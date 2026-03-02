@@ -21,7 +21,7 @@ using System.Collections.Generic;
 
 namespace Chummer
 {
-    public interface IHasCharacterObjects
+    public interface IHasCharacterObjects : IHasCharacterObject
     {
         IEnumerable<Character> CharacterObjects { get; }
     }

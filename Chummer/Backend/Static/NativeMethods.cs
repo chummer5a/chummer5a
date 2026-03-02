@@ -28,7 +28,7 @@ namespace Chummer
 {
     internal static class NativeMethods
     {
-        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool MiniDumpWriteDump
         (
@@ -41,7 +41,7 @@ namespace Chummer
             IntPtr CallbackParam
         );
 
-        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, ExactSpelling = true, SetLastError = true)]
+        [DllImport("dbghelp.dll", EntryPoint = "MiniDumpWriteDump", CallingConvention = CallingConvention.StdCall, CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool MiniDumpWriteDump
         (
@@ -96,15 +96,15 @@ namespace Chummer
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern bool DebugActiveProcess(IntPtr hProcess);
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentThreadId", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern uint GetCurrentThreadId();
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcess", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcess", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern IntPtr GetCurrentProcess();
 
-        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcessId", CharSet = CharSet.Auto, ExactSpelling = true)]
+        [DllImport("kernel32.dll", EntryPoint = "GetCurrentProcessId", CharSet = CharSet.Auto)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
         internal static extern uint GetCurrentProcessId();
 
@@ -339,7 +339,7 @@ namespace Chummer
             ShowNormal = 1,
             ShowMinimized = 2,
             ShowMaximized = 3,
-            Maximize = 3,
+            Maximize = ShowMaximized,
             ShowNormalNoActivate = 4,
             Show = 5,
             Minimize = 6,
@@ -496,7 +496,7 @@ namespace Chummer
             int intLastWin32Error = Marshal.GetLastWin32Error();
             if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
             {
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdBuffer))
                 {
                     if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
@@ -885,7 +885,7 @@ namespace Chummer
             SHGSI_SYSICONINDEX = 0x000004000,
             SHGSI_LINKOVERLAY = 0x000008000,
             SHGSI_SELECTED = 0x000010000,
-            SHGSI_LARGEICON = 0x000000000,
+            SHGSI_LARGEICON = SHGSI_ICONLOCATION,
             SHGSI_SMALLICON = 0x000000001,
             SHGSI_SHELLICONSIZE = 0x000000004
         }
@@ -914,7 +914,7 @@ namespace Chummer
         {
             SHSTOCKICONINFO sii = new SHSTOCKICONINFO
             {
-                cbSize = (uint)Marshal.SizeOf(typeof(SHSTOCKICONINFO))
+                cbSize = (uint)Marshal.SizeOf<SHSTOCKICONINFO>()
             };
             Marshal.ThrowExceptionForHR(SHGetStockIconInfo(eIconId, SHGSI.SHGSI_ICON, ref sii));
             try

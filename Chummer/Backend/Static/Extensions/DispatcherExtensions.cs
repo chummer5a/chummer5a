@@ -19,6 +19,7 @@
 
 using System;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
@@ -37,10 +38,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objDispatcher, Action funcToRun) where T : DispatcherObject
+        public static void DoThreadSafe<T>(this T objDispatcher, Action funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -48,7 +51,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke();
                 else
-                    Utils.RunOnMainThread(() => funcToRun);
+                    Utils.RunOnMainThread(() => funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -64,12 +67,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -83,10 +83,12 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static void DoThreadSafe<T>(this T objDispatcher, Action<T> funcToRun) where T : DispatcherObject
+        public static void DoThreadSafe<T>(this T objDispatcher, Action<T> funcToRun, CancellationToken token = default) where T : DispatcherObject
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return;
             try
@@ -94,7 +96,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke(null);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objDispatcher));
+                    Utils.RunOnMainThread(() => funcToRun(objDispatcher), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -110,12 +112,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -142,7 +141,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke(token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(token), token);
+                    Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -158,12 +157,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -190,7 +186,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke(null, token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token);
+                    Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -206,12 +202,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -421,15 +414,17 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T2> funcToRun) where T1 : DispatcherObject
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
-                return objDispatcher == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun);
+                return objDispatcher == null ? funcToRun.Invoke() : Utils.RunOnMainThread(funcToRun, token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -445,12 +440,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -466,17 +458,19 @@ namespace Chummer
         /// </summary>
         /// <param name="objDispatcher">Dispatcher object whose dispatcher's Invoke would need to be called.</param>
         /// <param name="funcToRun">Code to run in the form of a delegate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         // Note: we cannot do a flag hack here because .GetAwaiter().GetResult() can run into object disposed issues for this special case.
-        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T1, T2> funcToRun) where T1 : DispatcherObject
+        public static T2 DoThreadSafeFunc<T1, T2>(this T1 objDispatcher, Func<T1, T2> funcToRun, CancellationToken token = default) where T1 : DispatcherObject
         {
+            token.ThrowIfCancellationRequested();
             if (funcToRun == null)
                 return default;
             try
             {
                 return objDispatcher == null
                     ? funcToRun.Invoke(null)
-                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher));
+                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -492,12 +486,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -523,7 +514,7 @@ namespace Chummer
                 return default;
             try
             {
-                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token));
+                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -539,12 +530,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());
@@ -572,7 +560,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token));
+                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -588,12 +576,9 @@ namespace Chummer
             {
                 //no need to do anything here - actually we can't anyway...
             }
-            catch (OperationCanceledException)
+            catch (Exception e) when (!(e is OperationCanceledException))
             {
-                throw;
-            }
-            catch (Exception e)
-            {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(e.ToString());

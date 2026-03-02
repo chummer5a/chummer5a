@@ -24,7 +24,9 @@
 
   <categories>
     <category blackmarket="Magic">Alchemical Tools</category>
+    <category blackmarket="Magic">Alchemical Preperations</category>
     <category blackmarket="Weapons">Ammunition</category>
+    <category>Animals</category>
     <category blackmarket="Armor">Armor Enhancements</category>
     <category blackmarket="Electronics">Audio Devices</category>
     <category blackmarket="Electronics">Audio Enhancements</category>
@@ -64,6 +66,7 @@
     <category blackmarket="Electronics">Housewares</category>
     <category>ID/Credsticks</category>
     <category blackmarket="Magic">Magical Compounds</category>
+    <category blackmarket="Magic">Magical Plants</category>
     <category blackmarket="Magic">Magical Supplies</category>
     <category>Metatype-Specific</category>
     <category>Miscellany</category>
@@ -71,6 +74,7 @@
     <category blackmarket="Nanoware">Nanogear</category>
     <category blackmarket="Software">Paydata</category>
     <category blackmarket="Electronics">PI-Tac</category>
+    <category blackmarket="Software">PI-Tac Programs</category>
     <category>Printing</category>
     <category blackmarket="Electronics">Reporter Gear</category>
     <category blackmarket="Electronics">RFID Tags</category>
@@ -85,6 +89,7 @@
     <category blackmarket="Electronics">Software Tweaks</category>
     <category blackmarket="Electronics">Survival Gear</category>
     <category blackmarket="Drugs">Tailored Perfume/Cologne</category>
+    <category>Tir Tairngire Beverages</category>
     <category blackmarket="Armor,Bioware,Cyberware,Drugs,Electronics,Geneware,Magic,Nanoware,Software,Vehicles,Weapons">Tools</category>
     <category blackmarket="Armor,Electronics">Tools of the Trade</category>
     <category blackmarket="Drugs">Toxins</category>
@@ -545,7 +550,7 @@
       <weaponbonus>
         <ap>4</ap>
         <damage>-4</damage>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -665,14 +670,14 @@
     </gear>
     <gear>
       <id>13b3f7fb-87c1-41d1-9c98-54484b0d557c</id>
-      <name>Elektro-Netz</name>
+      <name>Electro-Net</name>
       <category>Ammunition</category>
       <rating>0</rating>
       <source>HAMG</source>
       <page>172</page>
       <avail>6</avail>
       <cost>600</cost>
-      <addweapon>Elektro-Netz</addweapon>
+      <addweapon>Electro-Net</addweapon>
       <costfor>1</costfor>
     </gear>
     <gear>
@@ -1299,6 +1304,17 @@
       <cost>100</cost>
     </gear>
     <gear>
+      <id>ee1789ab-c000-4c69-bc11-7a99370f89b2</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye)</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint (Radioactive Tracking Dye)</addweapon>
+      <cost>150</cost>
+    </gear>
+    <gear>
       <id>77a7504c-0eb8-4268-9744-66c4bbaae509</id>
       <name>Grenade: Smokebomb</name>
       <category>Ammunition</category>
@@ -1400,6 +1416,17 @@
       <avail>8R</avail>
       <addweapon>Grenade: Paint, Aerodynamic</addweapon>
       <cost>100</cost>
+    </gear>
+    <gear>
+      <id>022bc6c7-1f91-4852-b1ee-0f50433a1b97</id>
+      <name>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>RG</source>
+      <page>102</page>
+      <avail>8R</avail>
+      <addweapon>Grenade: Paint (Radioactive Tracking Dye), Aerodynamic</addweapon>
+      <cost>150</cost>
     </gear>
     <gear>
       <id>32d933f1-638e-4022-bed7-7cf846cb4f20</id>
@@ -1573,7 +1600,7 @@
       <source>SOTG</source>
       <page>13</page>
       <avail>0</avail>
-      <cost>100</cost>
+      <cost>520</cost>
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>As Narcoject</damagereplace>
@@ -1592,9 +1619,33 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagereplace>As Drug/Toxin</damagereplace>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype noextra="True">slingshot</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>89b2c8c2-e13a-4c76-a62a-09adcda15924</id>
+      <name>Ammo: Ruhrmetall SFW-30 Smart Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>14</page>
+      <avail>24F</avail>
+      <cost>600</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype noextra="True">sfw-30 main weapon</ammoforweapontype>
+    </gear>
+    <gear>
+      <id>5de06b98-6c28-4d0c-addb-885438011a81</id>
+      <name>Ammo: Ruhrmetall SFW-30 Tracker Ammunition</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SOTG</source>
+      <page>14</page>
+      <avail>12F</avail>
+      <cost>410</cost>
+      <costfor>10</costfor>
+      <ammoforweapontype noextra="True">sfw-30 underbarrel weapon</ammoforweapontype>
     </gear>
     <!-- Region Street Lethal -->
     <gear>
@@ -1742,7 +1793,7 @@
       <cost>FixedValues(20,30,40,50,100,200)</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1757,7 +1808,7 @@
       <cost>FixedValues(30,50)</cost>
       <costfor>10</costfor>
       <weaponbonus>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1773,7 +1824,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1792,7 +1843,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1811,7 +1862,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1827,7 +1878,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1846,7 +1897,7 @@
       <costfor>10</costfor>
       <weaponbonus>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1867,7 +1918,7 @@
         <damage>-4</damage>
         <ap>-4</ap>
         <damagetype>(M)</damagetype>
-        <userange>Light Pistol</userange>
+        <userange>Light Pistols</userange>
       </weaponbonus>
       <ammoforweapontype>gun</ammoforweapontype>
     </gear>
@@ -1924,7 +1975,7 @@
       <page>53</page>
       <avail>10R</avail>
       <cost>Rating*20</cost>
-      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>-->
+      <addweapon rating="{Rating}">Grenade: Fuzzy Boom Boom Bunnies</addweapon>
     </gear>
     <gear>
       <id>7470ed31-0d81-4992-bae6-38f9de198020</id>
@@ -2217,27 +2268,27 @@
     </gear>
     <gear>
       <id>89549b33-b3fa-48ac-bd6f-8b0aec288ae7</id>
-      <name>Detonating Cord, Low Yield (meter)</name>
+      <name>Detonating Cord, Low Yield</name>
       <category>Explosives</category>
-      <rating>3</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>193</page>
       <avail>10R</avail>
       <cost>100</cost>
-      <minrating>3</minrating>
-      <weight>1</weight>
+      <weight>Rating</weight>
     </gear>
     <gear>
       <id>6a38466e-f5ea-451b-bdf9-51aacc5e1537</id>
-      <name>Detonating Cord, High Yield (meter)</name>
+      <name>Detonating Cord, High Yield</name>
       <category>Explosives</category>
-      <rating>6</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>193</page>
       <avail>14R</avail>
       <cost>150</cost>
-      <minrating>6</minrating>
-      <weight>1</weight>
+      <weight>Rating</weight>
     </gear>
     <gear>
       <id>ded12d46-347a-424f-9e18-0d8c8cdfa48e</id>
@@ -2397,9 +2448,10 @@
     </gear>
     <gear>
       <id>7b14565a-ac42-4dcc-930d-34740c79358c</id>
-      <name>Safety Fuse (meter)</name>
+      <name>Safety Fuse</name>
       <category>Explosives</category>
-      <rating>0</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RG</source>
       <page>197</page>
       <avail>8R</avail>
@@ -3000,8 +3052,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3029,8 +3082,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3058,8 +3112,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3087,8 +3142,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3116,8 +3172,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3145,8 +3202,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3174,8 +3232,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3215,8 +3274,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3244,8 +3304,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3277,8 +3338,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3310,8 +3372,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3445,8 +3508,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3485,8 +3549,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3529,8 +3594,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3577,8 +3643,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3623,8 +3690,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3671,8 +3739,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3723,8 +3792,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3783,8 +3853,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3813,8 +3884,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3842,8 +3914,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3878,8 +3951,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3907,8 +3981,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -3936,8 +4011,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4551,8 +4627,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4580,8 +4657,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4616,8 +4694,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4645,8 +4724,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4677,8 +4757,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4706,8 +4787,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4738,8 +4820,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4770,8 +4853,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4799,8 +4883,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4828,8 +4913,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4860,8 +4946,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4889,8 +4976,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4918,8 +5006,39 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
+        </usegear>
+        <usegear>
+          <name>Commlink Functionality</name>
+          <category>Electronics Accessories</category>
+        </usegear>
+      </gears>
+    </gear>
+    <gear>
+      <id>2da87cc0-5291-4628-a38d-85271899fc71</id>
+      <name>Transys Graygul</name>
+      <category>Cyberdecks</category>
+      <rating>0</rating>
+      <source>LCD</source>
+      <page>219</page>
+      <avail>16R</avail>
+      <capacity>0</capacity>
+      <cost>789475</cost>
+      <devicerating>6</devicerating>
+      <attributearray>8,8,7,6</attributearray>
+      <programs>8</programs>
+      <canformpersona>Self</canformpersona>
+      <gears>
+        <usegear>
+          <name>Sim Module, Hot</name>
+          <category>Commlink Accessories</category>
+        </usegear>
+        <usegear>
+          <name>Universal Connector Cord</name>
+          <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
@@ -4946,8 +5065,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -4970,8 +5090,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -4994,8 +5115,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5018,8 +5140,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5042,8 +5165,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5066,8 +5190,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5090,8 +5215,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5114,8 +5240,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
     </gear>
@@ -5202,25 +5329,23 @@
       <canformpersona>Self</canformpersona>
       <gears>
         <usegear>
-          <name>Datasoft</name>
+          <name>Commlink Form Factor, Weapon</name>
+          <category>Commlink/Cyberdeck Form Factors</category>
+        </usegear>
+        <usegear>
+          <name select="Urban Brawl News">Datasoft</name>
           <category>Software</category>
+        </usegear>
+        <usegear>
+          <name>Hardened Casing</name>
+          <category>Commlink Accessories</category>
         </usegear>
         <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
-    </gear>
-    <gear>
-      <id>db03eec4-aa3b-4393-bf86-f8e3e6652264</id>
-      <name>Urban Brawl News</name>
-      <category>Miscellany</category>
-      <rating>0</rating>
-      <source>SAG</source>
-      <page>86</page>
-      <avail>0</avail>
-      <cost>0</cost>
-      <hide />
+      <addweapon>Extendable Baton</addweapon>
     </gear>
     <gear>
       <id>69c65b09-ac94-4032-a491-3610a464d168</id>
@@ -5251,21 +5376,14 @@
           <category>Sensors</category>
         </usegear>
         <usegear>
+          <name>Noise Detector and Alarm</name>
+          <category>Sensors</category>
+        </usegear>
+        <usegear>
           <name>Commlink Functionality</name>
           <category>Electronics Accessories</category>
         </usegear>
       </gears>
-    </gear>
-    <gear>
-      <id>33f9d60d-740f-4e99-8a15-e08ba8ed53ac</id>
-      <name>Wristband</name>
-      <category>Miscellany</category>
-      <rating>0</rating>
-      <source>SAG</source>
-      <page>86</page>
-      <avail>0</avail>
-      <cost>0</cost>
-      <hide />
     </gear>
     <gear>
       <id>403f8001-71a4-49c5-9ff3-00abd67e2e7a</id>
@@ -5282,6 +5400,18 @@
     <gear>
       <id>314a9040-1f18-4b1e-aece-36be00ad7aa9</id>
       <name>Blood Alcohol Biosensor</name>
+      <category>Sensors</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>86</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addoncategory>Custom</addoncategory>
+      <hide />
+    </gear>
+    <gear>
+      <id>bc847262-cacb-414f-a383-885ab2976e6a</id>
+      <name>Noise Detector and Alarm</name>
       <category>Sensors</category>
       <rating>0</rating>
       <source>SAG</source>
@@ -5331,8 +5461,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Waterproof Casing</name>
@@ -5376,8 +5507,9 @@
           <category>Commlink Accessories</category>
         </usegear>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
         <usegear>
           <name>Hardened Casing</name>
@@ -5929,7 +6061,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5939,7 +6071,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5949,7 +6081,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5959,7 +6091,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5969,7 +6101,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5979,7 +6111,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5989,7 +6121,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -5999,7 +6131,7 @@
       <category>Hacking Programs</category>
       <rating>0</rating>
       <source>SR5</source>
-      <page>245</page>
+      <page>246</page>
       <avail>4R</avail>
       <cost>250</cost>
     </gear>
@@ -6176,7 +6308,7 @@
     <gear>
       <id>d900aa9c-5914-4e5b-baa4-b4e0c0625123</id>
       <name>Pantheon Industries "Co-Pilot" Mk I</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6186,7 +6318,7 @@
     <gear>
       <id>5294813b-3421-46b6-b30a-de8cab38f89f</id>
       <name>Pantheon Industries "Co-Pilot" Mk II</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6196,7 +6328,7 @@
     <gear>
       <id>3727d9a2-c556-4133-8083-d1c61f239034</id>
       <name>Pantheon Industries "Co-Pilot" Mk III</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6206,7 +6338,7 @@
     <gear>
       <id>cf954b05-0c06-4fdd-8af6-15b03770bccc</id>
       <name>Pantheon Industries "Door Gunner"</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6216,7 +6348,7 @@
     <gear>
       <id>52adb8cf-22a4-4581-a354-0f7b9bcf6999</id>
       <name>Pantheon Industries "ECM-Warrior"</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6226,7 +6358,7 @@
     <gear>
       <id>4b7ec6a4-243b-490c-92f5-d337e5cc36de</id>
       <name>Pantheon Industries Mobile CNC</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -6236,7 +6368,7 @@
     <gear>
       <id>a9edf32b-dea2-4939-9fa1-016ed3693a23</id>
       <name>Pantheon Industries Shield Wall</name>
-      <category>Pi-Tac Programs</category>
+      <category>PI-Tac Programs</category>
       <rating>0</rating>
       <source>KC</source>
       <page>70</page>
@@ -8664,6 +8796,18 @@
       <avail>6R</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>e5a91f52-8f6d-4a2e-9b8f-3a087e3d97e4</id>
+      <name>Ink Pouch</name>
+      <category>Security Devices</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>0</cost>
+      <addweapon>Ink Pouch</addweapon>
+      <hide />
+    </gear>
     <!-- End Region -->
     <!-- Region Breaking and Entering Gear -->
     <gear>
@@ -9254,7 +9398,7 @@
     <gear>
       <id>3772ad51-c689-4e38-8c93-b285e78670b5</id>
       <name>Can Make Commcalls</name>
-      <category>Electronic Accessories</category>
+      <category>Electronics Accessories</category>
       <rating>0</rating>
       <source>SR5</source>
       <page>422</page>
@@ -9968,6 +10112,7 @@
       <name>Alchemical Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>318</page>
       <avail>(Rating * 3)R</avail>
@@ -9985,6 +10130,7 @@
       <name>Disenchanting Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10002,6 +10148,7 @@
       <name>Centering Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10015,6 +10162,7 @@
       <name>Flexible Signature Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10028,6 +10176,7 @@
       <name>Masking Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10041,6 +10190,7 @@
       <name>Spell Shaping Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10054,6 +10204,7 @@
       <name>Power Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
@@ -10071,6 +10222,7 @@
       <name>Qi Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -10091,6 +10243,7 @@
       <name>Counterspelling Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10104,6 +10257,7 @@
       <name>Ritual Spellcasting Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10117,10 +10271,11 @@
       <name>Spellcasting Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -10134,6 +10289,7 @@
       <name>Sustaining Focus, Combat</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10147,6 +10303,7 @@
       <name>Counterspelling Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10160,6 +10317,7 @@
       <name>Ritual Spellcasting Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10173,10 +10331,11 @@
       <name>Spellcasting Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -10190,6 +10349,7 @@
       <name>Sustaining Focus, Detection</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10203,6 +10363,7 @@
       <name>Counterspelling Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10216,6 +10377,7 @@
       <name>Ritual Spellcasting Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10229,10 +10391,11 @@
       <name>Spellcasting Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -10246,6 +10409,7 @@
       <name>Sustaining Focus, Health</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10259,6 +10423,7 @@
       <name>Counterspelling Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10272,6 +10437,7 @@
       <name>Ritual Spellcasting Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10285,10 +10451,11 @@
       <name>Spellcasting Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -10302,6 +10469,7 @@
       <name>Sustaining Focus, Illusion</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10315,6 +10483,7 @@
       <name>Counterspelling Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10328,6 +10497,7 @@
       <name>Ritual Spellcasting Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10341,10 +10511,11 @@
       <name>Spellcasting Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
@@ -10358,6 +10529,7 @@
       <name>Sustaining Focus, Manipulation</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10371,6 +10543,7 @@
       <name>Summoning Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10384,6 +10557,7 @@
       <name>Banishing Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10397,6 +10571,7 @@
       <name>Binding Focus</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -10409,6 +10584,7 @@
       <id>25b0168d-7052-4f76-b8e5-162d67b8ab6e</id>
       <name>Weapon Focus</name>
       <category>Foci</category>
+      <ratinglabel>String_Force</ratinglabel>
       <rating>18</rating>
       <source>SR5</source>
       <page>320</page>
@@ -10427,6 +10603,7 @@
       <name>Alchemical Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10449,6 +10626,7 @@
       <name>Disenchanting Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10471,6 +10649,7 @@
       <name>Centering Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10489,6 +10668,7 @@
       <name>Flexible Signature Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10507,6 +10687,7 @@
       <name>Masking Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10525,6 +10706,7 @@
       <name>Spell Shaping Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10543,6 +10725,7 @@
       <name>Power Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -10565,6 +10748,7 @@
       <name>Qi Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10590,6 +10774,7 @@
       <name>Counterspelling Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10608,6 +10793,7 @@
       <name>Ritual Spellcasting Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10626,10 +10812,11 @@
       <name>Spellcasting Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -10648,6 +10835,7 @@
       <name>Sustaining Focus, Combat, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10666,6 +10854,7 @@
       <name>Counterspelling Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10684,6 +10873,7 @@
       <name>Ritual Spellcasting Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10702,10 +10892,11 @@
       <name>Spellcasting Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -10724,6 +10915,7 @@
       <name>Sustaining Focus, Detection, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10742,6 +10934,7 @@
       <name>Counterspelling Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10760,6 +10953,7 @@
       <name>Ritual Spellcasting Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10778,10 +10972,11 @@
       <name>Spellcasting Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -10800,6 +10995,7 @@
       <name>Sustaining Focus, Health, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10818,6 +11014,7 @@
       <name>Counterspelling Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10836,6 +11033,7 @@
       <name>Ritual Spellcasting Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10854,10 +11052,11 @@
       <name>Spellcasting Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -10876,6 +11075,7 @@
       <name>Sustaining Focus, Illusion, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10894,6 +11094,7 @@
       <name>Counterspelling Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10912,6 +11113,7 @@
       <name>Ritual Spellcasting Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10930,10 +11132,11 @@
       <name>Spellcasting Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
@@ -10952,6 +11155,7 @@
       <name>Sustaining Focus, Manipulation, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10970,6 +11174,7 @@
       <name>Summoning Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -10988,6 +11193,7 @@
       <name>Banishing Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11006,6 +11212,7 @@
       <name>Binding Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11024,6 +11231,7 @@
       <name>Weapon Focus, Individualized, Partial</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11042,6 +11250,7 @@
       <name>Alchemical Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11064,6 +11273,7 @@
       <name>Disenchanting Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11086,6 +11296,7 @@
       <name>Centering Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11104,6 +11315,7 @@
       <name>Flexible Signature Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11122,6 +11334,7 @@
       <name>Masking Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11140,6 +11353,7 @@
       <name>Spell Shaping Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11158,6 +11372,7 @@
       <name>Power Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11180,6 +11395,7 @@
       <name>Qi Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11205,6 +11421,7 @@
       <name>Counterspelling Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11223,6 +11440,7 @@
       <name>Ritual Spellcasting Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11241,10 +11459,11 @@
       <name>Spellcasting Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="combatspellfocus">
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
@@ -11263,6 +11482,7 @@
       <name>Sustaining Focus, Combat, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11281,6 +11501,7 @@
       <name>Counterspelling Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11299,6 +11520,7 @@
       <name>Ritual Spellcasting Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11317,10 +11539,11 @@
       <name>Spellcasting Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="detectionspellfocus">
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
@@ -11339,6 +11562,7 @@
       <name>Sustaining Focus, Detection, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11357,6 +11581,7 @@
       <name>Counterspelling Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11375,6 +11600,7 @@
       <name>Ritual Spellcasting Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11393,10 +11619,11 @@
       <name>Spellcasting Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="healthspellfocus">
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
@@ -11415,6 +11642,7 @@
       <name>Sustaining Focus, Health, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11433,6 +11661,7 @@
       <name>Counterspelling Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11451,6 +11680,7 @@
       <name>Ritual Spellcasting Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11469,10 +11699,11 @@
       <name>Spellcasting Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="illusionspellfocus">
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
@@ -11491,6 +11722,7 @@
       <name>Sustaining Focus, Illusion, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11509,6 +11741,7 @@
       <name>Counterspelling Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11527,6 +11760,7 @@
       <name>Ritual Spellcasting Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11545,10 +11779,11 @@
       <name>Spellcasting Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
-      <bonus>
+      <bonus unique="manipulationspellfocus">
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
@@ -11567,6 +11802,7 @@
       <name>Sustaining Focus, Manipulation, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11585,6 +11821,7 @@
       <name>Summoning Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11603,6 +11840,7 @@
       <name>Banishing Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11621,6 +11859,7 @@
       <name>Binding Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 3)R</avail>
@@ -11639,6 +11878,7 @@
       <name>Weapon Focus, Individualized, Complete</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>230</page>
       <avail>(Rating * 4)R</avail>
@@ -11659,6 +11899,7 @@
       <name>Alchemical Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>318</page>
       <avail>(Rating * 3)R</avail>
@@ -11672,6 +11913,7 @@
       <name>Disenchanting Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11685,6 +11927,7 @@
       <name>Centering Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11698,6 +11941,7 @@
       <name>Flexible Signature Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11711,6 +11955,7 @@
       <name>Masking Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11724,6 +11969,7 @@
       <name>Spell Shaping Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11737,6 +11983,7 @@
       <name>Power Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 4)R</avail>
@@ -11750,6 +11997,7 @@
       <name>Qi Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>319</page>
       <avail>(Rating * 3)R</avail>
@@ -11763,6 +12011,7 @@
       <name>Counterspelling Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11776,6 +12025,7 @@
       <name>Ritual Spellcasting Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11789,6 +12039,7 @@
       <name>Spellcasting Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11802,6 +12053,7 @@
       <name>Sustaining Focus Formula, Combat</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11815,6 +12067,7 @@
       <name>Counterspelling Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11828,6 +12081,7 @@
       <name>Ritual Spellcasting Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11841,6 +12095,7 @@
       <name>Spellcasting Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11854,6 +12109,7 @@
       <name>Sustaining Focus Formula, Detection</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11867,6 +12123,7 @@
       <name>Counterspelling Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11880,6 +12137,7 @@
       <name>Ritual Spellcasting Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11893,6 +12151,7 @@
       <name>Spellcasting Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11906,6 +12165,7 @@
       <name>Sustaining Focus Formula, Health</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11919,6 +12179,7 @@
       <name>Counterspelling Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11932,6 +12193,7 @@
       <name>Ritual Spellcasting Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11945,6 +12207,7 @@
       <name>Spellcasting Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11958,6 +12221,7 @@
       <name>Sustaining Focus Formula, Illusion</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11971,6 +12235,7 @@
       <name>Counterspelling Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11984,6 +12249,7 @@
       <name>Ritual Spellcasting Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -11997,6 +12263,7 @@
       <name>Spellcasting Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12010,6 +12277,7 @@
       <name>Sustaining Focus Formula, Manipulation</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12023,6 +12291,7 @@
       <name>Summoning Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12037,6 +12306,7 @@
       <name>Banishing Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12051,6 +12321,7 @@
       <name>Binding Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 3)R</avail>
@@ -12065,6 +12336,7 @@
       <name>Weapon Focus Formula</name>
       <category>Formulae</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>320</page>
       <avail>(Rating * 4)R</avail>
@@ -12161,6 +12433,7 @@
       <name>Magical Lodge Materials</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SR5</source>
       <page>326</page>
       <avail>Rating * 2</avail>
@@ -12174,6 +12447,7 @@
       <name>Sacred Circle Materials</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>FA</source>
       <page>65</page>
       <avail>Rating * 2</avail>
@@ -12493,6 +12767,7 @@
       <name>FAB II</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>16R</avail>
@@ -12503,6 +12778,7 @@
       <name>FAB III</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>20F</avail>
@@ -12563,6 +12839,7 @@
       <name>Govi</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>212</page>
       <avail>Rating</avail>
@@ -12573,6 +12850,7 @@
       <name>Hand of Glory</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>213</page>
       <avail>(Rating * Rating)R</avail>
@@ -12606,6 +12884,7 @@
       <name>Mystic Cuff</name>
       <category>Magical Supplies</category>
       <rating>8</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12616,6 +12895,7 @@
       <name>Mystic Jacket</name>
       <category>Magical Supplies</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12626,6 +12906,7 @@
       <name>Mystic Mask</name>
       <category>Magical Supplies</category>
       <rating>12</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>214</page>
       <avail>(Rating)R</avail>
@@ -12666,6 +12947,7 @@
       <name>Shofar</name>
       <category>Magical Supplies</category>
       <rating>12</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>216</page>
       <avail>Rating</avail>
@@ -12719,13 +13001,551 @@
       <cost>1000</cost>
       <allowrename>True</allowrename>
     </gear>
+    <gear>
+      <id>c62abf8d-f754-4eab-8d5b-5b6ba9c65343</id>
+      <name>Abyssitine, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>36</avail>
+      <cost>9800000</cost>
+    </gear>
+    <gear>
+      <id>9f0ea3cb-be9a-4287-8968-36d8861f0af7</id>
+      <name>Cerrukite, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>7000000</cost>
+    </gear>
+    <gear>
+      <id>2f70ea3b-20ad-4598-9ac9-5ad658c611c4</id>
+      <name>Elichium, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>d71dd55a-a222-44bc-b9f7-51a31d6efb70</id>
+      <name>Orichalcum, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>12</avail>
+      <cost>14000</cost>
+    </gear>
+    <gear>
+      <id>c768f045-2435-40af-84dd-9eebff5e95fa</id>
+      <name>Ulmenite, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>ef27cb56-9d67-49e7-bd8b-17a0694070ec</id>
+      <name>Wertamiline, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>36</avail>
+      <cost>9800000</cost>
+    </gear>
+    <gear>
+      <id>1188d817-9305-438b-92c0-13c6f3ef3eb0</id>
+      <name>Corinthian Bronze, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>7000000</cost>
+    </gear>
+    <gear>
+      <id>b560a02e-5344-44d4-a071-68866c8ce3f6</id>
+      <name>Hepatizon, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>7000000</cost>
+    </gear>
+    <gear>
+      <id>bf43f2b6-a9ea-4fa5-8dea-d6874ec4506c</id>
+      <name>Ithium, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>7000000</cost>
+    </gear>
+    <gear>
+      <id>ee4f9cd1-89fd-4069-afec-69695d77f76b</id>
+      <name>Psilosen, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>36</avail>
+      <cost>11200000</cost>
+    </gear>
+    <gear>
+      <id>f2cfc9d4-82d2-4778-bac2-d310dc0e1695</id>
+      <name>Ukkru, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>14</avail>
+      <cost>210000</cost>
+    </gear>
+    <gear>
+      <id>a1f8c40d-314f-4fb9-b591-ae36ad3935c8</id>
+      <name>True Element, Air (Longfeng), per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>78da7f6a-37a0-4caf-babd-aaf9d99abd2a</id>
+      <name>True Element, Earth (Longpi), per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>247ca39b-eb85-4e6f-983c-aead9b659e3e</id>
+      <name>True Element, Fire (Longqi), per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>4d27a2ae-afc9-44bb-a59a-209f787062df</id>
+      <name>True Element, Water (Longlei), per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>30</avail>
+      <cost>4200000</cost>
+    </gear>
+    <gear>
+      <id>b96a7267-ce2f-4a42-b142-dc7b2879e455</id>
+      <name>True Element Primal Stone, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>24</avail>
+      <cost>2100000</cost>
+    </gear>
+    <gear>
+      <id>10e64ca8-5524-46c6-a94a-ccfeb33ec951</id>
+      <name>True Element Primal Breath, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>24</avail>
+      <cost>2100000</cost>
+    </gear>
+    <gear>
+      <id>3288465a-7c6f-4dd5-9a87-a096dbbc5b0f</id>
+      <name>True Element Primal Forged Metals, per dram</name>
+      <category>Magical Supplies</category>
+      <rating>0</rating>
+      <source>PGG</source>
+      <page>34</page>
+      <avail>24</avail>
+      <cost>2100000</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Magical Plants -->
+    <gear>
+      <id>b2336252-30b7-4390-92c9-4cd1067fc80a</id>
+      <name>Embracing Fruit</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>137</page>
+      <avail>18R</avail>
+      <cost>35000</cost>
+    </gear>
+    <gear>
+      <id>76d62d7c-55d5-4715-b6dc-1170a951b7e9</id>
+      <name>Night Cellar Cat</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>138</page>
+      <avail>5F</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>d7a960e2-7cbf-4077-a5ea-4a80c4194a30</id>
+      <name>Hephaestus' Staff</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SOXG</source>
+      <page>39</page>
+      <avail>2F</avail>
+      <cost>150</cost>
+    </gear>
+    <gear>
+      <id>90cd01a9-6d95-4e12-937b-dac9d921fb31</id>
+      <name>Hercules' Strangler</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SOXG</source>
+      <page>39</page>
+      <avail>20F</avail>
+      <cost>500</cost>
+    </gear>
+    <gear>
+      <id>fb6f2c7e-88fc-4be3-8695-1ea85c0a77a9</id>
+      <name>Red Oak</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>SOXG</source>
+      <page>40</page>
+      <avail>20F</avail>
+      <cost>35000</cost>
+    </gear>
+    <gear>
+      <id>fab9c8aa-0a11-451d-a80d-d09fabdd29fc</id>
+      <name>Austras Kok</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>25F</avail>
+      <cost>5000000</cost>
+    </gear>
+    <gear>
+      <id>184da378-0edb-4706-a66b-3ea9e5ab9790</id>
+      <name>Black Mana Orchid</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>18F</avail>
+      <cost>200000</cost>
+    </gear>
+    <gear>
+      <id>01bdba13-7980-4125-8359-b9d12fb68d3f</id>
+      <name>Caldwell Lily</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>2</avail>
+      <cost>1000</cost>
+    </gear>
+    <gear>
+      <id>dd2ed263-56db-456b-a20e-583377f61f40</id>
+      <name>Chicago Grey</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>8R</avail>
+      <cost>5500</cost>
+    </gear>
+    <gear>
+      <id>2794129f-c7e6-4dc7-b49e-a4d5b6c7d071</id>
+      <name>Chimera Tree</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>4</avail>
+      <cost>800</cost>
+    </gear>
+    <gear>
+      <id>8d904740-7ae5-46db-8130-d47df6404d8f</id>
+      <name>Crimson Orchids</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>18F</avail>
+      <cost>200000</cost>
+    </gear>
+    <gear>
+      <id>a591540d-129c-47ab-8d8f-4e5acea9756b</id>
+      <name>Deepweed</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>18F</avail>
+      <cost>200000</cost>
+    </gear>
+    <gear>
+      <id>4427cbe7-e02b-4870-90d7-03b20caff328</id>
+      <name>Devil's Breath</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>12R</avail>
+      <cost>5500</cost>
+    </gear>
+    <gear>
+      <id>5a62408d-37c3-4859-bc83-9e89cf3d011a</id>
+      <name>Divining Lotus</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>20F</avail>
+      <cost>230000</cost>
+    </gear>
+    <gear>
+      <id>da894da7-b6fd-46ca-823e-c5c9c739cac1</id>
+      <name>Glammergold</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>16</avail>
+      <cost>15000</cost>
+    </gear>
+    <gear>
+      <id>2924c28a-20fc-404c-8709-41870f7c0719</id>
+      <name>Hag Golete</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>8</avail>
+      <cost>1100</cost>
+    </gear>
+    <gear>
+      <id>94234658-5e47-4189-8e35-ecb8392839e2</id>
+      <name>Hellhound's Tongue</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>14</avail>
+      <cost>20000</cost>
+    </gear>
+    <gear>
+      <id>bad4e36f-51cd-414d-b2ba-05bbb5647ca6</id>
+      <name>Immortal Flower</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>14F</avail>
+      <cost>180000</cost>
+    </gear>
+    <gear>
+      <id>fd1de5db-f1a9-4edf-ad33-6e00b08256d3</id>
+      <name>Laésal Tree</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>25F</avail>
+      <cost>1000000</cost>
+    </gear>
+    <gear>
+      <id>d3197ebd-3e3c-42c0-bdfe-11a95f4e2620</id>
+      <name>Magnus Kudzu</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>5</avail>
+      <cost>4000</cost>
+    </gear>
+    <gear>
+      <id>c4cb7d98-428a-44fd-8628-54b07d6f2c9f</id>
+      <name>Metadrake</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>12R</avail>
+      <cost>50000</cost>
+    </gear>
+    <gear>
+      <id>18f46e9a-aa30-492a-ba65-5c9d856344cd</id>
+      <name>Molu</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>8</avail>
+      <cost>15000</cost>
+    </gear>
+    <gear>
+      <id>ca3a5116-12e8-4d4e-af68-0c79c386859b</id>
+      <name>Nahala Aloe</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>8</avail>
+      <cost>15000</cost>
+    </gear>
+    <gear>
+      <id>c301853a-1f34-44a2-bf60-7dfbc50b4886</id>
+      <name>Porqupod</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>10R</avail>
+      <cost>12000</cost>
+    </gear>
+    <gear>
+      <id>6c91231a-aa25-422c-b849-9a53d15f08bf</id>
+      <name>Prairie Smite</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>10</avail>
+      <cost>2000</cost>
+    </gear>
+    <gear>
+      <id>b84e3135-ea68-430a-a381-cb8fc96065d6</id>
+      <name>Sleeping Willow</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>8</avail>
+      <cost>10000</cost>
+    </gear>
+    <gear>
+      <id>ed53e780-f352-4349-a04d-2615d9db8a2f</id>
+      <name>Spider Fern</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>7</avail>
+      <cost>8000</cost>
+    </gear>
+    <gear>
+      <id>ec01eab8-0de6-4565-93da-8cd5ffdad487</id>
+      <name>Weeping Tree</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>10R</avail>
+      <cost>30000</cost>
+    </gear>
+    <gear>
+      <id>f1789e19-56a4-48fd-b820-0e9a8718139e</id>
+      <name>Whipcord Viper Lily</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>6</avail>
+      <cost>8000</cost>
+    </gear>
+    <gear>
+      <id>8d7f969e-1f3b-4a11-a871-a6ee0681fd64</id>
+      <name>Xutuli</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>12R</avail>
+      <cost>50000</cost>
+    </gear>
+    <gear>
+      <id>010a5652-3775-4590-985b-cf65fed083e8</id>
+      <name>Yann Orchid</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>14F</avail>
+      <cost>180000</cost>
+    </gear>
+    <gear>
+      <id>0d2f33d3-45bb-4e3f-ac3e-c8cb6effad00</id>
+      <name>Ziba Tree</name>
+      <category>Magical Plants</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>10</avail>
+      <cost>20000</cost>
+    </gear>
+    <gear>
+      <id>c324309d-f4d9-4694-8c7b-85d491288c6d</id>
+      <name>Thorn Blades</name>
+      <category>Magical Plants</category>
+      <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>Rating * 4</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>bc3e37ea-86b0-4ad3-99ae-b585bc703f28</id>
+      <name>Teapot Fern</name>
+      <category>Magical Plants</category>
+      <rating>2</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force</ratinglabel>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>6</avail>
+      <cost>400</cost>
+    </gear>
+    <gear>
+      <id>36ddf555-8e74-4c16-a344-b8c0ba599ec8</id>
+      <name>Detective Fichus</name>
+      <category>Magical Plants</category>
+      <rating>4</rating>
+      <minrating>4</minrating>
+      <ratinglabel>String_Force</ratinglabel>
+      <source>PBG</source>
+      <page>40</page>
+      <avail>6</avail>
+      <cost>2000</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Magical Compounds -->
     <gear>
       <id>08b3bf17-e52a-41d4-b023-af6ee5354fe6</id>
       <name>AgHexHex</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>219</page>
       <avail>8</avail>
@@ -12735,7 +13555,8 @@
       <id>46e9dca6-bb11-4e33-8436-3dcadc23433c</id>
       <name>BDNB</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>8</avail>
@@ -12745,7 +13566,8 @@
       <id>bdb141a3-7104-4d9e-a939-6f2d75678c0f</id>
       <name>Lot's Curse</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>14F</avail>
@@ -12755,7 +13577,8 @@
       <id>e7b70355-cf78-4680-93f2-da82b6fc98a5</id>
       <name>Sage</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
@@ -12765,7 +13588,8 @@
       <id>b6bbfa14-9b0f-4474-a182-4f374c1efae2</id>
       <name>Spirit Strength</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
@@ -12775,12 +13599,371 @@
       <id>000dd333-262f-4b51-8c66-01495b0df8ab</id>
       <name>Witch's Moss</name>
       <category>Magical Compounds</category>
-      <rating>20</rating>
+      <rating>1000000</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>SG</source>
       <page>220</page>
       <avail>(Rating * 6)R</avail>
       <cost>Rating * 1600</cost>
     </gear>
+    <gear>
+      <id>cc7032d0-ce05-4dea-8fe6-17d41004227e</id>
+      <name>Metadrake Spray</name>
+      <category>Magical Compounds</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>17</page>
+      <avail>20R</avail>
+      <cost>20000</cost>
+    </gear>
+    <gear>
+      <id>01a0c2a6-3d06-4cf9-9fc4-4388b1c87bb3</id>
+      <name>Alchemical Duct Tape</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>194</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>82afb8a5-e5b7-4fb2-9b9e-bb8ec9fee029</id>
+      <name>Astral Increase</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>194</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>a869cbec-e320-417a-b9bc-e7ed8f624670</id>
+      <name>Astral Bond</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>195</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>de78507e-d5ea-4fab-b034-d116d9fafd51</id>
+      <name>Baobhan's Tears</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>195</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>14941349-f9fa-4671-b194-eb0e3b9205fc</id>
+      <name>Drain Away</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>195</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>f48792cd-1c0e-4c69-93d5-ad54caca9827</id>
+      <name>Dulled Edges</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>195</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>c8cc2a19-c40f-44b5-a2f9-6b3c5da2b10d</id>
+      <name>Feel No Pain</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>195</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>86b0f1d8-5777-443f-a90c-4be0a264a5ea</id>
+      <name>Force of Personality</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>196</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>feb6f468-641f-4443-a72a-b78b6cf239d3</id>
+      <name>HMHVV II Inhibitor</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>196</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>9a2f3b3e-4f6c-4d47-bf65-09e79ea0e306</id>
+      <name>Laminate</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>196</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>c40e890f-3744-4151-bcd2-ce8de0cf92fa</id>
+      <name>Perfect Sight</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>196</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>af58e5e2-78aa-440f-9283-937819ef2d17</id>
+      <name>Sharpshooter</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>197</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>22e38a1f-305d-460f-836d-645818811e60</id>
+      <name>Unstoppable Vigor</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>197</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>bf435f24-1bf4-416f-8665-a5f9c4595196</id>
+      <name>Water Breathing</name>
+      <category>Magical Compounds</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>197</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>0336261c-a1ae-4d82-91b2-6c03cab65bb9</id>
+      <name>Abandon All Hope</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>198</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>94f8ff12-dfb6-4316-a3a5-fdd50cda26d9</id>
+      <name>Barricade</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>198</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>30e7f5c4-b955-408c-a5c6-a221da65d067</id>
+      <name>Burn, Baby, Burn</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>198</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7b045c01-6631-4904-b024-824368b6a1e2</id>
+      <name>Do your Best</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>198</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>00125c87-ab8a-4a5d-b9a9-167e305520d7</id>
+      <name>Get Away From My Ride</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>198</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>ee884eb3-9f55-4375-a478-2d735c198d9d</id>
+      <name>High As A Kite</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>6290d8fe-925b-4c48-80af-35236ae65f91</id>
+      <name>Noise On The Line</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>8dd76614-b2a6-4cee-9998-33caf2b027c4</id>
+      <name>NOMW</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7bd5086c-bb9f-4d5b-aa49-8ed123427a4c</id>
+      <name>Lightning Blade</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>70ed70bf-1da4-4e2b-b1ee-de6d9778c22e</id>
+      <name>Spirit Zapper</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>8436a323-e60f-4651-a238-e33a895a0b42</id>
+      <name>Stink Bomb</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>357492f9-adfe-491d-8893-3ba3f198b283</id>
+      <name>Stop Thief!</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>199</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>7fc912ac-44d0-41ab-97dc-7b6df02ac327</id>
+      <name>Truth Serum</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>200</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>4a16cc8a-0cd1-4d6b-8962-5edff4dd98aa</id>
+      <name>Up And At 'Em</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>200</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>
+    <gear>
+      <id>6ea96a5d-476f-445d-b439-4328c542983d</id>
+      <name>Watch Your Step</name>
+      <category>Alchemical Preperations</category>
+      <rating>1000000</rating>
+      <minrating>2</minrating>
+      <ratinglabel>String_Force_Potency</ratinglabel>
+      <source>FA</source>
+      <page>200</page>
+      <avail>14R</avail>
+      <cost>Rating * 500</cost>
+    </gear>    
     <!-- End Region -->
     <!-- Region Toxins -->
     <gear>
@@ -12938,7 +14121,7 @@
       <avail>0</avail>
       <cost>5</cost>
       <!-- ReSharper disable once MarkupTextTypo -->
-      <ammoforweapontype>pepperpunch,spraypen</ammoforweapontype>
+      <ammoforweapontype noextra="True">pepperpunch,spraypen</ammoforweapontype>
     </gear>
     <gear>
       <id>189c3bb8-357b-412a-afc4-ce931ea8871d</id>
@@ -13024,6 +14207,16 @@
       <page>11</page>
       <avail>10</avail>
       <cost>20</cost>
+    </gear>
+    <gear>
+      <id>fbcd16f4-203e-4683-8e6c-43c4f80291d5</id>
+      <name>Bunyip Poison</name>
+      <category>Toxins</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>16</page>
+      <avail>15R</avail>
+      <cost>2500</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Drugs -->
@@ -14111,7 +15304,7 @@
       <avail>0</avail>
       <capacity>0</capacity>
       <requireparent />
-      <cost>Parent Cost * -.5</cost>
+      <cost>Parent Cost * -0.5</cost>
       <required>
         <geardetails>
           <category>Drugs</category>
@@ -14151,6 +15344,68 @@
           <category>Drugs</category>
         </geardetails>
       </required>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Animals -->
+    <gear>
+      <id>be39c579-deb5-4f7f-b4c3-09cc1c375b0b</id>
+      <name>Mini Mokele-Mbembe, Iyoki</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>37</page>
+      <avail>13</avail>
+      <cost>10000</cost>
+    </gear>
+    <gear>
+      <id>8ff2c26c-dd97-4143-bfe4-7bba6a4cd8af</id>
+      <name>Mini Mokele-Mbembe, Gashka</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>37</page>
+      <avail>9</avail>
+      <cost>5000</cost>
+    </gear>
+    <gear>
+      <id>91f3c0aa-c60c-432b-9d8f-7296bc9f11f1</id>
+      <name>Mini Mokele-Mbembe, Borgu</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>37</page>
+      <avail>9</avail>
+      <cost>8000</cost>
+    </gear>
+    <gear>
+      <id>b8f3b108-4d86-42d3-93b4-8a57398bf4f9</id>
+      <name>Riding Horse, Farasi</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>42</page>
+      <avail>16</avail>
+      <cost>150000</cost>
+    </gear>
+    <gear>
+      <id>8edf4c6b-6b9f-4de6-b479-1fcce41c1bad</id>
+      <name>Riding Horse, Ghazu</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>42</page>
+      <avail>16</avail>
+      <cost>120000</cost>
+    </gear>
+    <gear>
+      <id>718bd7b5-7a7c-42c1-ae5f-bf6bf2f565a6</id>
+      <name>Riding Horse, Rinaldo</name>
+      <category>Animals</category>
+      <rating>0</rating>
+      <source>PZG</source>
+      <page>42</page>
+      <avail>14</avail>
+      <cost>100000</cost>
     </gear>
     <!-- End Region -->
     <!-- Region Armor Enhancements -->
@@ -14437,8 +15692,9 @@
       <programs>Rating</programs>
       <gears>
         <usegear>
-          <name>Universal Connector Cord (Meter)</name>
+          <name>Universal Connector Cord</name>
           <category>Tools</category>
+          <rating>1</rating>
         </usegear>
       </gears>
       <required>
@@ -15573,78 +16829,6 @@
       <costfor>5</costfor>
     </gear>
     <!-- End Region -->
-    <!-- Region Hard Nanoware -->
-    <gear>
-      <id>6ba6ff51-9dd3-43fa-8d46-e7fedcc68fe4</id>
-      <name>Anti-Rad</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>14F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>1fb25d10-fa70-4a4e-87c8-b8a5acbb1473</id>
-      <name>Control Rig Booster</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>12F</avail>
-      <cost>Rating * 6000</cost>
-    </gear>
-    <gear>
-      <id>d139c977-eb78-4234-8cfc-2e4ae909ef6f</id>
-      <name>Nanite Hunters</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>147</page>
-      <avail>16R</avail>
-      <cost>Rating * 5000</cost>
-    </gear>
-    <gear>
-      <id>f317ccfa-a0ab-4e14-8c6f-436b31061e73</id>
-      <name>Markers</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 2000</cost>
-    </gear>
-    <gear>
-      <id>044072d3-824c-49f9-91e2-07ae3e01be3c</id>
-      <name>Nanotattoos</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 1000</cost>
-    </gear>
-    <gear>
-      <id>3718b500-b035-40dd-9f5f-c73682fff3ef</id>
-      <name>Taggants</name>
-      <category>Hard Nanoware</category>
-      <rating>3</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12</avail>
-      <cost>Rating * 600</cost>
-    </gear>
-    <gear>
-      <id>071a20a3-0507-43dc-b504-9aeaeb6df09b</id>
-      <name>Trauma Control System</name>
-      <category>Hard Nanoware</category>
-      <rating>6</rating>
-      <source>CF</source>
-      <page>148</page>
-      <avail>12F</avail>
-      <cost>Rating * 4000</cost>
-    </gear>
-    <!-- End Region -->
     <!-- Region Food -->
     <gear>
       <id>af06a5f9-a010-4e29-95b0-cd3e280d1de3</id>
@@ -16562,6 +17746,17 @@
       <cost>1</cost>
       <costfor>4</costfor>
     </gear>
+    <gear>
+      <id>9c7f1a63-4b2d-4e19-a9cb-fb8b63b5e3ac</id>
+      <name>Plasma Torch</name>
+      <category>Tools</category>
+      <rating>0</rating>
+      <source>R5</source>
+      <page>136</page>
+      <avail>0</avail>
+      <cost>1</cost>
+      <hide />
+    </gear>
     <!-- End Region -->
     <!-- Region Housewares -->
     <gear>
@@ -16686,9 +17881,10 @@
     </gear>
     <gear>
       <id>a2f8d85c-99eb-44ed-b747-ac995f8fec89</id>
-      <name>Universal Connector Cord (Meter)</name>
+      <name>Universal Connector Cord</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>20000</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
@@ -16906,9 +18102,10 @@
     </gear>
     <gear>
       <id>647871e8-8dad-42db-8d38-856756b72384</id>
-      <name>Folding Ladder (Meter)</name>
+      <name>Folding Ladder</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>20</rating>
+      <ratinglabel>Rating_Meters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
@@ -17086,9 +18283,10 @@
     </gear>
     <gear>
       <id>8acd6bcd-7f05-4e48-b645-ea9bfd3b93fb</id>
-      <name>Solar Panel (Square Meter)</name>
+      <name>Solar Panel</name>
       <category>Tools</category>
-      <rating>0</rating>
+      <rating>10</rating>
+      <ratinglabel>Rating_SqMeters</ratinglabel>
       <source>RF</source>
       <page>254</page>
       <avail>0</avail>
@@ -17514,6 +18712,7 @@
       <page>254</page>
       <avail>0</avail>
       <cost>2</cost>
+      <weight>1</weight>
     </gear>
     <gear>
       <id>1e8589a2-5737-4870-9a56-8614309a72a9</id>
@@ -18143,6 +19342,150 @@
       <avail>1</avail>
       <cost>250</cost>
     </gear>
+    <gear>
+      <id>85283941-f6e6-4a3c-ac7f-782ce58d3680</id>
+      <name>Critter Medkit</name>
+      <category>Critter Gear</category>
+      <rating>6</rating>
+      <source>GRST2019</source>
+      <page>96</page>
+      <avail>Rating+2</avail>
+      <cost>Rating * 250</cost>
+    </gear>
+    <!-- End Region -->
+    <!-- Region Tir Tairngire Beverages -->
+    <gear>
+      <id>e0ad5cdd-2c16-41b2-8076-1d90be51d163</id>
+      <name>Alamestra</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>20</avail>
+      <cost>15000</cost>
+    </gear>
+    <gear>
+      <id>9a969e46-6b12-48f4-a40d-545244a82843</id>
+      <name>Cara'Sir Kirsch</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>12</avail>
+      <cost>8000</cost>
+    </gear>
+    <gear>
+      <id>93a7c72b-9391-4925-bd6b-a6ad136fc08a</id>
+      <name>Cetheral</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>10</avail>
+      <cost>50</cost>
+      <costfor>6</costfor>
+    </gear>
+    <gear>
+      <id>139205f2-5c56-4de9-af57-49be557b7e15</id>
+      <name>Näch</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>10</avail>
+      <cost>30</cost>
+      <costfor>6</costfor>
+    </gear>
+    <gear>
+      <id>b3abb764-cb1c-465d-b5cf-175d77202d5d</id>
+      <name>KéValan Frunte</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>12</avail>
+      <cost>10000</cost>
+    </gear>
+    <gear>
+      <id>01568102-ff75-47bc-a1c7-d963e3f85423</id>
+      <name>Sil Oineäm</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>15</avail>
+      <cost>10</cost>
+    </gear>
+    <gear>
+      <id>25aa223a-3ae8-4897-8027-2222c9ddaef4</id>
+      <name>Sérentaneyo Laésate</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>12R</avail>
+      <cost>8000</cost>
+    </gear>
+    <gear>
+      <id>ce5ccd68-745d-4f7a-911d-f185a076e5ea</id>
+      <name>Taéngelé (Falan)</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>10</avail>
+      <cost>600</cost>
+    </gear>
+    <gear>
+      <id>eee601f3-84cd-41ef-9b6b-1ede5cbc6010</id>
+      <name>Taéngelé (Gheal)</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>10</avail>
+      <cost>125</cost>
+    </gear>
+    <gear>
+      <id>b54b219a-9b26-4750-b8c1-7b67981daaf4</id>
+      <name>Tir Lacrima White</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>0</avail>
+      <cost>30</cost>
+    </gear>
+    <gear>
+      <id>d3f2bce0-ad96-4ef5-9e06-32fe822ce1d6</id>
+      <name>Tir Lacrima Rosé</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>0</avail>
+      <cost>50</cost>
+    </gear>
+    <gear>
+      <id>ca234133-29b2-4b37-8f99-ace8a5d0e3c1</id>
+      <name>Tolanestéa Kirsch</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>15R</avail>
+      <cost>12000</cost>
+    </gear>
+    <gear>
+      <id>4d2162c2-c229-4b31-98c3-060f42056a26</id>
+      <name>Tolanestéa Gewürztraminer</name>
+      <category>Tir Tairngire Beverages</category>
+      <rating>0</rating>
+      <source>PBG</source>
+      <page>43</page>
+      <avail>10</avail>
+      <cost>500</cost>
+    </gear>
     <!-- End Region -->
     <!-- Region Tailored Cologne/Perfume -->
     <gear>
@@ -18641,7 +19984,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>191</page>
-      <avail>4E</avail>
+      <avail>4R</avail>
       <cost>250</cost>
     </gear>
     <gear>
@@ -18925,6 +20268,18 @@
       <addweapon>Grenade: Halloweener Molotov Cocktail, Aerodynamic</addweapon>
       <cost>50</cost>
     </gear>
+    <gear>
+      <id>e1e1d6df-3136-4093-9d07-ce22646158d0</id>
+      <name>Microgrenade: High Explosive</name>
+      <category>Ammunition</category>
+      <rating>0</rating>
+      <source>SAG</source>
+      <page>27</page>
+      <avail>20F</avail>
+      <addweapon>Microgrenade: High Explosive</addweapon>
+      <cost>200</cost>
+      <ammoforweapontype noextra="True">microglauncher</ammoforweapontype>
+    </gear>
     <!-- Ammo -->
     <gear>
       <id>02993005-44f2-4b2c-9e19-6ddb3517a7ee</id>
@@ -19081,7 +20436,7 @@
     </gear>
     <gear>
       <id>60ac70ec-8b62-464d-817d-1d2fd04a8102</id>
-      <name>Thermographic Vision(2050)</name>
+      <name>Thermographic Vision (2050)</name>
       <category>Vision Enhancements</category>
       <rating>0</rating>
       <source>2050</source>
@@ -19098,6 +20453,7 @@
       <name>Counterspelling Focus, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19108,6 +20464,7 @@
       <name>Counterspelling Focus, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19118,6 +20475,7 @@
       <name>Counterspelling Focus, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19128,6 +20486,7 @@
       <name>Counterspelling Focus, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19138,6 +20497,7 @@
       <name>Counterspelling Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19148,6 +20508,7 @@
       <name>Binding Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19158,6 +20519,7 @@
       <name>Summoning Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19168,6 +20530,7 @@
       <name>Power Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19178,6 +20541,7 @@
       <name>Banishing Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 3)R</avail>
@@ -19188,6 +20552,7 @@
       <name>Weapon Focus (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <bonus>
@@ -19201,6 +20566,7 @@
       <name>Spell Lock, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19211,6 +20577,7 @@
       <name>Spell Lock, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19221,6 +20588,7 @@
       <name>Spell Lock, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19231,6 +20599,7 @@
       <name>Spell Lock, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19241,6 +20610,7 @@
       <name>Spell Lock, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19251,6 +20621,7 @@
       <name>Spellcasting Focus, Health (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19261,6 +20632,7 @@
       <name>Spellcasting Focus, Illusion (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19271,6 +20643,7 @@
       <name>Spellcasting Focus, Combat (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19281,6 +20654,7 @@
       <name>Spellcasting Focus, Manipulation (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19291,6 +20665,7 @@
       <name>Spellcasting Focus, Detection (2050)</name>
       <category>Foci</category>
       <rating>18</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>(Rating * 4)R</avail>
@@ -19303,6 +20678,7 @@
       <name>Elemental Binding Materials (2050)</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>Rating</avail>
@@ -19313,6 +20689,7 @@
       <name>Medicine Lodge Materials (2050)</name>
       <category>Magical Supplies</category>
       <rating>20</rating>
+      <ratinglabel>String_Force</ratinglabel>
       <source>2050</source>
       <page>207</page>
       <avail>Rating</avail>
@@ -20238,7 +21615,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4V</avail>
+      <avail>4F</avail>
       <cost>180</cost>
     </gear>
     <gear>
@@ -20260,7 +21637,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>4E</avail>
+      <avail>4R</avail>
       <cost>50</cost>
     </gear>
     <gear>
@@ -20280,7 +21657,7 @@
       <rating>0</rating>
       <source>2050</source>
       <page>197</page>
-      <avail>3V</avail>
+      <avail>3F</avail>
       <cost>360</cost>
     </gear>
     <gear>

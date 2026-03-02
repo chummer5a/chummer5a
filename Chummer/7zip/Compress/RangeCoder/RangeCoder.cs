@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Buffers;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,7 +32,7 @@ namespace SevenZip.Compression.RangeCoder
 
         public ulong Low;
         public uint Range;
-        private uint _cacheSize;
+        private int _cacheSize;
         private byte _cache;
 
         private long StartPosition;
@@ -60,6 +61,13 @@ namespace SevenZip.Compression.RangeCoder
         {
             for (int i = 0; i < 5; i++)
                 ShiftLow();
+        }
+
+        public async Task FlushDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            for (int i = 0; i < 5; i++)
+                await ShiftLowAsync(token).ConfigureAwait(false);
         }
 
         public void FlushStream()
@@ -91,19 +99,42 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public async Task EncodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                Low += start * (Range /= total);
+                Range *= size;
+                while (Range < kTopValue)
+                {
+                    Range <<= 8;
+                    await ShiftLowAsync(token).ConfigureAwait(false);
+                }
+            }
+        }
+
         public void ShiftLow()
         {
             unchecked
             {
-                if ((uint)Low < 0xFF000000 || (uint)(Low >> 32) == 1)
+                uint shiftedLow = (uint) (Low >> 32);
+                if ((uint)Low < 0xFF000000 || shiftedLow == 1)
                 {
-                    byte temp = _cache;
-                    do
+                    if (_cacheSize > 1)
                     {
-                        Stream.WriteByte((byte)(temp + (Low >> 32)));
-                        temp = 0xFF;
-                    } while (--_cacheSize != 0);
-
+                        using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, _cacheSize, out byte[] data))
+                        {
+                            data[0] = (byte)(_cache + shiftedLow);
+                            byte paddingValue = (byte)(0xFF + shiftedLow);
+                            for (int i = 1; i < _cacheSize; ++i)
+                                data[i] = paddingValue;
+                            Stream.Write(data, 0, _cacheSize);
+                        }
+                    }
+                    else
+                        Stream.WriteByte((byte)(_cache + shiftedLow));
+                    _cacheSize = 0;
                     _cache = (byte)((uint)Low >> 24);
                 }
 
@@ -112,7 +143,37 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public void EncodeDirectBits(uint v, int numTotalBits)
+        public async Task ShiftLowAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint shiftedLow = (uint)(Low >> 32);
+                if ((uint)Low < 0xFF000000 || shiftedLow == 1)
+                {
+                    if (_cacheSize > 1)
+                    {
+                        using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, _cacheSize, out byte[] data))
+                        {
+                            data[0] = (byte)(_cache + shiftedLow);
+                            byte paddingValue = (byte)(0xFF + shiftedLow);
+                            for (int i = 1; i < _cacheSize; ++i)
+                                data[i] = paddingValue;
+                            await Stream.WriteAsync(data, 0, _cacheSize, token).ConfigureAwait(false);
+                        }
+                    }
+                    else
+                        Stream.WriteByte((byte)(_cache + shiftedLow));
+                    _cacheSize = 0;
+                    _cache = (byte)((uint)Low >> 24);
+                }
+
+                _cacheSize++;
+                Low = (uint)Low << 8;
+            }
+        }
+
+        public void EncodeDirectBits(int v, int numTotalBits)
         {
             unchecked
             {
@@ -125,6 +186,25 @@ namespace SevenZip.Compression.RangeCoder
                     {
                         Range <<= 8;
                         ShiftLow();
+                    }
+                }
+            }
+        }
+
+        public async Task EncodeDirectBitsAsync(int v, int numTotalBits, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                for (int i = numTotalBits - 1; i >= 0; i--)
+                {
+                    Range >>= 1;
+                    if (((v >> i) & 1) == 1)
+                        Low += Range;
+                    if (Range < kTopValue)
+                    {
+                        Range <<= 8;
+                        await ShiftLowAsync(token).ConfigureAwait(false);
                     }
                 }
             }
@@ -151,6 +231,28 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public async Task EncodeBitAsync(uint size0, int numTotalBits, uint symbol, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            unchecked
+            {
+                uint newBound = (Range >> numTotalBits) * size0;
+                if (symbol == 0)
+                    Range = newBound;
+                else
+                {
+                    Low += newBound;
+                    Range -= newBound;
+                }
+
+                while (Range < kTopValue)
+                {
+                    Range <<= 8;
+                    await ShiftLowAsync(token).ConfigureAwait(false);
+                }
+            }
+        }
+
         public long GetProcessedSizeAdd()
         {
             return _cacheSize +
@@ -166,7 +268,7 @@ namespace SevenZip.Compression.RangeCoder
         public uint Code;
 
         // public Buffer.InBuffer Stream = new Buffer.InBuffer(1 << 16);
-        public Stream Stream;
+        public Stream Stream { get; private set; }
 
         public void Init(Stream stream)
         {
@@ -175,28 +277,44 @@ namespace SevenZip.Compression.RangeCoder
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = new byte[5];
-            _ = Stream.Read(achrBuffer, 0, 5);
-            unchecked
+            using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 5, out byte[] achrBuffer))
             {
-                for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | achrBuffer[i];
+                _ = Stream.Read(achrBuffer, 0, 5);
+                unchecked
+                {
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            for (int i = 0; i < 5; i++)
+                                Code = (Code << 8) | *(pchrBuffer + i);
+                        }
+                    }
+                }
             }
         }
 
-        public async ValueTask InitAsync(Stream stream, CancellationToken token = default)
+        public async Task InitAsync(Stream stream, CancellationToken token = default)
         {
             // Stream.Init(stream);
             Stream = stream;
 
             Code = 0;
             Range = 0xFFFFFFFF;
-            byte[] achrBuffer = new byte[5];
-            _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
-            unchecked
+            using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 5, out byte[] achrBuffer))
             {
-                for (int i = 0; i < 5; i++)
-                    Code = (Code << 8) | achrBuffer[i];
+                _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
+                unchecked
+                {
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            for (int i = 0; i < 5; i++)
+                                Code = (Code << 8) | *(pchrBuffer + i);
+                        }
+                    }
+                }
             }
         }
 
@@ -218,18 +336,26 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int) (kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = new byte[intNumReads];
-                _ = Stream.Read(achrBuffer, 0, intNumReads);
-                int i = 0;
-                while (Range < kTopValue)
+                using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, intNumReads, out byte[] achrBuffer))
                 {
-                    Code = (Code << 8) | achrBuffer[i++];
-                    Range <<= 8;
+                    _ = Stream.Read(achrBuffer, 0, intNumReads);
+                    int i = 0;
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            while (Range < kTopValue)
+                            {
+                                Code = (Code << 8) | *(pchrBuffer + i++);
+                                Range <<= 8;
+                            }
+                        }
+                    }
                 }
             }
         }
 
-        public async ValueTask NormalizeAsync(CancellationToken token = default)
+        public async Task NormalizeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -237,13 +363,21 @@ namespace SevenZip.Compression.RangeCoder
                 int intNumReads = Chummer.IntegerExtensions.DivAwayFromZero((int)(kTopValue / Range), 8);
                 if (intNumReads <= 0)
                     return;
-                byte[] achrBuffer = new byte[intNumReads];
-                _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
-                int i = 0;
-                while (Range < kTopValue)
+                using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, intNumReads, out byte[] achrBuffer))
                 {
-                    Code = (Code << 8) | achrBuffer[i++];
-                    Range <<= 8;
+                    _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
+                    int i = 0;
+                    unsafe
+                    {
+                        fixed (byte* pchrBuffer = achrBuffer)
+                        {
+                            while (Range < kTopValue)
+                            {
+                                Code = (Code << 8) | *(pchrBuffer + i++);
+                                Range <<= 8;
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -275,7 +409,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public ValueTask DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
+        public Task DecodeAsync(uint start, uint size, uint total, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -345,7 +479,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public async ValueTask<uint> DecodeBitAsync(uint size0, int numTotalBits, CancellationToken token = default)
+        public async Task<uint> DecodeBitAsync(uint size0, int numTotalBits, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked

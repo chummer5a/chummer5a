@@ -514,7 +514,7 @@
     </mentor>
     <mentor>
       <name>Pig</name>
-      <advantage>All: +2 dice to Socialize Tests.</advantage>
+      <advantage>All: +2 dice for Socialize Tests.</advantage>
       <bonus>
         <specificskill xpathfilter="name = 'Con'">
           <name>Socialize</name>

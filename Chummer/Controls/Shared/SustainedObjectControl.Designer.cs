@@ -164,14 +164,13 @@ namespace Chummer
             this.chkSelfSustained.Tag = "";
             this.chkSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
             this.chkSelfSustained.UseVisualStyleBackColor = true;
-            this.chkSelfSustained.Visible = false;
             this.chkSelfSustained.CheckedChanged += new System.EventHandler(this.SustainedObject_ControlStateChanged);
             // 
             // cmdDelete
             // 
             this.cmdDelete.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDelete.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDelete.BackgroundImage = global::Chummer.Properties.Resources.delete;
+            this.cmdDelete.BackgroundImage = global::Chummer.Properties.Resources.delete_16;
             this.cmdDelete.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.cmdDelete.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.cmdDelete.Location = new System.Drawing.Point(242, 9);
@@ -194,7 +193,6 @@ namespace Chummer
             this.lblSelfSustained.Tag = "Label_SustainedSelf";
             this.lblSelfSustained.Text = "Self \r\nsustained";
             this.lblSelfSustained.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
-            this.lblSelfSustained.Visible = false;
             // 
             // SustainedSpellControl
             // 

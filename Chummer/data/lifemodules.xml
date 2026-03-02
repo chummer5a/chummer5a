@@ -35,7 +35,6 @@
       <category>LifeModule</category>
       <name>United Canadian American States</name>
       <karma>15</karma>
-      <!--<selectable />-->
       <versions>
         <version>
           <id>f9e684bb-d7fa-4fc7-87e0-d140cc6fc64d</id>
@@ -70,9 +69,7 @@
             </knowledgeskilllevel>
             <pushtext>United Canadian American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -94,9 +91,7 @@
             </skilllevel>
             <pushtext>United Canadian American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -119,9 +114,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -145,9 +138,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>United Canadian American States</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -220,9 +211,7 @@
             </skilllevel>
             <pushtext>Confederation of American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -245,9 +234,7 @@
             </knowledgeskilllevel>
             <pushtext>Confederation of American States</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -381,9 +368,7 @@
         </skilllevel>
         <pushtext>Tír Tairngire</pushtext>
         <freenegativequalities>-5</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real was born in Tir Tairngire, $TIRDESC .</story>
       <source>RF</source>
@@ -438,9 +423,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Algonkian-Manitou Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -472,9 +455,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Athabaskan Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -511,9 +492,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Pueblo Corporate Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -547,9 +526,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Salish-Shidhe Council</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -590,9 +567,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Sioux Nation</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -623,9 +598,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Trans-Polar Aleut Nation</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -686,9 +659,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Denver</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -713,9 +684,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Las Vegas</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -753,9 +722,7 @@
             </knowledgeskilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Salt Lake City</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
       </versions>
@@ -811,9 +778,7 @@
           <name>[Corporation]</name>
         </knowledgeskilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <story>$real was  $LUCK  enough to grow up in an Arcology: a corporate fortress city that $ARCOLOGY.</story>
       <source>RF</source>
@@ -922,7 +887,7 @@
         <addqualities>
           <addquality>Paranoia</addquality>
           <addquality>Bad Rep</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real spent their formative years with their parents as they ran away from $FLEE.</story>
@@ -1314,7 +1279,7 @@
           <addquality>Black Market Pipeline</addquality>
           <addquality>Paranoia</addquality>
           <addquality>Uneducated</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real spent their teenage years shooting at other teenagers just to gain control over a few city blocks. Just to be clear, $real was in a gang, not the Battle of Stalingrad.</story>
@@ -1526,9 +1491,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1584,9 +1547,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1642,9 +1603,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -1700,9 +1659,7 @@
           <val>2</val>
         </skilllevel>
         <freenegativequalities>-15</freenegativequalities>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <required>
         <oneof>
@@ -3754,9 +3711,7 @@
           <group>Professional</group>
           <val>3</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -3952,7 +3907,7 @@
       <id>81e2f441-c13d-4cfd-815f-d27daf1dfc82</id>
       <stage>Real Life</stage>
       <category>LifeModule</category>
-      <name>Cover Operations</name>
+      <name>Covert Operations</name>
       <karma>100</karma>
       <bonus>
         <attributelevel>
@@ -4166,7 +4121,7 @@
           <name>Running</name>
         </skilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real became a criminal, their main income coming from selling other people's cyber-VCRs, and occasionally mugging people and stealing the money they got by selling cyber-VCRs.</story>
@@ -4225,9 +4180,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real somehow managed to get a job with one of the few government organizations that hasn't yet been privatized. Be it with the FBI, MI5, NSA, TAO, Unit 61398, or some other organization, they get to be paid less than normal people in return for working longer hours and being hated by everyone.</story>
       <source>RF</source>
@@ -4478,7 +4431,7 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Made Man</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real decided the best way to wealth and power was also the most brutal: organized crime. Specializing in $GANGDESC , $real became well known in the $GANGTYPE</story>
@@ -4554,7 +4507,7 @@
           <val>4</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real was one of the most dangerous things in the world: an idealist. Working for a small policlub or interest group, they got arrested multiple times in their quest to make the world a better place.</story>
@@ -5309,7 +5262,7 @@
           <val>2</val>
         </knowledgeskilllevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
       </bonus>
       <story>$real decided activism is for fools. The only way to get your voice heard is force. Blowing up pubs, executing civilians, assassinations, $real has done it all.</story>
@@ -5618,9 +5571,7 @@
           <group>Professional</group>
           <val>3</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -5841,9 +5792,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -6156,9 +6105,7 @@
           <group>Professional</group>
           <val>4</val>
         </knowledgeskilllevel>
-        <addqualities>
-          <addquality>SINner (National)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <versions>
         <version>
@@ -7170,9 +7117,9 @@
         </knowledgeskilllevel>
         <addqualities>
           <addquality>Natural Athlete</addquality>
-          <addquality>SINner (National)</addquality>
           <addquality>Fame: Local</addquality>
         </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
       </bonus>
       <story>$real fought in Urban Brawl, which, despite all appearances, is somehow not a blood sport. It did, however, teach them quite a lot of things about $URBANBRAWL .</story>
       <source>CF</source>
@@ -7236,7 +7183,6 @@
       <category>LifeModule</category>
       <name>Caribbean League</name>
       <karma>15</karma>
-      <!--<selectable />-->
       <versions>
         <version>
           <id>62a71e87-d427-4b96-93f2-33d96c6226f2</id>
@@ -7259,9 +7205,7 @@
             </skillgrouplevel>
             <pushtext>Caribbean League</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7283,9 +7227,7 @@
             </skilllevel>
             <pushtext>Caribbean League</pushtext>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7307,9 +7249,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Caribbean League</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -7331,9 +7271,7 @@
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
             <pushtext>Caribbean League</pushtext>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8474,7 +8412,6 @@
       <category>LifeModule</category>
       <name>Amazonian</name>
       <karma>15</karma>
-      <!--<selectable />-->
       <versions>
         <version>
           <id>047e3fb2-1d43-480c-baed-2b333472eb7d</id>
@@ -8492,9 +8429,7 @@
               <name>Swimming</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8518,9 +8453,7 @@
               <name>Computer</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -8540,9 +8473,7 @@
               <name>Negotiation</name>
             </skilllevel>
             <freenegativequalities>-5</freenegativequalities>
-            <addqualities>
-              <addquality>SINner (National)</addquality>
-            </addqualities>
+            <qualitylevel group="SINner">1</qualitylevel>
           </bonus>
         </version>
         <version>
@@ -9698,9 +9629,7 @@
         </oneof>
       </required>
       <bonus>
-        <addqualities>
-          <addquality>SINner (Corporate Limited)</addquality>
-        </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <attributelevel>
           <name>LOG</name>
         </attributelevel>
@@ -9917,8 +9846,8 @@
         </attributelevel>
         <addqualities>
           <addquality>Fame: National</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
         </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <knowledgeskilllevel>
           <name>[Any]</name>
           <group>Language</group>
@@ -10612,7 +10541,7 @@
           <name>INT</name>
         </attributelevel>
         <addqualities>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Disguise</name>
@@ -10792,9 +10721,9 @@
         </attributelevel>
         <addqualities>
           <addquality>Common Sense</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
           <addquality>Perceptive</addquality>
         </addqualities>
+        <qualitylevel group="SINner">3</qualitylevel>
         <skilllevel>
           <name>Con</name>
         </skilllevel>
@@ -10842,7 +10771,7 @@
         <addqualities>
           <addquality>Born Rich</addquality>
           <addquality>Privileged Family Name</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Etiquette</name>
@@ -10895,7 +10824,7 @@
           <!-- todo: should have 3 levels of records on file -->
           <addquality>Daredevil</addquality>
           <addquality>Records on File</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Intimidation</name>
@@ -11038,8 +10967,8 @@
         <addqualities>
           <addquality>
             <options>
-              <collegeeducation>College Education</collegeeducation>
-              <technicalschooleducation>Technical School Education</technicalschooleducation>
+              <quality>College Education</quality>
+              <quality>Technical School Education</quality>
             </options>
           </addquality>
           <addquality>Common Sense</addquality>
@@ -11205,7 +11134,7 @@
           <addquality>Records on File</addquality>
           <addquality>Solid Rep</addquality>
           <addquality>Observant</addquality>
-          <addquality>SINner (Corporate Limited)</addquality>
+          <qualitylevel group="SINner">3</qualitylevel>
         </addqualities>
         <skilllevel>
           <name>Automatics</name>
@@ -11570,7 +11499,7 @@
         </attributelevel>
         <addqualities>
           <addquality>Battle Hardened</addquality>
-          <addquality>SINner (Criminal)</addquality>
+          <qualitylevel group="SINner">2</qualitylevel>
           <addquality>Paranoia</addquality>
           <addquality>Wanted</addquality>
         </addqualities>
@@ -12175,6 +12104,523 @@
       <story />
       <source>KC</source>
       <page>81</page>
+    </module>
+    <!-- End Region -->
+    <!-- Region Shadows in Focus: Morocco -->
+    <module>
+      <id>53bbb6ff-dd83-41c6-83df-474c5ede08e7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Moroccan Citizen</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <freenegativequalities>-5</freenegativequalities>
+        <addqualities>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <qualitylevel group="SINner">1</qualitylevel>
+        <selectquality>
+          <quality>College Education</quality>
+          <quality>Technical School Education</quality>
+        </selectquality>
+        <skilllevel>
+          <name>Computer</name>
+          <val>2</val>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Moroccan</spec>
+        </addskillspecialization>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Business</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>d90bad82-303e-4c0b-b00b-f8649af99db6</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Business Apprentice</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Bilingual</addquality>
+          <addquality>Dealer Connection</addquality>
+          <addquality>Linguist</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Con</name>
+          <val>2</val>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Etiquette</skill>
+          <spec>Business</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Negotiation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Perception</name>
+          <val>2</val>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>bb1f877c-6826-41ad-a4cc-b4bad9b4eb28</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>RMAF Short-Timer/Auxiliary Forces Member</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>LOG</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Will to Live</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automatics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+          <val>2</val>
+        </skilllevel>
+        <selectskill limittoskill="Pilot Ground Craft,Pilot Watercraft">
+          <val>2</val>
+        </selectskill>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>6a32e5d6-23cd-41fc-9225-5919e42fe979</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Former Royal Gendarmerie or National Police Force</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <freenegativequalities>-7</freenegativequalities>
+        <addqualities>
+          <addquality>Bad Rep</addquality>
+          <addquality>Common Sense</addquality>
+          <addquality select="Street Politics">Home Ground</addquality>
+          <addquality>Perceptive</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Clubs</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pilot Ground Craft</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Criminal Investigation</name>
+          <group>Professional</group>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Running</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>29</page>
+    </module>
+    <module>
+      <id>b70926e9-2150-461e-9c3f-6340e7bd8236</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>RMAF Veteran</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Tough as Nails (Physical)</addquality>
+          <addquality>Restricted Gear</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Automatics</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Blades</name>
+        </skilllevel>
+        <skilllevel>
+          <name>First Aid</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Heavy Weapons</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Pistols</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Sneaking</name>
+        </skilllevel>
+        <selectskill limittoskill="Pilot Ground Craft,Pilot Watercraft">
+          <val>1</val>
+        </selectskill>
+        <skilllevel>
+          <name>Throwing Weapons</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+      </bonus>
+      <story />
+      <source>SFMO</source>
+      <page>30</page>
+    </module>
+    <!-- End Region -->
+    <!-- Region Shadows in Focus: Casablanca-Rabat -->
+    <module>
+      <id>8aa2a54f-3afd-4fe3-b30a-7a525b1c52d0</id>
+      <stage>Nationality</stage>
+      <category>LifeModule</category>
+      <name>Morocco</name>
+      <karma>15</karma>
+      <versions>
+        <version>
+          <id>9bc6c8ed-7ec1-4eb2-ad2f-714f580483ac</id>
+          <name>Casablanca-Rabat</name>
+          <story>$real was born in Casablanca-Rabat.</story>
+          <bonus>
+            <attributelevel>
+              <!--Defaults to <val>1</val>-->
+              <name>INT</name>
+            </attributelevel>
+            <skilllevel>
+              <name>Navigation</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Survival</name>
+            </skilllevel>
+            <skilllevel>
+              <name>Etiquette</name>
+            </skilllevel>
+            <freenegativequalities>-5</freenegativequalities>
+            <qualitylevel group="SINner">1</qualitylevel>
+            <knowledgeskilllevel>
+              <name>Area Knowledge: Casablanca-Rabat</name>
+              <group>Street</group>
+            </knowledgeskilllevel>
+          </bonus>
+        </version>
+      </versions>
+      <bonus>
+        <knowledgeskilllevel>
+          <name>Morocco History</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>SINless Intuition</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <arabic>Arabic</arabic>
+            <tamazight>Tamazight</tamazight>
+          </options>
+          <id>1082e017-a93f-4b64-a478-b329668d57d6</id>
+          <val>0</val>
+          <group>Language</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <options>
+            <arabic>Arabic</arabic>
+            <tamazight>Tamazight</tamazight>
+            <french>French</french>
+            <spanish>Spanish</spanish>
+            <english>English</english>
+          </options>
+          <id>6715b9d9-5445-4bc0-886c-b6ac309181b3</id>
+          <group>Language</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story>$real was born in Morocco in Northeast Africa.</story>
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>4aa7d75c-538f-4f36-9d19-5be9e29e6335</id>
+      <stage>Formative Years</stage>
+      <category>LifeModule</category>
+      <name>Desert Nomad</name>
+      <karma>40</karma>
+      <bonus>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Outdoorsman</addquality>
+          <addquality>Sense of Direction</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Animal Handling</name>
+        </skilllevel>
+        <skillgrouplevel>
+          <name>Outdoors</name>
+        </skillgrouplevel>
+        <skilllevel>
+          <name>Perception</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Tracking</skill>
+          <spec>Desert</spec>
+        </addskillspecialization>
+        <knowledgeskilllevel>
+          <name>Geography</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>845921f5-9481-49df-bd1f-138889459c4a</id>
+      <stage>Teen Years</stage>
+      <category>LifeModule</category>
+      <name>Wharf Rat</name>
+      <karma>50</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>BOD</name>
+        </attributelevel>
+        <attributelevel>
+          <name>WIL</name>
+        </attributelevel>
+        <freenegativequalities>-10</freenegativequalities>
+        <addqualities>
+          <addquality>Loss of Confidence</addquality>
+        </addqualities>
+        <skilllevel>
+          <name>Clubs</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Survival</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Swimming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Unarmed Combat</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Ship Identification</name>
+          <group>Academic</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[Language]</name>
+          <group>Language</group>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>13149d3c-9454-416e-983a-86828554bdb7</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Bardi (Berber Rider)</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>INT</name>
+        </attributelevel>
+        <addqualities>
+          <addquality>Animal Empathy</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>Moroccan History</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Berber Tribes</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Animal Handling</name>
+        </skilllevel>
+        <addskillspecialization>
+          <skill>Animal Handling</skill>
+          <spec>Riding</spec>
+        </addskillspecialization>
+        <skilllevel>
+          <name>Longarms</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Intimidation</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Leadership</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
+    </module>
+    <module>
+      <id>45dc7fce-c096-4515-b98b-ccedf8341dec</id>
+      <stage>Real Life</stage>
+      <category>LifeModule</category>
+      <name>Snake Charmer</name>
+      <karma>100</karma>
+      <bonus>
+        <attributelevel>
+          <name>AGI</name>
+        </attributelevel>
+        <attributelevel>
+          <name>CHA</name>
+        </attributelevel>
+        <attributelevel>
+          <name>REA</name>
+        </attributelevel>
+        <addqualities>
+          <!-- RF version of Inspired -->
+          <addquality>f8f216b5-1c29-467d-9fb5-c9812408203d</addquality>
+        </addqualities>
+        <knowledgeskilllevel>
+          <name>Herpetology</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <knowledgeskilllevel>
+          <name>Berber Tribes</name>
+          <group>Academic</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Con</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Etiquette</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Gymnastics</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>Music</name>
+          <group>Interest</group>
+        </knowledgeskilllevel>
+        <skilllevel>
+          <name>Palming</name>
+        </skilllevel>
+        <skilllevel>
+          <name>Performance</name>
+          <val>2</val>
+        </skilllevel>
+        <skilllevel>
+          <name>Tracking</name>
+        </skilllevel>
+        <knowledgeskilllevel>
+          <name>[City]</name>
+          <group>Street</group>
+          <val>2</val>
+        </knowledgeskilllevel>
+      </bonus>
+      <story />
+      <source>SFCR</source>
+      <page>27</page>
     </module>
     <!-- End Region -->
     <!-- End Region -->

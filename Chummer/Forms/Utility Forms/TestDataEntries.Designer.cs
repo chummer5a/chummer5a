@@ -13,9 +13,12 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _objCharacter.Dispose();
+                Utils.StringBuilderPool.Return(_sbdOutputBuilder);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -57,7 +60,6 @@ namespace Chummer
             this.cboTest.Size = new System.Drawing.Size(187, 21);
             this.cboTest.Sorted = true;
             this.cboTest.TabIndex = 0;
-            this.cboTest.TooltipText = "";
             // 
             // cmdTest
             // 

@@ -52,12 +52,25 @@ namespace Chummer
             }
         }
 
+        public async Task SetCharacterFileAsync(string value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _strCharacterFile, value) == value)
+                return;
+            if (this.IsNullOrDisposed())
+                return;
+            string strDisplayText = string.Format(GlobalSettings.CultureInfo,
+                await LanguageManager.GetStringAsync("String_Loading_Pattern", token: token), value);
+            await this.DoThreadSafeAsync(x => x.Text = strDisplayText, token).ConfigureAwait(false);
+        }
+
         public LoadingBar()
         {
             InitializeComponent();
             TopMost = !Utils.IsUnitTest && !Debugger.IsAttached;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         /// <summary>
@@ -83,7 +96,7 @@ namespace Chummer
         /// </summary>
         /// <param name="intMaxProgressBarValue">New Maximum Value the ProgressBar should have.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public async ValueTask ResetAsync(int intMaxProgressBarValue = 100, CancellationToken token = default)
+        public async Task ResetAsync(int intMaxProgressBarValue = 100, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
@@ -151,10 +164,10 @@ namespace Chummer
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace + '('
+                    strNewText += strSpace + "("
                                            + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
-                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                                           + "/" + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ")";
                 x.PerformStep();
             });
             lblLoadingInfo.DoThreadSafe(x => x.Text = strNewText);
@@ -167,7 +180,7 @@ namespace Chummer
         /// <param name="strStepName">The text that the descriptive label above the ProgressBar should use, i.e. "Loading {strStepName}..."</param>
         /// <param name="eUseTextPattern">The text pattern to use in combination with <paramref name="strStepName"/>, e.g. "Loading", "Saving", et al.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public async ValueTask PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
+        public async Task PerformStepAsync(string strStepName = "", ProgressBarTextPatterns eUseTextPattern = ProgressBarTextPatterns.Loading, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (this.IsNullOrDisposed())
@@ -216,10 +229,10 @@ namespace Chummer
             {
                 int intLoadingMaximum = x.Maximum;
                 if (intLoadingMaximum > 2)
-                    strNewText += strSpace + '('
+                    strNewText += strSpace + "("
                                            + (x.Value + 1).ToString(
                                                GlobalSettings.CultureInfo)
-                                           + '/' + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ')';
+                                           + "/" + (intLoadingMaximum - 1).ToString(GlobalSettings.CultureInfo) + ")";
                 x.PerformStep();
             }, token).ConfigureAwait(false);
             await lblLoadingInfo.DoThreadSafeAsync(x => x.Text = strNewText, token).ConfigureAwait(false);

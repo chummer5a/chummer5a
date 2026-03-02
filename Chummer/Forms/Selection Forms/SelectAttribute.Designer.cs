@@ -64,7 +64,6 @@ namespace Chummer
             this.cboAttribute.Name = "cboAttribute";
             this.cboAttribute.Size = new System.Drawing.Size(320, 21);
             this.cboAttribute.TabIndex = 1;
-            this.cboAttribute.TooltipText = "";
             // 
             // lblDescription
             // 

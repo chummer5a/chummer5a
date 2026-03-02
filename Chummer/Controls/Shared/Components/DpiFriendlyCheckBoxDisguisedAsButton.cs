@@ -57,7 +57,7 @@ namespace Chummer
                 // Image-only button that auto-sizes means we should scale things up only if we are large enough
                 using (Graphics g = CreateGraphics())
                 {
-                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0f * 96.0f)));
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0d * 96.0d)));
                     if (fltScalingRatio >= 4.0f)
                         objBestImage = ImageDpi384;
                     if (objBestImage == null && fltScalingRatio >= 3.0f)
@@ -75,16 +75,16 @@ namespace Chummer
             else
             {
                 // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
-                int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+                int intPaddingLR = Padding.Left + Padding.Right;
+                int intPaddingTB = Padding.Top + Padding.Bottom;
+                int intWidth = Math.Max(Math.Min(PreferredSize.Width - intPaddingLR, PreferredSize.Height - intPaddingTB), Math.Min(Width - intPaddingLR, Height - intPaddingTB));
                 int intHeight = intWidth;
-                intWidth -= Padding.Left + Padding.Right;
-                intHeight -= Padding.Top + Padding.Bottom;
                 int intBestImageMetric = int.MaxValue;
                 foreach (Image objLoopImage in lstImages)
                 {
-                    int intLoopMetric = (intHeight - objLoopImage.Height).RaiseToPower(2) +
-                                        (intWidth - objLoopImage.Width).RaiseToPower(2);
-                    // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not scaled up
+                    int intLoopMetric = (intHeight - objLoopImage.Height).Pow(2) +
+                                        (intWidth - objLoopImage.Width).Pow(2);
+                    // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
                     if (objLoopImage.Height >= intHeight)
                         --intLoopMetric;
                     if (objLoopImage.Width >= intWidth)
@@ -217,6 +217,22 @@ namespace Chummer
             }
         }
 
+        public void BatchSetImages(Image imgDpi96, Image imgDpi120, Image imgDpi144, Image imgDpi192, Image imgDpi288,
+            Image imgDpi384)
+        {
+            _objImageDpi96 = imgDpi96;
+            _objImageDpi120 = imgDpi120;
+            _objImageDpi144 = imgDpi144;
+            _objImageDpi192 = imgDpi192;
+            _objImageDpi288 = imgDpi288;
+            _objImageDpi384 = imgDpi384;
+
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+                base.Image = imgDpi96;
+            else
+                RefreshImage();
+        }
+
         /// <summary>
         /// Checks a newly set image against the existing image of the button to see if it's a better fit than the current image.
         /// Only use this with images that are one of the ones set for this button!
@@ -246,7 +262,7 @@ namespace Chummer
                 // Image-only button that auto-sizes means we should scale things up only if we are large enough
                 using (Graphics g = CreateGraphics())
                 {
-                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0f * 96.0f)));
+                    float fltScalingRatio = Convert.ToSingle(Math.Sqrt(g.DpiX * g.DpiY / (96.0d * 96.0d)));
                     if (fltNewImageIntendedScaling > fltScalingRatio)
                         return;
                 }
@@ -269,15 +285,23 @@ namespace Chummer
             }
 
             // Toolstrip items contain both images and text, so we take the smallest of the two dimensions for the image and then assume that the image should be square-shaped
-            int intWidth = Math.Max(Math.Min(PreferredSize.Width, PreferredSize.Height), Math.Min(Width, Height));
+            int intPaddingLR = Padding.Left + Padding.Right;
+            int intPaddingTB = Padding.Top + Padding.Bottom;
+            int intWidth = Math.Max(Math.Min(PreferredSize.Width - intPaddingLR, PreferredSize.Height - intPaddingTB), Math.Min(Width - intPaddingLR, Height - intPaddingTB));
             int intHeight = intWidth;
-            intWidth -= Padding.Left + Padding.Right;
-            intHeight -= Padding.Top + Padding.Bottom;
-            int intCurrentMetric = (intHeight - Image.Height).RaiseToPower(2) +
-                                   (intWidth - Image.Width).RaiseToPower(2);
-            int intNewMetric = (intHeight - objNewImage.Height).RaiseToPower(2) +
-                               (intWidth - objNewImage.Width).RaiseToPower(2);
-
+            int intCurrentMetric = (intHeight - Image.Height).Pow(2) +
+                                   (intWidth - Image.Width).Pow(2);
+            int intNewMetric = (intHeight - objNewImage.Height).Pow(2) +
+                               (intWidth - objNewImage.Width).Pow(2);
+            // Small biasing so that in case of a tie, the image that gets picked is the one that would be scaled down, not up
+            if (Image.Height >= intHeight)
+                --intCurrentMetric;
+            if (Image.Width >= intWidth)
+                --intCurrentMetric;
+            if (objNewImage.Height >= intHeight)
+                --intNewMetric;
+            if (objNewImage.Width >= intWidth)
+                --intNewMetric;
             if (intNewMetric < intCurrentMetric)
                 Image = objNewImage;
         }

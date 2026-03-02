@@ -18,18 +18,19 @@
  */
 
 using System;
-using System.Windows.Forms;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
 {
     public partial class TextTableCell : TableCell
     {
-        private readonly Label _lblText;
+        private readonly LabelWithToolTip _lblText;
 
         public TextTableCell()
         {
             InitializeComponent();
-            _lblText = new Label();
+            _lblText = new LabelWithToolTip();
             ContentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;
@@ -51,6 +52,17 @@ namespace Chummer.UI.Table
             base.UpdateValue(newValue);
             _lblText.Text = newValue?.ToString() ?? string.Empty;
             MinimumSize = _lblText.Size;
+        }
+
+        protected internal override async Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            await base.UpdateValueAsync(newValue, token).ConfigureAwait(false);
+            string strText = newValue?.ToString() ?? string.Empty;
+            await _lblText.DoThreadSafeAsync(x =>
+            {
+                x.Text = strText;
+                MinimumSize = x.Size;
+            }, token: token).ConfigureAwait(false);
         }
     }
 }

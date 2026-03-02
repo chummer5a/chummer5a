@@ -64,18 +64,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             CurrentVersion = Utils.CurrentChummerVersion.ToString(3);
             _blnPreferNightly = GlobalSettings.PreferNightlyBuilds;
             _strTempLatestVersionChangelogPath = Path.Combine(Utils.GetTempPath(), "changelog.txt");
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
-            Disposed += (sender, args) =>
-            {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-                _clientChangelogDownloader.Dispose();
-                _clientDownloader.Dispose();
-                _objConnectionLoaderCancellationTokenSource?.Dispose();
-            };
             _clientDownloader.DownloadFileCompleted += wc_DownloadCompleted;
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
@@ -104,13 +98,13 @@ namespace Chummer
                     Log.Info("More than one instance, exiting");
                     if (!SilentMode)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             await LanguageManager.GetStringAsync("Message_Update_MultipleInstances",
-                                                                 token: _objGenericToken).ConfigureAwait(false),
+                                token: _objGenericToken).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync("Title_Update", token: _objGenericToken)
-                                                 .ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation);
+                                .ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Exclamation, token: _objGenericToken).ConfigureAwait(false);
                     }
 
                     Log.Info("ChummerUpdater_Load exit");
@@ -146,7 +140,7 @@ namespace Chummer
                 tskConnectionLoader.IsFaulted)))
             {
                 CancellationToken objToken = objNewChangelogSource.Token;
-                Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                Task tskNew = DownloadChangelog(objToken);
                 if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                 {
                     Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -206,7 +200,8 @@ namespace Chummer
                 e.Cancel = true;
                 try
                 {
-                    await this.DoThreadSafeAsync(x => x.Hide(), _objGenericToken).ConfigureAwait(false);
+                    if (sender is Control ctlSender)
+                        await ctlSender.DoThreadSafeAsync(x => x.Hide(), _objGenericToken).ConfigureAwait(false);
                 }
                 catch (OperationCanceledException)
                 {
@@ -305,11 +300,12 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            Task tskNew = Task.Run(async () =>
+            Task tskNew = DownloadAndPopulationChangelog(objToken);
+            async Task DownloadAndPopulationChangelog(CancellationToken innerToken)
             {
-                await LoadConnection(objToken).ConfigureAwait(false);
-                await PopulateChangelog(objToken).ConfigureAwait(false);
-            }, objToken);
+                await LoadConnection(innerToken).ConfigureAwait(false);
+                await PopulateChangelog(innerToken).ConfigureAwait(false);
+            }
             if (Interlocked.CompareExchange(ref _tskConnectionLoader, tskNew, null) != null)
             {
                 Interlocked.CompareExchange(ref _objConnectionLoaderCancellationTokenSource, null, objNewSource);
@@ -332,7 +328,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask PopulateChangelog(CancellationToken token = default)
+        private async Task PopulateChangelog(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!_blnFormClosing)
@@ -356,7 +352,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask LoadConnection(CancellationToken token = default)
+        private async Task LoadConnection(CancellationToken token = default)
         {
             while (_clientChangelogDownloader.IsBusy)
             {
@@ -411,7 +407,7 @@ namespace Chummer
 
                             // Open the stream using a StreamReader for easy access.
                             string responseFromServer;
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (StreamReader objReader = new StreamReader(dataStream, Encoding.UTF8, true))
@@ -434,25 +430,25 @@ namespace Chummer
 
                             bool blnFoundTag = false;
                             bool blnFoundArchive = false;
-                            foreach (string line in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                            foreach (string strLine in responseFromServer.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                             {
                                 token.ThrowIfCancellationRequested();
 
-                                if (!blnFoundTag && line.Contains("tag_name"))
+                                if (!blnFoundTag && strLine.Contains("tag_name"))
                                 {
-                                    _strLatestVersion = line.SplitNoAlloc(':').ElementAtOrDefault(1);
-                                    LatestVersion = _strLatestVersion.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
+                                    LatestVersion = (_strLatestVersion = strLine.SplitNoAlloc(':').ElementAtOrDefaultBetter(1))
+                                        .SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
                                     blnFoundTag = true;
                                     if (blnFoundArchive)
                                         break;
                                 }
 
-                                if (!blnFoundArchive && line.Contains("browser_download_url"))
+                                if (!blnFoundArchive && strLine.Contains("browser_download_url"))
                                 {
-                                    _strDownloadFile = line.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty;
-                                    _strDownloadFile = _strDownloadFile.Substring(2);
-                                    _strDownloadFile = _strDownloadFile.SplitNoAlloc('}').FirstOrDefault().FastEscape('\"');
-                                    _strDownloadFile = "https://" + _strDownloadFile;
+                                    _strDownloadFile = "https://" +
+                                                       (strLine.SplitNoAlloc(':').ElementAtOrDefaultBetter(2) ?? string.Empty)
+                                                       .Substring(2).SplitNoAlloc('}').FirstOrDefault()
+                                                       .FastEscape('\"');
                                     blnFoundArchive = true;
                                     if (blnFoundTag)
                                         break;
@@ -484,20 +480,20 @@ namespace Chummer
             {
                 if (!SilentMode)
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                                     string.IsNullOrEmpty(_strExceptionString)
-                                                         ? await LanguageManager
-                                                                 .GetStringAsync(
-                                                                     "Warning_Update_CouldNotConnect", token: token)
-                                                                 .ConfigureAwait(false)
-                                                         : string.Format(GlobalSettings.CultureInfo,
-                                                                         await LanguageManager
-                                                                               .GetStringAsync(
-                                                                                   "Warning_Update_CouldNotConnectException",
-                                                                                   token: token).ConfigureAwait(false),
-                                                                         _strExceptionString),
-                                                     Application.ProductName, MessageBoxButtons.OK,
-                                                     MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.IsNullOrEmpty(_strExceptionString)
+                            ? await LanguageManager
+                                .GetStringAsync(
+                                    "Warning_Update_CouldNotConnect", token: token)
+                                .ConfigureAwait(false)
+                            : string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager
+                                    .GetStringAsync(
+                                        "Warning_Update_CouldNotConnectException",
+                                        token: token).ConfigureAwait(false),
+                                _strExceptionString),
+                        Application.ProductName, MessageBoxButtons.OK,
+                        MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 }
 
                 return;
@@ -537,15 +533,15 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                   await LanguageManager
-                                                                         .GetStringAsync(
-                                                                             "Warning_Update_CouldNotConnectException",
-                                                                             token: token).ConfigureAwait(false),
-                                                                   strException),
-                                                     Application.ProductName, MessageBoxButtons.OK,
-                                                     MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Warning_Update_CouldNotConnectException",
+                                    token: token).ConfigureAwait(false),
+                            strException),
+                        Application.ProductName, MessageBoxButtons.OK,
+                        MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 }
 
                 return;
@@ -563,15 +559,15 @@ namespace Chummer
                 _strExceptionString = strException;
                 if (!SilentMode)
                 {
-                    Program.ShowScrollableMessageBox(this,
-                                                     string.Format(GlobalSettings.CultureInfo,
-                                                                   await LanguageManager
-                                                                         .GetStringAsync(
-                                                                             "Warning_Update_CouldNotConnectException",
-                                                                             token: token).ConfigureAwait(false),
-                                                                   strException),
-                                                     Application.ProductName, MessageBoxButtons.OK,
-                                                     MessageBoxIcon.Error);
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager
+                                .GetStringAsync(
+                                    "Warning_Update_CouldNotConnectException",
+                                    token: token).ConfigureAwait(false),
+                            strException),
+                        Application.ProductName, MessageBoxButtons.OK,
+                        MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 }
 
                 return;
@@ -619,7 +615,7 @@ namespace Chummer
                             objNewSource.Dispose();
                             return;
                         }
-                        Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                        Task tskNew = DownloadChangelog(objToken);
                         if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                         {
                             Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -672,7 +668,7 @@ namespace Chummer
         /// </summary>
         public string CurrentVersion { get; }
 
-        public async ValueTask DoVersionTextUpdate(CancellationToken token = default)
+        public async Task DoVersionTextUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strLatestVersion = LatestVersion.TrimStartOnce("Nightly-v");
@@ -698,8 +694,8 @@ namespace Chummer
             }
 
             int intResult = 0;
-            if (VersionExtensions.TryParse(strLatestVersion, out Version objLatestVersion))
-                intResult = objLatestVersion?.CompareTo(Utils.CurrentChummerVersion) ?? 0;
+            if (ValueVersion.TryParse(strLatestVersion, out ValueVersion objLatestVersion))
+                intResult = objLatestVersion.CompareTo(Utils.CurrentChummerVersion);
             token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strStatusText;
@@ -790,7 +786,7 @@ namespace Chummer
                 {
                     CancellationToken objToken = objNewChangelogSource.Token;
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, objToken).ConfigureAwait(false);
-                    Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                    Task tskNew = DownloadChangelog(objToken);
                     if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                     {
                         Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -848,7 +844,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> CreateBackupZip(CancellationToken token = default)
+        private async Task<bool> CreateBackupZip(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             //Create a backup file in the temp directory.
@@ -866,10 +862,10 @@ namespace Chummer
                             using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                             {
                                 token.ThrowIfCancellationRequested();
-                                foreach (string strFile in Directory.GetFiles(_strAppPath))
+                                foreach (string strFile in Directory.EnumerateFiles(_strAppPath))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
+                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile), CompressionLevel.Fastest);
                                     objEntry.LastWriteTime = File.GetLastWriteTime(strFile);
                                     using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                     {
@@ -896,27 +892,27 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return false;
             }
             catch (IOException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
+                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
                 return false;
             }
             catch (NotSupportedException)
             {
                 token.ThrowIfCancellationRequested();
                 if (!SilentMode)
-                    Program.ShowScrollableMessageBox(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)));
+                    await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_File_Cannot_Be_Accessed", token: token).ConfigureAwait(false), Path.GetFileName(strBackupZipPath)), token: token).ConfigureAwait(false);
                 return false;
             }
             return true;
         }
 
-        private async ValueTask DoUpdate(CancellationToken token = default)
+        private async Task DoUpdate(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
@@ -927,7 +923,7 @@ namespace Chummer
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdCleanReinstall.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                    if (!(await CreateBackupZip(token).ConfigureAwait(false)))
+                    if (!await CreateBackupZip(token).ConfigureAwait(false))
                         return;
 
                     List<string> lstFilesToDelete = new List<string>(byte.MaxValue);
@@ -990,11 +986,11 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoCleanReinstall(CancellationToken token = default)
+        private async Task DoCleanReinstall(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false),
-                                       await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+            if (await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_Updater_CleanReinstallPrompt", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
@@ -1041,7 +1037,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask InstallUpdateFromZip(string strZipPath, ICollection<string> lstFilesToDelete, CancellationToken token = default)
+        private async Task InstallUpdateFromZip(string strZipPath, List<string> lstFilesToDelete, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
@@ -1070,6 +1066,10 @@ namespace Chummer
                             string strLoopPath = Path.Combine(_strAppPath, strFullName);
                             if (strLoopPath.IndexOfAny(Path.GetInvalidPathChars()) >= 0)
                                 continue;
+                            // Test to make sure we have no sneaky writes to outside our intended directory
+                            strLoopPath = Path.GetFullPath(strLoopPath);
+                            if (!strLoopPath.StartsWith(Path.GetFullPath(_strAppPath + Path.DirectorySeparatorChar), StringComparison.OrdinalIgnoreCase))
+                                continue;
                             try
                             {
                                 string strLoopDirectory = Path.GetDirectoryName(strLoopPath);
@@ -1096,14 +1096,14 @@ namespace Chummer
                             {
                                 if (!SilentMode)
                                 {
-                                    Program.ShowScrollableMessageBox(
+                                    await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager.GetStringAsync(
-                                                                               "Message_File_Cannot_Be_Accessed",
-                                                                               token: token)
-                                                                           .ConfigureAwait(false),
-                                                      Path.GetFileName(strLoopPath)));
+                                            await LanguageManager.GetStringAsync(
+                                                    "Message_File_Cannot_Be_Accessed",
+                                                    token: token)
+                                                .ConfigureAwait(false),
+                                            Path.GetFileName(strLoopPath)), token: token).ConfigureAwait(false);
                                 }
 
                                 blnDoRestart = false;
@@ -1113,14 +1113,14 @@ namespace Chummer
                             {
                                 if (!SilentMode)
                                 {
-                                    Program.ShowScrollableMessageBox(
+                                    await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         string.Format(GlobalSettings.CultureInfo,
-                                                      await LanguageManager.GetStringAsync(
-                                                                               "Message_File_Cannot_Be_Accessed",
-                                                                               token: token)
-                                                                           .ConfigureAwait(false),
-                                                      Path.GetFileName(strLoopPath)));
+                                            await LanguageManager.GetStringAsync(
+                                                    "Message_File_Cannot_Be_Accessed",
+                                                    token: token)
+                                                .ConfigureAwait(false),
+                                            Path.GetFileName(strLoopPath)), token: token).ConfigureAwait(false);
                                 }
 
                                 blnDoRestart = false;
@@ -1130,12 +1130,12 @@ namespace Chummer
                             {
                                 if (!SilentMode)
                                 {
-                                    Program.ShowScrollableMessageBox(
+                                    await Program.ShowScrollableMessageBoxAsync(
                                         this,
                                         await LanguageManager.GetStringAsync(
-                                                                 "Message_Insufficient_Permissions_Warning",
-                                                                 token: token)
-                                                             .ConfigureAwait(false));
+                                                "Message_Insufficient_Permissions_Warning",
+                                                token: token)
+                                            .ConfigureAwait(false), token: token).ConfigureAwait(false);
                                 }
 
                                 blnDoRestart = false;
@@ -1150,13 +1150,13 @@ namespace Chummer
                 {
                     if (!SilentMode)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager
-                                                .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                .ConfigureAwait(false),
-                                          strZipPath));
+                                await LanguageManager
+                                    .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                    .ConfigureAwait(false),
+                                strZipPath), token: token).ConfigureAwait(false);
                     }
 
                     blnDoRestart = false;
@@ -1165,13 +1165,13 @@ namespace Chummer
                 {
                     if (!SilentMode)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager
-                                                .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
-                                                .ConfigureAwait(false),
-                                          strZipPath));
+                                await LanguageManager
+                                    .GetStringAsync("Message_File_Cannot_Be_Accessed", token: token)
+                                    .ConfigureAwait(false),
+                                strZipPath), token: token).ConfigureAwait(false);
                     }
 
                     blnDoRestart = false;
@@ -1180,11 +1180,11 @@ namespace Chummer
                 {
                     if (!SilentMode)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             await LanguageManager
-                                  .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
-                                  .ConfigureAwait(false));
+                                .GetStringAsync("Message_Insufficient_Permissions_Warning", token: token)
+                                .ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
 
                     blnDoRestart = false;
@@ -1192,81 +1192,80 @@ namespace Chummer
 
                 if (blnDoRestart)
                 {
-                    List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
-                    Dictionary<string, Task<bool>> dicTasks
-                        = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
-                    int intCounter = 0;
-                    foreach (string strFileToDelete in lstFilesToDelete)
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setBlocked))
                     {
-                        dicTasks.Add(strFileToDelete, FileExtensions.SafeDeleteAsync(strFileToDelete, token: token));
-                        if (++intCounter != Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                        foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                        {
-                            if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                                lstBlocked.Add(kvpTaskPair.Key);
-                        }
-
-                        dicTasks.Clear();
-                        intCounter = 0;
-                    }
-
-                    await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                    foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                    {
-                        if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                            lstBlocked.Add(kvpTaskPair.Key);
-                    }
-
-                    foreach (string strBlockedFile in lstBlocked.ToList())
-                    {
+                        DebuggableSemaphoreSlim objBlockedFilesPopulateSemaphore = Utils.SemaphorePool.Get();
                         try
                         {
-                            if (File.Exists(strBlockedFile + ".old")
-                                && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
-                                               .ConfigureAwait(false))
+                            await ParallelExtensions.ForEachAsync(lstFilesToDelete, async strFileToDelete =>
+                            {
+                                if (!await FileExtensions.SafeDeleteAsync(strFileToDelete, token: token).ConfigureAwait(false))
+                                {
+                                    await objBlockedFilesPopulateSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        setBlocked.Add(strFileToDelete);
+                                    }
+                                    finally
+                                    {
+                                        objBlockedFilesPopulateSemaphore.Release();
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Utils.SemaphorePool.Return(ref objBlockedFilesPopulateSemaphore);
+                        }
+                        foreach (string strBlockedFile in setBlocked)
+                        {
+                            try
+                            {
+                                if (File.Exists(strBlockedFile + ".old")
+                                    && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
+                                                   .ConfigureAwait(false))
+                                {
+                                    continue;
+                                }
+
+                                File.Move(strBlockedFile, strBlockedFile + ".old");
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (NotSupportedException)
+                            {
+                                continue;
+                            }
+                            catch (UnauthorizedAccessException)
                             {
                                 continue;
                             }
 
-                            File.Move(strBlockedFile, strBlockedFile + ".old");
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (NotSupportedException)
-                        {
-                            continue;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            continue;
+                            setBlocked.Remove(strBlockedFile);
                         }
 
-                        lstBlocked.Remove(strBlockedFile);
-                    }
-
-                    if (lstBlocked.Count > 0)
-                    {
-                        Utils.BreakIfDebug();
-                        if (!SilentMode)
+                        if (setBlocked.Count > 0)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdOutput))
+                            Utils.BreakIfDebug();
+                            if (!SilentMode)
                             {
-                                sbdOutput.Append(
-                                    await LanguageManager
-                                          .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
-                                          .ConfigureAwait(false));
-                                foreach (string strFile in lstBlocked)
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdOutput))
                                 {
-                                    sbdOutput.AppendLine().Append(strFile);
-                                }
+                                    sbdOutput.Append(
+                                        await LanguageManager
+                                              .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
+                                              .ConfigureAwait(false));
+                                    foreach (string strFile in setBlocked)
+                                    {
+                                        sbdOutput.AppendLine().Append(strFile);
+                                    }
 
-                                Program.ShowScrollableMessageBox(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
-                                                       MessageBoxIcon.Information);
+                                    await Program.ShowScrollableMessageBoxAsync(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -1327,7 +1326,7 @@ namespace Chummer
                 await Utils.RestartApplication(token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask DownloadUpdates(CancellationToken token = default)
+        private async Task DownloadUpdates(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Uri.TryCreate(_strDownloadFile, UriKind.Absolute, out Uri uriDownloadFileAddress))
@@ -1344,7 +1343,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    using (token.Register(() => _clientDownloader.CancelAsync()))
+                    using (token.RegisterWithoutEC(x => ((WebClient)x).CancelAsync(), _clientDownloader))
                         await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath).ConfigureAwait(false);
                 }
                 catch (WebException ex)
@@ -1359,15 +1358,15 @@ namespace Chummer
                     // Show the warning even if we're in silent mode, because the user should still know that the update check could not be performed
                     if (!SilentMode)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync(
-                                                                   "Warning_Update_CouldNotConnectException",
-                                                                   token: token)
-                                                               .ConfigureAwait(false),
-                                          strException), Application.ProductName, MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                                await LanguageManager.GetStringAsync(
+                                        "Warning_Update_CouldNotConnectException",
+                                        token: token)
+                                    .ConfigureAwait(false),
+                                strException), Application.ProductName, MessageBoxButtons.OK,
+                            MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     }
 
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
@@ -1434,10 +1433,10 @@ namespace Chummer
                 Log.Info("wc_DownloadExeFileCompleted exit");
                 if (SilentMode)
                 {
-                    if (Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms", token: _objGenericToken).ConfigureAwait(false),
-                                               await LanguageManager.GetStringAsync(
-                                                   "Title_Update", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                               MessageBoxIcon.Question) ==
+                    if (await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Update_CloseForms", token: _objGenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync(
+                                "Title_Update", token: _objGenericToken).ConfigureAwait(false), MessageBoxButtons.YesNo,
+                            MessageBoxIcon.Question, token: _objGenericToken).ConfigureAwait(false) ==
                         DialogResult.Yes)
                     {
                         await DoUpdate(_objGenericToken).ConfigureAwait(false);

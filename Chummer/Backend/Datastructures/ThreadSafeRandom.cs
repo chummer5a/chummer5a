@@ -31,21 +31,24 @@ namespace Chummer
         [CLSCompliant(false)]
         protected readonly Random _objRandom;
         [CLSCompliant(false)]
-        protected DebuggableSemaphoreSlim _objLock = Utils.SemaphorePool.Get();
+        protected DebuggableSemaphoreSlim _objLock;
 
         public ThreadSafeRandom()
         {
             _objRandom = new Random();
+            _objLock = Utils.SemaphorePool.Get();
         }
 
         public ThreadSafeRandom(int seed)
         {
             _objRandom = new Random(seed);
+            _objLock = Utils.SemaphorePool.Get();
         }
 
         public ThreadSafeRandom(Random objRandom)
         {
             _objRandom = objRandom;
+            _objLock = Utils.SemaphorePool.Get();
         }
 
         /// <inheritdoc />

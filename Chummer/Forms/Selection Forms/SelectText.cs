@@ -34,6 +34,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -42,7 +43,7 @@ namespace Chummer
             if ((PreventXPathErrors && strValue.Contains('"'))
                 || (PreventFileNameCharErrors && strValue.IndexOfAny(Path.GetInvalidFileNameChars()) >= 0))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters").ConfigureAwait(false), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_InvalidCharacters").ConfigureAwait(false), string.Empty, MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
             }
             else
             {

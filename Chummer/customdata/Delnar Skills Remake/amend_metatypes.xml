@@ -52,10 +52,7 @@
         <specificskill xpathfilter="name = 'Leadership'">
           <name>Command</name>
         </specificskill>
-        <specificskill xpathfilter="name = 'Impersonation'">
-          <name>Acting</name>
-        </specificskill>
-        <specificskill xpathfilter="name = 'Negotiation'">
+        <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
           <name>Persuade</name>
         </specificskill>
         <weaponcategorydv>
@@ -95,10 +92,7 @@
             <specificskill xpathfilter="name = 'Leadership'">
               <name>Command</name>
             </specificskill>
-            <specificskill xpathfilter="name = 'Impersonation'">
-              <name>Acting</name>
-            </specificskill>
-            <specificskill xpathfilter="name = 'Negotiation'">
+            <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
               <name>Persuade</name>
             </specificskill>
             <weaponcategorydv>

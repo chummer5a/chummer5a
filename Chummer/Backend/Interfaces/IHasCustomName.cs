@@ -24,7 +24,7 @@ namespace Chummer
 {
     internal interface IHasCustomName
     {
-        ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
+        Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default);
 
         string CurrentDisplayName { get; }
 

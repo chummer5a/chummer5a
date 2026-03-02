@@ -19,7 +19,8 @@
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -84,6 +85,21 @@ namespace Chummer
             control.DoThreadSafe(x => x.MouseLeave += control_MouseLeave);
         }
 
+        /// <summary>
+        /// Add a new control to the list of controls
+        /// </summary>
+        /// <param name="control">The control to add</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task AddControlAsync(Control control, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (control == null)
+                throw new ArgumentNullException(nameof(control));
+            _lstControls.Add(control);
+            return control.DoThreadSafeAsync(x => x.MouseLeave += control_MouseLeave, token);
+        }
+
         public void AddControlRecursive(Control control)
         {
             if (control == null)
@@ -96,10 +112,54 @@ namespace Chummer
                 {
                     foreach (Control child in x.Controls)
                     {
-                        AddControlRecursive(child);
+                        AddControlRecursiveInner(child);
                     }
                 }
             });
+
+            void AddControlRecursiveInner(Control innerControl)
+            {
+                innerControl.MouseLeave += control_MouseLeave;
+                if (innerControl.HasChildren)
+                {
+                    foreach (Control child in innerControl.Controls)
+                    {
+                        AddControlRecursiveInner(child);
+                    }
+                }
+            }
+        }
+
+        public Task AddControlRecursiveAsync(Control control, CancellationToken token = default)
+        {
+            if (control == null)
+                throw new ArgumentNullException(nameof(control));
+            _lstControls.Add(control);
+            return control.DoThreadSafeAsync(x =>
+            {
+                x.MouseLeave += control_MouseLeave;
+                if (x.HasChildren)
+                {
+                    foreach (Control child in x.Controls)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        AddControlRecursiveInner(child);
+                    }
+                }
+            }, token);
+
+            void AddControlRecursiveInner(Control innerControl)
+            {
+                innerControl.MouseLeave += control_MouseLeave;
+                if (innerControl.HasChildren)
+                {
+                    foreach (Control child in innerControl.Controls)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        AddControlRecursiveInner(child);
+                    }
+                }
+            }
         }
 
         //This is our custom event added to each control to check mouse leave
@@ -109,7 +169,7 @@ namespace Chummer
             if (_left) return;
 
             //Check if the mouse is inside any control
-            if (_lstControls.Any(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
+            if (_lstControls.Exists(x => x.ClientRectangle.Contains(x.PointToClient(Control.MousePosition))))
                 return;
 
             _left = true; //Don't do again flag

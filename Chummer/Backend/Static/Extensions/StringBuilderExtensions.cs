@@ -30,25 +30,26 @@ namespace Chummer
     internal static class StringBuilderExtensions
     {
         /// <summary>
-        /// Syntactic sugar for appending a character followed by a new line.
+        /// Syntactic sugar for enumerating through a StringBuilder's characters.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which appending is to take place.</param>
-        /// <param name="chrValue">New character to append before the new line is appended.</param>
-        /// <returns></returns>
-        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, char chrValue)
+        /// <param name="sbdInput">StringBuilder whose contents should enumerated.</param>
+        public static IEnumerable<char> Enumerate([NotNull] this StringBuilder sbdInput)
         {
-            return sbdInput.Append(chrValue).AppendLine();
+            if (sbdInput.Length == 0)
+                yield break;
+            for (int i = 0; i < sbdInput.Length; ++i)
+                yield return sbdInput[i];
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder CheapReplace([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
@@ -56,15 +57,15 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> does not need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder CheapReplace([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal)
         {
@@ -87,35 +88,35 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that ToString() will be applied to this as part of the method, so it may not be as cheap.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             return sbdInput.CheapReplaceAsync(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison, token: token);
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> does not need to be called.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static async Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<string> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
@@ -164,18 +165,35 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like StringBuilder::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
-        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
-        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that StringBuilder::ToString() doesn't need to be called.</param>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place. Note that <see cref="StringBuilder.ToString()"/> will be applied to this as part of the method, so it may not be as cheap.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a StringBuilder::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async ValueTask<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        public static Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        {
+            return sbdInput.CheapReplaceAsync(sbdInput.ToString(), strOldValue, funcNewValueFactory, eStringComparison, token: token);
+        }
+
+        /// <summary>
+        /// Like <see cref="StringBuilder.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="StringBuilder.Replace(string, string)"/> if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which the replacing takes place.</param>
+        /// <param name="strOriginal">Original string around which StringBuilder was created. Set this so that <see cref="StringBuilder.ToString()"/> does not need to be called.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="StringBuilder.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> CheapReplaceAsync([NotNull] this StringBuilder sbdInput, string strOriginal, string strOldValue, Func<Task<string>> funcNewValueFactory, StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput.Length > 0 && !string.IsNullOrEmpty(strOriginal) && funcNewValueFactory != null)
@@ -217,7 +235,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -229,19 +247,38 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (T objValue in lstValues)
+            using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(objValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -252,19 +289,38 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (string strValue in lstValues)
+            using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(strValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -283,17 +339,44 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i + intStartIndex]);
+                int intExtraLength = 0;
+                for (int j = 0; j < intCount; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + strSeparator.Length;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                int i = 1;
+                string strLoop = astrValues[intStartIndex];
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        strLoop = astrValues[i + intStartIndex];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    strLoop = astrValues[i + intStartIndex];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -304,17 +387,45 @@ namespace Chummer
         {
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(astrValues[i]);
+                int intExtraLength = 0;
+                for (int j = 0; j < intLength; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + strSeparator.Length;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                int i = 1;
+                string strLoop = astrValues[0];
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = astrValues[i];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = astrValues[i];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -325,17 +436,37 @@ namespace Chummer
         {
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(aobjValues[i]);
+                int i = 1;
+                string strLoop = aobjValues[0]?.ToString();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = aobjValues[i]?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = aobjValues[i]?.ToString();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -347,19 +478,38 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (T objValue in lstValues)
+            using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(objValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -370,19 +520,38 @@ namespace Chummer
         {
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (string strValue in lstValues)
+            using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(strValue);
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -401,18 +570,44 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                string strLoop = astrValues[i + intStartIndex];
-                sbdInput.Append(strLoop);
+                int intExtraLength = 0;
+                for (int j = 0; j < intCount; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + 1;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                int i = 1;
+                string strLoop = astrValues[intStartIndex];
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        strLoop = astrValues[i + intStartIndex];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    strLoop = astrValues[i + intStartIndex];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -423,18 +618,45 @@ namespace Chummer
         {
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                string strLoop = astrValues[i];
-                sbdInput.Append(strLoop);
+                int intExtraLength = 0;
+                for (int j = 0; j < intLength; ++j)
+                {
+                    string s = astrValues[j];
+                    if (!string.IsNullOrEmpty(s))
+                        intExtraLength += s.Length + 1;
+                }
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                int i = 1;
+                string strLoop = astrValues[0];
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = astrValues[i];
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = astrValues[i];
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -445,18 +667,37 @@ namespace Chummer
         {
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
-                string strLoop = aobjValues[i].ToString();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(strLoop);
+                int i = 1;
+                string strLoop = aobjValues[0]?.ToString();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        strLoop = aobjValues[i]?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    strLoop = aobjValues[i]?.ToString();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -469,20 +710,48 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<T> tskValue in lstValues)
+            using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    Task<T> tskCurrent = objEnumerator.Current;
+                    string strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                    token.ThrowIfCancellationRequested();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        tskCurrent = objEnumerator.Current;
+                        strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -495,20 +764,48 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<string> tskValue in lstValues)
+            using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    Task<string> tskCurrent = objEnumerator.Current;
+                    string strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                    token.ThrowIfCancellationRequested();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        tskCurrent = objEnumerator.Current;
+                        strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -529,18 +826,42 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[intStartIndex].ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -553,18 +874,43 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[0].ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = await astrValues[i].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -577,18 +923,43 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(strSeparator);
-                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = (await aobjValues[0].ConfigureAwait(false))?.ToString();
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(strSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
@@ -602,20 +973,52 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<T> tskValue in lstValues)
+            using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Task<T> tskCurrent = objEnumerator.Current;
+                        string strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                        token.ThrowIfCancellationRequested();
+                        if (string.IsNullOrEmpty(strLoop))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                tskCurrent = objEnumerator.Current;
+                                strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                                token.ThrowIfCancellationRequested();
+                                if (!string.IsNullOrEmpty(strLoop))
+                                {
+                                    sbdInput.Append(strLoop);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            sbdInput.Append(strLoop);
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? (await tskCurrent.ConfigureAwait(false))?.ToString() : string.Empty;
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdInput.Append(chrSeparator).Append(strLoop);
+                        }
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending a list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -628,20 +1031,53 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstValues == null)
                 throw new ArgumentNullException(nameof(lstValues));
-            bool blnFirst = true;
-            foreach (Task<string> tskValue in lstValues)
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
-                if (!blnFirst)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await tskValue.ConfigureAwait(false));
-                blnFirst = false;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        Task<string> tskCurrent = objEnumerator.Current;
+                        string strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                        token.ThrowIfCancellationRequested();
+                        if (string.IsNullOrEmpty(strLoop))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                tskCurrent = objEnumerator.Current;
+                                strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                                token.ThrowIfCancellationRequested();
+                                if (!string.IsNullOrEmpty(strLoop))
+                                {
+                                    sbdInput.Append(strLoop);
+                                    break;
+                                }
+                            }
+                        }
+                        else
+                            sbdInput.Append(strLoop);
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            tskCurrent = objEnumerator.Current;
+                            strLoop = tskCurrent != null ? await tskCurrent.ConfigureAwait(false) : string.Empty;
+                            token.ThrowIfCancellationRequested();
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdInput.Append(chrSeparator).Append(strLoop);
+                        }
+                    }
+                }
+                return sbdInput;
             }
-            return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[], int, int)"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -662,18 +1098,42 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(intCount));
             if (intStartIndex + intCount >= astrValues.Length)
                 throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            for (int i = 0; i < intCount; ++i)
+            if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i + intStartIndex].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[intStartIndex].ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intCount; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intCount; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = await astrValues[i + intStartIndex].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -686,18 +1146,43 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (astrValues == null)
                 throw new ArgumentNullException(nameof(astrValues));
-            for (int i = 0; i < astrValues.Length; ++i)
+            int intLength = astrValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await astrValues[i].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = await astrValues[0].ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = await astrValues[i].ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = await astrValues[i].ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
             }
             return sbdInput;
         }
 
         /// <summary>
-        /// Combination of StringBuilder::Append() and static string::Join(), appending an list of strings with a separator.
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
         /// </summary>
         /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
         /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
@@ -710,12 +1195,885 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (aobjValues == null)
                 throw new ArgumentNullException(nameof(aobjValues));
-            for (int i = 0; i < aobjValues.Length; ++i)
+            int intLength = aobjValues.Length;
+            if (intLength > 0)
             {
                 token.ThrowIfCancellationRequested();
-                if (i > 0)
-                    sbdInput.Append(chrSeparator);
-                sbdInput.Append(await aobjValues[i].ConfigureAwait(false));
+                int i = 1;
+                string strLoop = (await aobjValues[0].ConfigureAwait(false))?.ToString();
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(strLoop))
+                {
+                    for (; i < intLength; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            sbdInput.Append(strLoop);
+                            break;
+                        }
+                    }
+                }
+                else
+                    sbdInput.Append(strLoop);
+                for (; i < intLength; ++i)
+                {
+                    token.ThrowIfCancellationRequested();
+                    strLoop = (await aobjValues[i].ConfigureAwait(false))?.ToString();
+                    token.ThrowIfCancellationRequested();
+                    if (!string.IsNullOrEmpty(strLoop))
+                        sbdInput.Append(chrSeparator).Append(strLoop);
+                }
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="strSeparator">The string to use as a separator. <paramref name="strSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(strSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(object)"/> and <see cref="string.Join(string, object[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the objects to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current?.ToString();
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current?.ToString();
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = objEnumerator.Current?.ToString();
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Async combination of <see cref="StringBuilder.Append(string)"/> and <see cref="string.Join(string, string[])"/>, appending a list of strings with a separator.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder onto which appending will take place.</param>
+        /// <param name="chrSeparator">The char to use as a separator. <paramref name="chrSeparator" /> is included in the returned string only if value has more than one element.</param>
+        /// <param name="lstValues">A collection that contains the strings to append.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><paramref name="sbdInput" /> with values appended.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstValues == null)
+                throw new ArgumentNullException(nameof(lstValues));
+            IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current;
+                    if (string.IsNullOrEmpty(strLoop))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                sbdInput.Append(strLoop);
+                                break;
+                            }
+                        }
+                    }
+                    else
+                        sbdInput.Append(strLoop);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop))
+                            sbdInput.Append(chrSeparator).Append(strLoop);
+                    }
+                }
+                return sbdInput;
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringBuilder.ToString()"/> that returns a trimmed version of the string.
+        /// Faster than doing <see cref="StringBuilder.ToString()"/> and then <see cref="string.Trim()"/> because it takes advantage of StringBuilder internals that can modify string contents quickly without needing to allocate new strings.
+        /// </summary>
+        /// <param name="sbdInput">StringBuilder containing the string to be trimmed and returned.</param>
+        /// <returns>The trimmed version of the string inside of <paramref name="sbdInput"/>.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string ToTrimmedString([NotNull] this StringBuilder sbdInput)
+        {
+            int intLength = sbdInput.Length;
+            if (intLength == 0)
+                return sbdInput.ToString();
+
+            int intIndex;
+            for (intIndex = intLength - 1; intIndex >= 0; --intIndex)
+            {
+                if (!char.IsWhiteSpace(sbdInput[intIndex]))
+                    break;
+            }
+
+            ++intIndex;
+            if (intIndex < intLength)
+                sbdInput.Length = intLength = intIndex;
+
+            if (intLength == 0)
+                return sbdInput.ToString();
+
+            for (intIndex = 0; intIndex < intLength; ++intIndex)
+            {
+                if (!char.IsWhiteSpace(sbdInput[intIndex]))
+                    return sbdInput.ToString(intIndex, intLength - intIndex);
+            }
+
+            return sbdInput.ToString();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, params string[] astrValues)
+        {
+            int intExtraLength = 0;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                foreach (string strLoop in astrValues)
+                    sbdInput.Append(strLoop);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 2);
+            return sbdInput.Append(chr1).Append(chr2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, char chr2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 2;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(chr2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2, string str3)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, string str2, char chr3)
+        {
+            int intExtraLength = 2 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(str2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings and/or chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, string str3)
+        {
+            int intExtraLength = 2 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(chr1).Append(chr2).Append(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 3);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).Append(str7);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, params char[] achrValues)
+        {
+            int intExtraLength = achrValues.Length;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                foreach (char chrLoop in achrValues)
+                    sbdInput.Append(chrLoop);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, params string[] astrValues)
+        {
+            int intExtraLength = Environment.NewLine.Length;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            foreach (string strLoop in astrValues)
+                sbdInput.Append(strLoop);
+            return sbdInput.AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).AppendLine(str2);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).AppendLine(str3);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).AppendLine(str4);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).AppendLine(str5);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).AppendLine(str6);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine(string)"/> after calling <see cref="StringBuilder.Append(string)"/> over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0) + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).AppendLine(str7);
+        }
+
+        /// <summary>
+        /// Syntactic sugar <see cref="StringBuilder.AppendLine()"/> after calling <see cref="StringBuilder.Append(char)"/>.
+        /// </summary>
+        /// <param name="sbdInput">Base StringBuilder in which appending is to take place.</param>
+        /// <param name="chrValue">New character to append before the new line is appended.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, char chrValue)
+        {
+            return sbdInput.Append(chrValue).AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.AppendLine()"/> after calling <see cref="StringBuilder.Append(char)"/> over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder AppendLine([NotNull] this StringBuilder sbdInput, params char[] achrValues)
+        {
+            int intExtraLength = achrValues.Length + Environment.NewLine.Length;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            foreach (char chrLoop in achrValues)
+                sbdInput.Append(chrLoop);
+            return sbdInput.AppendLine();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, params string[] astrValues)
+        {
+            int intExtraLength = 0;
+            foreach (string strLoop in astrValues)
+                intExtraLength += strLoop?.Length ?? 0;
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC, so let's assemble everything we want inserted first so we only need to call Insert once.
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTemp))
+                {
+                    sbdTemp.EnsureCapacity(intExtraLength);
+                    foreach (string strTemp in astrValues)
+                        sbdTemp.Append(strTemp);
+                    sbdInput.Insert(index, sbdTemp.ToString());
+                }
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+                sbdInput.Insert(index, string.Concat(str1, str2));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(str1, chr2));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(chr1, str2));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, char)"/> over multiple chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 2);
+            // Multiple insert calls can hammer the GC, so it's better to assemble the chars into a temporary array to be able to call Insert once
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(chr1, chr2));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC, so let's assemble everything we want inserted first so we only need to call Insert once.
+                sbdInput.Insert(index, string.Concat(str1, str2, str3));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + 1;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(string.Concat(str1, str2), chr3));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, string str3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 1 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, string.Concat(StringExtensions.ConcatFast(str1, chr2), str3));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, char chr2, char chr3)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + 2;
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            // Multiple insert calls can hammer the GC, so it's better to assemble the chars into a temporary array to be able to call Insert fewer times
+            return sbdInput.Insert(index, string.Concat(str1, StringExtensions.ConcatFast(chr2, chr3)));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, string str3)
+        {
+            int intExtraLength = 1 + (str2?.Length ?? 0) + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(chr1, string.Concat(str2, str3)));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, string str2, char chr3)
+        {
+            int intExtraLength = 2 + (str2?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(StringExtensions.ConcatFast(chr1, str2), chr3));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings and/or chars.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2, string str3)
+        {
+            int intExtraLength = 2 + (str3?.Length ?? 0);
+            sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+            return sbdInput.Insert(index, string.Concat(StringExtensions.ConcatFast(chr1, chr2), str3));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, char)"/> over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, char chr1, char chr2, char chr3)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 3);
+            // Multiple insert calls can hammer the GC, so it's better to assemble the chars into a temporary array to be able to call Insert once
+            return sbdInput.Insert(index, StringExtensions.ConcatFast(chr1, chr2, chr3));
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC, so let's assemble everything we want inserted first so we only need to call Insert once.
+                sbdInput.Insert(index, string.Concat(str1, str2, str3, str4));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5, str6));
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Insert(int, string)"/> over multiple strings.
+        /// Elements are inserted such that the resulting string builder will have them in the same order as they are in the arguments.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Insert([NotNull] this StringBuilder sbdInput, int index, string str1, string str2, string str3, string str4, string str5, string str6, string str7)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
+                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5, str6, str7));
             }
             return sbdInput;
         }

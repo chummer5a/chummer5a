@@ -13,9 +13,11 @@ namespace Chummer.UI.Shared.Components
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _objDicePoolLockObject.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -40,13 +42,13 @@ namespace Chummer.UI.Shared.Components
             this.cmdRoll.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdRoll.AutoSize = true;
             this.cmdRoll.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdRoll.Image = global::Chummer.Properties.Resources.die;
-            this.cmdRoll.ImageDpi120 = null;
-            this.cmdRoll.ImageDpi144 = null;
-            this.cmdRoll.ImageDpi192 = global::Chummer.Properties.Resources.die1;
-            this.cmdRoll.ImageDpi288 = null;
-            this.cmdRoll.ImageDpi384 = null;
-            this.cmdRoll.ImageDpi96 = global::Chummer.Properties.Resources.die;
+            this.cmdRoll.Image = global::Chummer.Properties.Resources.die_16;
+            this.cmdRoll.ImageDpi120 = global::Chummer.Properties.Resources.die_20;
+            this.cmdRoll.ImageDpi144 = global::Chummer.Properties.Resources.die_24;
+            this.cmdRoll.ImageDpi192 = global::Chummer.Properties.Resources.die_32;
+            this.cmdRoll.ImageDpi288 = global::Chummer.Properties.Resources.die_48;
+            this.cmdRoll.ImageDpi384 = global::Chummer.Properties.Resources.die_64;
+            this.cmdRoll.ImageDpi96 = global::Chummer.Properties.Resources.die_16;
             this.cmdRoll.Location = new System.Drawing.Point(40, 0);
             this.cmdRoll.Margin = new System.Windows.Forms.Padding(3, 0, 0, 0);
             this.cmdRoll.Name = "cmdRoll";

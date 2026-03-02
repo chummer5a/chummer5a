@@ -31,12 +31,13 @@ namespace Chummer
     {
         private readonly List<Gear> _lstGear = new List<Gear>();
         private readonly List<Vehicle> _lstVehicles = new List<Vehicle>();
-        private List<ListItem> _lstGeneralItems = Utils.ListItemListPool.Get();
+        private List<ListItem> _lstGeneralItems;
         private string _strMode = "General";
         private Character _objCharacter;
+        private string _strSelectedItem = string.Empty;
+        private string _strSelectedName = string.Empty;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
-        private string _strSelectItemOnLoad = string.Empty;
 
         #region Control Events
 
@@ -45,55 +46,58 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGeneralItems);
+            this.UpdateParentForToolTipControls();
+            _lstGeneralItems = Utils.ListItemListPool.Get();
         }
 
         private async void SelectItem_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
-                switch (_strMode)
+                switch (_strMode.ToUpperInvariant())
                 {
-                    case "Gear":
+                    case "GEAR":
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List since we need to also grab their plugin information.
                         foreach (Gear objGear in _lstGear)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(
                                        Utils.StringBuilderPool, out StringBuilder sbdAmmoName))
                             {
                                 sbdAmmoName.Append(await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false));
                                 // Retrieve the plugin information if it has any.
-                                if (objGear.Children.Count > 0)
+                                if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // Append the plugin information to the name.
-                                    (await sbdAmmoName.Append(strSpace).Append('[')
-                                                      .AppendJoinAsync(',' + strSpace,
+                                    (await sbdAmmoName.Append(strSpace, '[')
+                                                      .AppendJoinAsync("," + strSpace,
                                                                        objGear.Children.Select(
-                                                                           x => x.GetCurrentDisplayNameShortAsync()
-                                                                               .AsTask())).ConfigureAwait(false))
+                                                                           x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
                                         .Append(']');
                                 }
 
-                                if (objGear.Rating > 0)
+                                int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
+                                if (intRating > 0)
                                 {
-                                    sbdAmmoName.Append(strSpace).Append('(')
-                                               .Append(await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                            .ConfigureAwait(false)).Append(strSpace)
-                                               .Append(objGear.Rating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    sbdAmmoName.Append(strSpace, '(')
+                                               .AppendFormat(GlobalSettings.CultureInfo,
+                                                             await LanguageManager.GetStringAsync("Label_RatingFormat")
+                                                                 .ConfigureAwait(false),
+                                                             await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                 .ConfigureAwait(false))
+                                               .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
                                 }
 
-                                sbdAmmoName.Append(strSpace).Append('x')
-                                           .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace, '×', objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                             }
                         }
 
                         break;
                     }
-                    case "Vehicles":
+                    case "VEHICLES":
                     {
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List.
@@ -104,12 +108,12 @@ namespace Chummer
 
                         break;
                     }
-                    case "General":
+                    case "GENERAL":
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Dropdown":
+                    case "DROPDOWN":
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {
                             x.DropDownStyle = ComboBoxStyle.DropDown;
@@ -118,7 +122,7 @@ namespace Chummer
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Restricted":
+                    case "RESTRICTED":
                     {
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {
@@ -127,26 +131,26 @@ namespace Chummer
                         }).ConfigureAwait(false);
                         if (!(await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).LicenseRestricted)
                         {
-                            foreach (XPathNavigator objNode in await (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
-                                                                     .SelectAndCacheExpressionAsync(
-                                                                         "/chummer/licenses/license").ConfigureAwait(false))
+                            foreach (XPathNavigator objNode in (await _objCharacter.LoadDataXPathAsync("licenses.xml").ConfigureAwait(false))
+                                                                     .SelectAndCacheExpression(
+                                                                         "/chummer/licenses/license"))
                             {
                                 string strInnerText = objNode.Value;
                                 if (!string.IsNullOrEmpty(strInnerText))
                                 {
                                     lstItems.Add(new ListItem(strInnerText,
-                                                              (await objNode
-                                                                     .SelectSingleNodeAndCacheExpressionAsync(
-                                                                         "@translate").ConfigureAwait(false))
-                                                              ?.Value ?? strInnerText));
+                                        objNode
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "@translate")
+                                            ?.Value ?? strInnerText));
                                 }
                             }
                         }
                         else
                         {
                             // Cyberware/Bioware.
-                            foreach (Cyberware objCyberware in (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendants(
-                                         x => x.Children))
+                            foreach (Cyberware objCyberware in await (await _objCharacter.GetCyberwareAsync().ConfigureAwait(false)).GetAllDescendantsAsync(
+                                         x => x.GetChildrenAsync()).ConfigureAwait(false))
                             {
                                 if ((await objCyberware.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
@@ -154,8 +158,8 @@ namespace Chummer
                                         new ListItem(objCyberware.InternalId, await objCyberware.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
                                 }
 
-                                foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
@@ -181,8 +185,8 @@ namespace Chummer
                                                                       .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objMod.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objMod.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId,
@@ -191,8 +195,8 @@ namespace Chummer
                                     }
                                 }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objArmor.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objArmor.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         lstItems.Add(new ListItem(objGear.InternalId,
@@ -202,7 +206,7 @@ namespace Chummer
                             }).ConfigureAwait(false);
 
                             // Weapons.
-                            foreach (Weapon objWeapon in (await _objCharacter.GetWeaponsAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                            foreach (Weapon objWeapon in await (await _objCharacter.GetWeaponsAsync().ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                             {
                                 if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                 {
@@ -220,8 +224,8 @@ namespace Chummer
                                                                            .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                             lstItems.Add(new ListItem(objGear.InternalId,
@@ -232,7 +236,7 @@ namespace Chummer
                             }
 
                             // Gear.
-                            foreach (Gear objGear in (await _objCharacter.GetGearAsync().ConfigureAwait(false)).GetAllDescendants(x => x.Children))
+                            foreach (Gear objGear in await (await _objCharacter.GetGearAsync().ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                             {
                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                     lstItems.Add(new ListItem(objGear.InternalId, await objGear.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
@@ -257,7 +261,7 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendants(x => x.Children))
+                                    foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
@@ -278,8 +282,8 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                         x => x.Children))
+                                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                         x => x.Children).ConfigureAwait(false))
                                             {
                                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                                     lstItems.Add(
@@ -301,8 +305,8 @@ namespace Chummer
                                                                       .ConfigureAwait(false)));
                                     }
 
-                                    foreach (Weapon objWeapon in objWeaponMount.Weapons.GetAllDescendants(
-                                                 x => x.Children))
+                                    foreach (Weapon objWeapon in await objWeaponMount.Weapons.GetAllDescendantsAsync(
+                                                 x => x.Children).ConfigureAwait(false))
                                     {
                                         if ((await objWeapon.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         {
@@ -323,8 +327,8 @@ namespace Chummer
                                                                               .ConfigureAwait(false)));
                                             }
 
-                                            foreach (Gear objGear in objAccessory.GearChildren.GetAllDescendants(
-                                                         x => x.Children))
+                                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                                         x => x.Children).ConfigureAwait(false))
                                             {
                                                 if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                                     lstItems.Add(
@@ -336,8 +340,8 @@ namespace Chummer
                                     }
                                 }).ConfigureAwait(false);
 
-                                foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendants(
-                                             x => x.Children))
+                                foreach (Gear objGear in await objVehicle.GearChildren.GetAllDescendantsAsync(
+                                             x => x.Children).ConfigureAwait(false))
                                 {
                                     if ((await objGear.TotalAvailTupleAsync(false).ConfigureAwait(false)).Suffix == 'R')
                                         lstItems.Add(new ListItem(objGear.InternalId,
@@ -367,19 +371,19 @@ namespace Chummer
                         AcceptForm();
                 }
 
-                if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
+                if (!string.IsNullOrEmpty(_strSelectedItem))
                 {
                     await cboAmmo.DoThreadSafeAsync(x =>
                     {
                         if (x.DropDownStyle == ComboBoxStyle.DropDownList || x.DropDownStyle == ComboBoxStyle.DropDown)
                         {
                             string strOldSelected = x.SelectedValue?.ToString();
-                            x.SelectedValue = _strSelectItemOnLoad;
+                            x.SelectedValue = _strSelectedItem;
                             if (x.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
                                 x.SelectedValue = strOldSelected;
                         }
                         else
-                            x.Text = _strSelectItemOnLoad;
+                            x.Text = _strSelectedItem;
                     }).ConfigureAwait(false);
                 }
             }
@@ -408,24 +412,17 @@ namespace Chummer
         /// </summary>
         public string SelectedItem
         {
-            get
-            {
-                if (cboAmmo == null)
-                    return null;
-                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList && cboAmmo.SelectedValue != null)
-                    return cboAmmo.SelectedValue.ToString();
-                return cboAmmo.Text;
-            }
-            set => _strSelectItemOnLoad = value;
+            get => _strSelectedItem;
+            set => _strSelectedItem = value;
         }
 
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>
-        public string SelectedName => cboAmmo.Text;
+        public string SelectedName => _strSelectedName;
 
         /// <summary>
-        /// Whether or not the Form should be accepted if there is only one item left in the list.
+        /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
         public bool AllowAutoSelect
         {
@@ -508,6 +505,13 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            _strSelectedName = cboAmmo.Text;
+            if (cboAmmo == null)
+                _strSelectedItem = string.Empty;
+            else if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                _strSelectedItem = cboAmmo.SelectedValue?.ToString() ?? _strSelectedName;
+            else
+                _strSelectedItem = _strSelectedName;
             DialogResult = DialogResult.OK;
             Close();
         }

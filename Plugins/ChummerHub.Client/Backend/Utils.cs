@@ -613,7 +613,7 @@ namespace ChummerHub.Client.Backend
             if (blnSync)
                 ShowResponseForm();
             else
-                await Task.Run(ShowResponseForm, token);
+                await Task.Run(ShowResponseFormAsync, token);
             void ShowResponseForm()
             {
                 PluginHandler.MainForm.DoThreadSafe(() =>
@@ -627,7 +627,22 @@ namespace ChummerHub.Client.Backend
                     frmSIN.SINnerResponseUI.Result = rb;
                     Log.Trace("Showing Dialog for frmSINnerResponse()");
                     frmSIN.Show();
-                });
+                }, token: token);
+            }
+            Task ShowResponseFormAsync()
+            {
+                return PluginHandler.MainForm.DoThreadSafeAsync(() =>
+                {
+                    frmSINnerResponse frmSIN = new frmSINnerResponse
+                    {
+                        TopMost = true
+                    };
+                    if (rb.ErrorText.Length > 600)
+                        rb.ErrorText = rb.ErrorText.Substring(0, 598) + "...";
+                    frmSIN.SINnerResponseUI.Result = rb;
+                    Log.Trace("Showing Dialog for frmSINnerResponse()");
+                    frmSIN.Show();
+                }, token: token);
             }
             return rb;
         }
@@ -762,18 +777,8 @@ namespace ChummerHub.Client.Backend
                                               CharacterAlias = sinner.Alias,
                                               BuildMethod = "online"
                                           };
-                if (blnSync)
-                {
-                    // ReSharper disable once MethodHasAsyncOverload
-                    objCache.MyPluginDataDic.AddOrUpdate("IsSINnerFavorite", member.IsFavorite,
-                                                         (x, y) => member.IsFavorite, token);
-                }
-                else
-                {
-                    await objCache.MyPluginDataDic
-                                  .AddOrUpdateAsync("IsSINnerFavorite", member.IsFavorite, (x, y) => member.IsFavorite,
-                                                    token).ConfigureAwait(false);
-                }
+                objCache.MyPluginDataDic.AddOrUpdate("IsSINnerFavorite", member.IsFavorite,
+                    (x, y) => member.IsFavorite);
 
                 SetEventHandlers(sinner, objCache);
                 TreeNode memberNode = new TreeNode
@@ -978,7 +983,7 @@ namespace ChummerHub.Client.Backend
                 throw new ArgumentNullException(nameof(sinner));
             if (objCache == null)
                 throw new ArgumentNullException(nameof(objCache));
-            objCache.MyPluginDataDic.Add("SINnerId", sinner.Id);
+            objCache.MyPluginDataDic.TryAdd("SINnerId", sinner.Id);
             objCache.OnMyDoubleClick = null;
             objCache.OnMyDoubleClick += OnObjCacheOnMyDoubleClick;
             async void OnObjCacheOnMyDoubleClick(object sender, EventArgs e) => await OnMyDoubleClick(sinner, objCache);
@@ -1183,11 +1188,11 @@ namespace ChummerHub.Client.Backend
                 Log.Info("Posting " + ce.MySINnerFile.Id + "...");
                 TaskScheduler objUIScheduler = null;
                 if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    // ReSharper disable once MethodHasAsyncOverload
                     Program.MainForm.DoThreadSafe(() =>
                     {
                         objUIScheduler = TaskScheduler.FromCurrentSynchronizationContext();
-                    });
+                    }, token: token);
                 SinnersClient client = StaticUtils.GetClient();
                 if (!StaticUtils.IsUnitTest)
                 {

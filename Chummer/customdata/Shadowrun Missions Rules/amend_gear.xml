@@ -18,9 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <chummer>
-  <categories>
-    <category amendoperation="addnode">Animals</category>
-  </categories>
   <gears>
       <gear>
         <name>Ammo: Depleted Uranium</name>

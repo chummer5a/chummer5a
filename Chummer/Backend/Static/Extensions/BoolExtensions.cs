@@ -33,7 +33,7 @@ namespace Chummer
         [SecuritySafeCritical]
         public static unsafe long ToInt64(this bool value)
         {
-            return *(byte*)&value;
+            return (*(byte*)&value != 0).ToInt64NonNormalized();
         }
 
         /// <summary>
@@ -45,7 +45,7 @@ namespace Chummer
         [SecuritySafeCritical]
         public static unsafe int ToInt32(this bool value)
         {
-            return *(byte*)&value;
+            return (*(byte*)&value != 0).ToInt32NonNormalized();
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace Chummer
         [SecuritySafeCritical]
         public static unsafe short ToShort(this bool value)
         {
-            return *(byte*)&value;
+            return (*(byte*)&value != 0).ToShortNonNormalized();
         }
 
         /// <summary>
@@ -68,6 +68,54 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SecuritySafeCritical]
         public static unsafe byte ToByte(this bool value)
+        {
+            return (*(byte*)&value != 0).ToByteNonNormalized();
+        }
+
+        /// <summary>
+        /// Converts a boolean to number form the fastest way possible (interop-unsafe version).
+        /// </summary>
+        /// <param name="value">The boolean to convert</param>
+        /// <returns>1 if <paramref name="value"/> is True, 0 if <paramref name="value"/> is False.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        private static unsafe long ToInt64NonNormalized(this bool value)
+        {
+            return *(byte*)&value;
+        }
+
+        /// <summary>
+        /// Converts a boolean to number form the fastest way possible (interop-unsafe version).
+        /// </summary>
+        /// <param name="value">The boolean to convert</param>
+        /// <returns>1 if <paramref name="value"/> is True, 0 if <paramref name="value"/> is False.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        private static unsafe int ToInt32NonNormalized(this bool value)
+        {
+            return *(byte*)&value;
+        }
+
+        /// <summary>
+        /// Converts a boolean to number form the fastest way possible (interop-unsafe version).
+        /// </summary>
+        /// <param name="value">The boolean to convert</param>
+        /// <returns>1 if <paramref name="value"/> is True, 0 if <paramref name="value"/> is False.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        private static unsafe short ToShortNonNormalized(this bool value)
+        {
+            return *(byte*)&value;
+        }
+
+        /// <summary>
+        /// Converts a boolean to number form the fastest way possible (interop-unsafe version).
+        /// </summary>
+        /// <param name="value">The boolean to convert</param>
+        /// <returns>1 if <paramref name="value"/> is True, 0 if <paramref name="value"/> is False.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        [SecuritySafeCritical]
+        private static unsafe byte ToByteNonNormalized(this bool value)
         {
             return *(byte*)&value;
         }

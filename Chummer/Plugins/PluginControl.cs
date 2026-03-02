@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -309,20 +310,21 @@ namespace Chummer.Plugins
                     }
                     catch (ReflectionTypeLoadException e)
                     {
+                        e = e.Demystify();
                         TelemetryClient objTelemetry = Program.ChummerTelemetryClient.Value;
                         if (objTelemetry != null)
                         {
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdLoaderExceptions))
                             {
                                 int counter = 0;
                                 foreach (Exception except in e.LoaderExceptions)
                                 {
+                                    Exception innerExcept = except.Demystify();
                                     counter++;
                                     sbdLoaderExceptions
-                                        .AppendLine().Append("LoaderException ").Append(counter).Append(": ")
-                                        .Append(except.Message);
-                                    objTelemetry.TrackException(except);
+                                        .AppendLine().Append("LoaderException ", counter.ToString(GlobalSettings.InvariantCultureInfo), ": ", innerExcept.Message);
+                                    objTelemetry.TrackException(innerExcept);
                                 }
 
                                 try
@@ -343,10 +345,10 @@ namespace Chummer.Plugins
 
                                 string msg
                                     = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
-                                      + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
-                                      + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
+                                      + Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Exception: "
+                                      + Environment.NewLine + Environment.NewLine + e.ToString() + Environment.NewLine
                                       + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
-                                      + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
+                                      + sbdLoaderExceptions.ToString() + Environment.NewLine + Environment.NewLine;
 
                                 Log.Info(e, msg);
                             }
@@ -361,12 +363,12 @@ namespace Chummer.Plugins
 
                     if (MyPlugins.Count == 0)
                     {
-                        throw new ArgumentException("No plugins found in " + path + '.');
+                        throw new ArgumentException("No plugins found in " + path + ".");
                     }
 
                     IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
-                    Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: "
-                             + lstActivePlugins.Count);
+                    Log.Info("Plugins found: " + MyPlugins.Count.ToString(GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Plugins active: "
+                             + lstActivePlugins.Count.ToString(GlobalSettings.InvariantCultureInfo));
                     foreach (IPlugin plugin in lstActivePlugins)
                     {
                         try
@@ -381,6 +383,7 @@ namespace Chummer.Plugins
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Error(e);
 #if DEBUG
                             throw;
@@ -392,13 +395,15 @@ namespace Chummer.Plugins
                 }
                 catch (System.Security.SecurityException e)
                 {
+                    e = e.Demystify();
                     string msg
                         = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
-                          + Environment.NewLine + Environment.NewLine + e;
+                          + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Warn(e, msg);
                 }
                 catch (Exception e) when (!(e is ApplicationException))
                 {
+                    e = e.Demystify();
                     Log.Fatal(e);
                     throw;
                 }
@@ -410,7 +415,7 @@ namespace Chummer.Plugins
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstMyPlugins;
             }
         }
@@ -421,7 +426,7 @@ namespace Chummer.Plugins
             {
                 if (!GlobalSettings.PluginsEnabled)
                     return Array.Empty<IPlugin>();
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     List<IPlugin> result = new List<IPlugin>(MyPlugins.Count);
                     foreach (IPlugin plugin in MyPlugins)
@@ -436,23 +441,27 @@ namespace Chummer.Plugins
             }
         }
 
-        public async ValueTask<IReadOnlyList<IPlugin>> GetMyActivePluginsAsync(CancellationToken token = default)
+        public async Task<IReadOnlyList<IPlugin>> GetMyActivePluginsAsync(CancellationToken token = default)
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
-                await MyPlugins.ForEachAsync(async plugin =>
+                await MyPlugins.ForEachAsync(plugin =>
                 {
-                    (bool blnSuccess, bool blnEnabled)
-                        = await GlobalSettings.PluginsEnabledDic.TryGetValueAsync(plugin.ToString(), token)
-                                              .ConfigureAwait(false);
-                    if (!blnSuccess || blnEnabled)
+                    if (!GlobalSettings.PluginsEnabledDic.TryGetValue(plugin.ToString(), out bool blnEnabled)
+                        || blnEnabled)
                         result.Add(plugin);
                 }, token).ConfigureAwait(false);
 
                 return result;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -503,13 +512,14 @@ namespace Chummer.Plugins
                 }
                 catch (ReflectionTypeLoadException e)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    e = e.Demystify();
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdMessage))
                     {
                         sbdMessage.AppendLine("Exception loading plugins: ");
                         foreach (Exception exp in e.LoaderExceptions)
                         {
-                            sbdMessage.AppendLine(exp.Message);
+                            sbdMessage.AppendLine(exp.Demystify().Message);
                         }
 
                         sbdMessage.AppendLine().Append(e);
@@ -518,7 +528,7 @@ namespace Chummer.Plugins
                 }
                 catch (CompositionException e)
                 {
-                    using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdMessage))
                     {
                         sbdMessage.AppendLine("Exception loading plugins: ");
@@ -537,7 +547,8 @@ namespace Chummer.Plugins
                 }
                 catch (Exception e)
                 {
-                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
+                    e = e.Demystify();
+                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Error(e, msg);
                 }
             }
@@ -545,8 +556,10 @@ namespace Chummer.Plugins
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Career_" + plugin,
@@ -571,13 +584,19 @@ namespace Chummer.Plugins
                     }
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetTabPage_Create_" + plugin, parentActivity,
@@ -601,13 +620,19 @@ namespace Chummer.Plugins
                     }
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
                 {
                     using (Timekeeper.StartSyncron("load_plugin_GetMenuItems_" + plugin,
@@ -632,6 +657,10 @@ namespace Chummer.Plugins
                         }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

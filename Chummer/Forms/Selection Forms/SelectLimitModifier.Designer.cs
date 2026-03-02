@@ -162,7 +162,6 @@ namespace Chummer
             this.cboLimit.Name = "cboLimit";
             this.cboLimit.Size = new System.Drawing.Size(220, 21);
             this.cboLimit.TabIndex = 13;
-            this.cboLimit.TooltipText = "";
             this.cboLimit.SelectedIndexChanged += new System.EventHandler(this.ToggleOkEnabled);
             // 
             // lblLimit

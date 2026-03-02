@@ -153,6 +153,26 @@
                     <xs:element name="useskill" minOccurs="0" maxOccurs="1" />
                     <xs:element name="useskillspec" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weapontype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="wirelessweaponbonus" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="accuracyreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="smartlinkpool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -169,6 +189,7 @@
                     <xs:element name="name" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="mount" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="addmount" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="avail" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="cost" type="xs:string" minOccurs="1" maxOccurs="1" />
                     <xs:element name="source" type="xs:string" minOccurs="1" maxOccurs="1" />
@@ -196,7 +217,6 @@
                     <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="dicepool" type="xs:integer" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="extramount" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="forbidden" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="gears" minOccurs="0" maxOccurs="1" />
                     <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
@@ -206,7 +226,28 @@
                     <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="rcdeployable" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="rcgroup" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="replacerange" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="wirelessweaponbonus" minOccurs="0" maxOccurs="1">
+                      <xs:complexType>
+                        <xs:sequence>
+                          <xs:element name="accuracy" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="accuracyreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="ap" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="apreplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damage" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="damagetype" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="mode" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="modereplace" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="pool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rangebonus" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="rc" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="smartlinkpool" type="xs:string" minOccurs="0" maxOccurs="1" />
+                          <xs:element name="userange" type="xs:string" minOccurs="0" maxOccurs="1" />
+                        </xs:sequence>
+                      </xs:complexType>
+                    </xs:element>
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>

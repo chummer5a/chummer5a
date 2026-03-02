@@ -197,7 +197,7 @@ namespace Chummer
                 return NativeMethods.CallNextHookEx(_hHook, nCode, wParam, lParam);
             }
 
-            CwpRetStruct msg = (CwpRetStruct)Marshal.PtrToStructure(lParam, typeof(CwpRetStruct));
+            CwpRetStruct msg = Marshal.PtrToStructure<CwpRetStruct>(lParam);
             IntPtr hook = _hHook;
 
             if (msg.message == (int)CbtHookAction.HCBT_ACTIVATE)

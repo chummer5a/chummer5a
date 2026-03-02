@@ -21,6 +21,8 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Backend.Equipment;
 
@@ -40,55 +42,61 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void ReloadWeapon_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstAmmo))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                 // Add each of the items to a new List since we need to also grab their plugin information.
                 foreach (Gear objGear in _lstAmmo)
                 {
-                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + " x"
+                    string strName = await objGear.GetCurrentDisplayNameShortAsync().ConfigureAwait(false) + strSpace + "×"
                         + objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo);
-                    if (objGear.Rating > 0)
+                    int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
+                    if (intRating > 0)
                     {
-                        strName += strSpace + '('
-                                            + await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                   .ConfigureAwait(false) + strSpace
-                                            + objGear.Rating.ToString(GlobalSettings.CultureInfo) + ')';
+                        strName += strSpace + "("
+                                            + string.Format(
+                                                GlobalSettings.CultureInfo,
+                                                await LanguageManager.GetStringAsync("Label_RatingFormat")
+                                                                     .ConfigureAwait(false),
+                                                await LanguageManager.GetStringAsync(objGear.RatingLabel)
+                                                                     .ConfigureAwait(false)) + strSpace
+                                            + intRating.ToString(GlobalSettings.CultureInfo) + ")";
                     }
 
                     if (objGear.Parent is Gear objParent)
                     {
                         if (!string.IsNullOrEmpty(await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)))
                         {
-                            strName += strSpace + '(' + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
+                            strName += strSpace + "(" + await objParent.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
                             if (objParent.Location != null)
-                                strName += strSpace + '@' + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
-                            strName += ')';
+                                strName += strSpace + "@" + strSpace + await objParent.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false);
+                            strName += ")";
                         }
                     }
                     else if (objGear.Location != null)
-                        strName += strSpace + '(' + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ')';
+                        strName += strSpace + "(" + await objGear.Location.GetCurrentDisplayNameAsync().ConfigureAwait(false) + ")";
 
                     // Retrieve the plugin information if it has any.
-                    if (objGear.Children.Count > 0)
+                    if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                     {
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdPlugins))
                         {
-                            foreach (Gear objChild in objGear.Children)
-                            {
-                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false)).Append(',').Append(strSpace);
-                            }
+                            sbdPlugins.Append(strName).Append(strSpace).Append('[');
+                            await objGear.Children.ForEachAsync(async objChild =>
+                                sbdPlugins.Append(await objChild.GetCurrentDisplayNameShortAsync().ConfigureAwait(false), ',', strSpace))
+                                .ConfigureAwait(false);
 
                             // Remove the trailing comma.
                             sbdPlugins.Length -= 1 + strSpace.Length;
                             // Append the plugin information to the name.
-                            strName += strSpace + '[' + sbdPlugins + ']';
+                            strName = sbdPlugins.Append(']').ToString();
                         }
                     }
 
@@ -168,16 +176,24 @@ namespace Chummer
         /// <summary>
         /// Name of the ammunition that was selected.
         /// </summary>
-        public string SelectedAmmo => cboAmmo.DoThreadSafeFunc(x => x.SelectedValue)?.ToString() ?? string.Empty;
+        public async Task<string> GetSelectedAmmoAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await cboAmmo.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false))?.ToString() ?? string.Empty;
+        }
 
         /// <summary>
         /// Number of rounds that were selected to be loaded.
         /// </summary>
-        public int SelectedCount =>
-            int.TryParse(cboType.DoThreadSafeFunc(x => x.Text), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo,
-                out int intReturn)
-                ? intReturn
+        public async Task<decimal> GetSelectedCountAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strText = await cboType.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+            return decimal.TryParse(strText, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
+                out decimal decReturn)
+                ? decReturn
                 : _objWeapon?.AmmoRemaining ?? 0;
+        }
 
         #endregion Properties
 

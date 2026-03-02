@@ -32,8 +32,8 @@ namespace Chummer
     /// <summary>
     /// An Art.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public class Art : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
+    public class Art : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanRemove, IHasSource, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -50,6 +50,8 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
 
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -104,16 +106,79 @@ namespace Chummer
                     _guiID = Guid.Empty;
                     return;
                 }
-                if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue))
-                    _strName += LanguageManager.GetString("String_Space") + '(' + ImprovementManager.SelectedValue + ')';
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                    _strName += LanguageManager.GetString("String_Space") + "(" + strSelectedValue + ")";
             }
             /*
             if (string.IsNullOrEmpty(_strNotes))
             {
-                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                }
+            }
+            */
+        }
+
+        /// <summary>
+        /// Create an Art from an XmlNode.
+        /// </summary>
+        /// <param name="objXmlArtNode">XmlNode to create the object from.</param>
+        /// <param name="objSource">Source of the Improvement.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task CreateAsync(XmlNode objXmlArtNode, Improvement.ImprovementSource objSource, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!objXmlArtNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
+            {
+                Log.Warn(new object[] { "Missing id field for xmlnode", objXmlArtNode });
+                Utils.BreakIfDebug();
+            }
+
+            if (objXmlArtNode.TryGetStringFieldQuickly("name", ref _strName))
+            {
+                _objCachedMyXmlNode = null;
+                _objCachedMyXPathNode = null;
+            }
+
+            objXmlArtNode.TryGetStringFieldQuickly("source", ref _strSource);
+            objXmlArtNode.TryGetStringFieldQuickly("page", ref _strPage);
+            _objImprovementSource = objSource;
+            if (!objXmlArtNode.TryGetMultiLineStringFieldQuickly("altnotes", ref _strNotes))
+                objXmlArtNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+            string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+            objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+            _colNotes = ColorTranslator.FromHtml(sNotesColor);
+
+            if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlArtNode, Name, CurrentDisplayName, Source, Page,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
+            }
+
+            objXmlArtNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
+            _nodBonus = objXmlArtNode["bonus"];
+            if (_nodBonus != null)
+            {
+                if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, objSource, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), _nodBonus, 1, await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                {
+                    _guiID = Guid.Empty;
+                    return;
+                }
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue))
+                    _strName += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + strSelectedValue + ")";
+            }
+            /*
+            if (string.IsNullOrEmpty(_strNotes))
+            {
+                _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
+                if (string.IsNullOrEmpty(_strNotes))
+                {
+                    _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                 }
             }
             */
@@ -135,11 +200,11 @@ namespace Chummer
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("grade", _intGrade.ToString(GlobalSettings.InvariantCultureInfo));
             if (_nodBonus != null)
-                objWriter.WriteRaw(_nodBonus.OuterXml);
+                objWriter.WriteRaw(_nodBonus.OuterXmlViaPool());
             else
                 objWriter.WriteElementString("bonus", string.Empty);
             objWriter.WriteElementString("improvementsource", _objImprovementSource.ToString());
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteEndElement();
         }
@@ -150,6 +215,22 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Metamagic from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
             {
                 _guiID = Guid.NewGuid();
@@ -158,15 +239,22 @@ namespace Chummer
             objNode.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
+            Lazy<XPathNavigator> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath(token));
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
-            _nodBonus = objNode["bonus"];
+            XPathNavigator objSourceNavigator = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+            objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNavigator);
             if (objNode["improvementsource"] != null)
-                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerText);
+                _objImprovementSource = Improvement.ConvertToImprovementSource(objNode["improvementsource"].InnerTextViaPool(token));
 
             objNode.TryGetInt32FieldQuickly("grade", ref _intGrade);
             objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -182,7 +270,7 @@ namespace Chummer
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -195,11 +283,12 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("improvementsource", SourceType.ToString(), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -217,16 +306,25 @@ namespace Chummer
         /// </summary>
         public string InternalId => _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
 
-        public SourceString SourceDetail
+        public SourceString SourceDetail =>
+            _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                    DisplayPage(GlobalSettings.Language),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter)
+                : _objCachedSourceDetail;
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
-            get
-            {
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                        _objCharacter);
-                return _objCachedSourceDetail;
-            }
+            token.ThrowIfCancellationRequested();
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
         }
 
         /// <summary>
@@ -301,14 +399,14 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             // Get the translated name if applicable.
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return objNode != null ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -324,18 +422,18 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             return DisplayNameShortAsync(strLanguage, token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.Language, token);
 
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) => DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
         /// The initiate grade where the art was learned.
@@ -385,15 +483,13 @@ namespace Chummer
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
-                : Page;
-            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
         }
 
         /// <summary>
@@ -405,6 +501,21 @@ namespace Chummer
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -412,6 +523,21 @@ namespace Chummer
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         private XmlNode _objCachedMyXmlNode;
@@ -423,18 +549,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("metamagic.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("metamagic.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/arts/art[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/arts/art[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XmlNode objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("metamagic.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("metamagic.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/arts/art", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/arts/art", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -449,18 +574,17 @@ namespace Chummer
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("metamagic.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("metamagic.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/arts/art[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/arts/art[id = "
-                                        + SourceIDString.CleanXPath()
-                                        + " or id = " + SourceIDString
-                                                        .ToUpperInvariant().CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("metamagic.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("metamagic.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/arts/art", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/arts/art", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
@@ -470,24 +594,25 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsArt, bool blnAddCategory = false)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsArt, bool blnAddCategory = false, CancellationToken token = default)
         {
-            if (Grade == -1 && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            token.ThrowIfCancellationRequested();
+            if (Grade < 0 && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
-            string strText = CurrentDisplayName;
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             if (blnAddCategory)
-                strText = LanguageManager.GetString("Label_Art") + LanguageManager.GetString("String_Space") + strText;
+                strText = await LanguageManager.GetStringAsync("Label_Art", token: token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + strText;
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
                 Text = strText,
                 Tag = this,
                 ContextMenuStrip = cmsArt,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
-
             return objNode;
         }
 
@@ -497,43 +622,58 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return Grade == -1
+                    return Grade < 0
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
-                return Grade == -1
+                return Grade < 0
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return Grade < 0
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return Grade < 0
+                ? ColorManager.GrayText
+                : ColorManager.WindowText;
         }
 
         #endregion UI Methods
 
         public bool Remove(bool blnConfirmDelete = true)
         {
-            if (Grade <= 0)
+            if (Grade < 0)
                 return false;
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteArt")))
                 return false;
 
             ImprovementManager.RemoveImprovements(_objCharacter, _objImprovementSource, InternalId);
+
             return _objCharacter.Arts.Remove(this);
         }
 
-        public async ValueTask<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
-            if (Grade <= 0)
+            token.ThrowIfCancellationRequested();
+            if (Grade < 0)
                 return false;
             if (blnConfirmDelete && !await CommonFunctions
-                                           .ConfirmDeleteAsync(
-                                               await LanguageManager.GetStringAsync("Message_DeleteArt", token: token)
-                                                                    .ConfigureAwait(false), token)
-                                           .ConfigureAwait(false))
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteArt", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
                 return false;
 
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
                                     .ConfigureAwait(false);
-            return await _objCharacter.Arts.RemoveAsync(this, token).ConfigureAwait(false);
+            return await (await _objCharacter.GetArtsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)
@@ -543,11 +683,11 @@ namespace Chummer
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
     }
 }

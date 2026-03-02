@@ -18,45 +18,45 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using ExternalUtils.RegularExpressions;
 
 namespace Chummer
 {
     public static class LanguageManager
     {
-        private static readonly LockingDictionary<string, LanguageData> s_DicLanguageData
-            = new LockingDictionary<string, LanguageData>();
+        private static readonly ConcurrentDictionary<string, LanguageData> s_DicLanguageData
+            = new ConcurrentDictionary<string, LanguageData>();
 
-        private static readonly LockingDictionary<string, string> s_DicEnglishStrings
-            = new LockingDictionary<string, string>();
+        private static readonly ConcurrentDictionary<string, string> s_DicEnglishStrings
+            = new ConcurrentDictionary<string, string>();
 
-        public static IAsyncReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
+        public static IReadOnlyDictionary<string, LanguageData> LoadedLanguageData => s_DicLanguageData;
         public static string ManagerErrorMessage { get; }
 
         #region Constructor
 
         static LanguageManager()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
                 {
-                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath);
+                    XPathDocument xmlEnglishDocument = XPathDocumentExtensions.LoadStandardFromFile(strFilePath, token: CancellationToken.None);
                     XPathNodeIterator xmlStringList =
                         xmlEnglishDocument.CreateNavigator().SelectAndCacheExpression("/chummer/strings/string");
                     if (xmlStringList.Count > 0)
@@ -84,13 +84,13 @@ namespace Chummer
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex;
+                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
                 }
                 catch (XmlException ex)
                 {
                     ManagerErrorMessage = "Language strings for the default language (" + GlobalSettings.DefaultLanguage
                         + ") could not be loaded:"
-                        + Environment.NewLine + Environment.NewLine + ex;
+                        + Environment.NewLine + Environment.NewLine + ex.Demystify().ToString();
                 }
             }
             else
@@ -107,8 +107,8 @@ namespace Chummer
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -116,15 +116,14 @@ namespace Chummer
                                             bool blnDoResumeLayout = true, CancellationToken token = default)
         {
             // Use RunOnMainThread here because we don't want redraws while we translate a form
-            Utils.RunOnMainThread(
-                () => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token);
+            Utils.RunOnMainThread(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token: token);
         }
 
         /// <summary>
         /// Translate an object int a specified language.
         /// </summary>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -140,14 +139,14 @@ namespace Chummer
         /// https://docs.microsoft.com/en-us/archive/msdn-magazine/2015/july/async-programming-brownfield-async-development
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
-        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="objObject">Object to translate.</param>
+        /// <param name="strIntoLanguage">Language to which to translate the object.</param>
         /// <param name="blnDoResumeLayout">Whether to suspend and then resume the control being translated.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task TranslateWinFormCoreAsync(bool blnSync, Control objObject, string strIntoLanguage,
                                                             bool blnDoResumeLayout, CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
             if (blnDoResumeLayout)
             {
@@ -169,18 +168,8 @@ namespace Chummer
             {
                 RightToLeft eIntoRightToLeft = RightToLeft.No;
                 string strKey = strIntoLanguage.ToUpperInvariant();
-                if (blnSync)
-                {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                        eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
-                }
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
+                    eIntoRightToLeft = objLanguageData.IsRightToLeftScript ? RightToLeft.Yes : RightToLeft.No;
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
@@ -254,24 +243,28 @@ namespace Chummer
             if (blnSync)
             {
                 // ReSharper disable once MethodHasAsyncOverload
-                objNewLanguage = s_DicLanguageData.AddCheapOrGet(strKey, x => new LanguageData(strLanguage), token);
+                objNewLanguage = s_DicLanguageData.GetOrAdd(strKey, x => new LanguageData(strLanguage));
             }
             else
             {
                 objNewLanguage = await s_DicLanguageData
-                                       .AddCheapOrGetAsync(
-                                           strKey, x => Task.Run(() => new LanguageData(strLanguage), token), token)
-                                       .ConfigureAwait(false);
+                    .GetOrAddAsync(
+                        strKey, x => LanguageData.CreateAsync(strLanguage, token), token)
+                    .ConfigureAwait(false);
             }
 
             if (!string.IsNullOrEmpty(objNewLanguage.ErrorMessage))
             {
                 if (!objNewLanguage.ErrorAlreadyShown)
                 {
-                    Program.ShowScrollableMessageBox(
-                        "Language with code " + strLanguage + " could not be loaded for the following reasons:" +
-                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage, "Cannot Load Language",
-                        MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    string strMessage = "Language with code " + strLanguage +
+                                        " could not be loaded for the following reasons:" +
+                                        Environment.NewLine + Environment.NewLine + objNewLanguage.ErrorMessage;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Program.ShowScrollableMessageBox(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    else
+                        await Program.ShowScrollableMessageBoxAsync(strMessage, "Cannot Load Language", MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                     objNewLanguage.ErrorAlreadyShown = true;
                 }
 
@@ -284,8 +277,8 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
         private static void UpdateControls(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
@@ -486,11 +479,11 @@ namespace Chummer
         /// <summary>
         /// Recursive method to translate all of the controls in a Form or UserControl.
         /// </summary>
-        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="objParent">Control container to translate.</param>
+        /// <param name="strIntoLanguage">Language into which the control should be translated</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage" /> is a right-to-left language</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        private static async ValueTask UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
+        private static async Task UpdateControlsAsync(Control objParent, string strIntoLanguage, RightToLeft eIntoRightToLeft,
                                            CancellationToken token = default)
         {
             if (objParent == null)
@@ -532,8 +525,9 @@ namespace Chummer
                 MenuStrip objMenuStrip = await frmForm.DoThreadSafeFuncAsync((x, y) => x.MainMenuStrip, token).ConfigureAwait(false);
                 if (objMenuStrip != null)
                 {
-                    List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                    foreach (ToolStripItem tssItem in await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                    ToolStripItemCollection lstItems = await objMenuStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                    List<ValueTuple<ToolStripItem, string>> lstTagsToUse = new List<ValueTuple<ToolStripItem, string>>(lstItems.Count);
+                    foreach (ToolStripItem tssItem in lstItems)
                         lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(objMenuStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                     foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                     {
@@ -585,8 +579,9 @@ namespace Chummer
                         }
                     case ToolStrip tssStrip:
                         {
-                            List<Tuple<ToolStripItem, string>> lstTagsToUse = new List<Tuple<ToolStripItem, string>>();
-                            foreach (ToolStripItem tssItem in await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false))
+                            ToolStripItemCollection lstItems = await tssStrip.DoThreadSafeFuncAsync((x, y) => x.Items, token).ConfigureAwait(false);
+                            List<ValueTuple<ToolStripItem, string>> lstTagsToUse = new List<ValueTuple<ToolStripItem, string>>(lstItems.Count);
+                            foreach (ToolStripItem tssItem in lstItems)
                                 lstTagsToUse.AddRange(await TranslateToolStripItemsRecursivelyPrepAsync(tssStrip, tssItem, strIntoLanguage, eIntoRightToLeft, token).ConfigureAwait(false));
                             foreach ((ToolStripItem objControl, string strTag) in lstTagsToUse)
                             {
@@ -597,7 +592,7 @@ namespace Chummer
                         }
                     case ListView lstList:
                         {
-                            List<Tuple<ColumnHeader, string>> lstTagsToUse = new List<Tuple<ColumnHeader, string>>();
+                            List<ValueTuple<ColumnHeader, string>> lstTagsToUse = new List<ValueTuple<ColumnHeader, string>>(await lstList.DoThreadSafeFuncAsync(x => x.Columns.Count, token).ConfigureAwait(false));
                             await lstList.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (ColumnHeader objHeader in x.Columns)
@@ -606,7 +601,7 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
                                                                              && !strControlTag.IsGuid()
                                                                              && !File.Exists(strControlTag))
-                                        lstTagsToUse.Add(new Tuple<ColumnHeader, string>(objHeader, strControlTag));
+                                        lstTagsToUse.Add(new ValueTuple<ColumnHeader, string>(objHeader, strControlTag));
                                     else if (objHeader.Text.StartsWith('['))
                                         objHeader.Text = string.Empty;
                                 }
@@ -621,7 +616,7 @@ namespace Chummer
                         }
                     case TabControl objTabControl:
                         {
-                            List<Tuple<TabPage, string>> lstTagsToUse = new List<Tuple<TabPage, string>>();
+                            List<ValueTuple<TabPage, string>> lstTagsToUse = new List<ValueTuple<TabPage, string>>(await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabCount, token).ConfigureAwait(false));
                             foreach (TabPage tabPage in await objTabControl.DoThreadSafeFuncAsync((x, y) => x.TabPages, token).ConfigureAwait(false))
                             {
                                 await tabPage.DoThreadSafeAsync((x, y) =>
@@ -631,7 +626,7 @@ namespace Chummer
                                                                              && !strControlTag.IsGuid()
                                                                              && !File.Exists(strControlTag))
                                     {
-                                        lstTagsToUse.Add(new Tuple<TabPage, string>(x, strControlTag));
+                                        lstTagsToUse.Add(new ValueTuple<TabPage, string>(x, strControlTag));
                                     }
                                     else if (x.Text.StartsWith('['))
                                         x.Text = string.Empty;
@@ -680,7 +675,7 @@ namespace Chummer
 
                     case TreeView treTree:
                         {
-                            List<Tuple<TreeNode, string>> lstTagsToUse = new List<Tuple<TreeNode, string>>();
+                            List<ValueTuple<TreeNode, string>> lstTagsToUse = new List<ValueTuple<TreeNode, string>>(await treTree.DoThreadSafeFuncAsync(x => x.Nodes.Count, token).ConfigureAwait(false));
                             await treTree.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (TreeNode objNode in x.Nodes)
@@ -691,7 +686,7 @@ namespace Chummer
                                         if (!string.IsNullOrEmpty(strControlTag)
                                             && strControlTag.StartsWith("Node_", StringComparison.Ordinal))
                                         {
-                                            lstTagsToUse.Add(new Tuple<TreeNode, string>(objNode, strControlTag));
+                                            lstTagsToUse.Add(new ValueTuple<TreeNode, string>(objNode, strControlTag));
                                         }
                                         else if (objNode.Text.StartsWith('['))
                                             objNode.Text = string.Empty;
@@ -710,7 +705,7 @@ namespace Chummer
                         }
                     case DataGridView objDataGridView:
                         {
-                            List<Tuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<Tuple<DataGridViewTextBoxColumn, string>>();
+                            List<ValueTuple<DataGridViewTextBoxColumn, string>> lstTagsToUse = new List<ValueTuple<DataGridViewTextBoxColumn, string>>(await objDataGridView.DoThreadSafeFuncAsync(x => x.ColumnCount, token).ConfigureAwait(false));
                             await objDataGridView.DoThreadSafeAsync((x, y) =>
                             {
                                 foreach (DataGridViewTextBoxColumn objColumn in x.Columns)
@@ -718,7 +713,7 @@ namespace Chummer
                                     if (objColumn is DataGridViewTextBoxColumnTranslated objTranslatedColumn
                                         && !string.IsNullOrWhiteSpace(objTranslatedColumn.TranslationTag))
                                     {
-                                        lstTagsToUse.Add(new Tuple<DataGridViewTextBoxColumn, string>(objColumn, objTranslatedColumn.TranslationTag));
+                                        lstTagsToUse.Add(new ValueTuple<DataGridViewTextBoxColumn, string>(objColumn, objTranslatedColumn.TranslationTag));
                                     }
                                 }
                             }, token).ConfigureAwait(false);
@@ -785,12 +780,12 @@ namespace Chummer
         /// <param name="strIntoLanguage">Language into which the ToolStripItem and all dropdown items should be translated.</param>
         /// <param name="eIntoRightToLeft">Whether <paramref name="strIntoLanguage"/> uses right-to-left script or left-to-right. If left at Inherit, then a loading function will be used to set the value.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public static async Task<List<Tuple<ToolStripItem, string>>> TranslateToolStripItemsRecursivelyPrepAsync(this ToolStrip tssBase, ToolStripItem tssItem, string strIntoLanguage = "",
+        public static async Task<List<ValueTuple<ToolStripItem, string>>> TranslateToolStripItemsRecursivelyPrepAsync(this ToolStrip tssBase, ToolStripItem tssItem, string strIntoLanguage = "",
                                                                                                                  RightToLeft eIntoRightToLeft = RightToLeft.Inherit,
                                                                                                                  CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<Tuple<ToolStripItem, string>> lstReturn = new List<Tuple<ToolStripItem, string>>();
+            List<ValueTuple<ToolStripItem, string>> lstReturn = new List<ValueTuple<ToolStripItem, string>>(byte.MaxValue);
             if (tssItem == null)
                 return lstReturn;
             if (string.IsNullOrEmpty(strIntoLanguage))
@@ -811,7 +806,7 @@ namespace Chummer
                 string strControlTag = tssItem.Tag?.ToString();
                 if (!string.IsNullOrEmpty(strControlTag) && !int.TryParse(strControlTag, out int _)
                                                          && !strControlTag.IsGuid() && !File.Exists(strControlTag))
-                    lstReturn.Add(new Tuple<ToolStripItem, string>(tssItem, strControlTag));
+                    lstReturn.Add(new ValueTuple<ToolStripItem, string>(tssItem, strControlTag));
                 else if (tssItem.Text.StartsWith('['))
                     tssItem.Text = string.Empty;
             }, token).ConfigureAwait(false);
@@ -942,7 +937,7 @@ namespace Chummer
         private static async Task<string> GetStringCoreAsync(bool blnSync, string strKey, string strLanguage,
                                                              bool blnReturnError, CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return strKey;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
@@ -954,60 +949,37 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strLanguageKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
+                    && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
                 {
-                    if (LoadedLanguageData.TryGetValue(strLanguageKey, out LanguageData objLanguageData)
-                        && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strLanguageKey, token).ConfigureAwait(false);
-                    if (blnSuccess && objLanguageData.TranslatedStrings.TryGetValue(strKey, out strReturn))
-                    {
-                        return strReturn;
-                    }
+                    return strReturn;
                 }
             }
 
-            if (blnSync)
-            {
-                // ReSharper disable once MethodHasAsyncOverload
-                if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn, token))
-                    return strReturn;
-            }
-            else
-            {
-                bool blnSuccess;
-                (blnSuccess, strReturn)
-                    = await s_DicEnglishStrings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                if (blnSuccess)
-                    return strReturn;
-            }
+            if (s_DicEnglishStrings.TryGetValue(strKey, out strReturn))
+                return strReturn;
 
             return !blnReturnError ? string.Empty : strKey + " not found; check language file for string";
         }
 
-        private static readonly char[] s_CurlyBrackets = "{}".ToCharArray();
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_CurlyBrackets = new[] { '{', '}' };
 
         /// <summary>
         /// Processes a compound string that contains both plaintext and references to localized strings
         /// </summary>
         /// <param name="strInput">Input string to process.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strLanguage">Language into which to translate the compound string.</param>
-        /// <param name="blnUseTranslateExtra">Whether to use TranslateExtra() instead of GetString() for translating localized strings.</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
+        /// <param name="blnUseTranslateExtra">Whether to use <see cref="TranslateExtraAsync(string, string, Character, string, CancellationToken)"/> instead of <see cref="GetStringAsync(string, bool, CancellationToken)"/> for translating localized strings.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public static async ValueTask<string> ProcessCompoundString(string strInput, string strLanguage = "",
+        public static async Task<string> ProcessCompoundString(string strInput, string strLanguage = "",
                                                                     Character objCharacter = null,
                                                                     bool blnUseTranslateExtra = false,
                                                                     CancellationToken token = default)
         {
-            if (Utils.IsDesignerMode || string.IsNullOrEmpty(strInput))
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio || string.IsNullOrEmpty(strInput))
                 return strInput;
             // Exit out early if we don't have a pair of curly brackets, which is what would signify localized strings
             int intStartPosition = strInput.IndexOf('{');
@@ -1020,10 +992,10 @@ namespace Chummer
             // strInput will get split up based on curly brackets and put into this list as a string-bool Tuple.
             // String value in Tuple will be a section of strInput either enclosed in curly brackets or between sets of enclosed curly brackets
             // Bool value in Tuple is a flag for whether the item was enclosed in curly brackets (True) or between sets of enclosed curly brackets (False)
-            List<Tuple<string, bool>> lstStringWithCompoundsSplit = new List<Tuple<string, bool>>(5)
+            List<ValueTuple<string, bool>> lstStringWithCompoundsSplit = new List<ValueTuple<string, bool>>(5)
             {
                 // Start out with part between start of string and the first set of enclosed curly brackets already added to the list
-                new Tuple<string, bool>(strInput.Substring(0, intStartPosition), false)
+                new ValueTuple<string, bool>(strInput.Substring(0, intStartPosition), false)
             };
 
             // Current bracket level. This needs to be tracked so that this method can be performed recursively on curly bracket sets inside of curly bracket sets
@@ -1041,7 +1013,7 @@ namespace Chummer
                         {
                             // End of area between sets of curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to False
                             lstStringWithCompoundsSplit.Add(
-                                new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
+                                new ValueTuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), false));
                             // Tracks the start of the top-level curly bracket opening to know where to start the substring when this item will be closed by a closing curly bracket
                             intStartPosition = i;
                         }
@@ -1059,7 +1031,7 @@ namespace Chummer
                             {
                                 // End of area enclosed by curly brackets, push it to lstStringWithCompoundsSplit with Item2 set to True
                                 lstStringWithCompoundsSplit.Add(
-                                    new Tuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
+                                    new ValueTuple<string, bool>(strInput.Substring(intStartPosition + 1, i - 1), true));
                                 // Tracks the start of the area between curly bracket sets to know where to start the substring when the next set of curly brackets is encountered
                                 intStartPosition = i;
                             }
@@ -1071,16 +1043,16 @@ namespace Chummer
             }
 
             // End with part between the last set of enclosed curly brackets and the end of the string. This will also catch cases where there are opening curly brackets without matching closing brackets
-            lstStringWithCompoundsSplit.Add(new Tuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
+            lstStringWithCompoundsSplit.Add(new ValueTuple<string, bool>(strInput.Substring(intEndPosition + 1), false));
 
             // Start building the return value.
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strInput.Length;
                 if (sbdReturn.Capacity < intNewCapacity)
                     sbdReturn.Capacity = intNewCapacity;
-                foreach (Tuple<string, bool> objLoop in lstStringWithCompoundsSplit)
+                foreach (ValueTuple<string, bool> objLoop in lstStringWithCompoundsSplit)
                 {
                     string strLoop = objLoop.Item1;
                     if (string.IsNullOrEmpty(strLoop))
@@ -1154,21 +1126,9 @@ namespace Chummer
             if (blnLanguageLoaded)
             {
                 string strKey = strLanguage.ToUpperInvariant();
-                if (blnSync)
+                if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
                 {
-                    if (LoadedLanguageData.TryGetValue(strKey, out LanguageData objLanguageData))
-                    {
-                        return objLanguageData.DataDocument;
-                    }
-                }
-                else
-                {
-                    (bool blnSuccess, LanguageData objLanguageData)
-                        = await LoadedLanguageData.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        return objLanguageData.DataDocument;
-                    }
+                    return objLanguageData.DataDocument;
                 }
             }
 
@@ -1180,86 +1140,83 @@ namespace Chummer
         /// </summary>
         /// <param name="strLanguage">Language to check.</param>
         /// <param name="token">Cancellation token to use.</param>
-        public static async ValueTask VerifyStrings(string strLanguage, CancellationToken token = default)
+        public static async Task VerifyStrings(string strLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strMessage;
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setEnglishKeys))
-            using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setLanguageKeys))
             {
                 // Potentially expensive checks that can (and therefore should) be parallelized.
-                await Task.WhenAll(
-                    Task.Run(async () =>
-                    {
-                        // Load the English version.
-                        string strFilePath
-                            = Path.Combine(Utils.GetStartupPath, "lang", GlobalSettings.DefaultLanguage + ".xml");
-                        try
-                        {
-                            XPathDocument objEnglishDocument = await XPathDocumentExtensions
-                                                                     .LoadStandardFromFileAsync(
-                                                                         strFilePath, token: token)
-                                                                     .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objEnglishDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
-                            {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
-                                if (!string.IsNullOrEmpty(strKey))
-                                    setEnglishKeys.Add(strKey);
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            //swallow this
-                        }
-                        catch (XmlException)
-                        {
-                            //swallow this
-                        }
-                    }, token),
-                    Task.Run(async () =>
-                    {
-                        // Load the selected language version.
-                        string strLangPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
-                        try
-                        {
-                            XPathDocument objLanguageDocument = await XPathDocumentExtensions
-                                                                      .LoadStandardFromFileAsync(
-                                                                          strLangPath, token: token)
-                                                                      .ConfigureAwait(false);
-                            foreach (XPathNavigator objNode in await objLanguageDocument.CreateNavigator()
-                                         .SelectAndCacheExpressionAsync("/chummer/strings/string", token)
-                                         .ConfigureAwait(false))
-                            {
-                                string strKey = (await objNode.SelectSingleNodeAndCacheExpressionAsync("key", token)
-                                                              .ConfigureAwait(false))?.Value;
-                                if (!string.IsNullOrEmpty(strKey))
-                                    setLanguageKeys.Add(strKey);
-                            }
-                        }
-                        catch (IOException)
-                        {
-                            //swallow this
-                        }
-                        catch (XmlException)
-                        {
-                            //swallow this
-                        }
-                    }, token)).ConfigureAwait(false);
+                await Task.WhenAll(LoadEnglishStrings(), LoadAltLanguageStrings()).ConfigureAwait(false);
 
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                async Task LoadEnglishStrings()
+                {
+                    // Load the English version.
+                    string strFilePath
+                        = Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml");
+                    try
+                    {
+                        XPathDocument objEnglishDocument = await XPathDocumentExtensions
+                                                                 .LoadStandardFromFileAsync(
+                                                                     strFilePath, token: token)
+                                                                 .ConfigureAwait(false);
+                        foreach (XPathNavigator objNode in objEnglishDocument.CreateNavigator()
+                                     .SelectAndCacheExpression("/chummer/strings/string", token))
+                        {
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                setEnglishKeys.Add(strKey);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        //swallow this
+                    }
+                    catch (XmlException)
+                    {
+                        //swallow this
+                    }
+                }
+
+                async Task LoadAltLanguageStrings()
+                {
+                    // Load the selected language version.
+                    string strLangPath = Path.Combine(Utils.GetLanguageFolderPath, "lang", strLanguage + ".xml");
+                    try
+                    {
+                        XPathDocument objLanguageDocument = await XPathDocumentExtensions
+                                                                  .LoadStandardFromFileAsync(
+                                                                      strLangPath, token: token)
+                                                                  .ConfigureAwait(false);
+                        foreach (XPathNavigator objNode in objLanguageDocument.CreateNavigator()
+                                     .SelectAndCacheExpression("/chummer/strings/string", token))
+                        {
+                            string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                            if (!string.IsNullOrEmpty(strKey))
+                                setLanguageKeys.Add(strKey);
+                        }
+                    }
+                    catch (IOException)
+                    {
+                        //swallow this
+                    }
+                    catch (XmlException)
+                    {
+                        //swallow this
+                    }
+                }
+
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdMissingMessage))
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                               out StringBuilder sbdUnusedMessage))
                 {
-                    // Potentially expensive checks that can (and therefore should) be parallelized. Normally, this would just be a Parallel.Invoke,
-                    // but we want to allow UI messages to happen, just in case this is called on the Main Thread and another thread wants to show a message box.
+                    // Potentially expensive checks that can (and therefore should) be parallelized.
                     await Task.WhenAll(
-                        Task.Run(() =>
+                        TaskExtensions.RunWithoutEC(() =>
                         {
                             // Check for strings that are in the English file but not in the selected language file.
                             foreach (string strKey in setEnglishKeys)
@@ -1268,7 +1225,7 @@ namespace Chummer
                                     sbdMissingMessage.Append("Missing String: ").AppendLine(strKey);
                             }
                         }, token),
-                        Task.Run(() =>
+                        TaskExtensions.RunWithoutEC(() =>
                         {
                             // Check for strings that are not in the English file but are in the selected language file (someone has put in Keys that they shouldn't have which are ignored).
                             foreach (string strKey in setLanguageKeys)
@@ -1278,173 +1235,172 @@ namespace Chummer
                             }
                         }, token)).ConfigureAwait(false);
 
-                    strMessage = (sbdMissingMessage + sbdUnusedMessage.ToString()).TrimEndOnce(Environment.NewLine);
+                    strMessage = sbdMissingMessage.Append(sbdUnusedMessage).ToString().TrimEndOnce(Environment.NewLine);
                 }
             }
 
             // Display the message.
-            Program.ShowScrollableMessageBox(!string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
-                                             "Language File Contents", MessageBoxButtons.OK,
-                                             MessageBoxIcon.Information);
+            await Program.ShowScrollableMessageBoxAsync(
+                !string.IsNullOrEmpty(strMessage) ? strMessage : "Language file is OK.",
+                "Language File Contents", MessageBoxButtons.OK,
+                MessageBoxIcon.Information, token: token).ConfigureAwait(false);
         }
 
         // List of arrays for XPaths to search for extras. Item1 is Document, Item2 is XPath, Item3 is the Name getter, Item4 is the Translate getter.
         // List index indicates priority. Priority tries to avoid issues where an English word has multiple translations, and an unofficial one might get preference over an official one
         private static readonly
             IReadOnlyList<IReadOnlyList<
-                Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>> s_LstAXPathsToSearch
+                ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>>> s_LstAXPathsToSearch
                 =
                 new[]
                 {
                     new[]
                     {
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "programs.xml", "/chummer/categories/category",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "programs.xml", Utils.TryCacheExpression("/chummer/categories/category"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "skills.xml", "/chummer/skillgroups/name",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "skills.xml", Utils.TryCacheExpression("/chummer/skillgroups/name"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "skills.xml", "/chummer/categories/category",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "skills.xml", Utils.TryCacheExpression("/chummer/categories/category"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "spells.xml", "/chummer/categories/category",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "spells.xml", Utils.TryCacheExpression("/chummer/categories/category"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "weapons.xml", "/chummer/categories/category",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "weapons.xml", Utils.TryCacheExpression("/chummer/categories/category"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "armor.xml", "/chummer/armors/armor",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "armor.xml", Utils.TryCacheExpression("/chummer/armors/armor"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "armor.xml", "/chummer/mods/mod",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "armor.xml", Utils.TryCacheExpression("/chummer/mods/mod"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "cyberware.xml", "/chummer/cyberwares/cyberware",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "cyberware.xml", Utils.TryCacheExpression("/chummer/cyberwares/cyberware"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "critterpowers.xml", "/chummer/powers/power",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "critterpowers.xml", Utils.TryCacheExpression("/chummer/powers/power"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "echoes.xml", "/chummer/echoes/echo",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "echoes.xml", Utils.TryCacheExpression("/chummer/echoes/echo"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "mentors.xml", "/chummer/mentors/mentor",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "mentors.xml", Utils.TryCacheExpression("/chummer/mentors/mentor"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "metamagic.xml", "/chummer/metamagics/metamagic",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "metamagic.xml", Utils.TryCacheExpression("/chummer/metamagics/metamagic"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "metatypes.xml", "/chummer/metatypes/metatype",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "metatypes.xml", Utils.TryCacheExpression("/chummer/metatypes/metatype"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "metatypes.xml", "/chummer/metatypes/metatype/metavariants/metavariant",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "metatypes.xml", Utils.TryCacheExpression("/chummer/metatypes/metatype/metavariants/metavariant"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "paragons.xml", "/chummer/mentors/mentor",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "paragons.xml", Utils.TryCacheExpression("/chummer/mentors/mentor"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "powers.xml", "/chummer/powers/power",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "powers.xml", Utils.TryCacheExpression("/chummer/powers/power"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "programs.xml", "/chummer/programs/program",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "programs.xml", Utils.TryCacheExpression("/chummer/programs/program"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "qualities.xml", "/chummer/qualities/quality",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "qualities.xml", Utils.TryCacheExpression("/chummer/qualities/quality"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "ranges.xml", "/chummer/ranges/range",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "ranges.xml", Utils.TryCacheExpression("/chummer/ranges/range"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "skills.xml", "/chummer/skills/skill",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "skills.xml", Utils.TryCacheExpression("/chummer/skills/skill"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "spells.xml", "/chummer/spells/spell",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "spells.xml", Utils.TryCacheExpression("/chummer/spells/spell"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "streams.xml", "/chummer/traditions/tradition[name != 'Default']",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "streams.xml", Utils.TryCacheExpression("/chummer/traditions/tradition[name != 'Default']"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "traditions.xml", "/chummer/traditions/tradition[name != 'Custom']",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "traditions.xml", Utils.TryCacheExpression("/chummer/traditions/tradition[name != 'Custom']"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "weapons.xml", "/chummer/weapons/weapon",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "weapons.xml", Utils.TryCacheExpression("/chummer/weapons/weapon"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
                     },
                     new[]
                     {
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/contacts/contact",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/contacts/contact"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/genders/gender",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/genders/gender"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/ages/age",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/ages/age"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/personallives/personallife",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/personallives/personallife"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/types/type",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/types/type"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/preferredpayments/preferredpayment",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/preferredpayments/preferredpayment"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "contacts.xml", "/chummer/hobbiesvices/hobbyvice",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "contacts.xml", Utils.TryCacheExpression("/chummer/hobbiesvices/hobbyvice"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "licenses.xml", "/chummer/licenses/license",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "licenses.xml", Utils.TryCacheExpression("/chummer/licenses/license"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "skills.xml", "/chummer/skills/skill/specs/spec",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "skills.xml", Utils.TryCacheExpression("/chummer/skills/skill/specs/spec"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "skills.xml", "/chummer/knowledgeskills/skill/specs/spec",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "skills.xml", Utils.TryCacheExpression("/chummer/knowledgeskills/skill/specs/spec"),
                             x => x.Value, x => x.SelectSingleNodeAndCacheExpression("@translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "actions.xml", "/chummer/actions/action",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "actions.xml", Utils.TryCacheExpression("/chummer/actions/action"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "mentors.xml", "/chummer/mentors/mentor/choices/choice",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "mentors.xml", Utils.TryCacheExpression("/chummer/mentors/mentor/choices/choice"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value),
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "paragons.xml", "/chummer/mentors/mentor/choices/choice",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "paragons.xml", Utils.TryCacheExpression("/chummer/mentors/mentor/choices/choice"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
                     },
                     new[]
                     {
-                        new Tuple<string, string, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
-                            "references.xml", "/chummer/rules/rule",
+                        new ValueTuple<string, XPathExpression, Func<XPathNavigator, string>, Func<XPathNavigator, string>>(
+                            "references.xml", Utils.TryCacheExpression("/chummer/rules/rule"),
                             x => x.SelectSingleNodeAndCacheExpression("name")?.Value,
                             x => x.SelectSingleNodeAndCacheExpression("translate")?.Value)
                     }
                 };
-
-        private static readonly ExtraFileSpecifierPattern s_RgxExtraFileSpecifierExpression = new ExtraFileSpecifierPattern();
 
         public static string MAGAdeptString(string strLanguage = "", bool blnLong = false,
                                             CancellationToken token = default)
@@ -1453,7 +1409,7 @@ namespace Chummer
                 strLanguage = GlobalSettings.Language;
             return GetString(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                              token: token) + GetString("String_Space", strLanguage, token: token)
-                                           + '(' + GetString("String_DescAdept", strLanguage, token: token) + ')';
+                                           + "(" + GetString("String_DescAdept", strLanguage, token: token) + ")";
         }
 
         public static async Task<string> MAGAdeptStringAsync(string strLanguage = "", bool blnLong = false,
@@ -1464,16 +1420,16 @@ namespace Chummer
             return await GetStringAsync(blnLong ? "String_AttributeMAGLong" : "String_AttributeMAGShort", strLanguage,
                                         token: token).ConfigureAwait(false)
                    + await GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
-                   + '(' + await GetStringAsync(
-                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ')';
+                   + "(" + await GetStringAsync(
+                       "String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
         }
 
         /// <summary>
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1485,21 +1441,14 @@ namespace Chummer
                 : Utils.SafelyRunSynchronously(
                     () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token),
                     token);
-            /*
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            : Utils.RunWithoutThreadLock(
-                () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile));
-            */
         }
 
         /// <summary>
         /// Attempt to translate any Extra text for an item.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1519,8 +1468,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strIntoLanguage">Language into which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         private static async Task<string> TranslateExtraCoreAsync(bool blnSync, string strExtra, string strIntoLanguage,
@@ -1697,20 +1646,35 @@ namespace Chummer
 
                     default:
                         strReturn = strExtra;
-                        Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
-                        if (objFileSpecifier.Success)
+                        if (strReturn.StartsWith('['))
                         {
-                            strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
-                            if (string.IsNullOrEmpty(strPreferFile))
-                                strPreferFile = objFileSpecifier.Value.Trim('[', ']');
+                            int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2, StringComparison.Ordinal);
+                            if (intFileSpecifierIndex >= 0)
+                            {
+                                string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
+                                if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
+                                {
+                                    strPreferFile = strSnippet.Trim('[', ']');
+                                    strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
+                                }
+                            }
                         }
+                        strReturn = strReturn.Trim();
 
                         string strTemp = string.Empty;
                         string strExtraNoQuotes = strReturn.FastEscape('\"');
-                        using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+                        IReadOnlyCollection<string> lstCustomDataPaths = null;
+                        if (objCharacter != null)
+                        {
+                            if (blnSync)
+                                lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                            else
+                                lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+                        }
+                        using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
                         {
                             bool blnEnglishLanguageLoaded;
-                            CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                            CancellationToken objFoundItemToken = objFoundItemSource.Token;
                             if (!string.IsNullOrEmpty(strPreferFile))
                             {
                                 if (string.Equals(strPreferFile, "lang", StringComparison.OrdinalIgnoreCase))
@@ -1722,22 +1686,9 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                     if (blnEnglishLanguageLoaded)
                                     {
-                                        bool blnSuccess;
-                                        LanguageData objEnglishLanguageData;
-                                        if (blnSync)
-                                        {
-                                            blnSuccess = LoadedLanguageData.TryGetValue(
-                                                GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                                out objEnglishLanguageData);
-                                        }
-                                        else
-                                        {
-                                            (blnSuccess, objEnglishLanguageData)
-                                                = await LoadedLanguageData.TryGetValueAsync(
-                                                                              GlobalSettings.DefaultLanguage
-                                                                                  .ToUpperInvariant(), token)
-                                                                          .ConfigureAwait(false);
-                                        }
+                                        bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                            GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                            out LanguageData objEnglishLanguageData);
 
                                         token.ThrowIfCancellationRequested();
                                         if (blnSuccess)
@@ -1771,24 +1722,21 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                else if (blnSync)
-                                {
-                                    strTemp = FindString(strPreferFile, token);
-                                }
                                 else
                                 {
                                     using (CancellationTokenSource objCombinedCancellationTokenSource
                                            = CancellationTokenSource.CreateLinkedTokenSource(
-                                               objCancellationToken, token))
+                                               objFoundItemToken, token))
                                     {
                                         CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                                         try
                                         {
-                                            strTemp = await Task.Run(
-                                                () => FindString(strPreferFile, objCombinedToken),
-                                                objCombinedToken).ConfigureAwait(false);
+                                            strTemp = blnSync
+                                                ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                                : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                                    .ConfigureAwait(false);
                                         }
-                                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                                        catch (OperationCanceledException) when (!token.IsCancellationRequested)
                                         {
                                             //swallow this
                                         }
@@ -1799,7 +1747,7 @@ namespace Chummer
                                     strReturn = strTemp;
                             }
 
-                            if (objCancellationToken.IsCancellationRequested)
+                            if (objFoundItemToken.IsCancellationRequested)
                                 break;
 
                             // Look through loaded strings first because that's faster than trawling through the XML data
@@ -1809,22 +1757,9 @@ namespace Chummer
                                 : await LoadLanguageAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false);
                             if (blnEnglishLanguageLoaded)
                             {
-                                bool blnSuccess;
-                                LanguageData objEnglishLanguageData;
-                                if (blnSync)
-                                {
-                                    blnSuccess = LoadedLanguageData.TryGetValue(
-                                        GlobalSettings.DefaultLanguage.ToUpperInvariant(),
-                                        out objEnglishLanguageData);
-                                }
-                                else
-                                {
-                                    (blnSuccess, objEnglishLanguageData)
-                                        = await LoadedLanguageData.TryGetValueAsync(
-                                                                      GlobalSettings.DefaultLanguage
-                                                                          .ToUpperInvariant(), token)
-                                                                  .ConfigureAwait(false);
-                                }
+                                bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                    GlobalSettings.DefaultLanguage.ToUpperInvariant(),
+                                    out LanguageData objEnglishLanguageData);
 
                                 token.ThrowIfCancellationRequested();
                                 if (blnSuccess)
@@ -1857,52 +1792,47 @@ namespace Chummer
                                 }
                             }
 
-                            if (blnSync)
+                            using (CancellationTokenSource objCombinedCancellationTokenSource
+                                   = CancellationTokenSource.CreateLinkedTokenSource(
+                                       objFoundItemToken, token))
                             {
-                                strTemp = FindString(innerToken: token);
-                            }
-                            else
-                            {
-                                using (CancellationTokenSource objCombinedCancellationTokenSource
-                                       = CancellationTokenSource.CreateLinkedTokenSource(
-                                           objCancellationToken, token))
+                                CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                                try
                                 {
-                                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                                    try
-                                    {
-                                        strTemp = await Task.Run(
-                                            () => FindString(innerToken: objCombinedToken),
-                                            objCombinedToken).ConfigureAwait(false);
-                                    }
-                                    catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                                    {
-                                        //swallow this
-                                    }
+                                    strTemp = blnSync
+                                        ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                                        : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
+                                }
+                                catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                                {
+                                    //swallow this
                                 }
                             }
 
-                            string FindString(string strPreferredFileName = "",
-                                              CancellationToken innerToken = default)
+                            string FindString(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
                             {
+                                innerToken.ThrowIfCancellationRequested();
                                 string strInnerReturn = string.Empty;
-                                foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                                foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                              Func<XPathNavigator, string>>> aobjPaths
                                          in s_LstAXPathsToSearch)
                                 {
-                                    IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                                    innerToken.ThrowIfCancellationRequested();
+                                    IEnumerable<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                         Func<XPathNavigator, string>>> lstToSearch
                                         = !string.IsNullOrEmpty(strPreferredFileName)
                                             ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
-                                                                  StringComparison.OrdinalIgnoreCase))
+                                                StringComparison.OrdinalIgnoreCase))
                                             : aobjPaths;
                                     Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                                     {
                                         if (objState.ShouldExitCurrentIteration)
-                                            return string.Empty;
+                                            return x;
                                         if (innerToken.IsCancellationRequested)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
                                         XPathNavigator xmlDocument;
@@ -1910,43 +1840,52 @@ namespace Chummer
                                         {
                                             xmlDocument = XmlManager.LoadXPath(
                                                 objXPathPair.Item1,
-                                                objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                                lstInnerCustomDataPaths,
                                                 strIntoLanguage, token: innerToken);
                                         }
                                         catch (OperationCanceledException)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
                                         if (objState.ShouldExitCurrentIteration)
-                                            return string.Empty;
+                                            return x;
                                         if (innerToken.IsCancellationRequested)
                                         {
                                             objState.Stop();
-                                            return string.Empty;
+                                            return x;
                                         }
 
-                                        foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                                     objXPathPair.Item2))
+                                        try
                                         {
-                                            if (objState.ShouldExitCurrentIteration)
-                                                return string.Empty;
-                                            if (innerToken.IsCancellationRequested)
+                                            foreach (XPathNavigator objNode in xmlDocument.Select(
+                                                         objXPathPair.Item2))
                                             {
-                                                objState.Stop();
-                                                return string.Empty;
-                                            }
+                                                if (objState.ShouldExitCurrentIteration)
+                                                    return x;
+                                                if (innerToken.IsCancellationRequested)
+                                                {
+                                                    objState.Stop();
+                                                    return x;
+                                                }
 
-                                            if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
-                                                continue;
-                                            string strTranslate = objXPathPair.Item4(objNode);
-                                            if (string.IsNullOrEmpty(strTranslate))
-                                                continue;
-                                            return strTranslate;
+                                                if (objXPathPair.Item3(objNode) != strExtraNoQuotes)
+                                                    continue;
+                                                string strTranslate = objXPathPair.Item4(objNode);
+                                                if (string.IsNullOrEmpty(strTranslate))
+                                                    continue;
+                                                objState.Stop();
+                                                return strTranslate;
+                                            }
+                                        }
+                                        catch (OperationCanceledException)
+                                        {
+                                            objState.Stop();
+                                            return x;
                                         }
 
-                                        return string.Empty;
+                                        return x;
                                     }, strFound =>
                                     {
                                         if (innerToken.IsCancellationRequested)
@@ -1955,13 +1894,80 @@ namespace Chummer
                                             return;
                                         strInnerReturn = strFound;
                                         // ReSharper disable once AccessToDisposedClosure
-                                        objCancellationTokenSource.Cancel(false);
+                                        objFoundItemSource.Cancel(false);
                                     });
                                     if (!string.IsNullOrEmpty(strInnerReturn))
                                         return strInnerReturn;
                                 }
 
                                 return strInnerReturn;
+                            }
+
+                            async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
+                            {
+                                innerToken.ThrowIfCancellationRequested();
+                                foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                             Func<XPathNavigator, string>>> aobjPaths
+                                         in s_LstAXPathsToSearch)
+                                {
+                                    innerToken.ThrowIfCancellationRequested();
+                                    IEnumerable<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                        Func<XPathNavigator, string>>> lstToSearch
+                                        = !string.IsNullOrEmpty(strPreferredFileName)
+                                            ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                                StringComparison.OrdinalIgnoreCase))
+                                            : aobjPaths;
+                                    string strInnerReturn = string.Empty;
+                                    await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
+                                    {
+                                        if (objSource.IsCancellationRequested)
+                                            return;
+                                        string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                                    tupLoop.Item4, innerToken).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoop))
+                                        {
+                                            objSource.Cancel(false);
+                                            strInnerReturn = strLoop;
+                                        }
+                                    }, innerToken).ConfigureAwait(false);
+                                    if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                                        return strInnerReturn;
+                                }
+
+                                return string.Empty;
+
+                                async Task<string> FetchAndReturnString(string strDoc, IReadOnlyCollection<string> lstInnerCustomDataPaths2,
+                                        XPathExpression xprExpression,
+                                        Func<XPathNavigator, string> funcEnglish,
+                                        Func<XPathNavigator, string> funcTranslated,
+                                        CancellationToken innerToken2)
+                                {
+                                    if (innerToken2.IsCancellationRequested)
+                                        return string.Empty;
+                                    XPathNavigator xmlDocument = await XmlManager.LoadXPathAsync(
+                                        strDoc,
+                                        lstInnerCustomDataPaths2,
+                                        strIntoLanguage, token: innerToken2).ConfigureAwait(false);
+
+                                    foreach (XPathNavigator objNode in xmlDocument.Select(xprExpression))
+                                    {
+                                        if (innerToken2.IsCancellationRequested)
+                                            return string.Empty;
+                                        if (funcEnglish(objNode) != strExtraNoQuotes)
+                                            continue;
+                                        if (innerToken2.IsCancellationRequested)
+                                            return string.Empty;
+                                        string strTranslate = funcTranslated(objNode);
+                                        if (string.IsNullOrEmpty(strTranslate))
+                                            continue;
+                                        // ReSharper disable once AccessToDisposedClosure
+                                        objFoundItemSource.Cancel(false);
+                                        return strTranslate;
+                                    }
+
+                                    return string.Empty;
+                                }
                             }
                         }
 
@@ -1983,8 +1989,8 @@ namespace Chummer
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1997,21 +2003,14 @@ namespace Chummer
                 : Utils.SafelyRunSynchronously(
                     () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
                                                          token), token);
-            /*
-            // This task can normally end up locking up the UI thread because of the Parallel.Foreach call, so we manually schedule it and intermittently do events while waiting for it
-            // Because of how ubiquitous this method is, setting it to async so that we can await this instead would require a massive overhaul.
-            // TODO: Do this overhaul.
-            : Utils.RunWithoutThreadLock(
-                () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile));
-            */
         }
 
         /// <summary>
         /// Attempt to translate any Extra text for an item from a foreign language to the default one.
         /// </summary>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2032,8 +2031,8 @@ namespace Chummer
         /// </summary>
         /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
         /// <param name="strExtra">Extra string to translate.</param>
-        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strFromLanguage">Language from which the string should be translated</param>
+        /// <param name="objCharacter">Character whose custom data to use. If null, will not use any custom data.</param>
         /// <param name="strPreferFile">Name of a file to prefer for extras before all others.</param>
         /// <param name="token">Cancellation token to use.</param>
         public static async Task<string> ReverseTranslateExtraCoreAsync(bool blnSync, string strExtra,
@@ -2164,19 +2163,34 @@ namespace Chummer
                 return "None";
             // If no original could be found, just use whatever we were passed.
             string strReturn = strExtra;
-            Match objFileSpecifier = s_RgxExtraFileSpecifierExpression.Match(strReturn);
-            if (objFileSpecifier.Success)
+            if (strReturn.StartsWith('['))
             {
-                strReturn = strReturn.TrimStartOnce(objFileSpecifier.Value).Trim();
-                if (string.IsNullOrEmpty(strPreferFile))
-                    strPreferFile = objFileSpecifier.Value.Trim('[', ']');
+                int intFileSpecifierIndex = strReturn.IndexOf(".xml]", 2, StringComparison.Ordinal);
+                if (intFileSpecifierIndex >= 0)
+                {
+                    string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
+                    if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
+                    {
+                        strPreferFile = strSnippet.Trim('[', ']');
+                        strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
+                    }
+                }
             }
+            strReturn = strReturn.Trim();
 
             string strTemp = string.Empty;
             string strExtraNoQuotes = strReturn.FastEscape('\"');
-            using (CancellationTokenSource objCancellationTokenSource = new CancellationTokenSource())
+            IReadOnlyCollection<string> lstCustomDataPaths = null;
+            if (objCharacter != null)
             {
-                CancellationToken objCancellationToken = objCancellationTokenSource.Token;
+                if (blnSync)
+                    lstCustomDataPaths = objCharacter.Settings.EnabledCustomDataDirectoryPaths;
+                else
+                    lstCustomDataPaths = await (await objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
+            }
+            using (CancellationTokenSource objFoundItemSource = new CancellationTokenSource())
+            {
+                CancellationToken objFoundItemToken = objFoundItemSource.Token;
                 bool blnFromLanguageLoaded;
                 if (!string.IsNullOrEmpty(strPreferFile))
                 {
@@ -2188,20 +2202,8 @@ namespace Chummer
                             : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                         if (blnFromLanguageLoaded)
                         {
-                            bool blnSuccess;
-                            LanguageData objFromLanguageData;
-                            if (blnSync)
-                            {
-                                blnSuccess = LoadedLanguageData.TryGetValue(
-                                    strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                            }
-                            else
-                            {
-                                (blnSuccess, objFromLanguageData)
-                                    = await LoadedLanguageData
-                                            .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                            .ConfigureAwait(false);
-                            }
+                            bool blnSuccess = LoadedLanguageData.TryGetValue(
+                                strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                             token.ThrowIfCancellationRequested();
                             if (blnSuccess)
@@ -2230,24 +2232,20 @@ namespace Chummer
                             }
                         }
                     }
-                    else if (blnSync)
-                    {
-                        strTemp = FindString(strPreferFile, token);
-                    }
                     else
                     {
                         using (CancellationTokenSource objCombinedCancellationTokenSource
                                = CancellationTokenSource.CreateLinkedTokenSource(
-                                   objCancellationToken, token))
+                                   objFoundItemToken, token))
                         {
                             CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
                             try
                             {
-                                strTemp = await Task.Run(
-                                    () => FindString(strPreferFile, objCombinedToken),
-                                    objCombinedToken).ConfigureAwait(false);
+                                strTemp = blnSync
+                                    ? FindString(strPreferFile, lstCustomDataPaths, objCombinedToken)
+                                    : await FindStringAsync(strPreferFile, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
                             }
-                            catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
+                            catch (OperationCanceledException) when (!token.IsCancellationRequested)
                             {
                                 //swallow this
                             }
@@ -2258,7 +2256,7 @@ namespace Chummer
                         strReturn = strTemp;
                 }
 
-                if (objCancellationToken.IsCancellationRequested)
+                if (objFoundItemToken.IsCancellationRequested)
                     return strReturn;
 
                 // Look through loaded strings first because that's faster than trawling through the XML data
@@ -2268,20 +2266,8 @@ namespace Chummer
                     : await LoadLanguageAsync(strFromLanguage, token).ConfigureAwait(false);
                 if (blnFromLanguageLoaded)
                 {
-                    bool blnSuccess;
-                    LanguageData objFromLanguageData;
-                    if (blnSync)
-                    {
-                        blnSuccess = LoadedLanguageData.TryGetValue(
-                            strFromLanguage.ToUpperInvariant(), out objFromLanguageData);
-                    }
-                    else
-                    {
-                        (blnSuccess, objFromLanguageData)
-                            = await LoadedLanguageData
-                                    .TryGetValueAsync(strFromLanguage.ToUpperInvariant(), token)
-                                    .ConfigureAwait(false);
-                    }
+                    bool blnSuccess = LoadedLanguageData.TryGetValue(
+                        strFromLanguage.ToUpperInvariant(), out LanguageData objFromLanguageData);
 
                     token.ThrowIfCancellationRequested();
                     if (blnSuccess)
@@ -2310,39 +2296,34 @@ namespace Chummer
                     }
                 }
 
-                if (blnSync)
+                using (CancellationTokenSource objCombinedCancellationTokenSource
+                       = CancellationTokenSource.CreateLinkedTokenSource(
+                           objFoundItemToken, token))
                 {
-                    strTemp = FindString(innerToken: token);
-                }
-                else
-                {
-                    using (CancellationTokenSource objCombinedCancellationTokenSource
-                           = CancellationTokenSource.CreateLinkedTokenSource(
-                               objCancellationToken, token))
+                    CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
+                    try
                     {
-                        CancellationToken objCombinedToken = objCombinedCancellationTokenSource.Token;
-                        try
-                        {
-                            strTemp = await Task.Run(
-                                () => FindString(innerToken: objCombinedToken),
-                                objCombinedToken).ConfigureAwait(false);
-                        }
-                        catch (OperationCanceledException) when (objCancellationToken.IsCancellationRequested)
-                        {
-                            //swallow this
-                        }
+                        strTemp = blnSync
+                            ? FindString(string.Empty, lstCustomDataPaths, objCombinedToken)
+                            : await FindStringAsync(string.Empty, lstCustomDataPaths, objCombinedToken).ConfigureAwait(false);
+                    }
+                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                    {
+                        //swallow this
                     }
                 }
 
-                string FindString(string strPreferredFileName = "", CancellationToken innerToken = default)
+                string FindString(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null, CancellationToken innerToken = default)
                 {
+                    innerToken.ThrowIfCancellationRequested();
                     string strInnerReturn = string.Empty;
-                    foreach (IReadOnlyList<Tuple<string, string, Func<XPathNavigator, string>,
+                    foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                                      Func<XPathNavigator, string>>>
                                  aobjPaths
                              in s_LstAXPathsToSearch)
                     {
-                        IEnumerable<Tuple<string, string, Func<XPathNavigator, string>,
+                        innerToken.ThrowIfCancellationRequested();
+                        IEnumerable<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
                             Func<XPathNavigator, string>>> lstToSearch
                             = !string.IsNullOrEmpty(strPreferredFileName)
                                 ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
@@ -2351,11 +2332,11 @@ namespace Chummer
                         Parallel.ForEach(lstToSearch, () => string.Empty, (objXPathPair, objState, x) =>
                         {
                             if (objState.ShouldExitCurrentIteration)
-                                return string.Empty;
+                                return x;
                             if (innerToken.IsCancellationRequested)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
                             XPathNavigator xmlDocument;
@@ -2363,43 +2344,51 @@ namespace Chummer
                             {
                                 xmlDocument = XmlManager.LoadXPath(
                                     objXPathPair.Item1,
-                                    objCharacter?.Settings.EnabledCustomDataDirectoryPaths,
+                                    lstInnerCustomDataPaths,
                                     strFromLanguage, token: innerToken);
                             }
                             catch (OperationCanceledException)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
                             if (objState.ShouldExitCurrentIteration)
-                                return string.Empty;
+                                return x;
                             if (innerToken.IsCancellationRequested)
                             {
                                 objState.Stop();
-                                return string.Empty;
+                                return x;
                             }
 
-                            foreach (XPathNavigator objNode in xmlDocument.SelectAndCacheExpression(
-                                         objXPathPair.Item2))
+                            try
                             {
-                                if (objState.ShouldExitCurrentIteration)
-                                    return string.Empty;
-                                if (innerToken.IsCancellationRequested)
+                                foreach (XPathNavigator objNode in xmlDocument.Select(objXPathPair.Item2))
                                 {
-                                    objState.Stop();
-                                    return string.Empty;
-                                }
+                                    if (objState.ShouldExitCurrentIteration)
+                                        return x;
+                                    if (innerToken.IsCancellationRequested)
+                                    {
+                                        objState.Stop();
+                                        return x;
+                                    }
 
-                                if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
-                                    continue;
-                                string strOriginal = objXPathPair.Item3(objNode);
-                                if (string.IsNullOrEmpty(strOriginal))
-                                    continue;
-                                return strOriginal;
+                                    if (objXPathPair.Item4(objNode) != strExtraNoQuotes)
+                                        continue;
+                                    string strOriginal = objXPathPair.Item3(objNode);
+                                    if (string.IsNullOrEmpty(strOriginal))
+                                        continue;
+                                    objState.Stop();
+                                    return strOriginal;
+                                }
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                objState.Stop();
+                                return x;
                             }
 
-                            return string.Empty;
+                            return x;
                         }, strFound =>
                         {
                             if (innerToken.IsCancellationRequested)
@@ -2408,13 +2397,79 @@ namespace Chummer
                                 return;
                             strInnerReturn = strFound;
                             // ReSharper disable once AccessToDisposedClosure
-                            objCancellationTokenSource.Cancel(false);
+                            objFoundItemSource.Cancel(false);
                         });
                         if (!string.IsNullOrEmpty(strInnerReturn))
                             return strInnerReturn;
                     }
 
                     return strInnerReturn;
+                }
+
+                async Task<string> FindStringAsync(string strPreferredFileName = "", IReadOnlyCollection<string> lstInnerCustomDataPaths = null,
+                                CancellationToken innerToken = default)
+                {
+                    innerToken.ThrowIfCancellationRequested();
+                    foreach (IReadOnlyList<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                                 Func<XPathNavigator, string>>> aobjPaths
+                             in s_LstAXPathsToSearch)
+                    {
+                        innerToken.ThrowIfCancellationRequested();
+                        IEnumerable<ValueTuple<string, XPathExpression, Func<XPathNavigator, string>,
+                            Func<XPathNavigator, string>>> lstToSearch
+                            = !string.IsNullOrEmpty(strPreferredFileName)
+                                ? aobjPaths.Where(x => string.Equals(x.Item1, strPreferredFileName,
+                                    StringComparison.OrdinalIgnoreCase))
+                                : aobjPaths;
+                        string strInnerReturn = string.Empty;
+                        await ParallelExtensions.ForEachAsync(lstToSearch, async (tupLoop, objSource) =>
+                        {
+                            if (objSource.IsCancellationRequested)
+                                return;
+                            string strLoop = await FetchAndReturnString(tupLoop.Item1, lstInnerCustomDataPaths, tupLoop.Item2, tupLoop.Item3,
+                                        tupLoop.Item4, innerToken).ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strLoop))
+                            {
+                                objSource.Cancel(false);
+                                strInnerReturn = strLoop;
+                            }
+                        }, innerToken).ConfigureAwait(false);
+                        if (objFoundItemToken.IsCancellationRequested && !string.IsNullOrEmpty(strInnerReturn))
+                            return strInnerReturn;
+                    }
+
+                    return string.Empty;
+
+                    async Task<string> FetchAndReturnString(string strDoc, IReadOnlyCollection<string> lstInnerCustomDataPaths2,
+                            XPathExpression xprExpression,
+                            Func<XPathNavigator, string> funcEnglish,
+                            Func<XPathNavigator, string> funcTranslated,
+                            CancellationToken innerToken2)
+                    {
+                        if (innerToken2.IsCancellationRequested)
+                            return string.Empty;
+                        XPathNavigator xmlDocument = await XmlManager
+                            .LoadXPathAsync(strDoc, lstInnerCustomDataPaths2, strFromLanguage, token: innerToken2)
+                            .ConfigureAwait(false);
+
+                        foreach (XPathNavigator objNode in xmlDocument.Select(xprExpression))
+                        {
+                            if (innerToken2.IsCancellationRequested)
+                                return string.Empty;
+                            if (funcTranslated(objNode) != strExtraNoQuotes)
+                                continue;
+                            if (innerToken2.IsCancellationRequested)
+                                return string.Empty;
+                            string strTranslate = funcEnglish(objNode);
+                            if (string.IsNullOrEmpty(strTranslate))
+                                continue;
+                            // ReSharper disable once AccessToDisposedClosure
+                            objFoundItemSource.Cancel(false);
+                            return strTranslate;
+                        }
+
+                        return string.Empty;
+                    }
                 }
             }
 
@@ -2445,7 +2500,8 @@ namespace Chummer
                 cboLanguage.PopulateWithListItems(lstSheetLanguageList, token: token);
                 cboLanguage.DoThreadSafe((x, y) =>
                 {
-                    x.SelectedValue = strDefaultSheetLanguage;
+                    if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                        x.SelectedValue = strDefaultSheetLanguage;
                     if (x.SelectedIndex == -1)
                         x.SelectedValue
                             = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
@@ -2485,7 +2541,8 @@ namespace Chummer
                                      .ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
-                        x.SelectedValue = strDefaultSheetLanguage;
+                        if (!string.IsNullOrEmpty(strDefaultSheetLanguage))
+                            x.SelectedValue = strDefaultSheetLanguage;
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
@@ -2504,37 +2561,19 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = XPathDocumentExtensions.LoadStandardFromFile(filePath, token: token);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = GetLanguageNameFromFileName(strFilePath, token: token);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = xmlDocument.CreateNavigator().SelectSingleNodeAndCacheExpression("/chummer/name", token);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (XmlManager.AnyXslFiles(strLanguageCode, lstCharacterToUse, token))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
@@ -2548,45 +2587,127 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             List<Character> lstCharacterToUse = lstCharacters?.ToList();
             List<ListItem> lstLanguages = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(5);
-            foreach (string filePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
+            foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                XPathDocument xmlDocument;
-                try
-                {
-                    xmlDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(filePath, token: token)
-                                                               .ConfigureAwait(false);
-                }
-                catch (IOException)
-                {
+                if (strFilePath.EndsWith("_data.xml"))
                     continue;
-                }
-                catch (XmlException)
-                {
+                string strLanguageName = await GetLanguageNameFromFileNameAsync(strFilePath, token:token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strLanguageName))
                     continue;
-                }
-
                 token.ThrowIfCancellationRequested();
-
-                XPathNavigator node = await xmlDocument.CreateNavigator()
-                                                       .SelectSingleNodeAndCacheExpressionAsync(
-                                                           "/chummer/name", token: token).ConfigureAwait(false);
-
-                if (node == null)
+                string strLanguageCode = Path.GetFileNameWithoutExtension(strFilePath);
+                if (!await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
                     continue;
-
-                token.ThrowIfCancellationRequested();
-
-                string strLanguageCode = Path.GetFileNameWithoutExtension(filePath);
-                if (await XmlManager.AnyXslFilesAsync(strLanguageCode, lstCharacterToUse, token).ConfigureAwait(false))
-                {
-                    lstLanguages.Add(new ListItem(strLanguageCode, node.Value));
-                }
+                lstLanguages.Add(new ListItem(strLanguageCode, strLanguageName));
             }
 
             token.ThrowIfCancellationRequested();
             lstLanguages.Sort(CompareListItems.CompareNames);
             return lstLanguages;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static string GetLanguageNameFromFileName(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            using (FileStream objFileStream
+                   = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe
+                                   ? GlobalSettings.SafeXmlReaderSettings
+                                   : GlobalSettings.UnSafeXmlReaderSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objReader.MoveToContent();
+                        token.ThrowIfCancellationRequested();
+                        do
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                continue;
+                            while (objReader.Read())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                    continue;
+                                while (objReader.Read())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType == XmlNodeType.Text)
+                                    {
+                                        return objReader.Value;
+                                    }
+                                }
+                            }
+                        } while (objReader.Read());
+                    }
+                }
+            }
+
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Memory-efficient way of opening up a language xml file for the sole purpose of reading its name.
+        /// </summary>
+        /// <param name="strFilePath">File path of the language xml file.</param>
+        /// <param name="blnSafe">Whether to use safe or unsafe xml reader settings.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Name of the language associated with <paramref name="strFilePath"/> if one is found, empty string otherwise.</returns>
+        public static async Task<string> GetLanguageNameFromFileNameAsync(string strFilePath, bool blnSafe = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (FileStream objFileStream
+                       = new FileStream(strFilePath, FileMode.Open, FileAccess.Read, FileShare.Read))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                               blnSafe
+                                   ? GlobalSettings.SafeXmlReaderAsyncSettings
+                                   : GlobalSettings.UnSafeXmlReaderAsyncSettings))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        _ = await objReader.MoveToContentAsync().ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        do
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "chummer")
+                                continue;
+                            while (await objReader.ReadAsync().ConfigureAwait(false))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objReader.NodeType != XmlNodeType.Element || objReader.Name != "name")
+                                    continue;
+                                while (await objReader.ReadAsync().ConfigureAwait(false))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (objReader.NodeType == XmlNodeType.Text)
+                                    {
+                                        return objReader.Value;
+                                    }
+                                }
+                            }
+                        } while (await objReader.ReadAsync().ConfigureAwait(false));
+                    }
+                }
+            }
+
+            return string.Empty;
         }
 
         #endregion Methods
@@ -2595,19 +2716,19 @@ namespace Chummer
     public class LanguageData
     {
         private readonly Dictionary<string, string> _dicTranslatedStrings = new Dictionary<string, string>();
-        public bool IsRightToLeftScript { get; }
+        public bool IsRightToLeftScript { get; private set; }
 
         public IReadOnlyDictionary<string, string> TranslatedStrings => _dicTranslatedStrings;
 
-        public XPathDocument DataDocument { get; }
-        public string ErrorMessage { get; } = string.Empty;
+        public XPathDocument DataDocument { get; private set; }
+        public string ErrorMessage { get; private set; } = string.Empty;
         public bool ErrorAlreadyShown { get; set; }
 
         public LanguageData(string strLanguage)
         {
-            string strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + ".xml");
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
             if (!File.Exists(strFilePath))
-                strFilePath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + ".xml");
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
             if (File.Exists(strFilePath))
             {
                 try
@@ -2653,19 +2774,19 @@ namespace Chummer
                         {
                             ErrorMessage = "Failed to load the strings file " + strLanguage
                                                                               + ".xml into an XmlDocument: "
-                                                                              + strExtraMessage + '.';
+                                                                              + strExtraMessage + ".";
                         }
                     }
                     else
                     {
                         ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
-                                       + strExtraMessage + '.';
+                                       + strExtraMessage + ".";
                     }
                 }
                 catch (Exception ex)
                 {
                     ErrorMessage = "Encountered the following the exception while loading " + strLanguage
-                        + ".xml into an XmlDocument: " + ex + '.';
+                        + ".xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else
@@ -2674,9 +2795,9 @@ namespace Chummer
             }
 
             // Check to see if the data translation file for the selected language exists.
-            string strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage + "_data.xml");
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
             if (!File.Exists(strDataPath))
-                strDataPath = Path.Combine(Utils.GetStartupPath, "lang", strLanguage.ToLowerInvariant() + "_data.xml");
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
             if (File.Exists(strDataPath))
             {
                 try
@@ -2691,7 +2812,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
                         ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                     catch (XmlException ex)
                     {
@@ -2699,7 +2820,7 @@ namespace Chummer
                         if (!string.IsNullOrEmpty(ErrorMessage))
                             ErrorMessage += Environment.NewLine;
                         ErrorMessage += "Failed to load the data file " + strLanguage
-                                                                        + "_data.xml into an XmlDocument: " + ex + '.';
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                     }
                 }
                 catch (Exception ex)
@@ -2708,7 +2829,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(ErrorMessage))
                         ErrorMessage += Environment.NewLine;
                     ErrorMessage += "Encountered the following the exception while loading " + strLanguage
-                        + "_data.xml into an XmlDocument: " + ex + '.';
+                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
                 }
             }
             else
@@ -2717,6 +2838,129 @@ namespace Chummer
                     ErrorMessage += Environment.NewLine;
                 ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
             }
+        }
+
+        private LanguageData()
+        {
+        }
+
+        public static async Task<LanguageData> CreateAsync(string strLanguage, CancellationToken token = default)
+        {
+            LanguageData objReturn = new LanguageData();
+            string strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + ".xml");
+            if (!File.Exists(strFilePath))
+                strFilePath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + ".xml");
+            if (File.Exists(strFilePath))
+            {
+                try
+                {
+                    XPathDocument objLanguageDocument;
+                    string strExtraMessage = string.Empty;
+                    try
+                    {
+                        objLanguageDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strFilePath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+                    catch (XmlException ex)
+                    {
+                        objLanguageDocument = null;
+                        strExtraMessage = ex.ToString();
+                    }
+
+                    if (objLanguageDocument != null)
+                    {
+                        XPathNavigator objLanguageDocumentNavigator = objLanguageDocument.CreateNavigator();
+                        objReturn.IsRightToLeftScript
+                            = objLanguageDocumentNavigator.SelectSingleNodeAndCacheExpression("/chummer/righttoleft", token)
+                                                          ?.Value == bool.TrueString;
+                        XPathNodeIterator xmlStringList =
+                            objLanguageDocumentNavigator.SelectAndCacheExpression("/chummer/strings/string", token);
+                        if (xmlStringList.Count > 0)
+                        {
+                            foreach (XPathNavigator objNode in xmlStringList)
+                            {
+                                // Look for the English version of the found string. If it has been found, replace the English contents with the contents from this file.
+                                // If the string was not found, then someone has inserted a Key that should not exist and is ignored.
+                                string strKey = objNode.SelectSingleNodeAndCacheExpression("key", token)?.Value;
+                                string strText = objNode.SelectSingleNodeAndCacheExpression("text", token)?.Value;
+                                if (!string.IsNullOrEmpty(strKey) && !string.IsNullOrEmpty(strText))
+                                    objReturn._dicTranslatedStrings[strKey] = strText.NormalizeLineEndings(true);
+                            }
+                        }
+                        else
+                        {
+                            objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage
+                                                                              + ".xml into an XmlDocument: "
+                                                                              + strExtraMessage + ".";
+                        }
+                    }
+                    else
+                    {
+                        objReturn.ErrorMessage = "Failed to load the strings file " + strLanguage + ".xml into an XmlDocument: "
+                                                 + strExtraMessage + ".";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.ErrorMessage = "Encountered the following the exception while loading " + strLanguage
+                        + ".xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
+                }
+            }
+            else
+            {
+                objReturn.ErrorMessage = "Could not find the strings file " + strLanguage + ".xml.";
+            }
+
+            // Check to see if the data translation file for the selected language exists.
+            string strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage + "_data.xml");
+            if (!File.Exists(strDataPath))
+                strDataPath = Path.Combine(Utils.GetLanguageFolderPath, strLanguage.ToLowerInvariant() + "_data.xml");
+            if (File.Exists(strDataPath))
+            {
+                try
+                {
+                    try
+                    {
+                        objReturn.DataDocument = await XPathDocumentExtensions.LoadStandardFromFileAsync(strDataPath, token: token).ConfigureAwait(false);
+                    }
+                    catch (IOException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
+                    }
+                    catch (XmlException ex)
+                    {
+                        objReturn.DataDocument = null;
+                        if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                            objReturn.ErrorMessage += Environment.NewLine;
+                        objReturn.ErrorMessage += "Failed to load the data file " + strLanguage
+                                                                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
+                    }
+                }
+                catch (Exception ex)
+                {
+                    objReturn.DataDocument = null;
+                    if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                        objReturn.ErrorMessage += Environment.NewLine;
+                    objReturn.ErrorMessage += "Encountered the following the exception while loading " + strLanguage
+                        + "_data.xml into an XmlDocument: " + ex.Demystify().ToString() + ".";
+                }
+            }
+            else
+            {
+                if (!string.IsNullOrEmpty(objReturn.ErrorMessage))
+                    objReturn.ErrorMessage += Environment.NewLine;
+                objReturn.ErrorMessage += "Could not find the data file " + strLanguage + "_data.xml.";
+            }
+
+            return objReturn;
         }
     }
 }

@@ -19,6 +19,8 @@
 
 using System;
 using System.Globalization;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
@@ -27,6 +29,11 @@ namespace Chummer
     {
         private ExpenseType _eMode = ExpenseType.Karma;
         private readonly CharacterSettings _objCharacterSettings;
+        private bool _blnForceCareerVisible;
+        private bool _blnRefund;
+        private string _strReason;
+        private decimal _decAmount;
+        private DateTime _datSelectedDate;
 
         #region Control Events
 
@@ -37,6 +44,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             // Determine the DateTime format and use that to display the date field (removing seconds since they're not important).
 
@@ -59,19 +67,32 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen && await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) % _objCharacterSettings.NuyenPerBPWftP != 0)
+            if (KarmaNuyenExchange && _eMode == ExpenseType.Nuyen)
             {
-                Program.ShowScrollableMessageBox(
-                    this,
-                    string.Format(GlobalSettings.CultureInfo,
-                                  await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
-                                  _objCharacterSettings.NuyenPerBPWftP.ToString(
-                                      _objCharacterSettings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
-                    await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange").ConfigureAwait(false), MessageBoxButtons.OK,
-                    MessageBoxIcon.Information);
+                decimal decNuyenPerBPWtfP = await _objCharacterSettings.GetNuyenPerBPWftPAsync().ConfigureAwait(false);
+                decimal decDividend = await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false) / decNuyenPerBPWtfP;
+                if (decimal.Floor(decDividend) != decimal.Ceiling(decDividend))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("Message_KarmaNuyenExchange").ConfigureAwait(false),
+                            decNuyenPerBPWtfP.ToString(
+                                await _objCharacterSettings.GetNuyenFormatAsync().ConfigureAwait(false), GlobalSettings.CultureInfo)
+                            + await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_KarmaNuyenExchange").ConfigureAwait(false), MessageBoxButtons.OK,
+                        MessageBoxIcon.Information).ConfigureAwait(false);
+                }
             }
             else
             {
+                _decAmount = await nudAmount.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false);
+                if (_eMode == ExpenseType.Nuyen)
+                    _decAmount *= nudPercent.Value / 100.0m;
+                _datSelectedDate = await datDate.DoThreadSafeFuncAsync(x => x.Value).ConfigureAwait(false);
+                _strReason = await txtDescription.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+                _blnRefund = await chkRefund.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
+                _blnForceCareerVisible = await chkForceCareerVisible.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
@@ -95,13 +116,7 @@ namespace Chummer
         /// </summary>
         public decimal Amount
         {
-            get
-            {
-                decimal decReturn = nudAmount.Value;
-                if (_eMode == ExpenseType.Nuyen)
-                    decReturn *= (nudPercent.Value / 100.0m);
-                return decReturn;
-            }
+            get => _decAmount;
             set
             {
                 if (value < 0)
@@ -117,25 +132,25 @@ namespace Chummer
         /// </summary>
         public string Reason
         {
-            get => txtDescription.Text;
+            get => _strReason;
             set => txtDescription.Text = value;
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool Refund
         {
-            get => chkRefund.Checked;
+            get => _blnRefund;
             set => chkRefund.Checked = value;
         }
 
         /// <summary>
-        /// Whether or not this is a Karma refund.
+        /// Whether this is a Karma refund.
         /// </summary>
         public bool ForceCareerVisible
         {
-            get => chkForceCareerVisible.Checked;
+            get => _blnForceCareerVisible;
             set => chkForceCareerVisible.Checked = value;
         }
 
@@ -144,7 +159,7 @@ namespace Chummer
         /// </summary>
         public DateTime SelectedDate
         {
-            get => datDate.Value;
+            get => _datSelectedDate;
             set => datDate.Value = value;
         }
 
@@ -173,6 +188,39 @@ namespace Chummer
                     lblPercent.Visible = false;
                 }
             }
+        }
+
+        public async Task SetModeAsync(ExpenseType value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (InterlockedExtensions.Exchange(ref _eMode, value) == value)
+                return;
+            string strAmountText;
+            string strText;
+            string strRefundText;
+            bool blnPercentVisible;
+            if (value == ExpenseType.Nuyen)
+            {
+                strAmountText = await LanguageManager.GetStringAsync("Label_Expense_NuyenAmount", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync("Title_Expense_Nuyen", token: token).ConfigureAwait(false);
+                strRefundText = await LanguageManager.GetStringAsync("Checkbox_Expense_RefundNuyen", token: token).ConfigureAwait(false);
+                blnPercentVisible = true;
+            }
+            else
+            {
+                strAmountText = await LanguageManager.GetStringAsync("Label_Expense_KarmaAmount", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync("Title_Expense_Karma", token: token).ConfigureAwait(false);
+                strRefundText = string.Empty;
+                blnPercentVisible = false;
+            }
+            await this.DoThreadSafeAsync(() =>
+            {
+                lblKarma.Text = strAmountText;
+                Text = strText;
+                chkRefund.Text = strRefundText;
+                nudPercent.Visible = blnPercentVisible;
+                lblPercent.Visible = blnPercentVisible;
+            }, token).ConfigureAwait(false);
         }
 
         public bool KarmaNuyenExchange { get; set; }

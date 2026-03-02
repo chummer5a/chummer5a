@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -25,19 +26,23 @@ namespace Chummer.UI.Table
 {
     public partial class ButtonTableCell<T> : TableCell where T : class
     {
-        private readonly Control _button;
+        private readonly ButtonBase _button;
+        private readonly CancellationToken _objMyToken;
 
-        public ButtonTableCell(Control button) : base(button)
+        public ButtonTableCell(ButtonBase button, CancellationToken objMyToken = default) : base(button)
         {
+            _objMyToken = objMyToken;
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
+            ContentField = _button;
             button.Click += OnButtonClick;
             SuspendLayout();
             try
             {
                 Controls.Add(button);
-                this.UpdateLightDarkMode();
-                this.TranslateWinForm();
+                this.UpdateLightDarkMode(objMyToken);
+                this.TranslateWinForm(token: objMyToken);
+                this.UpdateParentForToolTipControls();
                 button.PerformLayout();
             }
             finally
@@ -46,10 +51,33 @@ namespace Chummer.UI.Table
             }
         }
 
+        private readonly DebuggableSemaphoreSlim _objUpdateSemaphore = new DebuggableSemaphoreSlim();
+
         private async void OnButtonClick(object sender, EventArgs e)
         {
             if (ClickHandler != null)
-                await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
+            {
+                try
+                {
+                    await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
+                    try
+                    {
+                        await ClickHandler.Invoke(Value as T, _objMyToken).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        _objUpdateSemaphore.Release();
+                    }
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+                catch (OperationCanceledException)
+                {
+                    //swallow this
+                }
+            }
         }
 
         private void OnLoad(object sender, EventArgs eventArgs)
@@ -59,16 +87,34 @@ namespace Chummer.UI.Table
 
         protected internal override void UpdateValue(object newValue)
         {
-            base.UpdateValue(newValue);
-
-            if (EnabledExtractor != null)
+            try
             {
-                _button.Enabled = EnabledExtractor(Value as T);
+                base.UpdateValue(newValue);
+
+                if (EnabledExtractor != null)
+                {
+                    _button.Enabled = Utils.SafelyRunSynchronously(() => EnabledExtractor(Value as T, _objMyToken), _objMyToken);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
             }
         }
 
-        public Func<T, Task> ClickHandler { get; set; }
+        protected internal override async Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            await base.UpdateValueAsync(newValue, token).ConfigureAwait(false);
 
-        public Func<T, bool> EnabledExtractor { get; set; }
+            if (EnabledExtractor != null)
+            {
+                bool blnEnabled = await EnabledExtractor(Value as T, token).ConfigureAwait(false);
+                await _button.DoThreadSafeAsync(x => x.Enabled = blnEnabled, token: token).ConfigureAwait(false);
+            }
+        }
+
+        public Func<T, CancellationToken, Task> ClickHandler { get; set; }
+
+        public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
     }
 }

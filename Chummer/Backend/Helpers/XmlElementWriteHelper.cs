@@ -53,9 +53,9 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public ValueTask DisposeAsync()
+        public async ValueTask DisposeAsync()
         {
-            return new ValueTask(_objWriter.WriteEndElementAsync());
+            await _objWriter.WriteEndElementAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />

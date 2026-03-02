@@ -15,9 +15,12 @@ namespace Chummer.UI.Editors
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                foreach (System.Windows.Forms.Control objControl in Controls)
+                    objControl.ResetBindings();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -92,13 +95,13 @@ namespace Chummer.UI.Editors
             this.tsbBold.CheckOnClick = true;
             this.tsbBold.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbBold.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.tsbBold.Image = global::Chummer.Properties.Resources.text_bold;
-            this.tsbBold.ImageDpi120 = null;
-            this.tsbBold.ImageDpi144 = null;
-            this.tsbBold.ImageDpi192 = global::Chummer.Properties.Resources.text_bold1;
-            this.tsbBold.ImageDpi288 = null;
-            this.tsbBold.ImageDpi384 = null;
-            this.tsbBold.ImageDpi96 = global::Chummer.Properties.Resources.text_bold;
+            this.tsbBold.Image = global::Chummer.Properties.Resources.text_bold_16;
+            this.tsbBold.ImageDpi120 = global::Chummer.Properties.Resources.text_bold_20;
+            this.tsbBold.ImageDpi144 = global::Chummer.Properties.Resources.text_bold_24;
+            this.tsbBold.ImageDpi192 = global::Chummer.Properties.Resources.text_bold_32;
+            this.tsbBold.ImageDpi288 = global::Chummer.Properties.Resources.text_bold_48;
+            this.tsbBold.ImageDpi384 = global::Chummer.Properties.Resources.text_bold_64;
+            this.tsbBold.ImageDpi96 = global::Chummer.Properties.Resources.text_bold_16;
             this.tsbBold.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBold.Name = "tsbBold";
             this.tsbBold.Size = new System.Drawing.Size(23, 20);
@@ -111,13 +114,13 @@ namespace Chummer.UI.Editors
             this.tsbItalic.CheckOnClick = true;
             this.tsbItalic.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbItalic.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.tsbItalic.Image = global::Chummer.Properties.Resources.text_italic;
-            this.tsbItalic.ImageDpi120 = null;
-            this.tsbItalic.ImageDpi144 = null;
-            this.tsbItalic.ImageDpi192 = global::Chummer.Properties.Resources.text_italic1;
-            this.tsbItalic.ImageDpi288 = null;
-            this.tsbItalic.ImageDpi384 = null;
-            this.tsbItalic.ImageDpi96 = global::Chummer.Properties.Resources.text_italic;
+            this.tsbItalic.Image = global::Chummer.Properties.Resources.text_italic_16;
+            this.tsbItalic.ImageDpi120 = global::Chummer.Properties.Resources.text_italic_20;
+            this.tsbItalic.ImageDpi144 = global::Chummer.Properties.Resources.text_italic_24;
+            this.tsbItalic.ImageDpi192 = global::Chummer.Properties.Resources.text_italic_32;
+            this.tsbItalic.ImageDpi288 = global::Chummer.Properties.Resources.text_italic_48;
+            this.tsbItalic.ImageDpi384 = global::Chummer.Properties.Resources.text_italic_64;
+            this.tsbItalic.ImageDpi96 = global::Chummer.Properties.Resources.text_italic_16;
             this.tsbItalic.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbItalic.Name = "tsbItalic";
             this.tsbItalic.Size = new System.Drawing.Size(23, 20);
@@ -130,13 +133,13 @@ namespace Chummer.UI.Editors
             this.tsbUnderline.CheckOnClick = true;
             this.tsbUnderline.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
             this.tsbUnderline.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.tsbUnderline.Image = global::Chummer.Properties.Resources.text_underline;
-            this.tsbUnderline.ImageDpi120 = null;
-            this.tsbUnderline.ImageDpi144 = null;
-            this.tsbUnderline.ImageDpi192 = global::Chummer.Properties.Resources.text_underline1;
-            this.tsbUnderline.ImageDpi288 = null;
-            this.tsbUnderline.ImageDpi384 = null;
-            this.tsbUnderline.ImageDpi96 = global::Chummer.Properties.Resources.text_underline;
+            this.tsbUnderline.Image = global::Chummer.Properties.Resources.text_underline_16;
+            this.tsbUnderline.ImageDpi120 = global::Chummer.Properties.Resources.text_underline_20;
+            this.tsbUnderline.ImageDpi144 = global::Chummer.Properties.Resources.text_underline_24;
+            this.tsbUnderline.ImageDpi192 = global::Chummer.Properties.Resources.text_underline_32;
+            this.tsbUnderline.ImageDpi288 = global::Chummer.Properties.Resources.text_underline_48;
+            this.tsbUnderline.ImageDpi384 = global::Chummer.Properties.Resources.text_underline_64;
+            this.tsbUnderline.ImageDpi96 = global::Chummer.Properties.Resources.text_underline_16;
             this.tsbUnderline.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnderline.Name = "tsbUnderline";
             this.tsbUnderline.Size = new System.Drawing.Size(23, 20);
@@ -148,13 +151,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbStrikeout.CheckOnClick = true;
             this.tsbStrikeout.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbStrikeout.Image = global::Chummer.Properties.Resources.text_strikethrough;
-            this.tsbStrikeout.ImageDpi120 = null;
-            this.tsbStrikeout.ImageDpi144 = null;
-            this.tsbStrikeout.ImageDpi192 = global::Chummer.Properties.Resources.text_strikethrough1;
-            this.tsbStrikeout.ImageDpi288 = null;
-            this.tsbStrikeout.ImageDpi384 = null;
-            this.tsbStrikeout.ImageDpi96 = global::Chummer.Properties.Resources.text_strikethrough;
+            this.tsbStrikeout.Image = global::Chummer.Properties.Resources.text_strikethrough_16;
+            this.tsbStrikeout.ImageDpi120 = global::Chummer.Properties.Resources.text_strikethrough_20;
+            this.tsbStrikeout.ImageDpi144 = global::Chummer.Properties.Resources.text_strikethrough_24;
+            this.tsbStrikeout.ImageDpi192 = global::Chummer.Properties.Resources.text_strikethrough_32;
+            this.tsbStrikeout.ImageDpi288 = global::Chummer.Properties.Resources.text_strikethrough_48;
+            this.tsbStrikeout.ImageDpi384 = global::Chummer.Properties.Resources.text_strikethrough_64;
+            this.tsbStrikeout.ImageDpi96 = global::Chummer.Properties.Resources.text_strikethrough_16;
             this.tsbStrikeout.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbStrikeout.Name = "tsbStrikeout";
             this.tsbStrikeout.Size = new System.Drawing.Size(23, 20);
@@ -164,19 +167,20 @@ namespace Chummer.UI.Editors
             // 
             // tss1
             // 
+            this.tss1.DefaultColorScheme = true;
             this.tss1.Name = "tss1";
             this.tss1.Size = new System.Drawing.Size(6, 23);
             // 
             // tsbFont
             // 
             this.tsbFont.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbFont.Image = global::Chummer.Properties.Resources.font;
-            this.tsbFont.ImageDpi120 = null;
-            this.tsbFont.ImageDpi144 = null;
-            this.tsbFont.ImageDpi192 = global::Chummer.Properties.Resources.font1;
-            this.tsbFont.ImageDpi288 = null;
-            this.tsbFont.ImageDpi384 = null;
-            this.tsbFont.ImageDpi96 = global::Chummer.Properties.Resources.font;
+            this.tsbFont.Image = global::Chummer.Properties.Resources.font_16;
+            this.tsbFont.ImageDpi120 = global::Chummer.Properties.Resources.font_20;
+            this.tsbFont.ImageDpi144 = global::Chummer.Properties.Resources.font_24;
+            this.tsbFont.ImageDpi192 = global::Chummer.Properties.Resources.font_32;
+            this.tsbFont.ImageDpi288 = global::Chummer.Properties.Resources.font_48;
+            this.tsbFont.ImageDpi384 = global::Chummer.Properties.Resources.font_64;
+            this.tsbFont.ImageDpi96 = global::Chummer.Properties.Resources.font_16;
             this.tsbFont.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbFont.Name = "tsbFont";
             this.tsbFont.Size = new System.Drawing.Size(23, 20);
@@ -187,13 +191,13 @@ namespace Chummer.UI.Editors
             // tsbForeColor
             // 
             this.tsbForeColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbForeColor.Image = global::Chummer.Properties.Resources.color_wheel;
-            this.tsbForeColor.ImageDpi120 = null;
-            this.tsbForeColor.ImageDpi144 = null;
-            this.tsbForeColor.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel1;
-            this.tsbForeColor.ImageDpi288 = null;
-            this.tsbForeColor.ImageDpi384 = null;
-            this.tsbForeColor.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
+            this.tsbForeColor.Image = global::Chummer.Properties.Resources.color_wheel_16;
+            this.tsbForeColor.ImageDpi120 = global::Chummer.Properties.Resources.color_wheel_20;
+            this.tsbForeColor.ImageDpi144 = global::Chummer.Properties.Resources.color_wheel_24;
+            this.tsbForeColor.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel_32;
+            this.tsbForeColor.ImageDpi288 = global::Chummer.Properties.Resources.color_wheel_48;
+            this.tsbForeColor.ImageDpi384 = global::Chummer.Properties.Resources.color_wheel_64;
+            this.tsbForeColor.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel_16;
             this.tsbForeColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbForeColor.Name = "tsbForeColor";
             this.tsbForeColor.Size = new System.Drawing.Size(23, 20);
@@ -204,13 +208,13 @@ namespace Chummer.UI.Editors
             // tsbBackColor
             // 
             this.tsbBackColor.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbBackColor.Image = global::Chummer.Properties.Resources.paintcan;
-            this.tsbBackColor.ImageDpi120 = null;
-            this.tsbBackColor.ImageDpi144 = null;
-            this.tsbBackColor.ImageDpi192 = global::Chummer.Properties.Resources.paintcan1;
-            this.tsbBackColor.ImageDpi288 = null;
-            this.tsbBackColor.ImageDpi384 = null;
-            this.tsbBackColor.ImageDpi96 = global::Chummer.Properties.Resources.paintcan;
+            this.tsbBackColor.Image = global::Chummer.Properties.Resources.paintcan_16;
+            this.tsbBackColor.ImageDpi120 = global::Chummer.Properties.Resources.paintcan_20;
+            this.tsbBackColor.ImageDpi144 = global::Chummer.Properties.Resources.paintcan_24;
+            this.tsbBackColor.ImageDpi192 = global::Chummer.Properties.Resources.paintcan_32;
+            this.tsbBackColor.ImageDpi288 = global::Chummer.Properties.Resources.paintcan_48;
+            this.tsbBackColor.ImageDpi384 = global::Chummer.Properties.Resources.paintcan_64;
+            this.tsbBackColor.ImageDpi96 = global::Chummer.Properties.Resources.paintcan_16;
             this.tsbBackColor.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbBackColor.Name = "tsbBackColor";
             this.tsbBackColor.Size = new System.Drawing.Size(23, 20);
@@ -220,6 +224,7 @@ namespace Chummer.UI.Editors
             // 
             // tss2
             // 
+            this.tss2.DefaultColorScheme = true;
             this.tss2.Name = "tss2";
             this.tss2.Size = new System.Drawing.Size(6, 23);
             // 
@@ -227,13 +232,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbSuperscript.CheckOnClick = true;
             this.tsbSuperscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSuperscript.Image = global::Chummer.Properties.Resources.text_superscript;
-            this.tsbSuperscript.ImageDpi120 = null;
-            this.tsbSuperscript.ImageDpi144 = null;
-            this.tsbSuperscript.ImageDpi192 = global::Chummer.Properties.Resources.text_superscript1;
-            this.tsbSuperscript.ImageDpi288 = null;
-            this.tsbSuperscript.ImageDpi384 = null;
-            this.tsbSuperscript.ImageDpi96 = global::Chummer.Properties.Resources.text_superscript;
+            this.tsbSuperscript.Image = global::Chummer.Properties.Resources.text_superscript_16;
+            this.tsbSuperscript.ImageDpi120 = global::Chummer.Properties.Resources.text_superscript_20;
+            this.tsbSuperscript.ImageDpi144 = global::Chummer.Properties.Resources.text_superscript_24;
+            this.tsbSuperscript.ImageDpi192 = global::Chummer.Properties.Resources.text_superscript_32;
+            this.tsbSuperscript.ImageDpi288 = global::Chummer.Properties.Resources.text_superscript_48;
+            this.tsbSuperscript.ImageDpi384 = global::Chummer.Properties.Resources.text_superscript_64;
+            this.tsbSuperscript.ImageDpi96 = global::Chummer.Properties.Resources.text_superscript_16;
             this.tsbSuperscript.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSuperscript.Name = "tsbSuperscript";
             this.tsbSuperscript.Size = new System.Drawing.Size(23, 20);
@@ -244,13 +249,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbSubscript.CheckOnClick = true;
             this.tsbSubscript.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSubscript.Image = global::Chummer.Properties.Resources.text_subscript;
-            this.tsbSubscript.ImageDpi120 = null;
-            this.tsbSubscript.ImageDpi144 = null;
-            this.tsbSubscript.ImageDpi192 = global::Chummer.Properties.Resources.text_subscript1;
-            this.tsbSubscript.ImageDpi288 = null;
-            this.tsbSubscript.ImageDpi384 = null;
-            this.tsbSubscript.ImageDpi96 = global::Chummer.Properties.Resources.text_subscript;
+            this.tsbSubscript.Image = global::Chummer.Properties.Resources.text_subscript_16;
+            this.tsbSubscript.ImageDpi120 = global::Chummer.Properties.Resources.text_subscript_20;
+            this.tsbSubscript.ImageDpi144 = global::Chummer.Properties.Resources.text_subscript_24;
+            this.tsbSubscript.ImageDpi192 = global::Chummer.Properties.Resources.text_subscript_32;
+            this.tsbSubscript.ImageDpi288 = global::Chummer.Properties.Resources.text_subscript_48;
+            this.tsbSubscript.ImageDpi384 = global::Chummer.Properties.Resources.text_subscript_64;
+            this.tsbSubscript.ImageDpi96 = global::Chummer.Properties.Resources.text_subscript_16;
             this.tsbSubscript.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSubscript.Name = "tsbSubscript";
             this.tsbSubscript.Size = new System.Drawing.Size(23, 20);
@@ -259,6 +264,7 @@ namespace Chummer.UI.Editors
             // 
             // tss3
             // 
+            this.tss3.DefaultColorScheme = true;
             this.tss3.Name = "tss3";
             this.tss3.Size = new System.Drawing.Size(6, 23);
             // 
@@ -266,13 +272,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbAlignLeft.CheckOnClick = true;
             this.tsbAlignLeft.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbAlignLeft.Image = global::Chummer.Properties.Resources.text_align_left;
-            this.tsbAlignLeft.ImageDpi120 = null;
-            this.tsbAlignLeft.ImageDpi144 = null;
-            this.tsbAlignLeft.ImageDpi192 = global::Chummer.Properties.Resources.text_align_left1;
-            this.tsbAlignLeft.ImageDpi288 = null;
-            this.tsbAlignLeft.ImageDpi384 = null;
-            this.tsbAlignLeft.ImageDpi96 = global::Chummer.Properties.Resources.text_align_left;
+            this.tsbAlignLeft.Image = global::Chummer.Properties.Resources.text_align_left_16;
+            this.tsbAlignLeft.ImageDpi120 = global::Chummer.Properties.Resources.text_align_left_20;
+            this.tsbAlignLeft.ImageDpi144 = global::Chummer.Properties.Resources.text_align_left_24;
+            this.tsbAlignLeft.ImageDpi192 = global::Chummer.Properties.Resources.text_align_left_32;
+            this.tsbAlignLeft.ImageDpi288 = global::Chummer.Properties.Resources.text_align_left_48;
+            this.tsbAlignLeft.ImageDpi384 = global::Chummer.Properties.Resources.text_align_left_64;
+            this.tsbAlignLeft.ImageDpi96 = global::Chummer.Properties.Resources.text_align_left_16;
             this.tsbAlignLeft.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignLeft.Name = "tsbAlignLeft";
             this.tsbAlignLeft.Size = new System.Drawing.Size(23, 20);
@@ -285,13 +291,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbAlignCenter.CheckOnClick = true;
             this.tsbAlignCenter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbAlignCenter.Image = global::Chummer.Properties.Resources.text_align_center;
-            this.tsbAlignCenter.ImageDpi120 = null;
-            this.tsbAlignCenter.ImageDpi144 = null;
-            this.tsbAlignCenter.ImageDpi192 = global::Chummer.Properties.Resources.text_align_center1;
-            this.tsbAlignCenter.ImageDpi288 = null;
-            this.tsbAlignCenter.ImageDpi384 = null;
-            this.tsbAlignCenter.ImageDpi96 = global::Chummer.Properties.Resources.text_align_center;
+            this.tsbAlignCenter.Image = global::Chummer.Properties.Resources.text_align_center_16;
+            this.tsbAlignCenter.ImageDpi120 = global::Chummer.Properties.Resources.text_align_center_20;
+            this.tsbAlignCenter.ImageDpi144 = global::Chummer.Properties.Resources.text_align_center_24;
+            this.tsbAlignCenter.ImageDpi192 = global::Chummer.Properties.Resources.text_align_center_32;
+            this.tsbAlignCenter.ImageDpi288 = global::Chummer.Properties.Resources.text_align_center_48;
+            this.tsbAlignCenter.ImageDpi384 = global::Chummer.Properties.Resources.text_align_center_64;
+            this.tsbAlignCenter.ImageDpi96 = global::Chummer.Properties.Resources.text_align_center_16;
             this.tsbAlignCenter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignCenter.Name = "tsbAlignCenter";
             this.tsbAlignCenter.Size = new System.Drawing.Size(23, 20);
@@ -304,13 +310,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbAlignRight.CheckOnClick = true;
             this.tsbAlignRight.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbAlignRight.Image = global::Chummer.Properties.Resources.text_align_right;
-            this.tsbAlignRight.ImageDpi120 = null;
-            this.tsbAlignRight.ImageDpi144 = null;
-            this.tsbAlignRight.ImageDpi192 = global::Chummer.Properties.Resources.text_align_right1;
-            this.tsbAlignRight.ImageDpi288 = null;
-            this.tsbAlignRight.ImageDpi384 = null;
-            this.tsbAlignRight.ImageDpi96 = global::Chummer.Properties.Resources.text_align_right;
+            this.tsbAlignRight.Image = global::Chummer.Properties.Resources.text_align_right_16;
+            this.tsbAlignRight.ImageDpi120 = global::Chummer.Properties.Resources.text_align_right_20;
+            this.tsbAlignRight.ImageDpi144 = global::Chummer.Properties.Resources.text_align_right_24;
+            this.tsbAlignRight.ImageDpi192 = global::Chummer.Properties.Resources.text_align_right_32;
+            this.tsbAlignRight.ImageDpi288 = global::Chummer.Properties.Resources.text_align_right_48;
+            this.tsbAlignRight.ImageDpi384 = global::Chummer.Properties.Resources.text_align_right_64;
+            this.tsbAlignRight.ImageDpi96 = global::Chummer.Properties.Resources.text_align_right_16;
             this.tsbAlignRight.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbAlignRight.Name = "tsbAlignRight";
             this.tsbAlignRight.Size = new System.Drawing.Size(23, 20);
@@ -321,6 +327,7 @@ namespace Chummer.UI.Editors
             // 
             // tss4
             // 
+            this.tss4.DefaultColorScheme = true;
             this.tss4.Name = "tss4";
             this.tss4.Size = new System.Drawing.Size(6, 23);
             // 
@@ -328,13 +335,13 @@ namespace Chummer.UI.Editors
             // 
             this.tsbUnorderedList.CheckOnClick = true;
             this.tsbUnorderedList.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbUnorderedList.Image = global::Chummer.Properties.Resources.text_list_bullets;
-            this.tsbUnorderedList.ImageDpi120 = null;
-            this.tsbUnorderedList.ImageDpi144 = null;
-            this.tsbUnorderedList.ImageDpi192 = global::Chummer.Properties.Resources.text_list_bullets1;
-            this.tsbUnorderedList.ImageDpi288 = null;
-            this.tsbUnorderedList.ImageDpi384 = null;
-            this.tsbUnorderedList.ImageDpi96 = global::Chummer.Properties.Resources.text_list_bullets;
+            this.tsbUnorderedList.Image = global::Chummer.Properties.Resources.text_list_bullets_16;
+            this.tsbUnorderedList.ImageDpi120 = global::Chummer.Properties.Resources.text_list_bullets_20;
+            this.tsbUnorderedList.ImageDpi144 = global::Chummer.Properties.Resources.text_list_bullets_24;
+            this.tsbUnorderedList.ImageDpi192 = global::Chummer.Properties.Resources.text_list_bullets_32;
+            this.tsbUnorderedList.ImageDpi288 = global::Chummer.Properties.Resources.text_list_bullets_48;
+            this.tsbUnorderedList.ImageDpi384 = global::Chummer.Properties.Resources.text_list_bullets_64;
+            this.tsbUnorderedList.ImageDpi96 = global::Chummer.Properties.Resources.text_list_bullets_16;
             this.tsbUnorderedList.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbUnorderedList.Name = "tsbUnorderedList";
             this.tsbUnorderedList.Size = new System.Drawing.Size(23, 20);
@@ -345,13 +352,13 @@ namespace Chummer.UI.Editors
             // tsbIncreaseIndent
             // 
             this.tsbIncreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbIncreaseIndent.Image = global::Chummer.Properties.Resources.text_indent;
-            this.tsbIncreaseIndent.ImageDpi120 = null;
-            this.tsbIncreaseIndent.ImageDpi144 = null;
-            this.tsbIncreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent1;
-            this.tsbIncreaseIndent.ImageDpi288 = null;
-            this.tsbIncreaseIndent.ImageDpi384 = null;
-            this.tsbIncreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent;
+            this.tsbIncreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_16;
+            this.tsbIncreaseIndent.ImageDpi120 = global::Chummer.Properties.Resources.text_indent_20;
+            this.tsbIncreaseIndent.ImageDpi144 = global::Chummer.Properties.Resources.text_indent_24;
+            this.tsbIncreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent_32;
+            this.tsbIncreaseIndent.ImageDpi288 = global::Chummer.Properties.Resources.text_indent_48;
+            this.tsbIncreaseIndent.ImageDpi384 = global::Chummer.Properties.Resources.text_indent_64;
+            this.tsbIncreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent_16;
             this.tsbIncreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbIncreaseIndent.Name = "tsbIncreaseIndent";
             this.tsbIncreaseIndent.Size = new System.Drawing.Size(23, 20);
@@ -362,13 +369,13 @@ namespace Chummer.UI.Editors
             // tsbDecreaseIndent
             // 
             this.tsbDecreaseIndent.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbDecreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_remove;
-            this.tsbDecreaseIndent.ImageDpi120 = null;
-            this.tsbDecreaseIndent.ImageDpi144 = null;
-            this.tsbDecreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent_remove1;
-            this.tsbDecreaseIndent.ImageDpi288 = null;
-            this.tsbDecreaseIndent.ImageDpi384 = null;
-            this.tsbDecreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent_remove;
+            this.tsbDecreaseIndent.Image = global::Chummer.Properties.Resources.text_indent_remove_16;
+            this.tsbDecreaseIndent.ImageDpi120 = global::Chummer.Properties.Resources.text_indent_remove_20;
+            this.tsbDecreaseIndent.ImageDpi144 = global::Chummer.Properties.Resources.text_indent_remove_24;
+            this.tsbDecreaseIndent.ImageDpi192 = global::Chummer.Properties.Resources.text_indent_remove_32;
+            this.tsbDecreaseIndent.ImageDpi288 = global::Chummer.Properties.Resources.text_indent_remove_48;
+            this.tsbDecreaseIndent.ImageDpi384 = global::Chummer.Properties.Resources.text_indent_remove_64;
+            this.tsbDecreaseIndent.ImageDpi96 = global::Chummer.Properties.Resources.text_indent_remove_16;
             this.tsbDecreaseIndent.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbDecreaseIndent.Name = "tsbDecreaseIndent";
             this.tsbDecreaseIndent.Size = new System.Drawing.Size(23, 20);
@@ -406,6 +413,7 @@ namespace Chummer.UI.Editors
             this.rtbContent.TabStop = false;
             this.rtbContent.Text = "";
             this.rtbContent.SelectionChanged += new System.EventHandler(this.UpdateButtons);
+            this.rtbContent.TextChanged += new System.EventHandler(this.rtbContent_TextChanged);
             this.rtbContent.Enter += new System.EventHandler(this.rtbContent_Enter);
             this.rtbContent.KeyDown += new System.Windows.Forms.KeyEventHandler(this.rtbContent_KeyDown);
             this.rtbContent.Leave += new System.EventHandler(this.rtbContent_Leave);

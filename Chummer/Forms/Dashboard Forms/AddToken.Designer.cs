@@ -58,7 +58,7 @@ namespace Chummer
             // 
             // btnBrowse
             // 
-            this.btnBrowse.BackgroundImage = global::Chummer.Properties.Resources.folder_page;
+            this.btnBrowse.BackgroundImage = global::Chummer.Properties.Resources.folder_page_16;
             this.btnBrowse.BackgroundImageLayout = System.Windows.Forms.ImageLayout.Center;
             this.btnBrowse.Location = new System.Drawing.Point(248, 12);
             this.btnBrowse.MaximumSize = new System.Drawing.Size(24, 24);

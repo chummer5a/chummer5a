@@ -66,61 +66,15 @@
       <name>Hong Kong Sourcebook</name>
       <hide />
     </book>
+    <!-- Region German (not specifically included in Missions FAQ) -->
+    <book xpathfilter="contains(name, 'German')">
+      <hide />
+    </book>
+    <!-- End Region -->
     <book>
-      <name>Shadowrun 2050 (5th Edition)</name>
+      <id>71a6304e-03dc-41db-be01-a86acab1517b</id>
       <!-- Shadowrun 2050 is for 5e in German, but 4e in English. So we need to hide it because we only have the 5e version in Chummer5a, which is German-only -->
       <hide />
     </book>
-    <!-- End Region -->
-    <!-- Region German (not specifically included in Missions FAQ) -->
-    <book>
-      <name>Shadowrun 5th Edition (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Street Grimoire (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Run Faster (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch 2 (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Schattenhandbuch 3 (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Rigger 5.0 (German-exclusive Content)</name>
-      <hide />
-    </book>
-    <book>
-      <name>State of the Art ADL (German Handbook)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Hamburg (German-exclusive)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Datapuls SOTA 2080 (German-exclusive)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Datapuls Verschlusssache (German-exclusive)</name>
-      <hide />
-    </book>
-    <book>
-      <name>Grimmes Erwachen (German-exclusive)</name>
-      <hide />
-    </book>
-    <!-- End Region -->
   </books>
 </chummer>

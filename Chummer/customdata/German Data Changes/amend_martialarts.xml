@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+    Chummer5a is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Chummer5a is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+    You can obtain the full source code for Chummer5a at
+    https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <martialart>
+    <id>21bc338f-7b28-49df-9d11-e4db076404be</id>
+	<techniques amendoperation="replace">
+        <technique>
+          <name>Ballestra</name>
+        </technique>
+        <technique>
+          <name>Multiple Opponent Combat</name>
+        </technique>
+        <technique>
+          <name>Multiple Opponent Defense (Friends in Melee)</name>
+        </technique>
+        <technique>
+          <name>Opposing Force (Parry)</name>
+        </technique>
+        <technique>
+          <name>Riposte</name>
+        </technique>
+        <technique>
+          <name>Yielding Force (Riposte)</name>
+        </technique>
+        <technique>
+          <name>Neijia</name>
+        </technique>
+        <technique>
+          <name>Strike the Darkness</name>
+        </technique>
+      </techniques>
+  </martialart>
+</chummer>

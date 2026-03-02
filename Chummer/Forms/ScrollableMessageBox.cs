@@ -19,6 +19,8 @@
 
 using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.Forms
@@ -44,6 +46,30 @@ namespace Chummer.Forms
                    = ThreadSafeForm<ScrollableMessageBox>.Get(
                        () => new ScrollableMessageBox(text, caption, buttons, icon, defButton, options)))
                 return frmMessageBox.ShowDialogSafe(owner);
+        }
+
+        public static async Task<DialogResult> ShowAsync(string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK,
+            MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1,
+            MessageBoxOptions options = 0, CancellationToken token = default)
+        {
+            using (ThreadSafeForm<ScrollableMessageBox> frmMessageBox
+                   = await ThreadSafeForm<ScrollableMessageBox>.GetAsync(
+                       () => new ScrollableMessageBox(text, caption, buttons, icon, defButton, options), token).ConfigureAwait(false))
+            {
+                return await frmMessageBox.ShowDialogSafeAsync(token: token).ConfigureAwait(false);
+            }
+        }
+
+        public static async Task<DialogResult> ShowAsync(IWin32Window owner, string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK,
+            MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1,
+            MessageBoxOptions options = 0, CancellationToken token = default)
+        {
+            using (ThreadSafeForm<ScrollableMessageBox> frmMessageBox
+                   = await ThreadSafeForm<ScrollableMessageBox>.GetAsync(
+                       () => new ScrollableMessageBox(text, caption, buttons, icon, defButton, options), token).ConfigureAwait(false))
+            {
+                return await frmMessageBox.ShowDialogSafeAsync(owner, token).ConfigureAwait(false);
+            }
         }
 
         private ScrollableMessageBox(string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1, MessageBoxOptions options = 0)

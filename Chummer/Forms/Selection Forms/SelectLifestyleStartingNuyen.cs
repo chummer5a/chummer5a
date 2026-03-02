@@ -36,10 +36,11 @@ namespace Chummer
 
         public SelectLifestyleStartingNuyen(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         [Obsolete("This constructor is for use by form designers only.", true)]
@@ -70,26 +71,24 @@ namespace Chummer
             await RefreshResultLabel().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshResultLabel(CancellationToken token = default)
+        private async Task RefreshResultLabel(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-                await lblResult.DoThreadSafeAsync(x => x.Text = strSpace + '+' + strSpace
-                                                                + Extra.ToString("#,0", GlobalSettings.CultureInfo)
-                                                                + ')' +
-                                                                strSpace + '×'
-                                                                + strSpace + (SelectedLifestyle?.Multiplier ?? 0)
-                                                                .ToString(
-                                                                    _objCharacter.Settings.NuyenFormat
-                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                    GlobalSettings.CultureInfo)
-                                                                + strSpace + '=' + strSpace +
-                                                                StartingNuyen.ToString(
-                                                                    _objCharacter.Settings.NuyenFormat
-                                                                    + LanguageManager.GetString("String_NuyenSymbol"),
-                                                                    GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false)
+                    + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                decimal decMultiplier = SelectedLifestyle != null ? await SelectedLifestyle.GetMultiplierAsync(token).ConfigureAwait(false) : 0;
+                string strText = ")" + strSpace + "×" + strSpace +
+                                 decMultiplier.ToString(strFormat, GlobalSettings.CultureInfo) +
+                                 strSpace + "=" + strSpace +
+                                 (await GetStartingNuyenAsync(token).ConfigureAwait(false)).ToString(strFormat, GlobalSettings.CultureInfo);
+                if (Extra != 0)
+                {
+                    strText = strSpace + "+" + strSpace + Extra.ToString("#,0.##", GlobalSettings.CultureInfo) + strText;
+                }
+                await lblResult.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -102,25 +101,27 @@ namespace Chummer
             await RefreshBaseLifestyle().ConfigureAwait(false);
         }
 
-        private async ValueTask RefreshBaseLifestyle()
+        private async Task RefreshBaseLifestyle(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (_blnIsSelectLifestyleRefreshing)
                 return;
-            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) < 0)
+            if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) < 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
                 _objLifestyle
-                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false))
+                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                     .Value as Lifestyle;
+                int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
                 string strDice = string.Format(GlobalSettings.CultureInfo,
-                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf").ConfigureAwait(false),
-                                               SelectedLifestyle?.Dice ?? 0);
-                await lblDice.DoThreadSafeAsync(x => x.Text = strDice).ConfigureAwait(false);
-                await RefreshCalculation().ConfigureAwait(false);
-                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = SelectedLifestyle?.Dice > 0).ConfigureAwait(false);
-                await DoRoll().ConfigureAwait(false);
+                                               await LanguageManager.GetStringAsync("Label_LifestyleNuyen_ResultOf", token: token).ConfigureAwait(false),
+                                               intDice);
+                await lblDice.DoThreadSafeAsync(x => x.Text = strDice, token).ConfigureAwait(false);
+                await RefreshCalculation(token).ConfigureAwait(false);
+                await cmdRoll.DoThreadSafeAsync(x => x.Enabled = intDice > 0, token).ConfigureAwait(false);
+                await DoRoll(token).ConfigureAwait(false);
             }
             finally
             {
@@ -128,26 +129,31 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshSelectLifestyle()
+        private async Task RefreshSelectLifestyle(CancellationToken token = default)
         {
-            _blnIsSelectLifestyleRefreshing = true;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                _blnIsSelectLifestyleRefreshing = true;
                 try
                 {
+                    decimal decPreferredExpectedValue = 0;
                     Lifestyle objPreferredLifestyle = null;
                     ListItem objPreferredLifestyleItem = default;
                     Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(
                         x => x.SelectedIndex >= 0
                             ? ((ListItem) x.SelectedItem).Value as Lifestyle
-                            : null).ConfigureAwait(false);
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                            : null, token).ConfigureAwait(false);
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
                     {
-                        foreach (Lifestyle objLifestyle in _objCharacter.Lifestyles)
+                        await _objCharacter.Lifestyles.ForEachAsync(async objLifestyle =>
                         {
-                            ListItem objLifestyleItem = new ListItem(objLifestyle, await objLifestyle.GetCurrentDisplayNameAsync().ConfigureAwait(false));
+                            ListItem objLifestyleItem = new ListItem(objLifestyle,
+                                                                     await objLifestyle
+                                                                           .GetCurrentDisplayNameAsync(token)
+                                                                           .ConfigureAwait(false));
                             lstLifestyleItems.Add(objLifestyleItem);
                             // We already selected a lifestyle, so keep the selection if possible despite the refresh
                             if (objCurrentlySelectedLifestyle != null)
@@ -155,24 +161,29 @@ namespace Chummer
                                 if (objCurrentlySelectedLifestyle == objLifestyle)
                                     objPreferredLifestyleItem = objLifestyleItem;
                             }
-                            else if (objPreferredLifestyle == null ||
-                                     objLifestyle.ExpectedValue > objPreferredLifestyle.ExpectedValue)
+                            else
                             {
-                                objPreferredLifestyleItem = objLifestyleItem;
-                                objPreferredLifestyle = objLifestyle;
+                                decimal decLoopExpectedValue = await objLifestyle.GetExpectedValueAsync(token).ConfigureAwait(false);
+                                if (objPreferredLifestyle == null ||
+                                     decLoopExpectedValue > decPreferredExpectedValue)
+                                {
+                                    objPreferredLifestyleItem = objLifestyleItem;
+                                    objPreferredLifestyle = objLifestyle;
+                                    decPreferredExpectedValue = decLoopExpectedValue;
+                                }
                             }
-                        }
+                        }, token).ConfigureAwait(false);
 
                         lstLifestyleItems.Sort(CompareListItems.CompareNames);
 
-                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems).ConfigureAwait(false);
+                        await cboSelectLifestyle.PopulateWithListItemsAsync(lstLifestyleItems, token).ConfigureAwait(false);
                         await cboSelectLifestyle.DoThreadSafeAsync(x =>
                         {
                             x.SelectedItem = objPreferredLifestyleItem;
                             if (x.SelectedIndex < 0 && lstLifestyleItems.Count > 0)
                                 x.SelectedIndex = 0;
                             x.Enabled = lstLifestyleItems.Count > 1;
-                        }).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -180,7 +191,7 @@ namespace Chummer
                     _blnIsSelectLifestyleRefreshing = false;
                 }
 
-                await RefreshBaseLifestyle().ConfigureAwait(false);
+                await RefreshBaseLifestyle(token).ConfigureAwait(false);
             }
             finally
             {
@@ -188,20 +199,21 @@ namespace Chummer
             }
         }
 
-        private async ValueTask RefreshCalculation(CancellationToken token = default)
+        private async Task RefreshCalculation(CancellationToken token = default)
         {
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
+                int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
                 await nudDiceResult.DoThreadSafeAsync(x =>
                 {
                     x.SuspendLayout();
                     try
                     {
-                        x.MinimumAsInt =
+                        x.Minimum =
                             int.MinValue; // Temporarily set this to avoid crashing if we shift from something with more than 6 dice to something with less.
-                        x.MaximumAsInt = SelectedLifestyle?.Dice * 6 ?? 0;
-                        x.MinimumAsInt = SelectedLifestyle?.Dice ?? 0;
+                        x.Maximum = intDice * 6;
+                        x.Minimum = intDice;
                     }
                     finally
                     {
@@ -231,15 +243,17 @@ namespace Chummer
             }
         }
 
-        private async ValueTask DoRoll(CancellationToken token = default)
+        private async Task DoRoll(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
+            int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
             int intResult = 0;
-            for (int i = 0; i < SelectedLifestyle.Dice; ++i)
+            for (int i = 0; i < intDice; ++i)
             {
-                intResult += await GlobalSettings.RandomGenerator.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
+                intResult += await Utils.GlobalRandom.NextD6ModuloBiasRemovedAsync(token: token).ConfigureAwait(false);
             }
 
-            await nudDiceResult.DoThreadSafeAsync(x => x.ValueAsInt = intResult, token: token).ConfigureAwait(false);
+            await nudDiceResult.DoThreadSafeAsync(x => x.Value = intResult, token: token).ConfigureAwait(false);
         }
 
         #endregion Control Events
@@ -254,7 +268,15 @@ namespace Chummer
         /// <summary>
         /// The total amount of Nuyen resulting from the dice roll.
         /// </summary>
-        public decimal StartingNuyen => ((nudDiceResult.Value + Extra) * SelectedLifestyle?.Multiplier) ?? 0;
+        public async Task<decimal> GetStartingNuyenAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decMultiplier = SelectedLifestyle != null ? await SelectedLifestyle.GetMultiplierAsync(token).ConfigureAwait(false) : 0;
+            if (decMultiplier == 0)
+                return 0;
+            decimal decDiceResult = await nudDiceResult.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+            return (decDiceResult + Extra) * decMultiplier;
+        }
 
         /// <summary>
         /// The currently selected lifestyle

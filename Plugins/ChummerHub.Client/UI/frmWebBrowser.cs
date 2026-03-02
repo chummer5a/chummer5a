@@ -56,24 +56,29 @@ namespace ChummerHub.Client.UI
 
         private void frmWebBrowser_Load(object sender, EventArgs e)
         {
-            Invoke((Action)(() =>
-                {
-                    SuspendLayout();
-                    webBrowser2.Navigated += webBrowser2_Navigated;
-                    webBrowser2.ScriptErrorsSuppressed = true;
-                    webBrowser2.Navigate(LoginUrl);
-                    BringToFront();
-                })
-                );
+            SuspendLayout();
+            try
+            {
+                webBrowser2.Navigated += webBrowser2_Navigated;
+                webBrowser2.ScriptErrorsSuppressed = true;
+                webBrowser2.Navigate(LoginUrl);
+                BringToFront();
+            }
+            finally
+            {
+                ResumeLayout();
+            }
         }
 
         private bool login;
 
         private async void webBrowser2_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
+            if (e.Url == null)
+                return;
             if(e.Url.AbsoluteUri == LoginUrl.AbsoluteUri)
                 return;
-            if((e.Url.AbsoluteUri.Contains("/Identity/Account/Logout")))
+            if(e.Url.AbsoluteUri.Contains("/Identity/Account/Logout"))
             {
                 //maybe we are logged in now
                 GetCookieContainer();
@@ -94,7 +99,7 @@ namespace ChummerHub.Client.UI
                     if (body?.CallSuccess == true)
                     {
                         login = true;
-                        Program.MainForm.Invoke(new Action(() =>
+                        await Program.MainForm.DoThreadSafeAsync(x =>
                         {
                             SINnerVisibility tempvis = Backend.Utils.DefaultSINnerVisibility
                                                        ?? new SINnerVisibility
@@ -103,8 +108,8 @@ namespace ChummerHub.Client.UI
                                                            IsPublic = true
                                                        };
                             tempvis.AddVisibilityForEmail(body.MyApplicationUser?.Email);
-                            Close();
-                        }));
+                            x.Close();
+                        }).ConfigureAwait(false);
                     }
                     else
                     {

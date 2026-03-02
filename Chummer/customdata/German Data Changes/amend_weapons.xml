@@ -21,6 +21,11 @@
 <chummer>
   <weapons>
     <weapon>
+      <!-- Mortimer of London 'Belgrave' Sword Cane -->
+      <id>dfec9209-7bf7-49fa-b816-da173fad9963</id>
+      <accuracy>4</accuracy>
+    </weapon>
+    <weapon>
       <!-- Ares HVAR -->
       <id>413200d1-fbd4-485f-8a18-152b60cfb290</id>
       <shortburst>4</shortburst>

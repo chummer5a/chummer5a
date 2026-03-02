@@ -32,6 +32,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void VersionHistory_Load(object sender, EventArgs e)
@@ -44,10 +45,10 @@ namespace Chummer
             }
             catch
             {
-                Program.ShowScrollableMessageBox(this,
-                                                 await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
-                                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
-                                                 MessageBoxIcon.Exclamation);
+                await Program.ShowScrollableMessageBoxAsync(this,
+                    await LanguageManager.GetStringAsync("Message_History_FileNotFound").ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_FileNotFound").ConfigureAwait(false), MessageBoxButtons.OK,
+                    MessageBoxIcon.Exclamation).ConfigureAwait(false);
                 await this.DoThreadSafeAsync(x => x.Close()).ConfigureAwait(false);
                 return;
             }

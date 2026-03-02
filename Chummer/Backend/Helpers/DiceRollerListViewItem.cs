@@ -55,7 +55,7 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetResult(int value, CancellationToken token = default)
+        public async Task SetResult(int value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _intResult, value) == value)
                 return;
@@ -75,11 +75,11 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetTargetAsync(int value, CancellationToken token = default)
+        public Task SetTargetAsync(int value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _intTarget, value) == value)
-                return;
-            await UpdateColorAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateColorAsync(token);
         }
 
         public int GlitchMin
@@ -93,11 +93,11 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetGlitchMinAsync(int value, CancellationToken token = default)
+        public Task SetGlitchMinAsync(int value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _intGlitchMin, value) == value)
-                return;
-            await UpdateColorAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateColorAsync(token);
         }
 
         public bool BubbleDie
@@ -112,12 +112,12 @@ namespace Chummer
             }
         }
 
-        public async ValueTask SetBubbleDie(bool value, CancellationToken token = default)
+        public Task SetBubbleDie(bool value, CancellationToken token = default)
         {
             int intNewValue = value.ToInt32();
             if (Interlocked.Exchange(ref _intBubbleDie, intNewValue) == intNewValue)
-                return;
-            await UpdateTextAsync(token).ConfigureAwait(false);
+                return Task.CompletedTask;
+            return UpdateTextAsync(token);
         }
 
         public bool IsHit => Result >= Target && !BubbleDie;
@@ -128,18 +128,18 @@ namespace Chummer
         {
             string strText = BubbleDie
                 ? LanguageManager.GetString("String_BubbleDie", token: token)
-                  + LanguageManager.GetString("String_Space", token: token) + '('
-                  + Result.ToString(GlobalSettings.CultureInfo) + ')'
+                  + LanguageManager.GetString("String_Space", token: token) + "("
+                  + Result.ToString(GlobalSettings.CultureInfo) + ")"
                 : Result.ToString(GlobalSettings.CultureInfo);
-            Utils.RunOnMainThread(() => Text = strText, token);
+            Utils.RunOnMainThread(() => Text = strText, token: token);
         }
 
-        private async ValueTask UpdateTextAsync(CancellationToken token = default)
+        private async Task UpdateTextAsync(CancellationToken token = default)
         {
             string strText = BubbleDie
                 ? await LanguageManager.GetStringAsync("String_BubbleDie", token: token).ConfigureAwait(false)
-                  + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                  + Result.ToString(GlobalSettings.CultureInfo) + ')'
+                  + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
+                  + Result.ToString(GlobalSettings.CultureInfo) + ")"
                 : Result.ToString(GlobalSettings.CultureInfo);
             await Utils.RunOnMainThreadAsync(() => Text = strText, token).ConfigureAwait(false);
         }
@@ -177,10 +177,10 @@ namespace Chummer
             {
                 ForeColor = objForeColor;
                 BackColor = objBackColor;
-            }, token);
+            }, token: token);
         }
 
-        private async ValueTask UpdateColorAsync(CancellationToken token = default)
+        private Task UpdateColorAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             Color objForeColor;
@@ -189,31 +189,31 @@ namespace Chummer
             {
                 if (IsGlitch)
                 {
-                    objForeColor = await ColorManager.GetDieGlitchHitForeAsync(token).ConfigureAwait(false);
-                    objBackColor = await ColorManager.GetDieGlitchHitBackgroundAsync(token).ConfigureAwait(false);
+                    objForeColor = ColorManager.DieGlitchHitFore;
+                    objBackColor = ColorManager.DieGlitchHitBackground;
                 }
                 else
                 {
-                    objForeColor = await ColorManager.GetDieHitForeAsync(token).ConfigureAwait(false);
-                    objBackColor = await ColorManager.GetDieHitBackgroundAsync(token).ConfigureAwait(false);
+                    objForeColor = ColorManager.DieHitFore;
+                    objBackColor = ColorManager.DieHitBackground;
                 }
             }
             else if (IsGlitch)
             {
-                objForeColor = await ColorManager.GetDieGlitchForeAsync(token).ConfigureAwait(false);
-                objBackColor = await ColorManager.GetDieGlitchBackgroundAsync(token).ConfigureAwait(false);
+                objForeColor = ColorManager.DieGlitchFore;
+                objBackColor = ColorManager.DieGlitchBackground;
             }
             else
             {
-                objForeColor = await ColorManager.GetWindowTextAsync(token).ConfigureAwait(false);
-                objBackColor = await ColorManager.GetWindowAsync(token).ConfigureAwait(false);
+                objForeColor = ColorManager.WindowText;
+                objBackColor = ColorManager.Window;
             }
 
-            await Utils.RunOnMainThreadAsync(() =>
+            return Utils.RunOnMainThreadAsync(() =>
             {
                 ForeColor = objForeColor;
                 BackColor = objBackColor;
-            }, token).ConfigureAwait(false);
+            }, token);
         }
     }
 }

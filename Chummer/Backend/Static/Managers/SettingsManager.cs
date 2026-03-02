@@ -18,12 +18,14 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml.XPath;
+using Chummer.Backend.Enums;
 using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
@@ -31,8 +33,9 @@ namespace Chummer
     public static class SettingsManager
     {
         private static int _intDicLoadedCharacterSettingsLoadedStatus = -1;
-        private static readonly LockingDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new LockingDictionary<string, CharacterSettings>();
+        private static readonly ConcurrentDictionary<string, CharacterSettings> s_DicLoadedCharacterSettings = new ConcurrentDictionary<string, CharacterSettings>();
         private static readonly FileSystemWatcher s_ObjSettingsFolderWatcher;
+        private static readonly DebuggableSemaphoreSlim s_ObjSettingsFolderWatcherSemaphore;
 
         static SettingsManager()
         {
@@ -49,6 +52,7 @@ namespace Chummer
                 }
             }
 
+            s_ObjSettingsFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
             s_ObjSettingsFolderWatcher = new FileSystemWatcher(strSettingsPath, "*.xml");
             s_ObjSettingsFolderWatcher.BeginInit();
             s_ObjSettingsFolderWatcher.Created += ObjSettingsFolderWatcherOnChanged;
@@ -67,16 +71,40 @@ namespace Chummer
                 switch (e.ChangeType)
                 {
                     case WatcherChangeTypes.Created:
-                        await AddSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await AddSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
 
                     case WatcherChangeTypes.Deleted:
-                        await RemoveSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await RemoveSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
 
                     case WatcherChangeTypes.Changed:
                     case WatcherChangeTypes.Renamed:
-                        await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        await s_ObjSettingsFolderWatcherSemaphore.WaitAsync().ConfigureAwait(false);
+                        try
+                        {
+                            await ReloadSpecificCustomCharacterSetting(Path.GetFileName(e.FullPath)).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            s_ObjSettingsFolderWatcherSemaphore.Release();
+                        }
                         break;
                 }
             }
@@ -87,7 +115,16 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static IAsyncReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings
+        public static IReadOnlyDictionary<string, CharacterSettings> LoadedCharacterSettings => LoadedCharacterSettingsAsModifiable;
+
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static async Task<IReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        {
+            return await GetLoadedCharacterSettingsAsModifiableAsync(token).ConfigureAwait(false);
+        }
+
+        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
+        public static ConcurrentDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
         {
             get
             {
@@ -105,7 +142,8 @@ namespace Chummer
                         throw;
                     }
 
-                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
+                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
+                           && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
                         Utils.SafeSleep();
                 }
                 while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
@@ -114,7 +152,7 @@ namespace Chummer
         }
 
         // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<IAsyncReadOnlyDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsync(CancellationToken token = default)
+        public static async Task<ConcurrentDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
         {
             do
             {
@@ -131,265 +169,226 @@ namespace Chummer
                 }
 
                 while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                       && _intDicLoadedCharacterSettingsLoadedStatus > 0)
+                       && _intDicLoadedCharacterSettingsLoadedStatus >= 0)
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
 
             return s_DicLoadedCharacterSettings;
         }
 
-        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static LockingDictionary<string, CharacterSettings> LoadedCharacterSettingsAsModifiable
+        private static void LoadCharacterSettings(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
+            s_DicLoadedCharacterSettings.Clear();
+            foreach (CharacterSettings objSettings in lstSettings)
+                objSettings.Dispose();
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
             {
-                do
+                CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                try
                 {
+                    token.ThrowIfCancellationRequested();
+                    if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
+                                                             objNewCharacterSettings))
+                        objNewCharacterSettings.Dispose();
+                }
+                catch
+                {
+                    objNewCharacterSettings.Dispose();
+                    throw;
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 0);
+                }
+
+                return;
+            }
+
+            Utils.RunWithoutThreadLock(() =>
+            {
+                IEnumerable<XPathNavigator> xmlSettingsIterator
+                    = XmlManager.LoadXPath("settings.xml", token: token).SelectAndCacheExpression("/chummer/settings/setting", token)
+                    .Cast<XPathNavigator>();
+                Parallel.ForEach(xmlSettingsIterator,
+                    (xmlBuiltInSetting, state) =>
+                    {
+                        if (token.IsCancellationRequested)
+                            state.Stop();
+                        if (!state.ShouldExitCurrentIteration)
+                        {
+                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                            try
+                            {
+                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting, token)
+                                    || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                        && !GlobalSettings.LifeModuleEnabled)
+                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                        objNewCharacterSettings))
+                                {
+                                    objNewCharacterSettings.Dispose();
+                                }
+
+                            }
+                            catch (OperationCanceledException)
+                            {
+                                state.Stop();
+                                objNewCharacterSettings.Dispose();
+                                throw;
+                            }
+                            catch
+                            {
+                                objNewCharacterSettings.Dispose();
+                                throw;
+                            }
+                        }
+                    });
+            }, token);
+            if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 1, 0) != 0)
+                return;
+
+            string strSettingsPath = Utils.GetSettingsFolderPath;
+            if (Directory.Exists(strSettingsPath))
+            {
+                Utils.RunWithoutThreadLock(() =>
+                {
+                    Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"),
+                        (strSettingsFilePath, state) =>
+                        {
+                            if (token.IsCancellationRequested)
+                                state.Stop();
+                            if (!state.ShouldExitCurrentIteration)
+                            {
+                                CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                                try
+                                {
+                                    string strSettingName = Path.GetFileName(strSettingsFilePath);
+                                    if (!objNewCharacterSettings.Load(strSettingName, false, false, token)
+                                        || (objNewCharacterSettings.BuildMethodIsLifeModule
+                                            && !GlobalSettings.LifeModuleEnabled)
+                                        || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
+                                            objNewCharacterSettings))
+                                    {
+                                        objNewCharacterSettings.Dispose();
+                                    }
+                                }
+                                catch (OperationCanceledException)
+                                {
+                                    state.Stop();
+                                    objNewCharacterSettings.Dispose();
+                                    throw;
+                                }
+                                catch
+                                {
+                                    objNewCharacterSettings.Dispose();
+                                    throw;
+                                }
+                            }
+                        });
+                }, token);
+            }
+
+            Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
+        }
+
+        private static async Task LoadCharacterSettingsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _intDicLoadedCharacterSettingsLoadedStatus = 0;
+            List<CharacterSettings> lstSettings = s_DicLoadedCharacterSettings.GetValuesToListSafe();
+            s_DicLoadedCharacterSettings.Clear();
+            foreach (CharacterSettings objSettings in lstSettings)
+                await objSettings.DisposeAsync().ConfigureAwait(false);
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
+            {
+                CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                try
+                {
+                    if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
+                            objNewCharacterSettings))
+                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+                finally
+                {
+                    Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 0);
+                }
+
+                return;
+            }
+
+            await ParallelExtensions.ForEachAsync((await XmlManager.LoadXPathAsync("settings.xml", token: token)
+                    .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token),
+                xmlBuiltInSetting => LoadSettings(xmlBuiltInSetting as XPathNavigator), token).ConfigureAwait(false);
+
+            async Task LoadSettings(XPathNavigator xmlBuiltInSetting)
+            {
+                CharacterSettings objNewCharacterSettings = new CharacterSettings();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, token)
+                                                      .ConfigureAwait(false)
+                        || (!GlobalSettings.LifeModuleEnabled
+                            && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token)
+                                                            .ConfigureAwait(false))
+                        || !s_DicLoadedCharacterSettings.TryAdd(
+                            await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                            objNewCharacterSettings))
+                    {
+                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                catch
+                {
+                    await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                    throw;
+                }
+            }
+            if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 1, 0) != 0)
+                return;
+
+            string strSettingsPath = Utils.GetSettingsFolderPath;
+            if (Directory.Exists(strSettingsPath))
+            {
+                await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), LoadSettingsFromFile, token).ConfigureAwait(false);
+
+                async Task LoadSettingsFromFile(string strSettingsFilePath)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strSettingName = Path.GetFileName(strSettingsFilePath);
+                    CharacterSettings objNewCharacterSettings = new CharacterSettings();
                     try
-                    {
-                        if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                            < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                            LoadCharacterSettings();
-                    }
-                    catch
-                    {
-                        _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                        throw;
-                    }
-
-                    while (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
-                        Utils.SafeSleep();
-                }
-                while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-                return s_DicLoadedCharacterSettings;
-            }
-        }
-
-        // Looks awkward to have two different versions of the same property, but this allows for easier tracking of where character settings are being modified
-        public static async ValueTask<LockingDictionary<string, CharacterSettings>> GetLoadedCharacterSettingsAsModifiableAsync(CancellationToken token = default)
-        {
-            do
-            {
-                try
-                {
-                    if (Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 0, -1)
-                        < 0) // Makes sure if we end up calling this from multiple threads, only one does loading at a time
-                        await LoadCharacterSettingsAsync(token).ConfigureAwait(false);
-                }
-                catch
-                {
-                    _intDicLoadedCharacterSettingsLoadedStatus = -1;
-                    throw;
-                }
-
-                while (_intDicLoadedCharacterSettingsLoadedStatus <= 1
-                       && _intDicLoadedCharacterSettingsLoadedStatus > 0)
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-            } while (_intDicLoadedCharacterSettingsLoadedStatus < 0);
-
-            return s_DicLoadedCharacterSettings;
-        }
-
-        private static void LoadCharacterSettings()
-        {
-            _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            try
-            {
-                s_DicLoadedCharacterSettings.Clear();
-                try
-                {
-                    if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                    {
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        try
-                        {
-                            if (!s_DicLoadedCharacterSettings.TryAdd(GlobalSettings.DefaultCharacterSetting,
-                                                                     objNewCharacterSettings))
-                                objNewCharacterSettings.Dispose();
-                        }
-                        catch
-                        {
-                            objNewCharacterSettings.Dispose();
-                            throw;
-                        }
-
-                        return;
-                    }
-
-                    Utils.RunWithoutThreadLock(async () =>
-                    {
-                        IEnumerable<XPathNavigator> xmlSettingsIterator
-                            = (await (await XmlManager.LoadXPathAsync("settings.xml").ConfigureAwait(false))
-                                     .SelectAndCacheExpressionAsync("/chummer/settings/setting").ConfigureAwait(false)).Cast<XPathNavigator>();
-                        Parallel.ForEach(xmlSettingsIterator, xmlBuiltInSetting =>
-                        {
-                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                            try
-                            {
-                                if (!objNewCharacterSettings.Load(xmlBuiltInSetting)
-                                    || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                        && !GlobalSettings.LifeModuleEnabled)
-                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                                                            objNewCharacterSettings))
-                                    objNewCharacterSettings.Dispose();
-                            }
-                            catch
-                            {
-                                objNewCharacterSettings.Dispose();
-                                throw;
-                            }
-                        });
-                    });
-                }
-                finally
-                {
-                    Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
-                }
-
-                string strSettingsPath = Utils.GetSettingsFolderPath;
-                if (Directory.Exists(strSettingsPath))
-                {
-                    Utils.RunWithoutThreadLock(() =>
-                    {
-                        Parallel.ForEach(Directory.EnumerateFiles(strSettingsPath, "*.xml"), strSettingsFilePath =>
-                        {
-                            string strSettingName = Path.GetFileName(strSettingsFilePath);
-                            CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                            try
-                            {
-                                if (!objNewCharacterSettings.Load(strSettingName, false)
-                                    || (objNewCharacterSettings.BuildMethodIsLifeModule
-                                        && !GlobalSettings.LifeModuleEnabled)
-                                    || !s_DicLoadedCharacterSettings.TryAdd(objNewCharacterSettings.DictionaryKey,
-                                                                            objNewCharacterSettings))
-                                    objNewCharacterSettings.Dispose();
-                            }
-                            catch
-                            {
-                                objNewCharacterSettings.Dispose();
-                                throw;
-                            }
-                        });
-                    });
-                }
-            }
-            finally
-            {
-                Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
-            }
-        }
-
-        private static async ValueTask LoadCharacterSettingsAsync(CancellationToken token = default)
-        {
-            _intDicLoadedCharacterSettingsLoadedStatus = 0;
-            try
-            {
-                await s_DicLoadedCharacterSettings.ClearAsync(token).ConfigureAwait(false);
-                try
-                {
-                    if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
-                    {
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        try
-                        {
-                            if (!await s_DicLoadedCharacterSettings.TryAddAsync(GlobalSettings.DefaultCharacterSetting,
-                                    objNewCharacterSettings, token).ConfigureAwait(false))
-                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                            throw;
-                        }
-
-                        return;
-                    }
-
-                    List<Task> lstTasks = new List<Task>();
-                    foreach (XPathNavigator xmlBuiltInSetting in await (await XmlManager
-                                                                              .LoadXPathAsync(
-                                                                                  "settings.xml", token: token)
-                                                                              .ConfigureAwait(false))
-                                                                       .SelectAndCacheExpressionAsync(
-                                                                           "/chummer/settings/setting", token: token)
-                                                                       .ConfigureAwait(false))
-                    {
-                        lstTasks.Add(Task.Run(() => LoadSetting(xmlBuiltInSetting), token));
-                    }
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-
-                    async Task LoadSetting(XPathNavigator xmlBuiltInSetting)
-                    {
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        try
-                        {
-                            if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, token)
-                                                              .ConfigureAwait(false)
-                                || (!GlobalSettings.LifeModuleEnabled
-                                    && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token)
-                                                                    .ConfigureAwait(false))
-                                || !await s_DicLoadedCharacterSettings.TryAddAsync(
-                                    await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                                    objNewCharacterSettings, token).ConfigureAwait(false))
-                            {
-                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        catch
-                        {
-                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                            throw;
-                        }
-                    }
-                }
-                finally
-                {
-                    Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
-                }
-
-                string strSettingsPath = Utils.GetSettingsFolderPath;
-                if (Directory.Exists(strSettingsPath))
-                {
-                    List<Task> lstTasks = new List<Task>();
-                    foreach (string strSettingsFilePath in Directory.EnumerateFiles(strSettingsPath, "*.xml"))
-                        lstTasks.Add(Task.Run(() => LoadSetting(strSettingsFilePath), token));
-
-                    await Task.WhenAll(lstTasks).ConfigureAwait(false);
-
-                    async Task LoadSetting(string strSettingsFilePath)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strSettingName = Path.GetFileName(strSettingsFilePath);
-                        CharacterSettings objNewCharacterSettings = new CharacterSettings();
-                        try
-                        {
-                            if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token)
-                                                              .ConfigureAwait(false)
-                                || (!GlobalSettings.LifeModuleEnabled
-                                    && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
-                                || !await s_DicLoadedCharacterSettings.TryAddAsync(
-                                    await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
-                                    objNewCharacterSettings, token).ConfigureAwait(false))
-                            {
-                                await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        catch
+                        if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, false, token)
+                                                          .ConfigureAwait(false)
+                            || (!GlobalSettings.LifeModuleEnabled
+                                && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                            || !s_DicLoadedCharacterSettings.TryAdd(
+                                await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                objNewCharacterSettings))
                         {
                             await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                            throw;
                         }
+                    }
+                    catch
+                    {
+                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
+                        throw;
                     }
                 }
             }
-            finally
-            {
-                Interlocked.Increment(ref _intDicLoadedCharacterSettingsLoadedStatus);
-            }
+            Interlocked.CompareExchange(ref _intDicLoadedCharacterSettingsLoadedStatus, 2, 1);
         }
 
-        private static async ValueTask AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task AddSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -397,7 +396,7 @@ namespace Chummer
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
             try
             {
-                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, true, token).ConfigureAwait(false)
                     || (objNewCharacterSettings.BuildMethodIsLifeModule
                         && !GlobalSettings.LifeModuleEnabled))
                 {
@@ -406,31 +405,21 @@ namespace Chummer
                 }
 
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                while (true)
+                CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
+                    strKey, objNewCharacterSettings,
+                    async (x, objOldCharacterSettings) =>
+                    {
+                        await objOldCharacterSettings
+                              .CopyValuesAsync(
+                                  objNewCharacterSettings,
+                                  token: token)
+                              .ConfigureAwait(false);
+                        return objOldCharacterSettings;
+                    }, token).ConfigureAwait(false);
+
+                if (objSettingsLoaded != objNewCharacterSettings)
                 {
-                    if (await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
-                                                          .ConfigureAwait(false))
-                    {
-                        return;
-                    }
-
-                    // We somehow already have a setting loaded with this name, so just copy over the values and dispose of the new setting instead
-                    (bool blnSuccess, CharacterSettings objOldCharacterSettings)
-                        = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
-                    {
-                        try
-                        {
-                            await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token)
-                                                         .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                        }
-
-                        return;
-                    }
+                    await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch
@@ -438,22 +427,24 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task RemoveSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
 
             CharacterSettings objSettingsToDelete
-                = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(x => x.Value.FileName == strSettingName, token: token).ConfigureAwait(false)).Value;
+                = s_DicLoadedCharacterSettings.FirstOrDefault(x => x.Value.FileName == strSettingName).Value;
             if (objSettingsToDelete == default)
                 return;
             string strKeyToDelete = await objSettingsToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
 
             try
             {
-                AsyncLazy<string> strBestMatchNewSettingsKey = new AsyncLazy<string>(async () =>
+                AsyncLazy<string> strBestMatchForCreatedNewSettingsKey = new AsyncLazy<string>(async () =>
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
@@ -464,7 +455,27 @@ namespace Chummer
                         // ReSharper disable once AccessToDisposedClosure
                         int intLoopScore
                             = await CalculateCharacterSettingsMatchScore(
-                                objSettingsToDelete, x.Value, token).ConfigureAwait(false);
+                                objSettingsToDelete, x.Value, true, token).ConfigureAwait(false);
+                        if (intLoopScore > intBestScore)
+                        {
+                            intBestScore = intLoopScore;
+                            strReturn = x.Key;
+                        }
+                    }, token: token).ConfigureAwait(false);
+                    return strReturn;
+                }, Utils.JoinableTaskFactory);
+                AsyncLazy<string> strBestMatchForNonCreatedNewSettingsKey = new AsyncLazy<string>(async () =>
+                {
+                    int intBestScore = int.MinValue;
+                    string strReturn = string.Empty;
+                    await s_DicLoadedCharacterSettings.ForEachAsync(async x =>
+                    {
+                        if (strKeyToDelete == x.Key)
+                            return;
+                        // ReSharper disable once AccessToDisposedClosure
+                        int intLoopScore
+                            = await CalculateCharacterSettingsMatchScore(
+                                objSettingsToDelete, x.Value, false, token).ConfigureAwait(false);
                         if (intLoopScore > intBestScore)
                         {
                             intBestScore = intLoopScore;
@@ -475,24 +486,37 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    using (await EnterReadLock.EnterAsync(objCharacter, token).ConfigureAwait(false))
+                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    try
                     {
+                        token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                        {
                             await objCharacter
-                                  .SetSettingsKeyAsync(
-                                      await strBestMatchNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
-                                      token).ConfigureAwait(false);
+                                .SetSettingsKeyAsync(await objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
+                                ? await strBestMatchForCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false)
+                                : await strBestMatchForNonCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
+                                    token).ConfigureAwait(false);
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }, token: token).ConfigureAwait(false);
             }
             finally
             {
-                await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                if (s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out CharacterSettings objRemovedSetting)
+                    && !ReferenceEquals(objRemovedSetting, objSettingsToDelete))
+                    await objRemovedSetting.DisposeAsync().ConfigureAwait(false);
                 await objSettingsToDelete.DisposeAsync().ConfigureAwait(false);
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
+        private static async Task ReloadSpecificCustomCharacterSetting(string strSettingName, CancellationToken token = default)
         {
             if (_intDicLoadedCharacterSettingsLoadedStatus <= 1)
                 return;
@@ -500,7 +524,7 @@ namespace Chummer
             CharacterSettings objNewCharacterSettings = new CharacterSettings();
             try
             {
-                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, token).ConfigureAwait(false)
+                if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, true, token).ConfigureAwait(false)
                     || (objNewCharacterSettings.BuildMethodIsLifeModule
                         && !GlobalSettings.LifeModuleEnabled))
                 {
@@ -509,23 +533,22 @@ namespace Chummer
                 }
 
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                while (true)
-                {
-                    (bool blnSuccess, CharacterSettings objOldCharacterSettings)
-                        = await s_DicLoadedCharacterSettings.TryGetValueAsync(strKey, token).ConfigureAwait(false);
-                    if (blnSuccess)
+                CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
+                    strKey, objNewCharacterSettings,
+                    async (x, objOldCharacterSettings) =>
                     {
-                        await objOldCharacterSettings.CopyValuesAsync(objNewCharacterSettings, token: token)
-                                                     .ConfigureAwait(false);
-                        await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
-                        return;
-                    }
+                        await objOldCharacterSettings
+                              .CopyValuesAsync(
+                                  objNewCharacterSettings,
+                                  token: token)
+                              .ConfigureAwait(false);
+                        return objOldCharacterSettings;
+                    }, token).ConfigureAwait(false);
 
-                    // We ended up changing our dictionary key, so find the first custom setting without a corresponding file and delete it
-                    // (we assume that it's the one that got renamed)
-                    if (!await s_DicLoadedCharacterSettings.TryAddAsync(strKey, objNewCharacterSettings, token)
-                                                           .ConfigureAwait(false))
-                        continue;
+                // We ended up changing our dictionary key, so find the first custom setting without a corresponding file and delete it
+                // (we assume that it's the one that got renamed)
+                if (objSettingsLoaded == objNewCharacterSettings)
+                {
                     CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(
                             async x => !await x.Value.GetBuiltInOptionAsync(token)
                                                .ConfigureAwait(false)
@@ -542,11 +565,15 @@ namespace Chummer
                             if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
                                 await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
                         }, token: token).ConfigureAwait(false);
-                        await s_DicLoadedCharacterSettings.RemoveAsync(strKeyToDelete, token).ConfigureAwait(false);
+                        if (s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out CharacterSettings objRemovedSetting)
+                            && !ReferenceEquals(objRemovedSetting, objToDelete))
+                            await objRemovedSetting.DisposeAsync().ConfigureAwait(false);
                         await objToDelete.DisposeAsync().ConfigureAwait(false);
                     }
-
-                    break;
+                }
+                else
+                {
+                    await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch
@@ -554,82 +581,99 @@ namespace Chummer
                 await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
                 throw;
             }
+
+            await GlobalSettings.ReloadCustomSourcebookInfosAsync(token).ConfigureAwait(false);
         }
 
-        private static async ValueTask<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, CancellationToken token = default)
+        private static async Task<int> CalculateCharacterSettingsMatchScore(CharacterSettings objBaselineSettings, CharacterSettings objOptionsToCheck, bool blnForCreatedCharacter, CancellationToken token = default)
         {
-            int intReturn = int.MaxValue - ((await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false)).RaiseToPower(2)
-                                            + (await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false))
-                                            .RaiseToPower(2))
-                                           .RaiseToPower(0.5m).StandardRound();
+            int intReturn = int.MaxValue;
             int intBaseline = await objOptionsToCheck.GetBuiltInOptionAsync(token).ConfigureAwait(false) ? 5 : 4;
             CharacterBuildMethod eLeftBuildMethod = await objBaselineSettings.GetBuildMethodAsync(token).ConfigureAwait(false);
             CharacterBuildMethod eRightBuildMethod = await objOptionsToCheck.GetBuildMethodAsync(token).ConfigureAwait(false);
-            if (eLeftBuildMethod != eRightBuildMethod)
+            int intDeltaMaxKarma = await objBaselineSettings.GetBuildKarmaAsync(token).ConfigureAwait(false) -  await objOptionsToCheck.GetBuildKarmaAsync(token).ConfigureAwait(false);
+            decimal decDeltaMaxNuyen = await objBaselineSettings.GetNuyenMaximumBPAsync(token).ConfigureAwait(false) - await objOptionsToCheck.GetNuyenMaximumBPAsync(token).ConfigureAwait(false);
+            if (blnForCreatedCharacter)
             {
-                if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                if (eLeftBuildMethod != eRightBuildMethod)
                 {
-                    intBaseline += 2;
-                    intReturn -= int.MaxValue / 2;
+                    if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                        intReturn -= 2;
+                    else
+                        intReturn -= 4;
                 }
-                else
-                {
-                    intBaseline += 4;
-                    intReturn -= int.MaxValue;
-                }
-            }
+                if (intDeltaMaxKarma != 0)
+                    intReturn -= Math.Min(Math.Abs(intDeltaMaxKarma), 2);
+                if (decDeltaMaxNuyen != 0)
+                    intReturn -= Math.Min(Math.Abs(decDeltaMaxNuyen).StandardRound(), 2);
 
-            int intBaselineCustomDataCount = objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
-            if (intBaselineCustomDataCount == 0)
-            {
-                intBaselineCustomDataCount = objBaselineSettings.EnabledCustomDataDirectoryInfos.Count;
-                if (intBaselineCustomDataCount > 0)
-                {
-                    intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
-                }
-            }
-            else if (objBaselineSettings.EnabledCustomDataDirectoryInfos.Count == 0)
-            {
-                intReturn -= intBaselineCustomDataCount.RaiseToPower(2) * intBaseline;
             }
             else
             {
-                intBaselineCustomDataCount
-                    = Math.Max(objBaselineSettings.EnabledCustomDataDirectoryInfos.Count,
-                               intBaselineCustomDataCount);
+                if (eLeftBuildMethod != eRightBuildMethod)
+                {
+                    if (eLeftBuildMethod.UsesPriorityTables() == eRightBuildMethod.UsesPriorityTables())
+                    {
+                        intBaseline += 2;
+                        intReturn -= int.MaxValue / 2;
+                    }
+                    else
+                    {
+                        intBaseline += 4;
+                        intReturn -= int.MaxValue;
+                    }
+                }
+                intReturn -= (intDeltaMaxKarma.Pow(2) + decDeltaMaxNuyen.Pow(2).StandardRound()).FastSqrtAndStandardRound();
+            }
+
+            IReadOnlyList<CustomDataDirectoryInfo> setBaselineCustomDataDirectoryInfos = await objBaselineSettings.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            IReadOnlyList<CustomDataDirectoryInfo> setCheckCustomDataDirectoryInfos = await objOptionsToCheck.GetEnabledCustomDataDirectoryInfosAsync(token).ConfigureAwait(false);
+            int intBaselineCustomDataCount = setCheckCustomDataDirectoryInfos.Count;
+            if (intBaselineCustomDataCount == 0)
+            {
+                intBaselineCustomDataCount = setBaselineCustomDataDirectoryInfos.Count;
+                if (intBaselineCustomDataCount > 0)
+                {
+                    intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
+                }
+            }
+            else if (setBaselineCustomDataDirectoryInfos.Count == 0)
+            {
+                intReturn -= intBaselineCustomDataCount.Pow(2) * intBaseline;
+            }
+            else
+            {
+                intBaselineCustomDataCount = Math.Max(setBaselineCustomDataDirectoryInfos.Count, intBaselineCustomDataCount);
                 for (int i = 0;
-                     i < objOptionsToCheck.EnabledCustomDataDirectoryInfos.Count;
+                     i < setCheckCustomDataDirectoryInfos.Count;
                      ++i)
                 {
-                    string strLoopCustomDataName =
-                        objOptionsToCheck.EnabledCustomDataDirectoryInfos[i].Name;
-                    int intLoopIndex =
-                        objBaselineSettings.EnabledCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
+                    string strLoopCustomDataName = setCheckCustomDataDirectoryInfos[i].Name;
+                    int intLoopIndex = setBaselineCustomDataDirectoryInfos.FindIndex(x => x.Name == strLoopCustomDataName);
                     if (intLoopIndex < 0)
                         intReturn -= intBaselineCustomDataCount * intBaseline;
                     else
                         intReturn -= Math.Abs(i - intLoopIndex) * intBaseline;
                 }
 
-                foreach (string strLoopCustomDataName in objBaselineSettings.EnabledCustomDataDirectoryInfos.Select(x => x.Name))
+                int intMismatchCount = setBaselineCustomDataDirectoryInfos.Count(x =>
                 {
-                    if (objOptionsToCheck.EnabledCustomDataDirectoryInfos.All(x => x.Name != strLoopCustomDataName))
-                        intReturn -= intBaselineCustomDataCount * intBaseline;
-                }
+                    string strInner = x.Name;
+                    return setCheckCustomDataDirectoryInfos.All(y => y.Name != strInner);
+                });
+                if (intMismatchCount != 0)
+                    intReturn -= intMismatchCount * intBaselineCustomDataCount * intBaseline;
             }
 
-            using (new FetchSafelyFromPool<HashSet<string>>(
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(
                        Utils.StringHashSetPool, out HashSet<string> setDummyBooks))
             {
-                setDummyBooks.AddRange(objBaselineSettings.Books);
-                int intExtraBooks = 0;
-                foreach (string strBook in objOptionsToCheck.Books)
-                {
-                    if (setDummyBooks.Remove(strBook))
-                        ++intExtraBooks;
-                }
-                setDummyBooks.IntersectWith(objOptionsToCheck.Books);
-                intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + 1)
+                setDummyBooks.AddRange(await objBaselineSettings.GetBooksAsync(token).ConfigureAwait(false));
+                IReadOnlyCollection<string> setNewBooks = await objOptionsToCheck.GetBooksAsync(token).ConfigureAwait(false);
+                int intExtraBooks = setNewBooks.Count(x => !setDummyBooks.Remove(x));
+                setDummyBooks.ExceptWith(setNewBooks);
+                // Missing books are weighted a lot more heavily than extra books
+                intReturn -= (setDummyBooks.Count * (intBaselineCustomDataCount + byte.MaxValue)
                               + intExtraBooks) * intBaseline;
             }
 

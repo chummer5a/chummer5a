@@ -41,6 +41,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -145,22 +146,22 @@ namespace Chummer
                 await cboMembership
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
+                                                 "+" + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
                       .ConfigureAwait(false);
                 await cboAreaOfInfluence
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intAreaOfInfluence.ToString(
+                                                 "+" + _intAreaOfInfluence.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMagicalResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMagicalResources.ToString(
+                                                 "+" + _intMagicalResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMatrixResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMatrixResources.ToString(
+                                                 "+" + _intMatrixResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
                 await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);
@@ -176,27 +177,29 @@ namespace Chummer
 
         private async void cmdChangeColor_Click(object sender, EventArgs e)
         {
-            Color objSelectedColor = _objColor;
-            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+            Color objPreviewColor = ColorManager.GenerateCurrentModeColor(_objColor);
+            (DialogResult eResult, Color objSelectedColor) = await this.DoThreadSafeFuncAsync(x =>
             {
                 using (ColorDialog dlgColor = new ColorDialog())
                 {
+                    dlgColor.Color = objPreviewColor;
                     DialogResult eReturn = dlgColor.ShowDialog(x);
-                    objSelectedColor = dlgColor.Color;
-                    return eReturn;
+                    objSelectedColor = ColorManager.GenerateModeIndependentColor(dlgColor.Color);
+                    return new ValueTuple<DialogResult, Color>(eReturn, objSelectedColor);
                 }
             }).ConfigureAwait(false);
             if (eResult != DialogResult.OK)
                 return;
             if (objSelectedColor.Name == "White" || objSelectedColor.Name == "Black")
             {
-                Color objColor = await ColorManager.GetControlAsync().ConfigureAwait(false);
+                Color objColor = ColorManager.Control;
                 await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objColor).ConfigureAwait(false);
-                _objColor = objColor;
+                _objColor = ColorManager.ControlLight;
             }
             else
             {
-                await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objSelectedColor).ConfigureAwait(false);
+                objPreviewColor = ColorManager.GenerateCurrentModeColor(objSelectedColor);
+                await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
                 _objColor = objSelectedColor;
             }
         }
@@ -260,7 +263,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not this is a free contact.
+        /// Whether this is a free contact.
         /// </summary>
         public bool Free
         {
@@ -280,10 +283,10 @@ namespace Chummer
             if (_blnSkipUpdate)
                 return;
 
-            _intMembership = Convert.ToInt32(cboMembership.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intAreaOfInfluence = Convert.ToInt32(cboAreaOfInfluence.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intMagicalResources = Convert.ToInt32(cboMagicalResources.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intMatrixResources = Convert.ToInt32(cboMatrixResources.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
+            int.TryParse(cboMembership.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMembership);
+            int.TryParse(cboAreaOfInfluence.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intAreaOfInfluence);
+            int.TryParse(cboMagicalResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMagicalResources);
+            int.TryParse(cboMatrixResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMatrixResources);
             _strGroupName = txtGroupName.Text;
             _blnFree = chkFreeContact.Checked;
 

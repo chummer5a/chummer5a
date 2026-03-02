@@ -55,11 +55,11 @@ namespace Chummer.UI.Charts
             };
             chtCartesian.AxisX.Add(new Axis
             {
-                LabelFormatter = val => new DateTime((long)val).ToString(GlobalSettings.CustomDateTimeFormats
+                LabelFormatter = val => new DateTime((long)val, DateTimeKind.Local).ToString(GlobalSettings.CustomDateTimeFormats
                     ? GlobalSettings.CustomDateFormat
-                      + ' ' + GlobalSettings.CustomTimeFormat
+                      + " " + GlobalSettings.CustomTimeFormat
                     : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
-                      + ' ' + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalSettings.CultureInfo)
+                      + " " + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern, GlobalSettings.CultureInfo)
             });
             _objYAxis = new Axis
             {
@@ -90,9 +90,16 @@ namespace Chummer.UI.Charts
             if (NuyenMode)
             {
                 string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
+                string strFormat = "#,0.##";
+                if (_objCharacter != null)
+                {
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync().ConfigureAwait(false);
+                    if (objSettings?.IsDisposed == false)
+                        strFormat = await objSettings.GetNuyenFormatAsync().ConfigureAwait(false);
+                }
+                strFormat += strNuyen;
                 await _objYAxis.DoThreadSafeAsync(x => x.LabelFormatter = val =>
-                                                      val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + strNuyen,
-                                                                   GlobalSettings.CultureInfo)).ConfigureAwait(false);
+                                                      val.ToString(strFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
             }
         }
 
@@ -150,9 +157,12 @@ namespace Chummer.UI.Charts
                     if (value)
                     {
                         _objYAxis.Title = LanguageManager.GetString("Label_SummaryNuyen");
-                        _objYAxis.LabelFormatter = val =>
-                            val.ToString((_objCharacter?.Settings.NuyenFormat ?? "#,0.##") + LanguageManager.GetString("String_NuyenSymbol"),
-                                         GlobalSettings.CultureInfo);
+                        string strFormat = "#,0.##";
+                        CharacterSettings objSettings = _objCharacter?.Settings;
+                        if (objSettings?.IsDisposed == false)
+                            strFormat = objSettings.NuyenFormat;
+                        strFormat += LanguageManager.GetString("String_NuyenSymbol");
+                        _objYAxis.LabelFormatter = val => val.ToString(strFormat, GlobalSettings.CultureInfo);
                         _objMainSeries.Title = LanguageManager.GetString("String_NuyenRemaining");
                         _objMainSeries.Stroke = Brushes.Red;
                         _objMainSeries.Fill = s_ObjNuyenFillBrush;

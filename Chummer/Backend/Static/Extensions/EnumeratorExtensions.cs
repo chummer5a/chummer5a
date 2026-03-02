@@ -26,89 +26,138 @@ namespace Chummer
 {
     public static class EnumeratorExtensions
     {
+        public static IEnumerable<T> AsEnumerable<T>(this IEnumerator<T> objEnumerator)
+        {
+            try
+            {
+                while (objEnumerator.MoveNext())
+                    yield return objEnumerator.Current;
+            }
+            finally
+            {
+                objEnumerator.Dispose();
+            }
+        }
+
         public static void ForEach<T>(this IEnumerator<T> objEnumerator, Action<T> objFuncToRun)
         {
-            while (objEnumerator.MoveNext())
-                objFuncToRun.Invoke(objEnumerator.Current);
-        }
-
-        public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Action<T> objFuncToRun, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            try
             {
-                token.ThrowIfCancellationRequested();
-                objFuncToRun.Invoke(objEnumerator.Current);
+                while (objEnumerator.MoveNext())
+                    objFuncToRun.Invoke(objEnumerator.Current);
+            }
+            finally
+            {
+                objEnumerator.Dispose();
             }
         }
 
-        public static async ValueTask ForEachAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            using (IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    objFuncToRun.Invoke(objEnumerator.Current);
+                }
             }
         }
 
-        public static async ValueTask ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                objEnumerator.Dispose();
+            }
+        }
+
+        public static async Task ForEachAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task> objFuncToRun, CancellationToken token = default)
+        {
             token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            using (IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    await objFuncToRun.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                }
             }
         }
 
         public static void ForEachWithBreak<T>(this IEnumerator<T> objEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate)
         {
-            while (objEnumerator.MoveNext())
+            try
             {
-                if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
-                    return;
+                while (objEnumerator.MoveNext())
+                {
+                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                        return;
+                }
+            }
+            finally
+            {
+                objEnumerator.Dispose();
             }
         }
 
-        public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            using (IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
-                    return;
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current))
+                        return;
+                }
             }
         }
 
-        public static async ValueTask ForEachWithBreakAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this IEnumerator<T> objEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            try
             {
-                token.ThrowIfCancellationRequested();
-                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                    return;
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
+                        return;
+                }
+            }
+            finally
+            {
+                objEnumerator.Dispose();
             }
         }
 
-        public static async ValueTask ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithBreakAsync<T>(this Task<IEnumerator<T>> tskEnumerator, Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false);
-            token.ThrowIfCancellationRequested();
-            while (objEnumerator.MoveNext())
+            using (IEnumerator<T> objEnumerator = await tskEnumerator.ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
-                    return;
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current).ConfigureAwait(false))
+                        return;
+                }
             }
         }
     }

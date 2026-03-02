@@ -17,11 +17,16 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace Chummer
 {
     public interface IHasRating
     {
         int Rating { get; set; }
+        Task<int> GetRatingAsync(CancellationToken token = default);
+        Task SetRatingAsync(int value, CancellationToken token = default);
         string RatingLabel { get; set; }
     }
 }

@@ -38,25 +38,26 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
         private async void SelectSkillCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Skill Categories found in the Skills file.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
-                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
+                                                      + _strForceCategory.CleanXPath() + "]")
+                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 // Select the first Skill in the list.
                 await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);

@@ -13,9 +13,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                dlgColor?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -78,14 +80,14 @@ namespace Chummer
             this.btnColorSelect.AutoSize = true;
             this.btnColorSelect.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnColorSelect.Dock = System.Windows.Forms.DockStyle.Left;
-            this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel;
+            this.btnColorSelect.Image = global::Chummer.Properties.Resources.color_wheel_16;
             this.btnColorSelect.ImageAlign = System.Drawing.ContentAlignment.TopLeft;
-            this.btnColorSelect.ImageDpi120 = null;
-            this.btnColorSelect.ImageDpi144 = null;
-            this.btnColorSelect.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel1;
-            this.btnColorSelect.ImageDpi288 = null;
-            this.btnColorSelect.ImageDpi384 = null;
-            this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel;
+            this.btnColorSelect.ImageDpi120 = global::Chummer.Properties.Resources.color_wheel_20;
+            this.btnColorSelect.ImageDpi144 = global::Chummer.Properties.Resources.color_wheel_24;
+            this.btnColorSelect.ImageDpi192 = global::Chummer.Properties.Resources.color_wheel_32;
+            this.btnColorSelect.ImageDpi288 = global::Chummer.Properties.Resources.color_wheel_48;
+            this.btnColorSelect.ImageDpi384 = global::Chummer.Properties.Resources.color_wheel_64;
+            this.btnColorSelect.ImageDpi96 = global::Chummer.Properties.Resources.color_wheel_16;
             this.btnColorSelect.Location = new System.Drawing.Point(3, 295);
             this.btnColorSelect.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnColorSelect.Name = "btnColorSelect";

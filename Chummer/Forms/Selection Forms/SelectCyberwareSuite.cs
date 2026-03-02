@@ -43,6 +43,7 @@ namespace Chummer
 
         public SelectCyberwareSuite(Character objCharacter, Improvement.ImprovementSource eSource = Improvement.ImprovementSource.Cyberware)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             _eSource = eSource;
             if (_eSource == Improvement.ImprovementSource.Cyberware)
@@ -55,7 +56,7 @@ namespace Chummer
             }
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = objCharacter.LoadData(_strType + ".xml", string.Empty, true);
         }
 
@@ -89,18 +90,18 @@ namespace Chummer
                 {
                     List<Grade> lstGrades = await _objCharacter.GetGradesListAsync(_eSource).ConfigureAwait(false);
 
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSuitesToAdd))
                     {
                         foreach (XmlNode objXmlSuite in xmlSuiteList)
                         {
-                            string strName = objXmlSuite["name"]?.InnerText;
+                            string strName = objXmlSuite["name"]?.InnerTextViaPool();
                             if (!string.IsNullOrEmpty(strName))
                             {
-                                string strGrade = objXmlSuite["grade"]?.InnerText ?? string.Empty;
-                                if (string.IsNullOrEmpty(strGrade))
+                                string strGrade = objXmlSuite["grade"]?.InnerTextViaPool() ?? string.Empty;
+                                if (!string.IsNullOrEmpty(strGrade))
                                 {
-                                    if (lstGrades.All(x => x.Name != strGrade))
+                                    if (lstGrades.TrueForAll(x => x.Name != strGrade))
                                         continue;
                                     // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
                                     switch (_eSource)
@@ -117,7 +118,7 @@ namespace Chummer
                                     }
                                 }
 
-                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerText ?? strName, objXmlSuite["translate"]?.InnerText ?? strName));
+                                lstSuitesToAdd.Add(new ListItem(objXmlSuite["id"]?.InnerTextViaPool() ?? strName, objXmlSuite["translate"]?.InnerTextViaPool() ?? strName));
                             }
                         }
 
@@ -133,18 +134,17 @@ namespace Chummer
         {
             string strSelectedSuite = await lstCyberware.DoThreadSafeFuncAsync(x => x.SelectedItem?.ToString()).ConfigureAwait(false);
             XmlNode xmlSuite = null;
-            string strGrade;
             Grade objGrade = null;
             if (strSelectedSuite != null)
             {
-                xmlSuite = _objXmlDocument.SelectSingleNode("/chummer/suites/suite[id = " + strSelectedSuite.CleanXPath() + ']');
-                string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerText;
+                xmlSuite = _objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite", strSelectedSuite);
+                string strSuiteGradeEntry = xmlSuite?["grade"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strSuiteGradeEntry))
                 {
-                    strGrade = CyberwareGradeName(strSuiteGradeEntry);
+                    string strGrade = CyberwareGradeName(strSuiteGradeEntry);
                     if (!string.IsNullOrEmpty(strGrade))
                     {
-                        objGrade = _objCharacter.GetGrades(_eSource).FirstOrDefault(x => x.Name == strGrade);
+                        objGrade = await _objCharacter.GetGradeByNameAsync(_eSource, strGrade).ConfigureAwait(false);
                     }
                 }
             }
@@ -162,8 +162,8 @@ namespace Chummer
             decimal decTotalCost = 0;
 
             List<Cyberware> lstSuiteCyberwares = new List<Cyberware>(5);
-            ParseNode(xmlSuite, objGrade, lstSuiteCyberwares);
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            await ParseNode(xmlSuite, objGrade, lstSuiteCyberwares).ConfigureAwait(false);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdCyberwareLabelString))
             {
                 foreach (Cyberware objCyberware in lstSuiteCyberwares)
@@ -175,9 +175,11 @@ namespace Chummer
                 await lblCyberware.DoThreadSafeAsync(x => x.Text = sbdCyberwareLabelString.ToString()).ConfigureAwait(false);
             }
 
-            await lblEssence.DoThreadSafeAsync(x => x.Text = decTotalESS.ToString(_objCharacter.Settings.EssenceFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
+            string strEssenceFormat = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetEssenceFormatAsync().ConfigureAwait(false);
+            await lblEssence.DoThreadSafeAsync(x => x.Text = decTotalESS.ToString(strEssenceFormat, GlobalSettings.CultureInfo)).ConfigureAwait(false);
             string strNuyen = await LanguageManager.GetStringAsync("String_NuyenSymbol").ConfigureAwait(false);
-            await lblCost.DoThreadSafeAsync(x => x.Text = decTotalCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + strNuyen).ConfigureAwait(false);
+            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetNuyenFormatAsync().ConfigureAwait(false);
+            await lblCost.DoThreadSafeAsync(x => x.Text = decTotalCost.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen).ConfigureAwait(false);
             string strGradeName = await objGrade.GetCurrentDisplayNameAsync().ConfigureAwait(false);
             await lblGrade.DoThreadSafeAsync(x => x.Text = strGradeName).ConfigureAwait(false);
             _decCost = decTotalCost;
@@ -221,43 +223,43 @@ namespace Chummer
         /// <param name="strValue">Grade from the Cyberware Suite.</param>
         private static string CyberwareGradeName(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Alphaware":
+                case "ALPHAWARE":
                     return "Alphaware";
 
-                case "Betaware":
+                case "BETAWARE":
                     return "Betaware";
 
-                case "Deltaware":
+                case "DELTAWARE":
                     return "Deltaware";
 
-                case "Standard (Used)":
-                case "StandardSecondHand":
+                case "STANDARD (USED)":
+                case "STANDARDSECONDHAND":
                     return "Standard (Used)";
 
-                case "Alphaware (Used)":
-                case "AlphawareSecondHand":
+                case "ALPHAWARE (USED)":
+                case "ALPHAWARESECONDHAND":
                     return "Alphaware (Used)";
 
-                case "StandardAdapsin":
+                case "STANDARDADAPSIN":
                     return "Standard (Adapsin)";
 
-                case "AlphawareAdapsin":
+                case "ALPHAWAREADAPSIN":
                     return "Alphaware (Adapsin)";
 
-                case "BetawareAdapsin":
+                case "BETAWAREADAPSIN":
                     return "Betaware (Adapsin)";
 
-                case "DeltawareAdapsin":
+                case "DELTAWAREADAPSIN":
                     return "Deltaware (Adapsin)";
 
-                case "Standard (Used) (Adapsin)":
-                case "StandardSecondHandAdapsin":
+                case "STANDARD (USED) (ADAPSIN)":
+                case "STANDARDSECONDHANDADAPSIN":
                     return "Standard (Used) (Adapsin)";
 
-                case "Alphaware (Used) (Adapsin)":
-                case "AlphawareSecondHandAdapsin":
+                case "ALPHAWARE (USED) (ADAPSIN)":
+                case "ALPHAWARESECONDHANDADAPSIN":
                     return "Alphaware (Used) (Adapsin)";
 
                 default:
@@ -271,34 +273,56 @@ namespace Chummer
         /// <param name="xmlSuite">XmlNode to parse.</param>
         /// <param name="objGrade">Grade that the Cyberware should be created with.</param>
         /// <param name="lstChildren">List for children to which child items should be assigned.</param>
-        private void ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren)
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren, CancellationToken token = default)
         {
-            // Run through all of the items in the Suite list.
-            using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
+            IAsyncDisposable objLocker =
+                await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (xmlChildrenList?.Count > 0)
+                token.ThrowIfCancellationRequested();
+                // Run through all of the items in the Suite list.
+                using (XmlNodeList xmlChildrenList = xmlSuite.SelectNodes(_strType + "s/" + _strType))
                 {
-                    foreach (XmlNode xmlChildItem in xmlChildrenList)
+                    if (xmlChildrenList?.Count > 0)
                     {
-                        int intRating = 0;
-                        xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
-                        string strName = string.Empty;
-                        xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
+                        foreach (XmlNode xmlChildItem in xmlChildrenList)
+                        {
+                            int intRating = 0;
+                            xmlChildItem.TryGetInt32FieldQuickly("rating", ref intRating);
+                            string strName = string.Empty;
+                            xmlChildItem.TryGetStringFieldQuickly("name", ref strName);
 
-                        // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
-                        XmlNode objXmlCyberware = _objXmlDocument.SelectSingleNode("/chummer/" + _strType + "s/" + _strType + "[name = " + strName.CleanXPath() + ']');
+                            // Retrieve the information for the current piece of Cyberware and add it to the ESS and Cost totals.
+                            XmlNode objXmlCyberware =
+                                _objXmlDocument.TryGetNodeByNameOrId("/chummer/" + _strType + "s/" + _strType,
+                                    strName.CleanXPath());
 
-                        List<Weapon> lstWeapons = new List<Weapon>(1);
-                        List<Vehicle> lstVehicles = new List<Vehicle>(1);
-                        Cyberware objCyberware = new Cyberware(_objCharacter);
-                        objCyberware.Create(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons, lstVehicles, false, false);
-                        objCyberware.Suite = true;
+                            List<Weapon> lstWeapons = new List<Weapon>(1);
+                            List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                            Cyberware objCyberware = new Cyberware(_objCharacter);
+                            try
+                            {
+                                await objCyberware.CreateAsync(objXmlCyberware, objGrade, _eSource, intRating, lstWeapons,
+                                    lstVehicles, false, false, token: token).ConfigureAwait(false);
+                                objCyberware.Suite = true;
 
-                        lstChildren.Add(objCyberware);
+                                lstChildren.Add(objCyberware);
 
-                        ParseNode(xmlChildItem, objGrade, objCyberware.Children);
+                                await ParseNode(xmlChildItem, objGrade, await objCyberware.GetChildrenAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+                        }
                     }
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -309,15 +333,15 @@ namespace Chummer
         /// <param name="objCyberware">Cyberware to iterate through.</param>
         /// <param name="intDepth">Current dept in the list to determine how many spaces to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        private static async ValueTask WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
+        private static async Task WriteList(StringBuilder objCyberwareLabelString, Cyberware objCyberware, int intDepth, CancellationToken token = default)
         {
             for (int i = 0; i <= intDepth; ++i)
                 objCyberwareLabelString.Append("   ");
 
             objCyberwareLabelString.AppendLine(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
-
-            foreach (Cyberware objPlugin in objCyberware.Children)
-                await WriteList(objCyberwareLabelString, objPlugin, intDepth + 1, token).ConfigureAwait(false);
+            ++intDepth;
+            await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(
+                objPlugin => WriteList(objCyberwareLabelString, objPlugin, intDepth, token), token).ConfigureAwait(false);
         }
 
         #endregion Methods

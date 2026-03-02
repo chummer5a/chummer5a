@@ -32,6 +32,9 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
 
+        private string _strChoice1 = string.Empty;
+        private string _strChoice2 = string.Empty;
+
         #region Control Events
 
         public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
@@ -42,6 +45,7 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Mentor information.
             _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
@@ -60,45 +64,43 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strSelectedId))
                     {
                         objXmlMentor =
-                            _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " +
-                                                                          strSelectedId.CleanXPath() + ']');
+                            _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId);
                     }
                 }
 
                 if (objXmlMentor != null)
                 {
                     // If the Mentor offers a choice of bonuses, build the list and let the user select one.
-                    XPathNavigator xmlChoices = await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("choices").ConfigureAwait(false);
+                    XPathNavigator xmlChoices = objXmlMentor.SelectSingleNodeAndCacheExpression("choices");
                     if (xmlChoices != null)
                     {
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstChoice1))
-                        using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstChoice1))
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                        out List<ListItem> lstChoice2))
                         {
-                            foreach (XPathNavigator objChoice in await xmlChoices.SelectAndCacheExpressionAsync("choice").ConfigureAwait(false))
+                            foreach (XPathNavigator objChoice in xmlChoices.SelectAndCacheExpression("choice"))
                             {
-                                string strName = (await objChoice.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                                string strName = objChoice.SelectSingleNodeAndCacheExpression("name")?.Value
                                                  ?? string.Empty;
-                                if ((_objCharacter.AdeptEnabled ||
+                                if ((await _objCharacter.GetAdeptEnabledAsync().ConfigureAwait(false) ||
                                      !strName.StartsWith("Adept:", StringComparison.Ordinal)) &&
-                                    (_objCharacter.MagicianEnabled ||
+                                    (await _objCharacter.GetMagicianEnabledAsync().ConfigureAwait(false) ||
                                      !strName.StartsWith("Magician:", StringComparison.Ordinal)))
                                 {
-                                    if ((await objChoice.SelectSingleNodeAndCacheExpressionAsync("@set")
-                                                        .ConfigureAwait(false))?.Value == "2")
+                                    if (objChoice.SelectSingleNodeAndCacheExpression("@set")?.Value == "2")
                                     {
                                         lstChoice2.Add(new ListItem(strName,
-                                                                    (await objChoice
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "translate").ConfigureAwait(false))
+                                                                    objChoice
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "translate")
                                                                     ?.Value ?? strName));
                                     }
                                     else
                                     {
                                         lstChoice1.Add(new ListItem(strName,
-                                                                    (await objChoice
-                                                                           .SelectSingleNodeAndCacheExpressionAsync(
-                                                                               "translate").ConfigureAwait(false))
+                                                                    objChoice
+                                                                        .SelectSingleNodeAndCacheExpression(
+                                                                            "translate")
                                                                     ?.Value ?? strName));
                                     }
                                 }
@@ -145,25 +147,25 @@ namespace Chummer
 
                     // Get the information for the selected Mentor.
                     string strUnknown = await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strAdvantage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altadvantage").ConfigureAwait(false))?.Value ??
-                                          (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("advantage").ConfigureAwait(false))?.Value ??
+                    string strAdvantage = objXmlMentor.SelectSingleNodeAndCacheExpression("altadvantage")?.Value ??
+                                          objXmlMentor.SelectSingleNodeAndCacheExpression("advantage")?.Value ??
                                           strUnknown;
                     await lblAdvantage.DoThreadSafeAsync(x => x.Text = strAdvantage).ConfigureAwait(false);
                     await lblAdvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAdvantage)).ConfigureAwait(false);
-                    string strDisadvantage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altdisadvantage").ConfigureAwait(false))?.Value ??
-                                             (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("disadvantage").ConfigureAwait(false))?.Value ??
+                    string strDisadvantage = objXmlMentor.SelectSingleNodeAndCacheExpression("altdisadvantage")?.Value ??
+                                             objXmlMentor.SelectSingleNodeAndCacheExpression("disadvantage")?.Value ??
                                              strUnknown;
                     await lblDisadvantage.DoThreadSafeAsync(x => x.Text = strDisadvantage).ConfigureAwait(false);
                     await lblDisadvantageLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDisadvantage)).ConfigureAwait(false);
 
-                    string strSource = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ??
+                    string strSource = objXmlMentor.SelectSingleNodeAndCacheExpression("source")?.Value ??
                                        await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strPage = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                     (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ??
+                    string strPage = objXmlMentor.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
+                                     objXmlMentor.SelectSingleNodeAndCacheExpression("page")?.Value ??
                                      await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this).ConfigureAwait(false);
                     bool blnSourceEmpty = string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false));
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !blnSourceEmpty).ConfigureAwait(false);
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
@@ -191,12 +193,13 @@ namespace Chummer
             string strSelectedId = lstMentor.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
-                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.SelectSingleNode("mentors/mentor[id = " + strSelectedId.CleanXPath() + ']');
+                XPathNavigator objXmlMentor = _xmlBaseMentorSpiritDataNode.TryGetNodeByNameOrId("mentors/mentor", strSelectedId);
                 if (objXmlMentor == null)
                     return;
 
                 SelectedMentor = strSelectedId;
-
+                _strChoice1 = cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+                _strChoice2 = cboChoice2.SelectedValue?.ToString() ?? string.Empty;
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -209,26 +212,28 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ')';
+            string strFilter = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
-                             "mentors/mentor[" + strFilter + ']'))
+                             "mentors/mentor" + strFilter))
                 {
                     if (!await objXmlMentor.RequirementsMetAsync(_objCharacter).ConfigureAwait(false))
                         continue;
 
-                    string strName = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value
+                    string strName = objXmlMentor.SelectSingleNodeAndCacheExpression("name")?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                    string strId = (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("id").ConfigureAwait(false))?.Value ?? string.Empty;
+                    string strId = objXmlMentor.SelectSingleNodeAndCacheExpression("id")?.Value ?? string.Empty;
                     if (strName == _strForceMentor)
                         strForceId = strId;
                     lstMentors.Add(new ListItem(
                                        strId,
-                                       (await objXmlMentor.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value ?? strName));
+                                       objXmlMentor.SelectSingleNodeAndCacheExpression("translate")?.Value ?? strName));
                 }
 
                 lstMentors.Sort(CompareListItems.CompareNames);
@@ -288,12 +293,12 @@ namespace Chummer
         /// <summary>
         /// First choice that was selected in the dialogue.
         /// </summary>
-        public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice1 => _strChoice1;
 
         /// <summary>
         /// Second choice that was selected in the dialogue.
         /// </summary>
-        public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice2 => _strChoice2;
 
         #endregion Properties
     }

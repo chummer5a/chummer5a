@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -44,19 +45,12 @@ namespace Chummer
                 telemetry.Context.GlobalProperties.Add("Milestone", Utils.IsMilestoneVersion.ToString(GlobalSettings.InvariantCultureInfo));
 
             telemetry.Context.Device.OperatingSystem = Environment.OSVersion.ToString();
-            if (Properties.Settings.Default.UploadClientId == Guid.Empty)
+            if (Properties.Settings.Default.UploadClientId == Guid.Empty
+                //sometimes, there are odd values stored in the UploadClientId.
+                || !Properties.Settings.Default.UploadClientId.ToString().IsGuid())
             {
                 Properties.Settings.Default.UploadClientId = Guid.NewGuid();
                 Properties.Settings.Default.Save();
-            }
-            else
-            {
-                //sometimes, there are odd values stored in the UploadClientId.
-                if (!Properties.Settings.Default.UploadClientId.ToString().IsGuid())
-                {
-                    Properties.Settings.Default.UploadClientId = Guid.NewGuid();
-                    Properties.Settings.Default.Save();
-                }
             }
             telemetry.Context.Cloud.RoleInstance = Properties.Settings.Default.UploadClientId.ToString();
             telemetry.Context.Cloud.RoleName = Properties.Settings.Default.UploadClientId.ToString();
@@ -66,7 +60,7 @@ namespace Chummer
 
             telemetry.Context.Component.Version = Utils.CurrentChummerVersion.ToString();
 
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 //don't fill the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
@@ -79,6 +73,7 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
+                    e = e.Demystify();
                     Log.Error(e);
 #if DEBUG
                     throw;

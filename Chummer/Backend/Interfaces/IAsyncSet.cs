@@ -25,26 +25,26 @@ namespace Chummer
 {
     public interface IAsyncSet<T> : IAsyncCollection<T>, ISet<T>
     {
-        new ValueTask<bool> AddAsync(T item, CancellationToken token = default);
+        new Task<bool> AddAsync(T item, CancellationToken token = default);
 
-        ValueTask UnionWithAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task UnionWithAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask IntersectWithAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task IntersectWithAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask ExceptWithAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task ExceptWithAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask SymmetricExceptWithAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task SymmetricExceptWithAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> IsSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> IsSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> IsSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> IsSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> IsProperSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> IsProperSupersetOfAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> IsProperSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> IsProperSubsetOfAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> OverlapsAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> OverlapsAsync(IEnumerable<T> other, CancellationToken token = default);
 
-        ValueTask<bool> SetEqualsAsync(IEnumerable<T> other, CancellationToken token = default);
+        Task<bool> SetEqualsAsync(IEnumerable<T> other, CancellationToken token = default);
     }
 }

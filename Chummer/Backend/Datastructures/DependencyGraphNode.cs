@@ -20,6 +20,8 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -41,8 +43,20 @@ namespace Chummer
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, null));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, null));
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
             }
         }
 
@@ -51,16 +65,62 @@ namespace Chummer
         /// Use this constructor when specifying arguments for a DependencyGraph constructor.
         /// </summary>
         /// <param name="objMyObject">Object associated with the current node</param>
-        /// <param name="funcDependancyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
+        /// <param name="funcDependencyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
         /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
-        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependancyCondition, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
+        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
         {
             MyObject = objMyObject;
+            MyCondition = funcDependencyCondition;
 
             foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
             {
-                objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this, funcDependancyCondition));
-                DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode, funcDependancyCondition));
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Constructor used for to make a blueprint of a DependencyGraph.
+        /// Use this constructor when specifying arguments for a DependencyGraph constructor.
+        /// </summary>
+        /// <param name="objMyObject">Object associated with the current node</param>
+        /// <param name="funcDependencyCondition">Function that must return true at the time of collecting dependencies in order for the dependency to register.</param>
+        /// <param name="funcDependencyConditionAsync">Async version of <paramref name="funcDependencyCondition"/>.</param>
+        /// <param name="lstDownStreamNodes">Any objects that depend on the object associated with the current node</param>
+        public DependencyGraphNode(T objMyObject, Func<T2, bool> funcDependencyCondition, Func<T2, CancellationToken, Task<bool>> funcDependencyConditionAsync, params DependencyGraphNode<T, T2>[] lstDownStreamNodes)
+        {
+            MyObject = objMyObject;
+            MyCondition = funcDependencyCondition;
+            MyConditionAsync = funcDependencyConditionAsync;
+
+            foreach (DependencyGraphNode<T, T2> objDownStreamNode in lstDownStreamNodes)
+            {
+                if (objDownStreamNode.MyConditionAsync != null)
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition, objDownStreamNode.MyConditionAsync));
+                }
+                else
+                {
+                    objDownStreamNode.UpStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(this,
+                        objDownStreamNode.MyCondition));
+                    DownStreamNodes.Add(new DependencyGraphNodeWithCondition<T, T2>(objDownStreamNode,
+                        objDownStreamNode.MyCondition));
+                }
             }
         }
 
@@ -102,6 +162,16 @@ namespace Chummer
         /// </summary>
         public HashSet<DependencyGraphNodeWithCondition<T, T2>> DownStreamNodes { get; } = new HashSet<DependencyGraphNodeWithCondition<T, T2>>();
 
+        /// <summary>
+        /// Dependency condition that is set in this node's constructor. Used to construct conditional node edges when processed by parent constructors of this node.
+        /// </summary>
+        private Func<T2, bool> MyCondition { get; }
+
+        /// <summary>
+        /// Dependency condition that is set in this node's constructor. Used to construct conditional node edges when processed by parent constructors of this node.
+        /// </summary>
+        private Func<T2, CancellationToken, Task<bool>> MyConditionAsync { get; }
+
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(obj, this))
@@ -125,10 +195,10 @@ namespace Chummer
         public override int GetHashCode()
         {
             if (Root != null)
-                return MyObject != null
-                    ? (Root, MyObject).GetHashCode()
-                    : Root.GetHashCode();
-            return MyObject != null ? MyObject.GetHashCode() : 0;
+                return Equals(MyObject, default(T))
+                    ? Root.GetHashCode()
+                    : (Root, MyObject).GetHashCode();
+            return Equals(MyObject, default(T)) ? 0 : MyObject.GetHashCode();
         }
 
         public override string ToString()

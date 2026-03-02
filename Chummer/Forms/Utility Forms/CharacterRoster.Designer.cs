@@ -1,5 +1,6 @@
 
 using System;
+using System.Threading;
 
 namespace Chummer
 {
@@ -16,9 +17,32 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericFormClosingCancellationTokenSource?.Dispose();
+                _watcherCharacterRosterFolderSaves?.Dispose();
+                _objCharacterRosterFolderWatcherSemaphore?.Dispose();
+                _objCachePurgeReaderWriterLock?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -56,7 +80,7 @@ namespace Chummer
             this.lblCharacterAliasLabel = new System.Windows.Forms.Label();
             this.lblEssence = new System.Windows.Forms.Label();
             this.lblEssenceLabel = new System.Windows.Forms.Label();
-            this.lblFilePath = new System.Windows.Forms.Label();
+            this.lblFilePath = new Chummer.LabelWithToolTip();
             this.lblFilePathLabel = new System.Windows.Forms.Label();
             this.lblSettings = new System.Windows.Forms.Label();
             this.lblSettingsLabel = new System.Windows.Forms.Label();
@@ -549,7 +573,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCharacterAliasLabel;
         private System.Windows.Forms.Label lblEssence;
         private System.Windows.Forms.Label lblEssenceLabel;
-        private System.Windows.Forms.Label lblFilePath;
+        private Chummer.LabelWithToolTip lblFilePath;
         private System.Windows.Forms.Label lblFilePathLabel;
         private System.Windows.Forms.TabPage panGameNotes;
       

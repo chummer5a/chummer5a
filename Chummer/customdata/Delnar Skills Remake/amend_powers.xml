@@ -24,6 +24,9 @@
       <bonus xpathfilter="specificskill/name = 'Navigation' and specificskill/name = 'Tracking'">
         <specificskill xpathfilter="name = 'Tracking'" amendoperation="remove" />
       </bonus>
+      <bonus xpathfilter="specificskill/name = 'Negotiation' and specificskill/name = 'Con'">
+        <specificskill xpathfilter="name = 'Negotiation'" amendoperation="remove" />
+      </bonus>
       <bonus>
         <specificskill xpathfilter="name = 'Running'">
           <name>Athletics</name>
@@ -51,10 +54,6 @@
           <name>Acting</name>
           <condition>Make-Up</condition>
         </specificskill>
-        <specificskill xpathfilter="name = 'Impersonation'">
-          <name>Acting</name>
-          <condition>Voice</condition>
-        </specificskill>
         <specificskill xpathfilter="name = 'Intimidation'">
           <name>Command</name>
           <condition>Intimidate/Interrogate</condition>
@@ -73,7 +72,7 @@
         <specificskill xpathfilter="name = 'Etiquette'">
           <name>Socialize</name>
         </specificskill>
-        <specificskill xpathfilter="name = 'Negotiation'">
+        <specificskill xpathfilter="name = 'Negotiation' or name = 'Con'">
           <name>Persuade</name>
         </specificskill>
         <weaponcategorydv>
@@ -83,8 +82,17 @@
     </power>
     <power>
       <name>Enhanced Perception</name>
-      <bonus>
+      <bonus amendoperation="replace">
         <physicalillusionresist>Rating</physicalillusionresist>
+      </bonus>
+    </power>
+    <power>
+      <name>Voice Control</name>
+      <bonus>
+        <specificskill>
+          <name>Impersonation</name>
+          <condition amendoperation="addnode">Vocal</condition>
+        </specificskill>
       </bonus>
     </power>
   </powers>

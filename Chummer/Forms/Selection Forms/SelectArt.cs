@@ -48,10 +48,11 @@ namespace Chummer
 
         public SelectArt(Character objCharacter, Mode objWindowMode)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            this.UpdateParentForToolTipControls();
 
             // Load the Metamagic information.
             switch (objWindowMode)
@@ -74,14 +75,14 @@ namespace Chummer
                     _strLocalName = LanguageManager.GetString("String_Enchantment");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ')';
+                    _strXPathFilter = "category = 'Enchantments' and (" + _objCharacter.Settings.BookXPath() + ")";
                     break;
 
                 case Mode.Ritual:
                     _strLocalName = LanguageManager.GetString("String_Ritual");
                     _objXmlDocument = objCharacter.LoadDataXPath("spells.xml").SelectSingleNodeAndCacheExpression("/chummer/spells");
                     _strBaseXPath = "spell";
-                    _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ')';
+                    _strXPathFilter = "category = 'Rituals' and (" + _objCharacter.Settings.BookXPath() + ")";
                     break;
             }
         }
@@ -114,7 +115,7 @@ namespace Chummer
             }
 
             // Retrieve the information for the selected art
-            XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = " + strSelected.CleanXPath() + ']');
+            XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strBaseXPath, strSelected);
 
             if (objXmlMetamagic == null)
             {
@@ -122,17 +123,17 @@ namespace Chummer
                 return;
             }
 
-            string strSource = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-            string strPage = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strSource = objXmlMetamagic.SelectSingleNodeAndCacheExpression("source")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+            string strPage = objXmlMetamagic.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
             SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                                                                              GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-            await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+            await objSource.SetControlAsync(lblSource, this).ConfigureAwait(false);
             await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -141,9 +142,9 @@ namespace Chummer
             Close();
         }
 
-        private void lstArt_DoubleClick(object sender, EventArgs e)
+        private async void lstArt_DoubleClick(object sender, EventArgs e)
         {
-            AcceptForm();
+            await AcceptForm();
         }
 
         private async void chkLimitList_CheckedChanged(object sender, EventArgs e)
@@ -170,29 +171,29 @@ namespace Chummer
         /// <summary>
         /// Build the list of Arts.
         /// </summary>
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
-            
+
             string strFilter = _strXPathFilter;
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstArts))
             {
                 bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlMetamagic in
-                         _objXmlDocument.Select(_strBaseXPath + '[' + strFilter + ']'))
+                         _objXmlDocument.Select(_strBaseXPath + "[" + strFilter + "]"))
                 {
-                    string strId = (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (!string.IsNullOrEmpty(strId)
                         && (!blnLimitList || await objXmlMetamagic.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false)))
                     {
-                        lstArts.Add(new ListItem((await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value,
-                                                 (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                                                 ?? (await objXmlMetamagic.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                        lstArts.Add(new ListItem(objXmlMetamagic.SelectSingleNodeAndCacheExpression("id", token: token)?.Value,
+                                                 objXmlMetamagic.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                                 ?? objXmlMetamagic.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                                  ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false)));
                     }
                 }
@@ -215,24 +216,24 @@ namespace Chummer
         /// <summary>
         /// Accept the selected item and close the form.
         /// </summary>
-        private void AcceptForm()
+        private async Task AcceptForm(CancellationToken token = default)
         {
-            string strSelectedItem = lstArt.SelectedValue?.ToString();
+            token.ThrowIfCancellationRequested();
+            string strSelectedItem = await lstArt.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSelectedItem))
             {
                 // Make sure the selected Metamagic or Echo meets its requirements.
-                XPathNavigator objXmlMetamagic = _objXmlDocument.SelectSingleNode(_strBaseXPath + "[id = " + strSelectedItem.CleanXPath() + ']');
+                XPathNavigator objXmlMetamagic = _objXmlDocument.TryGetNodeByNameOrId(_strBaseXPath, strSelectedItem);
 
-                if (objXmlMetamagic != null)
+                if (objXmlMetamagic == null || !await objXmlMetamagic.RequirementsMetAsync(_objCharacter, strLocalName: _strLocalName, token: token).ConfigureAwait(false))
+                    return;
+
+                _strSelectedItem = strSelectedItem;
+                await this.DoThreadSafeAsync(x =>
                 {
-                    if (!objXmlMetamagic.RequirementsMet(_objCharacter, null, _strLocalName))
-                        return;
-
-                    _strSelectedItem = strSelectedItem;
-
-                    DialogResult = DialogResult.OK;
-                    Close();
-                }
+                    x.DialogResult = DialogResult.OK;
+                    x.Close();
+                }, token).ConfigureAwait(false);
             }
         }
 

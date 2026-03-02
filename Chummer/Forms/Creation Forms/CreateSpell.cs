@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,16 +33,18 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
         private bool _blnLoading = true;
         private int _intSkipRefresh;
-        private readonly Spell _objSpell;
+        private readonly Character _objCharacter;
+        private Spell _objSpell;
 
         #region Control Events
 
         public CreateSpell(Character objCharacter)
         {
-            _objSpell = new Spell(objCharacter);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
@@ -49,16 +52,16 @@ namespace Chummer
         {
             await lblDV.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo)).ConfigureAwait(false);
 
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstCategory))
             {
                 // Populate the list of Spell Categories.
-                foreach (XPathNavigator objXmlCategory in await _objXmlDocument.SelectAndCacheExpressionAsync(
-                             "/chummer/categories/category").ConfigureAwait(false))
+                foreach (XPathNavigator objXmlCategory in _objXmlDocument.SelectAndCacheExpression(
+                             "/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
 
@@ -68,7 +71,7 @@ namespace Chummer
             await cboCategory.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
 
             // Populate the list of Spell Types.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
                 lstTypes.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_DescPhysical").ConfigureAwait(false)));
                 lstTypes.Add(new ListItem("M", await LanguageManager.GetStringAsync("String_DescMana").ConfigureAwait(false)));
@@ -78,7 +81,7 @@ namespace Chummer
             await cboType.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
 
             // Populate the list of Ranges.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstRanges))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstRanges))
             {
                 lstRanges.Add(new ListItem("T", await LanguageManager.GetStringAsync("String_SpellRangeTouchLong").ConfigureAwait(false)));
                 lstRanges.Add(new ListItem("LOS", await LanguageManager.GetStringAsync("String_SpellRangeLineOfSight").ConfigureAwait(false)));
@@ -88,7 +91,7 @@ namespace Chummer
             await cboRange.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
 
             // Populate the list of Durations.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDurations))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDurations))
             {
                 lstDurations.Add(new ListItem("I", await LanguageManager.GetStringAsync("String_SpellDurationInstantLong").ConfigureAwait(false)));
                 lstDurations.Add(new ListItem("P", await LanguageManager.GetStringAsync("String_SpellDurationPermanentLong").ConfigureAwait(false)));
@@ -502,9 +505,9 @@ namespace Chummer
                                 Interlocked.Decrement(ref _intSkipRefresh);
                             }
                         }
-                        await chkModifier1.DoThreadSafeAsync(x => x.Enabled = !chkModifier2.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
-                        await chkModifier2.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.DoThreadSafeFunc(y => y.Checked) && !chkModifier3.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
-                        await chkModifier3.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.DoThreadSafeFunc(y => y.Checked) && !chkModifier2.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+                        await chkModifier1.DoThreadSafeAsync(x => x.Enabled = !chkModifier2.Checked && !chkModifier3.Checked).ConfigureAwait(false);
+                        await chkModifier2.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.Checked && !chkModifier3.Checked).ConfigureAwait(false);
+                        await chkModifier3.DoThreadSafeAsync(x => x.Enabled = !chkModifier1.Checked && !chkModifier2.Checked).ConfigureAwait(false);
 
                         // Minor Change and Major Change cannot be selected at the same time.
                         if (await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked).ConfigureAwait(false))
@@ -557,11 +560,11 @@ namespace Chummer
 
         private async void chkRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            await chkVeryRestricted.DoThreadSafeAsync(x => x.Enabled = !chkRestricted.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+            await chkVeryRestricted.DoThreadSafeAsync(x => x.Enabled = !chkRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
             await txtRestriction.DoThreadSafeAsync(x =>
             {
-                x.Enabled = chkRestricted.DoThreadSafeFunc(y => y.Checked) || chkVeryRestricted.DoThreadSafeFunc(y => y.Checked);
+                x.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
                 if (!x.Enabled)
                     x.Text = string.Empty;
             }).ConfigureAwait(false);
@@ -569,11 +572,11 @@ namespace Chummer
 
         private async void chkVeryRestricted_CheckedChanged(object sender, EventArgs e)
         {
-            await chkRestricted.DoThreadSafeAsync(x => x.Enabled = !chkVeryRestricted.DoThreadSafeFunc(y => y.Checked)).ConfigureAwait(false);
+            await chkRestricted.DoThreadSafeAsync(x => x.Enabled = !chkVeryRestricted.Checked).ConfigureAwait(false);
             await CalculateDrain().ConfigureAwait(false);
             await txtRestriction.DoThreadSafeAsync(x =>
             {
-                x.Enabled = chkRestricted.DoThreadSafeFunc(y => y.Checked) || chkVeryRestricted.DoThreadSafeFunc(y => y.Checked);
+                x.Enabled = chkRestricted.Checked || chkVeryRestricted.Checked;
                 if (!x.Enabled)
                     x.Text = string.Empty;
             }).ConfigureAwait(false);
@@ -607,7 +610,7 @@ namespace Chummer
         /// <summary>
         /// Re-calculate the Drain modifiers based on the currently-selected options.
         /// </summary>
-        private async ValueTask ChangeModifiers(CancellationToken token = default)
+        private async Task ChangeModifiers(CancellationToken token = default)
         {
             foreach (Control objControl in await flpModifiers.DoThreadSafeFuncAsync(x => x.Controls, token: token).ConfigureAwait(false))
             {
@@ -953,7 +956,7 @@ namespace Chummer
         /// <summary>
         /// Calculate the Spell's Drain Value based on the currently-selected options.
         /// </summary>
-        private async ValueTask<string> CalculateDrain(CancellationToken token = default)
+        private async Task<string> CalculateDrain(CancellationToken token = default)
         {
             if (_blnLoading)
                 return string.Empty;
@@ -991,16 +994,15 @@ namespace Chummer
             {
                 await chkModifier.DoThreadSafeAsync(x =>
                 {
-                    if (x.Visible && x.Checked)
+                    if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                     {
                         if (x == chkModifier3 && strCategory == "Combat")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else if (x == chkModifier6 && strCategory == "Manipulation")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                            intDV += intDummy;
                     }
                 }, token: token).ConfigureAwait(false);
             }
@@ -1010,16 +1012,15 @@ namespace Chummer
                 {
                     await chkModifier.DoThreadSafeAsync(x =>
                     {
-                        if (x.Visible && x.Checked)
+                        if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                         {
                             if (x == chkModifier3 && strCategory == "Combat")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else if (x == chkModifier6 && strCategory == "Manipulation")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                                intDV += intDummy;
                         }
                     }, token: token).ConfigureAwait(false);
                 }
@@ -1029,7 +1030,7 @@ namespace Chummer
             if (strCategory == "Health" && await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = '(' + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false) + ')';
+                strBase = "(" + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false) + ")";
             }
             else
             {
@@ -1039,7 +1040,7 @@ namespace Chummer
 
             string strDV = intDV.ToString(GlobalSettings.InvariantCultureInfo);
             if (intDV > 0)
-                strDV = '+' + strDV;
+                strDV = "+" + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
             string strText = await (strBase + strDV).Replace('/', '÷').Replace('*', '×')
@@ -1056,7 +1057,7 @@ namespace Chummer
         /// <summary>
         /// Accept the values of the form.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             string strMessage = string.Empty;
             // Make sure a name has been provided.
@@ -1167,7 +1168,7 @@ namespace Chummer
             // Show the message if necessary.
             if (!string.IsNullOrEmpty(strMessage))
             {
-                Program.ShowScrollableMessageBox(this, strMessage, await LanguageManager.GetStringAsync("Title_CreateSpell", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, strMessage, await LanguageManager.GetStringAsync("Title_CreateSpell", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 return;
             }
 
@@ -1243,21 +1244,31 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strDescriptors))
                 strDescriptors = strDescriptors.Substring(0, strDescriptors.Length - 2);
 
-            _objSpell.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            _objSpell.Source = "SM";
-            _objSpell.Page = "159";
-            _objSpell.Category = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
-            _objSpell.Descriptors = strDescriptors;
-            _objSpell.Range = strRange;
-            _objSpell.Type = await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
-            _objSpell.Limited = await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            if (_objSpell.Category == "Combat")
-                _objSpell.Damage = await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? "P" : "S";
-            _objSpell.DvBase = await CalculateDrain(token).ConfigureAwait(false);
-            string strExtra = await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strExtra))
-                _objSpell.Extra = strExtra;
-            _objSpell.Duration = await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+            Spell objSpell = new Spell(_objCharacter);
+            try
+            {
+                objSpell.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                objSpell.Source = "SM";
+                objSpell.Page = "159";
+                objSpell.Category = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                objSpell.Descriptors = strDescriptors;
+                objSpell.Range = strRange;
+                objSpell.Type = await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                objSpell.Limited = await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (objSpell.Category == "Combat")
+                    objSpell.Damage = await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? "P" : "S";
+                objSpell.DvBase = await CalculateDrain(token).ConfigureAwait(false);
+                string strExtra = await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strExtra))
+                    objSpell.Extra = strExtra;
+                objSpell.Duration = await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
+            _objSpell = objSpell;
 
             await this.DoThreadSafeAsync(x =>
             {

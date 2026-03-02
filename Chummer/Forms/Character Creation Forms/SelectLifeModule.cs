@@ -24,39 +24,45 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
+using System.Xml.XPath;
+using Microsoft.VisualStudio.Threading;
 
 namespace Chummer
 {
-    public partial class SelectLifeModule : Form
+    public partial class SelectLifeModule : Form, IHasCharacterObject
     {
         public bool AddAgain { get; private set; }
         private readonly Character _objCharacter;
         private readonly int _intStage;
         private string _strDefaultStageName;
-        private readonly XmlDocument _xmlDocument;
+        private readonly XPathNavigator _xmlLifeModulesDocumentChummerNode;
         private string _strSelectedId;
         private Regex _rgxSearchExpression;
+
+        public Character CharacterObject => _objCharacter;
 
         private string _strWorkStage;
 
         public SelectLifeModule(Character objCharacter, int intStage)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
+            this.UpdateParentForToolTipControls();
             _intStage = intStage;
-            _xmlDocument = _objCharacter.LoadData("lifemodules.xml");
+            _xmlLifeModulesDocumentChummerNode
+                = _objCharacter.LoadDataXPath("lifemodules.xml").SelectSingleNode("/chummer");
         }
 
         private async void SelectLifeModule_Load(object sender, EventArgs e)
         {
-            string strSelectString = "chummer/stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + ']';
+            string strSelectString = "stages/stage[@order = " + _intStage.ToString(GlobalSettings.InvariantCultureInfo).CleanXPath() + "]";
 
-            XmlNode xmlStageNode = _xmlDocument.SelectSingleNode(strSelectString);
+            XPathNavigator xmlStageNode = _xmlLifeModulesDocumentChummerNode.SelectSingleNodeAndCacheExpression(strSelectString);
             if (xmlStageNode != null)
             {
-                _strWorkStage = _strDefaultStageName = xmlStageNode.InnerText;
+                _strWorkStage = _strDefaultStageName = xmlStageNode.Value;
 
                 await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
             }
@@ -66,10 +72,9 @@ namespace Chummer
             }
         }
 
-        private async ValueTask BuildTree(string stageString, CancellationToken token = default)
+        private async Task BuildTree(string stageString, CancellationToken token = default)
         {
-            XmlNodeList matches = _xmlDocument.SelectNodes("chummer/modules/module" + stageString);
-            TreeNode[] aobjNodes = await BuildList(matches, token).ConfigureAwait(false);
+            TreeNode[] aobjNodes = await BuildList(_xmlLifeModulesDocumentChummerNode.Select("modules/module" + stageString), token).ConfigureAwait(false);
             await treModules.DoThreadSafeAsync(x =>
             {
                 x.Nodes.Clear();
@@ -77,37 +82,38 @@ namespace Chummer
             }, token: token).ConfigureAwait(false);
         }
 
-        private async ValueTask<TreeNode[]> BuildList(XmlNodeList xmlNodes, CancellationToken token = default)
+        private async Task<TreeNode[]> BuildList(XPathNodeIterator lstXmlNodes, CancellationToken token = default)
         {
-            List<TreeNode> lstTreeNodes = new List<TreeNode>(xmlNodes.Count);
+            token.ThrowIfCancellationRequested();
+            List<TreeNode> lstTreeNodes = new List<TreeNode>(5);
             bool blnLimitList = await chkLimitList.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            for (int i = 0; i < xmlNodes.Count; i++)
+            AsyncLazy<string> strBookPath = new AsyncLazy<string>(async () => await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), Utils.JoinableTaskFactory);
+            foreach (XPathNavigator xmlNode in lstXmlNodes)
             {
-                XmlNode xmlNode = xmlNodes[i];
-
-                if (!blnLimitList || await xmlNode.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                if (!blnLimitList || await xmlNode.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                 {
                     TreeNode treNode = new TreeNode
                     {
-                        Text = xmlNode["name"]?.InnerText ?? string.Empty
+                        Text = xmlNode.SelectSingleNodeAndCacheExpression("translate", token)?.Value
+                               ?? xmlNode.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? string.Empty
                     };
-                    if (xmlNode["versions"] != null)
+                    XPathNavigator xmlVersionsNode = xmlNode
+                                                           .SelectSingleNodeAndCacheExpression("versions", token);
+                    if (xmlVersionsNode != null)
                     {
                         TreeNode[] aobjNodes = await BuildList(
-                            xmlNode.SelectNodes("versions/version["
-                                                + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                                + "or not(source)]"), token).ConfigureAwait(false);
+                            xmlVersionsNode.Select(
+                                "version[(" + await strBookPath.GetValueAsync(token).ConfigureAwait(false)
+                                            + ") or not(source)]"), token).ConfigureAwait(false);
                         treNode.Nodes.AddRange(aobjNodes);
                     }
 
-                    treNode.Tag = xmlNode["id"]?.InnerText;
+                    treNode.Tag = xmlNode.SelectSingleNodeAndCacheExpression("id", token)?.Value;
+                    token.ThrowIfCancellationRequested();
                     if (_rgxSearchExpression != null)
                     {
-                        if (_rgxSearchExpression.IsMatch(treNode.Text))
-                        {
-                            lstTreeNodes.Add(treNode);
-                        }
-                        else if (treNode.Nodes.Count != 0)
+                        if (_rgxSearchExpression.IsMatch(treNode.Text) || treNode.Nodes.Count != 0)
                         {
                             lstTreeNodes.Add(treNode);
                         }
@@ -118,6 +124,7 @@ namespace Chummer
                     }
                 }
             }
+            token.ThrowIfCancellationRequested();
 
             return lstTreeNodes.ToArray();
         }
@@ -144,19 +151,18 @@ namespace Chummer
 
         private async void treModules_AfterSelect(object sender, TreeViewEventArgs e)
         {
-            bool blnSelectAble;
-            if (e.Node.Nodes.Count == 0)
-            {
-                blnSelectAble = true;
-            }
-            else
+            bool blnSelectable = true;
+            if (e.Node.Nodes.Count != 0)
             {
                 //Select any node that have an id node equal to tag
-                string selectString = "//*[id = " + e.Node.Tag.ToString().CleanXPath() + "]/selectable";
-                XmlNode node = _xmlDocument.SelectSingleNode(selectString);
                 //if it contains >selectable>True</selectable>, yes or </selectable>
                 //set button to selectable, otherwise not
-                blnSelectAble = (node != null && (node.InnerText == bool.TrueString || node.OuterXml.EndsWith("/>", StringComparison.Ordinal)));
+                XPathNavigator xmlModulePath = _xmlLifeModulesDocumentChummerNode.TryGetNodeByNameOrId("//*", e.Node.Tag.ToString());
+                if (xmlModulePath != null)
+                {
+                    blnSelectable
+                        = xmlModulePath.SelectSingleNodeAndCacheExpression("selectable")?.Value != bool.FalseString;
+                }
             }
 
             _strSelectedId = (string)e.Node.Tag;
@@ -164,15 +170,20 @@ namespace Chummer
 
             if (xmlSelectedNodeInfo != null)
             {
-                await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnSelectAble).ConfigureAwait(false);
-                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = blnSelectAble).ConfigureAwait(false);
-
-                await lblBP.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["karma"]?.InnerText ?? string.Empty).ConfigureAwait(false);
-                string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
-                await lblSource.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["source"]?.InnerText
-                                                                ?? string.Empty + strSpace
-                                                                + xmlSelectedNodeInfo["page"]?.InnerText).ConfigureAwait(false);
-                await lblStage.DoThreadSafeAsync(x => x.Text = xmlSelectedNodeInfo["stage"]?.InnerText ?? string.Empty).ConfigureAwait(false);
+                string strBP = xmlSelectedNodeInfo["karma"]?.InnerTextViaPool()
+                               ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                string strSource = await (await SourceString.GetSourceStringAsync(xmlSelectedNodeInfo["source"]?.InnerTextViaPool(),
+                                                                            strPage: xmlSelectedNodeInfo["altpage"]?.InnerTextViaPool()
+                                                                            ?? xmlSelectedNodeInfo["page"]?.InnerTextViaPool(),
+                                                                            objSettings: await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).ConfigureAwait(false))
+                                               .ToStringAsync().ConfigureAwait(false);
+                string strStage = xmlSelectedNodeInfo["stage"]?.InnerTextViaPool()
+                                  ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
+                await lblBP.DoThreadSafeAsync(x => x.Text = strBP).ConfigureAwait(false);
+                await lblSource.DoThreadSafeAsync(x => x.Text = strSource).ConfigureAwait(false);
+                await lblStage.DoThreadSafeAsync(x => x.Text = strStage).ConfigureAwait(false);
+                await cmdOK.DoThreadSafeAsync(x => x.Enabled = blnSelectable).ConfigureAwait(false);
+                await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = blnSelectable).ConfigureAwait(false);
             }
             else
             {
@@ -180,7 +191,6 @@ namespace Chummer
                 await lblBP.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
                 await lblStage.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
                 await lblSource.DoThreadSafeAsync(x => x.Text = strError).ConfigureAwait(false);
-
                 await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
                 await cmdOKAdd.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
             }
@@ -207,22 +217,16 @@ namespace Chummer
             {
                 if (await cboStage.DoThreadSafeFuncAsync(x => x.DataSource == null).ConfigureAwait(false))
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstStages))
                     {
                         lstStages.Add(new ListItem("0", await LanguageManager.GetStringAsync("String_All").ConfigureAwait(false)));
 
-                        using (XmlNodeList xmlNodes = _xmlDocument.SelectNodes("/chummer/stages/stage"))
+                        foreach (XPathNavigator xnode in _xmlLifeModulesDocumentChummerNode.Select("stages/stage"))
                         {
-                            if (xmlNodes?.Count > 0)
+                            string strOrder = xnode.SelectSingleNodeAndCacheExpression("order")?.Value;
+                            if (!string.IsNullOrEmpty(strOrder))
                             {
-                                foreach (XmlNode xnode in xmlNodes)
-                                {
-                                    string strOrder = xnode.Attributes?["order"]?.Value;
-                                    if (!string.IsNullOrEmpty(strOrder))
-                                    {
-                                        lstStages.Add(new ListItem(strOrder, xnode.InnerText));
-                                    }
-                                }
+                                lstStages.Add(new ListItem(strOrder, xnode.Value));
                             }
                         }
 
@@ -270,14 +274,11 @@ namespace Chummer
         private async void cboStage_SelectionChangeCommitted(object sender, EventArgs e)
         {
             string strSelected = await cboStage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false) ?? string.Empty;
-            if (strSelected == "0")
-            {
-                _strWorkStage = string.Empty;
-            }
-            else
-            {
-                _strWorkStage = _xmlDocument.SelectSingleNode("chummer/stages/stage[@order = " + strSelected.CleanXPath() + ']')?.InnerText ?? string.Empty;
-            }
+            _strWorkStage = strSelected == "0"
+                ? string.Empty
+                : _xmlLifeModulesDocumentChummerNode
+                    .SelectSingleNodeAndCacheExpression("stages/stage[@order = " + strSelected.CleanXPath() + "]")
+                    ?.Value ?? string.Empty;
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
@@ -306,9 +307,9 @@ namespace Chummer
             await BuildTree(await GetSelectString().ConfigureAwait(false)).ConfigureAwait(false);
         }
 
-        private async ValueTask<string> GetSelectString(CancellationToken token = default)
+        private async Task<string> GetSelectString(CancellationToken token = default)
         {
-            string strReturn = "[(" + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false);
+            string strReturn = "[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
 
             //chummer/modules/module//name[contains(., "C")]/..["" = string.Empty]
             // /chummer/modules/module//name[contains(., "can")]/..[id]
@@ -320,7 +321,7 @@ namespace Chummer
             //}
             if (!string.IsNullOrWhiteSpace(_strWorkStage))
             {
-                strReturn += ") and (stage = " + _strWorkStage.CleanXPath();
+                strReturn += " and (stage = " + _strWorkStage.CleanXPath();
             }
 
             return strReturn + ")]";

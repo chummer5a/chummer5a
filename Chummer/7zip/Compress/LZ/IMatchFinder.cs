@@ -30,28 +30,28 @@ namespace SevenZip.Compression.LZ
 
         void Init();
 
-        ValueTask InitAsync(CancellationToken token = default);
+        Task InitAsync(CancellationToken token = default);
 
         void ReleaseStream();
 
         byte GetIndexByte(int index);
 
-        uint GetMatchLen(int index, uint distance, uint limit);
+        int GetMatchLen(int index, int distance, int limit);
 
-        uint GetNumAvailableBytes();
+        int GetNumAvailableBytes();
     }
 
     internal interface IMatchFinder : IInWindowStream
     {
-        void Create(uint historySize, uint keepAddBufferBefore,
-                uint matchMaxLen, uint keepAddBufferAfter);
+        void Create(int historySize, int keepAddBufferBefore,
+                int matchMaxLen, int keepAddBufferAfter);
 
-        uint GetMatches(uint[] distances);
+        int GetMatches(int[] distances);
 
-        ValueTask<uint> GetMatchesAsync(uint[] distances, CancellationToken token = default);
+        Task<int> GetMatchesAsync(int[] distances, CancellationToken token = default);
 
-        void Skip(uint num);
+        void Skip(int num);
 
-        ValueTask SkipAsync(uint num, CancellationToken token = default);
+        Task SkipAsync(int num, CancellationToken token = default);
     }
 }

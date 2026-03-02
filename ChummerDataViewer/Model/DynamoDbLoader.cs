@@ -70,7 +70,7 @@ namespace ChummerDataViewer.Model
                             .ToList();
 
                         //If all items are known
-                        if (newItems.All(item => item.known))
+                        if (newItems.TrueForAll(item => item.known))
                         {
                             //reset progress so we start from start (new first on dynamoDB)
                             PersistentState.Database.SetKey("crashdumps_last_timestamp", null);

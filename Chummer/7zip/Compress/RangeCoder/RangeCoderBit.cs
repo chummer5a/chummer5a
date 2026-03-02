@@ -17,6 +17,9 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading;
+using System.Threading.Tasks;
+
 namespace SevenZip.Compression.RangeCoder
 {
     internal struct BitEncoder
@@ -43,7 +46,7 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public void Encode(Encoder encoder, uint symbol)
+        public void Encode(Encoder encoder, int symbol)
         {
             // encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
             // UpdateModel(symbol);
@@ -70,6 +73,36 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
+        public Task EncodeAsync(Encoder encoder, int symbol, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            // encoder.EncodeBit(Prob, kNumBitModelTotalBits, symbol);
+            // UpdateModel(symbol);
+            unchecked
+            {
+                uint newBound = (encoder.Range >> kNumBitModelTotalBits) * Prob;
+                if (symbol == 0)
+                {
+                    encoder.Range = newBound;
+                    Prob += (kBitModelTotal - Prob) >> kNumMoveBits;
+                }
+                else
+                {
+                    encoder.Low += newBound;
+                    encoder.Range -= newBound;
+                    Prob -= Prob >> kNumMoveBits;
+                }
+
+                if (encoder.Range < Encoder.kTopValue)
+                {
+                    encoder.Range <<= 8;
+                    return encoder.ShiftLowAsync(token);
+                }
+            }
+            return Task.CompletedTask;
+        }
+
         private static readonly uint[] ProbPrices = new uint[kBitModelTotal >> kNumMoveReducingBits];
 
         static BitEncoder()
@@ -88,11 +121,11 @@ namespace SevenZip.Compression.RangeCoder
             }
         }
 
-        public uint GetPrice(uint symbol)
+        public uint GetPrice(int symbol)
         {
             unchecked
             {
-                return ProbPrices[(((Prob - symbol) ^ -(int)symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
+                return ProbPrices[(((Prob - symbol) ^ -symbol) & (kBitModelTotal - 1)) >> kNumMoveReducingBits];
             }
         }
 

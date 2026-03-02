@@ -30,7 +30,7 @@
       <name>A - Any metatype</name>
       <value>A</value>
       <category>Heritage</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <metatypes>
         <!-- TODO: Add AIs -->
         <metatype>
@@ -181,7 +181,7 @@
       <name>B - Any metatype</name>
       <value>B</value>
       <category>Heritage</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <metatypes>
         <!-- TODO: Re-add AIs -->
         <metatype>
@@ -311,7 +311,7 @@
       <name>C - Human, Dwarf, Elf, or Ork</name>
       <value>C</value>
       <category>Heritage</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <metatypes>
         <!-- TODO: Re-add AIs -->
         <metatype>
@@ -419,7 +419,7 @@
       <name>D - Human, Dwarf, Elf, or Ork</name>
       <value>D</value>
       <category>Heritage</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -511,7 +511,7 @@
       <name>E - Human</name>
       <value>E</value>
       <category>Heritage</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -534,7 +534,7 @@
       <name>A - 24 Attributes</name>
       <value>A</value>
       <category>Attributes</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <attributes>24</attributes>
     </priority>
     <priority>
@@ -542,7 +542,7 @@
       <name>B - 19 Attributes</name>
       <value>B</value>
       <category>Attributes</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <attributes>19</attributes>
     </priority>
     <priority>
@@ -550,7 +550,7 @@
       <name>C - 16 Attributes</name>
       <value>C</value>
       <category>Attributes</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <attributes>16</attributes>
     </priority>
     <priority>
@@ -558,7 +558,7 @@
       <name>D - 14 Attributes</name>
       <value>D</value>
       <category>Attributes</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <attributes>14</attributes>
     </priority>
     <priority>
@@ -566,7 +566,7 @@
       <name>E - 12 Attributes</name>
       <value>E</value>
       <category>Attributes</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <attributes>12</attributes>
     </priority>
     <!-- End Region -->
@@ -576,7 +576,7 @@
       <name>A - 11 Special Attribute Points</name>
       <value>A</value>
       <category>Talent</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <talents>
         <talent>
           <name>11 Special Attribute Points</name>
@@ -590,7 +590,7 @@
       <name>B - 7 Special Attribute Points</name>
       <value>B</value>
       <category>Talent</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <talents>
         <talent>
           <name>7 Special Attribute Points</name>
@@ -604,7 +604,7 @@
       <name>C - 5 Special Attribute Points</name>
       <value>C</value>
       <category>Talent</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <talents>
         <talent>
           <name>5 Special Attribute Points</name>
@@ -618,7 +618,7 @@
       <name>D - 3 Special Attribute Points</name>
       <value>D</value>
       <category>Talent</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <talents>
         <talent>
           <name>3 Special Attribute Points</name>
@@ -632,7 +632,7 @@
       <name>E - 1 Special Attribute Point</name>
       <value>E</value>
       <category>Talent</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <talents>
         <talent>
           <name>1 Special Attribute Point</name>
@@ -648,7 +648,7 @@
       <name>A - 46 Skill Points</name>
       <value>A</value>
       <category>Skills</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <skills>46</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -657,7 +657,7 @@
       <name>B - 32 Skill Points</name>
       <value>B</value>
       <category>Skills</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <skills>32</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -666,7 +666,7 @@
       <name>C - 24 Skill Points</name>
       <value>C</value>
       <category>Skills</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <skills>24</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -675,7 +675,7 @@
       <name>D - 18 Skill Points</name>
       <value>D</value>
       <category>Skills</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <skills>18</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -684,7 +684,7 @@
       <name>E - 12 Skill Points</name>
       <value>E</value>
       <category>Skills</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <skills>12</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -695,7 +695,7 @@
       <name>A - 450,000 ¥</name>
       <value>A</value>
       <category>Resources</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <resources>450000</resources>
     </priority>
     <priority>
@@ -703,7 +703,7 @@
       <name>B - 260,000 ¥</name>
       <value>B</value>
       <category>Resources</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <resources>260000</resources>
     </priority>
     <priority>
@@ -711,7 +711,7 @@
       <name>C - 150,000 ¥</name>
       <value>C</value>
       <category>Resources</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <resources>150000</resources>
     </priority>
     <priority>
@@ -719,7 +719,7 @@
       <name>D - 80,000 ¥</name>
       <value>D</value>
       <category>Resources</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <resources>80000</resources>
     </priority>
     <priority>
@@ -727,7 +727,7 @@
       <name>E - 10,000 ¥</name>
       <value>E</value>
       <category>Resources</category>
-      <gameplayoption>Standard</gameplayoption>
+      <prioritytable>Standard</prioritytable>
       <resources>10000</resources>
     </priority>
     <!-- End Region -->
@@ -738,7 +738,7 @@
       <name>A - Any metatype</name>
       <value>A</value>
       <category>Heritage</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <metatypes>
         <!-- TODO: Add AIs -->
         <metatype>
@@ -878,7 +878,7 @@
       <name>B - Human, Dwarf, Elf, or Ork</name>
       <value>B</value>
       <category>Heritage</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <metatypes>
         <!-- TODO: Re-add AIs -->
         <metatype>
@@ -986,7 +986,7 @@
       <name>C - Human, Dwarf, Elf, or Ork</name>
       <value>C</value>
       <category>Heritage</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -1088,7 +1088,7 @@
       <name>D - Human</name>
       <value>D</value>
       <category>Heritage</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -1109,7 +1109,7 @@
       <name>E - Human</name>
       <value>E</value>
       <category>Heritage</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -1132,7 +1132,7 @@
       <name>A - 19 Attributes</name>
       <value>A</value>
       <category>Attributes</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <attributes>19</attributes>
     </priority>
     <priority>
@@ -1140,7 +1140,7 @@
       <name>B - 16 Attributes</name>
       <value>B</value>
       <category>Attributes</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <attributes>16</attributes>
     </priority>
     <priority>
@@ -1148,7 +1148,7 @@
       <name>C - 13 Attributes</name>
       <value>C</value>
       <category>Attributes</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <attributes>13</attributes>
     </priority>
     <priority>
@@ -1156,7 +1156,7 @@
       <name>D - 12 Attributes</name>
       <value>D</value>
       <category>Attributes</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <attributes>12</attributes>
     </priority>
     <priority>
@@ -1164,7 +1164,7 @@
       <name>E - 11 Attributes</name>
       <value>E</value>
       <category>Attributes</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <attributes>11</attributes>
     </priority>
     <!-- End Region -->
@@ -1174,7 +1174,7 @@
       <name>A - 8 Special Attribute Points</name>
       <value>A</value>
       <category>Talent</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <talents>
         <talent>
           <name>8 Special Attribute Points</name>
@@ -1188,7 +1188,7 @@
       <name>B - 5 Special Attribute Points</name>
       <value>B</value>
       <category>Talent</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <talents>
         <talent>
           <name>5 Special Attribute Points</name>
@@ -1202,7 +1202,7 @@
       <name>C - 4 Special Attribute Points</name>
       <value>C</value>
       <category>Talent</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <talents>
         <talent>
           <name>4 Special Attribute Points</name>
@@ -1216,7 +1216,7 @@
       <name>D - 2 Special Attribute Points</name>
       <value>D</value>
       <category>Talent</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <talents>
         <talent>
           <name>2 Special Attribute Points</name>
@@ -1230,7 +1230,7 @@
       <name>E - 0 Special Attribute Points</name>
       <value>E</value>
       <category>Talent</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <talents>
         <talent>
           <name>0 Special Attribute Points</name>
@@ -1246,7 +1246,7 @@
       <name>A - 32 Skill Points</name>
       <value>A</value>
       <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <skills>32</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1255,7 +1255,7 @@
       <name>B - 22 Skill Points</name>
       <value>B</value>
       <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <skills>22</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1264,7 +1264,7 @@
       <name>C - 17 Skill Points</name>
       <value>C</value>
       <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <skills>17</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1273,7 +1273,7 @@
       <name>D - 13 Skill Points</name>
       <value>D</value>
       <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <skills>13</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1282,7 +1282,7 @@
       <name>E - 9 Skill Points</name>
       <value>E</value>
       <category>Skills</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <skills>9</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1293,7 +1293,7 @@
       <name>A - 340,000 ¥</name>
       <value>A</value>
       <category>Resources</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <resources>340000</resources>
     </priority>
     <priority>
@@ -1301,7 +1301,7 @@
       <name>B - 190,000 ¥</name>
       <value>B</value>
       <category>Resources</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <resources>190000</resources>
     </priority>
     <priority>
@@ -1309,7 +1309,7 @@
       <name>C - 110,000 ¥</name>
       <value>C</value>
       <category>Resources</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <resources>110000</resources>
     </priority>
     <priority>
@@ -1317,7 +1317,7 @@
       <name>D - 60,000 ¥</name>
       <value>D</value>
       <category>Resources</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <resources>60000</resources>
     </priority>
     <priority>
@@ -1325,7 +1325,7 @@
       <name>E - 10,000 ¥</name>
       <value>E</value>
       <category>Resources</category>
-      <gameplayoption>Street Scum</gameplayoption>
+      <prioritytable>Street Scum</prioritytable>
       <resources>10000</resources>
     </priority>
     <!-- End Region -->
@@ -1336,7 +1336,7 @@
       <name>A - Any metatype</name>
       <value>A</value>
       <category>Heritage</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <metatypes>
         <!-- TODO: Add AIs -->
         <metatype>
@@ -1487,7 +1487,7 @@
       <name>B - Any metatype</name>
       <value>B</value>
       <category>Heritage</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <metatypes>
         <!-- TODO: Re-add AIs -->
         <metatype>
@@ -1633,7 +1633,7 @@
       <name>C - Human, Dwarf, Elf, or Ork</name>
       <value>C</value>
       <category>Heritage</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <metatypes>
         <!-- TODO: Re-add AIs -->
         <metatype>
@@ -1741,7 +1741,7 @@
       <name>D - Human, Dwarf, Elf, or Ork</name>
       <value>D</value>
       <category>Heritage</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -1843,7 +1843,7 @@
       <name>E - Human</name>
       <value>E</value>
       <category>Heritage</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <metatypes>
         <metatype>
           <name>Human</name>
@@ -1866,7 +1866,7 @@
       <name>A - 30 Attributes</name>
       <value>A</value>
       <category>Attributes</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <attributes>30</attributes>
     </priority>
     <priority>
@@ -1874,7 +1874,7 @@
       <name>B - 23 Attributes</name>
       <value>B</value>
       <category>Attributes</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <attributes>23</attributes>
     </priority>
     <priority>
@@ -1882,7 +1882,7 @@
       <name>C - 19 Attributes</name>
       <value>C</value>
       <category>Attributes</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <attributes>19</attributes>
     </priority>
     <priority>
@@ -1890,7 +1890,7 @@
       <name>D - 16 Attributes</name>
       <value>D</value>
       <category>Attributes</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <attributes>16</attributes>
     </priority>
     <priority>
@@ -1898,7 +1898,7 @@
       <name>E - 14 Attributes</name>
       <value>E</value>
       <category>Attributes</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <attributes>14</attributes>
     </priority>
     <!-- End Region -->
@@ -1908,7 +1908,7 @@
       <name>A - 14 Special Attribute Points</name>
       <value>A</value>
       <category>Talent</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <talents>
         <talent>
           <name>14 Special Attribute Points</name>
@@ -1922,7 +1922,7 @@
       <name>B - 9 Special Attribute Points</name>
       <value>B</value>
       <category>Talent</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <talents>
         <talent>
           <name>9 Special Attribute Points</name>
@@ -1936,7 +1936,7 @@
       <name>C - 6 Special Attribute Points</name>
       <value>C</value>
       <category>Talent</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <talents>
         <talent>
           <name>6 Special Attribute Points</name>
@@ -1950,7 +1950,7 @@
       <name>D - 4 Special Attribute Points</name>
       <value>D</value>
       <category>Talent</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <talents>
         <talent>
           <name>4 Special Attribute Points</name>
@@ -1964,7 +1964,7 @@
       <name>E - 2 Special Attribute Points</name>
       <value>E</value>
       <category>Talent</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <talents>
         <talent>
           <name>2 Special Attribute Points</name>
@@ -1980,7 +1980,7 @@
       <name>A - 62 Skill Points</name>
       <value>A</value>
       <category>Skills</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <skills>62</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1989,7 +1989,7 @@
       <name>B - 43 Skill Points</name>
       <value>B</value>
       <category>Skills</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <skills>43</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -1998,7 +1998,7 @@
       <name>C - 32 Skill Points</name>
       <value>C</value>
       <category>Skills</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <skills>32</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -2007,7 +2007,7 @@
       <name>D - 25 Skill Points</name>
       <value>D</value>
       <category>Skills</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <skills>25</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -2016,7 +2016,7 @@
       <name>E - 18 Skill Points</name>
       <value>E</value>
       <category>Skills</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <skills>18</skills>
       <skillgroups>0</skillgroups>
     </priority>
@@ -2027,7 +2027,7 @@
       <name>A - 600,000 ¥</name>
       <value>A</value>
       <category>Resources</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <resources>600000</resources>
     </priority>
     <priority>
@@ -2035,7 +2035,7 @@
       <name>B - 350,000 ¥</name>
       <value>B</value>
       <category>Resources</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <resources>350000</resources>
     </priority>
     <priority>
@@ -2043,7 +2043,7 @@
       <name>C - 210,000 ¥</name>
       <value>C</value>
       <category>Resources</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <resources>210000</resources>
     </priority>
     <priority>
@@ -2051,7 +2051,7 @@
       <name>D - 120,000 ¥</name>
       <value>D</value>
       <category>Resources</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <resources>120000</resources>
     </priority>
     <priority>
@@ -2059,7 +2059,7 @@
       <name>E - 30,000 ¥</name>
       <value>E</value>
       <category>Resources</category>
-      <gameplayoption>Prime Runner</gameplayoption>
+      <prioritytable>Prime Runner</prioritytable>
       <resources>30000</resources>
     </priority>
     <!-- End Region -->

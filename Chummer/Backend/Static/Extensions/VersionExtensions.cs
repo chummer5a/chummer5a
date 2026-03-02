@@ -41,5 +41,14 @@ namespace Chummer
 
             return Version.TryParse(input, out result);
         }
+
+        /// <summary>
+        /// Syntactic sugar to return an allocated version as its value type equivalent
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static ValueVersion AsValue(this Version objVersion)
+        {
+            return new ValueVersion(objVersion);
+        }
     }
 }

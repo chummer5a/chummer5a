@@ -31,7 +31,7 @@ using NLog;
 
 namespace Chummer
 {
-    public class SustainedObject : IHasInternalId, INotifyPropertyChanged
+    public sealed class SustainedObject : IHasInternalId, INotifyPropertyChangedAsync, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -40,24 +40,18 @@ namespace Chummer
         private bool _blnSelfSustained = true;
         private int _intForce;
         private int _intNetHits;
-        private IHasInternalId _objLinkedObject;
-        private Improvement.ImprovementSource _eLinkedObjectType;
+        private readonly IHasInternalId _objLinkedObject;
+        private readonly Improvement.ImprovementSource _eLinkedObjectType;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public SustainedObject(Character objCharacter)
+        public SustainedObject(Character objCharacter, IHasInternalId objLinkedObject)
         {
             // Create the GUID for the new Spell.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-        }
-
-        /// <summary>
-        /// Creates a sustained object from a thing that can be sustained (usually a Spell, Complex Form, or Critter Power)
-        /// </summary>
-        /// <param name="objLinkedObject">The liked object that is meant to be sustained.</param>
-        public void Create(IHasInternalId objLinkedObject)
-        {
             _objLinkedObject = objLinkedObject;
             switch (objLinkedObject)
             {
@@ -78,6 +72,62 @@ namespace Chummer
             }
         }
 
+        public SustainedObject(Character objCharacter, XmlNode objNode)
+        {
+            _objCharacter = objCharacter;
+            if (objNode == null)
+            {
+                _guiID = Guid.Empty;
+                return;
+            }
+            string strLinkedId = string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("linkedobject", ref strLinkedId))
+            {
+                _guiID = Guid.Empty;
+                return;
+            }
+            string strType = string.Empty;
+            if (objNode.TryGetStringFieldQuickly("linkedobjecttype", ref strType))
+                _eLinkedObjectType = Improvement.ConvertToImprovementSource(strType);
+            else
+            {
+                _guiID = Guid.Empty;
+                return;
+            }
+            IEnumerable<IHasInternalId> lstToSearch;
+            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    lstToSearch = objCharacter.Spells;
+                    break;
+
+                case Improvement.ImprovementSource.ComplexForm:
+                    lstToSearch = objCharacter.ComplexForms;
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    lstToSearch = objCharacter.CritterPowers;
+                    break;
+
+                default:
+                    _guiID = Guid.Empty;
+                    return;
+            }
+            _objLinkedObject = lstToSearch.FirstOrDefault(x => x.InternalId == strLinkedId);
+            if (_objLinkedObject == null)
+            {
+                Utils.BreakIfDebug();
+                _guiID = Guid.Empty;
+                return;
+            }
+            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
+            objNode.TryGetInt32FieldQuickly("nethits", ref _intNetHits);
+            objNode.TryGetBoolFieldQuickly("self", ref _blnSelfSustained);
+            // Create the GUID for the new Spell.
+            _guiID = Guid.NewGuid();
+        }
+
         /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
@@ -96,68 +146,13 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Sustained Object from the XmlNode.
-        /// </summary>
-        /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
-        {
-            if (objNode == null)
-                return;
-            string strLinkedId = string.Empty;
-            if (!objNode.TryGetStringFieldQuickly("linkedobject", ref strLinkedId))
-            {
-                _guiID = Guid.Empty;
-                return;
-            }
-            if (objNode["linkedobjecttype"] != null)
-            {
-                _eLinkedObjectType = Improvement.ConvertToImprovementSource(objNode["linkedobjecttype"].InnerText);
-            }
-            else
-            {
-                _guiID = Guid.Empty;
-                return;
-            }
-            IEnumerable<IHasInternalId> lstToSearch;
-            // ReSharper disable once SwitchStatementHandlesSomeKnownEnumValuesWithDefault
-            switch (_eLinkedObjectType)
-            {
-                case Improvement.ImprovementSource.Spell:
-                    lstToSearch = _objCharacter.Spells;
-                    break;
-
-                case Improvement.ImprovementSource.ComplexForm:
-                    lstToSearch = _objCharacter.ComplexForms;
-                    break;
-
-                case Improvement.ImprovementSource.CritterPower:
-                    lstToSearch = _objCharacter.CritterPowers;
-                    break;
-
-                default:
-                    _guiID = Guid.Empty;
-                    return;
-            }
-            _objLinkedObject = lstToSearch.FirstOrDefault(x => x.InternalId == strLinkedId);
-            if (_objLinkedObject == null)
-            {
-                Utils.BreakIfDebug();
-                _guiID = Guid.Empty;
-                return;
-            }
-            objNode.TryGetInt32FieldQuickly("force", ref _intForce);
-            objNode.TryGetInt32FieldQuickly("nethits", ref _intNetHits);
-            objNode.TryGetBoolFieldQuickly("self", ref _blnSelfSustained);
-        }
-
-        /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="objCulture">Culture in which to print numbers.</param>
         /// <param name="strLanguageToPrint">Language in which to print.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -173,12 +168,12 @@ namespace Chummer
                       .WriteElementStringAsync(
                           "fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
                       .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("force", Force.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("force", (await GetForceAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("nethits", NetHits.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("nethits", (await GetNetHitsAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("self", SelfSustained.ToString(objCulture), token)
+                await objWriter.WriteElementStringAsync("self", (await GetSelfSustainedAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                                .ConfigureAwait(false);
             }
             finally
@@ -197,13 +192,85 @@ namespace Chummer
         /// </summary>
         public bool SelfSustained
         {
-            get => _blnSelfSustained;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _blnSelfSustained;
+            }
             set
             {
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_blnSelfSustained == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_blnSelfSustained == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        _blnSelfSustained = value;
+                        OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Is the spell sustained by yourself?
+        /// </summary>
+        public async Task<bool> GetSelfSustainedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _blnSelfSustained;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Is the spell sustained by yourself?
+        /// </summary>
+        public async Task SetSelfSustainedAsync(bool value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 if (_blnSelfSustained == value)
                     return;
-                _blnSelfSustained = value;
-                OnPropertyChanged();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_blnSelfSustained == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _blnSelfSustained = value;
+                    await OnPropertyChangedAsync(nameof(SelfSustained), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -212,11 +279,85 @@ namespace Chummer
         /// </summary>
         public int Force
         {
-            get => _intForce;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _intForce;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intForce, value) != value)
-                    OnPropertyChanged();
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_intForce == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_intForce == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intForce, value) != value)
+                            OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Force of the sustained spell
+        /// </summary>
+        public async Task<int> GetForceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intForce;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Force of the sustained spell
+        /// </summary>
+        public async Task SetForceAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intForce == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intForce == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _intForce, value) != value)
+                        await OnPropertyChangedAsync(nameof(Force), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -225,11 +366,85 @@ namespace Chummer
         /// </summary>
         public int NetHits
         {
-            get => _intNetHits;
+            get
+            {
+                using (_objCharacter.LockObject.EnterReadLock())
+                    return _intNetHits;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intNetHits, value) != value)
-                    OnPropertyChanged();
+                using (_objCharacter.LockObject.EnterReadLock())
+                {
+                    if (_intNetHits == value)
+                        return;
+                }
+                using (_objCharacter.LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_intNetHits == value)
+                        return;
+                    using (_objCharacter.LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                            OnPropertyChanged();
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// The Net Hits the Sustained Spell has
+        /// </summary>
+        public async Task<int> GetNetHitsAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intNetHits;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// The Net Hits the Sustained Spell has
+        /// </summary>
+        public async Task SetNetHitsAsync(int value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNetHits == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_intNetHits == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _intNetHits, value) != value)
+                        await OnPropertyChangedAsync(nameof(NetHits), token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -262,27 +477,29 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameShortAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameShortAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         /// <summary>
@@ -308,32 +525,34 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
             switch (_eLinkedObjectType)
             {
                 case Improvement.ImprovementSource.Spell:
                     if (_objLinkedObject is Spell objSpell)
-                        return await objSpell.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objSpell.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.ComplexForm:
                     if (_objLinkedObject is ComplexForm objComplexForm)
-                        return await objComplexForm.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objComplexForm.DisplayNameAsync(strLanguage, token);
                     break;
 
                 case Improvement.ImprovementSource.CritterPower:
                     if (_objLinkedObject is CritterPower objCritterPower)
-                        return await objCritterPower.DisplayNameAsync(strLanguage, token).ConfigureAwait(false);
+                        return objCritterPower.DisplayNameAsync(strLanguage, token);
                     break;
             }
-            return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token).ConfigureAwait(false);
+            return LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token);
         }
 
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         public string Name
@@ -356,18 +575,79 @@ namespace Chummer
             }
         }
 
-        public bool HasSustainingPenalty => SelfSustained && LinkedObjectType != Improvement.ImprovementSource.CritterPower;
+        public Task<string> GetNameAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            // ReSharper disable once SwitchStatementMissingSomeEnumCasesNoDefault
+            switch (_eLinkedObjectType)
+            {
+                case Improvement.ImprovementSource.Spell:
+                    if (_objLinkedObject is Spell objSpell)
+                        return objSpell.GetNameAsync(token);
+                    break;
+
+                case Improvement.ImprovementSource.ComplexForm:
+                    if (_objLinkedObject is ComplexForm objComplexForm)
+                        return objComplexForm.GetNameAsync(token);
+                    break;
+
+                case Improvement.ImprovementSource.CritterPower:
+                    if (_objLinkedObject is CritterPower objCritterPower)
+                        return Task.FromResult(objCritterPower.Name);
+                    break;
+            }
+            return LanguageManager.GetStringAsync("String_Unknown", GlobalSettings.DefaultLanguage, token: token);
+        }
+
+        public bool HasSustainingPenalty => LinkedObjectType != Improvement.ImprovementSource.CritterPower && SelfSustained;
+
+        public Task<bool> GetHasSustainingPenaltyAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<bool>(token);
+            if (LinkedObjectType != Improvement.ImprovementSource.CritterPower)
+                return Task.FromResult(false);
+            return GetSelfSustainedAsync(token);
+        }
 
         #endregion Properties
 
         public event PropertyChangedEventHandler PropertyChanged;
 
+        private readonly ConcurrentHashSet<PropertyChangedAsyncEventHandler> _setPropertyChangedAsync =
+            new ConcurrentHashSet<PropertyChangedAsyncEventHandler>();
+
+        public event PropertyChangedAsyncEventHandler PropertyChangedAsync
+        {
+            add => _setPropertyChangedAsync.TryAdd(value);
+            remove => _setPropertyChangedAsync.Remove(value);
+        }
+
         [NotifyPropertyChangedInvocator]
         public void OnPropertyChanged([CallerMemberName] string strPropertyName = null)
         {
-            Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(strPropertyName)));
-            if (strPropertyName == nameof(SelfSustained) || strPropertyName == nameof(LinkedObjectType))
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (_setPropertyChangedAsync.Count > 0)
+                Utils.RunWithoutThreadLock(_setPropertyChangedAsync.Select(x => new Func<Task>(() => x.Invoke(this, objArgs))));
+            if (PropertyChanged != null)
+                Utils.RunOnMainThread(() => PropertyChanged?.Invoke(this, objArgs));
+            if (strPropertyName == nameof(SelfSustained) && _objCharacter != null)
                 _objCharacter.RefreshSustainingPenalties();
+        }
+
+        public async Task OnPropertyChangedAsync(string strPropertyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            PropertyChangedEventArgs objArgs = new PropertyChangedEventArgs(strPropertyName);
+            if (_setPropertyChangedAsync.Count > 0)
+                await ParallelExtensions.ForEachAsync(_setPropertyChangedAsync, x => x.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (PropertyChanged != null)
+                await Utils.RunOnMainThreadAsync(() => PropertyChanged?.Invoke(this, objArgs), token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (strPropertyName == nameof(SelfSustained) && _objCharacter != null)
+                await _objCharacter.RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
         }
     }
 }

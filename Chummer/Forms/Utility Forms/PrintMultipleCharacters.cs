@@ -18,15 +18,15 @@
  */
 
 using System;
+using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public partial class PrintMultipleCharacters : Form
+    public partial class PrintMultipleCharacters : Form, IHasCharacterObjects
     {
         private CancellationTokenSource _objPrinterCancellationTokenSource;
         private readonly CancellationTokenSource _objGenericCancellationTokenSource = new CancellationTokenSource();
@@ -35,15 +35,19 @@ namespace Chummer
         private Character[] _aobjCharacters;
         private CharacterSheetViewer _frmPrintView;
 
+        public IEnumerable<Character> CharacterObjects => _aobjCharacters;
+
+        public Character CharacterObject => _aobjCharacters.Length > 0 ? _aobjCharacters[0] : null;
+
         #region Control Events
 
         public PrintMultipleCharacters()
         {
-            Disposed += (sender, args) => _objGenericCancellationTokenSource.Dispose();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void PrintMultipleCharacters_Load(object sender, EventArgs e)
@@ -51,9 +55,9 @@ namespace Chummer
             try
             {
                 dlgOpenFile.Title = await LanguageManager.GetStringAsync("Title_PrintMultiple", token: _objGenericToken).ConfigureAwait(false);
-                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + '|' +
-                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                dlgOpenFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objGenericToken).ConfigureAwait(false) + "|" +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objGenericToken).ConfigureAwait(false) + "|" +
+                                     await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objGenericToken).ConfigureAwait(false) + "|" +
                                      await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -72,7 +76,7 @@ namespace Chummer
             }
             _objGenericCancellationTokenSource.Cancel(false);
             // ReSharper disable once MethodSupportsCancellation
-            await CleanUpOldCharacters().ConfigureAwait(false);
+            await CleanUpOldCharacters(Interlocked.Exchange(ref _aobjCharacters, null), CancellationToken.None).ConfigureAwait(false);
         }
 
         private async void cmdSelectCharacter_Click(object sender, EventArgs e)
@@ -124,7 +128,7 @@ namespace Chummer
 
             if (_frmPrintView != null)
             {
-                Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                Task tskNew = DoPrint(objToken);
                 if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
                 {
                     Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
@@ -203,7 +207,7 @@ namespace Chummer
 
                     if (_frmPrintView != null)
                     {
-                        Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+                        Task tskNew = DoPrint(objToken);
                         if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
                         {
                             Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
@@ -277,7 +281,7 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            Task tskNew = Task.Run(() => DoPrint(objToken), objToken);
+            Task tskNew = DoPrint(objToken);
             if (Interlocked.CompareExchange(ref _tskPrinter, tskNew, null) != null)
             {
                 Interlocked.CompareExchange(ref _objPrinterCancellationTokenSource, null, objNewSource);
@@ -319,16 +323,13 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[intNodesCount];
-                    Task<Character>[] tskLoadingTasks = new Task<Character>[intNodesCount];
-                    for (int i = 0; i < tskLoadingTasks.Length; ++i)
+                    await ParallelExtensions.ForAsync(0, intNodesCount, async i =>
                     {
-                        int i1 = i;
                         string strLoopFile
-                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i1].Tag.ToString(), token).ConfigureAwait(false);
-                        tskLoadingTasks[i]
-                            = Task.Run(() => InnerLoad(strLoopFile, token), token);
-                    }
-
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
+                        lstCharacters[i] = await InnerLoad(strLoopFile, token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                    
                     async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)
                     {
                         innerToken.ThrowIfCancellationRequested();
@@ -346,30 +347,29 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await Task.WhenAll(tskLoadingTasks).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    for (int i = 0; i < lstCharacters.Length; ++i)
-                        lstCharacters[i] = await tskLoadingTasks[i].ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    await CleanUpOldCharacters(token).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    _aobjCharacters = lstCharacters;
+                    await CleanUpOldCharacters(Interlocked.Exchange(ref _aobjCharacters, lstCharacters), token).ConfigureAwait(false);
 
                     if (_frmPrintView == null)
                     {
-                        _frmPrintView = await this.DoThreadSafeFuncAsync(x =>
+                        CharacterSheetViewer frmPrintView = await this.DoThreadSafeFuncAsync(() => new CharacterSheetViewer(), token).ConfigureAwait(false);
+                        CharacterSheetViewer frmOld = Interlocked.CompareExchange(ref _frmPrintView, frmPrintView, null);
+                        if (frmOld == null)
                         {
-                            CharacterSheetViewer objReturn = new CharacterSheetViewer();
-                            x.Disposed += (sender, args) => objReturn.Dispose();
-                            return objReturn;
-                        }, token).ConfigureAwait(false);
-                        await _frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
-                        await _frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                            await frmPrintView.SetSelectedSheet("Game Master Summary", token).ConfigureAwait(false);
+                            await frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
+                            await frmPrintView.DoThreadSafeAsync(x => x.Show(), token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            await frmPrintView.DoThreadSafeAsync(x => x.Close(), CancellationToken.None).ConfigureAwait(false);
+                            await frmOld.SetCharacters(token, lstCharacters).ConfigureAwait(false);
+                            await frmOld.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
+                        }
                     }
                     else
                     {
-                        await _frmPrintView.SetCharacters(token, _aobjCharacters).ConfigureAwait(false);
+                        await _frmPrintView.SetCharacters(token, lstCharacters).ConfigureAwait(false);
                         await _frmPrintView.DoThreadSafeAsync(x => x.Activate(), token).ConfigureAwait(false);
                     }
                 }
@@ -385,10 +385,10 @@ namespace Chummer
             }
         }
 
-        private async ValueTask CleanUpOldCharacters(CancellationToken token = default)
+        private async Task CleanUpOldCharacters(Character[] aobjCharacters, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!(_aobjCharacters?.Length > 0))
+            if (!(aobjCharacters?.Length > 0))
                 return;
             // Dispose of any characters who were previous loaded but are no longer needed and don't have any linked characters
             bool blnAnyChanges = true;
@@ -396,11 +396,11 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 blnAnyChanges = false;
-                foreach (Character objCharacter in _aobjCharacters)
+                foreach (Character objCharacter in aobjCharacters)
                 {
                     if (!await Program.OpenCharacters.ContainsAsync(objCharacter, token: token).ConfigureAwait(false)
-                        || await Program.OpenCharacters.AnyAsync(x => x.LinkedCharacters.Contains(objCharacter), token).ConfigureAwait(false)
-                        || Program.MainForm.OpenFormsWithCharacters.Any(x => x.CharacterObjects.Contains(objCharacter)))
+                        || await Program.OpenCharacters.AnyAsync(async x => (await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token).ConfigureAwait(false)
+                        || await Program.MainForm.AnyOpenFormContainsCharacter(objCharacter, this, token).ConfigureAwait(false))
                         continue;
                     blnAnyChanges = true;
                     await Program.OpenCharacters.RemoveAsync(objCharacter, token: token).ConfigureAwait(false);

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -29,6 +30,7 @@ using System.Windows.Forms;
 using System.Xml.Serialization;
 using System.Xml.XPath;
 using Newtonsoft.Json;
+using static Chummer.EventHandlerExtensions;
 
 namespace Chummer
 {
@@ -57,12 +59,11 @@ namespace Chummer
         private Image _imgMugshot;
         private int _intCreated;
         private string _strSettingsFile;
-        private readonly LockingDictionary<string, object> _dicMyPluginData = new LockingDictionary<string, object>();
-        private Task<string> _tskRunningDownloadTask;
-        private EventHandler _onMyDoubleClick;
-        private EventHandler _onMyContextMenuDeleteClick;
-        private EventHandler<TreeViewEventArgs> _onMyAfterSelect;
-        private EventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
+        private readonly ConcurrentDictionary<string, object> _dicMyPluginData = new ConcurrentDictionary<string, object>();
+        private SafeAsyncEventHandler _onMyDoubleClick;
+        private SafeAsyncEventHandler _onMyContextMenuDeleteClick;
+        private SafeAsyncEventHandler<TreeViewEventArgs> _onMyAfterSelect;
+        private SafeAsyncEventHandler<ValueTuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -70,13 +71,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFilePath;
             }
-            set
+        }
+
+        public async Task<string> GetFilePathAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strFilePath, value);
+                token.ThrowIfCancellationRequested();
+                return _strFilePath;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -84,13 +94,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strFileName;
             }
-            set
+        }
+
+        public async Task<string> GetFileNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strFileName, value);
+                token.ThrowIfCancellationRequested();
+                return _strFileName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -98,13 +117,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strErrorText;
             }
-            set
+        }
+
+        public async Task<string> GetErrorTextAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strErrorText, value);
+                token.ThrowIfCancellationRequested();
+                return _strErrorText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -112,13 +140,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strDescription;
             }
-            set
+        }
+
+        public async Task<string> GetDescriptionAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strDescription, value);
+                token.ThrowIfCancellationRequested();
+                return _strDescription;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -126,13 +163,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBackground;
             }
-            set
+        }
+
+        public async Task<string> GetBackgroundAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strBackground, value);
+                token.ThrowIfCancellationRequested();
+                return _strBackground;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -140,13 +186,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strGameNotes;
             }
-            set
+        }
+
+        public async Task<string> GetGameNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strGameNotes, value);
+                token.ThrowIfCancellationRequested();
+                return _strGameNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -154,13 +209,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterNotes;
             }
-            set
+        }
+
+        public async Task<string> GetCharacterNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strCharacterNotes, value);
+                token.ThrowIfCancellationRequested();
+                return _strCharacterNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -168,13 +232,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strConcept;
             }
-            set
+        }
+
+        public async Task<string> GetConceptAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strConcept, value);
+                token.ThrowIfCancellationRequested();
+                return _strConcept;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -182,13 +255,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strKarma;
             }
-            set
+        }
+
+        public async Task<string> GetKarmaAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strKarma, value);
+                token.ThrowIfCancellationRequested();
+                return _strKarma;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -196,13 +278,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetatype;
             }
-            set
+        }
+
+        public async Task<string> GetMetatypeAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strMetatype, value);
+                token.ThrowIfCancellationRequested();
+                return _strMetatype;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -210,13 +301,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strMetavariant;
             }
-            set
+        }
+
+        public async Task<string> GetMetavariantAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strMetavariant, value);
+                token.ThrowIfCancellationRequested();
+                return _strMetavariant;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -224,13 +324,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strPlayerName;
             }
-            set
+        }
+
+        public async Task<string> GetPlayerNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strPlayerName, value);
+                token.ThrowIfCancellationRequested();
+                return _strPlayerName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -238,13 +347,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterName;
             }
-            set
+        }
+
+        public async Task<string> GetCharacterNameAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strCharacterName, value);
+                token.ThrowIfCancellationRequested();
+                return _strCharacterName;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -252,13 +370,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strCharacterAlias;
             }
-            set
+        }
+
+        public async Task<string> GetCharacterAliasAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strCharacterAlias, value);
+                token.ThrowIfCancellationRequested();
+                return _strCharacterAlias;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -266,13 +393,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strBuildMethod;
             }
-            set
+        }
+
+        public async Task<string> GetBuildMethodAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strBuildMethod, value);
+                token.ThrowIfCancellationRequested();
+                return _strBuildMethod;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -280,13 +416,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strEssence;
             }
-            set
+        }
+
+        public async Task<string> GetEssenceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strEssence, value);
+                token.ThrowIfCancellationRequested();
+                return _strEssence;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -297,13 +442,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _imgMugshot;
             }
-            private set
+        }
+
+        public async Task<Image> GetMugshotAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _imgMugshot, value)?.Dispose();
+                token.ThrowIfCancellationRequested();
+                return _imgMugshot;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -311,14 +465,22 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intCreated > 0;
             }
-            set
+        }
+
+        public async Task<bool> GetCreatedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                int intNewValue = value.ToInt32();
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _intCreated, intNewValue);
+                token.ThrowIfCancellationRequested();
+                return _intCreated > 0;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -326,42 +488,34 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strSettingsFile;
             }
-            set
+        }
+
+        public async Task<string> GetSettingsFileAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _strSettingsFile, value);
+                token.ThrowIfCancellationRequested();
+                return _strSettingsFile;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public LockingDictionary<string, object> MyPluginDataDic
+        public ConcurrentDictionary<string, object> MyPluginDataDic
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _dicMyPluginData;
-            }
-        }
-
-        public Task<string> RunningDownloadTask
-        {
-            get
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    return _tskRunningDownloadTask;
-            }
-            set
-            {
-                Task<string> tskOld;
-                using (EnterReadLock.Enter(LockObject))
-                    tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, value);
-                if (tskOld != null && tskOld != value)
-                    Utils.SafelyRunSynchronously(() => tskOld);
             }
         }
 
@@ -370,13 +524,16 @@ namespace Chummer
             SetDefaultEventHandlers();
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="CopyFrom(CharacterCache)"/> immediately after the constructor.
+        /// </summary>
         public CharacterCache(CharacterCache objExistingCache) : this()
         {
             CopyFrom(objExistingCache);
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFile(string)"/> immediately after the constructor.
         /// </summary>
         public CharacterCache(string strFile) : this()
         {
@@ -384,29 +541,45 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="CopyFromAsync(CharacterCache, CancellationToken)"/> immediately after the constructor.
         /// </summary>
-        public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        public static async Task<CharacterCache> CreateCopyFromAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFileAsync(string, CancellationToken)"/> immediately after the constructor.
         /// </summary>
         public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         public void CopyFrom(CharacterCache objExistingCache)
         {
             using (LockObject.EnterWriteLock())
-            using (EnterReadLock.Enter(objExistingCache.LockObject))
+            using (objExistingCache.LockObject.EnterReadLock())
             {
                 _strBackground = objExistingCache.Background;
                 _strBuildMethod = objExistingCache.BuildMethod;
@@ -433,25 +606,33 @@ namespace Chummer
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                using (await EnterReadLock.EnterAsync(objExistingCache.LockObject, token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await objExistingCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    _strBackground = objExistingCache.Background;
-                    _strBuildMethod = objExistingCache.BuildMethod;
-                    _strCharacterAlias = objExistingCache.CharacterAlias;
-                    _strCharacterName = objExistingCache.CharacterName;
-                    _strCharacterNotes = objExistingCache.CharacterNotes;
-                    _strConcept = objExistingCache.Concept;
-                    _intCreated = objExistingCache.Created.ToInt32();
-                    _strDescription = objExistingCache.Description;
-                    _strEssence = objExistingCache.Essence;
-                    _strGameNotes = objExistingCache.GameNotes;
-                    _strKarma = objExistingCache.Karma;
-                    _strFileName = objExistingCache.FileName;
-                    _strMetatype = objExistingCache.Metatype;
-                    _strMetavariant = objExistingCache.Metavariant;
-                    _strPlayerName = objExistingCache.PlayerName;
-                    _strSettingsFile = objExistingCache.SettingsFile;
-                    Interlocked.Exchange(ref _imgMugshot, objExistingCache.Mugshot.Clone() as Image)?.Dispose();
+                    token.ThrowIfCancellationRequested();
+                    _strBackground = await objExistingCache.GetBackgroundAsync(token).ConfigureAwait(false);
+                    _strBuildMethod = await objExistingCache.GetBuildMethodAsync(token).ConfigureAwait(false);
+                    _strCharacterAlias = await objExistingCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
+                    _strCharacterName = await objExistingCache.GetCharacterNameAsync(token).ConfigureAwait(false);
+                    _strCharacterNotes = await objExistingCache.GetCharacterNotesAsync(token).ConfigureAwait(false);
+                    _strConcept = await objExistingCache.GetConceptAsync(token).ConfigureAwait(false);
+                    _intCreated = (await objExistingCache.GetCreatedAsync(token).ConfigureAwait(false)).ToInt32();
+                    _strDescription = await objExistingCache.GetDescriptionAsync(token).ConfigureAwait(false);
+                    _strEssence = await objExistingCache.GetEssenceAsync(token).ConfigureAwait(false);
+                    _strGameNotes = await objExistingCache.GetGameNotesAsync(token).ConfigureAwait(false);
+                    _strKarma = await objExistingCache.GetKarmaAsync(token).ConfigureAwait(false);
+                    _strFileName = await objExistingCache.GetFileNameAsync(token).ConfigureAwait(false);
+                    _strMetatype = await objExistingCache.GetMetatypeAsync(token).ConfigureAwait(false);
+                    _strMetavariant = await objExistingCache.GetMetavariantAsync(token).ConfigureAwait(false);
+                    _strPlayerName = await objExistingCache.GetPlayerNameAsync(token).ConfigureAwait(false);
+                    _strSettingsFile = await objExistingCache.GetSettingsFileAsync(token).ConfigureAwait(false);
+                    Image objMugshot = await objExistingCache.GetMugshotAsync(token).ConfigureAwait(false);
+                    Interlocked.Exchange(ref _imgMugshot, objMugshot.Clone() as Image)?.Dispose();
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -473,101 +654,104 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyDoubleClick
+        public SafeAsyncEventHandler OnMyDoubleClick
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyDoubleClick;
             }
-            set
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _onMyDoubleClick, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler OnMyContextMenuDeleteClick
+        public SafeAsyncEventHandler OnMyContextMenuDeleteClick
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyContextMenuDeleteClick;
             }
-            set
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _onMyContextMenuDeleteClick, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<TreeViewEventArgs> OnMyAfterSelect
+        public SafeAsyncEventHandler<TreeViewEventArgs> OnMyAfterSelect
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyAfterSelect;
             }
-            set
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _onMyAfterSelect, value);
-            }
         }
 
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public EventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown
+        public SafeAsyncEventHandler<ValueTuple<KeyEventArgs, TreeNode>> OnMyKeyDown
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _onMyKeyDown;
             }
-            set
-            {
-                using (EnterReadLock.Enter(LockObject))
-                    Interlocked.Exchange(ref _onMyKeyDown, value);
-            }
         }
 
-        public async void OnDefaultDoubleClick(object sender, EventArgs e)
+        public async Task OnDefaultDoubleClick(object sender, EventArgs e, CancellationToken token = default)
         {
-            Character objOpenCharacter = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == FileName)
-                                                      .ConfigureAwait(false);
-            if (objOpenCharacter == null)
+            token.ThrowIfCancellationRequested();
+            string strFilePath = string.Empty;
+            Character objOpenCharacter;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
+                objOpenCharacter = await Program.OpenCharacters
+                    .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
+                    .ConfigureAwait(false);
+                if (objOpenCharacter == null)
+                {
+                    strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (!string.IsNullOrEmpty(strFilePath))
             {
                 using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
-                                                                        .CreateAndShowProgressBarAsync(
-                                                                            FilePath, Character.NumLoadingSections)
-                                                                        .ConfigureAwait(false))
-                    objOpenCharacter = await Program.LoadCharacterAsync(FilePath, frmLoadingBar: frmLoadingBar.MyForm)
-                                                    .ConfigureAwait(false);
+                               .CreateAndShowProgressBarAsync(
+                                   strFilePath, Character.NumLoadingSections, token)
+                               .ConfigureAwait(false))
+                    objOpenCharacter = await Program
+                        .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
+                        .ConfigureAwait(false);
             }
 
-            if (!await Program.SwitchToOpenCharacter(objOpenCharacter).ConfigureAwait(false))
-                await Program.OpenCharacter(objOpenCharacter).ConfigureAwait(false);
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
         }
 
-        public void OnDefaultContextMenuDeleteClick(object sender, EventArgs e)
+        public async Task OnDefaultContextMenuDeleteClick(object sender, EventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sender is TreeNode t)
             {
                 switch (t.Parent.Tag?.ToString())
                 {
                     case "Recent":
-                        GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
                         break;
                 }
             }
@@ -593,22 +777,7 @@ namespace Chummer
                 objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                Task<string> tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                {
-                    try
-                    {
-                        if (blnSync)
-                            Utils.SafelyRunSynchronously(() => tskOld, token);
-                        else
-                            await tskOld.ConfigureAwait(false);
-                    }
-                    catch
-                    {
-                        _ = Interlocked.CompareExchange(ref _tskRunningDownloadTask, tskOld, null);
-                        throw;
-                    }
-                }
+                token.ThrowIfCancellationRequested();
                 string strErrorText = string.Empty;
                 XPathNavigator xmlSourceNode;
                 if (!File.Exists(strFile))
@@ -627,14 +796,14 @@ namespace Chummer
                     {
                         XPathDocument xmlDoc = blnSync
                             ? LoadXPathDocument()
-                            : await Task.Run(LoadXPathDocumentAsync, token).ConfigureAwait(false);
+                            : await LoadXPathDocumentAsync().ConfigureAwait(false);
 
                         XPathDocument LoadXPathDocument()
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromFile(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromFilePatient(strFile, token: token);
                             if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFile(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatient(strFile, token: token);
                             Utils.BreakIfDebug();
                             throw new InvalidOperationException();
                         }
@@ -642,20 +811,15 @@ namespace Chummer
                         Task<XPathDocument> LoadXPathDocumentAsync()
                         {
                             if (strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromFileAsync(strFile, token: token);
+                                return XPathDocumentExtensions.LoadStandardFromFilePatientAsync(strFile, token: token);
                             if (strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
-                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFileAsync(
+                                return XPathDocumentExtensions.LoadStandardFromLzmaCompressedFilePatientAsync(
                                     strFile, token: token);
                             Utils.BreakIfDebug();
                             return Task.FromException<XPathDocument>(new InvalidOperationException());
                         }
 
-                        xmlSourceNode = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token)
-                            : await xmlDoc.CreateNavigator()
-                                          .SelectSingleNodeAndCacheExpressionAsync("/character", token: token)
-                                          .ConfigureAwait(false);
+                        xmlSourceNode = xmlDoc.CreateNavigator().SelectSingleNodeAndCacheExpression("/character", token);
                     }
                     catch (Exception ex)
                     {
@@ -666,85 +830,29 @@ namespace Chummer
 
                 if (xmlSourceNode != null)
                 {
-                    if (blnSync)
-                    {
-                        // ReSharper disable MethodHasAsyncOverload
-                        _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
-                        _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
-                        _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
-                        _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
-                        _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
-                        _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
-                        _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
-                        _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
-                        _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
-                        _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
-                        _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
-                        _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
-                        _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
-                                       == bool.TrueString).ToInt32();
-                        _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
-                        // ReSharper restore MethodHasAsyncOverload
-                    }
-                    else
-                    {
-                        _strDescription = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("description", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strBuildMethod = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("buildmethod", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strBackground = (await xmlSourceNode
-                                                .SelectSingleNodeAndCacheExpressionAsync("background", token: token)
-                                                .ConfigureAwait(false))?.Value;
-                        _strCharacterNotes = (await xmlSourceNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("notes", token: token)
-                                                    .ConfigureAwait(false))?.Value;
-                        _strGameNotes = (await xmlSourceNode
-                                               .SelectSingleNodeAndCacheExpressionAsync("gamenotes", token: token)
-                                               .ConfigureAwait(false))?.Value;
-                        _strConcept = (await xmlSourceNode
-                                             .SelectSingleNodeAndCacheExpressionAsync("concept", token: token)
-                                             .ConfigureAwait(false))?.Value;
-                        _strKarma = (await xmlSourceNode
-                                           .SelectSingleNodeAndCacheExpressionAsync("totalkarma", token: token)
-                                           .ConfigureAwait(false))?.Value;
-                        _strMetatype = (await xmlSourceNode
-                                              .SelectSingleNodeAndCacheExpressionAsync("metatype", token: token)
-                                              .ConfigureAwait(false))?.Value;
-                        _strMetavariant = (await xmlSourceNode
-                                                 .SelectSingleNodeAndCacheExpressionAsync("metavariant", token: token)
-                                                 .ConfigureAwait(false))?.Value;
-                        _strPlayerName = (await xmlSourceNode
-                                                .SelectSingleNodeAndCacheExpressionAsync("playername", token: token)
-                                                .ConfigureAwait(false))?.Value;
-                        _strCharacterName = (await xmlSourceNode
-                                                   .SelectSingleNodeAndCacheExpressionAsync("name", token: token)
-                                                   .ConfigureAwait(false))?.Value;
-                        _strCharacterAlias = (await xmlSourceNode
-                                                    .SelectSingleNodeAndCacheExpressionAsync("alias", token: token)
-                                                    .ConfigureAwait(false))?.Value;
-                        _intCreated = ((await xmlSourceNode
-                                              .SelectSingleNodeAndCacheExpressionAsync("created", token: token)
-                                              .ConfigureAwait(false))?.Value == bool.TrueString).ToInt32();
-                        _strEssence = (await xmlSourceNode
-                                             .SelectSingleNodeAndCacheExpressionAsync("totaless", token: token)
-                                             .ConfigureAwait(false))?.Value;
-                    }
+                    _strDescription = xmlSourceNode.SelectSingleNodeAndCacheExpression("description", token)?.Value;
+                    _strBuildMethod = xmlSourceNode.SelectSingleNodeAndCacheExpression("buildmethod", token)?.Value;
+                    _strBackground = xmlSourceNode.SelectSingleNodeAndCacheExpression("background", token)?.Value;
+                    _strCharacterNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("notes", token)?.Value;
+                    _strGameNotes = xmlSourceNode.SelectSingleNodeAndCacheExpression("gamenotes", token)?.Value;
+                    _strConcept = xmlSourceNode.SelectSingleNodeAndCacheExpression("concept", token)?.Value;
+                    _strKarma = xmlSourceNode.SelectSingleNodeAndCacheExpression("totalkarma", token)?.Value;
+                    _strMetatype = xmlSourceNode.SelectSingleNodeAndCacheExpression("metatype", token)?.Value;
+                    _strMetavariant = xmlSourceNode.SelectSingleNodeAndCacheExpression("metavariant", token)?.Value;
+                    _strPlayerName = xmlSourceNode.SelectSingleNodeAndCacheExpression("playername", token)?.Value;
+                    _strCharacterName = xmlSourceNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    _strCharacterAlias = xmlSourceNode.SelectSingleNodeAndCacheExpression("alias", token)?.Value;
+                    _intCreated = (xmlSourceNode.SelectSingleNodeAndCacheExpression("created", token)?.Value
+                                   == bool.TrueString).ToInt32();
+                    _strEssence = xmlSourceNode.SelectSingleNodeAndCacheExpression("totaless", token)?.Value;
 
                     string strSettings
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("settings", token: token)
-                                                   .ConfigureAwait(false))?.Value
+                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("settings", token)?.Value
                           ?? string.Empty;
                     if (!string.IsNullOrEmpty(strSettings))
                     {
-                        (bool blnSuccess, CharacterSettings objSettings)
-                            = await (await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
-                                    .TryGetValueAsync(strSettings, token).ConfigureAwait(false);
-                        if (blnSuccess)
+                        if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
+                            .TryGetValue(strSettings, out CharacterSettings objSettings))
                             _strSettingsFile = blnSync
                                 ? objSettings.CurrentDisplayName
                                 : await objSettings.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
@@ -759,36 +867,23 @@ namespace Chummer
                                                        .ConfigureAwait(false) +
                                   await LanguageManager.GetStringAsync("String_Space", token: token)
                                                        .ConfigureAwait(false);
-                            _strSettingsFile = strTemp + '[' + strSettings + ']';
+                            _strSettingsFile = strTemp + "[" + strSettings + "]";
                         }
                     }
                     else
                         _strSettingsFile = string.Empty;
 
                     string strMugshotBase64
-                        = (blnSync
-                              // ReSharper disable once MethodHasAsyncOverload
-                              ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)
-                              : await xmlSourceNode.SelectSingleNodeAndCacheExpressionAsync("mugshot", token: token)
-                                                   .ConfigureAwait(false))?.Value
+                        = xmlSourceNode.SelectSingleNodeAndCacheExpression("mugshot", token)?.Value
                           ?? string.Empty;
                     if (string.IsNullOrEmpty(strMugshotBase64))
                     {
-                        XPathNavigator xmlMainMugshotIndex = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token)
-                            : await xmlSourceNode
-                                    .SelectSingleNodeAndCacheExpressionAsync("mainmugshotindex", token: token)
-                                    .ConfigureAwait(false);
+                        XPathNavigator xmlMainMugshotIndex = xmlSourceNode.SelectSingleNodeAndCacheExpression("mainmugshotindex", token);
                         if (xmlMainMugshotIndex != null &&
                             int.TryParse(xmlMainMugshotIndex.Value, out int intMainMugshotIndex) &&
                             intMainMugshotIndex >= 0)
                         {
-                            XPathNodeIterator xmlMugshotList = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token)
-                                : await xmlSourceNode.SelectAndCacheExpressionAsync("mugshots/mugshot", token: token)
-                                                     .ConfigureAwait(false);
+                            XPathNodeIterator xmlMugshotList = xmlSourceNode.SelectAndCacheExpression("mugshots/mugshot", token);
                             if (xmlMugshotList.Count > intMainMugshotIndex)
                             {
                                 int intIndex = 0;
@@ -811,10 +906,10 @@ namespace Chummer
                         Image imgNewMugshot;
                         if (blnSync)
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            using (Image imgMugshot = strMugshotBase64.ToImage())
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                imgNewMugshot = imgMugshot.GetCompressedImage();
+                            // ReSharper disable once MethodHasAsyncOverload
+                            using (Image imgMugshot = strMugshotBase64.ToImage(token))
+                                // ReSharper disable once MethodHasAsyncOverload
+                                imgNewMugshot = imgMugshot.GetCompressedImage(token: token);
                         }
                         else
                         {
@@ -823,14 +918,31 @@ namespace Chummer
                                 imgNewMugshot = await imgMugshot.GetCompressedImageAsync(token: token)
                                                                 .ConfigureAwait(false);
                         }
-                        Interlocked.Exchange(ref _imgMugshot, imgNewMugshot)?.Dispose();
+                        Image objOldMugshot = Interlocked.Exchange(ref _imgMugshot, imgNewMugshot);
+                        if (objOldMugshot != null && !ReferenceEquals(objOldMugshot, imgNewMugshot))
+                            objOldMugshot.Dispose();
                     }
                 }
                 else
                 {
-                    _strErrorText = strErrorText;
+                    _strDescription = string.Empty;
+                    _strBuildMethod = string.Empty;
+                    _strBackground = string.Empty;
+                    _strCharacterNotes = string.Empty;
+                    _strGameNotes = string.Empty;
+                    _strConcept = string.Empty;
+                    _strKarma = string.Empty;
+                    _strMetatype = string.Empty;
+                    _strMetavariant = string.Empty;
+                    _strPlayerName = string.Empty;
+                    _strCharacterName = string.Empty;
+                    _strCharacterAlias = string.Empty;
+                    _intCreated = 0;
+                    _strEssence = string.Empty;
+                    _strSettingsFile = string.Empty;
+                    Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
                 }
-
+                _strErrorText = strErrorText;
                 _strFilePath = strFile;
                 if (!string.IsNullOrEmpty(strFile))
                 {
@@ -859,41 +971,50 @@ namespace Chummer
         {
             string strSpace = LanguageManager.GetString("String_Space");
             string strReturn;
-            if (!string.IsNullOrEmpty(ErrorText))
+            using (LockObject.EnterReadLock())
             {
-                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + LanguageManager.GetString("String_Error") + ')';
-            }
-            else
-            {
-                strReturn = CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
+                if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = CharacterName;
+                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + "(" +
+                                LanguageManager.GetString("String_Error") + ")";
+                }
+                else
+                {
+                    strReturn = CharacterAlias;
                     if (string.IsNullOrEmpty(strReturn))
-                        strReturn = LanguageManager.GetString("String_UnnamedCharacter");
+                    {
+                        strReturn = CharacterName;
+                        if (string.IsNullOrEmpty(strReturn))
+                            strReturn = LanguageManager.GetString("String_UnnamedCharacter");
+                    }
+
+                    string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
+                    if (string.IsNullOrEmpty(strBuildMethod))
+                        strBuildMethod = LanguageManager.GetString("String_Unknown");
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
+                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ")";
                 }
 
-                string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
-                if (string.IsNullOrEmpty(strBuildMethod))
-                    strBuildMethod = LanguageManager.GetString("String_Unknown");
-                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                             + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
-            }
-
-            if (blnAddMarkerIfOpen && Program.MainForm != null)
-            {
-                string strMarker = string.Empty;
-                if (Program.MainForm.OpenCharacterEditorForms?.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
-                    strMarker += '*';
-                if (Program.MainForm.OpenCharacterSheetViewers?.Any(
-                        x => x.CharacterObjects.Any(y => !y.IsDisposed && y.FileName == FilePath)) == true)
-                    strMarker += '^';
-                if (Program.MainForm.OpenCharacterExportForms?.Any(
-                        x => !x.CharacterObject.IsDisposed && x.CharacterObject.FileName == FilePath) == true)
-                    strMarker += '\'';
-                if (!string.IsNullOrEmpty(strMarker))
-                    strReturn = strMarker + strSpace + strReturn;
+                if (blnAddMarkerIfOpen && Program.MainForm != null)
+                {
+                    string strMarker = string.Empty;
+                    string strFilePath = FilePath;
+                    if (Program.MainForm.OpenCharacterEditorForms?.Any(
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
+                                StringComparison.Ordinal)) == true)
+                        strMarker += "*";
+                    if (Program.MainForm.OpenCharacterSheetViewers?.Any(
+                            x => x.CharacterObjects.Any(y =>
+                                !y.IsDisposed && string.Equals(y.FileName, strFilePath,
+                                    StringComparison.Ordinal))) == true)
+                        strMarker += "^";
+                    if (Program.MainForm.OpenCharacterExportForms?.Any(
+                            x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
+                                StringComparison.Ordinal)) == true)
+                        strMarker += "\'";
+                    if (!string.IsNullOrEmpty(strMarker))
+                        strReturn = strMarker + strSpace + strReturn;
+                }
             }
 
             return strReturn;
@@ -905,77 +1026,103 @@ namespace Chummer
         /// <param name="blnAddMarkerIfOpen">Whether to add an asterisk to the beginning of the name if the character is open.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
+        public async Task<string> CalculatedNameAsync(bool blnAddMarkerIfOpen = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
             string strReturn;
-            if (!string.IsNullOrEmpty(ErrorText))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
-            }
-            else
-            {
-                strReturn = CharacterAlias;
-                if (string.IsNullOrEmpty(strReturn))
+                token.ThrowIfCancellationRequested();
+                string strErrorText = await GetErrorTextAsync(token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strErrorText))
                 {
-                    strReturn = CharacterName;
+                    strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
+                        + strSpace + "(" + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ")";
+                }
+                else
+                {
+                    strReturn = await GetCharacterAliasAsync(token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strReturn))
-                        strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token).ConfigureAwait(false);
+                    {
+                        strReturn = await GetCharacterNameAsync(token).ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strReturn))
+                            strReturn = await LanguageManager.GetStringAsync("String_UnnamedCharacter", token: token)
+                                .ConfigureAwait(false);
+                    }
+
+                    string strBuildMethod = await LanguageManager.GetStringAsync("String_" + await GetBuildMethodAsync(token).ConfigureAwait(false), false, token)
+                        .ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strBuildMethod))
+                        strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
+                            .ConfigureAwait(false);
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
+                                 + await LanguageManager
+                                     .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
+                                        ? "Title_CareerMode"
+                                        : "Title_CreateMode", token: token)
+                                     .ConfigureAwait(false) + ")";
                 }
 
-                string strBuildMethod = await LanguageManager.GetStringAsync("String_" + BuildMethod, false, token).ConfigureAwait(false);
-                if (string.IsNullOrEmpty(strBuildMethod))
-                    strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                             + await LanguageManager.GetStringAsync(Created ? "Title_CareerMode" : "Title_CreateMode", token: token).ConfigureAwait(false) + ')';
+                if (blnAddMarkerIfOpen && Program.MainForm != null)
+                {
+                    string strMarker = string.Empty;
+                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
+                    ThreadSafeObservableCollection<CharacterShared> lstToProcess1
+                        = Program.MainForm.OpenCharacterEditorForms;
+                    if (lstToProcess1 != null && await lstToProcess1
+                            .AnyAsync(
+                                async x => !x.CharacterObject.IsDisposed &&
+                                           string.Equals(
+                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               strFilePath, StringComparison.Ordinal), token)
+                            .ConfigureAwait(false))
+                        strMarker += "*";
+                    ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
+                        = Program.MainForm.OpenCharacterSheetViewers;
+                    if (lstToProcess2 != null && await lstToProcess2
+                            .AnyAsync(
+                                x => x.CharacterObjects.AnyAsync(
+                                    async y => !y.IsDisposed && string.Equals(
+                                        await y.GetFileNameAsync(token).ConfigureAwait(false), strFilePath,
+                                        StringComparison.Ordinal), token), token).ConfigureAwait(false))
+                        strMarker += "^";
+                    ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
+                        = Program.MainForm.OpenCharacterExportForms;
+                    if (lstToProcess3 != null && await lstToProcess3
+                            .AnyAsync(
+                                async x => !x.CharacterObject.IsDisposed &&
+                                           string.Equals(
+                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               strFilePath, StringComparison.Ordinal), token)
+                            .ConfigureAwait(false))
+                        strMarker += "\'";
+                    if (!string.IsNullOrEmpty(strMarker))
+                        strReturn = strMarker + strSpace + strReturn;
+                }
             }
-
-            if (blnAddMarkerIfOpen && Program.MainForm != null)
+            finally
             {
-                string strMarker = string.Empty;
-                ThreadSafeObservableCollection<CharacterShared> lstToProcess1
-                    = Program.MainForm.OpenCharacterEditorForms;
-                if (lstToProcess1 != null && await lstToProcess1
-                                                   .AnyAsync(
-                                                       x => !x.CharacterObject.IsDisposed
-                                                            && x.CharacterObject.FileName == FilePath, token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '*';
-                ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
-                    = Program.MainForm.OpenCharacterSheetViewers;
-                if (lstToProcess1 != null && await lstToProcess2
-                                                   .AnyAsync(
-                                                       x => x.CharacterObjects.Any(
-                                                           y => !y.IsDisposed && y.FileName == FilePath), token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '^';
-                ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
-                    = Program.MainForm.OpenCharacterExportForms;
-                if (lstToProcess1 != null && await lstToProcess3
-                                                   .AnyAsync(
-                                                       x => !x.CharacterObject.IsDisposed
-                                                            && x.CharacterObject.FileName == FilePath, token)
-                                                   .ConfigureAwait(false))
-                    strMarker += '\'';
-                if (!string.IsNullOrEmpty(strMarker))
-                    strReturn = strMarker + strSpace + strReturn;
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return strReturn;
         }
 
-        public void OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args)
+        public async Task OnDefaultKeyDown(object sender, ValueTuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
         {
-            if (args?.Item1.KeyCode == Keys.Delete)
+            token.ThrowIfCancellationRequested();
+            if (args.Item1.KeyCode == Keys.Delete)
             {
                 switch (args.Item2.Parent.Tag.ToString())
                 {
                     case "Recent":
-                        GlobalSettings.MostRecentlyUsedCharacters.Remove(FilePath);
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         break;
 
                     case "Favorite":
-                        GlobalSettings.FavoriteCharacters.Remove(FilePath);
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                         break;
                 }
             }
@@ -993,10 +1140,6 @@ namespace Chummer
             using (LockObject.EnterWriteLock())
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                    Utils.SafelyRunSynchronously(() => tskOld);
-                _dicMyPluginData.Dispose();
             }
 
             LockObject.Dispose();
@@ -1011,10 +1154,6 @@ namespace Chummer
             try
             {
                 Interlocked.Exchange(ref _imgMugshot, null)?.Dispose();
-                Task tskOld = Interlocked.Exchange(ref _tskRunningDownloadTask, null);
-                if (tskOld != null)
-                    await tskOld.ConfigureAwait(false);
-                await _dicMyPluginData.DisposeAsync().ConfigureAwait(false);
             }
             finally
             {

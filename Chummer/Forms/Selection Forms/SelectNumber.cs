@@ -33,6 +33,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             nudNumber.DecimalPlaces = intDecimalPlaces;
         }
 
@@ -92,7 +93,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Cancel button is enabled.
+        /// Whether the Cancel button is enabled.
         /// </summary>
         public bool AllowCancel
         {

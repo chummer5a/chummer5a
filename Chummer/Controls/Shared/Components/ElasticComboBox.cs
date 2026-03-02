@@ -18,52 +18,52 @@
  */
 
 using System;
-using System.Threading;
 using System.Windows.Forms;
 
 namespace Chummer
 {
     public class ElasticComboBox : ComboBox
     {
-        private readonly int _intToolTipWrap;
-
-        private readonly ToolTip _objToolTip;
-
-        private string _strToolTipText = string.Empty;
-
-        public string TooltipText
+        protected override void OnSelectedIndexChanged(EventArgs e)
         {
-            get => _strToolTipText;
-            set
-            {
-                value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
-                if (Interlocked.Exchange(ref _strToolTipText, value) == value)
-                    return;
-                _objToolTip.SetToolTip(this, value.CleanForHtml());
-            }
+            base.OnSelectedIndexChanged(e);
+            if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
+                ClearSelection();
         }
 
-        public ElasticComboBox() : this(ToolTipFactory.ToolTip)
+        protected override void OnResize(EventArgs e)
         {
-        }
-
-        public ElasticComboBox(ToolTip objToolTip, int intToolTipWrap = -1)
-        {
-            _objToolTip = objToolTip;
-            _intToolTipWrap = intToolTipWrap;
-            SelectedIndexChanged += ClearUnintendedHighlight;
-            Resize += ClearUnintendedHighlight;
-        }
-
-        private void ClearUnintendedHighlight(object sender, EventArgs e)
-        {
+            base.OnResize(e);
             if (DropDownStyle != ComboBoxStyle.DropDownList && IsHandleCreated)
                 ClearSelection();
         }
 
         protected override void OnDataSourceChanged(EventArgs e)
         {
-            base.OnDataSourceChanged(e);
+            // Save the current selected index before the data source changes
+            // The base class will try to restore it, but it might be out of range for the new data source
+            int intPreviousSelectedIndex = SelectedIndex;
+            // Temporarily clear selection to prevent base class from trying to restore an invalid index
+            // We'll restore it after if it's still valid
+            if (intPreviousSelectedIndex >= 0)
+            {
+                SelectedIndex = -1;
+            }
+            try
+            {
+                base.OnDataSourceChanged(e);
+                // After the data source has changed, try to restore the previous selection if it's still valid
+                if (intPreviousSelectedIndex >= 0 && intPreviousSelectedIndex < Items.Count)
+                {
+                    SelectedIndex = intPreviousSelectedIndex;
+                }
+            }
+            catch (ArgumentOutOfRangeException)
+            {
+                // If setting the selected index fails, just leave it at -1 (no selection)
+                // This can happen if the Items collection changes between setting the data source and here
+                SelectedIndex = -1;
+            }
             ResizeDropDown();
         }
 
@@ -102,15 +102,6 @@ namespace Chummer
             if (objActiveControl == null || objActiveControl == this)
                 return;
             SelectionLength = 0;
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing && _objToolTip != null && _objToolTip != ToolTipFactory.ToolTip)
-            {
-                _objToolTip.Dispose();
-            }
-            base.Dispose(disposing);
         }
     }
 }

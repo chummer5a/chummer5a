@@ -55,7 +55,6 @@ namespace Chummer
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
             txtNotes.Text = _strNotes = strOldNotes.NormalizeLineEndings();
-
             btnColorSelect.Enabled = _strNotes.Length > 0;
 
             _colNotes = colNotes;
@@ -138,13 +137,13 @@ namespace Chummer
         {
             try
             {
-                _colNotes = dlgColor
-                    .Color; //Selected color is always how it is shown in light mode, use the stored one for it.
+                Color objShowColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+                await this.DoThreadSafeAsync(() => dlgColor.Color = objShowColor, _objMyToken).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgColor.ShowDialog(x), token: _objMyToken)
                               .ConfigureAwait(false) != DialogResult.OK)
                     return;
-                _colNotes = await ColorManager.GenerateModeIndependentColorAsync(dlgColor.Color, _objMyToken)
-                                              .ConfigureAwait(false);
+                // Stored color is always how it looks in light mode
+                _colNotes = ColorManager.GenerateModeIndependentColor(await this.DoThreadSafeFuncAsync(() => dlgColor.Color, _objMyToken).ConfigureAwait(false));
                 await UpdateColorRepresentation(_objMyToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -171,11 +170,11 @@ namespace Chummer
 
         #endregion Properties
 
-        private async ValueTask UpdateColorRepresentation(CancellationToken token = default)
+        private Task UpdateColorRepresentation(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            Color objColor = await ColorManager.GenerateCurrentModeColorAsync(_colNotes, token).ConfigureAwait(false);
-            await txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token).ConfigureAwait(false);
+            Color objColor = ColorManager.GenerateCurrentModeColor(_colNotes);
+            return txtNotes.DoThreadSafeAsync(x => x.ForeColor = objColor, token);
         }
     }
 }

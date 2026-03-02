@@ -1,3 +1,4 @@
+using System.Threading;
 using System.Windows.Forms;
 using Chummer.UI.Powers;
 
@@ -16,9 +17,30 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _fntNormal?.Dispose();
+                _fntStrikeout?.Dispose();
+                Interlocked.Exchange(ref _objKarmaChartSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objNuyenChartSemaphore, null)?.Dispose();
+                Interlocked.Exchange(ref _objFormClosingSemaphore, null)?.Dispose();
+                // These tabs might not necessarily be present in our form, so check to dispose them manually
+                if (tabInitiation?.IsDisposed == false)
+                    tabInitiation.Dispose();
+                if (tabMagician?.IsDisposed == false)
+                    tabMagician.Dispose();
+                if (tabAdept?.IsDisposed == false)
+                    tabAdept.Dispose();
+                if (tabTechnomancer?.IsDisposed == false)
+                    tabTechnomancer.Dispose();
+                if (tabAdvancedPrograms?.IsDisposed == false)
+                    tabAdvancedPrograms.Dispose();
+                if (tabCritter?.IsDisposed == false)
+                    tabCritter.Dispose();
+                if (tabEnemies?.IsDisposed == false)
+                    tabEnemies.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -58,7 +80,7 @@ namespace Chummer
             System.Windows.Forms.TreeNode treeNode24 = new System.Windows.Forms.TreeNode("Selected Vehicles");
             System.Windows.Forms.TreeNode treeNode25 = new System.Windows.Forms.TreeNode("Selected Improvements");
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(CharacterCareer));
-            this.lblTraditionSource = new System.Windows.Forms.Label();
+            this.lblTraditionSource = new Chummer.LabelWithToolTip();
             this.lblTraditionSourceLabel = new System.Windows.Forms.Label();
             this.tabPowerUc = new Chummer.UI.Powers.PowersTabUserControl();
             this.StatusStrip = new System.Windows.Forms.StatusStrip();
@@ -71,22 +93,22 @@ namespace Chummer
             this.tslCarriedWeightLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.tslCarriedWeight = new System.Windows.Forms.ToolStripStatusLabel();
             this.pgbProgress = new System.Windows.Forms.ToolStripProgressBar();
-            this.lblCMStunLabel = new System.Windows.Forms.Label();
-            this.lblCMPhysicalLabel = new System.Windows.Forms.Label();
-            this.lblRemainingNuyenLabel = new System.Windows.Forms.Label();
-            this.lblESS = new System.Windows.Forms.Label();
-            this.lblCareerKarmaLabel = new System.Windows.Forms.Label();
-            this.lblMemoryLabel = new System.Windows.Forms.Label();
-            this.lblLiftCarryLabel = new System.Windows.Forms.Label();
-            this.lblJudgeIntentionsLabel = new System.Windows.Forms.Label();
-            this.lblComposureLabel = new System.Windows.Forms.Label();
-            this.lblCMPenaltyLabel = new System.Windows.Forms.Label();
-            this.lblCMArmorLabel = new System.Windows.Forms.Label();
-            this.lblCMDamageResistancePoolLabel = new System.Windows.Forms.Label();
+            this.lblCMStunLabel = new Chummer.LabelWithToolTip();
+            this.lblCMPhysicalLabel = new Chummer.LabelWithToolTip();
+            this.lblRemainingNuyenLabel = new Chummer.LabelWithToolTip();
+            this.lblESS = new Chummer.LabelWithToolTip();
+            this.lblCareerKarmaLabel = new Chummer.LabelWithToolTip();
+            this.lblMemoryLabel = new Chummer.LabelWithToolTip();
+            this.lblLiftCarryLabel = new Chummer.LabelWithToolTip();
+            this.lblJudgeIntentionsLabel = new Chummer.LabelWithToolTip();
+            this.lblComposureLabel = new Chummer.LabelWithToolTip();
+            this.lblCMPenaltyLabel = new Chummer.LabelWithToolTip();
+            this.lblCMArmorLabel = new Chummer.LabelWithToolTip();
+            this.lblCMDamageResistancePoolLabel = new Chummer.LabelWithToolTip();
             this.lblCareerNuyenLabel = new System.Windows.Forms.Label();
-            this.lblArmorLabel = new System.Windows.Forms.Label();
-            this.lblAstralINILabel = new System.Windows.Forms.Label();
-            this.lblINILabel = new System.Windows.Forms.Label();
+            this.lblArmorLabel = new Chummer.LabelWithToolTip();
+            this.lblAstralINILabel = new Chummer.LabelWithToolTip();
+            this.lblINILabel = new Chummer.LabelWithToolTip();
             this.cmdEdgeGained = new Chummer.ButtonWithToolTip();
             this.cmdEdgeSpent = new Chummer.ButtonWithToolTip();
             this.lblCounterspellingDiceLabel = new System.Windows.Forms.Label();
@@ -107,8 +129,8 @@ namespace Chummer
             this.lblSpellDefenseDirectSoakManaLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectSoakLabel = new System.Windows.Forms.Label();
             this.lblSpellDefenseIndirectDodgeLabel = new System.Windows.Forms.Label();
-            this.lblStreetCred = new System.Windows.Forms.Label();
-            this.lblNotoriety = new System.Windows.Forms.Label();
+            this.lblStreetCred = new Chummer.LabelWithToolTip();
+            this.lblNotoriety = new Chummer.LabelWithToolTip();
             this.cmdBurnStreetCred = new Chummer.ButtonWithToolTip();
             this.cmdVehicleGearReduceQty = new Chummer.ButtonWithToolTip();
             this.cmdVehicleMoveToInventory = new Chummer.ButtonWithToolTip();
@@ -119,8 +141,8 @@ namespace Chummer
             this.lblRiggingINILabel = new System.Windows.Forms.Label();
             this.lblMatrixINIHotLabel = new System.Windows.Forms.Label();
             this.lblMatrixINIColdLabel = new System.Windows.Forms.Label();
-            this.lblMatrixINILabel = new System.Windows.Forms.Label();
-            this.lblMovementLabel = new System.Windows.Forms.Label();
+            this.lblMatrixINILabel = new Chummer.LabelWithToolTip();
+            this.lblMovementLabel = new Chummer.LabelWithToolTip();
             this.cmsMartialArts = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsMartialArtsAddTechnique = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsMartialArtsNotes = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -264,9 +286,9 @@ namespace Chummer
             this.lblCMDodge = new Chummer.LabelWithToolTip();
             this.tabOtherInfo = new System.Windows.Forms.TabPage();
             this.tlpInfo = new System.Windows.Forms.TableLayoutPanel();
-            this.lblFlyLabel = new System.Windows.Forms.Label();
+            this.lblFlyLabel = new Chummer.LabelWithToolTip();
             this.lblFly = new System.Windows.Forms.Label();
-            this.lblSwimLabel = new System.Windows.Forms.Label();
+            this.lblSwimLabel = new Chummer.LabelWithToolTip();
             this.lblCareerNuyen = new System.Windows.Forms.Label();
             this.lblSwim = new System.Windows.Forms.Label();
             this.lblRiggingINI = new Chummer.LabelWithToolTip();
@@ -289,7 +311,7 @@ namespace Chummer
             this.lblSurprise = new Chummer.LabelWithToolTip();
             this.lblDodgeLabel = new Chummer.LabelWithToolTip();
             this.lblDodge = new Chummer.LabelWithToolTip();
-            this.lblLiftCarryLimitsLabel = new System.Windows.Forms.Label();
+            this.lblLiftCarryLimitsLabel = new Chummer.LabelWithToolTip();
             this.lblLiftCarryLimits = new Chummer.LabelWithToolTip();
             this.lblLiftCarryHitsLabel = new System.Windows.Forms.Label();
             this.nudLiftCarryHits = new Chummer.NumericUpDownEx();
@@ -398,7 +420,7 @@ namespace Chummer
             this.tabCommon = new System.Windows.Forms.TabPage();
             this.tlpCommon = new System.Windows.Forms.TableLayoutPanel();
             this.tlpCommonLeftSide = new System.Windows.Forms.TableLayoutPanel();
-            this.lblQualitySource = new System.Windows.Forms.Label();
+            this.lblQualitySource = new Chummer.LabelWithToolTip();
             this.treQualities = new System.Windows.Forms.TreeView();
             this.tlpQualityButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdAddQuality = new System.Windows.Forms.Button();
@@ -419,7 +441,7 @@ namespace Chummer
             this.lblMetatypeSourceLabel = new System.Windows.Forms.Label();
             this.lblPossessed = new System.Windows.Forms.Label();
             this.lblMysticAdeptAssignment = new System.Windows.Forms.Label();
-            this.lblMetatypeSource = new System.Windows.Forms.Label();
+            this.lblMetatypeSource = new Chummer.LabelWithToolTip();
             this.lblMetatype = new System.Windows.Forms.Label();
             this.flpMysticAdeptMAGAdept = new System.Windows.Forms.FlowLayoutPanel();
             this.lblMysticAdeptMAGAdept = new System.Windows.Forms.Label();
@@ -427,7 +449,7 @@ namespace Chummer
             this.tabSkills = new System.Windows.Forms.TabPage();
             this.tabSkillsUc = new Chummer.UI.Skills.SkillsTabUserControl();
             this.tabLimits = new System.Windows.Forms.TabPage();
-            this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl();
+            this.lmtControl = new Chummer.UI.Shared.LimitTabUserControl(GenericToken);
             this.tabMartialArts = new System.Windows.Forms.TabPage();
             this.tlpMartialArts = new System.Windows.Forms.TableLayoutPanel();
             this.treMartialArts = new System.Windows.Forms.TreeView();
@@ -436,7 +458,7 @@ namespace Chummer
             this.cmdDeleteMartialArt = new System.Windows.Forms.Button();
             this.tlpMartialArtsRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblMartialArtSourceLabel = new System.Windows.Forms.Label();
-            this.lblMartialArtSource = new System.Windows.Forms.Label();
+            this.lblMartialArtSource = new Chummer.LabelWithToolTip();
             this.tabMagician = new System.Windows.Forms.TabPage();
             this.splitMagician = new System.Windows.Forms.SplitContainer();
             this.tlpMagicianTop = new System.Windows.Forms.TableLayoutPanel();
@@ -456,13 +478,13 @@ namespace Chummer
             this.lblSpellDamageLabel = new System.Windows.Forms.Label();
             this.lblSpellDamage = new System.Windows.Forms.Label();
             this.lblSpellRange = new System.Windows.Forms.Label();
-            this.lblSpellSource = new System.Windows.Forms.Label();
+            this.lblSpellSource = new Chummer.LabelWithToolTip();
             this.lblSpellSourceLabel = new System.Windows.Forms.Label();
             this.lblSpellDVLabel = new System.Windows.Forms.Label();
             this.lblSpellDuration = new System.Windows.Forms.Label();
             this.lblSpellDurationLabel = new System.Windows.Forms.Label();
             this.lblSpellDicePoolLabel = new System.Windows.Forms.Label();
-            this.lblSpellDV = new System.Windows.Forms.Label();
+            this.lblSpellDV = new Chummer.LabelWithToolTip();
             this.dpcSpellDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.gpbMagicianTradition = new System.Windows.Forms.GroupBox();
             this.tlpMagicianTradition = new System.Windows.Forms.TableLayoutPanel();
@@ -490,7 +512,7 @@ namespace Chummer
             this.lblMentorSpiritInformation = new System.Windows.Forms.Label();
             this.tlpMagicianMentorSpiritHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblMentorSpiritLabel = new System.Windows.Forms.Label();
-            this.lblMentorSpiritSource = new System.Windows.Forms.Label();
+            this.lblMentorSpiritSource = new Chummer.LabelWithToolTip();
             this.lblMentorSpirit = new System.Windows.Forms.Label();
             this.lblMentorSpiritSourceLabel = new System.Windows.Forms.Label();
             this.tlpMagicianButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -513,14 +535,14 @@ namespace Chummer
             this.lblTargetLabel = new System.Windows.Forms.Label();
             this.lblTarget = new System.Windows.Forms.Label();
             this.lblComplexFormSourceLabel = new System.Windows.Forms.Label();
-            this.lblComplexFormSource = new System.Windows.Forms.Label();
+            this.lblComplexFormSource = new Chummer.LabelWithToolTip();
             this.lblComplexFormDicePoolLabel = new System.Windows.Forms.Label();
             this.dpcComplexFormDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.lblDurationLabel = new System.Windows.Forms.Label();
             this.cmdAddSustainedForm = new System.Windows.Forms.Button();
             this.lblDuration = new System.Windows.Forms.Label();
             this.lblFVLabel = new System.Windows.Forms.Label();
-            this.lblFV = new System.Windows.Forms.Label();
+            this.lblFV = new Chummer.LabelWithToolTip();
             this.gpbTechnomancerStream = new System.Windows.Forms.GroupBox();
             this.tlpTechnomancerStream = new System.Windows.Forms.TableLayoutPanel();
             this.lblStreamLabel = new System.Windows.Forms.Label();
@@ -534,7 +556,7 @@ namespace Chummer
             this.lblParagonInformation = new System.Windows.Forms.Label();
             this.tlpTechnomancerParagonHeader = new System.Windows.Forms.TableLayoutPanel();
             this.lblParagonLabel = new System.Windows.Forms.Label();
-            this.lblParagonSource = new System.Windows.Forms.Label();
+            this.lblParagonSource = new Chummer.LabelWithToolTip();
             this.lblParagon = new System.Windows.Forms.Label();
             this.lblParagonSourceLabel = new System.Windows.Forms.Label();
             this.tlpTechnomancerButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -572,7 +594,7 @@ namespace Chummer
             this.lblCritterPowerNameLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerPointCostLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerCategoryLabel = new System.Windows.Forms.Label();
-            this.lblCritterPowerSource = new System.Windows.Forms.Label();
+            this.lblCritterPowerSource = new Chummer.LabelWithToolTip();
             this.lblCritterPowerSourceLabel = new System.Windows.Forms.Label();
             this.lblCritterPowerDuration = new System.Windows.Forms.Label();
             this.lblCritterPowerTypeLabel = new System.Windows.Forms.Label();
@@ -607,7 +629,7 @@ namespace Chummer
             this.lblGroupNotes = new System.Windows.Forms.Label();
             this.txtGroupName = new System.Windows.Forms.TextBox();
             this.chkJoinGroup = new Chummer.ColorableCheckBox();
-            this.lblMetamagicSource = new System.Windows.Forms.Label();
+            this.lblMetamagicSource = new Chummer.LabelWithToolTip();
             this.tabCyberware = new System.Windows.Forms.TabPage();
             this.tlpCyberware = new System.Windows.Forms.TableLayoutPanel();
             this.treCyberware = new System.Windows.Forms.TreeView();
@@ -639,7 +661,7 @@ namespace Chummer
             this.lblCyberlimbAGILabel = new System.Windows.Forms.Label();
             this.lblCyberwareCost = new System.Windows.Forms.Label();
             this.lblCyberwareEssenceLabel = new System.Windows.Forms.Label();
-            this.lblCyberwareSource = new System.Windows.Forms.Label();
+            this.lblCyberwareSource = new Chummer.LabelWithToolTip();
             this.lblCyberwareSourceLabel = new System.Windows.Forms.Label();
             this.lblCyberwareAvail = new System.Windows.Forms.Label();
             this.lblCyberwareAvailLabel = new System.Windows.Forms.Label();
@@ -709,7 +731,7 @@ namespace Chummer
             this.lblGearRating = new System.Windows.Forms.Label();
             this.lblGearRatingLabel = new System.Windows.Forms.Label();
             this.lblGearQtyLabel = new System.Windows.Forms.Label();
-            this.lblGearSource = new System.Windows.Forms.Label();
+            this.lblGearSource = new Chummer.LabelWithToolTip();
             this.lblGearSourceLabel = new System.Windows.Forms.Label();
             this.chkGearEquipped = new Chummer.ColorableCheckBox();
             this.flpGearQty = new System.Windows.Forms.FlowLayoutPanel();
@@ -797,7 +819,7 @@ namespace Chummer
             this.lblArmorAvail = new System.Windows.Forms.Label();
             this.lblArmorCostLabel = new System.Windows.Forms.Label();
             this.lblArmorCost = new System.Windows.Forms.Label();
-            this.lblArmorSource = new System.Windows.Forms.Label();
+            this.lblArmorSource = new Chummer.LabelWithToolTip();
             this.lblArmorCapacityLabel = new System.Windows.Forms.Label();
             this.lblArmorCapacity = new System.Windows.Forms.Label();
             this.lblArmorSourceLabel = new System.Windows.Forms.Label();
@@ -886,7 +908,7 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle = new Chummer.ButtonWithToolTip();
             this.chkWeaponEquipped = new Chummer.ColorableCheckBox();
             this.chkIncludedInWeapon = new Chummer.ColorableCheckBox();
-            this.lblWeaponSource = new System.Windows.Forms.Label();
+            this.lblWeaponSource = new Chummer.LabelWithToolTip();
             this.lblWeaponSourceLabel = new System.Windows.Forms.Label();
             this.gpbWeaponsWeapon = new System.Windows.Forms.GroupBox();
             this.flpWeaponsWeapon = new System.Windows.Forms.FlowLayoutPanel();
@@ -899,7 +921,7 @@ namespace Chummer
             this.lblWeaponAP = new System.Windows.Forms.Label();
             this.lblWeaponMode = new System.Windows.Forms.Label();
             this.lblWeaponModeLabel = new System.Windows.Forms.Label();
-            this.lblWeaponRC = new System.Windows.Forms.Label();
+            this.lblWeaponRC = new Chummer.LabelWithToolTip();
             this.lblWeaponRCLabel = new System.Windows.Forms.Label();
             this.lblWeaponDicePoolLabel = new System.Windows.Forms.Label();
             this.lblWeaponAccuracyLabel = new System.Windows.Forms.Label();
@@ -1033,7 +1055,7 @@ namespace Chummer
             this.lblLifestyleMonthsLabel = new System.Windows.Forms.Label();
             this.lblLifestyleSourceLabel = new System.Windows.Forms.Label();
             this.lblLifestyleComfortsLabel = new System.Windows.Forms.Label();
-            this.lblLifestyleSource = new System.Windows.Forms.Label();
+            this.lblLifestyleSource = new Chummer.LabelWithToolTip();
             this.lblLifestyleCityLabel = new System.Windows.Forms.Label();
             this.lblLifestyleDistrictLabel = new System.Windows.Forms.Label();
             this.lblLifestyleCity = new System.Windows.Forms.Label();
@@ -1057,7 +1079,7 @@ namespace Chummer
             this.flpVehiclesCommonQuantity = new System.Windows.Forms.FlowLayoutPanel();
             this.lblVehicleGearQty = new System.Windows.Forms.Label();
             this.lblVehicleSourceLabel = new System.Windows.Forms.Label();
-            this.lblVehicleSource = new System.Windows.Forms.Label();
+            this.lblVehicleSource = new Chummer.LabelWithToolTip();
             this.flpVehiclesCommonCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkVehicleIncludedInWeapon = new Chummer.ColorableCheckBox();
             this.lblVehicleAvailLabel = new System.Windows.Forms.Label();
@@ -1065,6 +1087,8 @@ namespace Chummer
             this.lblVehicleCostLabel = new System.Windows.Forms.Label();
             this.lblVehicleCost = new System.Windows.Forms.Label();
             this.lblVehicleSlotsLabel = new System.Windows.Forms.Label();
+            this.lblVehicleCapacity = new System.Windows.Forms.Label();
+            this.lblVehicleCapacityLabel = new System.Windows.Forms.Label();
             this.lblVehicleSlots = new System.Windows.Forms.Label();
             this.flpVehiclesCommonMoveButtons = new System.Windows.Forms.FlowLayoutPanel();
             this.cmdVehicleCyberwareChangeMount = new System.Windows.Forms.Button();
@@ -1117,7 +1141,7 @@ namespace Chummer
             this.lblVehicleWeaponAmmo = new System.Windows.Forms.Label();
             this.dpcVehicleWeaponDicePool = new Chummer.UI.Shared.Components.DicePoolControl();
             this.lblVehicleWeaponRCLabel = new System.Windows.Forms.Label();
-            this.lblVehicleWeaponRC = new System.Windows.Forms.Label();
+            this.lblVehicleWeaponRC = new Chummer.LabelWithToolTip();
             this.lblVehicleWeaponReachLabel = new System.Windows.Forms.Label();
             this.tlpVehiclesWeaponRanges = new System.Windows.Forms.TableLayoutPanel();
             this.lblVehicleWeaponAlternateRangeExtreme = new System.Windows.Forms.Label();
@@ -1245,7 +1269,7 @@ namespace Chummer
             this.txtWeight = new System.Windows.Forms.TextBox();
             this.lblSkin = new System.Windows.Forms.Label();
             this.txtSkin = new System.Windows.Forms.TextBox();
-            this.lblPublicAware = new System.Windows.Forms.Label();
+            this.lblPublicAware = new Chummer.LabelWithToolTip();
             this.nudMugshotIndex = new Chummer.NumericUpDownEx();
             this.lblNumMugshots = new System.Windows.Forms.Label();
             this.lblHandedness = new System.Windows.Forms.Label();
@@ -1395,6 +1419,7 @@ namespace Chummer
             this.tsVehicleWeaponMountAddAccessory = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountAddUnderbarrel = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponMountLocation = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsEditWeaponMount = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponMountNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsWeaponAccessoryGearNotes = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -2007,13 +2032,13 @@ namespace Chummer
             this.cmdEdgeGained.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdEdgeGained.AutoSize = true;
             this.cmdEdgeGained.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdEdgeGained.Image = global::Chummer.Properties.Resources.add;
-            this.cmdEdgeGained.ImageDpi120 = null;
-            this.cmdEdgeGained.ImageDpi144 = null;
-            this.cmdEdgeGained.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.cmdEdgeGained.ImageDpi288 = null;
-            this.cmdEdgeGained.ImageDpi384 = null;
-            this.cmdEdgeGained.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdEdgeGained.Image = global::Chummer.Properties.Resources.add_16;
+            this.cmdEdgeGained.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.cmdEdgeGained.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.cmdEdgeGained.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.cmdEdgeGained.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.cmdEdgeGained.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.cmdEdgeGained.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.cmdEdgeGained.Location = new System.Drawing.Point(28, 3);
             this.cmdEdgeGained.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdEdgeGained.Name = "cmdEdgeGained";
@@ -2029,13 +2054,13 @@ namespace Chummer
             this.cmdEdgeSpent.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdEdgeSpent.AutoSize = true;
             this.cmdEdgeSpent.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdEdgeSpent.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdEdgeSpent.ImageDpi120 = null;
-            this.cmdEdgeSpent.ImageDpi144 = null;
-            this.cmdEdgeSpent.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.cmdEdgeSpent.ImageDpi288 = null;
-            this.cmdEdgeSpent.ImageDpi384 = null;
-            this.cmdEdgeSpent.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdEdgeSpent.Image = global::Chummer.Properties.Resources.delete_16;
+            this.cmdEdgeSpent.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.cmdEdgeSpent.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.cmdEdgeSpent.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.cmdEdgeSpent.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.cmdEdgeSpent.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.cmdEdgeSpent.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdEdgeSpent.Location = new System.Drawing.Point(58, 3);
             this.cmdEdgeSpent.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdEdgeSpent.Name = "cmdEdgeSpent";
@@ -2310,13 +2335,13 @@ namespace Chummer
             this.cmdBurnStreetCred.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdBurnStreetCred.AutoSize = true;
             this.cmdBurnStreetCred.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdBurnStreetCred.Image = global::Chummer.Properties.Resources.fire;
-            this.cmdBurnStreetCred.ImageDpi120 = null;
-            this.cmdBurnStreetCred.ImageDpi144 = null;
-            this.cmdBurnStreetCred.ImageDpi192 = global::Chummer.Properties.Resources.fire1;
-            this.cmdBurnStreetCred.ImageDpi288 = null;
-            this.cmdBurnStreetCred.ImageDpi384 = null;
-            this.cmdBurnStreetCred.ImageDpi96 = global::Chummer.Properties.Resources.fire;
+            this.cmdBurnStreetCred.Image = global::Chummer.Properties.Resources.fire_16;
+            this.cmdBurnStreetCred.ImageDpi120 = global::Chummer.Properties.Resources.fire_20;
+            this.cmdBurnStreetCred.ImageDpi144 = global::Chummer.Properties.Resources.fire_24;
+            this.cmdBurnStreetCred.ImageDpi192 = global::Chummer.Properties.Resources.fire_32;
+            this.cmdBurnStreetCred.ImageDpi288 = global::Chummer.Properties.Resources.fire_48;
+            this.cmdBurnStreetCred.ImageDpi384 = global::Chummer.Properties.Resources.fire_64;
+            this.cmdBurnStreetCred.ImageDpi96 = global::Chummer.Properties.Resources.fire_16;
             this.cmdBurnStreetCred.Location = new System.Drawing.Point(28, 3);
             this.cmdBurnStreetCred.Name = "cmdBurnStreetCred";
             this.cmdBurnStreetCred.Padding = new System.Windows.Forms.Padding(1);
@@ -2331,13 +2356,13 @@ namespace Chummer
             this.cmdVehicleGearReduceQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdVehicleGearReduceQty.AutoSize = true;
             this.cmdVehicleGearReduceQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleGearReduceQty.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdVehicleGearReduceQty.ImageDpi120 = null;
-            this.cmdVehicleGearReduceQty.ImageDpi144 = null;
-            this.cmdVehicleGearReduceQty.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.cmdVehicleGearReduceQty.ImageDpi288 = null;
-            this.cmdVehicleGearReduceQty.ImageDpi384 = null;
-            this.cmdVehicleGearReduceQty.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdVehicleGearReduceQty.Image = global::Chummer.Properties.Resources.delete_16;
+            this.cmdVehicleGearReduceQty.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.cmdVehicleGearReduceQty.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.cmdVehicleGearReduceQty.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.cmdVehicleGearReduceQty.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.cmdVehicleGearReduceQty.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.cmdVehicleGearReduceQty.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdVehicleGearReduceQty.Location = new System.Drawing.Point(38, 3);
             this.cmdVehicleGearReduceQty.Name = "cmdVehicleGearReduceQty";
             this.cmdVehicleGearReduceQty.Padding = new System.Windows.Forms.Padding(1);
@@ -2352,13 +2377,13 @@ namespace Chummer
             this.cmdVehicleMoveToInventory.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdVehicleMoveToInventory.AutoSize = true;
             this.cmdVehicleMoveToInventory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdVehicleMoveToInventory.Image = global::Chummer.Properties.Resources.car_go;
-            this.cmdVehicleMoveToInventory.ImageDpi120 = null;
-            this.cmdVehicleMoveToInventory.ImageDpi144 = null;
-            this.cmdVehicleMoveToInventory.ImageDpi192 = global::Chummer.Properties.Resources.car_go1;
-            this.cmdVehicleMoveToInventory.ImageDpi288 = null;
-            this.cmdVehicleMoveToInventory.ImageDpi384 = null;
-            this.cmdVehicleMoveToInventory.ImageDpi96 = global::Chummer.Properties.Resources.car_go;
+            this.cmdVehicleMoveToInventory.Image = global::Chummer.Properties.Resources.car_go_16;
+            this.cmdVehicleMoveToInventory.ImageDpi120 = global::Chummer.Properties.Resources.car_go_20;
+            this.cmdVehicleMoveToInventory.ImageDpi144 = global::Chummer.Properties.Resources.car_go_24;
+            this.cmdVehicleMoveToInventory.ImageDpi192 = global::Chummer.Properties.Resources.car_go_32;
+            this.cmdVehicleMoveToInventory.ImageDpi288 = global::Chummer.Properties.Resources.car_go_48;
+            this.cmdVehicleMoveToInventory.ImageDpi384 = global::Chummer.Properties.Resources.car_go_64;
+            this.cmdVehicleMoveToInventory.ImageDpi96 = global::Chummer.Properties.Resources.car_go_16;
             this.cmdVehicleMoveToInventory.Location = new System.Drawing.Point(3, 3);
             this.cmdVehicleMoveToInventory.Name = "cmdVehicleMoveToInventory";
             this.cmdVehicleMoveToInventory.Padding = new System.Windows.Forms.Padding(1);
@@ -2492,13 +2517,13 @@ namespace Chummer
             // 
             // tsMartialArtsAddTechnique
             // 
-            this.tsMartialArtsAddTechnique.Image = global::Chummer.Properties.Resources.medal_gold_add;
-            this.tsMartialArtsAddTechnique.ImageDpi120 = null;
-            this.tsMartialArtsAddTechnique.ImageDpi144 = null;
-            this.tsMartialArtsAddTechnique.ImageDpi192 = global::Chummer.Properties.Resources.medal_gold_add1;
-            this.tsMartialArtsAddTechnique.ImageDpi288 = null;
-            this.tsMartialArtsAddTechnique.ImageDpi384 = null;
-            this.tsMartialArtsAddTechnique.ImageDpi96 = global::Chummer.Properties.Resources.medal_gold_add;
+            this.tsMartialArtsAddTechnique.Image = global::Chummer.Properties.Resources.medal_gold_add_16;
+            this.tsMartialArtsAddTechnique.ImageDpi120 = global::Chummer.Properties.Resources.medal_gold_add_20;
+            this.tsMartialArtsAddTechnique.ImageDpi144 = global::Chummer.Properties.Resources.medal_gold_add_24;
+            this.tsMartialArtsAddTechnique.ImageDpi192 = global::Chummer.Properties.Resources.medal_gold_add_32;
+            this.tsMartialArtsAddTechnique.ImageDpi288 = global::Chummer.Properties.Resources.medal_gold_add_48;
+            this.tsMartialArtsAddTechnique.ImageDpi384 = global::Chummer.Properties.Resources.medal_gold_add_64;
+            this.tsMartialArtsAddTechnique.ImageDpi96 = global::Chummer.Properties.Resources.medal_gold_add_16;
             this.tsMartialArtsAddTechnique.Name = "tsMartialArtsAddTechnique";
             this.tsMartialArtsAddTechnique.Size = new System.Drawing.Size(203, 22);
             this.tsMartialArtsAddTechnique.Tag = "Menu_AddTechnique";
@@ -2507,13 +2532,13 @@ namespace Chummer
             // 
             // tsMartialArtsNotes
             // 
-            this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsMartialArtsNotes.ImageDpi120 = null;
-            this.tsMartialArtsNotes.ImageDpi144 = null;
-            this.tsMartialArtsNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsMartialArtsNotes.ImageDpi288 = null;
-            this.tsMartialArtsNotes.ImageDpi384 = null;
-            this.tsMartialArtsNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsMartialArtsNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsMartialArtsNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsMartialArtsNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsMartialArtsNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsMartialArtsNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsMartialArtsNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsMartialArtsNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsMartialArtsNotes.Name = "tsMartialArtsNotes";
             this.tsMartialArtsNotes.Size = new System.Drawing.Size(203, 22);
             this.tsMartialArtsNotes.Tag = "Menu_Notes";
@@ -2522,13 +2547,13 @@ namespace Chummer
             // 
             // tsMartialArtsReapplyImprovements
             // 
-            this.tsMartialArtsReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsMartialArtsReapplyImprovements.ImageDpi120 = null;
-            this.tsMartialArtsReapplyImprovements.ImageDpi144 = null;
-            this.tsMartialArtsReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsMartialArtsReapplyImprovements.ImageDpi288 = null;
-            this.tsMartialArtsReapplyImprovements.ImageDpi384 = null;
-            this.tsMartialArtsReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMartialArtsReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsMartialArtsReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsMartialArtsReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsMartialArtsReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsMartialArtsReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsMartialArtsReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsMartialArtsReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsMartialArtsReapplyImprovements.Name = "tsMartialArtsReapplyImprovements";
             this.tsMartialArtsReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsMartialArtsReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -2544,13 +2569,13 @@ namespace Chummer
             // 
             // tsCreateSpell
             // 
-            this.tsCreateSpell.Image = global::Chummer.Properties.Resources.wand;
-            this.tsCreateSpell.ImageDpi120 = null;
-            this.tsCreateSpell.ImageDpi144 = null;
-            this.tsCreateSpell.ImageDpi192 = global::Chummer.Properties.Resources.wand1;
-            this.tsCreateSpell.ImageDpi288 = null;
-            this.tsCreateSpell.ImageDpi384 = null;
-            this.tsCreateSpell.ImageDpi96 = global::Chummer.Properties.Resources.wand;
+            this.tsCreateSpell.Image = global::Chummer.Properties.Resources.wand_16;
+            this.tsCreateSpell.ImageDpi120 = global::Chummer.Properties.Resources.wand_20;
+            this.tsCreateSpell.ImageDpi144 = global::Chummer.Properties.Resources.wand_24;
+            this.tsCreateSpell.ImageDpi192 = global::Chummer.Properties.Resources.wand_32;
+            this.tsCreateSpell.ImageDpi288 = global::Chummer.Properties.Resources.wand_48;
+            this.tsCreateSpell.ImageDpi384 = global::Chummer.Properties.Resources.wand_64;
+            this.tsCreateSpell.ImageDpi96 = global::Chummer.Properties.Resources.wand_16;
             this.tsCreateSpell.Name = "tsCreateSpell";
             this.tsCreateSpell.Size = new System.Drawing.Size(136, 22);
             this.tsCreateSpell.Tag = "Menu_CreateSpell";
@@ -2568,13 +2593,13 @@ namespace Chummer
             // 
             // tsComplexFormNotes
             // 
-            this.tsComplexFormNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsComplexFormNotes.ImageDpi120 = null;
-            this.tsComplexFormNotes.ImageDpi144 = null;
-            this.tsComplexFormNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsComplexFormNotes.ImageDpi288 = null;
-            this.tsComplexFormNotes.ImageDpi384 = null;
-            this.tsComplexFormNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsComplexFormNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsComplexFormNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsComplexFormNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsComplexFormNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsComplexFormNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsComplexFormNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsComplexFormNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsComplexFormNotes.Name = "tsComplexFormNotes";
             this.tsComplexFormNotes.Size = new System.Drawing.Size(203, 22);
             this.tsComplexFormNotes.Tag = "Menu_Notes";
@@ -2583,13 +2608,13 @@ namespace Chummer
             // 
             // tsComplexFormReapplyImprovements
             // 
-            this.tsComplexFormReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsComplexFormReapplyImprovements.ImageDpi120 = null;
-            this.tsComplexFormReapplyImprovements.ImageDpi144 = null;
-            this.tsComplexFormReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsComplexFormReapplyImprovements.ImageDpi288 = null;
-            this.tsComplexFormReapplyImprovements.ImageDpi384 = null;
-            this.tsComplexFormReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsComplexFormReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsComplexFormReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsComplexFormReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsComplexFormReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsComplexFormReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsComplexFormReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsComplexFormReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsComplexFormReapplyImprovements.Name = "tsComplexFormReapplyImprovements";
             this.tsComplexFormReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsComplexFormReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -2608,13 +2633,13 @@ namespace Chummer
             // 
             // tsCyberwareAddAsPlugin
             // 
-            this.tsCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.processor_add;
-            this.tsCyberwareAddAsPlugin.ImageDpi120 = null;
-            this.tsCyberwareAddAsPlugin.ImageDpi144 = null;
-            this.tsCyberwareAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.processor_add1;
-            this.tsCyberwareAddAsPlugin.ImageDpi288 = null;
-            this.tsCyberwareAddAsPlugin.ImageDpi384 = null;
-            this.tsCyberwareAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.processor_add;
+            this.tsCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.processor_add_16;
+            this.tsCyberwareAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.processor_add_20;
+            this.tsCyberwareAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.processor_add_24;
+            this.tsCyberwareAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.processor_add_32;
+            this.tsCyberwareAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.processor_add_48;
+            this.tsCyberwareAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.processor_add_64;
+            this.tsCyberwareAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.processor_add_16;
             this.tsCyberwareAddAsPlugin.Name = "tsCyberwareAddAsPlugin";
             this.tsCyberwareAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -2623,13 +2648,13 @@ namespace Chummer
             // 
             // tsCyberwareAddGear
             // 
-            this.tsCyberwareAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsCyberwareAddGear.ImageDpi120 = null;
-            this.tsCyberwareAddGear.ImageDpi144 = null;
-            this.tsCyberwareAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsCyberwareAddGear.ImageDpi288 = null;
-            this.tsCyberwareAddGear.ImageDpi384 = null;
-            this.tsCyberwareAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsCyberwareAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsCyberwareAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsCyberwareAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsCyberwareAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsCyberwareAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsCyberwareAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsCyberwareAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsCyberwareAddGear.Name = "tsCyberwareAddGear";
             this.tsCyberwareAddGear.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareAddGear.Tag = "Menu_AddGear";
@@ -2638,13 +2663,13 @@ namespace Chummer
             // 
             // tsCyberwareNotes
             // 
-            this.tsCyberwareNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsCyberwareNotes.ImageDpi120 = null;
-            this.tsCyberwareNotes.ImageDpi144 = null;
-            this.tsCyberwareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsCyberwareNotes.ImageDpi288 = null;
-            this.tsCyberwareNotes.ImageDpi384 = null;
-            this.tsCyberwareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsCyberwareNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsCyberwareNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsCyberwareNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsCyberwareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsCyberwareNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsCyberwareNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsCyberwareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsCyberwareNotes.Name = "tsCyberwareNotes";
             this.tsCyberwareNotes.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareNotes.Tag = "Menu_Notes";
@@ -2653,13 +2678,13 @@ namespace Chummer
             // 
             // tsCyberwareReapplyImprovements
             // 
-            this.tsCyberwareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsCyberwareReapplyImprovements.ImageDpi120 = null;
-            this.tsCyberwareReapplyImprovements.ImageDpi144 = null;
-            this.tsCyberwareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsCyberwareReapplyImprovements.ImageDpi288 = null;
-            this.tsCyberwareReapplyImprovements.ImageDpi384 = null;
-            this.tsCyberwareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsCyberwareReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsCyberwareReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsCyberwareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsCyberwareReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsCyberwareReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsCyberwareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsCyberwareReapplyImprovements.Name = "tsCyberwareReapplyImprovements";
             this.tsCyberwareReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -2677,13 +2702,13 @@ namespace Chummer
             // 
             // tsVehicleCyberwareAddAsPlugin
             // 
-            this.tsVehicleCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.processor_add;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi120 = null;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi144 = null;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.processor_add1;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi288 = null;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi384 = null;
-            this.tsVehicleCyberwareAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.processor_add;
+            this.tsVehicleCyberwareAddAsPlugin.Image = global::Chummer.Properties.Resources.processor_add_16;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.processor_add_20;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.processor_add_24;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.processor_add_32;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.processor_add_48;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.processor_add_64;
+            this.tsVehicleCyberwareAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.processor_add_16;
             this.tsVehicleCyberwareAddAsPlugin.Name = "tsVehicleCyberwareAddAsPlugin";
             this.tsVehicleCyberwareAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -2692,13 +2717,13 @@ namespace Chummer
             // 
             // tsVehicleCyberwareAddGear
             // 
-            this.tsVehicleCyberwareAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleCyberwareAddGear.ImageDpi120 = null;
-            this.tsVehicleCyberwareAddGear.ImageDpi144 = null;
-            this.tsVehicleCyberwareAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleCyberwareAddGear.ImageDpi288 = null;
-            this.tsVehicleCyberwareAddGear.ImageDpi384 = null;
-            this.tsVehicleCyberwareAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleCyberwareAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleCyberwareAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleCyberwareAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleCyberwareAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleCyberwareAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleCyberwareAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleCyberwareAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleCyberwareAddGear.Name = "tsVehicleCyberwareAddGear";
             this.tsVehicleCyberwareAddGear.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareAddGear.Tag = "Menu_AddGear";
@@ -2707,13 +2732,13 @@ namespace Chummer
             // 
             // tsVehicleCyberwareNotes
             // 
-            this.tsVehicleCyberwareNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleCyberwareNotes.ImageDpi120 = null;
-            this.tsVehicleCyberwareNotes.ImageDpi144 = null;
-            this.tsVehicleCyberwareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleCyberwareNotes.ImageDpi288 = null;
-            this.tsVehicleCyberwareNotes.ImageDpi384 = null;
-            this.tsVehicleCyberwareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleCyberwareNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleCyberwareNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleCyberwareNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleCyberwareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleCyberwareNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleCyberwareNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleCyberwareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleCyberwareNotes.Name = "tsVehicleCyberwareNotes";
             this.tsVehicleCyberwareNotes.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareNotes.Tag = "Menu_Notes";
@@ -2730,13 +2755,13 @@ namespace Chummer
             // 
             // tsCyberwareSell
             // 
-            this.tsCyberwareSell.Image = global::Chummer.Properties.Resources.money_yen;
-            this.tsCyberwareSell.ImageDpi120 = null;
-            this.tsCyberwareSell.ImageDpi144 = null;
-            this.tsCyberwareSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen1;
-            this.tsCyberwareSell.ImageDpi288 = null;
-            this.tsCyberwareSell.ImageDpi384 = null;
-            this.tsCyberwareSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen;
+            this.tsCyberwareSell.Image = global::Chummer.Properties.Resources.money_yen_16;
+            this.tsCyberwareSell.ImageDpi120 = global::Chummer.Properties.Resources.money_yen_20;
+            this.tsCyberwareSell.ImageDpi144 = global::Chummer.Properties.Resources.money_yen_24;
+            this.tsCyberwareSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen_32;
+            this.tsCyberwareSell.ImageDpi288 = global::Chummer.Properties.Resources.money_yen_48;
+            this.tsCyberwareSell.ImageDpi384 = global::Chummer.Properties.Resources.money_yen_64;
+            this.tsCyberwareSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen_16;
             this.tsCyberwareSell.Name = "tsCyberwareSell";
             this.tsCyberwareSell.Size = new System.Drawing.Size(146, 22);
             this.tsCyberwareSell.Tag = "Menu_SellItem";
@@ -2745,13 +2770,13 @@ namespace Chummer
             // 
             // tsCyberwareUpgrade
             // 
-            this.tsCyberwareUpgrade.Image = global::Chummer.Properties.Resources.processor_edit;
-            this.tsCyberwareUpgrade.ImageDpi120 = null;
-            this.tsCyberwareUpgrade.ImageDpi144 = null;
-            this.tsCyberwareUpgrade.ImageDpi192 = global::Chummer.Properties.Resources.processor_edit1;
-            this.tsCyberwareUpgrade.ImageDpi288 = null;
-            this.tsCyberwareUpgrade.ImageDpi384 = null;
-            this.tsCyberwareUpgrade.ImageDpi96 = global::Chummer.Properties.Resources.processor_edit;
+            this.tsCyberwareUpgrade.Image = global::Chummer.Properties.Resources.processor_edit_16;
+            this.tsCyberwareUpgrade.ImageDpi120 = global::Chummer.Properties.Resources.processor_edit_20;
+            this.tsCyberwareUpgrade.ImageDpi144 = global::Chummer.Properties.Resources.processor_edit_24;
+            this.tsCyberwareUpgrade.ImageDpi192 = global::Chummer.Properties.Resources.processor_edit_32;
+            this.tsCyberwareUpgrade.ImageDpi288 = global::Chummer.Properties.Resources.processor_edit_48;
+            this.tsCyberwareUpgrade.ImageDpi384 = global::Chummer.Properties.Resources.processor_edit_64;
+            this.tsCyberwareUpgrade.ImageDpi96 = global::Chummer.Properties.Resources.processor_edit_16;
             this.tsCyberwareUpgrade.Name = "tsCyberwareUpgrade";
             this.tsCyberwareUpgrade.Size = new System.Drawing.Size(146, 22);
             this.tsCyberwareUpgrade.Text = "&Upgrade Item";
@@ -2766,13 +2791,13 @@ namespace Chummer
             // 
             // tsAdvancedLifestyle
             // 
-            this.tsAdvancedLifestyle.Image = global::Chummer.Properties.Resources.house;
-            this.tsAdvancedLifestyle.ImageDpi120 = null;
-            this.tsAdvancedLifestyle.ImageDpi144 = null;
-            this.tsAdvancedLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house1;
-            this.tsAdvancedLifestyle.ImageDpi288 = null;
-            this.tsAdvancedLifestyle.ImageDpi384 = null;
-            this.tsAdvancedLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house;
+            this.tsAdvancedLifestyle.Image = global::Chummer.Properties.Resources.house_16;
+            this.tsAdvancedLifestyle.ImageDpi120 = global::Chummer.Properties.Resources.house_20;
+            this.tsAdvancedLifestyle.ImageDpi144 = global::Chummer.Properties.Resources.house_24;
+            this.tsAdvancedLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house_32;
+            this.tsAdvancedLifestyle.ImageDpi288 = global::Chummer.Properties.Resources.house_48;
+            this.tsAdvancedLifestyle.ImageDpi384 = global::Chummer.Properties.Resources.house_64;
+            this.tsAdvancedLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house_16;
             this.tsAdvancedLifestyle.Name = "tsAdvancedLifestyle";
             this.tsAdvancedLifestyle.Size = new System.Drawing.Size(173, 22);
             this.tsAdvancedLifestyle.Tag = "Menu_AdvancedLifestyle";
@@ -2792,13 +2817,13 @@ namespace Chummer
             // 
             // tsAddArmorMod
             // 
-            this.tsAddArmorMod.Image = global::Chummer.Properties.Resources.shield_add;
-            this.tsAddArmorMod.ImageDpi120 = null;
-            this.tsAddArmorMod.ImageDpi144 = null;
-            this.tsAddArmorMod.ImageDpi192 = global::Chummer.Properties.Resources.shield_add1;
-            this.tsAddArmorMod.ImageDpi288 = null;
-            this.tsAddArmorMod.ImageDpi384 = null;
-            this.tsAddArmorMod.ImageDpi96 = global::Chummer.Properties.Resources.shield_add;
+            this.tsAddArmorMod.Image = global::Chummer.Properties.Resources.shield_add_16;
+            this.tsAddArmorMod.ImageDpi120 = global::Chummer.Properties.Resources.shield_add_20;
+            this.tsAddArmorMod.ImageDpi144 = global::Chummer.Properties.Resources.shield_add_24;
+            this.tsAddArmorMod.ImageDpi192 = global::Chummer.Properties.Resources.shield_add_32;
+            this.tsAddArmorMod.ImageDpi288 = global::Chummer.Properties.Resources.shield_add_48;
+            this.tsAddArmorMod.ImageDpi384 = global::Chummer.Properties.Resources.shield_add_64;
+            this.tsAddArmorMod.ImageDpi96 = global::Chummer.Properties.Resources.shield_add_16;
             this.tsAddArmorMod.Name = "tsAddArmorMod";
             this.tsAddArmorMod.Size = new System.Drawing.Size(203, 22);
             this.tsAddArmorMod.Tag = "Menu_AddArmorMod";
@@ -2807,13 +2832,13 @@ namespace Chummer
             // 
             // tsArmorAddGear
             // 
-            this.tsArmorAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsArmorAddGear.ImageDpi120 = null;
-            this.tsArmorAddGear.ImageDpi144 = null;
-            this.tsArmorAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsArmorAddGear.ImageDpi288 = null;
-            this.tsArmorAddGear.ImageDpi384 = null;
-            this.tsArmorAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsArmorAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsArmorAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsArmorAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsArmorAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsArmorAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsArmorAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsArmorAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsArmorAddGear.Name = "tsArmorAddGear";
             this.tsArmorAddGear.Size = new System.Drawing.Size(203, 22);
             this.tsArmorAddGear.Tag = "Menu_AddGear";
@@ -2822,13 +2847,13 @@ namespace Chummer
             // 
             // tsArmorName
             // 
-            this.tsArmorName.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsArmorName.ImageDpi120 = null;
-            this.tsArmorName.ImageDpi144 = null;
-            this.tsArmorName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsArmorName.ImageDpi288 = null;
-            this.tsArmorName.ImageDpi384 = null;
-            this.tsArmorName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsArmorName.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsArmorName.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsArmorName.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsArmorName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsArmorName.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsArmorName.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsArmorName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsArmorName.Name = "tsArmorName";
             this.tsArmorName.Size = new System.Drawing.Size(203, 22);
             this.tsArmorName.Tag = "Menu_NameArmor";
@@ -2837,13 +2862,13 @@ namespace Chummer
             // 
             // tsArmorNotes
             // 
-            this.tsArmorNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsArmorNotes.ImageDpi120 = null;
-            this.tsArmorNotes.ImageDpi144 = null;
-            this.tsArmorNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsArmorNotes.ImageDpi288 = null;
-            this.tsArmorNotes.ImageDpi384 = null;
-            this.tsArmorNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsArmorNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsArmorNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsArmorNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsArmorNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsArmorNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsArmorNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsArmorNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsArmorNotes.Name = "tsArmorNotes";
             this.tsArmorNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorNotes.Tag = "Menu_Notes";
@@ -2852,13 +2877,13 @@ namespace Chummer
             // 
             // tsArmorReapplyImprovements
             // 
-            this.tsArmorReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsArmorReapplyImprovements.ImageDpi120 = null;
-            this.tsArmorReapplyImprovements.ImageDpi144 = null;
-            this.tsArmorReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsArmorReapplyImprovements.ImageDpi288 = null;
-            this.tsArmorReapplyImprovements.ImageDpi384 = null;
-            this.tsArmorReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsArmorReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsArmorReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsArmorReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsArmorReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsArmorReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsArmorReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsArmorReapplyImprovements.Name = "tsArmorReapplyImprovements";
             this.tsArmorReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsArmorReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -2874,13 +2899,13 @@ namespace Chummer
             // 
             // tsArmorSell
             // 
-            this.tsArmorSell.Image = global::Chummer.Properties.Resources.money_yen;
-            this.tsArmorSell.ImageDpi120 = null;
-            this.tsArmorSell.ImageDpi144 = null;
-            this.tsArmorSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen1;
-            this.tsArmorSell.ImageDpi288 = null;
-            this.tsArmorSell.ImageDpi384 = null;
-            this.tsArmorSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen;
+            this.tsArmorSell.Image = global::Chummer.Properties.Resources.money_yen_16;
+            this.tsArmorSell.ImageDpi120 = global::Chummer.Properties.Resources.money_yen_20;
+            this.tsArmorSell.ImageDpi144 = global::Chummer.Properties.Resources.money_yen_24;
+            this.tsArmorSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen_32;
+            this.tsArmorSell.ImageDpi288 = global::Chummer.Properties.Resources.money_yen_48;
+            this.tsArmorSell.ImageDpi384 = global::Chummer.Properties.Resources.money_yen_64;
+            this.tsArmorSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen_16;
             this.tsArmorSell.Name = "tsArmorSell";
             this.tsArmorSell.Size = new System.Drawing.Size(119, 22);
             this.tsArmorSell.Tag = "Menu_SellItem";
@@ -2900,13 +2925,13 @@ namespace Chummer
             // 
             // tsCreateNaturalWeapon
             // 
-            this.tsCreateNaturalWeapon.Image = global::Chummer.Properties.Resources.bomb;
-            this.tsCreateNaturalWeapon.ImageDpi120 = null;
-            this.tsCreateNaturalWeapon.ImageDpi144 = null;
-            this.tsCreateNaturalWeapon.ImageDpi192 = global::Chummer.Properties.Resources.bomb1;
-            this.tsCreateNaturalWeapon.ImageDpi288 = null;
-            this.tsCreateNaturalWeapon.ImageDpi384 = null;
-            this.tsCreateNaturalWeapon.ImageDpi96 = global::Chummer.Properties.Resources.bomb;
+            this.tsCreateNaturalWeapon.Image = global::Chummer.Properties.Resources.bomb_16;
+            this.tsCreateNaturalWeapon.ImageDpi120 = global::Chummer.Properties.Resources.bomb_20;
+            this.tsCreateNaturalWeapon.ImageDpi144 = global::Chummer.Properties.Resources.bomb_24;
+            this.tsCreateNaturalWeapon.ImageDpi192 = global::Chummer.Properties.Resources.bomb_32;
+            this.tsCreateNaturalWeapon.ImageDpi288 = global::Chummer.Properties.Resources.bomb_48;
+            this.tsCreateNaturalWeapon.ImageDpi384 = global::Chummer.Properties.Resources.bomb_64;
+            this.tsCreateNaturalWeapon.ImageDpi96 = global::Chummer.Properties.Resources.bomb_16;
             this.tsCreateNaturalWeapon.Name = "tsCreateNaturalWeapon";
             this.tsCreateNaturalWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsCreateNaturalWeapon.Tag = "Menu_AddNaturalWeapon";
@@ -2915,13 +2940,13 @@ namespace Chummer
             // 
             // tsWeaponAddAccessory
             // 
-            this.tsWeaponAddAccessory.Image = global::Chummer.Properties.Resources.flashlight_add;
-            this.tsWeaponAddAccessory.ImageDpi120 = null;
-            this.tsWeaponAddAccessory.ImageDpi144 = null;
-            this.tsWeaponAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add1;
-            this.tsWeaponAddAccessory.ImageDpi288 = null;
-            this.tsWeaponAddAccessory.ImageDpi384 = null;
-            this.tsWeaponAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add;
+            this.tsWeaponAddAccessory.Image = global::Chummer.Properties.Resources.flashlight_add_16;
+            this.tsWeaponAddAccessory.ImageDpi120 = global::Chummer.Properties.Resources.flashlight_add_20;
+            this.tsWeaponAddAccessory.ImageDpi144 = global::Chummer.Properties.Resources.flashlight_add_24;
+            this.tsWeaponAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add_32;
+            this.tsWeaponAddAccessory.ImageDpi288 = global::Chummer.Properties.Resources.flashlight_add_48;
+            this.tsWeaponAddAccessory.ImageDpi384 = global::Chummer.Properties.Resources.flashlight_add_64;
+            this.tsWeaponAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add_16;
             this.tsWeaponAddAccessory.Name = "tsWeaponAddAccessory";
             this.tsWeaponAddAccessory.Size = new System.Drawing.Size(208, 22);
             this.tsWeaponAddAccessory.Tag = "Menu_AddAccessory";
@@ -2930,13 +2955,13 @@ namespace Chummer
             // 
             // tsWeaponAddUnderbarrel
             // 
-            this.tsWeaponAddUnderbarrel.Image = global::Chummer.Properties.Resources.sword_add;
-            this.tsWeaponAddUnderbarrel.ImageDpi120 = null;
-            this.tsWeaponAddUnderbarrel.ImageDpi144 = null;
-            this.tsWeaponAddUnderbarrel.ImageDpi192 = global::Chummer.Properties.Resources.sword_add1;
-            this.tsWeaponAddUnderbarrel.ImageDpi288 = null;
-            this.tsWeaponAddUnderbarrel.ImageDpi384 = null;
-            this.tsWeaponAddUnderbarrel.ImageDpi96 = global::Chummer.Properties.Resources.sword_add;
+            this.tsWeaponAddUnderbarrel.Image = global::Chummer.Properties.Resources.sword_add_16;
+            this.tsWeaponAddUnderbarrel.ImageDpi120 = global::Chummer.Properties.Resources.sword_add_20;
+            this.tsWeaponAddUnderbarrel.ImageDpi144 = global::Chummer.Properties.Resources.sword_add_24;
+            this.tsWeaponAddUnderbarrel.ImageDpi192 = global::Chummer.Properties.Resources.sword_add_32;
+            this.tsWeaponAddUnderbarrel.ImageDpi288 = global::Chummer.Properties.Resources.sword_add_48;
+            this.tsWeaponAddUnderbarrel.ImageDpi384 = global::Chummer.Properties.Resources.sword_add_64;
+            this.tsWeaponAddUnderbarrel.ImageDpi96 = global::Chummer.Properties.Resources.sword_add_16;
             this.tsWeaponAddUnderbarrel.Name = "tsWeaponAddUnderbarrel";
             this.tsWeaponAddUnderbarrel.Size = new System.Drawing.Size(208, 22);
             this.tsWeaponAddUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
@@ -2945,13 +2970,13 @@ namespace Chummer
             // 
             // tsWeaponName
             // 
-            this.tsWeaponName.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsWeaponName.ImageDpi120 = null;
-            this.tsWeaponName.ImageDpi144 = null;
-            this.tsWeaponName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsWeaponName.ImageDpi288 = null;
-            this.tsWeaponName.ImageDpi384 = null;
-            this.tsWeaponName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsWeaponName.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsWeaponName.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsWeaponName.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsWeaponName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsWeaponName.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsWeaponName.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsWeaponName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsWeaponName.Name = "tsWeaponName";
             this.tsWeaponName.Size = new System.Drawing.Size(208, 22);
             this.tsWeaponName.Tag = "Menu_NameWeapon";
@@ -2960,13 +2985,13 @@ namespace Chummer
             // 
             // tsWeaponNotes
             // 
-            this.tsWeaponNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsWeaponNotes.ImageDpi120 = null;
-            this.tsWeaponNotes.ImageDpi144 = null;
-            this.tsWeaponNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsWeaponNotes.ImageDpi288 = null;
-            this.tsWeaponNotes.ImageDpi384 = null;
-            this.tsWeaponNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsWeaponNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsWeaponNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsWeaponNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsWeaponNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsWeaponNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsWeaponNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsWeaponNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsWeaponNotes.Name = "tsWeaponNotes";
             this.tsWeaponNotes.Size = new System.Drawing.Size(208, 22);
             this.tsWeaponNotes.Tag = "Menu_Notes";
@@ -2982,13 +3007,13 @@ namespace Chummer
             // 
             // tsWeaponSell
             // 
-            this.tsWeaponSell.Image = global::Chummer.Properties.Resources.money_yen;
-            this.tsWeaponSell.ImageDpi120 = null;
-            this.tsWeaponSell.ImageDpi144 = null;
-            this.tsWeaponSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen1;
-            this.tsWeaponSell.ImageDpi288 = null;
-            this.tsWeaponSell.ImageDpi384 = null;
-            this.tsWeaponSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen;
+            this.tsWeaponSell.Image = global::Chummer.Properties.Resources.money_yen_16;
+            this.tsWeaponSell.ImageDpi120 = global::Chummer.Properties.Resources.money_yen_20;
+            this.tsWeaponSell.ImageDpi144 = global::Chummer.Properties.Resources.money_yen_24;
+            this.tsWeaponSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen_32;
+            this.tsWeaponSell.ImageDpi288 = global::Chummer.Properties.Resources.money_yen_48;
+            this.tsWeaponSell.ImageDpi384 = global::Chummer.Properties.Resources.money_yen_64;
+            this.tsWeaponSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen_16;
             this.tsWeaponSell.Name = "tsWeaponSell";
             this.tsWeaponSell.Size = new System.Drawing.Size(119, 22);
             this.tsWeaponSell.Tag = "Menu_SellItem";
@@ -3062,6 +3087,7 @@ namespace Chummer
             this.cmsAmmoFullBurst.ImageDpi96 = null;
             this.cmsAmmoFullBurst.Name = "cmsAmmoFullBurst";
             this.cmsAmmoFullBurst.Size = new System.Drawing.Size(219, 22);
+            this.cmsAmmoFullBurst.Tag = "String_FullBurst";
             this.cmsAmmoFullBurst.Text = "Full Burst (10 bullets)";
             this.cmsAmmoFullBurst.Click += new System.EventHandler(this.cmsAmmoFullBurst_Click);
             // 
@@ -3076,6 +3102,7 @@ namespace Chummer
             this.cmsAmmoSuppressiveFire.ImageDpi96 = null;
             this.cmsAmmoSuppressiveFire.Name = "cmsAmmoSuppressiveFire";
             this.cmsAmmoSuppressiveFire.Size = new System.Drawing.Size(219, 22);
+            this.cmsAmmoSuppressiveFire.Tag = "String_SuppressiveFire";
             this.cmsAmmoSuppressiveFire.Text = "Suppressive Fire (20 bullets)";
             this.cmsAmmoSuppressiveFire.Click += new System.EventHandler(this.cmsAmmoSuppressiveFire_Click);
             // 
@@ -3089,13 +3116,13 @@ namespace Chummer
             // 
             // tsGearButtonAddAccessory
             // 
-            this.tsGearButtonAddAccessory.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsGearButtonAddAccessory.ImageDpi120 = null;
-            this.tsGearButtonAddAccessory.ImageDpi144 = null;
-            this.tsGearButtonAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsGearButtonAddAccessory.ImageDpi288 = null;
-            this.tsGearButtonAddAccessory.ImageDpi384 = null;
-            this.tsGearButtonAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsGearButtonAddAccessory.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsGearButtonAddAccessory.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsGearButtonAddAccessory.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsGearButtonAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsGearButtonAddAccessory.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsGearButtonAddAccessory.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsGearButtonAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsGearButtonAddAccessory.Name = "tsGearButtonAddAccessory";
             this.tsGearButtonAddAccessory.Size = new System.Drawing.Size(203, 22);
             this.tsGearButtonAddAccessory.Tag = "Menu_AddAccessory";
@@ -3104,13 +3131,13 @@ namespace Chummer
             // 
             // tsGearButtonReapplyImprovements
             // 
-            this.tsGearButtonReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsGearButtonReapplyImprovements.ImageDpi120 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi144 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsGearButtonReapplyImprovements.ImageDpi288 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi384 = null;
-            this.tsGearButtonReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearButtonReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsGearButtonReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsGearButtonReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsGearButtonReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsGearButtonReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsGearButtonReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsGearButtonReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsGearButtonReapplyImprovements.Name = "tsGearButtonReapplyImprovements";
             this.tsGearButtonReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsGearButtonReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -3126,13 +3153,13 @@ namespace Chummer
             // 
             // tsmSellItem
             // 
-            this.tsmSellItem.Image = global::Chummer.Properties.Resources.money_yen;
-            this.tsmSellItem.ImageDpi120 = null;
-            this.tsmSellItem.ImageDpi144 = null;
-            this.tsmSellItem.ImageDpi192 = global::Chummer.Properties.Resources.money_yen1;
-            this.tsmSellItem.ImageDpi288 = null;
-            this.tsmSellItem.ImageDpi384 = null;
-            this.tsmSellItem.ImageDpi96 = global::Chummer.Properties.Resources.money_yen;
+            this.tsmSellItem.Image = global::Chummer.Properties.Resources.money_yen_16;
+            this.tsmSellItem.ImageDpi120 = global::Chummer.Properties.Resources.money_yen_20;
+            this.tsmSellItem.ImageDpi144 = global::Chummer.Properties.Resources.money_yen_24;
+            this.tsmSellItem.ImageDpi192 = global::Chummer.Properties.Resources.money_yen_32;
+            this.tsmSellItem.ImageDpi288 = global::Chummer.Properties.Resources.money_yen_48;
+            this.tsmSellItem.ImageDpi384 = global::Chummer.Properties.Resources.money_yen_64;
+            this.tsmSellItem.ImageDpi96 = global::Chummer.Properties.Resources.money_yen_16;
             this.tsmSellItem.Name = "tsmSellItem";
             this.tsmSellItem.Size = new System.Drawing.Size(119, 22);
             this.tsmSellItem.Tag = "Menu_SellItem";
@@ -3158,13 +3185,13 @@ namespace Chummer
             this.tsVehicleAddWeaponWeapon,
             this.tsVehicleAddWeaponAccessory,
             this.tsVehicleAddUnderbarrelWeapon});
-            this.tsVehicleAddWeapon.Image = global::Chummer.Properties.Resources.gun;
-            this.tsVehicleAddWeapon.ImageDpi120 = null;
-            this.tsVehicleAddWeapon.ImageDpi144 = null;
-            this.tsVehicleAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun1;
-            this.tsVehicleAddWeapon.ImageDpi288 = null;
-            this.tsVehicleAddWeapon.ImageDpi384 = null;
-            this.tsVehicleAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun;
+            this.tsVehicleAddWeapon.Image = global::Chummer.Properties.Resources.gun_16;
+            this.tsVehicleAddWeapon.ImageDpi120 = global::Chummer.Properties.Resources.gun_20;
+            this.tsVehicleAddWeapon.ImageDpi144 = global::Chummer.Properties.Resources.gun_24;
+            this.tsVehicleAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_32;
+            this.tsVehicleAddWeapon.ImageDpi288 = global::Chummer.Properties.Resources.gun_48;
+            this.tsVehicleAddWeapon.ImageDpi384 = global::Chummer.Properties.Resources.gun_64;
+            this.tsVehicleAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_16;
             this.tsVehicleAddWeapon.Name = "tsVehicleAddWeapon";
             this.tsVehicleAddWeapon.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddWeapon.Tag = "Menu_Weapons";
@@ -3172,13 +3199,13 @@ namespace Chummer
             // 
             // tsVehicleAddWeaponWeapon
             // 
-            this.tsVehicleAddWeaponWeapon.Image = global::Chummer.Properties.Resources.gun_add;
-            this.tsVehicleAddWeaponWeapon.ImageDpi120 = null;
-            this.tsVehicleAddWeaponWeapon.ImageDpi144 = null;
-            this.tsVehicleAddWeaponWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add1;
-            this.tsVehicleAddWeaponWeapon.ImageDpi288 = null;
-            this.tsVehicleAddWeaponWeapon.ImageDpi384 = null;
-            this.tsVehicleAddWeaponWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add;
+            this.tsVehicleAddWeaponWeapon.Image = global::Chummer.Properties.Resources.gun_add_16;
+            this.tsVehicleAddWeaponWeapon.ImageDpi120 = global::Chummer.Properties.Resources.gun_add_20;
+            this.tsVehicleAddWeaponWeapon.ImageDpi144 = global::Chummer.Properties.Resources.gun_add_24;
+            this.tsVehicleAddWeaponWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add_32;
+            this.tsVehicleAddWeaponWeapon.ImageDpi288 = global::Chummer.Properties.Resources.gun_add_48;
+            this.tsVehicleAddWeaponWeapon.ImageDpi384 = global::Chummer.Properties.Resources.gun_add_64;
+            this.tsVehicleAddWeaponWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add_16;
             this.tsVehicleAddWeaponWeapon.Name = "tsVehicleAddWeaponWeapon";
             this.tsVehicleAddWeaponWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponWeapon.Tag = "Menu_AddWeapon";
@@ -3187,13 +3214,13 @@ namespace Chummer
             // 
             // tsVehicleAddWeaponAccessory
             // 
-            this.tsVehicleAddWeaponAccessory.Image = global::Chummer.Properties.Resources.flashlight_add;
-            this.tsVehicleAddWeaponAccessory.ImageDpi120 = null;
-            this.tsVehicleAddWeaponAccessory.ImageDpi144 = null;
-            this.tsVehicleAddWeaponAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add1;
-            this.tsVehicleAddWeaponAccessory.ImageDpi288 = null;
-            this.tsVehicleAddWeaponAccessory.ImageDpi384 = null;
-            this.tsVehicleAddWeaponAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add;
+            this.tsVehicleAddWeaponAccessory.Image = global::Chummer.Properties.Resources.flashlight_add_16;
+            this.tsVehicleAddWeaponAccessory.ImageDpi120 = global::Chummer.Properties.Resources.flashlight_add_20;
+            this.tsVehicleAddWeaponAccessory.ImageDpi144 = global::Chummer.Properties.Resources.flashlight_add_24;
+            this.tsVehicleAddWeaponAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add_32;
+            this.tsVehicleAddWeaponAccessory.ImageDpi288 = global::Chummer.Properties.Resources.flashlight_add_48;
+            this.tsVehicleAddWeaponAccessory.ImageDpi384 = global::Chummer.Properties.Resources.flashlight_add_64;
+            this.tsVehicleAddWeaponAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add_16;
             this.tsVehicleAddWeaponAccessory.Name = "tsVehicleAddWeaponAccessory";
             this.tsVehicleAddWeaponAccessory.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponAccessory.Tag = "Menu_AddAccessory";
@@ -3202,13 +3229,13 @@ namespace Chummer
             // 
             // tsVehicleAddUnderbarrelWeapon
             // 
-            this.tsVehicleAddUnderbarrelWeapon.Image = global::Chummer.Properties.Resources.sword_add;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi120 = null;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi144 = null;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi192 = global::Chummer.Properties.Resources.sword_add1;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi288 = null;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi384 = null;
-            this.tsVehicleAddUnderbarrelWeapon.ImageDpi96 = global::Chummer.Properties.Resources.sword_add;
+            this.tsVehicleAddUnderbarrelWeapon.Image = global::Chummer.Properties.Resources.sword_add_16;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi120 = global::Chummer.Properties.Resources.sword_add_20;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi144 = global::Chummer.Properties.Resources.sword_add_24;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi192 = global::Chummer.Properties.Resources.sword_add_32;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi288 = global::Chummer.Properties.Resources.sword_add_48;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi384 = global::Chummer.Properties.Resources.sword_add_64;
+            this.tsVehicleAddUnderbarrelWeapon.ImageDpi96 = global::Chummer.Properties.Resources.sword_add_16;
             this.tsVehicleAddUnderbarrelWeapon.Name = "tsVehicleAddUnderbarrelWeapon";
             this.tsVehicleAddUnderbarrelWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddUnderbarrelWeapon.Tag = "Menu_AddUnderbarrelWeapon";
@@ -3217,13 +3244,13 @@ namespace Chummer
             // 
             // tsVehicleAddWeaponMount
             // 
-            this.tsVehicleAddWeaponMount.Image = global::Chummer.Properties.Resources.hard_hat_military_add;
-            this.tsVehicleAddWeaponMount.ImageDpi120 = null;
-            this.tsVehicleAddWeaponMount.ImageDpi144 = null;
-            this.tsVehicleAddWeaponMount.ImageDpi192 = global::Chummer.Properties.Resources.hard_hat_military_add1;
-            this.tsVehicleAddWeaponMount.ImageDpi288 = null;
-            this.tsVehicleAddWeaponMount.ImageDpi384 = null;
-            this.tsVehicleAddWeaponMount.ImageDpi96 = global::Chummer.Properties.Resources.hard_hat_military_add;
+            this.tsVehicleAddWeaponMount.Image = global::Chummer.Properties.Resources.hard_hat_military_add_16;
+            this.tsVehicleAddWeaponMount.ImageDpi120 = global::Chummer.Properties.Resources.hard_hat_military_add_20;
+            this.tsVehicleAddWeaponMount.ImageDpi144 = global::Chummer.Properties.Resources.hard_hat_military_add_24;
+            this.tsVehicleAddWeaponMount.ImageDpi192 = global::Chummer.Properties.Resources.hard_hat_military_add_32;
+            this.tsVehicleAddWeaponMount.ImageDpi288 = global::Chummer.Properties.Resources.hard_hat_military_add_48;
+            this.tsVehicleAddWeaponMount.ImageDpi384 = global::Chummer.Properties.Resources.hard_hat_military_add_64;
+            this.tsVehicleAddWeaponMount.ImageDpi96 = global::Chummer.Properties.Resources.hard_hat_military_add_16;
             this.tsVehicleAddWeaponMount.Name = "tsVehicleAddWeaponMount";
             this.tsVehicleAddWeaponMount.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddWeaponMount.Tag = "Menu_AddWeaponMount";
@@ -3232,13 +3259,13 @@ namespace Chummer
             // 
             // tsVehicleAddMod
             // 
-            this.tsVehicleAddMod.Image = global::Chummer.Properties.Resources.steering_wheel_racing_add;
-            this.tsVehicleAddMod.ImageDpi120 = null;
-            this.tsVehicleAddMod.ImageDpi144 = null;
-            this.tsVehicleAddMod.ImageDpi192 = global::Chummer.Properties.Resources.steering_wheel_racing_add1;
-            this.tsVehicleAddMod.ImageDpi288 = null;
-            this.tsVehicleAddMod.ImageDpi384 = null;
-            this.tsVehicleAddMod.ImageDpi96 = global::Chummer.Properties.Resources.steering_wheel_racing_add;
+            this.tsVehicleAddMod.Image = global::Chummer.Properties.Resources.steering_wheel_racing_add_16;
+            this.tsVehicleAddMod.ImageDpi120 = global::Chummer.Properties.Resources.steering_wheel_racing_add_20;
+            this.tsVehicleAddMod.ImageDpi144 = global::Chummer.Properties.Resources.steering_wheel_racing_add_24;
+            this.tsVehicleAddMod.ImageDpi192 = global::Chummer.Properties.Resources.steering_wheel_racing_add_32;
+            this.tsVehicleAddMod.ImageDpi288 = global::Chummer.Properties.Resources.steering_wheel_racing_add_48;
+            this.tsVehicleAddMod.ImageDpi384 = global::Chummer.Properties.Resources.steering_wheel_racing_add_64;
+            this.tsVehicleAddMod.ImageDpi96 = global::Chummer.Properties.Resources.steering_wheel_racing_add_16;
             this.tsVehicleAddMod.Name = "tsVehicleAddMod";
             this.tsVehicleAddMod.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddMod.Tag = "Menu_AddModification";
@@ -3247,13 +3274,13 @@ namespace Chummer
             // 
             // tsVehicleAddCyberware
             // 
-            this.tsVehicleAddCyberware.Image = global::Chummer.Properties.Resources.processor_add;
-            this.tsVehicleAddCyberware.ImageDpi120 = null;
-            this.tsVehicleAddCyberware.ImageDpi144 = null;
-            this.tsVehicleAddCyberware.ImageDpi192 = global::Chummer.Properties.Resources.processor_add1;
-            this.tsVehicleAddCyberware.ImageDpi288 = null;
-            this.tsVehicleAddCyberware.ImageDpi384 = null;
-            this.tsVehicleAddCyberware.ImageDpi96 = global::Chummer.Properties.Resources.processor_add;
+            this.tsVehicleAddCyberware.Image = global::Chummer.Properties.Resources.processor_add_16;
+            this.tsVehicleAddCyberware.ImageDpi120 = global::Chummer.Properties.Resources.processor_add_20;
+            this.tsVehicleAddCyberware.ImageDpi144 = global::Chummer.Properties.Resources.processor_add_24;
+            this.tsVehicleAddCyberware.ImageDpi192 = global::Chummer.Properties.Resources.processor_add_32;
+            this.tsVehicleAddCyberware.ImageDpi288 = global::Chummer.Properties.Resources.processor_add_48;
+            this.tsVehicleAddCyberware.ImageDpi384 = global::Chummer.Properties.Resources.processor_add_64;
+            this.tsVehicleAddCyberware.ImageDpi96 = global::Chummer.Properties.Resources.processor_add_16;
             this.tsVehicleAddCyberware.Name = "tsVehicleAddCyberware";
             this.tsVehicleAddCyberware.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddCyberware.Tag = "Menu_AddCyberwarePlugin";
@@ -3265,13 +3292,13 @@ namespace Chummer
             this.tsVehicleAddSensor.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleAddGear,
             this.tsVehicleSensorAddAsPlugin});
-            this.tsVehicleAddSensor.Image = global::Chummer.Properties.Resources.camera;
-            this.tsVehicleAddSensor.ImageDpi120 = null;
-            this.tsVehicleAddSensor.ImageDpi144 = null;
-            this.tsVehicleAddSensor.ImageDpi192 = global::Chummer.Properties.Resources.camera1;
-            this.tsVehicleAddSensor.ImageDpi288 = null;
-            this.tsVehicleAddSensor.ImageDpi384 = null;
-            this.tsVehicleAddSensor.ImageDpi96 = global::Chummer.Properties.Resources.camera;
+            this.tsVehicleAddSensor.Image = global::Chummer.Properties.Resources.camera_16;
+            this.tsVehicleAddSensor.ImageDpi120 = global::Chummer.Properties.Resources.camera_20;
+            this.tsVehicleAddSensor.ImageDpi144 = global::Chummer.Properties.Resources.camera_24;
+            this.tsVehicleAddSensor.ImageDpi192 = global::Chummer.Properties.Resources.camera_32;
+            this.tsVehicleAddSensor.ImageDpi288 = global::Chummer.Properties.Resources.camera_48;
+            this.tsVehicleAddSensor.ImageDpi384 = global::Chummer.Properties.Resources.camera_64;
+            this.tsVehicleAddSensor.ImageDpi96 = global::Chummer.Properties.Resources.camera_16;
             this.tsVehicleAddSensor.Name = "tsVehicleAddSensor";
             this.tsVehicleAddSensor.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleAddSensor.Tag = "Menu_Gear";
@@ -3279,13 +3306,13 @@ namespace Chummer
             // 
             // tsVehicleAddGear
             // 
-            this.tsVehicleAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleAddGear.ImageDpi120 = null;
-            this.tsVehicleAddGear.ImageDpi144 = null;
-            this.tsVehicleAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleAddGear.ImageDpi288 = null;
-            this.tsVehicleAddGear.ImageDpi384 = null;
-            this.tsVehicleAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleAddGear.Name = "tsVehicleAddGear";
             this.tsVehicleAddGear.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleAddGear.Tag = "Menu_AddGear";
@@ -3294,13 +3321,13 @@ namespace Chummer
             // 
             // tsVehicleSensorAddAsPlugin
             // 
-            this.tsVehicleSensorAddAsPlugin.Image = global::Chummer.Properties.Resources.flashlight_add;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi120 = null;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi144 = null;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add1;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi288 = null;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi384 = null;
-            this.tsVehicleSensorAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add;
+            this.tsVehicleSensorAddAsPlugin.Image = global::Chummer.Properties.Resources.flashlight_add_16;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.flashlight_add_20;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.flashlight_add_24;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add_32;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.flashlight_add_48;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.flashlight_add_64;
+            this.tsVehicleSensorAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add_16;
             this.tsVehicleSensorAddAsPlugin.Name = "tsVehicleSensorAddAsPlugin";
             this.tsVehicleSensorAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleSensorAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -3309,13 +3336,13 @@ namespace Chummer
             // 
             // tsVehicleName
             // 
-            this.tsVehicleName.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsVehicleName.ImageDpi120 = null;
-            this.tsVehicleName.ImageDpi144 = null;
-            this.tsVehicleName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsVehicleName.ImageDpi288 = null;
-            this.tsVehicleName.ImageDpi384 = null;
-            this.tsVehicleName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsVehicleName.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsVehicleName.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsVehicleName.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsVehicleName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsVehicleName.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsVehicleName.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsVehicleName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsVehicleName.Name = "tsVehicleName";
             this.tsVehicleName.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleName.Tag = "Menu_NameVehicle";
@@ -3324,13 +3351,13 @@ namespace Chummer
             // 
             // tsVehicleNotes
             // 
-            this.tsVehicleNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleNotes.ImageDpi120 = null;
-            this.tsVehicleNotes.ImageDpi144 = null;
-            this.tsVehicleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleNotes.ImageDpi288 = null;
-            this.tsVehicleNotes.ImageDpi384 = null;
-            this.tsVehicleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleNotes.Name = "tsVehicleNotes";
             this.tsVehicleNotes.Size = new System.Drawing.Size(192, 22);
             this.tsVehicleNotes.Tag = "Menu_Notes";
@@ -3404,6 +3431,7 @@ namespace Chummer
             this.cmsVehicleAmmoFullBurst.ImageDpi96 = null;
             this.cmsVehicleAmmoFullBurst.Name = "cmsVehicleAmmoFullBurst";
             this.cmsVehicleAmmoFullBurst.Size = new System.Drawing.Size(219, 22);
+            this.cmsVehicleAmmoFullBurst.Tag = "String_FullBurst";
             this.cmsVehicleAmmoFullBurst.Text = "Full Burst (10 bullets)";
             this.cmsVehicleAmmoFullBurst.Click += new System.EventHandler(this.cmsVehicleAmmoFullBurst_Click);
             // 
@@ -3418,6 +3446,7 @@ namespace Chummer
             this.cmsVehicleAmmoSuppressiveFire.ImageDpi96 = null;
             this.cmsVehicleAmmoSuppressiveFire.Name = "cmsVehicleAmmoSuppressiveFire";
             this.cmsVehicleAmmoSuppressiveFire.Size = new System.Drawing.Size(219, 22);
+            this.cmsVehicleAmmoSuppressiveFire.Text = "String_SuppressiveFire";
             this.cmsVehicleAmmoSuppressiveFire.Text = "Suppressive Fire (20 bullets)";
             this.cmsVehicleAmmoSuppressiveFire.Click += new System.EventHandler(this.cmsVehicleAmmoSuppressiveFire_Click);
             // 
@@ -3430,13 +3459,13 @@ namespace Chummer
             // 
             // tsVehicleSell
             // 
-            this.tsVehicleSell.Image = global::Chummer.Properties.Resources.money_yen;
-            this.tsVehicleSell.ImageDpi120 = null;
-            this.tsVehicleSell.ImageDpi144 = null;
-            this.tsVehicleSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen1;
-            this.tsVehicleSell.ImageDpi288 = null;
-            this.tsVehicleSell.ImageDpi384 = null;
-            this.tsVehicleSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen;
+            this.tsVehicleSell.Image = global::Chummer.Properties.Resources.money_yen_16;
+            this.tsVehicleSell.ImageDpi120 = global::Chummer.Properties.Resources.money_yen_20;
+            this.tsVehicleSell.ImageDpi144 = global::Chummer.Properties.Resources.money_yen_24;
+            this.tsVehicleSell.ImageDpi192 = global::Chummer.Properties.Resources.money_yen_32;
+            this.tsVehicleSell.ImageDpi288 = global::Chummer.Properties.Resources.money_yen_48;
+            this.tsVehicleSell.ImageDpi384 = global::Chummer.Properties.Resources.money_yen_64;
+            this.tsVehicleSell.ImageDpi96 = global::Chummer.Properties.Resources.money_yen_16;
             this.tsVehicleSell.Name = "tsVehicleSell";
             this.tsVehicleSell.Size = new System.Drawing.Size(119, 22);
             this.tsVehicleSell.Tag = "Menu_SellItem";
@@ -5713,13 +5742,13 @@ namespace Chummer
             // 
             // mnuFileSave
             // 
-            this.mnuFileSave.Image = global::Chummer.Properties.Resources.disk;
-            this.mnuFileSave.ImageDpi120 = null;
-            this.mnuFileSave.ImageDpi144 = null;
-            this.mnuFileSave.ImageDpi192 = global::Chummer.Properties.Resources.disk1;
-            this.mnuFileSave.ImageDpi288 = null;
-            this.mnuFileSave.ImageDpi384 = null;
-            this.mnuFileSave.ImageDpi96 = global::Chummer.Properties.Resources.disk;
+            this.mnuFileSave.Image = global::Chummer.Properties.Resources.disk_16;
+            this.mnuFileSave.ImageDpi120 = global::Chummer.Properties.Resources.disk_20;
+            this.mnuFileSave.ImageDpi144 = global::Chummer.Properties.Resources.disk_24;
+            this.mnuFileSave.ImageDpi192 = global::Chummer.Properties.Resources.disk_32;
+            this.mnuFileSave.ImageDpi288 = global::Chummer.Properties.Resources.disk_48;
+            this.mnuFileSave.ImageDpi384 = global::Chummer.Properties.Resources.disk_64;
+            this.mnuFileSave.ImageDpi96 = global::Chummer.Properties.Resources.disk_16;
             this.mnuFileSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFileSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSave.MergeIndex = 3;
@@ -5732,13 +5761,13 @@ namespace Chummer
             // 
             // mnuFileSaveAs
             // 
-            this.mnuFileSaveAs.Image = global::Chummer.Properties.Resources.disk_multiple;
-            this.mnuFileSaveAs.ImageDpi120 = null;
-            this.mnuFileSaveAs.ImageDpi144 = null;
-            this.mnuFileSaveAs.ImageDpi192 = global::Chummer.Properties.Resources.disk_multiple1;
-            this.mnuFileSaveAs.ImageDpi288 = null;
-            this.mnuFileSaveAs.ImageDpi384 = null;
-            this.mnuFileSaveAs.ImageDpi96 = global::Chummer.Properties.Resources.disk_multiple;
+            this.mnuFileSaveAs.Image = global::Chummer.Properties.Resources.disk_multiple_16;
+            this.mnuFileSaveAs.ImageDpi120 = global::Chummer.Properties.Resources.disk_multiple_20;
+            this.mnuFileSaveAs.ImageDpi144 = global::Chummer.Properties.Resources.disk_multiple_24;
+            this.mnuFileSaveAs.ImageDpi192 = global::Chummer.Properties.Resources.disk_multiple_32;
+            this.mnuFileSaveAs.ImageDpi288 = global::Chummer.Properties.Resources.disk_multiple_48;
+            this.mnuFileSaveAs.ImageDpi384 = global::Chummer.Properties.Resources.disk_multiple_64;
+            this.mnuFileSaveAs.ImageDpi96 = global::Chummer.Properties.Resources.disk_multiple_16;
             this.mnuFileSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileSaveAs.MergeIndex = 4;
             this.mnuFileSaveAs.Name = "mnuFileSaveAs";
@@ -5757,13 +5786,13 @@ namespace Chummer
             // 
             // mnuFileClose
             // 
-            this.mnuFileClose.Image = global::Chummer.Properties.Resources.cancel;
-            this.mnuFileClose.ImageDpi120 = null;
-            this.mnuFileClose.ImageDpi144 = null;
-            this.mnuFileClose.ImageDpi192 = global::Chummer.Properties.Resources.cancel1;
-            this.mnuFileClose.ImageDpi288 = null;
-            this.mnuFileClose.ImageDpi384 = null;
-            this.mnuFileClose.ImageDpi96 = global::Chummer.Properties.Resources.cancel;
+            this.mnuFileClose.Image = global::Chummer.Properties.Resources.cancel_16;
+            this.mnuFileClose.ImageDpi120 = global::Chummer.Properties.Resources.cancel_20;
+            this.mnuFileClose.ImageDpi144 = global::Chummer.Properties.Resources.cancel_24;
+            this.mnuFileClose.ImageDpi192 = global::Chummer.Properties.Resources.cancel_32;
+            this.mnuFileClose.ImageDpi288 = global::Chummer.Properties.Resources.cancel_48;
+            this.mnuFileClose.ImageDpi384 = global::Chummer.Properties.Resources.cancel_64;
+            this.mnuFileClose.ImageDpi96 = global::Chummer.Properties.Resources.cancel_16;
             this.mnuFileClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileClose.MergeIndex = 6;
             this.mnuFileClose.Name = "mnuFileClose";
@@ -5783,13 +5812,13 @@ namespace Chummer
             // 
             // mnuFilePrint
             // 
-            this.mnuFilePrint.Image = global::Chummer.Properties.Resources.printer;
-            this.mnuFilePrint.ImageDpi120 = null;
-            this.mnuFilePrint.ImageDpi144 = null;
-            this.mnuFilePrint.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
-            this.mnuFilePrint.ImageDpi288 = null;
-            this.mnuFilePrint.ImageDpi384 = null;
-            this.mnuFilePrint.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.mnuFilePrint.Image = global::Chummer.Properties.Resources.printer_16;
+            this.mnuFilePrint.ImageDpi120 = global::Chummer.Properties.Resources.printer_20;
+            this.mnuFilePrint.ImageDpi144 = global::Chummer.Properties.Resources.printer_24;
+            this.mnuFilePrint.ImageDpi192 = global::Chummer.Properties.Resources.printer_32;
+            this.mnuFilePrint.ImageDpi288 = global::Chummer.Properties.Resources.printer_48;
+            this.mnuFilePrint.ImageDpi384 = global::Chummer.Properties.Resources.printer_64;
+            this.mnuFilePrint.ImageDpi96 = global::Chummer.Properties.Resources.printer_16;
             this.mnuFilePrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFilePrint.MergeIndex = 8;
             this.mnuFilePrint.Name = "mnuFilePrint";
@@ -5801,13 +5830,13 @@ namespace Chummer
             // 
             // mnuFileExport
             // 
-            this.mnuFileExport.Image = global::Chummer.Properties.Resources.script_go;
-            this.mnuFileExport.ImageDpi120 = null;
-            this.mnuFileExport.ImageDpi144 = null;
-            this.mnuFileExport.ImageDpi192 = global::Chummer.Properties.Resources.script_go1;
-            this.mnuFileExport.ImageDpi288 = null;
-            this.mnuFileExport.ImageDpi384 = null;
-            this.mnuFileExport.ImageDpi96 = global::Chummer.Properties.Resources.script_go;
+            this.mnuFileExport.Image = global::Chummer.Properties.Resources.script_go_16;
+            this.mnuFileExport.ImageDpi120 = global::Chummer.Properties.Resources.script_go_20;
+            this.mnuFileExport.ImageDpi144 = global::Chummer.Properties.Resources.script_go_24;
+            this.mnuFileExport.ImageDpi192 = global::Chummer.Properties.Resources.script_go_32;
+            this.mnuFileExport.ImageDpi288 = global::Chummer.Properties.Resources.script_go_48;
+            this.mnuFileExport.ImageDpi384 = global::Chummer.Properties.Resources.script_go_64;
+            this.mnuFileExport.ImageDpi96 = global::Chummer.Properties.Resources.script_go_16;
             this.mnuFileExport.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.mnuFileExport.MergeIndex = 9;
             this.mnuFileExport.Name = "mnuFileExport";
@@ -5830,13 +5859,13 @@ namespace Chummer
             // 
             // mnuEditCopy
             // 
-            this.mnuEditCopy.Image = global::Chummer.Properties.Resources.page_copy;
-            this.mnuEditCopy.ImageDpi120 = null;
-            this.mnuEditCopy.ImageDpi144 = null;
-            this.mnuEditCopy.ImageDpi192 = global::Chummer.Properties.Resources.page_copy1;
-            this.mnuEditCopy.ImageDpi288 = null;
-            this.mnuEditCopy.ImageDpi384 = null;
-            this.mnuEditCopy.ImageDpi96 = global::Chummer.Properties.Resources.page_copy;
+            this.mnuEditCopy.Image = global::Chummer.Properties.Resources.page_copy_16;
+            this.mnuEditCopy.ImageDpi120 = global::Chummer.Properties.Resources.page_copy_20;
+            this.mnuEditCopy.ImageDpi144 = global::Chummer.Properties.Resources.page_copy_24;
+            this.mnuEditCopy.ImageDpi192 = global::Chummer.Properties.Resources.page_copy_32;
+            this.mnuEditCopy.ImageDpi288 = global::Chummer.Properties.Resources.page_copy_48;
+            this.mnuEditCopy.ImageDpi384 = global::Chummer.Properties.Resources.page_copy_64;
+            this.mnuEditCopy.ImageDpi96 = global::Chummer.Properties.Resources.page_copy_16;
             this.mnuEditCopy.Name = "mnuEditCopy";
             this.mnuEditCopy.Size = new System.Drawing.Size(102, 22);
             this.mnuEditCopy.Tag = "Menu_EditCopy";
@@ -5865,13 +5894,13 @@ namespace Chummer
             // 
             // mnuSpecialAddCyberwareSuite
             // 
-            this.mnuSpecialAddCyberwareSuite.Image = global::Chummer.Properties.Resources.processor_add;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi120 = null;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi144 = null;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi192 = global::Chummer.Properties.Resources.processor_add1;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi288 = null;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi384 = null;
-            this.mnuSpecialAddCyberwareSuite.ImageDpi96 = global::Chummer.Properties.Resources.processor_add;
+            this.mnuSpecialAddCyberwareSuite.Image = global::Chummer.Properties.Resources.processor_add_16;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi120 = global::Chummer.Properties.Resources.processor_add_20;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi144 = global::Chummer.Properties.Resources.processor_add_24;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi192 = global::Chummer.Properties.Resources.processor_add_32;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi288 = global::Chummer.Properties.Resources.processor_add_48;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi384 = global::Chummer.Properties.Resources.processor_add_64;
+            this.mnuSpecialAddCyberwareSuite.ImageDpi96 = global::Chummer.Properties.Resources.processor_add_16;
             this.mnuSpecialAddCyberwareSuite.Name = "mnuSpecialAddCyberwareSuite";
             this.mnuSpecialAddCyberwareSuite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialAddCyberwareSuite.Tag = "Menu_SpecialAddCyberwareSuite";
@@ -5880,13 +5909,13 @@ namespace Chummer
             // 
             // mnuSpecialAddBiowareSuite
             // 
-            this.mnuSpecialAddBiowareSuite.Image = global::Chummer.Properties.Resources.brain_add;
-            this.mnuSpecialAddBiowareSuite.ImageDpi120 = null;
-            this.mnuSpecialAddBiowareSuite.ImageDpi144 = null;
-            this.mnuSpecialAddBiowareSuite.ImageDpi192 = global::Chummer.Properties.Resources.brain_add1;
-            this.mnuSpecialAddBiowareSuite.ImageDpi288 = null;
-            this.mnuSpecialAddBiowareSuite.ImageDpi384 = null;
-            this.mnuSpecialAddBiowareSuite.ImageDpi96 = global::Chummer.Properties.Resources.brain_add;
+            this.mnuSpecialAddBiowareSuite.Image = global::Chummer.Properties.Resources.brain_add_16;
+            this.mnuSpecialAddBiowareSuite.ImageDpi120 = global::Chummer.Properties.Resources.brain_add_20;
+            this.mnuSpecialAddBiowareSuite.ImageDpi144 = global::Chummer.Properties.Resources.brain_add_24;
+            this.mnuSpecialAddBiowareSuite.ImageDpi192 = global::Chummer.Properties.Resources.brain_add_32;
+            this.mnuSpecialAddBiowareSuite.ImageDpi288 = global::Chummer.Properties.Resources.brain_add_48;
+            this.mnuSpecialAddBiowareSuite.ImageDpi384 = global::Chummer.Properties.Resources.brain_add_64;
+            this.mnuSpecialAddBiowareSuite.ImageDpi96 = global::Chummer.Properties.Resources.brain_add_16;
             this.mnuSpecialAddBiowareSuite.Name = "mnuSpecialAddBiowareSuite";
             this.mnuSpecialAddBiowareSuite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialAddBiowareSuite.Tag = "Menu_SpecialAddBiowareSuite";
@@ -5895,13 +5924,13 @@ namespace Chummer
             // 
             // mnuSpecialChangeOptions
             // 
-            this.mnuSpecialChangeOptions.Image = global::Chummer.Properties.Resources.user_go;
-            this.mnuSpecialChangeOptions.ImageDpi120 = null;
-            this.mnuSpecialChangeOptions.ImageDpi144 = null;
-            this.mnuSpecialChangeOptions.ImageDpi192 = global::Chummer.Properties.Resources.user_go1;
-            this.mnuSpecialChangeOptions.ImageDpi288 = null;
-            this.mnuSpecialChangeOptions.ImageDpi384 = null;
-            this.mnuSpecialChangeOptions.ImageDpi96 = global::Chummer.Properties.Resources.user_go;
+            this.mnuSpecialChangeOptions.Image = global::Chummer.Properties.Resources.user_go_16;
+            this.mnuSpecialChangeOptions.ImageDpi120 = global::Chummer.Properties.Resources.user_go_20;
+            this.mnuSpecialChangeOptions.ImageDpi144 = global::Chummer.Properties.Resources.user_go_24;
+            this.mnuSpecialChangeOptions.ImageDpi192 = global::Chummer.Properties.Resources.user_go_32;
+            this.mnuSpecialChangeOptions.ImageDpi288 = global::Chummer.Properties.Resources.user_go_48;
+            this.mnuSpecialChangeOptions.ImageDpi384 = global::Chummer.Properties.Resources.user_go_64;
+            this.mnuSpecialChangeOptions.ImageDpi96 = global::Chummer.Properties.Resources.user_go_16;
             this.mnuSpecialChangeOptions.Name = "mnuSpecialChangeOptions";
             this.mnuSpecialChangeOptions.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialChangeOptions.Tag = "Menu_SpecialChangeOptions";
@@ -5910,13 +5939,13 @@ namespace Chummer
             // 
             // mnuSpecialCyberzombie
             // 
-            this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.emoticon_terminator;
-            this.mnuSpecialCyberzombie.ImageDpi120 = null;
-            this.mnuSpecialCyberzombie.ImageDpi144 = null;
-            this.mnuSpecialCyberzombie.ImageDpi192 = global::Chummer.Properties.Resources.emoticon_terminator1;
-            this.mnuSpecialCyberzombie.ImageDpi288 = null;
-            this.mnuSpecialCyberzombie.ImageDpi384 = null;
-            this.mnuSpecialCyberzombie.ImageDpi96 = global::Chummer.Properties.Resources.emoticon_terminator;
+            this.mnuSpecialCyberzombie.Image = global::Chummer.Properties.Resources.emoticon_terminator_16;
+            this.mnuSpecialCyberzombie.ImageDpi120 = global::Chummer.Properties.Resources.emoticon_terminator_20;
+            this.mnuSpecialCyberzombie.ImageDpi144 = global::Chummer.Properties.Resources.emoticon_terminator_24;
+            this.mnuSpecialCyberzombie.ImageDpi192 = global::Chummer.Properties.Resources.emoticon_terminator_32;
+            this.mnuSpecialCyberzombie.ImageDpi288 = global::Chummer.Properties.Resources.emoticon_terminator_48;
+            this.mnuSpecialCyberzombie.ImageDpi384 = global::Chummer.Properties.Resources.emoticon_terminator_64;
+            this.mnuSpecialCyberzombie.ImageDpi96 = global::Chummer.Properties.Resources.emoticon_terminator_16;
             this.mnuSpecialCyberzombie.Name = "mnuSpecialCyberzombie";
             this.mnuSpecialCyberzombie.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialCyberzombie.Tag = "Menu_SpecialConvertToCyberzombie";
@@ -5925,13 +5954,13 @@ namespace Chummer
             // 
             // mnuSpecialConvertToFreeSprite
             // 
-            this.mnuSpecialConvertToFreeSprite.Image = global::Chummer.Properties.Resources.emoticon_waii;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi120 = null;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi144 = null;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi192 = global::Chummer.Properties.Resources.emoticon_waii1;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi288 = null;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi384 = null;
-            this.mnuSpecialConvertToFreeSprite.ImageDpi96 = global::Chummer.Properties.Resources.emoticon_waii;
+            this.mnuSpecialConvertToFreeSprite.Image = global::Chummer.Properties.Resources.emoticon_waii_16;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi120 = global::Chummer.Properties.Resources.emoticon_waii_20;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi144 = global::Chummer.Properties.Resources.emoticon_waii_24;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi192 = global::Chummer.Properties.Resources.emoticon_waii_32;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi288 = global::Chummer.Properties.Resources.emoticon_waii_48;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi384 = global::Chummer.Properties.Resources.emoticon_waii_64;
+            this.mnuSpecialConvertToFreeSprite.ImageDpi96 = global::Chummer.Properties.Resources.emoticon_waii_16;
             this.mnuSpecialConvertToFreeSprite.Name = "mnuSpecialConvertToFreeSprite";
             this.mnuSpecialConvertToFreeSprite.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialConvertToFreeSprite.Tag = "Menu_SpecialConvertToFreeSprite";
@@ -5941,13 +5970,13 @@ namespace Chummer
             // 
             // mnuSpecialReduceAttribute
             // 
-            this.mnuSpecialReduceAttribute.Image = global::Chummer.Properties.Resources.arrow_down;
-            this.mnuSpecialReduceAttribute.ImageDpi120 = null;
-            this.mnuSpecialReduceAttribute.ImageDpi144 = null;
-            this.mnuSpecialReduceAttribute.ImageDpi192 = global::Chummer.Properties.Resources.arrow_down1;
-            this.mnuSpecialReduceAttribute.ImageDpi288 = null;
-            this.mnuSpecialReduceAttribute.ImageDpi384 = null;
-            this.mnuSpecialReduceAttribute.ImageDpi96 = global::Chummer.Properties.Resources.arrow_down;
+            this.mnuSpecialReduceAttribute.Image = global::Chummer.Properties.Resources.arrow_down_16;
+            this.mnuSpecialReduceAttribute.ImageDpi120 = global::Chummer.Properties.Resources.arrow_down_20;
+            this.mnuSpecialReduceAttribute.ImageDpi144 = global::Chummer.Properties.Resources.arrow_down_24;
+            this.mnuSpecialReduceAttribute.ImageDpi192 = global::Chummer.Properties.Resources.arrow_down_32;
+            this.mnuSpecialReduceAttribute.ImageDpi288 = global::Chummer.Properties.Resources.arrow_down_48;
+            this.mnuSpecialReduceAttribute.ImageDpi384 = global::Chummer.Properties.Resources.arrow_down_64;
+            this.mnuSpecialReduceAttribute.ImageDpi96 = global::Chummer.Properties.Resources.arrow_down_16;
             this.mnuSpecialReduceAttribute.Name = "mnuSpecialReduceAttribute";
             this.mnuSpecialReduceAttribute.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialReduceAttribute.Tag = "Menu_SpecialReduceAttribute";
@@ -5956,13 +5985,13 @@ namespace Chummer
             // 
             // mnuSpecialPossess
             // 
-            this.mnuSpecialPossess.Image = global::Chummer.Properties.Resources.status_online;
-            this.mnuSpecialPossess.ImageDpi120 = null;
-            this.mnuSpecialPossess.ImageDpi144 = null;
-            this.mnuSpecialPossess.ImageDpi192 = global::Chummer.Properties.Resources.status_online1;
-            this.mnuSpecialPossess.ImageDpi288 = null;
-            this.mnuSpecialPossess.ImageDpi384 = null;
-            this.mnuSpecialPossess.ImageDpi96 = global::Chummer.Properties.Resources.status_online;
+            this.mnuSpecialPossess.Image = global::Chummer.Properties.Resources.status_online_16;
+            this.mnuSpecialPossess.ImageDpi120 = global::Chummer.Properties.Resources.status_online_20;
+            this.mnuSpecialPossess.ImageDpi144 = global::Chummer.Properties.Resources.status_online_24;
+            this.mnuSpecialPossess.ImageDpi192 = global::Chummer.Properties.Resources.status_online_32;
+            this.mnuSpecialPossess.ImageDpi288 = global::Chummer.Properties.Resources.status_online_48;
+            this.mnuSpecialPossess.ImageDpi384 = global::Chummer.Properties.Resources.status_online_64;
+            this.mnuSpecialPossess.ImageDpi96 = global::Chummer.Properties.Resources.status_online_16;
             this.mnuSpecialPossess.Name = "mnuSpecialPossess";
             this.mnuSpecialPossess.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossess.Tag = "Menu_SpecialPossessLiving";
@@ -5971,13 +6000,13 @@ namespace Chummer
             // 
             // mnuSpecialPossessInanimate
             // 
-            this.mnuSpecialPossessInanimate.Image = global::Chummer.Properties.Resources.status_offline;
-            this.mnuSpecialPossessInanimate.ImageDpi120 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi144 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi192 = global::Chummer.Properties.Resources.status_offline1;
-            this.mnuSpecialPossessInanimate.ImageDpi288 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi384 = null;
-            this.mnuSpecialPossessInanimate.ImageDpi96 = global::Chummer.Properties.Resources.status_offline;
+            this.mnuSpecialPossessInanimate.Image = global::Chummer.Properties.Resources.status_offline_16;
+            this.mnuSpecialPossessInanimate.ImageDpi120 = global::Chummer.Properties.Resources.status_offline_20;
+            this.mnuSpecialPossessInanimate.ImageDpi144 = global::Chummer.Properties.Resources.status_offline_24;
+            this.mnuSpecialPossessInanimate.ImageDpi192 = global::Chummer.Properties.Resources.status_offline_32;
+            this.mnuSpecialPossessInanimate.ImageDpi288 = global::Chummer.Properties.Resources.status_offline_48;
+            this.mnuSpecialPossessInanimate.ImageDpi384 = global::Chummer.Properties.Resources.status_offline_64;
+            this.mnuSpecialPossessInanimate.ImageDpi96 = global::Chummer.Properties.Resources.status_offline_16;
             this.mnuSpecialPossessInanimate.Name = "mnuSpecialPossessInanimate";
             this.mnuSpecialPossessInanimate.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialPossessInanimate.Tag = "Menu_SpecialPossessInanimate";
@@ -5986,13 +6015,13 @@ namespace Chummer
             // 
             // mnuSpecialReapplyImprovements
             // 
-            this.mnuSpecialReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.mnuSpecialReapplyImprovements.ImageDpi120 = null;
-            this.mnuSpecialReapplyImprovements.ImageDpi144 = null;
-            this.mnuSpecialReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.mnuSpecialReapplyImprovements.ImageDpi288 = null;
-            this.mnuSpecialReapplyImprovements.ImageDpi384 = null;
-            this.mnuSpecialReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.mnuSpecialReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.mnuSpecialReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.mnuSpecialReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.mnuSpecialReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.mnuSpecialReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.mnuSpecialReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.mnuSpecialReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.mnuSpecialReapplyImprovements.Name = "mnuSpecialReapplyImprovements";
             this.mnuSpecialReapplyImprovements.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6001,13 +6030,13 @@ namespace Chummer
             // 
             // mnuSpecialCloningMachine
             // 
-            this.mnuSpecialCloningMachine.Image = global::Chummer.Properties.Resources.group;
-            this.mnuSpecialCloningMachine.ImageDpi120 = null;
-            this.mnuSpecialCloningMachine.ImageDpi144 = null;
-            this.mnuSpecialCloningMachine.ImageDpi192 = global::Chummer.Properties.Resources.group1;
-            this.mnuSpecialCloningMachine.ImageDpi288 = null;
-            this.mnuSpecialCloningMachine.ImageDpi384 = null;
-            this.mnuSpecialCloningMachine.ImageDpi96 = global::Chummer.Properties.Resources.group;
+            this.mnuSpecialCloningMachine.Image = global::Chummer.Properties.Resources.group_16;
+            this.mnuSpecialCloningMachine.ImageDpi120 = global::Chummer.Properties.Resources.group_20;
+            this.mnuSpecialCloningMachine.ImageDpi144 = global::Chummer.Properties.Resources.group_24;
+            this.mnuSpecialCloningMachine.ImageDpi192 = global::Chummer.Properties.Resources.group_32;
+            this.mnuSpecialCloningMachine.ImageDpi288 = global::Chummer.Properties.Resources.group_48;
+            this.mnuSpecialCloningMachine.ImageDpi384 = global::Chummer.Properties.Resources.group_64;
+            this.mnuSpecialCloningMachine.ImageDpi96 = global::Chummer.Properties.Resources.group_16;
             this.mnuSpecialCloningMachine.Name = "mnuSpecialCloningMachine";
             this.mnuSpecialCloningMachine.Size = new System.Drawing.Size(246, 22);
             this.mnuSpecialCloningMachine.Tag = "Menu_SpecialCloningMachine";
@@ -6031,13 +6060,13 @@ namespace Chummer
             // tsbSave
             // 
             this.tsbSave.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbSave.Image = global::Chummer.Properties.Resources.disk;
-            this.tsbSave.ImageDpi120 = null;
-            this.tsbSave.ImageDpi144 = null;
-            this.tsbSave.ImageDpi192 = global::Chummer.Properties.Resources.disk1;
-            this.tsbSave.ImageDpi288 = null;
-            this.tsbSave.ImageDpi384 = null;
-            this.tsbSave.ImageDpi96 = global::Chummer.Properties.Resources.disk;
+            this.tsbSave.Image = global::Chummer.Properties.Resources.disk_16;
+            this.tsbSave.ImageDpi120 = global::Chummer.Properties.Resources.disk_20;
+            this.tsbSave.ImageDpi144 = global::Chummer.Properties.Resources.disk_24;
+            this.tsbSave.ImageDpi192 = global::Chummer.Properties.Resources.disk_32;
+            this.tsbSave.ImageDpi288 = global::Chummer.Properties.Resources.disk_48;
+            this.tsbSave.ImageDpi384 = global::Chummer.Properties.Resources.disk_64;
+            this.tsbSave.ImageDpi96 = global::Chummer.Properties.Resources.disk_16;
             this.tsbSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbSave.Name = "tsbSave";
             this.tsbSave.Size = new System.Drawing.Size(23, 22);
@@ -6048,13 +6077,13 @@ namespace Chummer
             // tsbPrint
             // 
             this.tsbPrint.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsbPrint.ImageDpi120 = null;
-            this.tsbPrint.ImageDpi144 = null;
-            this.tsbPrint.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
-            this.tsbPrint.ImageDpi288 = null;
-            this.tsbPrint.ImageDpi384 = null;
-            this.tsbPrint.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.tsbPrint.Image = global::Chummer.Properties.Resources.printer_16;
+            this.tsbPrint.ImageDpi120 = global::Chummer.Properties.Resources.printer_20;
+            this.tsbPrint.ImageDpi144 = global::Chummer.Properties.Resources.printer_24;
+            this.tsbPrint.ImageDpi192 = global::Chummer.Properties.Resources.printer_32;
+            this.tsbPrint.ImageDpi288 = global::Chummer.Properties.Resources.printer_48;
+            this.tsbPrint.ImageDpi384 = global::Chummer.Properties.Resources.printer_64;
+            this.tsbPrint.ImageDpi96 = global::Chummer.Properties.Resources.printer_16;
             this.tsbPrint.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbPrint.Name = "tsbPrint";
             this.tsbPrint.Size = new System.Drawing.Size(23, 22);
@@ -6071,13 +6100,13 @@ namespace Chummer
             // tsbCopy
             // 
             this.tsbCopy.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbCopy.Image = global::Chummer.Properties.Resources.page_copy;
-            this.tsbCopy.ImageDpi120 = null;
-            this.tsbCopy.ImageDpi144 = null;
-            this.tsbCopy.ImageDpi192 = global::Chummer.Properties.Resources.page_copy1;
-            this.tsbCopy.ImageDpi288 = null;
-            this.tsbCopy.ImageDpi384 = null;
-            this.tsbCopy.ImageDpi96 = global::Chummer.Properties.Resources.page_copy;
+            this.tsbCopy.Image = global::Chummer.Properties.Resources.page_copy_16;
+            this.tsbCopy.ImageDpi120 = global::Chummer.Properties.Resources.page_copy_20;
+            this.tsbCopy.ImageDpi144 = global::Chummer.Properties.Resources.page_copy_24;
+            this.tsbCopy.ImageDpi192 = global::Chummer.Properties.Resources.page_copy_32;
+            this.tsbCopy.ImageDpi288 = global::Chummer.Properties.Resources.page_copy_48;
+            this.tsbCopy.ImageDpi384 = global::Chummer.Properties.Resources.page_copy_64;
+            this.tsbCopy.ImageDpi96 = global::Chummer.Properties.Resources.page_copy_16;
             this.tsbCopy.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbCopy.Name = "tsbCopy";
             this.tsbCopy.Size = new System.Drawing.Size(23, 22);
@@ -6098,13 +6127,13 @@ namespace Chummer
             // 
             // tsGearAddAsPlugin
             // 
-            this.tsGearAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsGearAddAsPlugin.ImageDpi120 = null;
-            this.tsGearAddAsPlugin.ImageDpi144 = null;
-            this.tsGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsGearAddAsPlugin.ImageDpi288 = null;
-            this.tsGearAddAsPlugin.ImageDpi384 = null;
-            this.tsGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsGearAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsGearAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsGearAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsGearAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsGearAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsGearAddAsPlugin.Name = "tsGearAddAsPlugin";
             this.tsGearAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -6113,13 +6142,13 @@ namespace Chummer
             // 
             // tsGearName
             // 
-            this.tsGearName.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsGearName.ImageDpi120 = null;
-            this.tsGearName.ImageDpi144 = null;
-            this.tsGearName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsGearName.ImageDpi288 = null;
-            this.tsGearName.ImageDpi384 = null;
-            this.tsGearName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsGearName.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsGearName.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsGearName.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsGearName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsGearName.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsGearName.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsGearName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsGearName.Name = "tsGearName";
             this.tsGearName.Size = new System.Drawing.Size(203, 22);
             this.tsGearName.Tag = "Menu_NameGear";
@@ -6128,13 +6157,13 @@ namespace Chummer
             // 
             // tsGearNotes
             // 
-            this.tsGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsGearNotes.ImageDpi120 = null;
-            this.tsGearNotes.ImageDpi144 = null;
-            this.tsGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsGearNotes.ImageDpi288 = null;
-            this.tsGearNotes.ImageDpi384 = null;
-            this.tsGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsGearNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsGearNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsGearNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsGearNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsGearNotes.Name = "tsGearNotes";
             this.tsGearNotes.Size = new System.Drawing.Size(203, 22);
             this.tsGearNotes.Tag = "Menu_Notes";
@@ -6143,13 +6172,13 @@ namespace Chummer
             // 
             // tsGearReapplyImprovements
             // 
-            this.tsGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsGearReapplyImprovements.ImageDpi120 = null;
-            this.tsGearReapplyImprovements.ImageDpi144 = null;
-            this.tsGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsGearReapplyImprovements.ImageDpi288 = null;
-            this.tsGearReapplyImprovements.ImageDpi384 = null;
-            this.tsGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsGearReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsGearReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsGearReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsGearReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsGearReapplyImprovements.Name = "tsGearReapplyImprovements";
             this.tsGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6167,13 +6196,13 @@ namespace Chummer
             // 
             // tsVehicleAddWeaponAccessoryAlt
             // 
-            this.tsVehicleAddWeaponAccessoryAlt.Image = global::Chummer.Properties.Resources.flashlight_add;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi120 = null;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi144 = null;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add1;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi288 = null;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi384 = null;
-            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add;
+            this.tsVehicleAddWeaponAccessoryAlt.Image = global::Chummer.Properties.Resources.flashlight_add_16;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi120 = global::Chummer.Properties.Resources.flashlight_add_20;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi144 = global::Chummer.Properties.Resources.flashlight_add_24;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add_32;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi288 = global::Chummer.Properties.Resources.flashlight_add_48;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi384 = global::Chummer.Properties.Resources.flashlight_add_64;
+            this.tsVehicleAddWeaponAccessoryAlt.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add_16;
             this.tsVehicleAddWeaponAccessoryAlt.Name = "tsVehicleAddWeaponAccessoryAlt";
             this.tsVehicleAddWeaponAccessoryAlt.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddWeaponAccessoryAlt.Tag = "Menu_AddAccessory";
@@ -6182,13 +6211,13 @@ namespace Chummer
             // 
             // tsVehicleAddUnderbarrelWeaponAlt
             // 
-            this.tsVehicleAddUnderbarrelWeaponAlt.Image = global::Chummer.Properties.Resources.sword_add;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi120 = null;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi144 = null;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi192 = global::Chummer.Properties.Resources.sword_add1;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi288 = null;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi384 = null;
-            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi96 = global::Chummer.Properties.Resources.sword_add;
+            this.tsVehicleAddUnderbarrelWeaponAlt.Image = global::Chummer.Properties.Resources.sword_add_16;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi120 = global::Chummer.Properties.Resources.sword_add_20;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi144 = global::Chummer.Properties.Resources.sword_add_24;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi192 = global::Chummer.Properties.Resources.sword_add_32;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi288 = global::Chummer.Properties.Resources.sword_add_48;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi384 = global::Chummer.Properties.Resources.sword_add_64;
+            this.tsVehicleAddUnderbarrelWeaponAlt.ImageDpi96 = global::Chummer.Properties.Resources.sword_add_16;
             this.tsVehicleAddUnderbarrelWeaponAlt.Name = "tsVehicleAddUnderbarrelWeaponAlt";
             this.tsVehicleAddUnderbarrelWeaponAlt.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleAddUnderbarrelWeaponAlt.Tag = "Menu_AddUnderbarrelWeapon";
@@ -6197,13 +6226,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponNotes
             // 
-            this.tsVehicleWeaponNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleWeaponNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleWeaponNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleWeaponNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleWeaponNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleWeaponNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleWeaponNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleWeaponNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleWeaponNotes.Name = "tsVehicleWeaponNotes";
             this.tsVehicleWeaponNotes.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleWeaponNotes.Tag = "Menu_Notes";
@@ -6220,13 +6249,13 @@ namespace Chummer
             // 
             // tsVehicleGearAddAsPlugin
             // 
-            this.tsVehicleGearAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleGearAddAsPlugin.ImageDpi120 = null;
-            this.tsVehicleGearAddAsPlugin.ImageDpi144 = null;
-            this.tsVehicleGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleGearAddAsPlugin.ImageDpi288 = null;
-            this.tsVehicleGearAddAsPlugin.ImageDpi384 = null;
-            this.tsVehicleGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleGearAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleGearAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleGearAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleGearAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleGearAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleGearAddAsPlugin.Name = "tsVehicleGearAddAsPlugin";
             this.tsVehicleGearAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -6235,13 +6264,13 @@ namespace Chummer
             // 
             // tsVehicleGearNotes
             // 
-            this.tsVehicleGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleGearNotes.ImageDpi120 = null;
-            this.tsVehicleGearNotes.ImageDpi144 = null;
-            this.tsVehicleGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleGearNotes.ImageDpi288 = null;
-            this.tsVehicleGearNotes.ImageDpi384 = null;
-            this.tsVehicleGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleGearNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleGearNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleGearNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleGearNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleGearNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleGearNotes.Name = "tsVehicleGearNotes";
             this.tsVehicleGearNotes.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleGearNotes.Tag = "Menu_Notes";
@@ -6258,13 +6287,13 @@ namespace Chummer
             // 
             // tsUndoKarmaExpense
             // 
-            this.tsUndoKarmaExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
-            this.tsUndoKarmaExpense.ImageDpi120 = null;
-            this.tsUndoKarmaExpense.ImageDpi144 = null;
-            this.tsUndoKarmaExpense.ImageDpi192 = global::Chummer.Properties.Resources.arrow_undo1;
-            this.tsUndoKarmaExpense.ImageDpi288 = null;
-            this.tsUndoKarmaExpense.ImageDpi384 = null;
-            this.tsUndoKarmaExpense.ImageDpi96 = global::Chummer.Properties.Resources.arrow_undo;
+            this.tsUndoKarmaExpense.Image = global::Chummer.Properties.Resources.arrow_undo_16;
+            this.tsUndoKarmaExpense.ImageDpi120 = global::Chummer.Properties.Resources.arrow_undo_20;
+            this.tsUndoKarmaExpense.ImageDpi144 = global::Chummer.Properties.Resources.arrow_undo_24;
+            this.tsUndoKarmaExpense.ImageDpi192 = global::Chummer.Properties.Resources.arrow_undo_32;
+            this.tsUndoKarmaExpense.ImageDpi288 = global::Chummer.Properties.Resources.arrow_undo_48;
+            this.tsUndoKarmaExpense.ImageDpi384 = global::Chummer.Properties.Resources.arrow_undo_64;
+            this.tsUndoKarmaExpense.ImageDpi96 = global::Chummer.Properties.Resources.arrow_undo_16;
             this.tsUndoKarmaExpense.Name = "tsUndoKarmaExpense";
             this.tsUndoKarmaExpense.Size = new System.Drawing.Size(149, 22);
             this.tsUndoKarmaExpense.Tag = "Menu_UndoExpense";
@@ -6273,13 +6302,13 @@ namespace Chummer
             // 
             // tsEditKarmaExpense
             // 
-            this.tsEditKarmaExpense.Image = global::Chummer.Properties.Resources.pencil;
-            this.tsEditKarmaExpense.ImageDpi120 = null;
-            this.tsEditKarmaExpense.ImageDpi144 = null;
-            this.tsEditKarmaExpense.ImageDpi192 = global::Chummer.Properties.Resources.pencil1;
-            this.tsEditKarmaExpense.ImageDpi288 = null;
-            this.tsEditKarmaExpense.ImageDpi384 = null;
-            this.tsEditKarmaExpense.ImageDpi96 = global::Chummer.Properties.Resources.pencil;
+            this.tsEditKarmaExpense.Image = global::Chummer.Properties.Resources.pencil_16;
+            this.tsEditKarmaExpense.ImageDpi120 = global::Chummer.Properties.Resources.pencil_20;
+            this.tsEditKarmaExpense.ImageDpi144 = global::Chummer.Properties.Resources.pencil_24;
+            this.tsEditKarmaExpense.ImageDpi192 = global::Chummer.Properties.Resources.pencil_32;
+            this.tsEditKarmaExpense.ImageDpi288 = global::Chummer.Properties.Resources.pencil_48;
+            this.tsEditKarmaExpense.ImageDpi384 = global::Chummer.Properties.Resources.pencil_64;
+            this.tsEditKarmaExpense.ImageDpi96 = global::Chummer.Properties.Resources.pencil_16;
             this.tsEditKarmaExpense.Name = "tsEditKarmaExpense";
             this.tsEditKarmaExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditKarmaExpense.Tag = "Button_EditExpense";
@@ -6296,13 +6325,13 @@ namespace Chummer
             // 
             // tsUndoNuyenExpense
             // 
-            this.tsUndoNuyenExpense.Image = global::Chummer.Properties.Resources.arrow_undo;
-            this.tsUndoNuyenExpense.ImageDpi120 = null;
-            this.tsUndoNuyenExpense.ImageDpi144 = null;
-            this.tsUndoNuyenExpense.ImageDpi192 = global::Chummer.Properties.Resources.arrow_undo1;
-            this.tsUndoNuyenExpense.ImageDpi288 = null;
-            this.tsUndoNuyenExpense.ImageDpi384 = null;
-            this.tsUndoNuyenExpense.ImageDpi96 = global::Chummer.Properties.Resources.arrow_undo;
+            this.tsUndoNuyenExpense.Image = global::Chummer.Properties.Resources.arrow_undo_16;
+            this.tsUndoNuyenExpense.ImageDpi120 = global::Chummer.Properties.Resources.arrow_undo_20;
+            this.tsUndoNuyenExpense.ImageDpi144 = global::Chummer.Properties.Resources.arrow_undo_24;
+            this.tsUndoNuyenExpense.ImageDpi192 = global::Chummer.Properties.Resources.arrow_undo_32;
+            this.tsUndoNuyenExpense.ImageDpi288 = global::Chummer.Properties.Resources.arrow_undo_48;
+            this.tsUndoNuyenExpense.ImageDpi384 = global::Chummer.Properties.Resources.arrow_undo_64;
+            this.tsUndoNuyenExpense.ImageDpi96 = global::Chummer.Properties.Resources.arrow_undo_16;
             this.tsUndoNuyenExpense.Name = "tsUndoNuyenExpense";
             this.tsUndoNuyenExpense.Size = new System.Drawing.Size(149, 22);
             this.tsUndoNuyenExpense.Tag = "Menu_UndoExpense";
@@ -6311,13 +6340,13 @@ namespace Chummer
             // 
             // tsEditNuyenExpense
             // 
-            this.tsEditNuyenExpense.Image = global::Chummer.Properties.Resources.pencil;
-            this.tsEditNuyenExpense.ImageDpi120 = null;
-            this.tsEditNuyenExpense.ImageDpi144 = null;
-            this.tsEditNuyenExpense.ImageDpi192 = global::Chummer.Properties.Resources.pencil1;
-            this.tsEditNuyenExpense.ImageDpi288 = null;
-            this.tsEditNuyenExpense.ImageDpi384 = null;
-            this.tsEditNuyenExpense.ImageDpi96 = global::Chummer.Properties.Resources.pencil;
+            this.tsEditNuyenExpense.Image = global::Chummer.Properties.Resources.pencil_16;
+            this.tsEditNuyenExpense.ImageDpi120 = global::Chummer.Properties.Resources.pencil_20;
+            this.tsEditNuyenExpense.ImageDpi144 = global::Chummer.Properties.Resources.pencil_24;
+            this.tsEditNuyenExpense.ImageDpi192 = global::Chummer.Properties.Resources.pencil_32;
+            this.tsEditNuyenExpense.ImageDpi288 = global::Chummer.Properties.Resources.pencil_48;
+            this.tsEditNuyenExpense.ImageDpi384 = global::Chummer.Properties.Resources.pencil_64;
+            this.tsEditNuyenExpense.ImageDpi96 = global::Chummer.Properties.Resources.pencil_16;
             this.tsEditNuyenExpense.Name = "tsEditNuyenExpense";
             this.tsEditNuyenExpense.Size = new System.Drawing.Size(149, 22);
             this.tsEditNuyenExpense.Tag = "Button_EditExpense";
@@ -6335,13 +6364,13 @@ namespace Chummer
             // 
             // tsArmorGearAddAsPlugin
             // 
-            this.tsArmorGearAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add;
-            this.tsArmorGearAddAsPlugin.ImageDpi120 = null;
-            this.tsArmorGearAddAsPlugin.ImageDpi144 = null;
-            this.tsArmorGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.brick_add1;
-            this.tsArmorGearAddAsPlugin.ImageDpi288 = null;
-            this.tsArmorGearAddAsPlugin.ImageDpi384 = null;
-            this.tsArmorGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.brick_add;
+            this.tsArmorGearAddAsPlugin.Image = global::Chummer.Properties.Resources.brick_add_16;
+            this.tsArmorGearAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.brick_add_20;
+            this.tsArmorGearAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.brick_add_24;
+            this.tsArmorGearAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.brick_add_32;
+            this.tsArmorGearAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.brick_add_48;
+            this.tsArmorGearAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.brick_add_64;
+            this.tsArmorGearAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.brick_add_16;
             this.tsArmorGearAddAsPlugin.Name = "tsArmorGearAddAsPlugin";
             this.tsArmorGearAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsArmorGearAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -6350,13 +6379,13 @@ namespace Chummer
             // 
             // tsArmorGearNotes
             // 
-            this.tsArmorGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsArmorGearNotes.ImageDpi120 = null;
-            this.tsArmorGearNotes.ImageDpi144 = null;
-            this.tsArmorGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsArmorGearNotes.ImageDpi288 = null;
-            this.tsArmorGearNotes.ImageDpi384 = null;
-            this.tsArmorGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsArmorGearNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsArmorGearNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsArmorGearNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsArmorGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsArmorGearNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsArmorGearNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsArmorGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsArmorGearNotes.Name = "tsArmorGearNotes";
             this.tsArmorGearNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorGearNotes.Tag = "Menu_Notes";
@@ -6365,13 +6394,13 @@ namespace Chummer
             // 
             // tsArmorGearReapplyImprovements
             // 
-            this.tsArmorGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsArmorGearReapplyImprovements.ImageDpi120 = null;
-            this.tsArmorGearReapplyImprovements.ImageDpi144 = null;
-            this.tsArmorGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsArmorGearReapplyImprovements.ImageDpi288 = null;
-            this.tsArmorGearReapplyImprovements.ImageDpi384 = null;
-            this.tsArmorGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsArmorGearReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsArmorGearReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsArmorGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsArmorGearReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsArmorGearReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsArmorGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsArmorGearReapplyImprovements.Name = "tsArmorGearReapplyImprovements";
             this.tsArmorGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsArmorGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6389,13 +6418,13 @@ namespace Chummer
             // 
             // tsArmorModAddAsPlugin
             // 
-            this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsArmorModAddAsPlugin.ImageDpi120 = null;
-            this.tsArmorModAddAsPlugin.ImageDpi144 = null;
-            this.tsArmorModAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsArmorModAddAsPlugin.ImageDpi288 = null;
-            this.tsArmorModAddAsPlugin.ImageDpi384 = null;
-            this.tsArmorModAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsArmorModAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsArmorModAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsArmorModAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsArmorModAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsArmorModAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsArmorModAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsArmorModAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsArmorModAddAsPlugin.Name = "tsArmorModAddAsPlugin";
             this.tsArmorModAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsArmorModAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -6404,13 +6433,13 @@ namespace Chummer
             // 
             // tsArmorModNotes
             // 
-            this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsArmorModNotes.ImageDpi120 = null;
-            this.tsArmorModNotes.ImageDpi144 = null;
-            this.tsArmorModNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsArmorModNotes.ImageDpi288 = null;
-            this.tsArmorModNotes.ImageDpi384 = null;
-            this.tsArmorModNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsArmorModNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsArmorModNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsArmorModNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsArmorModNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsArmorModNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsArmorModNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsArmorModNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsArmorModNotes.Name = "tsArmorModNotes";
             this.tsArmorModNotes.Size = new System.Drawing.Size(203, 22);
             this.tsArmorModNotes.Tag = "Menu_Notes";
@@ -6419,13 +6448,13 @@ namespace Chummer
             // 
             // tsArmorModReapplyImprovements
             // 
-            this.tsArmorModReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsArmorModReapplyImprovements.ImageDpi120 = null;
-            this.tsArmorModReapplyImprovements.ImageDpi144 = null;
-            this.tsArmorModReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsArmorModReapplyImprovements.ImageDpi288 = null;
-            this.tsArmorModReapplyImprovements.ImageDpi384 = null;
-            this.tsArmorModReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsArmorModReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsArmorModReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsArmorModReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsArmorModReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsArmorModReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsArmorModReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsArmorModReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsArmorModReapplyImprovements.Name = "tsArmorModReapplyImprovements";
             this.tsArmorModReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsArmorModReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6442,13 +6471,13 @@ namespace Chummer
             // 
             // tsQualityNotes
             // 
-            this.tsQualityNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsQualityNotes.ImageDpi120 = null;
-            this.tsQualityNotes.ImageDpi144 = null;
-            this.tsQualityNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsQualityNotes.ImageDpi288 = null;
-            this.tsQualityNotes.ImageDpi384 = null;
-            this.tsQualityNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsQualityNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsQualityNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsQualityNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsQualityNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsQualityNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsQualityNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsQualityNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsQualityNotes.Name = "tsQualityNotes";
             this.tsQualityNotes.Size = new System.Drawing.Size(203, 22);
             this.tsQualityNotes.Tag = "Menu_Notes";
@@ -6457,13 +6486,13 @@ namespace Chummer
             // 
             // tsQualityReapplyImprovements
             // 
-            this.tsQualityReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsQualityReapplyImprovements.ImageDpi120 = null;
-            this.tsQualityReapplyImprovements.ImageDpi144 = null;
-            this.tsQualityReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsQualityReapplyImprovements.ImageDpi288 = null;
-            this.tsQualityReapplyImprovements.ImageDpi384 = null;
-            this.tsQualityReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsQualityReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsQualityReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsQualityReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsQualityReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsQualityReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsQualityReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsQualityReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsQualityReapplyImprovements.Name = "tsQualityReapplyImprovements";
             this.tsQualityReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsQualityReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6480,13 +6509,13 @@ namespace Chummer
             // 
             // tsSpellNotes
             // 
-            this.tsSpellNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsSpellNotes.ImageDpi120 = null;
-            this.tsSpellNotes.ImageDpi144 = null;
-            this.tsSpellNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsSpellNotes.ImageDpi288 = null;
-            this.tsSpellNotes.ImageDpi384 = null;
-            this.tsSpellNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsSpellNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsSpellNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsSpellNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsSpellNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsSpellNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsSpellNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsSpellNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsSpellNotes.Name = "tsSpellNotes";
             this.tsSpellNotes.Size = new System.Drawing.Size(203, 22);
             this.tsSpellNotes.Tag = "Menu_Notes";
@@ -6495,13 +6524,13 @@ namespace Chummer
             // 
             // tsSpellReapplyImprovements
             // 
-            this.tsSpellReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsSpellReapplyImprovements.ImageDpi120 = null;
-            this.tsSpellReapplyImprovements.ImageDpi144 = null;
-            this.tsSpellReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsSpellReapplyImprovements.ImageDpi288 = null;
-            this.tsSpellReapplyImprovements.ImageDpi384 = null;
-            this.tsSpellReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsSpellReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsSpellReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsSpellReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsSpellReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsSpellReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsSpellReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsSpellReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsSpellReapplyImprovements.Name = "tsSpellReapplyImprovements";
             this.tsSpellReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsSpellReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6518,13 +6547,13 @@ namespace Chummer
             // 
             // tsCritterPowersNotes
             // 
-            this.tsCritterPowersNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsCritterPowersNotes.ImageDpi120 = null;
-            this.tsCritterPowersNotes.ImageDpi144 = null;
-            this.tsCritterPowersNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsCritterPowersNotes.ImageDpi288 = null;
-            this.tsCritterPowersNotes.ImageDpi384 = null;
-            this.tsCritterPowersNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsCritterPowersNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsCritterPowersNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsCritterPowersNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsCritterPowersNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsCritterPowersNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsCritterPowersNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsCritterPowersNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsCritterPowersNotes.Name = "tsCritterPowersNotes";
             this.tsCritterPowersNotes.Size = new System.Drawing.Size(203, 22);
             this.tsCritterPowersNotes.Tag = "Menu_Notes";
@@ -6533,13 +6562,13 @@ namespace Chummer
             // 
             // tsCritterPowersReapplyImprovements
             // 
-            this.tsCritterPowersReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsCritterPowersReapplyImprovements.ImageDpi120 = null;
-            this.tsCritterPowersReapplyImprovements.ImageDpi144 = null;
-            this.tsCritterPowersReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsCritterPowersReapplyImprovements.ImageDpi288 = null;
-            this.tsCritterPowersReapplyImprovements.ImageDpi384 = null;
-            this.tsCritterPowersReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCritterPowersReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsCritterPowersReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsCritterPowersReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsCritterPowersReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsCritterPowersReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsCritterPowersReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsCritterPowersReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsCritterPowersReapplyImprovements.Name = "tsCritterPowersReapplyImprovements";
             this.tsCritterPowersReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsCritterPowersReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6562,13 +6591,13 @@ namespace Chummer
             // 
             // tsMetamagicAddArt
             // 
-            this.tsMetamagicAddArt.Image = global::Chummer.Properties.Resources.script_add;
-            this.tsMetamagicAddArt.ImageDpi120 = null;
-            this.tsMetamagicAddArt.ImageDpi144 = null;
-            this.tsMetamagicAddArt.ImageDpi192 = global::Chummer.Properties.Resources.script_add1;
-            this.tsMetamagicAddArt.ImageDpi288 = null;
-            this.tsMetamagicAddArt.ImageDpi384 = null;
-            this.tsMetamagicAddArt.ImageDpi96 = global::Chummer.Properties.Resources.script_add;
+            this.tsMetamagicAddArt.Image = global::Chummer.Properties.Resources.script_add_16;
+            this.tsMetamagicAddArt.ImageDpi120 = global::Chummer.Properties.Resources.script_add_20;
+            this.tsMetamagicAddArt.ImageDpi144 = global::Chummer.Properties.Resources.script_add_24;
+            this.tsMetamagicAddArt.ImageDpi192 = global::Chummer.Properties.Resources.script_add_32;
+            this.tsMetamagicAddArt.ImageDpi288 = global::Chummer.Properties.Resources.script_add_48;
+            this.tsMetamagicAddArt.ImageDpi384 = global::Chummer.Properties.Resources.script_add_64;
+            this.tsMetamagicAddArt.ImageDpi96 = global::Chummer.Properties.Resources.script_add_16;
             this.tsMetamagicAddArt.Name = "tsMetamagicAddArt";
             this.tsMetamagicAddArt.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddArt.Text = "Add Art";
@@ -6576,13 +6605,13 @@ namespace Chummer
             // 
             // tsMetamagicAddEnchantment
             // 
-            this.tsMetamagicAddEnchantment.Image = global::Chummer.Properties.Resources.lightning_add;
-            this.tsMetamagicAddEnchantment.ImageDpi120 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi144 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi192 = global::Chummer.Properties.Resources.lightning_add1;
-            this.tsMetamagicAddEnchantment.ImageDpi288 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi384 = null;
-            this.tsMetamagicAddEnchantment.ImageDpi96 = global::Chummer.Properties.Resources.lightning_add;
+            this.tsMetamagicAddEnchantment.Image = global::Chummer.Properties.Resources.lightning_add_16;
+            this.tsMetamagicAddEnchantment.ImageDpi120 = global::Chummer.Properties.Resources.lightning_add_20;
+            this.tsMetamagicAddEnchantment.ImageDpi144 = global::Chummer.Properties.Resources.lightning_add_24;
+            this.tsMetamagicAddEnchantment.ImageDpi192 = global::Chummer.Properties.Resources.lightning_add_32;
+            this.tsMetamagicAddEnchantment.ImageDpi288 = global::Chummer.Properties.Resources.lightning_add_48;
+            this.tsMetamagicAddEnchantment.ImageDpi384 = global::Chummer.Properties.Resources.lightning_add_64;
+            this.tsMetamagicAddEnchantment.ImageDpi96 = global::Chummer.Properties.Resources.lightning_add_16;
             this.tsMetamagicAddEnchantment.Name = "tsMetamagicAddEnchantment";
             this.tsMetamagicAddEnchantment.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnchantment.Text = "Add Enchantment";
@@ -6590,13 +6619,13 @@ namespace Chummer
             // 
             // tsMetamagicAddEnhancement
             // 
-            this.tsMetamagicAddEnhancement.Image = global::Chummer.Properties.Resources.gift_add;
-            this.tsMetamagicAddEnhancement.ImageDpi120 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi144 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi192 = global::Chummer.Properties.Resources.gift_add1;
-            this.tsMetamagicAddEnhancement.ImageDpi288 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi384 = null;
-            this.tsMetamagicAddEnhancement.ImageDpi96 = global::Chummer.Properties.Resources.gift_add;
+            this.tsMetamagicAddEnhancement.Image = global::Chummer.Properties.Resources.gift_add_16;
+            this.tsMetamagicAddEnhancement.ImageDpi120 = global::Chummer.Properties.Resources.gift_add_20;
+            this.tsMetamagicAddEnhancement.ImageDpi144 = global::Chummer.Properties.Resources.gift_add_24;
+            this.tsMetamagicAddEnhancement.ImageDpi192 = global::Chummer.Properties.Resources.gift_add_32;
+            this.tsMetamagicAddEnhancement.ImageDpi288 = global::Chummer.Properties.Resources.gift_add_48;
+            this.tsMetamagicAddEnhancement.ImageDpi384 = global::Chummer.Properties.Resources.gift_add_64;
+            this.tsMetamagicAddEnhancement.ImageDpi96 = global::Chummer.Properties.Resources.gift_add_16;
             this.tsMetamagicAddEnhancement.Name = "tsMetamagicAddEnhancement";
             this.tsMetamagicAddEnhancement.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddEnhancement.Text = "Add Enhancement";
@@ -6604,13 +6633,13 @@ namespace Chummer
             // 
             // tsMetamagicAddMetamagic
             // 
-            this.tsMetamagicAddMetamagic.Image = global::Chummer.Properties.Resources.award_star_add;
-            this.tsMetamagicAddMetamagic.ImageDpi120 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi144 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi192 = global::Chummer.Properties.Resources.award_star_add1;
-            this.tsMetamagicAddMetamagic.ImageDpi288 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi384 = null;
-            this.tsMetamagicAddMetamagic.ImageDpi96 = global::Chummer.Properties.Resources.award_star_add;
+            this.tsMetamagicAddMetamagic.Image = global::Chummer.Properties.Resources.award_star_add_16;
+            this.tsMetamagicAddMetamagic.ImageDpi120 = global::Chummer.Properties.Resources.award_star_add_20;
+            this.tsMetamagicAddMetamagic.ImageDpi144 = global::Chummer.Properties.Resources.award_star_add_24;
+            this.tsMetamagicAddMetamagic.ImageDpi192 = global::Chummer.Properties.Resources.award_star_add_32;
+            this.tsMetamagicAddMetamagic.ImageDpi288 = global::Chummer.Properties.Resources.award_star_add_48;
+            this.tsMetamagicAddMetamagic.ImageDpi384 = global::Chummer.Properties.Resources.award_star_add_64;
+            this.tsMetamagicAddMetamagic.ImageDpi96 = global::Chummer.Properties.Resources.award_star_add_16;
             this.tsMetamagicAddMetamagic.Name = "tsMetamagicAddMetamagic";
             this.tsMetamagicAddMetamagic.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddMetamagic.Text = "Add Metamagic";
@@ -6618,13 +6647,13 @@ namespace Chummer
             // 
             // tsMetamagicAddRitual
             // 
-            this.tsMetamagicAddRitual.Image = global::Chummer.Properties.Resources.chart_organisation_add;
-            this.tsMetamagicAddRitual.ImageDpi120 = null;
-            this.tsMetamagicAddRitual.ImageDpi144 = null;
-            this.tsMetamagicAddRitual.ImageDpi192 = global::Chummer.Properties.Resources.chart_organisation_add1;
-            this.tsMetamagicAddRitual.ImageDpi288 = null;
-            this.tsMetamagicAddRitual.ImageDpi384 = null;
-            this.tsMetamagicAddRitual.ImageDpi96 = global::Chummer.Properties.Resources.chart_organisation_add;
+            this.tsMetamagicAddRitual.Image = global::Chummer.Properties.Resources.chart_organisation_add_16;
+            this.tsMetamagicAddRitual.ImageDpi120 = global::Chummer.Properties.Resources.chart_organisation_add_20;
+            this.tsMetamagicAddRitual.ImageDpi144 = global::Chummer.Properties.Resources.chart_organisation_add_24;
+            this.tsMetamagicAddRitual.ImageDpi192 = global::Chummer.Properties.Resources.chart_organisation_add_32;
+            this.tsMetamagicAddRitual.ImageDpi288 = global::Chummer.Properties.Resources.chart_organisation_add_48;
+            this.tsMetamagicAddRitual.ImageDpi384 = global::Chummer.Properties.Resources.chart_organisation_add_64;
+            this.tsMetamagicAddRitual.ImageDpi96 = global::Chummer.Properties.Resources.chart_organisation_add_16;
             this.tsMetamagicAddRitual.Name = "tsMetamagicAddRitual";
             this.tsMetamagicAddRitual.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicAddRitual.Text = "Add Ritual";
@@ -6632,13 +6661,13 @@ namespace Chummer
             // 
             // tsMetamagicNotes
             // 
-            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsMetamagicNotes.ImageDpi120 = null;
-            this.tsMetamagicNotes.ImageDpi144 = null;
-            this.tsMetamagicNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsMetamagicNotes.ImageDpi288 = null;
-            this.tsMetamagicNotes.ImageDpi384 = null;
-            this.tsMetamagicNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsMetamagicNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsMetamagicNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsMetamagicNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsMetamagicNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsMetamagicNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsMetamagicNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsMetamagicNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsMetamagicNotes.Name = "tsMetamagicNotes";
             this.tsMetamagicNotes.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicNotes.Tag = "Menu_Notes";
@@ -6647,13 +6676,13 @@ namespace Chummer
             // 
             // tsMetamagicReapplyImprovements
             // 
-            this.tsMetamagicReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsMetamagicReapplyImprovements.ImageDpi120 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi144 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsMetamagicReapplyImprovements.ImageDpi288 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi384 = null;
-            this.tsMetamagicReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsMetamagicReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsMetamagicReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsMetamagicReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsMetamagicReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsMetamagicReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsMetamagicReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsMetamagicReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsMetamagicReapplyImprovements.Name = "tsMetamagicReapplyImprovements";
             this.tsMetamagicReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsMetamagicReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -6671,13 +6700,13 @@ namespace Chummer
             // 
             // tsEditLifestyle
             // 
-            this.tsEditLifestyle.Image = global::Chummer.Properties.Resources.house_edit;
-            this.tsEditLifestyle.ImageDpi120 = null;
-            this.tsEditLifestyle.ImageDpi144 = null;
-            this.tsEditLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house_edit1;
-            this.tsEditLifestyle.ImageDpi288 = null;
-            this.tsEditLifestyle.ImageDpi384 = null;
-            this.tsEditLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house_edit;
+            this.tsEditLifestyle.Image = global::Chummer.Properties.Resources.house_edit_16;
+            this.tsEditLifestyle.ImageDpi120 = global::Chummer.Properties.Resources.house_edit_20;
+            this.tsEditLifestyle.ImageDpi144 = global::Chummer.Properties.Resources.house_edit_24;
+            this.tsEditLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house_edit_32;
+            this.tsEditLifestyle.ImageDpi288 = global::Chummer.Properties.Resources.house_edit_48;
+            this.tsEditLifestyle.ImageDpi384 = global::Chummer.Properties.Resources.house_edit_64;
+            this.tsEditLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house_edit_16;
             this.tsEditLifestyle.Name = "tsEditLifestyle";
             this.tsEditLifestyle.Size = new System.Drawing.Size(152, 22);
             this.tsEditLifestyle.Tag = "Menu_EditLifestyle";
@@ -6686,13 +6715,13 @@ namespace Chummer
             // 
             // tsLifestyleName
             // 
-            this.tsLifestyleName.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsLifestyleName.ImageDpi120 = null;
-            this.tsLifestyleName.ImageDpi144 = null;
-            this.tsLifestyleName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsLifestyleName.ImageDpi288 = null;
-            this.tsLifestyleName.ImageDpi384 = null;
-            this.tsLifestyleName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsLifestyleName.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsLifestyleName.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsLifestyleName.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsLifestyleName.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsLifestyleName.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsLifestyleName.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsLifestyleName.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsLifestyleName.Name = "tsLifestyleName";
             this.tsLifestyleName.Size = new System.Drawing.Size(152, 22);
             this.tsLifestyleName.Tag = "Menu_NameLifestyle";
@@ -6701,13 +6730,13 @@ namespace Chummer
             // 
             // tsLifestyleNotes
             // 
-            this.tsLifestyleNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsLifestyleNotes.ImageDpi120 = null;
-            this.tsLifestyleNotes.ImageDpi144 = null;
-            this.tsLifestyleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsLifestyleNotes.ImageDpi288 = null;
-            this.tsLifestyleNotes.ImageDpi384 = null;
-            this.tsLifestyleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsLifestyleNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsLifestyleNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsLifestyleNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsLifestyleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsLifestyleNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsLifestyleNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsLifestyleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsLifestyleNotes.Name = "tsLifestyleNotes";
             this.tsLifestyleNotes.Size = new System.Drawing.Size(152, 22);
             this.tsLifestyleNotes.Tag = "Menu_Notes";
@@ -6724,13 +6753,13 @@ namespace Chummer
             // 
             // tsWeaponAccessoryAddGear
             // 
-            this.tsWeaponAccessoryAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsWeaponAccessoryAddGear.ImageDpi120 = null;
-            this.tsWeaponAccessoryAddGear.ImageDpi144 = null;
-            this.tsWeaponAccessoryAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsWeaponAccessoryAddGear.ImageDpi288 = null;
-            this.tsWeaponAccessoryAddGear.ImageDpi384 = null;
-            this.tsWeaponAccessoryAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsWeaponAccessoryAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsWeaponAccessoryAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsWeaponAccessoryAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsWeaponAccessoryAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsWeaponAccessoryAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsWeaponAccessoryAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsWeaponAccessoryAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsWeaponAccessoryAddGear.Name = "tsWeaponAccessoryAddGear";
             this.tsWeaponAccessoryAddGear.Size = new System.Drawing.Size(123, 22);
             this.tsWeaponAccessoryAddGear.Tag = "Menu_AddGear";
@@ -6739,13 +6768,13 @@ namespace Chummer
             // 
             // tsWeaponAccessoryNotes
             // 
-            this.tsWeaponAccessoryNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsWeaponAccessoryNotes.ImageDpi120 = null;
-            this.tsWeaponAccessoryNotes.ImageDpi144 = null;
-            this.tsWeaponAccessoryNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsWeaponAccessoryNotes.ImageDpi288 = null;
-            this.tsWeaponAccessoryNotes.ImageDpi384 = null;
-            this.tsWeaponAccessoryNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsWeaponAccessoryNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsWeaponAccessoryNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsWeaponAccessoryNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsWeaponAccessoryNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsWeaponAccessoryNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsWeaponAccessoryNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsWeaponAccessoryNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsWeaponAccessoryNotes.Name = "tsWeaponAccessoryNotes";
             this.tsWeaponAccessoryNotes.Size = new System.Drawing.Size(123, 22);
             this.tsWeaponAccessoryNotes.Tag = "Menu_Notes";
@@ -6762,13 +6791,13 @@ namespace Chummer
             // 
             // tsGearPluginNotes
             // 
-            this.tsGearPluginNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsGearPluginNotes.ImageDpi120 = null;
-            this.tsGearPluginNotes.ImageDpi144 = null;
-            this.tsGearPluginNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsGearPluginNotes.ImageDpi288 = null;
-            this.tsGearPluginNotes.ImageDpi384 = null;
-            this.tsGearPluginNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsGearPluginNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsGearPluginNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsGearPluginNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsGearPluginNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsGearPluginNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsGearPluginNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsGearPluginNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsGearPluginNotes.Name = "tsGearPluginNotes";
             this.tsGearPluginNotes.Size = new System.Drawing.Size(203, 22);
             this.tsGearPluginNotes.Tag = "Menu_Notes";
@@ -6777,13 +6806,13 @@ namespace Chummer
             // 
             // tsGearPluginReapplyImprovements
             // 
-            this.tsGearPluginReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsGearPluginReapplyImprovements.ImageDpi120 = null;
-            this.tsGearPluginReapplyImprovements.ImageDpi144 = null;
-            this.tsGearPluginReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsGearPluginReapplyImprovements.ImageDpi288 = null;
-            this.tsGearPluginReapplyImprovements.ImageDpi384 = null;
-            this.tsGearPluginReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsGearPluginReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsGearPluginReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsGearPluginReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsGearPluginReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsGearPluginReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsGearPluginReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsGearPluginReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsGearPluginReapplyImprovements.Name = "tsGearPluginReapplyImprovements";
             this.tsGearPluginReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsGearPluginReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -7116,10 +7145,9 @@ namespace Chummer
             this.tlpAlias.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpAlias.ColumnCount = 4;
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpAlias.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
             this.tlpAlias.Controls.Add(this.lblAttributesMetatype, 3, 1);
             this.tlpAlias.Controls.Add(this.txtAlias, 1, 0);
             this.tlpAlias.Controls.Add(this.lblAttributesAug, 2, 1);
@@ -7199,7 +7227,6 @@ namespace Chummer
             this.cboAttributeCategory.Name = "cboAttributeCategory";
             this.cboAttributeCategory.Size = new System.Drawing.Size(325, 21);
             this.cboAttributeCategory.TabIndex = 107;
-            this.cboAttributeCategory.TooltipText = "";
             this.cboAttributeCategory.SelectedIndexChanged += new System.EventHandler(this.cboAttributeCategory_SelectedIndexChanged);
             // 
             // lblMetatypeLabel
@@ -7312,13 +7339,13 @@ namespace Chummer
             this.cmdIncreasePowerPoints.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdIncreasePowerPoints.AutoSize = true;
             this.cmdIncreasePowerPoints.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add;
-            this.cmdIncreasePowerPoints.ImageDpi120 = null;
-            this.cmdIncreasePowerPoints.ImageDpi144 = null;
-            this.cmdIncreasePowerPoints.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.cmdIncreasePowerPoints.ImageDpi288 = null;
-            this.cmdIncreasePowerPoints.ImageDpi384 = null;
-            this.cmdIncreasePowerPoints.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdIncreasePowerPoints.Image = global::Chummer.Properties.Resources.add_16;
+            this.cmdIncreasePowerPoints.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.cmdIncreasePowerPoints.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.cmdIncreasePowerPoints.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.cmdIncreasePowerPoints.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.cmdIncreasePowerPoints.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.cmdIncreasePowerPoints.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.cmdIncreasePowerPoints.Location = new System.Drawing.Point(28, 3);
             this.cmdIncreasePowerPoints.MinimumSize = new System.Drawing.Size(24, 24);
             this.cmdIncreasePowerPoints.Name = "cmdIncreasePowerPoints";
@@ -7430,7 +7457,7 @@ namespace Chummer
             this.treMartialArts.Size = new System.Drawing.Size(304, 590);
             this.treMartialArts.TabIndex = 2;
             this.treMartialArts.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMartialArts_AfterSelect);
-            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMartialArts_KeyDown);
+            this.treMartialArts.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMartialArts.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpMartialArtsButtons
@@ -7989,7 +8016,6 @@ namespace Chummer
             this.cboTradition.Name = "cboTradition";
             this.cboTradition.Size = new System.Drawing.Size(213, 21);
             this.cboTradition.TabIndex = 99;
-            this.cboTradition.TooltipText = "";
             this.cboTradition.SelectedIndexChanged += new System.EventHandler(this.cboTradition_SelectedIndexChanged);
             // 
             // lblDrainAttributesLabel
@@ -8035,7 +8061,6 @@ namespace Chummer
             this.cboSpiritManipulation.Name = "cboSpiritManipulation";
             this.cboSpiritManipulation.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritManipulation.TabIndex = 166;
-            this.cboSpiritManipulation.TooltipText = "";
             this.cboSpiritManipulation.Visible = false;
             // 
             // lblSpiritManipulation
@@ -8073,7 +8098,6 @@ namespace Chummer
             this.cboSpiritIllusion.Name = "cboSpiritIllusion";
             this.cboSpiritIllusion.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritIllusion.TabIndex = 164;
-            this.cboSpiritIllusion.TooltipText = "";
             this.cboSpiritIllusion.Visible = false;
             // 
             // cboSpiritCombat
@@ -8085,7 +8109,6 @@ namespace Chummer
             this.cboSpiritCombat.Name = "cboSpiritCombat";
             this.cboSpiritCombat.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritCombat.TabIndex = 158;
-            this.cboSpiritCombat.TooltipText = "";
             this.cboSpiritCombat.Visible = false;
             // 
             // lblSpiritIllusion
@@ -8110,7 +8133,6 @@ namespace Chummer
             this.cboSpiritHealth.Name = "cboSpiritHealth";
             this.cboSpiritHealth.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritHealth.TabIndex = 162;
-            this.cboSpiritHealth.TooltipText = "";
             this.cboSpiritHealth.Visible = false;
             // 
             // lblSpiritDetection
@@ -8135,7 +8157,6 @@ namespace Chummer
             this.cboSpiritDetection.Name = "cboSpiritDetection";
             this.cboSpiritDetection.Size = new System.Drawing.Size(213, 21);
             this.cboSpiritDetection.TabIndex = 160;
-            this.cboSpiritDetection.TooltipText = "";
             this.cboSpiritDetection.Visible = false;
             // 
             // lblSpiritHealth
@@ -8208,7 +8229,6 @@ namespace Chummer
             this.cboDrain.Name = "cboDrain";
             this.cboDrain.Size = new System.Drawing.Size(80, 21);
             this.cboDrain.TabIndex = 156;
-            this.cboDrain.TooltipText = "";
             this.cboDrain.Visible = false;
             // 
             // gpbMagicianMentorSpirit
@@ -8432,7 +8452,7 @@ namespace Chummer
             this.treSpells.Size = new System.Drawing.Size(304, 239);
             this.treSpells.TabIndex = 70;
             this.treSpells.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treSpells_AfterSelect);
-            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treSpells_KeyDown);
+            this.treSpells.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treSpells.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpSustainedSpells
@@ -8826,7 +8846,6 @@ namespace Chummer
             this.cboStream.Name = "cboStream";
             this.cboStream.Size = new System.Drawing.Size(150, 21);
             this.cboStream.TabIndex = 106;
-            this.cboStream.TooltipText = "";
             this.cboStream.SelectedIndexChanged += new System.EventHandler(this.cboStream_SelectedIndexChanged);
             // 
             // lblFadingAttributesLabel
@@ -9080,7 +9099,7 @@ namespace Chummer
             this.treComplexForms.Size = new System.Drawing.Size(304, 238);
             this.treComplexForms.TabIndex = 94;
             this.treComplexForms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treComplexForms_AfterSelect);
-            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treComplexForms_KeyDown);
+            this.treComplexForms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treComplexForms.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpSustainedComplexForms
@@ -9201,7 +9220,7 @@ namespace Chummer
             this.treAIPrograms.Size = new System.Drawing.Size(304, 590);
             this.treAIPrograms.TabIndex = 71;
             this.treAIPrograms.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treAIPrograms_AfterSelect);
-            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treAIPrograms_KeyDown);
+            this.treAIPrograms.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             // 
             // tlpAdvancedProgramsButtons
             // 
@@ -9378,7 +9397,7 @@ namespace Chummer
             this.treCritterPowers.Size = new System.Drawing.Size(304, 590);
             this.treCritterPowers.TabIndex = 15;
             this.treCritterPowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCritterPowers_AfterSelect);
-            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCritterPowers_KeyDown);
+            this.treCritterPowers.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCritterPowers.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpCritterButtons
@@ -9769,7 +9788,7 @@ namespace Chummer
             this.treMetamagic.Size = new System.Drawing.Size(304, 590);
             this.treMetamagic.TabIndex = 96;
             this.treMetamagic.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treMetamagic_AfterSelect);
-            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treMetamagic_KeyDown);
+            this.treMetamagic.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treMetamagic.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpInitiationButtons
@@ -10108,7 +10127,7 @@ namespace Chummer
             this.treCyberware.Size = new System.Drawing.Size(304, 590);
             this.treCyberware.TabIndex = 28;
             this.treCyberware.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treCyberware_AfterSelect);
-            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treCyberware_KeyDown);
+            this.treCyberware.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treCyberware.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpCyberware
@@ -10697,7 +10716,6 @@ namespace Chummer
             this.cboCyberwareAttack.Name = "cboCyberwareAttack";
             this.cboCyberwareAttack.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareAttack.TabIndex = 211;
-            this.cboCyberwareAttack.TooltipText = "";
             this.cboCyberwareAttack.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareAttack_SelectedIndexChanged);
             // 
             // cboCyberwareSleaze
@@ -10709,7 +10727,6 @@ namespace Chummer
             this.cboCyberwareSleaze.Name = "cboCyberwareSleaze";
             this.cboCyberwareSleaze.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareSleaze.TabIndex = 212;
-            this.cboCyberwareSleaze.TooltipText = "";
             this.cboCyberwareSleaze.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareSleaze_SelectedIndexChanged);
             // 
             // cboCyberwareDataProcessing
@@ -10721,7 +10738,6 @@ namespace Chummer
             this.cboCyberwareDataProcessing.Name = "cboCyberwareDataProcessing";
             this.cboCyberwareDataProcessing.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareDataProcessing.TabIndex = 214;
-            this.cboCyberwareDataProcessing.TooltipText = "";
             this.cboCyberwareDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareDataProcessing_SelectedIndexChanged);
             // 
             // cboCyberwareFirewall
@@ -10733,7 +10749,6 @@ namespace Chummer
             this.cboCyberwareFirewall.Name = "cboCyberwareFirewall";
             this.cboCyberwareFirewall.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareFirewall.TabIndex = 213;
-            this.cboCyberwareFirewall.TooltipText = "";
             this.cboCyberwareFirewall.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareFirewall_SelectedIndexChanged);
             // 
             // cboCyberwareOverclocker
@@ -10745,7 +10760,6 @@ namespace Chummer
             this.cboCyberwareOverclocker.Name = "cboCyberwareOverclocker";
             this.cboCyberwareOverclocker.Size = new System.Drawing.Size(115, 21);
             this.cboCyberwareOverclocker.TabIndex = 216;
-            this.cboCyberwareOverclocker.TooltipText = "";
             this.cboCyberwareOverclocker.Visible = false;
             this.cboCyberwareOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboCyberwareOverclocker_SelectedIndexChanged);
             // 
@@ -11571,8 +11585,11 @@ namespace Chummer
             this.treGear.Size = new System.Drawing.Size(302, 564);
             this.treGear.TabIndex = 49;
             this.treGear.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treGear_AfterSelect);
-            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.treGear_DragOver);
-            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treGear_KeyDown);
+            this.treGear.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treGear.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treGear.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treGear.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treGear.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treGear.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpGear
@@ -11798,13 +11815,13 @@ namespace Chummer
             this.cmdGearIncreaseQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearIncreaseQty.AutoSize = true;
             this.cmdGearIncreaseQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearIncreaseQty.Image = global::Chummer.Properties.Resources.add;
-            this.cmdGearIncreaseQty.ImageDpi120 = null;
-            this.cmdGearIncreaseQty.ImageDpi144 = null;
-            this.cmdGearIncreaseQty.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.cmdGearIncreaseQty.ImageDpi288 = null;
-            this.cmdGearIncreaseQty.ImageDpi384 = null;
-            this.cmdGearIncreaseQty.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdGearIncreaseQty.Image = global::Chummer.Properties.Resources.add_16;
+            this.cmdGearIncreaseQty.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.cmdGearIncreaseQty.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.cmdGearIncreaseQty.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.cmdGearIncreaseQty.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.cmdGearIncreaseQty.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.cmdGearIncreaseQty.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.cmdGearIncreaseQty.Location = new System.Drawing.Point(38, 3);
             this.cmdGearIncreaseQty.Name = "cmdGearIncreaseQty";
             this.cmdGearIncreaseQty.Padding = new System.Windows.Forms.Padding(1);
@@ -11819,13 +11836,13 @@ namespace Chummer
             this.cmdGearReduceQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearReduceQty.AutoSize = true;
             this.cmdGearReduceQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearReduceQty.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdGearReduceQty.ImageDpi120 = null;
-            this.cmdGearReduceQty.ImageDpi144 = null;
-            this.cmdGearReduceQty.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.cmdGearReduceQty.ImageDpi288 = null;
-            this.cmdGearReduceQty.ImageDpi384 = null;
-            this.cmdGearReduceQty.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdGearReduceQty.Image = global::Chummer.Properties.Resources.delete_16;
+            this.cmdGearReduceQty.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.cmdGearReduceQty.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.cmdGearReduceQty.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.cmdGearReduceQty.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.cmdGearReduceQty.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.cmdGearReduceQty.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdGearReduceQty.Location = new System.Drawing.Point(68, 3);
             this.cmdGearReduceQty.Name = "cmdGearReduceQty";
             this.cmdGearReduceQty.Padding = new System.Windows.Forms.Padding(1);
@@ -11840,13 +11857,13 @@ namespace Chummer
             this.cmdGearSplitQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearSplitQty.AutoSize = true;
             this.cmdGearSplitQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearSplitQty.Image = global::Chummer.Properties.Resources.arrow_divide;
-            this.cmdGearSplitQty.ImageDpi120 = null;
-            this.cmdGearSplitQty.ImageDpi144 = null;
-            this.cmdGearSplitQty.ImageDpi192 = global::Chummer.Properties.Resources.arrow_divide1;
-            this.cmdGearSplitQty.ImageDpi288 = null;
-            this.cmdGearSplitQty.ImageDpi384 = null;
-            this.cmdGearSplitQty.ImageDpi96 = global::Chummer.Properties.Resources.arrow_divide;
+            this.cmdGearSplitQty.Image = global::Chummer.Properties.Resources.arrow_divide_16;
+            this.cmdGearSplitQty.ImageDpi120 = global::Chummer.Properties.Resources.arrow_divide_20;
+            this.cmdGearSplitQty.ImageDpi144 = global::Chummer.Properties.Resources.arrow_divide_24;
+            this.cmdGearSplitQty.ImageDpi192 = global::Chummer.Properties.Resources.arrow_divide_32;
+            this.cmdGearSplitQty.ImageDpi288 = global::Chummer.Properties.Resources.arrow_divide_48;
+            this.cmdGearSplitQty.ImageDpi384 = global::Chummer.Properties.Resources.arrow_divide_64;
+            this.cmdGearSplitQty.ImageDpi96 = global::Chummer.Properties.Resources.arrow_divide_16;
             this.cmdGearSplitQty.Location = new System.Drawing.Point(98, 3);
             this.cmdGearSplitQty.Name = "cmdGearSplitQty";
             this.cmdGearSplitQty.Padding = new System.Windows.Forms.Padding(1);
@@ -11861,13 +11878,13 @@ namespace Chummer
             this.cmdGearMergeQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearMergeQty.AutoSize = true;
             this.cmdGearMergeQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearMergeQty.Image = global::Chummer.Properties.Resources.arrow_join;
-            this.cmdGearMergeQty.ImageDpi120 = null;
-            this.cmdGearMergeQty.ImageDpi144 = null;
-            this.cmdGearMergeQty.ImageDpi192 = global::Chummer.Properties.Resources.arrow_join1;
-            this.cmdGearMergeQty.ImageDpi288 = null;
-            this.cmdGearMergeQty.ImageDpi384 = null;
-            this.cmdGearMergeQty.ImageDpi96 = global::Chummer.Properties.Resources.arrow_join;
+            this.cmdGearMergeQty.Image = global::Chummer.Properties.Resources.arrow_join_16;
+            this.cmdGearMergeQty.ImageDpi120 = global::Chummer.Properties.Resources.arrow_join_20;
+            this.cmdGearMergeQty.ImageDpi144 = global::Chummer.Properties.Resources.arrow_join_24;
+            this.cmdGearMergeQty.ImageDpi192 = global::Chummer.Properties.Resources.arrow_join_32;
+            this.cmdGearMergeQty.ImageDpi288 = global::Chummer.Properties.Resources.arrow_join_48;
+            this.cmdGearMergeQty.ImageDpi384 = global::Chummer.Properties.Resources.arrow_join_64;
+            this.cmdGearMergeQty.ImageDpi96 = global::Chummer.Properties.Resources.arrow_join_16;
             this.cmdGearMergeQty.Location = new System.Drawing.Point(128, 3);
             this.cmdGearMergeQty.Name = "cmdGearMergeQty";
             this.cmdGearMergeQty.Padding = new System.Windows.Forms.Padding(1);
@@ -11882,13 +11899,13 @@ namespace Chummer
             this.cmdGearMoveToVehicle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdGearMoveToVehicle.AutoSize = true;
             this.cmdGearMoveToVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdGearMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go;
-            this.cmdGearMoveToVehicle.ImageDpi120 = null;
-            this.cmdGearMoveToVehicle.ImageDpi144 = null;
-            this.cmdGearMoveToVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_go1;
-            this.cmdGearMoveToVehicle.ImageDpi288 = null;
-            this.cmdGearMoveToVehicle.ImageDpi384 = null;
-            this.cmdGearMoveToVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_go;
+            this.cmdGearMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go_16;
+            this.cmdGearMoveToVehicle.ImageDpi120 = global::Chummer.Properties.Resources.car_go_20;
+            this.cmdGearMoveToVehicle.ImageDpi144 = global::Chummer.Properties.Resources.car_go_24;
+            this.cmdGearMoveToVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_go_32;
+            this.cmdGearMoveToVehicle.ImageDpi288 = global::Chummer.Properties.Resources.car_go_48;
+            this.cmdGearMoveToVehicle.ImageDpi384 = global::Chummer.Properties.Resources.car_go_64;
+            this.cmdGearMoveToVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_go_16;
             this.cmdGearMoveToVehicle.Location = new System.Drawing.Point(158, 3);
             this.cmdGearMoveToVehicle.Name = "cmdGearMoveToVehicle";
             this.cmdGearMoveToVehicle.Padding = new System.Windows.Forms.Padding(1);
@@ -12047,7 +12064,6 @@ namespace Chummer
             this.cboGearOverclocker.Name = "cboGearOverclocker";
             this.cboGearOverclocker.Size = new System.Drawing.Size(93, 21);
             this.cboGearOverclocker.TabIndex = 205;
-            this.cboGearOverclocker.TooltipText = "";
             this.cboGearOverclocker.Visible = false;
             this.cboGearOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboGearOverclocker_SelectedIndexChanged);
             // 
@@ -12060,7 +12076,6 @@ namespace Chummer
             this.cboGearAttack.Name = "cboGearAttack";
             this.cboGearAttack.Size = new System.Drawing.Size(93, 21);
             this.cboGearAttack.TabIndex = 164;
-            this.cboGearAttack.TooltipText = "";
             this.cboGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboGearAttack_SelectedIndexChanged);
             // 
             // cboGearSleaze
@@ -12072,7 +12087,6 @@ namespace Chummer
             this.cboGearSleaze.Name = "cboGearSleaze";
             this.cboGearSleaze.Size = new System.Drawing.Size(93, 21);
             this.cboGearSleaze.TabIndex = 165;
-            this.cboGearSleaze.TooltipText = "";
             this.cboGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboGearSleaze_SelectedIndexChanged);
             // 
             // cboGearDataProcessing
@@ -12084,7 +12098,6 @@ namespace Chummer
             this.cboGearDataProcessing.Name = "cboGearDataProcessing";
             this.cboGearDataProcessing.Size = new System.Drawing.Size(93, 21);
             this.cboGearDataProcessing.TabIndex = 167;
-            this.cboGearDataProcessing.TooltipText = "";
             this.cboGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboGearDataProcessing_SelectedIndexChanged);
             // 
             // cboGearFirewall
@@ -12096,7 +12109,6 @@ namespace Chummer
             this.cboGearFirewall.Name = "cboGearFirewall";
             this.cboGearFirewall.Size = new System.Drawing.Size(93, 21);
             this.cboGearFirewall.TabIndex = 166;
-            this.cboGearFirewall.TooltipText = "";
             this.cboGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboGearFirewall_SelectedIndexChanged);
             // 
             // lblGearOverclockerLabel
@@ -13035,8 +13047,11 @@ namespace Chummer
             this.treArmor.Size = new System.Drawing.Size(302, 564);
             this.treArmor.TabIndex = 69;
             this.treArmor.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treArmor_AfterSelect);
-            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.treArmor_DragOver);
-            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treArmor_KeyDown);
+            this.treArmor.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treArmor.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treArmor.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treArmor.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treArmor.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treArmor.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpArmor
@@ -13145,13 +13160,13 @@ namespace Chummer
             this.cmdArmorIncrease.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdArmorIncrease.AutoSize = true;
             this.cmdArmorIncrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorIncrease.Image = global::Chummer.Properties.Resources.add;
-            this.cmdArmorIncrease.ImageDpi120 = null;
-            this.cmdArmorIncrease.ImageDpi144 = null;
-            this.cmdArmorIncrease.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.cmdArmorIncrease.ImageDpi288 = null;
-            this.cmdArmorIncrease.ImageDpi384 = null;
-            this.cmdArmorIncrease.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdArmorIncrease.Image = global::Chummer.Properties.Resources.add_16;
+            this.cmdArmorIncrease.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.cmdArmorIncrease.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.cmdArmorIncrease.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.cmdArmorIncrease.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.cmdArmorIncrease.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.cmdArmorIncrease.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.cmdArmorIncrease.Location = new System.Drawing.Point(29, 3);
             this.cmdArmorIncrease.Name = "cmdArmorIncrease";
             this.cmdArmorIncrease.Padding = new System.Windows.Forms.Padding(1);
@@ -13166,13 +13181,13 @@ namespace Chummer
             this.cmdArmorDecrease.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdArmorDecrease.AutoSize = true;
             this.cmdArmorDecrease.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdArmorDecrease.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdArmorDecrease.ImageDpi120 = null;
-            this.cmdArmorDecrease.ImageDpi144 = null;
-            this.cmdArmorDecrease.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.cmdArmorDecrease.ImageDpi288 = null;
-            this.cmdArmorDecrease.ImageDpi384 = null;
-            this.cmdArmorDecrease.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdArmorDecrease.Image = global::Chummer.Properties.Resources.delete_16;
+            this.cmdArmorDecrease.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.cmdArmorDecrease.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.cmdArmorDecrease.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.cmdArmorDecrease.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.cmdArmorDecrease.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.cmdArmorDecrease.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdArmorDecrease.Location = new System.Drawing.Point(59, 3);
             this.cmdArmorDecrease.Name = "cmdArmorDecrease";
             this.cmdArmorDecrease.Padding = new System.Windows.Forms.Padding(1);
@@ -13401,7 +13416,6 @@ namespace Chummer
             this.cboArmorFirewall.Name = "cboArmorFirewall";
             this.cboArmorFirewall.Size = new System.Drawing.Size(93, 21);
             this.cboArmorFirewall.TabIndex = 219;
-            this.cboArmorFirewall.TooltipText = "";
             this.cboArmorFirewall.SelectedIndexChanged += new System.EventHandler(this.cboArmorFirewall_SelectedIndexChanged);
             // 
             // cboArmorOverclocker
@@ -13413,7 +13427,6 @@ namespace Chummer
             this.cboArmorOverclocker.Name = "cboArmorOverclocker";
             this.cboArmorOverclocker.Size = new System.Drawing.Size(93, 21);
             this.cboArmorOverclocker.TabIndex = 214;
-            this.cboArmorOverclocker.TooltipText = "";
             this.cboArmorOverclocker.Visible = false;
             this.cboArmorOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboArmorOverclocker_SelectedIndexChanged);
             // 
@@ -13567,7 +13580,6 @@ namespace Chummer
             this.cboArmorAttack.Name = "cboArmorAttack";
             this.cboArmorAttack.Size = new System.Drawing.Size(93, 21);
             this.cboArmorAttack.TabIndex = 216;
-            this.cboArmorAttack.TooltipText = "";
             this.cboArmorAttack.SelectedIndexChanged += new System.EventHandler(this.cboArmorAttack_SelectedIndexChanged);
             // 
             // cboArmorSleaze
@@ -13579,7 +13591,6 @@ namespace Chummer
             this.cboArmorSleaze.Name = "cboArmorSleaze";
             this.cboArmorSleaze.Size = new System.Drawing.Size(93, 21);
             this.cboArmorSleaze.TabIndex = 217;
-            this.cboArmorSleaze.TooltipText = "";
             this.cboArmorSleaze.SelectedIndexChanged += new System.EventHandler(this.cboArmorSleaze_SelectedIndexChanged);
             // 
             // cboArmorDataProcessing
@@ -13591,7 +13602,6 @@ namespace Chummer
             this.cboArmorDataProcessing.Name = "cboArmorDataProcessing";
             this.cboArmorDataProcessing.Size = new System.Drawing.Size(93, 21);
             this.cboArmorDataProcessing.TabIndex = 218;
-            this.cboArmorDataProcessing.TooltipText = "";
             this.cboArmorDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboArmorDataProcessing_SelectedIndexChanged);
             // 
             // tabArmorCM
@@ -14426,8 +14436,11 @@ namespace Chummer
             this.treWeapons.Size = new System.Drawing.Size(302, 564);
             this.treWeapons.TabIndex = 29;
             this.treWeapons.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treWeapons_AfterSelect);
-            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.treWeapons_DragOver);
-            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treWeapons_KeyDown);
+            this.treWeapons.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treWeapons.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treWeapons.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treWeapons.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treWeapons.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treWeapons.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpWeapons
@@ -14705,13 +14718,13 @@ namespace Chummer
             this.cmdWeaponMoveToVehicle.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdWeaponMoveToVehicle.AutoSize = true;
             this.cmdWeaponMoveToVehicle.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go;
-            this.cmdWeaponMoveToVehicle.ImageDpi120 = null;
-            this.cmdWeaponMoveToVehicle.ImageDpi144 = null;
-            this.cmdWeaponMoveToVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_go1;
-            this.cmdWeaponMoveToVehicle.ImageDpi288 = null;
-            this.cmdWeaponMoveToVehicle.ImageDpi384 = null;
-            this.cmdWeaponMoveToVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_go;
+            this.cmdWeaponMoveToVehicle.Image = global::Chummer.Properties.Resources.car_go_16;
+            this.cmdWeaponMoveToVehicle.ImageDpi120 = global::Chummer.Properties.Resources.car_go_20;
+            this.cmdWeaponMoveToVehicle.ImageDpi144 = global::Chummer.Properties.Resources.car_go_24;
+            this.cmdWeaponMoveToVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_go_32;
+            this.cmdWeaponMoveToVehicle.ImageDpi288 = global::Chummer.Properties.Resources.car_go_48;
+            this.cmdWeaponMoveToVehicle.ImageDpi384 = global::Chummer.Properties.Resources.car_go_64;
+            this.cmdWeaponMoveToVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_go_16;
             this.cmdWeaponMoveToVehicle.Location = new System.Drawing.Point(3, 3);
             this.cmdWeaponMoveToVehicle.Name = "cmdWeaponMoveToVehicle";
             this.cmdWeaponMoveToVehicle.Padding = new System.Windows.Forms.Padding(1);
@@ -15283,7 +15296,6 @@ namespace Chummer
             this.cboWeaponAmmo.Name = "cboWeaponAmmo";
             this.cboWeaponAmmo.Size = new System.Drawing.Size(151, 21);
             this.cboWeaponAmmo.TabIndex = 106;
-            this.cboWeaponAmmo.TooltipText = "";
             this.cboWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboWeaponAmmo_SelectedIndexChanged);
             // 
             // lblWeaponAmmoRemainingLabel
@@ -15389,13 +15401,13 @@ namespace Chummer
             this.cmdWeaponBuyAmmo.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdWeaponBuyAmmo.AutoSize = true;
             this.cmdWeaponBuyAmmo.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdWeaponBuyAmmo.Image = global::Chummer.Properties.Resources.basket_add;
-            this.cmdWeaponBuyAmmo.ImageDpi120 = null;
-            this.cmdWeaponBuyAmmo.ImageDpi144 = null;
-            this.cmdWeaponBuyAmmo.ImageDpi192 = global::Chummer.Properties.Resources.basket_add1;
-            this.cmdWeaponBuyAmmo.ImageDpi288 = null;
-            this.cmdWeaponBuyAmmo.ImageDpi384 = null;
-            this.cmdWeaponBuyAmmo.ImageDpi96 = global::Chummer.Properties.Resources.basket_add;
+            this.cmdWeaponBuyAmmo.Image = global::Chummer.Properties.Resources.basket_add_16;
+            this.cmdWeaponBuyAmmo.ImageDpi120 = global::Chummer.Properties.Resources.basket_add_20;
+            this.cmdWeaponBuyAmmo.ImageDpi144 = global::Chummer.Properties.Resources.basket_add_24;
+            this.cmdWeaponBuyAmmo.ImageDpi192 = global::Chummer.Properties.Resources.basket_add_32;
+            this.cmdWeaponBuyAmmo.ImageDpi288 = global::Chummer.Properties.Resources.basket_add_48;
+            this.cmdWeaponBuyAmmo.ImageDpi384 = global::Chummer.Properties.Resources.basket_add_64;
+            this.cmdWeaponBuyAmmo.ImageDpi96 = global::Chummer.Properties.Resources.basket_add_16;
             this.cmdWeaponBuyAmmo.Location = new System.Drawing.Point(261, 3);
             this.cmdWeaponBuyAmmo.Name = "cmdWeaponBuyAmmo";
             this.cmdWeaponBuyAmmo.Padding = new System.Windows.Forms.Padding(1);
@@ -15462,7 +15474,6 @@ namespace Chummer
             this.cboWeaponOverclocker.Name = "cboWeaponOverclocker";
             this.cboWeaponOverclocker.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponOverclocker.TabIndex = 218;
-            this.cboWeaponOverclocker.TooltipText = "";
             this.cboWeaponOverclocker.Visible = false;
             this.cboWeaponOverclocker.SelectedIndexChanged += new System.EventHandler(this.cboWeaponOverclocker_SelectedIndexChanged);
             // 
@@ -15568,7 +15579,6 @@ namespace Chummer
             this.cboWeaponGearDataProcessing.Name = "cboWeaponGearDataProcessing";
             this.cboWeaponGearDataProcessing.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearDataProcessing.TabIndex = 210;
-            this.cboWeaponGearDataProcessing.TooltipText = "";
             this.cboWeaponGearDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearDataProcessing_SelectedIndexChanged);
             // 
             // lblWeaponAttackLabel
@@ -15604,7 +15614,6 @@ namespace Chummer
             this.cboWeaponGearAttack.Name = "cboWeaponGearAttack";
             this.cboWeaponGearAttack.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearAttack.TabIndex = 207;
-            this.cboWeaponGearAttack.TooltipText = "";
             this.cboWeaponGearAttack.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearAttack_SelectedIndexChanged);
             // 
             // cboWeaponGearSleaze
@@ -15616,7 +15625,6 @@ namespace Chummer
             this.cboWeaponGearSleaze.Name = "cboWeaponGearSleaze";
             this.cboWeaponGearSleaze.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearSleaze.TabIndex = 208;
-            this.cboWeaponGearSleaze.TooltipText = "";
             this.cboWeaponGearSleaze.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearSleaze_SelectedIndexChanged);
             // 
             // lblWeaponSleazeLabel
@@ -15640,7 +15648,6 @@ namespace Chummer
             this.cboWeaponGearFirewall.Name = "cboWeaponGearFirewall";
             this.cboWeaponGearFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboWeaponGearFirewall.TabIndex = 209;
-            this.cboWeaponGearFirewall.TooltipText = "";
             this.cboWeaponGearFirewall.SelectedIndexChanged += new System.EventHandler(this.cboWeaponGearFirewall_SelectedIndexChanged);
             // 
             // lblWeaponDeviceRatingLabel
@@ -16685,13 +16692,13 @@ namespace Chummer
             this.btnIncreaseDrugQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnIncreaseDrugQty.AutoSize = true;
             this.btnIncreaseDrugQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnIncreaseDrugQty.Image = global::Chummer.Properties.Resources.add;
-            this.btnIncreaseDrugQty.ImageDpi120 = null;
-            this.btnIncreaseDrugQty.ImageDpi144 = null;
-            this.btnIncreaseDrugQty.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.btnIncreaseDrugQty.ImageDpi288 = null;
-            this.btnIncreaseDrugQty.ImageDpi384 = null;
-            this.btnIncreaseDrugQty.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.btnIncreaseDrugQty.Image = global::Chummer.Properties.Resources.add_16;
+            this.btnIncreaseDrugQty.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.btnIncreaseDrugQty.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.btnIncreaseDrugQty.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.btnIncreaseDrugQty.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.btnIncreaseDrugQty.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.btnIncreaseDrugQty.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.btnIncreaseDrugQty.Location = new System.Drawing.Point(38, 3);
             this.btnIncreaseDrugQty.Name = "btnIncreaseDrugQty";
             this.btnIncreaseDrugQty.Padding = new System.Windows.Forms.Padding(1);
@@ -16706,13 +16713,13 @@ namespace Chummer
             this.btnDecreaseDrugQty.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.btnDecreaseDrugQty.AutoSize = true;
             this.btnDecreaseDrugQty.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.btnDecreaseDrugQty.Image = global::Chummer.Properties.Resources.delete;
-            this.btnDecreaseDrugQty.ImageDpi120 = null;
-            this.btnDecreaseDrugQty.ImageDpi144 = null;
-            this.btnDecreaseDrugQty.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.btnDecreaseDrugQty.ImageDpi288 = null;
-            this.btnDecreaseDrugQty.ImageDpi384 = null;
-            this.btnDecreaseDrugQty.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.btnDecreaseDrugQty.Image = global::Chummer.Properties.Resources.delete_16;
+            this.btnDecreaseDrugQty.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.btnDecreaseDrugQty.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.btnDecreaseDrugQty.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.btnDecreaseDrugQty.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.btnDecreaseDrugQty.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.btnDecreaseDrugQty.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.btnDecreaseDrugQty.Location = new System.Drawing.Point(68, 3);
             this.btnDecreaseDrugQty.Name = "btnDecreaseDrugQty";
             this.btnDecreaseDrugQty.Padding = new System.Windows.Forms.Padding(1);
@@ -16830,9 +16837,8 @@ namespace Chummer
             this.treLifestyles.Size = new System.Drawing.Size(302, 564);
             this.treLifestyles.TabIndex = 80;
             this.treLifestyles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyles_AfterSelect);
-            this.treLifestyles.DragOver += new System.Windows.Forms.DragEventHandler(this.treLifestyles_DragOver);
             this.treLifestyles.DoubleClick += new System.EventHandler(this.treLifestyles_DoubleClick);
-            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treLifestyles_KeyDown);
+            this.treLifestyles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treLifestyles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // flpLifestyleDetails
@@ -16999,13 +17005,13 @@ namespace Chummer
             this.cmdDecreaseLifestyleMonths.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdDecreaseLifestyleMonths.AutoSize = true;
             this.cmdDecreaseLifestyleMonths.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdDecreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.delete;
-            this.cmdDecreaseLifestyleMonths.ImageDpi120 = null;
-            this.cmdDecreaseLifestyleMonths.ImageDpi144 = null;
-            this.cmdDecreaseLifestyleMonths.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.cmdDecreaseLifestyleMonths.ImageDpi288 = null;
-            this.cmdDecreaseLifestyleMonths.ImageDpi384 = null;
-            this.cmdDecreaseLifestyleMonths.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.cmdDecreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.delete_16;
+            this.cmdDecreaseLifestyleMonths.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.cmdDecreaseLifestyleMonths.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.cmdDecreaseLifestyleMonths.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.cmdDecreaseLifestyleMonths.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.cmdDecreaseLifestyleMonths.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.cmdDecreaseLifestyleMonths.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.cmdDecreaseLifestyleMonths.Location = new System.Drawing.Point(40, 3);
             this.cmdDecreaseLifestyleMonths.Name = "cmdDecreaseLifestyleMonths";
             this.cmdDecreaseLifestyleMonths.Padding = new System.Windows.Forms.Padding(1);
@@ -17020,13 +17026,13 @@ namespace Chummer
             this.cmdIncreaseLifestyleMonths.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.cmdIncreaseLifestyleMonths.AutoSize = true;
             this.cmdIncreaseLifestyleMonths.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.cmdIncreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.add;
-            this.cmdIncreaseLifestyleMonths.ImageDpi120 = null;
-            this.cmdIncreaseLifestyleMonths.ImageDpi144 = null;
-            this.cmdIncreaseLifestyleMonths.ImageDpi192 = global::Chummer.Properties.Resources.add1;
-            this.cmdIncreaseLifestyleMonths.ImageDpi288 = null;
-            this.cmdIncreaseLifestyleMonths.ImageDpi384 = null;
-            this.cmdIncreaseLifestyleMonths.ImageDpi96 = global::Chummer.Properties.Resources.add;
+            this.cmdIncreaseLifestyleMonths.Image = global::Chummer.Properties.Resources.add_16;
+            this.cmdIncreaseLifestyleMonths.ImageDpi120 = global::Chummer.Properties.Resources.add_20;
+            this.cmdIncreaseLifestyleMonths.ImageDpi144 = global::Chummer.Properties.Resources.add_24;
+            this.cmdIncreaseLifestyleMonths.ImageDpi192 = global::Chummer.Properties.Resources.add_32;
+            this.cmdIncreaseLifestyleMonths.ImageDpi288 = global::Chummer.Properties.Resources.add_48;
+            this.cmdIncreaseLifestyleMonths.ImageDpi384 = global::Chummer.Properties.Resources.add_64;
+            this.cmdIncreaseLifestyleMonths.ImageDpi96 = global::Chummer.Properties.Resources.add_16;
             this.cmdIncreaseLifestyleMonths.Location = new System.Drawing.Point(70, 3);
             this.cmdIncreaseLifestyleMonths.Name = "cmdIncreaseLifestyleMonths";
             this.cmdIncreaseLifestyleMonths.Padding = new System.Windows.Forms.Padding(1);
@@ -17283,6 +17289,8 @@ namespace Chummer
             this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSlotsLabel, 2, 2);
             this.tlpVehiclesCommon.Controls.Add(this.lblVehicleSlots, 3, 2);
             this.tlpVehiclesCommon.Controls.Add(this.flpVehiclesCommonMoveButtons, 2, 3);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCapacityLabel, 2, 5);
+            this.tlpVehiclesCommon.Controls.Add(this.lblVehicleCapacity, 3, 5);
             this.tlpVehiclesCommon.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpVehiclesCommon.Location = new System.Drawing.Point(3, 16);
             this.tlpVehiclesCommon.Margin = new System.Windows.Forms.Padding(0);
@@ -17514,6 +17522,31 @@ namespace Chummer
             this.lblVehicleSlotsLabel.TabIndex = 57;
             this.lblVehicleSlotsLabel.Tag = "Label_Slots";
             this.lblVehicleSlotsLabel.Text = "Slots:";
+            // 
+            // lblVehicleCapacityLabel
+            // 
+            this.lblVehicleCapacityLabel.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Right)));
+            this.lblVehicleCapacityLabel.AutoSize = true;
+            this.lblVehicleCapacityLabel.Location = new System.Drawing.Point(257, 106);
+            this.lblVehicleCapacityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCapacityLabel.Name = "lblVehicleCapacityLabel";
+            this.lblVehicleCapacityLabel.Size = new System.Drawing.Size(53, 13);
+            this.lblVehicleCapacityLabel.TabIndex = 61;
+            this.lblVehicleCapacityLabel.Tag = "Label_Capacity";
+            this.lblVehicleCapacityLabel.Text = "Capacity:";
+            this.lblVehicleCapacityLabel.Visible = false;
+            // 
+            // lblVehicleCapacity
+            // 
+            this.lblVehicleCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.lblVehicleCapacity.AutoSize = true;
+            this.lblVehicleCapacity.Location = new System.Drawing.Point(316, 106);
+            this.lblVehicleCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblVehicleCapacity.Name = "lblVehicleCapacity";
+            this.lblVehicleCapacity.Size = new System.Drawing.Size(58, 13);
+            this.lblVehicleCapacity.TabIndex = 62;
+            this.lblVehicleCapacity.Text = "[Capacity]";
+            this.lblVehicleCapacity.Visible = false;
             // 
             // lblVehicleSlots
             // 
@@ -18526,7 +18559,6 @@ namespace Chummer
             this.cboVehicleWeaponAmmo.Name = "cboVehicleWeaponAmmo";
             this.cboVehicleWeaponAmmo.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponAmmo.TabIndex = 114;
-            this.cboVehicleWeaponAmmo.TooltipText = "";
             this.cboVehicleWeaponAmmo.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponAmmo_SelectedIndexChanged);
             // 
             // lblFiringModeLabel
@@ -18550,7 +18582,6 @@ namespace Chummer
             this.cboVehicleWeaponFiringMode.Name = "cboVehicleWeaponFiringMode";
             this.cboVehicleWeaponFiringMode.Size = new System.Drawing.Size(151, 21);
             this.cboVehicleWeaponFiringMode.TabIndex = 248;
-            this.cboVehicleWeaponFiringMode.TooltipText = "";
             this.cboVehicleWeaponFiringMode.SelectedIndexChanged += new System.EventHandler(this.cboVehicleWeaponFiringMode_SelectedIndexChanged);
             // 
             // flpVehiclesWeaponCareerButtons
@@ -18683,7 +18714,6 @@ namespace Chummer
             this.cboVehicleDataProcessing.Name = "cboVehicleDataProcessing";
             this.cboVehicleDataProcessing.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleDataProcessing.TabIndex = 206;
-            this.cboVehicleDataProcessing.TooltipText = "";
             this.cboVehicleDataProcessing.Visible = false;
             this.cboVehicleDataProcessing.SelectedIndexChanged += new System.EventHandler(this.cboVehicleDataProcessing_SelectedIndexChanged);
             // 
@@ -18696,7 +18726,6 @@ namespace Chummer
             this.cboVehicleFirewall.Name = "cboVehicleFirewall";
             this.cboVehicleFirewall.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleFirewall.TabIndex = 205;
-            this.cboVehicleFirewall.TooltipText = "";
             this.cboVehicleFirewall.Visible = false;
             this.cboVehicleFirewall.SelectedIndexChanged += new System.EventHandler(this.cboVehicleFirewall_SelectedIndexChanged);
             // 
@@ -18733,7 +18762,6 @@ namespace Chummer
             this.cboVehicleSleaze.Name = "cboVehicleSleaze";
             this.cboVehicleSleaze.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleSleaze.TabIndex = 204;
-            this.cboVehicleSleaze.TooltipText = "";
             this.cboVehicleSleaze.Visible = false;
             this.cboVehicleSleaze.SelectedIndexChanged += new System.EventHandler(this.cboVehicleSleaze_SelectedIndexChanged);
             // 
@@ -18769,7 +18797,6 @@ namespace Chummer
             this.cboVehicleAttack.Name = "cboVehicleAttack";
             this.cboVehicleAttack.Size = new System.Drawing.Size(96, 21);
             this.cboVehicleAttack.TabIndex = 203;
-            this.cboVehicleAttack.TooltipText = "";
             this.cboVehicleAttack.Visible = false;
             this.cboVehicleAttack.SelectedIndexChanged += new System.EventHandler(this.cboVehicleAttack_SelectedIndexChanged);
             // 
@@ -20055,8 +20082,11 @@ namespace Chummer
             this.treVehicles.Size = new System.Drawing.Size(304, 590);
             this.treVehicles.TabIndex = 30;
             this.treVehicles.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treVehicles_AfterSelect);
-            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.treVehicles_DragOver);
-            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treVehicles_KeyDown);
+            this.treVehicles.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treVehicles.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treVehicles.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
+            this.treVehicles.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
+            this.treVehicles.KeyDown += new System.Windows.Forms.KeyEventHandler(this.TreeView_KeyDown);
             this.treVehicles.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
             // tlpVehiclesButtons
@@ -20233,7 +20263,6 @@ namespace Chummer
             this.cboPrimaryArm.Name = "cboPrimaryArm";
             this.cboPrimaryArm.Size = new System.Drawing.Size(145, 21);
             this.cboPrimaryArm.TabIndex = 95;
-            this.cboPrimaryArm.TooltipText = "";
             this.cboPrimaryArm.SelectedIndexChanged += new System.EventHandler(this.cboPrimaryArm_SelectedIndexChanged);
             // 
             // lblGender
@@ -21454,8 +21483,11 @@ namespace Chummer
             this.treImprovements.Size = new System.Drawing.Size(304, 590);
             this.treImprovements.TabIndex = 81;
             this.treImprovements.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treImprovements_AfterSelect);
-            this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.treImprovements_DragOver);
+            this.treImprovements.DragDrop += new System.Windows.Forms.DragEventHandler(this.TreeView_DragDrop);
+            this.treImprovements.DragEnter += new System.Windows.Forms.DragEventHandler(this.TreeView_DragEnter);
+            this.treImprovements.DragOver += new System.Windows.Forms.DragEventHandler(this.TreeView_DragOver);
             this.treImprovements.DoubleClick += new System.EventHandler(this.treImprovements_DoubleClick);
+            this.treImprovements.ItemDrag += new System.Windows.Forms.ItemDragEventHandler(this.TreeView_ItemDrag);
             this.treImprovements.KeyDown += new System.Windows.Forms.KeyEventHandler(this.treImprovements_KeyDown);
             this.treImprovements.MouseDown += new System.Windows.Forms.MouseEventHandler(this.TreeView_MouseDown);
             // 
@@ -21780,13 +21812,13 @@ namespace Chummer
             // 
             // tsAddFromFile
             // 
-            this.tsAddFromFile.Image = global::Chummer.Properties.Resources.folder_user;
-            this.tsAddFromFile.ImageDpi120 = null;
-            this.tsAddFromFile.ImageDpi144 = null;
-            this.tsAddFromFile.ImageDpi192 = global::Chummer.Properties.Resources.folder_user1;
-            this.tsAddFromFile.ImageDpi288 = null;
-            this.tsAddFromFile.ImageDpi384 = null;
-            this.tsAddFromFile.ImageDpi96 = global::Chummer.Properties.Resources.folder_user;
+            this.tsAddFromFile.Image = global::Chummer.Properties.Resources.folder_user_16;
+            this.tsAddFromFile.ImageDpi120 = global::Chummer.Properties.Resources.folder_user_20;
+            this.tsAddFromFile.ImageDpi144 = global::Chummer.Properties.Resources.folder_user_24;
+            this.tsAddFromFile.ImageDpi192 = global::Chummer.Properties.Resources.folder_user_32;
+            this.tsAddFromFile.ImageDpi288 = global::Chummer.Properties.Resources.folder_user_48;
+            this.tsAddFromFile.ImageDpi384 = global::Chummer.Properties.Resources.folder_user_64;
+            this.tsAddFromFile.ImageDpi96 = global::Chummer.Properties.Resources.folder_user_16;
             this.tsAddFromFile.Name = "tsAddFromFile";
             this.tsAddFromFile.Size = new System.Drawing.Size(148, 22);
             this.tsAddFromFile.Tag = "Menu_AddFromFile";
@@ -21946,13 +21978,13 @@ namespace Chummer
             // 
             // tsInitiationNotes
             // 
-            this.tsInitiationNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsInitiationNotes.ImageDpi120 = null;
-            this.tsInitiationNotes.ImageDpi144 = null;
-            this.tsInitiationNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsInitiationNotes.ImageDpi288 = null;
-            this.tsInitiationNotes.ImageDpi384 = null;
-            this.tsInitiationNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsInitiationNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsInitiationNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsInitiationNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsInitiationNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsInitiationNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsInitiationNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsInitiationNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsInitiationNotes.Name = "tsInitiationNotes";
             this.tsInitiationNotes.Size = new System.Drawing.Size(105, 22);
             this.tsInitiationNotes.Tag = "Menu_Notes";
@@ -21976,13 +22008,13 @@ namespace Chummer
             // 
             // tsBiowareNotes
             // 
-            this.tsBiowareNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsBiowareNotes.ImageDpi120 = null;
-            this.tsBiowareNotes.ImageDpi144 = null;
-            this.tsBiowareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsBiowareNotes.ImageDpi288 = null;
-            this.tsBiowareNotes.ImageDpi384 = null;
-            this.tsBiowareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsBiowareNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsBiowareNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsBiowareNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsBiowareNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsBiowareNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsBiowareNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsBiowareNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsBiowareNotes.Name = "tsBiowareNotes";
             this.tsBiowareNotes.Size = new System.Drawing.Size(203, 22);
             this.tsBiowareNotes.Tag = "Menu_Notes";
@@ -21991,13 +22023,13 @@ namespace Chummer
             // 
             // tsBiowareReapplyImprovements
             // 
-            this.tsBiowareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsBiowareReapplyImprovements.ImageDpi120 = null;
-            this.tsBiowareReapplyImprovements.ImageDpi144 = null;
-            this.tsBiowareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsBiowareReapplyImprovements.ImageDpi288 = null;
-            this.tsBiowareReapplyImprovements.ImageDpi384 = null;
-            this.tsBiowareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsBiowareReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsBiowareReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsBiowareReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsBiowareReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsBiowareReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsBiowareReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsBiowareReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsBiowareReapplyImprovements.Name = "tsBiowareReapplyImprovements";
             this.tsBiowareReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsBiowareReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -22014,13 +22046,13 @@ namespace Chummer
             // 
             // tsEditAdvancedLifestyle
             // 
-            this.tsEditAdvancedLifestyle.Image = global::Chummer.Properties.Resources.house_edit;
-            this.tsEditAdvancedLifestyle.ImageDpi120 = null;
-            this.tsEditAdvancedLifestyle.ImageDpi144 = null;
-            this.tsEditAdvancedLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house_edit1;
-            this.tsEditAdvancedLifestyle.ImageDpi288 = null;
-            this.tsEditAdvancedLifestyle.ImageDpi384 = null;
-            this.tsEditAdvancedLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house_edit;
+            this.tsEditAdvancedLifestyle.Image = global::Chummer.Properties.Resources.house_edit_16;
+            this.tsEditAdvancedLifestyle.ImageDpi120 = global::Chummer.Properties.Resources.house_edit_20;
+            this.tsEditAdvancedLifestyle.ImageDpi144 = global::Chummer.Properties.Resources.house_edit_24;
+            this.tsEditAdvancedLifestyle.ImageDpi192 = global::Chummer.Properties.Resources.house_edit_32;
+            this.tsEditAdvancedLifestyle.ImageDpi288 = global::Chummer.Properties.Resources.house_edit_48;
+            this.tsEditAdvancedLifestyle.ImageDpi384 = global::Chummer.Properties.Resources.house_edit_64;
+            this.tsEditAdvancedLifestyle.ImageDpi96 = global::Chummer.Properties.Resources.house_edit_16;
             this.tsEditAdvancedLifestyle.Name = "tsEditAdvancedLifestyle";
             this.tsEditAdvancedLifestyle.Size = new System.Drawing.Size(196, 22);
             this.tsEditAdvancedLifestyle.Tag = "Menu_EditAdvancedLifestyle";
@@ -22029,13 +22061,13 @@ namespace Chummer
             // 
             // tsAdvancedLifestyleNotes
             // 
-            this.tsAdvancedLifestyleNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsAdvancedLifestyleNotes.ImageDpi120 = null;
-            this.tsAdvancedLifestyleNotes.ImageDpi144 = null;
-            this.tsAdvancedLifestyleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsAdvancedLifestyleNotes.ImageDpi288 = null;
-            this.tsAdvancedLifestyleNotes.ImageDpi384 = null;
-            this.tsAdvancedLifestyleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsAdvancedLifestyleNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsAdvancedLifestyleNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsAdvancedLifestyleNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsAdvancedLifestyleNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsAdvancedLifestyleNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsAdvancedLifestyleNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsAdvancedLifestyleNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsAdvancedLifestyleNotes.Name = "tsAdvancedLifestyleNotes";
             this.tsAdvancedLifestyleNotes.Size = new System.Drawing.Size(196, 22);
             this.tsAdvancedLifestyleNotes.Tag = "Menu_Notes";
@@ -22052,13 +22084,13 @@ namespace Chummer
             // 
             // tsGearLocationAddGear
             // 
-            this.tsGearLocationAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsGearLocationAddGear.ImageDpi120 = null;
-            this.tsGearLocationAddGear.ImageDpi144 = null;
-            this.tsGearLocationAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsGearLocationAddGear.ImageDpi288 = null;
-            this.tsGearLocationAddGear.ImageDpi384 = null;
-            this.tsGearLocationAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsGearLocationAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsGearLocationAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsGearLocationAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsGearLocationAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsGearLocationAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsGearLocationAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsGearLocationAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsGearLocationAddGear.Name = "tsGearLocationAddGear";
             this.tsGearLocationAddGear.Size = new System.Drawing.Size(166, 22);
             this.tsGearLocationAddGear.Tag = "Menu_AddGear";
@@ -22067,13 +22099,13 @@ namespace Chummer
             // 
             // tsGearRenameLocation
             // 
-            this.tsGearRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
-            this.tsGearRenameLocation.ImageDpi120 = null;
-            this.tsGearRenameLocation.ImageDpi144 = null;
-            this.tsGearRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit1;
-            this.tsGearRenameLocation.ImageDpi288 = null;
-            this.tsGearRenameLocation.ImageDpi384 = null;
-            this.tsGearRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit;
+            this.tsGearRenameLocation.Image = global::Chummer.Properties.Resources.building_edit_16;
+            this.tsGearRenameLocation.ImageDpi120 = global::Chummer.Properties.Resources.building_edit_20;
+            this.tsGearRenameLocation.ImageDpi144 = global::Chummer.Properties.Resources.building_edit_24;
+            this.tsGearRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit_32;
+            this.tsGearRenameLocation.ImageDpi288 = global::Chummer.Properties.Resources.building_edit_48;
+            this.tsGearRenameLocation.ImageDpi384 = global::Chummer.Properties.Resources.building_edit_64;
+            this.tsGearRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit_16;
             this.tsGearRenameLocation.Name = "tsGearRenameLocation";
             this.tsGearRenameLocation.Size = new System.Drawing.Size(166, 22);
             this.tsGearRenameLocation.Tag = "Menu_RenameLocation";
@@ -22089,13 +22121,13 @@ namespace Chummer
             // 
             // tsImprovementNotes
             // 
-            this.tsImprovementNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsImprovementNotes.ImageDpi120 = null;
-            this.tsImprovementNotes.ImageDpi144 = null;
-            this.tsImprovementNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsImprovementNotes.ImageDpi288 = null;
-            this.tsImprovementNotes.ImageDpi384 = null;
-            this.tsImprovementNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsImprovementNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsImprovementNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsImprovementNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsImprovementNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsImprovementNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsImprovementNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsImprovementNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsImprovementNotes.Name = "tsImprovementNotes";
             this.tsImprovementNotes.Size = new System.Drawing.Size(105, 22);
             this.tsImprovementNotes.Tag = "Menu_Notes";
@@ -22112,13 +22144,13 @@ namespace Chummer
             // 
             // tsArmorLocationAddArmor
             // 
-            this.tsArmorLocationAddArmor.Image = global::Chummer.Properties.Resources.user_knight_add;
-            this.tsArmorLocationAddArmor.ImageDpi120 = null;
-            this.tsArmorLocationAddArmor.ImageDpi144 = null;
-            this.tsArmorLocationAddArmor.ImageDpi192 = global::Chummer.Properties.Resources.user_knight_add1;
-            this.tsArmorLocationAddArmor.ImageDpi288 = null;
-            this.tsArmorLocationAddArmor.ImageDpi384 = null;
-            this.tsArmorLocationAddArmor.ImageDpi96 = global::Chummer.Properties.Resources.user_knight_add;
+            this.tsArmorLocationAddArmor.Image = global::Chummer.Properties.Resources.user_knight_add_16;
+            this.tsArmorLocationAddArmor.ImageDpi120 = global::Chummer.Properties.Resources.user_knight_add_20;
+            this.tsArmorLocationAddArmor.ImageDpi144 = global::Chummer.Properties.Resources.user_knight_add_24;
+            this.tsArmorLocationAddArmor.ImageDpi192 = global::Chummer.Properties.Resources.user_knight_add_32;
+            this.tsArmorLocationAddArmor.ImageDpi288 = global::Chummer.Properties.Resources.user_knight_add_48;
+            this.tsArmorLocationAddArmor.ImageDpi384 = global::Chummer.Properties.Resources.user_knight_add_64;
+            this.tsArmorLocationAddArmor.ImageDpi96 = global::Chummer.Properties.Resources.user_knight_add_16;
             this.tsArmorLocationAddArmor.Name = "tsArmorLocationAddArmor";
             this.tsArmorLocationAddArmor.Size = new System.Drawing.Size(166, 22);
             this.tsArmorLocationAddArmor.Tag = "Button_AddArmor";
@@ -22127,13 +22159,13 @@ namespace Chummer
             // 
             // tsArmorRenameLocation
             // 
-            this.tsArmorRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
-            this.tsArmorRenameLocation.ImageDpi120 = null;
-            this.tsArmorRenameLocation.ImageDpi144 = null;
-            this.tsArmorRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit1;
-            this.tsArmorRenameLocation.ImageDpi288 = null;
-            this.tsArmorRenameLocation.ImageDpi384 = null;
-            this.tsArmorRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit;
+            this.tsArmorRenameLocation.Image = global::Chummer.Properties.Resources.building_edit_16;
+            this.tsArmorRenameLocation.ImageDpi120 = global::Chummer.Properties.Resources.building_edit_20;
+            this.tsArmorRenameLocation.ImageDpi144 = global::Chummer.Properties.Resources.building_edit_24;
+            this.tsArmorRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit_32;
+            this.tsArmorRenameLocation.ImageDpi288 = global::Chummer.Properties.Resources.building_edit_48;
+            this.tsArmorRenameLocation.ImageDpi384 = global::Chummer.Properties.Resources.building_edit_64;
+            this.tsArmorRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit_16;
             this.tsArmorRenameLocation.Name = "tsArmorRenameLocation";
             this.tsArmorRenameLocation.Size = new System.Drawing.Size(166, 22);
             this.tsArmorRenameLocation.Tag = "Menu_RenameLocation";
@@ -22150,13 +22182,13 @@ namespace Chummer
             // 
             // tsImprovementRenameLocation
             // 
-            this.tsImprovementRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
-            this.tsImprovementRenameLocation.ImageDpi120 = null;
-            this.tsImprovementRenameLocation.ImageDpi144 = null;
-            this.tsImprovementRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit1;
-            this.tsImprovementRenameLocation.ImageDpi288 = null;
-            this.tsImprovementRenameLocation.ImageDpi384 = null;
-            this.tsImprovementRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit;
+            this.tsImprovementRenameLocation.Image = global::Chummer.Properties.Resources.building_edit_16;
+            this.tsImprovementRenameLocation.ImageDpi120 = global::Chummer.Properties.Resources.building_edit_20;
+            this.tsImprovementRenameLocation.ImageDpi144 = global::Chummer.Properties.Resources.building_edit_24;
+            this.tsImprovementRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit_32;
+            this.tsImprovementRenameLocation.ImageDpi288 = global::Chummer.Properties.Resources.building_edit_48;
+            this.tsImprovementRenameLocation.ImageDpi384 = global::Chummer.Properties.Resources.building_edit_64;
+            this.tsImprovementRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit_16;
             this.tsImprovementRenameLocation.Name = "tsImprovementRenameLocation";
             this.tsImprovementRenameLocation.Size = new System.Drawing.Size(166, 22);
             this.tsImprovementRenameLocation.Tag = "Menu_RenameLocation";
@@ -22173,13 +22205,13 @@ namespace Chummer
             // 
             // tsCyberwareGearMenuAddAsPlugin
             // 
-            this.tsCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi120 = null;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi144 = null;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi288 = null;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi384 = null;
-            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsCyberwareGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsCyberwareGearMenuAddAsPlugin.Name = "tsCyberwareGearMenuAddAsPlugin";
             this.tsCyberwareGearMenuAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -22188,13 +22220,13 @@ namespace Chummer
             // 
             // tsCyberwareGearReapplyImprovements
             // 
-            this.tsCyberwareGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi120 = null;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi144 = null;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi288 = null;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi384 = null;
-            this.tsCyberwareGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsCyberwareGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsCyberwareGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsCyberwareGearReapplyImprovements.Name = "tsCyberwareGearReapplyImprovements";
             this.tsCyberwareGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsCyberwareGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -22210,13 +22242,13 @@ namespace Chummer
             // 
             // tsVehicleCyberwareGearMenuAddAsPlugin
             // 
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi120 = null;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi144 = null;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi288 = null;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi384 = null;
-            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleCyberwareGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleCyberwareGearMenuAddAsPlugin.Name = "tsVehicleCyberwareGearMenuAddAsPlugin";
             this.tsVehicleCyberwareGearMenuAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleCyberwareGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -22234,13 +22266,13 @@ namespace Chummer
             // 
             // tsWeaponAccessoryGearMenuAddAsPlugin
             // 
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi120 = null;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi144 = null;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi288 = null;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi384 = null;
-            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsWeaponAccessoryGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Name = "tsWeaponAccessoryGearMenuAddAsPlugin";
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Size = new System.Drawing.Size(203, 22);
             this.tsWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -22249,13 +22281,13 @@ namespace Chummer
             // 
             // tsWeaponAccessoryGearReapplyImprovements
             // 
-            this.tsWeaponAccessoryGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi120 = null;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi144 = null;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi288 = null;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi384 = null;
-            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsWeaponAccessoryGearReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsWeaponAccessoryGearReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsWeaponAccessoryGearReapplyImprovements.Name = "tsWeaponAccessoryGearReapplyImprovements";
             this.tsWeaponAccessoryGearReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsWeaponAccessoryGearReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -22273,13 +22305,13 @@ namespace Chummer
             // 
             // tsVehicleRenameLocation
             // 
-            this.tsVehicleRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
-            this.tsVehicleRenameLocation.ImageDpi120 = null;
-            this.tsVehicleRenameLocation.ImageDpi144 = null;
-            this.tsVehicleRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit1;
-            this.tsVehicleRenameLocation.ImageDpi288 = null;
-            this.tsVehicleRenameLocation.ImageDpi384 = null;
-            this.tsVehicleRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit;
+            this.tsVehicleRenameLocation.Image = global::Chummer.Properties.Resources.building_edit_16;
+            this.tsVehicleRenameLocation.ImageDpi120 = global::Chummer.Properties.Resources.building_edit_20;
+            this.tsVehicleRenameLocation.ImageDpi144 = global::Chummer.Properties.Resources.building_edit_24;
+            this.tsVehicleRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit_32;
+            this.tsVehicleRenameLocation.ImageDpi288 = global::Chummer.Properties.Resources.building_edit_48;
+            this.tsVehicleRenameLocation.ImageDpi384 = global::Chummer.Properties.Resources.building_edit_64;
+            this.tsVehicleRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit_16;
             this.tsVehicleRenameLocation.Name = "tsVehicleRenameLocation";
             this.tsVehicleRenameLocation.Size = new System.Drawing.Size(166, 22);
             this.tsVehicleRenameLocation.Tag = "Menu_RenameLocation";
@@ -22289,29 +22321,29 @@ namespace Chummer
             // tsVehicleLocationAddVehicle
             // 
             this.tsVehicleLocationAddVehicle.Enabled = false;
-            this.tsVehicleLocationAddVehicle.Image = global::Chummer.Properties.Resources.car_add;
-            this.tsVehicleLocationAddVehicle.ImageDpi120 = null;
-            this.tsVehicleLocationAddVehicle.ImageDpi144 = null;
-            this.tsVehicleLocationAddVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_add1;
-            this.tsVehicleLocationAddVehicle.ImageDpi288 = null;
-            this.tsVehicleLocationAddVehicle.ImageDpi384 = null;
-            this.tsVehicleLocationAddVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_add;
+            this.tsVehicleLocationAddVehicle.Image = global::Chummer.Properties.Resources.car_add_16;
+            this.tsVehicleLocationAddVehicle.ImageDpi120 = global::Chummer.Properties.Resources.car_add_20;
+            this.tsVehicleLocationAddVehicle.ImageDpi144 = global::Chummer.Properties.Resources.car_add_24;
+            this.tsVehicleLocationAddVehicle.ImageDpi192 = global::Chummer.Properties.Resources.car_add_32;
+            this.tsVehicleLocationAddVehicle.ImageDpi288 = global::Chummer.Properties.Resources.car_add_48;
+            this.tsVehicleLocationAddVehicle.ImageDpi384 = global::Chummer.Properties.Resources.car_add_64;
+            this.tsVehicleLocationAddVehicle.ImageDpi96 = global::Chummer.Properties.Resources.car_add_16;
             this.tsVehicleLocationAddVehicle.Name = "tsVehicleLocationAddVehicle";
             this.tsVehicleLocationAddVehicle.Size = new System.Drawing.Size(166, 22);
             this.tsVehicleLocationAddVehicle.Tag = "Button_AddVehicle";
-            this.tsVehicleLocationAddVehicle.Text = "Add &Vehicle";
+            this.tsVehicleLocationAddVehicle.Text = "&Add Vehicle";
             this.tsVehicleLocationAddVehicle.Click += new System.EventHandler(this.tsVehicleLocationAddVehicle_Click);
             // 
             // tsVehicleLocationAddWeapon
             // 
             this.tsVehicleLocationAddWeapon.Enabled = false;
-            this.tsVehicleLocationAddWeapon.Image = global::Chummer.Properties.Resources.gun_add;
-            this.tsVehicleLocationAddWeapon.ImageDpi120 = null;
-            this.tsVehicleLocationAddWeapon.ImageDpi144 = null;
-            this.tsVehicleLocationAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add1;
-            this.tsVehicleLocationAddWeapon.ImageDpi288 = null;
-            this.tsVehicleLocationAddWeapon.ImageDpi384 = null;
-            this.tsVehicleLocationAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add;
+            this.tsVehicleLocationAddWeapon.Image = global::Chummer.Properties.Resources.gun_add_16;
+            this.tsVehicleLocationAddWeapon.ImageDpi120 = global::Chummer.Properties.Resources.gun_add_20;
+            this.tsVehicleLocationAddWeapon.ImageDpi144 = global::Chummer.Properties.Resources.gun_add_24;
+            this.tsVehicleLocationAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add_32;
+            this.tsVehicleLocationAddWeapon.ImageDpi288 = global::Chummer.Properties.Resources.gun_add_48;
+            this.tsVehicleLocationAddWeapon.ImageDpi384 = global::Chummer.Properties.Resources.gun_add_64;
+            this.tsVehicleLocationAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add_16;
             this.tsVehicleLocationAddWeapon.Name = "tsVehicleLocationAddWeapon";
             this.tsVehicleLocationAddWeapon.Size = new System.Drawing.Size(166, 22);
             this.tsVehicleLocationAddWeapon.Tag = "Menu_AddWeapon";
@@ -22328,13 +22360,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponAccessoryAddGear
             // 
-            this.tsVehicleWeaponAccessoryAddGear.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi120 = null;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi144 = null;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi288 = null;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi384 = null;
-            this.tsVehicleWeaponAccessoryAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleWeaponAccessoryAddGear.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleWeaponAccessoryAddGear.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleWeaponAccessoryAddGear.Name = "tsVehicleWeaponAccessoryAddGear";
             this.tsVehicleWeaponAccessoryAddGear.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponAccessoryAddGear.Tag = "Menu_AddGear";
@@ -22343,13 +22375,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponAccessoryNotes
             // 
-            this.tsVehicleWeaponAccessoryNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponAccessoryNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponAccessoryNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleWeaponAccessoryNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleWeaponAccessoryNotes.Name = "tsVehicleWeaponAccessoryNotes";
             this.tsVehicleWeaponAccessoryNotes.Size = new System.Drawing.Size(123, 22);
             this.tsVehicleWeaponAccessoryNotes.Tag = "Menu_Notes";
@@ -22366,13 +22398,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponAccessoryGearMenuAddAsPlugin
             // 
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi120 = null;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi144 = null;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add1;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi288 = null;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi384 = null;
-            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Name = "tsVehicleWeaponAccessoryGearMenuAddAsPlugin";
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleWeaponAccessoryGearMenuAddAsPlugin.Tag = "Menu_AddAsPlugin";
@@ -22389,13 +22421,13 @@ namespace Chummer
             // 
             // tsWeaponLocationAddWeapon
             // 
-            this.tsWeaponLocationAddWeapon.Image = global::Chummer.Properties.Resources.gun_add;
-            this.tsWeaponLocationAddWeapon.ImageDpi120 = null;
-            this.tsWeaponLocationAddWeapon.ImageDpi144 = null;
-            this.tsWeaponLocationAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add1;
-            this.tsWeaponLocationAddWeapon.ImageDpi288 = null;
-            this.tsWeaponLocationAddWeapon.ImageDpi384 = null;
-            this.tsWeaponLocationAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add;
+            this.tsWeaponLocationAddWeapon.Image = global::Chummer.Properties.Resources.gun_add_16;
+            this.tsWeaponLocationAddWeapon.ImageDpi120 = global::Chummer.Properties.Resources.gun_add_20;
+            this.tsWeaponLocationAddWeapon.ImageDpi144 = global::Chummer.Properties.Resources.gun_add_24;
+            this.tsWeaponLocationAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add_32;
+            this.tsWeaponLocationAddWeapon.ImageDpi288 = global::Chummer.Properties.Resources.gun_add_48;
+            this.tsWeaponLocationAddWeapon.ImageDpi384 = global::Chummer.Properties.Resources.gun_add_64;
+            this.tsWeaponLocationAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add_16;
             this.tsWeaponLocationAddWeapon.Name = "tsWeaponLocationAddWeapon";
             this.tsWeaponLocationAddWeapon.Size = new System.Drawing.Size(166, 22);
             this.tsWeaponLocationAddWeapon.Tag = "Menu_AddWeapon";
@@ -22404,13 +22436,13 @@ namespace Chummer
             // 
             // tsWeaponRenameLocation
             // 
-            this.tsWeaponRenameLocation.Image = global::Chummer.Properties.Resources.building_edit;
-            this.tsWeaponRenameLocation.ImageDpi120 = null;
-            this.tsWeaponRenameLocation.ImageDpi144 = null;
-            this.tsWeaponRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit1;
-            this.tsWeaponRenameLocation.ImageDpi288 = null;
-            this.tsWeaponRenameLocation.ImageDpi384 = null;
-            this.tsWeaponRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit;
+            this.tsWeaponRenameLocation.Image = global::Chummer.Properties.Resources.building_edit_16;
+            this.tsWeaponRenameLocation.ImageDpi120 = global::Chummer.Properties.Resources.building_edit_20;
+            this.tsWeaponRenameLocation.ImageDpi144 = global::Chummer.Properties.Resources.building_edit_24;
+            this.tsWeaponRenameLocation.ImageDpi192 = global::Chummer.Properties.Resources.building_edit_32;
+            this.tsWeaponRenameLocation.ImageDpi288 = global::Chummer.Properties.Resources.building_edit_48;
+            this.tsWeaponRenameLocation.ImageDpi384 = global::Chummer.Properties.Resources.building_edit_64;
+            this.tsWeaponRenameLocation.ImageDpi96 = global::Chummer.Properties.Resources.building_edit_16;
             this.tsWeaponRenameLocation.Name = "tsWeaponRenameLocation";
             this.tsWeaponRenameLocation.Size = new System.Drawing.Size(166, 22);
             this.tsWeaponRenameLocation.Tag = "Menu_RenameLocation";
@@ -22427,13 +22459,13 @@ namespace Chummer
             // 
             // tsTechniqueAddNotes
             // 
-            this.tsTechniqueAddNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsTechniqueAddNotes.ImageDpi120 = null;
-            this.tsTechniqueAddNotes.ImageDpi144 = null;
-            this.tsTechniqueAddNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsTechniqueAddNotes.ImageDpi288 = null;
-            this.tsTechniqueAddNotes.ImageDpi384 = null;
-            this.tsTechniqueAddNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsTechniqueAddNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsTechniqueAddNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsTechniqueAddNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsTechniqueAddNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsTechniqueAddNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsTechniqueAddNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsTechniqueAddNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsTechniqueAddNotes.Name = "tsTechniqueAddNotes";
             this.tsTechniqueAddNotes.Size = new System.Drawing.Size(203, 22);
             this.tsTechniqueAddNotes.Tag = "Menu_Notes";
@@ -22442,13 +22474,13 @@ namespace Chummer
             // 
             // tsTechniqueReapplyImprovements
             // 
-            this.tsTechniqueReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsTechniqueReapplyImprovements.ImageDpi120 = null;
-            this.tsTechniqueReapplyImprovements.ImageDpi144 = null;
-            this.tsTechniqueReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsTechniqueReapplyImprovements.ImageDpi288 = null;
-            this.tsTechniqueReapplyImprovements.ImageDpi384 = null;
-            this.tsTechniqueReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsTechniqueReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsTechniqueReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsTechniqueReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsTechniqueReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsTechniqueReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsTechniqueReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsTechniqueReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsTechniqueReapplyImprovements.Name = "tsTechniqueReapplyImprovements";
             this.tsTechniqueReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsTechniqueReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -22466,13 +22498,13 @@ namespace Chummer
             // 
             // tsAIProgramAddOption
             // 
-            this.tsAIProgramAddOption.Image = global::Chummer.Properties.Resources.plugin_add;
-            this.tsAIProgramAddOption.ImageDpi120 = null;
-            this.tsAIProgramAddOption.ImageDpi144 = null;
-            this.tsAIProgramAddOption.ImageDpi192 = global::Chummer.Properties.Resources.plugin_add1;
-            this.tsAIProgramAddOption.ImageDpi288 = null;
-            this.tsAIProgramAddOption.ImageDpi384 = null;
-            this.tsAIProgramAddOption.ImageDpi96 = global::Chummer.Properties.Resources.plugin_add;
+            this.tsAIProgramAddOption.Image = global::Chummer.Properties.Resources.plugin_add_16;
+            this.tsAIProgramAddOption.ImageDpi120 = global::Chummer.Properties.Resources.plugin_add_20;
+            this.tsAIProgramAddOption.ImageDpi144 = global::Chummer.Properties.Resources.plugin_add_24;
+            this.tsAIProgramAddOption.ImageDpi192 = global::Chummer.Properties.Resources.plugin_add_32;
+            this.tsAIProgramAddOption.ImageDpi288 = global::Chummer.Properties.Resources.plugin_add_48;
+            this.tsAIProgramAddOption.ImageDpi384 = global::Chummer.Properties.Resources.plugin_add_64;
+            this.tsAIProgramAddOption.ImageDpi96 = global::Chummer.Properties.Resources.plugin_add_16;
             this.tsAIProgramAddOption.Name = "tsAIProgramAddOption";
             this.tsAIProgramAddOption.Size = new System.Drawing.Size(203, 22);
             this.tsAIProgramAddOption.Tag = "Menu_AddOption";
@@ -22480,13 +22512,13 @@ namespace Chummer
             // 
             // tsAIProgramNotes
             // 
-            this.tsAIProgramNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsAIProgramNotes.ImageDpi120 = null;
-            this.tsAIProgramNotes.ImageDpi144 = null;
-            this.tsAIProgramNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsAIProgramNotes.ImageDpi288 = null;
-            this.tsAIProgramNotes.ImageDpi384 = null;
-            this.tsAIProgramNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsAIProgramNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsAIProgramNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsAIProgramNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsAIProgramNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsAIProgramNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsAIProgramNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsAIProgramNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsAIProgramNotes.Name = "tsAIProgramNotes";
             this.tsAIProgramNotes.Size = new System.Drawing.Size(203, 22);
             this.tsAIProgramNotes.Tag = "Menu_Notes";
@@ -22495,13 +22527,13 @@ namespace Chummer
             // 
             // tsAIProgramReapplyImprovements
             // 
-            this.tsAIProgramReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh;
-            this.tsAIProgramReapplyImprovements.ImageDpi120 = null;
-            this.tsAIProgramReapplyImprovements.ImageDpi144 = null;
-            this.tsAIProgramReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh1;
-            this.tsAIProgramReapplyImprovements.ImageDpi288 = null;
-            this.tsAIProgramReapplyImprovements.ImageDpi384 = null;
-            this.tsAIProgramReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh;
+            this.tsAIProgramReapplyImprovements.Image = global::Chummer.Properties.Resources.page_refresh_16;
+            this.tsAIProgramReapplyImprovements.ImageDpi120 = global::Chummer.Properties.Resources.page_refresh_20;
+            this.tsAIProgramReapplyImprovements.ImageDpi144 = global::Chummer.Properties.Resources.page_refresh_24;
+            this.tsAIProgramReapplyImprovements.ImageDpi192 = global::Chummer.Properties.Resources.page_refresh_32;
+            this.tsAIProgramReapplyImprovements.ImageDpi288 = global::Chummer.Properties.Resources.page_refresh_48;
+            this.tsAIProgramReapplyImprovements.ImageDpi384 = global::Chummer.Properties.Resources.page_refresh_64;
+            this.tsAIProgramReapplyImprovements.ImageDpi96 = global::Chummer.Properties.Resources.page_refresh_16;
             this.tsAIProgramReapplyImprovements.Name = "tsAIProgramReapplyImprovements";
             this.tsAIProgramReapplyImprovements.Size = new System.Drawing.Size(203, 22);
             this.tsAIProgramReapplyImprovements.Tag = "Menu_SpecialReapplyImprovements";
@@ -22511,8 +22543,9 @@ namespace Chummer
             // cmsWeaponMount
             // 
             this.cmsWeaponMount.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.tsWeaponMountWeapons,
             this.tsWeaponMountLocation,
+            this.tsWeaponMountWeapons,
+            this.tsEditWeaponMount,
             this.tsVehicleWeaponMountNotes});
             this.cmsWeaponMount.Name = "cmsWeapon";
             this.cmsWeaponMount.Size = new System.Drawing.Size(167, 70);
@@ -22523,13 +22556,13 @@ namespace Chummer
             this.tsVehicleWeaponMountAddWeapon,
             this.tsVehicleWeaponMountAddAccessory,
             this.tsVehicleWeaponMountAddUnderbarrel});
-            this.tsWeaponMountWeapons.Image = global::Chummer.Properties.Resources.gun;
-            this.tsWeaponMountWeapons.ImageDpi120 = null;
-            this.tsWeaponMountWeapons.ImageDpi144 = null;
-            this.tsWeaponMountWeapons.ImageDpi192 = global::Chummer.Properties.Resources.gun1;
-            this.tsWeaponMountWeapons.ImageDpi288 = null;
-            this.tsWeaponMountWeapons.ImageDpi384 = null;
-            this.tsWeaponMountWeapons.ImageDpi96 = global::Chummer.Properties.Resources.gun;
+            this.tsWeaponMountWeapons.Image = global::Chummer.Properties.Resources.gun_16;
+            this.tsWeaponMountWeapons.ImageDpi120 = global::Chummer.Properties.Resources.gun_20;
+            this.tsWeaponMountWeapons.ImageDpi144 = global::Chummer.Properties.Resources.gun_24;
+            this.tsWeaponMountWeapons.ImageDpi192 = global::Chummer.Properties.Resources.gun_32;
+            this.tsWeaponMountWeapons.ImageDpi288 = global::Chummer.Properties.Resources.gun_48;
+            this.tsWeaponMountWeapons.ImageDpi384 = global::Chummer.Properties.Resources.gun_64;
+            this.tsWeaponMountWeapons.ImageDpi96 = global::Chummer.Properties.Resources.gun_16;
             this.tsWeaponMountWeapons.Name = "tsWeaponMountWeapons";
             this.tsWeaponMountWeapons.Size = new System.Drawing.Size(166, 22);
             this.tsWeaponMountWeapons.Tag = "Menu_Weapons";
@@ -22537,13 +22570,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponMountAddWeapon
             // 
-            this.tsVehicleWeaponMountAddWeapon.Image = global::Chummer.Properties.Resources.gun_add;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi120 = null;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi144 = null;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add1;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi288 = null;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi384 = null;
-            this.tsVehicleWeaponMountAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add;
+            this.tsVehicleWeaponMountAddWeapon.Image = global::Chummer.Properties.Resources.gun_add_16;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi120 = global::Chummer.Properties.Resources.gun_add_20;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi144 = global::Chummer.Properties.Resources.gun_add_24;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi192 = global::Chummer.Properties.Resources.gun_add_32;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi288 = global::Chummer.Properties.Resources.gun_add_48;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi384 = global::Chummer.Properties.Resources.gun_add_64;
+            this.tsVehicleWeaponMountAddWeapon.ImageDpi96 = global::Chummer.Properties.Resources.gun_add_16;
             this.tsVehicleWeaponMountAddWeapon.Name = "tsVehicleWeaponMountAddWeapon";
             this.tsVehicleWeaponMountAddWeapon.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleWeaponMountAddWeapon.Tag = "Menu_AddWeapon";
@@ -22552,13 +22585,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponMountAddAccessory
             // 
-            this.tsVehicleWeaponMountAddAccessory.Image = global::Chummer.Properties.Resources.flashlight_add;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi120 = null;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi144 = null;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add1;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi288 = null;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi384 = null;
-            this.tsVehicleWeaponMountAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add;
+            this.tsVehicleWeaponMountAddAccessory.Image = global::Chummer.Properties.Resources.flashlight_add_16;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi120 = global::Chummer.Properties.Resources.flashlight_add_20;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi144 = global::Chummer.Properties.Resources.flashlight_add_24;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi192 = global::Chummer.Properties.Resources.flashlight_add_32;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi288 = global::Chummer.Properties.Resources.flashlight_add_48;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi384 = global::Chummer.Properties.Resources.flashlight_add_64;
+            this.tsVehicleWeaponMountAddAccessory.ImageDpi96 = global::Chummer.Properties.Resources.flashlight_add_16;
             this.tsVehicleWeaponMountAddAccessory.Name = "tsVehicleWeaponMountAddAccessory";
             this.tsVehicleWeaponMountAddAccessory.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleWeaponMountAddAccessory.Tag = "Menu_AddAccessory";
@@ -22567,13 +22600,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponMountAddUnderbarrel
             // 
-            this.tsVehicleWeaponMountAddUnderbarrel.Image = global::Chummer.Properties.Resources.sword_add;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi120 = null;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi144 = null;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi192 = global::Chummer.Properties.Resources.sword_add1;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi288 = null;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi384 = null;
-            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi96 = global::Chummer.Properties.Resources.sword_add;
+            this.tsVehicleWeaponMountAddUnderbarrel.Image = global::Chummer.Properties.Resources.sword_add_16;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi120 = global::Chummer.Properties.Resources.sword_add_20;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi144 = global::Chummer.Properties.Resources.sword_add_24;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi192 = global::Chummer.Properties.Resources.sword_add_32;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi288 = global::Chummer.Properties.Resources.sword_add_48;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi384 = global::Chummer.Properties.Resources.sword_add_64;
+            this.tsVehicleWeaponMountAddUnderbarrel.ImageDpi96 = global::Chummer.Properties.Resources.sword_add_16;
             this.tsVehicleWeaponMountAddUnderbarrel.Name = "tsVehicleWeaponMountAddUnderbarrel";
             this.tsVehicleWeaponMountAddUnderbarrel.Size = new System.Drawing.Size(208, 22);
             this.tsVehicleWeaponMountAddUnderbarrel.Tag = "Menu_AddUnderbarrelWeapon";
@@ -22582,27 +22615,42 @@ namespace Chummer
             // 
             // tsWeaponMountLocation
             // 
-            this.tsWeaponMountLocation.Image = global::Chummer.Properties.Resources.tag_red;
-            this.tsWeaponMountLocation.ImageDpi120 = null;
-            this.tsWeaponMountLocation.ImageDpi144 = null;
-            this.tsWeaponMountLocation.ImageDpi192 = global::Chummer.Properties.Resources.tag_red1;
-            this.tsWeaponMountLocation.ImageDpi288 = null;
-            this.tsWeaponMountLocation.ImageDpi384 = null;
-            this.tsWeaponMountLocation.ImageDpi96 = global::Chummer.Properties.Resources.tag_red;
+            this.tsWeaponMountLocation.Image = global::Chummer.Properties.Resources.tag_red_16;
+            this.tsWeaponMountLocation.ImageDpi120 = global::Chummer.Properties.Resources.tag_red_20;
+            this.tsWeaponMountLocation.ImageDpi144 = global::Chummer.Properties.Resources.tag_red_24;
+            this.tsWeaponMountLocation.ImageDpi192 = global::Chummer.Properties.Resources.tag_red_32;
+            this.tsWeaponMountLocation.ImageDpi288 = global::Chummer.Properties.Resources.tag_red_48;
+            this.tsWeaponMountLocation.ImageDpi384 = global::Chummer.Properties.Resources.tag_red_64;
+            this.tsWeaponMountLocation.ImageDpi96 = global::Chummer.Properties.Resources.tag_red_16;
             this.tsWeaponMountLocation.Name = "tsWeaponMountLocation";
             this.tsWeaponMountLocation.Size = new System.Drawing.Size(166, 22);
             this.tsWeaponMountLocation.Tag = "Menu_RenameLocation";
             this.tsWeaponMountLocation.Text = "Rename &Location";
             // 
+            // tsEditWeaponMount
+            // 
+            this.tsEditWeaponMount.Image = global::Chummer.Properties.Resources.hard_hat_military_edit_16;
+            this.tsEditWeaponMount.ImageDpi120 = global::Chummer.Properties.Resources.hard_hat_military_edit_20;
+            this.tsEditWeaponMount.ImageDpi144 = global::Chummer.Properties.Resources.hard_hat_military_edit_24;
+            this.tsEditWeaponMount.ImageDpi192 = global::Chummer.Properties.Resources.hard_hat_military_edit_32;
+            this.tsEditWeaponMount.ImageDpi288 = global::Chummer.Properties.Resources.hard_hat_military_edit_48;
+            this.tsEditWeaponMount.ImageDpi384 = global::Chummer.Properties.Resources.hard_hat_military_edit_64;
+            this.tsEditWeaponMount.ImageDpi96 = global::Chummer.Properties.Resources.hard_hat_military_edit_16;
+            this.tsEditWeaponMount.Name = "tsEditWeaponMount";
+            this.tsEditWeaponMount.Size = new System.Drawing.Size(180, 22);
+            this.tsEditWeaponMount.Tag = "Menu_EditWeaponMount";
+            this.tsEditWeaponMount.Text = "&Edit Weapon Mount";
+            this.tsEditWeaponMount.Click += new System.EventHandler(this.tsEditWeaponMount_Click);
+            // 
             // tsVehicleWeaponMountNotes
             // 
-            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponMountNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponMountNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponMountNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleWeaponMountNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponMountNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponMountNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponMountNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleWeaponMountNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleWeaponMountNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleWeaponMountNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleWeaponMountNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleWeaponMountNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleWeaponMountNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleWeaponMountNotes.Name = "tsVehicleWeaponMountNotes";
             this.tsVehicleWeaponMountNotes.Size = new System.Drawing.Size(166, 22);
             this.tsVehicleWeaponMountNotes.Tag = "Menu_Notes";
@@ -22611,13 +22659,13 @@ namespace Chummer
             // 
             // tsVehicleWeaponAccessoryGearNotes
             // 
-            this.tsVehicleWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi120 = null;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi144 = null;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi288 = null;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi384 = null;
-            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsVehicleWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsVehicleWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsVehicleWeaponAccessoryGearNotes.Name = "tsVehicleWeaponAccessoryGearNotes";
             this.tsVehicleWeaponAccessoryGearNotes.Size = new System.Drawing.Size(147, 22);
             this.tsVehicleWeaponAccessoryGearNotes.Tag = "Menu_Notes";
@@ -22626,13 +22674,13 @@ namespace Chummer
             // 
             // tsWeaponAccessoryGearNotes
             // 
-            this.tsWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit;
-            this.tsWeaponAccessoryGearNotes.ImageDpi120 = null;
-            this.tsWeaponAccessoryGearNotes.ImageDpi144 = null;
-            this.tsWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit1;
-            this.tsWeaponAccessoryGearNotes.ImageDpi288 = null;
-            this.tsWeaponAccessoryGearNotes.ImageDpi384 = null;
-            this.tsWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit;
+            this.tsWeaponAccessoryGearNotes.Image = global::Chummer.Properties.Resources.note_edit_16;
+            this.tsWeaponAccessoryGearNotes.ImageDpi120 = global::Chummer.Properties.Resources.note_edit_20;
+            this.tsWeaponAccessoryGearNotes.ImageDpi144 = global::Chummer.Properties.Resources.note_edit_24;
+            this.tsWeaponAccessoryGearNotes.ImageDpi192 = global::Chummer.Properties.Resources.note_edit_32;
+            this.tsWeaponAccessoryGearNotes.ImageDpi288 = global::Chummer.Properties.Resources.note_edit_48;
+            this.tsWeaponAccessoryGearNotes.ImageDpi384 = global::Chummer.Properties.Resources.note_edit_64;
+            this.tsWeaponAccessoryGearNotes.ImageDpi96 = global::Chummer.Properties.Resources.note_edit_16;
             this.tsWeaponAccessoryGearNotes.Name = "tsWeaponAccessoryGearNotes";
             this.tsWeaponAccessoryGearNotes.Size = new System.Drawing.Size(203, 22);
             this.tsWeaponAccessoryGearNotes.Tag = "Menu_Notes";
@@ -22656,6 +22704,7 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Text = "Chummer - Career Mode";
             this.Activated += new System.EventHandler(this.CharacterCareer_Activated);
+            this.Deactivate += new System.EventHandler(this.CharacterCareer_Deactivate);
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.CharacterCareer_FormClosing);
             this.Load += new System.EventHandler(this.CharacterCareer_Load);
             this.StatusStrip.ResumeLayout(false);
@@ -23160,14 +23209,14 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabInfo;
         private System.Windows.Forms.TabPage tabOtherInfo;
         private System.Windows.Forms.Label lblESSMax;
-        private System.Windows.Forms.Label lblESS;
+        private LabelWithToolTip lblESS;
         private LabelWithToolTip lblArmor;
         private LabelWithToolTip lblCMStun;
         private LabelWithToolTip lblCMPhysical;
-        private System.Windows.Forms.Label lblCMStunLabel;
-        private System.Windows.Forms.Label lblCMPhysicalLabel;
+        private LabelWithToolTip lblCMStunLabel;
+        private LabelWithToolTip lblCMPhysicalLabel;
         private System.Windows.Forms.Label lblRemainingNuyen;
-        private System.Windows.Forms.Label lblRemainingNuyenLabel;
+        private LabelWithToolTip lblRemainingNuyenLabel;
         private System.Windows.Forms.MenuStrip mnuCreateMenu;
         private System.Windows.Forms.ToolStripMenuItem mnuCreateFile;
         private System.Windows.Forms.ContextMenuStrip cmsCyberware;
@@ -23197,31 +23246,31 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmdVehicleAmmoExpense;
         private System.Windows.Forms.ContextMenuStrip cmsLifestyle;
         private System.Windows.Forms.Label lblCMPenalty;
-        private System.Windows.Forms.Label lblCMPenaltyLabel;
+        private LabelWithToolTip lblCMPenaltyLabel;
         private System.Windows.Forms.TabPage tabConditionMonitor;
         private System.Windows.Forms.ContextMenuStrip cmsComplexForm;
         private ButtonWithToolTip cmdEdgeGained;
         private ButtonWithToolTip cmdEdgeSpent;
         private System.Windows.Forms.ContextMenuStrip cmsGearButton;
         private System.Windows.Forms.Label lblCareerKarma;
-        private System.Windows.Forms.Label lblCareerKarmaLabel;
+        private LabelWithToolTip lblCareerKarmaLabel;
         private System.Windows.Forms.Label lblMovement;
-        private System.Windows.Forms.Label lblMovementLabel;
+        private LabelWithToolTip lblMovementLabel;
         private System.Windows.Forms.ContextMenuStrip cmsUndoKarmaExpense;
         private System.Windows.Forms.ContextMenuStrip cmsUndoNuyenExpense;
         private LabelWithToolTip lblMemory;
-        private System.Windows.Forms.Label lblMemoryLabel;
+        private LabelWithToolTip lblMemoryLabel;
         private LabelWithToolTip lblLiftCarry;
-        private System.Windows.Forms.Label lblLiftCarryLabel;
+        private LabelWithToolTip lblLiftCarryLabel;
         private LabelWithToolTip lblJudgeIntentions;
-        private System.Windows.Forms.Label lblJudgeIntentionsLabel;
+        private LabelWithToolTip lblJudgeIntentionsLabel;
         private LabelWithToolTip lblComposure;
-        private System.Windows.Forms.Label lblComposureLabel;
+        private LabelWithToolTip lblComposureLabel;
         private System.Windows.Forms.ContextMenuStrip cmsArmorGear;
         private LabelWithToolTip lblCMDamageResistancePool;
-        private System.Windows.Forms.Label lblCMDamageResistancePoolLabel;
+        private LabelWithToolTip lblCMDamageResistancePoolLabel;
         private LabelWithToolTip lblCMArmor;
-        private System.Windows.Forms.Label lblCMArmorLabel;
+        private LabelWithToolTip lblCMArmorLabel;
         private System.Windows.Forms.ContextMenuStrip cmsArmorMod;
         private System.Windows.Forms.ContextMenuStrip cmsQuality;
         private System.Windows.Forms.ContextMenuStrip cmsSpell;
@@ -23232,9 +23281,9 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsGearPlugin;
         private System.Windows.Forms.ToolStripMenuItem mnuCreateSpecial;
         private System.Windows.Forms.Label lblFly;
-        private System.Windows.Forms.Label lblFlyLabel;
+        private LabelWithToolTip lblFlyLabel;
         private System.Windows.Forms.Label lblSwim;
-        private System.Windows.Forms.Label lblSwimLabel;
+        private LabelWithToolTip lblSwimLabel;
         private System.Windows.Forms.SplitContainer splitMain;
         private System.Windows.Forms.ContextMenuStrip cmsBioware;
         private System.Windows.Forms.ContextMenuStrip cmsAdvancedLifestyle;
@@ -23256,7 +23305,7 @@ namespace Chummer
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessory;
         private System.Windows.Forms.ContextMenuStrip cmsVehicleWeaponAccessoryGear;
         private System.Windows.Forms.ContextMenuStrip cmsWeaponLocation;
-        private System.Windows.Forms.Label lblArmorLabel;
+        private LabelWithToolTip lblArmorLabel;
         private LabelWithToolTip lblRiggingINI;
         private System.Windows.Forms.Label lblRiggingINILabel;
         private LabelWithToolTip lblMatrixINIHot;
@@ -23266,9 +23315,9 @@ namespace Chummer
         private LabelWithToolTip lblAstralINI;
         private LabelWithToolTip lblMatrixINI;
         private LabelWithToolTip lblINI;
-        private System.Windows.Forms.Label lblAstralINILabel;
-        private System.Windows.Forms.Label lblMatrixINILabel;
-        private System.Windows.Forms.Label lblINILabel;
+        private LabelWithToolTip lblAstralINILabel;
+        private LabelWithToolTip lblMatrixINILabel;
+        private LabelWithToolTip lblINILabel;
         private System.Windows.Forms.ContextMenuStrip cmsInitiationNotes;
         private System.Windows.Forms.ContextMenuStrip cmsTechnique;
         private System.Windows.Forms.TabPage tabDefenses;
@@ -23320,9 +23369,9 @@ namespace Chummer
         private System.Windows.Forms.Label lblPossessed;
         private System.Windows.Forms.TextBox txtAlias;
         private System.Windows.Forms.Label lblAlias;
-        private System.Windows.Forms.Label lblMetatypeSource;
+        private LabelWithToolTip lblMetatypeSource;
         private System.Windows.Forms.Label lblMetatypeSourceLabel;
-        private System.Windows.Forms.Label lblQualitySource;
+        private LabelWithToolTip lblQualitySource;
         private System.Windows.Forms.Label lblMysticAdeptAssignment;
         private System.Windows.Forms.Label lblMysticAdeptMAGAdept;
         private System.Windows.Forms.Label lblMetatype;
@@ -23333,7 +23382,7 @@ namespace Chummer
         private System.Windows.Forms.TabPage tabLimits;
         private System.Windows.Forms.TabPage tabMartialArts;
         private SplitButton cmdAddMartialArt;
-        private System.Windows.Forms.Label lblMartialArtSource;
+        private LabelWithToolTip lblMartialArtSource;
         private System.Windows.Forms.Label lblMartialArtSourceLabel;
         private System.Windows.Forms.TreeView treMartialArts;
         private System.Windows.Forms.Button cmdDeleteMartialArt;
@@ -23360,11 +23409,11 @@ namespace Chummer
         private System.Windows.Forms.Label lblDrainAttributes;
         private System.Windows.Forms.Label lblDrainAttributesLabel;
         private System.Windows.Forms.Label lblTraditionLabel;
-        private System.Windows.Forms.Label lblSpellSource;
+        private LabelWithToolTip lblSpellSource;
         private System.Windows.Forms.Label lblSpellSourceLabel;
         private System.Windows.Forms.Label lblSpellType;
         private System.Windows.Forms.Label lblSpellTypeLabel;
-        private System.Windows.Forms.Label lblSpellDV;
+        private LabelWithToolTip lblSpellDV;
         private System.Windows.Forms.Label lblSpellDVLabel;
         private System.Windows.Forms.Label lblSpellDuration;
         private System.Windows.Forms.Label lblSpellDurationLabel;
@@ -23383,13 +23432,13 @@ namespace Chummer
         private SplitButton cmdAddSpell;
         private System.Windows.Forms.TabPage tabAdept;
         private System.Windows.Forms.TabPage tabTechnomancer;
-        private System.Windows.Forms.Label lblFV;
+        private LabelWithToolTip lblFV;
         private System.Windows.Forms.Label lblFVLabel;
         private System.Windows.Forms.Label lblDuration;
         private System.Windows.Forms.Label lblDurationLabel;
         private System.Windows.Forms.Label lblTarget;
         private System.Windows.Forms.Label lblTargetLabel;
-        private System.Windows.Forms.Label lblComplexFormSource;
+        private LabelWithToolTip lblComplexFormSource;
         private System.Windows.Forms.Label lblComplexFormSourceLabel;
         private Chummer.ElasticComboBox cboStream;
         private System.Windows.Forms.Label lblFadingAttributes;
@@ -23408,7 +23457,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCritterPowerPointsLabel;
         private System.Windows.Forms.Button cmdDeleteCritterPower;
         private System.Windows.Forms.Button cmdAddCritterPower;
-        private System.Windows.Forms.Label lblCritterPowerSource;
+        private LabelWithToolTip lblCritterPowerSource;
         private System.Windows.Forms.Label lblCritterPowerSourceLabel;
         private System.Windows.Forms.Label lblCritterPowerDuration;
         private System.Windows.Forms.Label lblCritterPowerDurationLabel;
@@ -23440,7 +23489,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtGroupName;
         private System.Windows.Forms.Label lblGroupNotes;
         private System.Windows.Forms.Label lblGroupName;
-        private System.Windows.Forms.Label lblMetamagicSource;
+        private LabelWithToolTip lblMetamagicSource;
         private System.Windows.Forms.Label lblMetamagicSourceLabel;
         private System.Windows.Forms.TreeView treMetamagic;
         private System.Windows.Forms.Button cmdDeleteMetamagic;
@@ -23494,7 +23543,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCyberwareESSLabel;
         private System.Windows.Forms.Label lblCyberwareRating;
         private System.Windows.Forms.Label lblCyberwareGrade;
-        private System.Windows.Forms.Label lblCyberwareSource;
+        private LabelWithToolTip lblCyberwareSource;
         private System.Windows.Forms.Label lblCyberwareSourceLabel;
         private System.Windows.Forms.Button cmdAddBioware;
         private System.Windows.Forms.Label lblCyberwareRatingLabel;
@@ -23625,10 +23674,12 @@ namespace Chummer
         private System.Windows.Forms.Label lblVehicleWeaponDamageLabel;
         private System.Windows.Forms.Label lblVehicleWeaponDamage;
         private System.Windows.Forms.Label lblVehicleRating;
-        private System.Windows.Forms.Label lblVehicleSource;
+        private LabelWithToolTip lblVehicleSource;
         private System.Windows.Forms.Label lblVehicleSourceLabel;
         private System.Windows.Forms.Label lblVehicleSlots;
         private System.Windows.Forms.Label lblVehicleSlotsLabel;
+        private System.Windows.Forms.Label lblVehicleCapacity;
+        private System.Windows.Forms.Label lblVehicleCapacityLabel;
         private System.Windows.Forms.Label lblVehicleRatingLabel;
         private System.Windows.Forms.Label lblVehicleNameLabel;
         private System.Windows.Forms.Label lblVehicleName;
@@ -23673,11 +23724,11 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtAge;
         private System.Windows.Forms.TextBox txtGender;
         private Chummer.NumericUpDownEx nudPublicAware;
-        private System.Windows.Forms.Label lblPublicAware;
+        private LabelWithToolTip lblPublicAware;
         private Chummer.NumericUpDownEx nudNotoriety;
-        private System.Windows.Forms.Label lblNotoriety;
+        private LabelWithToolTip lblNotoriety;
         private Chummer.NumericUpDownEx nudStreetCred;
-        private System.Windows.Forms.Label lblStreetCred;
+        private LabelWithToolTip lblStreetCred;
         private System.Windows.Forms.Label lblPlayerName;
         private System.Windows.Forms.Button cmdDeleteMugshot;
         private System.Windows.Forms.Button cmdAddMugshot;
@@ -23728,7 +23779,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblNumMugshots;
         private Chummer.NumericUpDownEx nudMugshotIndex;
         private Chummer.ColorableCheckBox chkIsMainMugshot;
-        private System.Windows.Forms.Label lblTraditionSource;
+        private LabelWithToolTip lblTraditionSource;
         private System.Windows.Forms.Label lblTraditionSourceLabel;
         private PowersTabUserControl tabPowerUc;
         private FlowLayoutPanel pnlAttributes;
@@ -23778,7 +23829,7 @@ namespace Chummer
         private Label lblArmorCapacityLabel;
         private Label lblArmorRating;
         private Label lblArmorRatingLabel;
-        private Label lblArmorSource;
+        private LabelWithToolTip lblArmorSource;
         private Label lblArmorSourceLabel;
         private Label lblArmorCost;
         private Label lblArmorCostLabel;
@@ -23858,7 +23909,7 @@ namespace Chummer
         private Label lblWeaponAmmoRemainingLabel;
         private Label lblWeaponSlots;
         private Label lblWeaponSlotsLabel;
-        private Label lblWeaponSource;
+        private LabelWithToolTip lblWeaponSource;
         private Label lblWeaponSourceLabel;
         private Label lblWeaponAmmo;
         private Label lblWeaponAmmoLabel;
@@ -23879,7 +23930,7 @@ namespace Chummer
         private Label lblWeaponCostLabel;
         private Label lblWeaponRCLabel;
         private Label lblWeaponAvail;
-        private Label lblWeaponRC;
+        private LabelWithToolTip lblWeaponRC;
         private Label lblWeaponAvailLabel;
         private ButtonWithToolTip cmdWeaponMoveToVehicle;
         private ButtonWithToolTip cmdWeaponBuyAmmo;
@@ -23899,7 +23950,7 @@ namespace Chummer
         private Label lblLifestyleMonthsLabel;
         private Label lblLifestyleComfortsLabel;
         private Label lblLifestyleSourceLabel;
-        private Label lblLifestyleSource;
+        private LabelWithToolTip lblLifestyleSource;
         private SplitButton cmdAddLifestyle;
         private TreeView treLifestyles;
         private Button cmdDeleteLifestyle;
@@ -24080,7 +24131,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpMagicianTradition;
         private GroupBox gpbMagicianMentorSpirit;
         private System.Windows.Forms.TableLayoutPanel tlpMagicianMentorSpirit;
-        private Label lblMentorSpiritSource;
+        private LabelWithToolTip lblMentorSpiritSource;
         private Label lblMentorSpiritSourceLabel;
         private FlowLayoutPanel flpTechnomancer;
         private GroupBox gpbTechnomancerComplexForm;
@@ -24091,7 +24142,7 @@ namespace Chummer
         private GroupBox gpbTechnomancerParagon;
         private System.Windows.Forms.TableLayoutPanel tlpTechnomancerParagon;
         private Label lblParagonSourceLabel;
-        private Label lblParagonSource;
+        private LabelWithToolTip lblParagonSource;
         private UI.Charts.ExpenseChart chtKarma;
         private UI.Charts.ExpenseChart chtNuyen;
         private System.Windows.Forms.TableLayoutPanel tlpPhysicalCMBoxes;
@@ -24150,7 +24201,7 @@ namespace Chummer
         private Label lblGearRating;
         private Label lblGearRatingLabel;
         private Label lblGearQtyLabel;
-        private Label lblGearSource;
+        private LabelWithToolTip lblGearSource;
         private Label lblGearSourceLabel;
         private FlowLayoutPanel flpGearQty;
         private Label lblGearQty;
@@ -24407,6 +24458,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountAddAccessory;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountAddUnderbarrel;
         private DpiFriendlyToolStripMenuItem tsWeaponMountLocation;
+        private DpiFriendlyToolStripMenuItem tsEditWeaponMount;
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountNotes;
         private FlowLayoutPanel flpMagicianSpellButtons;
         private ElasticComboBox cboArmorFirewall;
@@ -24461,7 +24513,7 @@ namespace Chummer
         private TabPage tabConcept;
         private TabPage tabCharacterNotes;
         private FlowLayoutPanel flpMysticAdeptMAGAdept;
-        private Label lblLiftCarryLimitsLabel;
+        private LabelWithToolTip lblLiftCarryLimitsLabel;
         private LabelWithToolTip lblLiftCarryLimits;
         private ToolStripStatusLabel tslCarriedWeightLabel;
         private ToolStripStatusLabel tslCarriedWeight;
@@ -24474,7 +24526,7 @@ namespace Chummer
         private ColorableCheckBox chkHideLoadedAmmo;
         private Label lblVehicleWeaponReach;
         private Label lblVehicleWeaponRCLabel;
-        private Label lblVehicleWeaponRC;
+        private LabelWithToolTip lblVehicleWeaponRC;
         private Label lblVehicleWeaponReachLabel;
         private DpiFriendlyToolStripMenuItem tsCyberwareReapplyImprovements;
         private DpiFriendlyToolStripMenuItem tsArmorReapplyImprovements;

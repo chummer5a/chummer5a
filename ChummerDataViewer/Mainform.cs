@@ -187,7 +187,7 @@ namespace ChummerDataViewer
 
         private void SearchParameterChanged(object sender, EventArgs e)
         {
-            _bldCrashReports.Filter(report => TextFilter(report, txtSearch.Text) && OtherFilter(report), true);
+            _bldCrashReports.Filter(report => TextFilter(report, txtSearch.Text) && OtherFilter(report), forceRefresh: true);
         }
 
         private bool OtherFilter(CrashReport report)

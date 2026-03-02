@@ -58,37 +58,16 @@ namespace Chummer
         private bool _blnCanPrint;
         private Task _tskRefresher;
         private Task _tskOutputGenerator;
-        private readonly string _strTempSheetFilePath = Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
 
         public IEnumerable<Character> CharacterObjects => _lstCharacters;
+
+        public Character CharacterObject => _lstCharacters.FirstOrDefault();
 
         #region Control Events
 
         public CharacterSheetViewer(CancellationToken token = default)
         {
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                _lstCharacters.Dispose();
-                CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-                objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-                objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
-                if (objTempTokenSource?.IsCancellationRequested == false)
-                {
-                    objTempTokenSource.Cancel(false);
-                    objTempTokenSource.Dispose();
-                }
-            };
             Program.MainForm.OpenCharacterSheetViewers?.Add(this);
             if (_strSelectedSheet.StartsWith("Shadowrun 4", StringComparison.Ordinal))
             {
@@ -98,10 +77,8 @@ namespace Chummer
             {
                 if (!_strSelectedSheet.Contains(Path.DirectorySeparatorChar))
                     _strSelectedSheet = Path.Combine(GlobalSettings.Language, _strSelectedSheet);
-                else if (!_strSelectedSheet.Contains(GlobalSettings.Language) && _strSelectedSheet.Contains(GlobalSettings.Language.Substring(0, 2)))
-                {
+                else if (!_strSelectedSheet.Contains(GlobalSettings.Language))
                     _strSelectedSheet = _strSelectedSheet.Replace(GlobalSettings.Language.Substring(0, 2), GlobalSettings.Language);
-                }
             }
             else
             {
@@ -233,19 +210,20 @@ namespace Chummer
                                                         .ConfigureAwait(false);
                 string strCareer = await LanguageManager.GetStringAsync("Title_CareerMode", token: token)
                                                         .ConfigureAwait(false);
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdTitle))
                 {
                     await sbdTitle
-                          .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
-                                                       .ConfigureAwait(false)).Append(':').Append(strSpace)
-                          .AppendJoinAsync(
-                              ',' + strSpace,
-                              _lstCharacters.Select(async x => x.CharacterName + strSpace + '-' + strSpace
-                                                               + (await x.GetCreatedAsync(token).ConfigureAwait(false)
-                                                                   ? strCareer
-                                                                   : strCreate) + strSpace + '('
-                                                               + (await x.GetSettingsAsync(token).ConfigureAwait(false))
-                                                               .Name + ')'), token: token).ConfigureAwait(false);
+                        .Append(await LanguageManager.GetStringAsync("Title_CharacterViewer", token: token)
+                            .ConfigureAwait(false), ':', strSpace)
+                        .AppendJoinAsync(
+                            "," + strSpace,
+                            _lstCharacters.Select(async x =>
+                                await x.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
+                                + (await x.GetCreatedAsync(token).ConfigureAwait(false)
+                                    ? strCareer
+                                    : strCreate) + strSpace + "("
+                                + (await x.GetSettingsAsync(token).ConfigureAwait(false))
+                                .Name + ")"), token: token).ConfigureAwait(false);
                     strTitle = sbdTitle.ToString();
                 }
             }
@@ -284,7 +262,8 @@ namespace Chummer
             try
             {
                 // Save the generated output as HTML.
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: _objGenericToken).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: _objGenericToken).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.DefaultExt = "htm";
                 dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: _objGenericToken).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                     return;
@@ -311,7 +290,8 @@ namespace Chummer
             try
             {
                 // Save the printout XML generated by the character.
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: _objGenericToken).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Xml", token: _objGenericToken).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                dlgSaveFile.DefaultExt = "xml";
                 dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsXml", token: _objGenericToken).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                     return;
@@ -331,11 +311,11 @@ namespace Chummer
                 }
                 catch (XmlException)
                 {
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                 }
                 catch (UnauthorizedAccessException)
                 {
-                    Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false));
+                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_Save_Error_Warning", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -364,23 +344,10 @@ namespace Chummer
             {
                 if (objCharacter?.IsDisposed == false)
                 {
-                    IAsyncDisposable objLocker
-                        = await objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
-                    try
-                    {
-                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
+                    objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
+                    objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
                 }
             }
-
-            // Remove the mugshots directory when the form closes.
-            // ReSharper disable once MethodSupportsCancellation
-            await Utils.SafeDeleteDirectoryAsync(Path.Combine(Utils.GetStartupPath, "mugshots"), token: CancellationToken.None).ConfigureAwait(false);
 
             Task tskOld = Interlocked.Exchange(ref _tskRefresher, null);
             if (tskOld != null)
@@ -444,12 +411,12 @@ namespace Chummer
 
                     if (!string.IsNullOrEmpty(strPdfPrinter))
                     {
-                        DialogResult ePdfPrinterDialogResult = Program.ShowScrollableMessageBox(this,
+                        DialogResult ePdfPrinterDialogResult = await Program.ShowScrollableMessageBoxAsync(this,
                             string.Format(GlobalSettings.CultureInfo,
-                                          await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
-                                          strPdfPrinter),
+                                await LanguageManager.GetStringAsync("Message_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
+                                strPdfPrinter),
                             await LanguageManager.GetStringAsync("MessageTitle_Viewer_FoundPDFPrinter", token: _objGenericToken).ConfigureAwait(false),
-                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information);
+                            MessageBoxButtons.YesNoCancel, MessageBoxIcon.Information, token: _objGenericToken).ConfigureAwait(false);
                         switch (ePdfPrinterDialogResult)
                         {
                             case DialogResult.Cancel:
@@ -457,16 +424,17 @@ namespace Chummer
                                 return;
 
                             case DialogResult.Yes:
-                                Program.ShowScrollableMessageBox(this,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false));
+                                await Program.ShowScrollableMessageBoxAsync(this,
+                                    await LanguageManager.GetStringAsync(
+                                        "Message_Viewer_PDFPrinterError", token: _objGenericToken).ConfigureAwait(false), token: _objGenericToken).ConfigureAwait(false);
                                 break;
                         }
                     }
 
                     // Save the generated output as PDF.
-                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: _objGenericToken).ConfigureAwait(false) + '|' +
+                    dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Pdf", token: _objGenericToken).ConfigureAwait(false) + "|" +
                                              await LanguageManager.GetStringAsync("DialogFilter_All", token: _objGenericToken).ConfigureAwait(false);
+                    dlgSaveFile.DefaultExt = "pdf";
                     dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsPdf", token: _objGenericToken).ConfigureAwait(false);
                     if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), _objGenericToken).ConfigureAwait(false) != DialogResult.OK)
                         return;
@@ -480,19 +448,19 @@ namespace Chummer
 
                     if (!Directory.Exists(Path.GetDirectoryName(strSaveFile)) || !Utils.CanWriteToPath(strSaveFile))
                     {
-                        Program.ShowScrollableMessageBox(this,
-                                               string.Format(GlobalSettings.CultureInfo,
-                                                             await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;
                     }
 
                     if (!await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: _objGenericToken).ConfigureAwait(false))
                     {
-                        Program.ShowScrollableMessageBox(this,
-                                               string.Format(GlobalSettings.CultureInfo,
-                                                             await LanguageManager.GetStringAsync(
-                                                                 "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile));
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync(
+                                    "Message_File_Cannot_Be_Accessed", token: _objGenericToken).ConfigureAwait(false), strSaveFile), token: _objGenericToken).ConfigureAwait(false);
                         return;
                     }
 
@@ -502,22 +470,22 @@ namespace Chummer
                     {
                         PdfDocument objPdfDocument = new PdfDocument
                         {
-                            Html = webViewer.DocumentText,
+                            Html = await webViewer.DoThreadSafeFuncAsync(x => x.DocumentText, token: _objGenericToken)
+                                .ConfigureAwait(false),
                             ExtraParams = new Dictionary<string, string>(8)
                             {
-                                {"encoding", "UTF-8"},
-                                {"dpi", "300"},
-                                {"margin-top", "13"},
-                                {"margin-bottom", "19"},
-                                {"margin-left", "13"},
-                                {"margin-right", "13"},
-                                {"image-quality", "100"},
-                                {"print-media-type", string.Empty}
+                                { "encoding", "UTF-8" },
+                                { "dpi", "300" },
+                                { "margin-top", "13" },
+                                { "margin-bottom", "19" },
+                                { "margin-left", "13" },
+                                { "margin-right", "13" },
+                                { "image-quality", "100" },
+                                { "print-media-type", string.Empty }
                             }
                         };
-                        PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment
-                            {WkHtmlToPdfPath = Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe")};
-                        PdfOutput objPdfOutput = new PdfOutput {OutputFilePath = strSaveFile};
+                        PdfConvertEnvironment objPdfConvertEnvironment = new PdfConvertEnvironment(Path.Combine(Utils.GetStartupPath, "wkhtmltopdf.exe"));
+                        PdfOutput objPdfOutput = new PdfOutput(strSaveFile);
                         await PdfConvert
                               .ConvertHtmlToPdfAsync(objPdfDocument, objPdfConvertEnvironment, objPdfOutput,
                                                      _objGenericToken).ConfigureAwait(false);
@@ -535,7 +503,7 @@ namespace Chummer
                                 Arguments = strParams,
                                 WindowStyle = ProcessWindowStyle.Hidden
                             };
-                            objPdfProgramProcess.Start();
+                            await objPdfProgramProcess.StartAsync(_objGenericToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
@@ -544,7 +512,7 @@ namespace Chummer
                     }
                     catch (Exception ex)
                     {
-                        Program.ShowScrollableMessageBox(this, ex.ToString());
+                        await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: _objGenericToken).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -560,10 +528,30 @@ namespace Chummer
 
         private async void cboLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            _strPrintLanguage = cboLanguage.SelectedValue?.ToString() ?? GlobalSettings.Language;
-            imgSheetLanguageFlag.Image = Math.Min(imgSheetLanguageFlag.Width, imgSheetLanguageFlag.Height) >= 32
-                ? FlagImageGetter.GetFlagFromCountryCode192Dpi(_strPrintLanguage.Substring(3, 2))
-                : FlagImageGetter.GetFlagFromCountryCode(_strPrintLanguage.Substring(3, 2));
+            string strOldPrintLanguage;
+            try
+            {
+                strOldPrintLanguage = Interlocked.Exchange(ref _strPrintLanguage,
+                    await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: _objGenericToken)
+                        .ConfigureAwait(false) ?? GlobalSettings.Language);
+            }
+            catch (OperationCanceledException)
+            {
+                return; //swallow this
+            }
+
+            try
+            {
+                await imgSheetLanguageFlag.DoThreadSafeAsync(x => x.Image = FlagImageGetter.GetFlagFromCountryCode(
+                    _strPrintLanguage.Substring(3, 2),
+                    Math.Min(x.Width, x.Height)), token: _objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                _strPrintLanguage = strOldPrintLanguage;
+                return; //swallow this
+            }
+
             try
             {
                 _objPrintCulture = CultureInfo.GetCultureInfo(_strPrintLanguage);
@@ -660,7 +648,7 @@ namespace Chummer
         /// <summary>
         /// Set the text of the viewer to something descriptive. Also disables the Print, Print Preview, Save as HTML, and Save as PDF buttons.
         /// </summary>
-        private async ValueTask SetDocumentText(string strText, CancellationToken token = default)
+        private async Task SetDocumentText(string strText, CancellationToken token = default)
         {
             int intHeight = await webViewer.DoThreadSafeFuncAsync(x => x.Height, token).ConfigureAwait(false);
             string strDocumentText
@@ -674,7 +662,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the characters (and therefore content) of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshCharacters(CancellationToken token = default)
+        private async Task RefreshCharacters(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
@@ -744,7 +732,7 @@ namespace Chummer
                 throw;
             }
 
-            Task tskNew = Task.Run(() => RefreshCharacterXml(objToken), objToken);
+            Task tskNew = RefreshCharacterXml(objToken);
             if (Interlocked.CompareExchange(ref _tskRefresher, tskNew, null) != null)
             {
                 try
@@ -773,7 +761,7 @@ namespace Chummer
         /// <summary>
         /// Asynchronously update the sheet of the Viewer window.
         /// </summary>
-        private async ValueTask RefreshSheet(CancellationToken token = default)
+        private async Task RefreshSheet(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             CancellationTokenSource objNewSource = new CancellationTokenSource();
@@ -835,7 +823,7 @@ namespace Chummer
                 throw;
             }
 
-            Task tskNew = Task.Run(() => AsyncGenerateOutput(objToken), objToken);
+            Task tskNew = AsyncGenerateOutput(objToken);
             if (Interlocked.CompareExchange(ref _tskOutputGenerator, tskNew, null) != null)
             {
                 try
@@ -911,6 +899,8 @@ namespace Chummer
             }
         }
 
+        private static string GetRandomTempFilePath() => Path.Combine(Utils.GetTempPath(), Path.GetRandomFileName() + ".htm");
+
         /// <summary>
         /// Run the generated XML file through the XSL transformation engine to create the file output.
         /// </summary>
@@ -928,7 +918,7 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
                 await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                if (string.IsNullOrWhiteSpace(_objCharacterXml.OuterXml))
+                if (_objCharacterXml.ChildNodes.Count == 0)
                 {
                     await SetDocumentText(
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
@@ -950,7 +940,7 @@ namespace Chummer
                     string strReturn = "File not found when attempting to load " + _strSelectedSheet +
                                        Environment.NewLine;
                     Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -961,7 +951,7 @@ namespace Chummer
                     objXslTransform
                         = await XslManager.GetTransformForFileAsync(strXslPath, token).ConfigureAwait(false);
                 }
-                catch (ArgumentException)
+                catch (ArgumentException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -970,11 +960,11 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    Log.Debug(ex, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
-                catch (PathTooLongException)
+                catch (PathTooLongException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -983,11 +973,11 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    Log.Debug(ex, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
-                catch (UnauthorizedAccessException)
+                catch (UnauthorizedAccessException ex)
                 {
                     token.ThrowIfCancellationRequested();
                     await SetDocumentText(
@@ -996,8 +986,8 @@ namespace Chummer
                     string strReturn = "Last write time could not be fetched when attempting to load "
                                        + _strSelectedSheet +
                                        Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    Log.Debug(ex, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
                 catch (XsltException ex)
@@ -1007,10 +997,10 @@ namespace Chummer
                         await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
                                              .ConfigureAwait(false), token).ConfigureAwait(false);
                     string strReturn = "Error attempting to load " + _strSelectedSheet + Environment.NewLine;
-                    Log.Debug(strReturn);
-                    Log.Error("ERROR Message = " + ex.Message);
+                    ex = ex.Demystify();
+                    Log.Debug(ex, strReturn);
                     strReturn += ex.Message;
-                    Program.ShowScrollableMessageBox(this, strReturn);
+                    await Program.ShowScrollableMessageBoxAsync(this, strReturn, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -1023,55 +1013,58 @@ namespace Chummer
                     objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                 }
 
-                // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
-                // Delete any old versions of the file
-                if (GlobalSettings.PrintToFileFirst && !await FileExtensions.SafeDeleteAsync(
-                                                                                _strTempSheetFilePath, true, token: token)
-                                                                            .ConfigureAwait(false))
+                string strTempSheetFilePath = string.Empty;
+
+                if (GlobalSettings.PrintToFileFirst)
                 {
-                    await SetDocumentText(
-                        await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
-                                             .ConfigureAwait(false), token).ConfigureAwait(false);
-                    return;
+                    strTempSheetFilePath = GetRandomTempFilePath();
+                    // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
+                    // Delete any old versions of the file
+                    if (File.Exists(strTempSheetFilePath)
+                        && !await FileExtensions.SafeDeleteAsync(strTempSheetFilePath, true, token: token).ConfigureAwait(false))
+                    {
+                        await SetDocumentText(
+                            await LanguageManager.GetStringAsync("Message_Export_Error_Warning", token: token)
+                                                 .ConfigureAwait(false), token).ConfigureAwait(false);
+                        return;
+                    }
                 }
 
-                string strOutput = await Task.Run(async () =>
+                string strOutput;
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    using (XmlWriter objWriter = objSettings != null
+                                ? XmlWriter.Create(objStream, objSettings)
+                                : Utils.GetXslTransformXmlWriter(objStream))
                     {
-                        using (XmlWriter objWriter = objSettings != null
-                                   ? XmlWriter.Create(objStream, objSettings)
-                                   : Utils.GetXslTransformXmlWriter(objStream))
-                        {
-                            token.ThrowIfCancellationRequested();
-                            objXslTransform.Transform(_objCharacterXml, objWriter);
-                        }
-
                         token.ThrowIfCancellationRequested();
+                        objXslTransform.Transform(_objCharacterXml, objWriter);
+                    }
 
-                        objStream.Position = 0;
+                    token.ThrowIfCancellationRequested();
 
-                        // Read in the resulting code and pass it to the browser.
-                        using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    objStream.Position = 0;
+
+                    // Read in the resulting code and pass it to the browser.
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                         {
                             token.ThrowIfCancellationRequested();
-                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                            for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                    strLine != null;
+                                    strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
-                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
-                                     strLine != null;
-                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    if (!string.IsNullOrEmpty(strLine))
-                                        sbdReturn.AppendLine(strLine);
-                                }
+                                if (!string.IsNullOrEmpty(strLine))
+                                    sbdReturn.AppendLine(strLine);
                             }
-
-                            return sbdReturn.ToString();
                         }
+
+                        strOutput = sbdReturn.ToString();
                     }
-                }, token).ConfigureAwait(false);
+                }
 
                 token.ThrowIfCancellationRequested();
 
@@ -1086,11 +1079,11 @@ namespace Chummer
                     // The DocumentStream method fails when using Wine, so we'll instead dump everything out a temporary HTML file, have the WebBrowser load that, then delete the temporary file.
 
                     // Read in the resulting code and pass it to the browser.
-                    File.WriteAllText(_strTempSheetFilePath, strOutput);
+                    await FileExtensions.WriteAllTextAsync(strTempSheetFilePath, strOutput, token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     await this.DoThreadSafeAsync(x => x.UseWaitCursor = true, token).ConfigureAwait(false);
                     await webViewer.DoThreadSafeAsync(
-                        x => x.Url = new Uri("file:///" + _strTempSheetFilePath), token).ConfigureAwait(false);
+                        x => x.Url = new Uri("file:///" + strTempSheetFilePath), token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                 }
                 else
@@ -1140,7 +1133,7 @@ namespace Chummer
             }
         }
 
-        private async ValueTask<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
+        private async Task<bool> DoPdfPrinterShortcut(string strPdfPrinterName, CancellationToken token = default)
         {
             // We've got a proper, built-in PDF printer, so let's use that instead of wkhtmltopdf
             string strOldHeader = null;
@@ -1236,7 +1229,7 @@ namespace Chummer
             return true;
         }
 
-        private async ValueTask PopulateXsltList(CancellationToken token = default)
+        private async Task PopulateXsltList(CancellationToken token = default)
         {
             List<ListItem> lstFiles = await XmlManager.GetXslFilesFromLocalDirectoryAsync(
                 await cboLanguage.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)
@@ -1254,7 +1247,7 @@ namespace Chummer
         /// <summary>
         /// Set the XSL sheet that will be selected by default.
         /// </summary>
-        public ValueTask SetSelectedSheet(string strSheet, CancellationToken token = default)
+        public Task SetSelectedSheet(string strSheet, CancellationToken token = default)
         {
             _strSelectedSheet = strSheet;
             return RefreshSheet(token);
@@ -1272,27 +1265,30 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 foreach (Character objCharacter in _lstCharacters)
                 {
+                    if (objCharacter.IsDisposed)
+                        continue;
                     IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        objCharacter.PropertyChanged -= ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged -= ObjCharacterOnSettingsPropertyChanged;
-                        objCharacter.Cyberware.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Armor.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Weapons.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Gear.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Contacts.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.ExpenseEntries.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.MentorSpirits.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Powers.ListChanged -= OnCharacterListChanged;
-                        objCharacter.Qualities.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.MartialArts.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Metamagics.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.Spells.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.ComplexForms.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.CritterPowers.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.SustainedCollection.CollectionChanged -= OnCharacterCollectionChanged;
-                        objCharacter.InitiationGrades.CollectionChanged -= OnCharacterCollectionChanged;
+                        token.ThrowIfCancellationRequested();
+                        objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
+                        objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
+                        objCharacter.Cyberware.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Armor.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Weapons.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Gear.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Contacts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.ExpenseEntries.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.MentorSpirits.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Powers.ListChangedAsync -= OnCharacterListChanged;
+                        objCharacter.Qualities.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.MartialArts.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Metamagics.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.Spells.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.ComplexForms.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
+                        objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
                     }
                     finally
                     {
@@ -1301,35 +1297,40 @@ namespace Chummer
                 }
                 await _lstCharacters.ClearAsync(token).ConfigureAwait(false);
                 if (lstCharacters != null)
-                    await _lstCharacters.AddRangeAsync(lstCharacters, token).ConfigureAwait(false);
-                foreach (Character objCharacter in _lstCharacters)
                 {
-                    IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    foreach (Character objCharacter in lstCharacters)
                     {
-                        objCharacter.PropertyChanged += ObjCharacterOnPropertyChanged;
-                        objCharacter.SettingsPropertyChanged += ObjCharacterOnSettingsPropertyChanged;
-                        // TODO: Make these also work for any children collection changes
-                        objCharacter.Cyberware.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Armor.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Weapons.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Gear.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Contacts.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.ExpenseEntries.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.MentorSpirits.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Powers.ListChanged += OnCharacterListChanged;
-                        objCharacter.Qualities.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.MartialArts.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Metamagics.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.Spells.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.ComplexForms.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.CritterPowers.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.SustainedCollection.CollectionChanged += OnCharacterCollectionChanged;
-                        objCharacter.InitiationGrades.CollectionChanged += OnCharacterCollectionChanged;
-                    }
-                    finally
-                    {
-                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                        if (objCharacter.IsDisposed)
+                            continue;
+                        IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
+                            objCharacter.SettingsPropertyChangedAsync += ObjCharacterOnSettingsPropertyChanged;
+                            // TODO: Make these also work for any children collection changes
+                            objCharacter.Cyberware.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Armor.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Weapons.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Gear.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Contacts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.ExpenseEntries.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.MentorSpirits.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Powers.ListChangedAsync += OnCharacterListChanged;
+                            objCharacter.Qualities.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.MartialArts.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Metamagics.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.Spells.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.ComplexForms.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
+                            objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
+                        }
+                        finally
+                        {
+                            await objInnerLocker.DisposeAsync().ConfigureAwait(false);
+                        }
+                        await _lstCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -1355,7 +1356,7 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterListChanged(object sender, ListChangedEventArgs e)
+        private async Task OnCharacterListChanged(object sender, ListChangedEventArgs e, CancellationToken token = default)
         {
             if (e.ListChangedType == ListChangedType.ItemMoved
                 || e.ListChangedType == ListChangedType.PropertyDescriptorAdded
@@ -1364,7 +1365,7 @@ namespace Chummer
                 return;
             try
             {
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1372,13 +1373,13 @@ namespace Chummer
             }
         }
 
-        private async void OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task OnCharacterCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
             if (e.Action == NotifyCollectionChangedAction.Move)
                 return;
             try
             {
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1386,12 +1387,12 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnSettingsPropertyChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
                 if (e.PropertyName == nameof(CharacterSettings.Name))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -1399,13 +1400,14 @@ namespace Chummer
             }
         }
 
-        private async void ObjCharacterOnPropertyChanged(object sender, PropertyChangedEventArgs e)
+        private async Task ObjCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             try
             {
-                if (e.PropertyName == nameof(Character.CharacterName) || e.PropertyName == nameof(Character.Created))
-                    await UpdateWindowTitleAsync(_objGenericToken).ConfigureAwait(false);
-                await RefreshCharacters(_objGenericToken).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)) || e.PropertyNames.Contains(nameof(Character.Created)))
+                    await UpdateWindowTitleAsync(token).ConfigureAwait(false);
+                await RefreshCharacters(token).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {

@@ -67,27 +67,44 @@ namespace SevenZip.Buffer
                 FlushData();
         }
 
-        public async ValueTask WriteByteAsync(byte b, CancellationToken token = default)
+        public Task WriteByteAsync(byte b, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             m_Buffer[m_Pos++] = b;
-            if (m_Pos >= m_BufferSize)
-                await FlushDataAsync(token).ConfigureAwait(false);
+            return m_Pos >= m_BufferSize ? FlushDataAsync(token) : Task.CompletedTask;
         }
 
         public void FlushData()
         {
             if (m_Pos == 0)
                 return;
-            m_Stream.Write(m_Buffer, 0, (int)m_Pos);
+            if (m_Pos > int.MaxValue)
+            {
+                int intToWrite1 = (int)(m_Pos / 2);
+                int intToWrite2 = intToWrite1 + (int)(m_Pos & 1);
+                m_Stream.Write(m_Buffer, 0, intToWrite1);
+                m_Stream.Write(m_Buffer, intToWrite1, intToWrite2);
+            }
+            else
+                m_Stream.Write(m_Buffer, 0, (int)m_Pos);
             m_Pos = 0;
         }
 
-        public async ValueTask FlushDataAsync(CancellationToken token = default)
+        public async Task FlushDataAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (m_Pos == 0)
                 return;
-            await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
+            if (m_Pos > int.MaxValue)
+            {
+                int intToWrite1 = (int)(m_Pos / 2);
+                int intToWrite2 = intToWrite1 + (int)(m_Pos & 1);
+                await m_Stream.WriteAsync(m_Buffer, 0, intToWrite1, token).ConfigureAwait(false);
+                await m_Stream.WriteAsync(m_Buffer, intToWrite1, intToWrite2, token).ConfigureAwait(false);
+            }
+            else
+                await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
             m_Pos = 0;
         }
 

@@ -21,6 +21,7 @@ using System;
 using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -29,36 +30,2392 @@ using System.Text.RegularExpressions;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
-using ExternalUtils.RegularExpressions;
 using RtfPipe;
 
 namespace Chummer
 {
     public static class StringExtensions
     {
-        public static string EmptyGuid { get; } = Guid.Empty.ToString("D", GlobalSettings.InvariantCultureInfo);
-
         public static bool IsEmptyGuid(this string strInput)
         {
-            return strInput == EmptyGuid;
+            return string.Equals(strInput, Utils.GuidEmptyString, StringComparison.OrdinalIgnoreCase);
         }
 
+        /// <summary>
+        /// Removes all potentially identifiable information from a string containing a directory path.
+        /// </summary>
+        public static string AnonymizePath(this string strPath)
+        {
+            string strAppDataPath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            string strUserProfilePath = Environment.GetFolderPath(Environment.SpecialFolder.UserProfile);
+            return strPath
+                .Replace(Utils.GetStartupPath, "[Chummer Path]")
+                .Replace(Utils.GetEscapedStartupPath, "[Chummer Path]")
+                .Replace(strAppDataPath, "[Application Data]")
+                .Replace(strAppDataPath.Replace("\\", "\\\\").Replace("\\\\\\\\", "\\\\"), "[Application Data]")
+                .Replace(strUserProfilePath, "[User Profile]")
+                .Replace(strUserProfilePath.Replace("\\", "\\\\").Replace("\\\\\\\\", "\\\\"), "[User Profile]");
+        }
+
+        public static char[] ToPooledCharArray(this string strInput, out int intLength)
+        {
+            intLength = strInput.Length;
+            char[] achrReturn = ArrayPool<char>.Shared.Rent(intLength);
+            try
+            {
+                if (intLength > 0)
+                {
+                    int intMemoryLength = intLength * sizeof(char);
+                    unsafe
+                    {
+                        fixed (char* smem = strInput)
+                        fixed (char* dmem = achrReturn)
+                        {
+                            Buffer.MemoryCopy((byte*)smem, (byte*)dmem, intMemoryLength, intMemoryLength);
+                        }
+                    }
+                }
+
+                return achrReturn;
+            }
+            catch
+            {
+                ArrayPool<char>.Shared.Return(achrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[2];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            return new string(achrNewChars, 0, 2);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1, char chr2)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[3];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            achrNewChars[2] = chr2;
+            return new string(achrNewChars, 0, 3);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string, string, string)"/> for chars that is faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static unsafe string ConcatFast(char chr0, char chr1, char chr2, char chr3)
+        {
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            char* achrNewChars = stackalloc char[4];
+            achrNewChars[0] = chr0;
+            achrNewChars[1] = chr1;
+            achrNewChars[2] = chr2;
+            achrNewChars[3] = chr3;
+            return new string(achrNewChars, 0, 4);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is potentially faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static string ConcatFast(string str0, char chr1)
+        {
+            int intLoopLength = str0?.Length ?? 0;
+            if (intLoopLength == 0)
+                return chr1.ToString();
+            int intNewLength = intLoopLength + 1;
+            if (intNewLength > Utils.MaxStackLimit16BitTypes)
+            {
+                return string.Concat(str0, chr1.ToString());
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intNewLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                fixed (char* src = str0)
+                {
+                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intNewLength * sizeof(char), intLoopLength * sizeof(char));
+                }
+                achrNewChars[intLoopLength] = chr1;
+                return new string(achrNewChars, 0, intNewLength);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string, string)"/> for chars that is potentially faster because it does not require converting the chars to strings before concatenation.
+        /// </summary>
+        public static string ConcatFast(char chr0, string str1)
+        {
+            int intLoopLength = str1?.Length ?? 0;
+            if (intLoopLength == 0)
+                return chr0.ToString();
+            int intNewLength = intLoopLength + 1;
+            if (intNewLength > Utils.MaxStackLimit16BitTypes)
+            {
+                return string.Concat(chr0.ToString(), str1);
+            }
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intNewLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                achrNewChars[0] = chr0;
+                fixed (char* src = str1)
+                {
+                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + 1), intNewLength * sizeof(char), intLoopLength * sizeof(char));
+                }
+                return new string(achrNewChars, 0, intNewLength);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static string ConcatFast(params string[] lstStrings)
+        {
+            return ConcatFast(Array.AsReadOnly(lstStrings));
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static string ConcatFast(IReadOnlyCollection<string> lstStrings)
+        {
+            int intStringsCount = lstStrings.Count;
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (intStringsCount)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(0);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                }
+                            }
+                            return string.Concat(str1, str2);
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3);
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            str4 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                    }
+            }
+            int intTotalLength = 0;
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current;
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Concat(lstStrings);
+                }
+                objEnumerator.Reset();
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[intTotalLength];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    while (objEnumerator.MoveNext())
+                    {
+                        string strLoop = objEnumerator.Current;
+                        int intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                    }
+
+                    // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                    return new string(achrNewChars, 0, intCurrent);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// </summary>
+        public static string ConcatFast(IEnumerable<string> lstStrings)
+        {
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
+                string str2 = objEnumerator.Current;
+                string str3;
+                string str4;
+                if (objEnumerator.MoveNext())
+                {
+                    str3 = objEnumerator.Current;
+                    if (objEnumerator.MoveNext())
+                    {
+                        str4 = objEnumerator.Current;
+                        if (!objEnumerator.MoveNext())
+                            return string.Concat(str1, str2, str3, str4);
+                    }
+                    else
+                        return string.Concat(str1, str2, str3);
+                }
+                else
+                    return string.Concat(str1, str2);
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        sbdReturn.Append(str1).Append(str2).Append(str3).Append(str4).Append(objEnumerator.Current);
+                        while (objEnumerator.MoveNext())
+                            sbdReturn.Append(objEnumerator.Current);
+                        return sbdReturn.ToString();
+                    }
+                }
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    // We don't know the exact length we'll need, so allocate the maximum size we're allowed on the stack
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    intLoopLength = str1?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        fixed (char* src = str1)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        intCurrent = intLoopLength;
+                    }
+                    intLoopLength = str2?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        fixed (char* src = str2)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = str3?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        fixed (char* src = str3)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = str4?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        fixed (char* src = str4)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = strLoop?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
+                        {
+                            strFirstPart = new string(achrNewChars, 0, intCurrent);
+                            strSecondPart = strLoop;
+                        }
+                        else
+                        {
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(strFirstPart))
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
+                                {
+                                    strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                    strSecondPart = strLoop;
+                                    break; // We want to exit out of the score where we did our stackalloc to free it up
+                                }
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent += intLoopLength;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strFirstPart))
+                        {
+                            // ... then we create a new string from the new CharArray
+                            return new string(achrNewChars, 0, intCurrent);
+                        }
+                    }
+                }
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + (strSecondPart?.Length ?? 0));
+                    sbdReturn.Append(strFirstPart).Append(strSecondPart);
+                    while (objEnumerator.MoveNext())
+                        sbdReturn.Append(objEnumerator.Current);
+                    return sbdReturn.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            int intStringsCount = lstStrings.Count;
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (intStringsCount)
+            {
+                case 0:
+                    return Task.FromResult(string.Empty);
+                case 1:
+                    return lstStrings.ElementAtBetterAsync(0, token);
+                case 2:
+                    {
+                        return Inner2();
+                        async Task<string> Inner2()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+                case 3:
+                    {
+                        return Inner3();
+                        async Task<string> Inner3()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            string str3 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str3 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2, str3);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+                case 4:
+                    {
+                        return Inner4();
+                        async Task<string> Inner4()
+                        {
+                            string str1 = string.Empty;
+                            string str2 = string.Empty;
+                            string str3 = string.Empty;
+                            string str4 = string.Empty;
+                            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                            try
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str1 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str2 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str3 = objEnumerator.Current;
+                                            if (objEnumerator.MoveNext())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                str4 = objEnumerator.Current;
+                                            }
+                                        }
+                                    }
+                                }
+                                token.ThrowIfCancellationRequested();
+                                return string.Concat(str1, str2, str3, str4);
+                            }
+                            finally
+                            {
+                                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                                else if (objEnumerator is IDisposable objDispose)
+                                    objDispose.Dispose();
+                            }
+                        }
+                    }
+            }
+            return Inner();
+            async Task<string> Inner()
+            {
+                int intTotalLength = 0;
+                IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strLoop = objEnumerator.Current;
+                        if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                            return string.Concat(lstStrings);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    objEnumerator.Reset();
+                    token.ThrowIfCancellationRequested();
+                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                    unsafe
+                    {
+                        char* achrNewChars = stackalloc char[intTotalLength];
+                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                        int intCurrent = 0;
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            string strLoop = objEnumerator.Current;
+                            int intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent += intLoopLength;
+                            }
+                        }
+
+                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objEnumerator is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Async version of <see cref="string.Concat(IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// </summary>
+        public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                token.ThrowIfCancellationRequested();
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                token.ThrowIfCancellationRequested();
+                // Handle cases where we can rely on the faster string.Concat methods that work off of a fixed number of string parameters
+                string str2 = objEnumerator.Current;
+                string str3;
+                string str4;
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    str3 = objEnumerator.Current;
+                    if (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        str4 = objEnumerator.Current;
+                        if (objEnumerator.MoveNext())
+                            token.ThrowIfCancellationRequested();
+                        else
+                        {
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                    }
+                    else
+                    {
+                        token.ThrowIfCancellationRequested();
+                        return string.Concat(str1, str2, str3);
+                    }
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    return string.Concat(str1, str2);
+                }
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                token.ThrowIfCancellationRequested();
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (strLoop?.Length ?? 0);
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str1);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str2);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str3);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str4);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(objEnumerator.Current);
+                        token.ThrowIfCancellationRequested();
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            sbdReturn.Append(objEnumerator.Current);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        return sbdReturn.ToString();
+                    }
+                }
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    // We don't know the exact length we'll need, so allocate the maximum size we're allowed on the stack
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    intLoopLength = str1?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        fixed (char* src = str1)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        token.ThrowIfCancellationRequested();
+                        intCurrent = intLoopLength;
+                    }
+                    intLoopLength = str2?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        fixed (char* src = str2)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        token.ThrowIfCancellationRequested();
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = str3?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        fixed (char* src = str3)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        token.ThrowIfCancellationRequested();
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = str4?.Length ?? 0;
+                    if (intLoopLength > 0)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        fixed (char* src = str4)
+                        {
+                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                        }
+                        token.ThrowIfCancellationRequested();
+                        intCurrent += intLoopLength;
+                    }
+                    intLoopLength = strLoop?.Length ?? 0;
+                    token.ThrowIfCancellationRequested();
+                    if (intLoopLength > 0)
+                    {
+                        if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strFirstPart = new string(achrNewChars, 0, intCurrent);
+                            token.ThrowIfCancellationRequested();
+                            strSecondPart = strLoop;
+                        }
+                        else
+                        {
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            token.ThrowIfCancellationRequested();
+                            intCurrent += intLoopLength;
+                        }
+                    }
+                    if (string.IsNullOrEmpty(strFirstPart))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = objEnumerator.Current;
+                            intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (intCurrent + intLoopLength > Utils.MaxStackLimit16BitTypes)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                    strSecondPart = strLoop;
+                                    break; // We want to exit out of the score where we did our stackalloc to free it up
+                                }
+                                token.ThrowIfCancellationRequested();
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                token.ThrowIfCancellationRequested();
+                                intCurrent += intLoopLength;
+                            }
+                        }
+
+                        if (string.IsNullOrEmpty(strFirstPart))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            // ... then we create a new string from the new CharArray
+                            return new string(achrNewChars, 0, intCurrent);
+                        }
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + (strSecondPart?.Length ?? 0));
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strFirstPart);
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strSecondPart);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(objEnumerator.Current);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static string ConcatFast(string[] lstStrings, int startIndex, int count)
+        {
+            return ConcatFast(Array.AsReadOnly(lstStrings), startIndex, count);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static string ConcatFast(IReadOnlyCollection<string> lstStrings, int startIndex, int count)
+        {
+            if (count <= 0)
+                return string.Empty;
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (count)
+            {
+                case 1:
+                    return lstStrings.ElementAtBetter(startIndex);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Empty;
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                }
+                            }
+                            return string.Concat(str1, str2);
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Empty;
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3);
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                        {
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                if (!objEnumerator.MoveNext())
+                                    return string.Empty;
+                            }
+                            if (objEnumerator.MoveNext())
+                            {
+                                str1 = objEnumerator.Current;
+                                if (objEnumerator.MoveNext())
+                                {
+                                    str2 = objEnumerator.Current;
+                                    if (objEnumerator.MoveNext())
+                                    {
+                                        str3 = objEnumerator.Current;
+                                        if (objEnumerator.MoveNext())
+                                        {
+                                            str4 = objEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                    }
+            }
+            int intFinalIndex = startIndex + count;
+            if (intFinalIndex >= lstStrings.Count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            int intTotalLength = 0;
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                int intIndex = 0;
+                while (objEnumerator.MoveNext())
+                {
+                    if (intIndex++ < startIndex)
+                        continue;
+                    string strLoop = objEnumerator.Current;
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Concat(lstStrings);
+                    if (intIndex == intFinalIndex)
+                        break;
+                }
+                objEnumerator.Reset();
+                intIndex = 0;
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[intTotalLength];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    while (objEnumerator.MoveNext())
+                    {
+                        if (intIndex++ < startIndex)
+                            continue;
+                        string strLoop = objEnumerator.Current;
+                        int intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        if (intIndex == intFinalIndex)
+                            break;
+                    }
+
+                    // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                    return new string(achrNewChars, 0, intCurrent);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static async Task<string> ConcatFastAsync(IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (count <= 0)
+                return string.Empty;
+            // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+            switch (count)
+            {
+                case 1:
+                    return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+                case 2:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+                case 3:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3);
+                            }
+                            token.ThrowIfCancellationRequested();
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                    if (objLoopEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str3 = objLoopEnumerator.Current;
+                                    }
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+                case 4:
+                    {
+                        string str1 = string.Empty;
+                        string str2 = string.Empty;
+                        string str3 = string.Empty;
+                        string str4 = string.Empty;
+                        IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            for (int i = 0; i < startIndex; ++i)
+                            {
+                                token.ThrowIfCancellationRequested();
+                                if (!objLoopEnumerator.MoveNext())
+                                    return string.Concat(str1, str2, str3, str4);
+                            }
+                            if (objLoopEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                str1 = objLoopEnumerator.Current;
+                                if (objLoopEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    str2 = objLoopEnumerator.Current;
+                                    if (objLoopEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        str3 = objLoopEnumerator.Current;
+                                        if (objLoopEnumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            str4 = objLoopEnumerator.Current;
+                                        }
+                                    }
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return string.Concat(str1, str2, str3, str4);
+                        }
+                        finally
+                        {
+                            if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objLoopEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+            }
+            int intFinalIndex = startIndex + count;
+            if (intFinalIndex >= lstStrings.Count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            int intTotalLength = 0;
+            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                int intIndex = 0;
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (intIndex++ < startIndex)
+                        continue;
+                    string strLoop = objEnumerator.Current;
+                    if (!string.IsNullOrEmpty(strLoop) && (intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Concat(lstStrings);
+                    if (intIndex == intFinalIndex)
+                        break;
+                }
+                token.ThrowIfCancellationRequested();
+                objEnumerator.Reset();
+                token.ThrowIfCancellationRequested();
+                intIndex = 0;
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[intTotalLength];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (intIndex++ < startIndex)
+                            continue;
+                        string strLoop = objEnumerator.Current;
+                        int intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        if (intIndex == intFinalIndex)
+                            break;
+                    }
+
+                    // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                    return new string(achrNewChars, 0, intCurrent);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
+            intTotalLength += (strArg4?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Concat(string[])"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but it is slower than the Concat methods that take a fixed number of strings as their argument.
+        /// </summary>
+        public static string ConcatFast(this string strArg0, string strArg1, string strArg2, string strArg3, string strArg4, string strArg5, string strArg6)
+        {
+            int intTotalLength = (strArg0?.Length ?? 0) + (strArg1?.Length ?? 0) + (strArg2?.Length ?? 0) + (strArg3?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
+            intTotalLength += (strArg4?.Length ?? 0) + (strArg5?.Length ?? 0) + (strArg6?.Length ?? 0);
+            if (intTotalLength > Utils.MaxStackLimit16BitTypes)
+                return string.Concat(string.Concat(strArg0, strArg1, strArg2, strArg3), strArg4, strArg5, strArg6);
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intTotalLength];
+                // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                int intCurrent = 0;
+                int intLoopLength = strArg0?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg0)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent = intLoopLength;
+                }
+                intLoopLength = strArg1?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg1)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg2?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg2)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg3?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg3)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg4?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg4)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg5?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg5)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+                intLoopLength = strArg6?.Length ?? 0;
+                if (intLoopLength > 0)
+                {
+                    fixed (char* src = strArg6)
+                    {
+                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                    }
+                    intCurrent += intLoopLength;
+                }
+
+                // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings)
+        {
+            int intStringsCount = lstStrings.Count;
+            // Handle trivial cases first
+            switch (intStringsCount)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(0);
+                case 2:
+                    using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                    {
+                        objEnumerator.MoveNext();
+                        string str1 = objEnumerator.Current;
+                        objEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+            }
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return ConcatFast(lstStrings);
+            int intTotalLength = (intStringsCount - 1) * intSeparatorLength;
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    string strLoop = objEnumerator.Current ?? string.Empty;
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Join(strSeparator, lstStrings);
+                }
+                objEnumerator.Reset();
+                if (objEnumerator.MoveNext())
+                {
+                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                    unsafe
+                    {
+                        char* achrNewChars = stackalloc char[intTotalLength];
+                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                        int intCurrent = 0;
+                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+
+                        fixed (char* sep = strSeparator)
+                        {
+                            string strLoop = objEnumerator.Current;
+                            int intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent = intLoopLength;
+                            }
+                            else
+                            {
+                                while (objEnumerator.MoveNext())
+                                {
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent = intLoopLength;
+                                        break;
+                                    }
+                                }
+                            }
+                            while (objEnumerator.MoveNext())
+                            {
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                }
+                            }
+                        }
+                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings (including for string arrays because they have an unnecessary heap allocation) because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
+        /// </summary>
+        public static string JoinFast(string strSeparator, IEnumerable<string> lstStrings)
+        {
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return ConcatFast(lstStrings);
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+                string str2 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                {
+                    if (string.IsNullOrEmpty(str1))
+                        return str2;
+                    else
+                        return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                }
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = str1?.Length ?? 0;
+                if (!string.IsNullOrEmpty(str2))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += str2.Length;
+                }
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += strLoop.Length;
+                }
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        sbdReturn.Append(str1);
+                        if (!string.IsNullOrEmpty(str2))
+                        {
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(str2);
+                        }
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(strLoop);
+                        }
+                        while (objEnumerator.MoveNext())
+                        {
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                        }
+                        return sbdReturn.ToString();
+                    }
+                }
+
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                    fixed (char* sep = strSeparator)
+                    {
+                        intLoopLength = str1?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            fixed (char* src = str1)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent = intLoopLength;
+                        }
+                        intLoopLength = str2?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            fixed (char* src = str2)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                        }
+                        else
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                    }
+                                    else
+                                    {
+                                        if (intCurrent > 0)
+                                        {
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            intCurrent += intSeparatorLength;
+                                        }
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strFirstPart))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                        break; // We want to exit out of the score where we did our stackalloc to free it up
+                                    }
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                }
+                            }
+                        }
+                    }
+                    if (string.IsNullOrEmpty(strFirstPart))
+                    {
+                        // ... then we create a new string from the new CharArray
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    sbdReturn.Append(strFirstPart).Append(strSecondPart);
+                    while (objEnumerator.MoveNext())
+                        sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                    return sbdReturn.ToString();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            int intStringsCount = lstStrings.Count;
+            // Handle trivial cases first
+            switch (intStringsCount)
+            {
+                case 0:
+                    return Task.FromResult(string.Empty);
+                case 1:
+                    return lstStrings.ElementAtBetterAsync(0, token);
+                case 2:
+                    return Inner2();
+                    async Task<string> Inner2()
+                    {
+                        IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            objEnumerator.MoveNext();
+                            string str1 = objEnumerator.Current;
+                            objEnumerator.MoveNext();
+                            if (string.IsNullOrEmpty(str1))
+                            {
+                                return objEnumerator.Current;
+                            }
+                            else
+                            {
+                                string str2 = objEnumerator.Current;
+                                return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                            }
+                        }
+                        finally
+                        {
+                            if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                                await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                            else if (objEnumerator is IDisposable objDispose)
+                                objDispose.Dispose();
+                        }
+                    }
+            }
+            return Inner();
+            async Task<string> Inner()
+            {
+                int intSeparatorLength = strSeparator.Length;
+                if (intSeparatorLength == 0)
+                    return await ConcatFastAsync(lstStrings, token).ConfigureAwait(false);
+                int intTotalLength = (intStringsCount - 1) * intSeparatorLength;
+                IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strLoop = objEnumerator.Current ?? string.Empty;
+                        if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                            return string.Join(strSeparator, lstStrings);
+                    }
+                    objEnumerator.Reset();
+                    token.ThrowIfCancellationRequested();
+                    if (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                        unsafe
+                        {
+                            char* achrNewChars = stackalloc char[intTotalLength];
+                            // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                            int intCurrent = 0;
+                            int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+
+                            fixed (char* sep = strSeparator)
+                            {
+                                string strLoop = objEnumerator.Current;
+                                int intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent = intLoopLength;
+                                }
+                                else
+                                {
+                                    while (objEnumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        strLoop = objEnumerator.Current;
+                                        intLoopLength = strLoop?.Length ?? 0;
+                                        if (intLoopLength > 0)
+                                        {
+                                            fixed (char* src = strLoop)
+                                            {
+                                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                            }
+                                            intCurrent = intLoopLength;
+                                            break;
+                                        }
+                                    }
+                                }
+                                while (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                        intCurrent += intSeparatorLength;
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
+                                    }
+                                }
+                            }
+                            // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                            return new string(achrNewChars, 0, intCurrent);
+                        }
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                        await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                    else if (objEnumerator is IDisposable objDispose)
+                        objDispose.Dispose();
+                }
+                return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
+        /// </summary>
+        public static async Task<string> JoinFastAsync(string strSeparator, IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return await ConcatFastAsync(lstStrings, token).ConfigureAwait(false);
+            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // Handle trivial cases first
+                if (!objEnumerator.MoveNext())
+                    return string.Empty;
+                token.ThrowIfCancellationRequested();
+                string str1 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                    return str1;
+                token.ThrowIfCancellationRequested();
+                // Handle cases where we can rely on the internal Concat methods that do not need allocations and can make use of faster string construction
+                string str2 = objEnumerator.Current;
+                if (!objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (string.IsNullOrEmpty(str1))
+                        return str2;
+                    else
+                        return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                }
+                token.ThrowIfCancellationRequested();
+                string strLoop = objEnumerator.Current;
+                int intLoopLength = str1?.Length ?? 0;
+                if (!string.IsNullOrEmpty(str2))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += str2.Length;
+                }
+                token.ThrowIfCancellationRequested();
+                if (!string.IsNullOrEmpty(strLoop))
+                {
+                    if (intLoopLength > 0)
+                        intLoopLength += intSeparatorLength;
+                    intLoopLength += strLoop.Length;
+                }
+                token.ThrowIfCancellationRequested();
+                if (intLoopLength > Utils.MaxStackLimit16BitTypes)
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.EnsureCapacity(intLoopLength);
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(str1);
+                        token.ThrowIfCancellationRequested();
+                        if (!string.IsNullOrEmpty(str2))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(str2);
+                        }
+                        if (!string.IsNullOrEmpty(strLoop))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (sbdReturn.Length > 0)
+                                sbdReturn.Append(strSeparator);
+                            sbdReturn.Append(strLoop);
+                        }
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            strLoop = objEnumerator.Current;
+                            if (!string.IsNullOrEmpty(strLoop))
+                                sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                        }
+                        token.ThrowIfCancellationRequested();
+                        return sbdReturn.ToString();
+                    }
+                }
+
+                string strFirstPart = string.Empty;
+                string strSecondPart = string.Empty;
+                token.ThrowIfCancellationRequested();
+                // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                unsafe
+                {
+                    char* achrNewChars = stackalloc char[Utils.MaxStackLimit16BitTypes];
+                    // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                    int intCurrent = 0;
+                    int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                    fixed (char* sep = strSeparator)
+                    {
+                        intLoopLength = str1?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = str1)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, Utils.MaxStackLimit16BitTypes * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent = intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        intLoopLength = str2?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = str2)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        intLoopLength = strLoop?.Length ?? 0;
+                        if (intLoopLength > 0)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (intCurrent > 0)
+                            {
+                                Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                intCurrent += intSeparatorLength;
+                            }
+                            token.ThrowIfCancellationRequested();
+                            fixed (char* src = strLoop)
+                            {
+                                Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                            }
+                            intCurrent += intLoopLength;
+                            token.ThrowIfCancellationRequested();
+                        }
+                        else
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                    }
+                                    else
+                                    {
+                                        if (intCurrent > 0)
+                                        {
+                                            Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                            intCurrent += intSeparatorLength;
+                                        }
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
+                                    }
+                                    break;
+                                }
+                            }
+                        }
+                        if (string.IsNullOrEmpty(strFirstPart))
+                        {
+                            while (objEnumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                strLoop = objEnumerator.Current;
+                                intLoopLength = strLoop?.Length ?? 0;
+                                if (intLoopLength > 0)
+                                {
+                                    if (intCurrent + intLoopLength + intSeparatorLength > Utils.MaxStackLimit16BitTypes)
+                                    {
+                                        strFirstPart = new string(achrNewChars, 0, intCurrent);
+                                        strSecondPart = strSeparator + strLoop;
+                                        break; // We want to exit out of the score where we did our stackalloc to free it up
+                                    }
+                                    token.ThrowIfCancellationRequested();
+                                    Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                    intCurrent += intSeparatorLength;
+                                    token.ThrowIfCancellationRequested();
+                                    fixed (char* src = strLoop)
+                                    {
+                                        Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (Utils.MaxStackLimit16BitTypes - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                    }
+                                    intCurrent += intLoopLength;
+                                    token.ThrowIfCancellationRequested();
+                                }
+                            }
+                        }
+                    }
+                    if (string.IsNullOrEmpty(strFirstPart))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        // ... then we create a new string from the new CharArray
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                // Backup for if our string ended up being too long
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                {
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.EnsureCapacity(strFirstPart.Length + strSecondPart.Length);
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strFirstPart);
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(strSecondPart);
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        sbdReturn.Append(strSeparator).Append(objEnumerator.Current);
+                    }
+                    token.ThrowIfCancellationRequested();
+                    return sbdReturn.ToString();
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Join(string, string[], int, int)"/> that is faster for non-arrays because it does not need to transform the collection to an array first.
+        /// </summary>
+        public static string JoinFast(string strSeparator, IReadOnlyCollection<string> lstStrings, int startIndex, int count)
+        {
+            // Handle trivial cases first
+            switch (count)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return lstStrings.ElementAtBetter(startIndex);
+                case 2:
+                    using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+                    {
+                        for (int i = 0; i < startIndex; ++i)
+                        {
+                            if (!objEnumerator.MoveNext())
+                                throw new ArgumentOutOfRangeException(nameof(count));
+                        }
+                        objEnumerator.MoveNext();
+                        string str1 = objEnumerator.Current;
+                        objEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+            }
+            int intFinalIndex = startIndex + count;
+            if (intFinalIndex >= lstStrings.Count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return ConcatFast(lstStrings, startIndex, count);
+            int intTotalLength = (count - 1) * intSeparatorLength;
+            using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
+            {
+                int intIndex = 0;
+                while (objEnumerator.MoveNext())
+                {
+                    if (intIndex++ < startIndex)
+                        continue;
+                    string strLoop = objEnumerator.Current ?? string.Empty;
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Join(strSeparator, lstStrings);
+                    if (intIndex == intFinalIndex)
+                        break;
+                }
+                intIndex = 0;
+                objEnumerator.Reset();
+                if (startIndex > 0)
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        if (++intIndex == startIndex)
+                            break;
+                    }
+                }
+                if (objEnumerator.MoveNext())
+                {
+                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                    unsafe
+                    {
+                        char* achrNewChars = stackalloc char[intTotalLength];
+                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                        int intCurrent = 0;
+                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                        ++intIndex;
+                        fixed (char* sep = strSeparator)
+                        {
+                            string strLoop = objEnumerator.Current;
+                            int intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent = intLoopLength;
+                            }
+                            else if (intIndex < intFinalIndex)
+                            {
+                                while (objEnumerator.MoveNext())
+                                {
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent = intLoopLength;
+                                        break;
+                                    }
+                                    if (++intIndex == intFinalIndex)
+                                        break;
+                                }
+                            }
+                            if (intIndex < intFinalIndex)
+                            {
+                                while (objEnumerator.MoveNext())
+                                {
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                        intCurrent += intSeparatorLength;
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
+                                    }
+                                    if (++intIndex == intFinalIndex)
+                                        break;
+                                }
+                            }
+                        }
+                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Join(string, string[], int, int)"/> that is faster for non-arrays because it does not need to transform the collection to an array first.
+        /// </summary>
+        public static async Task<string> JoinFastAsync(string strSeparator, IAsyncReadOnlyCollection<string> lstStrings, int startIndex, int count, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Handle trivial cases first
+            switch (count)
+            {
+                case 0:
+                    return string.Empty;
+                case 1:
+                    return await lstStrings.ElementAtBetterAsync(startIndex, token).ConfigureAwait(false);
+                case 2:
+                    IEnumerator<string> objLoopEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        for (int i = 0; i < startIndex; ++i)
+                        {
+                            if (!objLoopEnumerator.MoveNext())
+                                throw new ArgumentOutOfRangeException(nameof(count));
+                        }
+                        objLoopEnumerator.MoveNext();
+                        string str1 = objLoopEnumerator.Current;
+                        objLoopEnumerator.MoveNext();
+                        if (string.IsNullOrEmpty(str1))
+                        {
+                            return objLoopEnumerator.Current;
+                        }
+                        else
+                        {
+                            string str2 = objLoopEnumerator.Current;
+                            return string.IsNullOrEmpty(str2) ? str1 : string.Concat(str1, strSeparator, str2);
+                        }
+                    }
+                    finally
+                    {
+                        if (objLoopEnumerator is IAsyncDisposable objDisposeAsync)
+                            await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                        else if (objLoopEnumerator is IDisposable objDispose)
+                            objDispose.Dispose();
+                    }
+            }
+            int intFinalIndex = startIndex + count;
+            if (intFinalIndex >= lstStrings.Count)
+                throw new ArgumentOutOfRangeException(nameof(count));
+            int intSeparatorLength = strSeparator.Length;
+            if (intSeparatorLength == 0)
+                return await ConcatFastAsync(lstStrings, startIndex, count, token).ConfigureAwait(false);
+            int intTotalLength = (count - 1) * intSeparatorLength;
+            IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                int intIndex = 0;
+                while (objEnumerator.MoveNext())
+                {
+                    if (intIndex++ < startIndex)
+                        continue;
+                    token.ThrowIfCancellationRequested();
+                    string strLoop = objEnumerator.Current ?? string.Empty;
+                    if ((intTotalLength += strLoop.Length) > Utils.MaxStackLimit16BitTypes)
+                        return string.Join(strSeparator, lstStrings);
+                    if (intIndex == intFinalIndex)
+                        break;
+                }
+                objEnumerator.Reset();
+                intIndex = 0;
+                if (startIndex > 0)
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        if (++intIndex == startIndex)
+                            break;
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                if (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+                    unsafe
+                    {
+                        char* achrNewChars = stackalloc char[intTotalLength];
+                        // What we're doing here is copying the string-as-CharArray via memory blocks into a new CharArray
+                        int intCurrent = 0;
+                        int intSeparatorByteLength = intSeparatorLength * sizeof(char);
+                        ++intIndex;
+                        fixed (char* sep = strSeparator)
+                        {
+                            string strLoop = objEnumerator.Current;
+                            int intLoopLength = strLoop?.Length ?? 0;
+                            if (intLoopLength > 0)
+                            {
+                                fixed (char* src = strLoop)
+                                {
+                                    Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                }
+                                intCurrent = intLoopLength;
+                            }
+                            else if (intIndex < intFinalIndex)
+                            {
+                                while (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)achrNewChars, intTotalLength * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent = intLoopLength;
+                                        break;
+                                    }
+                                    if (++intIndex == intFinalIndex)
+                                        break;
+                                }
+                            }
+                            if (intIndex < intFinalIndex)
+                            {
+                                while (objEnumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    strLoop = objEnumerator.Current;
+                                    intLoopLength = strLoop?.Length ?? 0;
+                                    if (intLoopLength > 0)
+                                    {
+                                        Buffer.MemoryCopy((byte*)sep, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intSeparatorByteLength);
+                                        intCurrent += intSeparatorLength;
+                                        fixed (char* src = strLoop)
+                                        {
+                                            Buffer.MemoryCopy((byte*)src, (byte*)(achrNewChars + intCurrent), (intTotalLength - intCurrent) * sizeof(char), intLoopLength * sizeof(char));
+                                        }
+                                        intCurrent += intLoopLength;
+                                    }
+                                    if (++intIndex == intFinalIndex)
+                                        break;
+                                }
+                            }
+                        }
+                        // ... then we create a new string from the new CharArray (using intCurrent just in case)
+                        return new string(achrNewChars, 0, intCurrent);
+                    }
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objDisposeAsync)
+                    await objDisposeAsync.DisposeAsync().ConfigureAwait(false);
+                else if (objEnumerator is IDisposable objDispose)
+                    objDispose.Dispose();
+            }
+            return string.Empty;
+        }
+
+        /// <summary>
+        /// Async version of <see cref="string.Join(string, IEnumerable{string})"/>, but on an enumerable of string tasks instead of an enumerable of strings.
+        /// </summary>
         public static async Task<string> JoinAsync(string strSeparator, IEnumerable<Task<string>> lstStringTasks,
                                                    CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnAddSeparator = false;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 foreach (Task<string> tskString in lstStringTasks)
                 {
-                    token.ThrowIfCancellationRequested();
-                    sbdReturn.Append(await tskString.ConfigureAwait(false));
                     token.ThrowIfCancellationRequested();
                     if (blnAddSeparator)
                         sbdReturn.Append(strSeparator);
                     else
                         blnAddSeparator = true;
+                    token.ThrowIfCancellationRequested();
+                    sbdReturn.Append(await tskString.ConfigureAwait(false));
                 }
 
                 return sbdReturn.ToString();
@@ -66,7 +2423,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Identical to string::Replace(), but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
+        /// Identical to <see cref="string.Replace(string, string)"/>, but the comparison for equality is custom-defined instead of always being case-sensitive Ordinal
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="strOldValue">Substring to replace</param>
@@ -87,7 +2444,7 @@ namespace Chummer
             int intHead = strInput.IndexOf(strOldValue, eStringComparison);
             if (intHead == -1)
                 return strInput;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 // Buffer size is increased by 1 in addition to the length-dependent stuff in order to compensate for integer division rounding down
                 int intNewCapacity = strInput.Length + 1 + Math.Max(0, strNewValue.Length - strOldValue.Length);
@@ -110,7 +2467,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of a char from a string (much faster than using Replace() with an empty string)
+        /// Method to quickly remove all instances of a char from a string (much faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="chrToDelete">Character to remove</param>
@@ -122,11 +2479,10 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
                     int intCurrent = 0;
@@ -139,10 +2495,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -167,7 +2519,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of Replace() with an empty string)
+        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="achrToDelete">Array of characters to remove</param>
@@ -182,11 +2534,10 @@ namespace Chummer
             int intLength = strInput.Length;
             if (intLength == 0)
                 return strInput;
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chars in achrToDelete...
                     int intCurrent = 0;
@@ -209,10 +2560,6 @@ namespace Chummer
 
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
                     strReturn = new string(achrNewChars, 0, intCurrent);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -247,7 +2594,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Method to quickly remove all instances of a substring from a string (should be faster than using Replace() with an empty string)
+        /// Method to quickly remove all instances of a substring from a string (should be faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
         /// <param name="strSubstringToDelete">Substring to remove</param>
@@ -264,8 +2611,8 @@ namespace Chummer
         /// Method to quickly remove the first instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the first instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromStart(this string strInput, string strSubstringToDelete,
@@ -290,8 +2637,8 @@ namespace Chummer
         /// Method to quickly remove the last instance of a substring from a string.
         /// </summary>
         /// <param name="strInput">String on which to operate.</param>
-        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="strSubstringToDelete">Substring to remove.</param>
+        /// <param name="intStartIndex">Index from which to begin searching (proceeding towards the beginning of the string).</param>
         /// <param name="eComparison">Comparison rules by which to find the substring to remove. Useful for when case-insensitive removal is required.</param>
         /// <returns>New string with the last instance of <paramref name="strSubstringToDelete"/> removed starting from <paramref name="intStartIndex"/>.</returns>
         public static string FastEscapeOnceFromEnd(this string strInput, string strSubstringToDelete,
@@ -313,7 +2660,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::IndexOfAny that uses params in its argument for the char array.
+        /// Syntactic sugar for <see cref="string.IndexOfAny(char[])"/> that uses params in its argument for the char array.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="anyOf">Array of characters to match with IndexOfAny</param>
@@ -332,9 +2679,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IReadOnlyCollection<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -349,14 +2708,13 @@ namespace Chummer
 
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-            
-            if (astrNeedles.All(x => x.Length > intHaystackLength))
+            if (astrNeedles.All(x => x.Length + intStartIndex > intHaystackLength))
                 return -1;
 
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length) - intStartIndex, eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -369,9 +2727,21 @@ namespace Chummer
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            return IndexOfAny(strHaystack, astrNeedles, 0, eComparison);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, IEnumerable<string> astrNeedles, int intStartIndex, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strHaystack))
                 return -1;
@@ -387,7 +2757,7 @@ namespace Chummer
             int intEarliestNeedleIndex = intHaystackLength;
             foreach (string strNeedle in astrNeedles)
             {
-                int intNeedleIndex = strHaystack.IndexOf(strNeedle, 0, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length), eComparison);
+                int intNeedleIndex = strHaystack.IndexOf(strNeedle, intStartIndex, Math.Min(intHaystackLength, intEarliestNeedleIndex + strNeedle.Length) - intStartIndex, eComparison);
                 if (intNeedleIndex >= 0 && intNeedleIndex < intEarliestNeedleIndex)
                     intEarliestNeedleIndex = intNeedleIndex;
             }
@@ -399,11 +2769,35 @@ namespace Chummer
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
+        {
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.LastIndexOfAny(char[])"/> that uses params in its argument for the char array.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="anyOf">Array of characters to match with LastIndexOfAny</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int LastIndexOfAny(this string strHaystack, params char[] anyOf)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return -1;
+            return strHaystack.LastIndexOfAny(anyOf);
         }
 
         /// <summary>
@@ -430,7 +2824,7 @@ namespace Chummer
             // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
             // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
 
-            return !astrNeedles.All(x => x.Length > intHaystackLength) && astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+            return astrNeedles.Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
         }
 
         /// <summary>
@@ -451,7 +2845,7 @@ namespace Chummer
             return astrNeedles != null &&
                    // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
                    // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
-                   astrNeedles.Any(strNeedle => strHaystack.IndexOf(strNeedle, eComparison) >= 0);
+                   astrNeedles.Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
         }
 
         /// <summary>
@@ -467,27 +2861,114 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator char in its argument in addition to StringSplitOptions.
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, IReadOnlyCollection<string> astrNeedles, StringComparison eComparison)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            if (astrNeedles == null)
+                return false;
+            int intNumNeedles = astrNeedles.Count;
+            if (intNumNeedles == 0)
+                return false;
+
+            // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+            // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+
+            return astrNeedles.AsParallel().Any(x => x.Length <= intHaystackLength && strHaystack.Contains(x, eComparison));
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="eComparison">Comparison rules by which to find instances of the substring to remove. Useful for when case-insensitive removal is required.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, IEnumerable<string> astrNeedles, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (string.IsNullOrEmpty(strHaystack))
+                return false;
+            int intHaystackLength = strHaystack.Length;
+            if (intHaystackLength == 0)
+                return false;
+            return astrNeedles != null &&
+                   // While one might think this is the slowest, worst-scaling way of checking for multiple needles, it's actually faster
+                   // in C# than a more detailed approach where characters of the haystack are progressively checked against all needles.
+                   astrNeedles.AsParallel().Any(strNeedle => strHaystack.Contains(strNeedle, eComparison));
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, params string[] astrNeedles)
+        {
+            return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(char[], StringSplitOptions)"/> that uses one separator char in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="chrSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
             if (strInput == null)
                 throw new ArgumentNullException(nameof(strInput));
-            return strInput.Split(new[] {chrSeparator}, eSplitOptions);
+            return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
         /// <summary>
-        /// Syntactic sugar for string::Split that uses one separator string in its argument in addition to StringSplitOptions.
+        /// Syntactic sugar for <see cref="string.Split(char[], int)"/> that uses one separator char in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator, int intCount)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { chrSeparator }, intCount);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(char[], int, StringSplitOptions)"/> that uses one separator char in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="chrSeparator">Separator to use.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, char chrSeparator, int intCount, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { chrSeparator }, intCount, eSplitOptions);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(string[], StringSplitOptions)"/> that uses one separator string in its argument.
         /// </summary>
         /// <param name="strInput">String to search.</param>
         /// <param name="strSeparator">Separator to use.</param>
         /// <param name="eSplitOptions">String split options.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
         {
@@ -497,17 +2978,32 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for <see cref="string.Split(string[], int, StringSplitOptions)"/> that uses one separator string in its argument.
+        /// </summary>
+        /// <param name="strInput">String to search.</param>
+        /// <param name="strSeparator">Separator to use.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">String split options.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string[] Split(this string strInput, string strSeparator, int intCount, StringSplitOptions eSplitOptions)
+        {
+            if (strInput == null)
+                throw new ArgumentNullException(nameof(strInput));
+            return strInput.Split(new[] { strSeparator }, intCount, eSplitOptions);
+        }
+
+        /// <summary>
         /// Syntactic sugar for a version of Contains(char) for strings that is faster than messing with Linq
         /// </summary>
         /// <param name="strHaystack">Input string to search.</param>
         /// <param name="chrNeedle">Character for which to look.</param>
-        /// <returns></returns>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, char chrNeedle)
+        public static bool Contains(this string strHaystack, char chrNeedle, int intStartIndex = 0)
         {
             if (strHaystack == null)
                 throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(chrNeedle) != -1;
+            return strHaystack.IndexOf(chrNeedle, intStartIndex) != -1;
         }
 
         /// <summary>
@@ -516,7 +3012,6 @@ namespace Chummer
         /// <param name="strHaystack">Input string to search.</param>
         /// <param name="strNeedle">String for which to look.</param>
         /// <param name="eComparison">Comparison to use.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
         {
@@ -526,7 +3021,36 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Syntactic sugar for a version of Contains(string) for strings from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex, StringComparison.Ordinal) != -1;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison from a specific starting index
+        /// </summary>
+        /// <param name="strHaystack">Input string to search.</param>
+        /// <param name="strNeedle">String for which to look.</param>
+        /// <param name="intStartIndex">Index from which to begin searching.</param>
+        /// <param name="eComparison">Comparison to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex, StringComparison eComparison)
+        {
+            if (strHaystack == null)
+                throw new ArgumentNullException(nameof(strHaystack));
+            return strHaystack.IndexOf(strNeedle, intStartIndex, eComparison) != -1;
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -536,13 +3060,18 @@ namespace Chummer
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
             if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
                 yield break;
+            }
+            int intInputLength = strInput.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
             {
                 intLoopLength = strInput.IndexOf(chrSplit, intStart);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
@@ -552,29 +3081,72 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, char chrSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+                yield break;
+            }
+            if (intCount <= 0)
+                yield break;
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                if (--intCount < 0)
+                    yield break;
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
         /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit,
-                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
             if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
                 yield break;
+            }
             if (string.IsNullOrEmpty(strSplit))
             {
                 yield return strInput;
                 yield break;
             }
 
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
             int intLoopLength;
-            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + strSplit.Length)
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
             {
-                intLoopLength = strInput.IndexOf(strSplit, intStart, StringComparison.Ordinal);
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
                 if (intLoopLength < 0)
-                    intLoopLength = strInput.Length;
+                    intLoopLength = intInputLength;
                 intLoopLength -= intStart;
                 if (intLoopLength != 0)
                     yield return strInput.Substring(intStart, intLoopLength);
@@ -584,15 +3156,81 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Version of string::Split() that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of string::Split()
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, string strSplit, int intCount,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intCount <= 0)
+                yield break;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+                yield break;
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                yield return strInput;
+                yield break;
+            }
+
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                if (--intCount < 0)
+                    yield break;
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    yield return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[])"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
         /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static IEnumerable<string> SplitNoAlloc(this string strInput, params char[] achrSplit)
         {
+            return SplitNoAlloc(strInput, StringSplitOptions.None, achrSplit);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="eSplitOptions">Split options to use.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static IEnumerable<string> SplitNoAlloc(this string strInput, StringSplitOptions eSplitOptions, params char[] achrSplit)
+        {
             if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                    yield return string.Empty;
                 yield break;
+            }
+            if (achrSplit.Length == 0)
+            {
+                if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                    yield return strInput;
+                yield break;
+            }
             int intLoopLength;
             for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
             {
@@ -600,7 +3238,671 @@ namespace Chummer
                 if (intLoopLength < 0)
                     intLoopLength = strInput.Length;
                 intLoopLength -= intStart;
-                yield return intLoopLength != 0 ? strInput.Substring(intStart, intLoopLength) : string.Empty;
+                if (intLoopLength == 0)
+                {
+                    if (eSplitOptions != StringSplitOptions.RemoveEmptyEntries)
+                        yield return string.Empty;
+                }
+                else
+                    yield return strInput.Substring(intStart, intLoopLength);
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, char chrSplit, int intSize,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, string strSplit, int intSize,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (string.IsNullOrEmpty(strSplit) || intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                else if (eSplitOptions == StringSplitOptions.None)
+                    ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], int)"/> that guarantees that the returned string will be of a specific size, padding with <see cref="string.Empty"/> when needed.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because fewer allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitFixedSize(this string strInput, int intSize, params char[] achrSplit)
+        {
+            if (intSize <= 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            string[] astrReturn = new string[intSize];
+            Array.Clear(astrReturn, 0, intSize);
+            if (string.IsNullOrEmpty(strInput))
+                return astrReturn;
+            if (achrSplit.Length == 0 || intSize == 1)
+            {
+                astrReturn[0] = strInput;
+                return astrReturn;
+            }
+            int intLoopLength;
+            int intIndex = 0;
+            for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = strInput.Length;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                ++intIndex;
+                if (intIndex >= intSize)
+                    break;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], int, StringSplitOptions)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, char chrSplit, int intSize,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intInputLength = strInput.Length;
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, string strSplit, int intSize,
+            StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (string.IsNullOrEmpty(strSplit) || intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+
+                int intInputLength = strInput.Length;
+                int intSplitLength = strSplit.Length;
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], int)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, params char[] achrSplit)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (achrSplit.Length == 0 || intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = strInput.Length;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                    ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, char chrSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            arrayLength = 0;
+            if (intCount <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                if (arrayLength >= intCount)
+                    break;
+                intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    if (arrayLength >= intCount)
+                        break;
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that returns a pooled string array, reducing overall allocations at the cost of needing to pay attention to disposal
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="strSplit">String to use for splitting.</param>
+        /// <param name="intCount">The maximum number of substrings to return.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <param name="eComparison">Comparison to use when searching for the next instance of <paramref name="strSplit"/>.</param>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="strSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, string strSplit, int intCount,
+                                                       StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
+        {
+            arrayLength = 0;
+            if (intCount <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            if (string.IsNullOrEmpty(strInput))
+            {
+                if (eSplitOptions == StringSplitOptions.None)
+                {
+                    arrayLength = 1;
+                    string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                    astrFastReturn[0] = string.Empty;
+                    return astrFastReturn;
+                }
+                else
+                    return ArrayPool<string>.Shared.Rent(0);
+            }
+            if (string.IsNullOrEmpty(strSplit))
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intSplitLength = strSplit.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+            {
+                if (arrayLength >= intCount)
+                    break;
+                intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                if (intLoopLength != 0 || eSplitOptions == StringSplitOptions.None)
+                    ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + intSplitLength)
+                {
+                    if (arrayLength >= intCount)
+                        break;
+                    intLoopLength = strInput.IndexOf(strSplit, intStart, eComparison);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[])"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary for the split.</param>
+        /// <param name="achrSplit">Characters to use for splitting.</param>
+        /// <returns>String array rented from <see cref="ArrayPool{string}.Shared"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
+        public static string[] SplitToPooledArray(this string strInput, out int arrayLength, params char[] achrSplit)
+        {
+            arrayLength = 0;
+            if (string.IsNullOrEmpty(strInput))
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = string.Empty;
+                return astrFastReturn;
+            }
+            if (achrSplit.Length == 0)
+            {
+                arrayLength = 1;
+                string[] astrFastReturn = ArrayPool<string>.Shared.Rent(1);
+                astrFastReturn[0] = strInput;
+                return astrFastReturn;
+            }
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                intLoopLength -= intStart;
+                ++arrayLength;
+            }
+            if (arrayLength <= 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(arrayLength);
+            try
+            {
+                int intIndex = 0;
+                for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOfAny(achrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = intInputLength;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex++] = strInput.Substring(intStart, intLoopLength);
+                    else
+                        astrReturn[intIndex++] = string.Empty;
+                }
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+            return astrReturn;
+        }
+
+        /// <summary>
+        /// Special version of <see cref="StringExtensions.SplitNoAlloc(string, char, StringSplitOptions)"/> that is meant for processing command-line arguments (where we are supposed to ignore spaces inside of quotation mark blocks)
+        /// </summary>
+        /// <param name="strInput">String to process.</param>
+        /// <returns>Enumerable containing substrings of <paramref name="strInput"/> split by whitespace</returns>
+        public static IEnumerable<string> ProcessArgsString(this string strInput)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                yield break;
+            int intInputLength = strInput.Length;
+            int intLoopLength;
+            for (int intStart = 0; intStart < intInputLength; intStart += intLoopLength + 1)
+            {
+                intLoopLength = strInput.IndexOfAny(s_achrWhiteSpaceAndQuotes, intStart);
+                if (intLoopLength < 0)
+                    intLoopLength = intInputLength;
+                else
+                {
+                    while (!char.IsWhiteSpace(strInput, intLoopLength))
+                    {
+                        intLoopLength = strInput.IndexOf('"', intLoopLength + 1);
+                        if (intLoopLength < 0)
+                        {
+                            intLoopLength = intInputLength;
+                            break;
+                        }
+                        intLoopLength = strInput.IndexOfAny(s_achrWhiteSpaceAndQuotes, intLoopLength + 1);
+                        if (intLoopLength < 0)
+                        {
+                            intLoopLength = intInputLength;
+                            break;
+                        }
+                    }
+                }
+                intLoopLength -= intStart;
+                if (intLoopLength != 0)
+                    yield return strInput.Substring(intStart, intLoopLength);
             }
         }
 
@@ -608,7 +3910,7 @@ namespace Chummer
         /// Normalizes whitespace for a given textblock, removing extra spaces and trimming the string.
         /// </summary>
         /// <param name="strInput">Input textblock</param>
-        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to char::IsWhiteSpace && !char::IsControl.</param>
+        /// <param name="funcIsWhiteSpace">Custom function with which to check if a character should count as whitespace. If null, defaults to <see cref="char.IsWhiteSpace(char)"/> && !<see cref="char.IsControl(char)"/>.</param>
         /// <returns>New string with any chars that return true from <paramref name="funcIsWhiteSpace"/> replaced with the first whitespace in a sequence and any excess whitespace removed.</returns>
         public static string NormalizeWhiteSpace(this string strInput, Func<char, bool> funcIsWhiteSpace = null)
         {
@@ -619,11 +3921,10 @@ namespace Chummer
                 return strInput;
             if (funcIsWhiteSpace == null)
                 funcIsWhiteSpace = x => char.IsWhiteSpace(x) && !char.IsControl(x);
-            if (intLength > GlobalSettings.MaxStackLimit)
+            if (intLength > Utils.MaxStackLimit16BitTypes)
             {
                 string strReturn;
-                char[] achrNewChars = ArrayPool<char>.Shared.Rent(intLength);
-                try
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
                 {
                     // What we're going here is copying the string-as-CharArray char-by-char into a new CharArray, but processing whitespace characters differently...
                     int intCurrent = 0;
@@ -661,10 +3962,6 @@ namespace Chummer
                     // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied.
                     // If the last char is whitespace, we don't copy that, either.
                     strReturn = new string(achrNewChars, 0, intCurrent - intLoopWhitespaceCount);
-                }
-                finally
-                {
-                    ArrayPool<char>.Shared.Return(achrNewChars);
                 }
 
                 return strReturn;
@@ -729,7 +4026,7 @@ namespace Chummer
         /// <param name="blnWhitelist">Whether the list of chars is a whitelist and the string can only contain characters in the list (true) or a blacklist and the string cannot contain any characts in the list (false).</param>
         /// <param name="achrChars">List of chars against which to check the string.</param>
         /// <returns>True if the string contains only legal characters, false if the string contains at least one illegal character.</returns>
-        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyList<char> achrChars)
+        public static bool IsLegalCharsOnly(this string strInput, bool blnWhitelist, IReadOnlyCollection<char> achrChars)
         {
             if (strInput == null)
                 return false;
@@ -745,7 +4042,7 @@ namespace Chummer
                 bool blnCharIsInList = false;
                 for (int j = 0; j < intLegalCharsLength; ++j)
                 {
-                    if (chrLoop == achrChars[j])
+                    if (chrLoop == achrChars.ElementAtBetter(j))
                     {
                         blnCharIsInList = true;
                         break;
@@ -837,8 +4134,7 @@ namespace Chummer
                                                 && (blnOmitCheck
                                                     || strInput.StartsWith(strToTrim, StringComparison.Ordinal)))
             {
-                int intTrimLength = strToTrim.Length;
-                return strInput.Substring(intTrimLength, strInput.Length - intTrimLength);
+                return strInput.Substring(strToTrim.Length);
             }
 
             return strInput;
@@ -886,12 +4182,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, char chrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim)
-            {
-                return strInput.Substring(1, strInput.Length - 1);
-            }
-
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput[0] == chrToTrim
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
@@ -903,9 +4196,9 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string TrimStartOnce(this string strInput, params char[] achrToTrim)
         {
-            if (!string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim))
-                return strInput.Substring(1, strInput.Length - 1);
-            return strInput;
+            return !string.IsNullOrEmpty(strInput) && strInput.StartsWith(achrToTrim)
+                ? strInput.Substring(1)
+                : strInput;
         }
 
         /// <summary>
@@ -1118,14 +4411,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
         /// <param name="strInput">Base string in which the replacing takes place.</param>
         /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string CheapReplace(this string strInput, string strOldValue, Func<string> funcNewValueFactory,
                                           StringComparison eStringComparison = StringComparison.Ordinal)
@@ -1145,7 +4438,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1154,7 +4447,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -1206,7 +4499,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1215,7 +4508,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -1229,7 +4522,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1238,7 +4531,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<string> funcNewValueFactory,
@@ -1252,7 +4545,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1261,7 +4554,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -1295,7 +4588,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1304,7 +4597,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -1318,7 +4611,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like string::Replace(), but meant for if the new value would be expensive to calculate. Actually slower than string::Replace() if the new value is something simple.
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -1327,7 +4620,7 @@ namespace Chummer
         /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
         /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>The result of a string::Replace() method if a replacement is made, the original string otherwise.</returns>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
@@ -1405,7 +4698,7 @@ namespace Chummer
             if (intWidth >= strText.Length)
                 return strText;
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strText.Length;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1505,10 +4798,23 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
-            return blnEscaped
-                ? s_RgxEscapedLineEndingsExpression.Replace(strInput, Environment.NewLine)
-                : s_RgxLineEndingsExpression.Replace(strInput, Environment.NewLine);
+            string[] astrLineEndingStrings = blnEscaped ? s_astrEscapedLineEndingStrings : s_astrLineEndingStrings;
+            if (!strInput.ContainsAnyParallel(astrLineEndingStrings))
+                return strInput;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strInput);
+                // Two-step process so that newlines normalized in earlier iterations of the loop are not re-detected by later iterations
+                // Yes, this will replace null characters with newlines as well, too bad, we shouldn't have null characters in our strings anyway
+                foreach (string strSequence in astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, s_strNullsToUseAsPlaceholder);
+                sbdReturn.Replace(s_strNullsToUseAsPlaceholder, Environment.NewLine);
+                return sbdReturn.ToString();
+            }
         }
+
+        // Use a placeholder length that matches the length of our new line string to reduce the amount of allocations needed in StringBuilder
+        private static readonly string s_strNullsToUseAsPlaceholder = Environment.NewLine.Length == 2 ? "\u0000\u0000" : "\u0000";
 
         /// <summary>
         /// Clean a string for usage inside an XPath filter, also surrounding it with quotation marks in an appropriate way.
@@ -1521,10 +4827,10 @@ namespace Chummer
             int intQuotePos = strSearch.IndexOf('"');
             if (intQuotePos == -1)
             {
-                return '\"' + strSearch + '\"';
+                return "\"" + strSearch + "\"";
             }
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 int intNewCapacity = strSearch.Length + 10;
                 if (sbdReturn.Capacity < intNewCapacity)
@@ -1543,6 +4849,9 @@ namespace Chummer
             }
         }
 
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrStringsToProcessForHtmlConversion = new[] { "&", "&amp;amp;", "<", ">", "\r\n", "\n\r", "\n", "\r" };
+
         /// <summary>
         /// Escapes characters in a string that would cause confusion if the string were placed as HTML content
         /// </summary>
@@ -1552,12 +4861,19 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strToClean))
                 return string.Empty;
-            string strReturn = strToClean
-                               .Replace("&", "&amp;")
-                               .Replace("&amp;amp;", "&amp;")
-                               .Replace("<", "&lt;")
-                               .Replace(">", "&gt;");
-            return s_RgxLineEndingsExpression.Replace(strReturn, "<br />");
+            if (!strToClean.ContainsAnyParallel(s_astrStringsToProcessForHtmlConversion))
+                return strToClean;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                sbdReturn.Append(strToClean);
+                sbdReturn.Replace("&", "&amp;")
+                    .Replace("&amp;amp;", "&amp;")
+                    .Replace("<", "&lt;")
+                    .Replace(">", "&gt;");
+                foreach (string strSequence in s_astrLineEndingStrings)
+                    sbdReturn.Replace(strSequence, "<br />");
+                return sbdReturn.ToString();
+            }
         }
 
         private static readonly ReadOnlyCollection<char> s_achrPathInvalidPathChars
@@ -1602,14 +4918,14 @@ namespace Chummer
             {
                 if (!s_RtbRtfManipulator.Value.IsHandleCreated)
                 {
-                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token);
+                    Utils.RunOnMainThread(() => s_RtbRtfManipulator.Value.CreateControl(), token: token);
                 }
 
                 return s_RtbRtfManipulator.Value.DoThreadSafeFunc(x =>
                 {
                     x.Text = strInput;
                     return x.Rtf;
-                });
+                }, token);
             }
             finally
             {
@@ -1687,7 +5003,7 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
                 return Task.FromResult(string.Empty);
-            return Task.Run(() =>
+            return TaskExtensions.RunWithoutEC(() =>
             {
                 string strInputTrimmed = strInput.TrimStart();
                 string strReturn = strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
@@ -1705,7 +5021,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             string strReturn = strInput.IsRtf() ? Rtf.ToHtml(strInput) : strInput.CleanForHtml();
-            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+            return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
         }
 
         public static Task<string> RtfToHtmlAsync(this string strInput, CancellationToken token = default)
@@ -1714,17 +5030,129 @@ namespace Chummer
                 return Task.FromCanceled<string>(token);
             if (string.IsNullOrEmpty(strInput))
                 return Task.FromResult(string.Empty);
-            return Task.Run(() =>
+            return TaskExtensions.RunWithoutEC(() =>
             {
                 string strReturn = strInput.IsRtf()
                     ? Rtf.ToHtml(strInput)
                     : strInput.CleanForHtml();
-                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfInvalidUnicodeChars();
+                return strReturn.CleanStylisticLigatures().NormalizeWhiteSpace().CleanOfXmlInvalidUnicodeChars();
             }, token);
         }
 
         /// <summary>
-        /// Whether or not a string is an RTF document
+        /// Takes a string with RTF formatting and transforms all of its colors to dark mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with light mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with dark mode versions.</returns>
+        public static string RtfToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableStart - intColorTableEnd <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objExistingColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objDarkModeColor = ColorManager.GenerateDarkModeColor(objExistingColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objDarkModeColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objDarkModeColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objDarkModeColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.Append(strInputPostColorTable).ToString();
+            }
+        }
+
+        /// <summary>
+        /// Takes a string with RTF formatting that is assumed to have dark mode formatting and transforms all of its colors to light mode versions.
+        /// </summary>
+        /// <param name="strInput">String to process with dark mode colors.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Version of <paramref name="strInput"/> with RTF color codes replaced with light mode versions.</returns>
+        public static string RtfInverseToDarkMode(this string strInput, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            string strInputTrimmed = strInput.TrimStart();
+            if (!strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal) && !strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
+                return strInput; // Faster and dirtier version of the full IsRtf check for performance reasons
+            int intColorTableStart = strInput.IndexOf(@"{\colortbl;", StringComparison.Ordinal);
+            if (intColorTableStart < 0)
+                return strInput;
+            int intColorTableEnd = strInput.IndexOf('}', intColorTableStart);
+            if (intColorTableEnd < 0 || intColorTableEnd - intColorTableStart <= 11)
+                return strInput;
+            string strInputColorTable = strInput.Substring(intColorTableStart, intColorTableEnd - intColorTableStart - 11);
+            if (string.IsNullOrEmpty(strInputColorTable))
+                return strInput;
+            MatchCollection lstColorMatches = s_RtfColorsRegex.Value.Matches(strInputColorTable);
+            if (lstColorMatches.Count == 0)
+                return strInput;
+            string strInputPreColorTable = strInput.Substring(0, intColorTableStart);
+            string strInputPostColorTable = intColorTableEnd + 1 < strInput.Length ? strInput.Substring(intColorTableEnd + 1) : string.Empty;
+            Dictionary<string, string> dicColorReplacements = new Dictionary<string, string>(lstColorMatches.Count);
+            foreach (Match objColorEntry in lstColorMatches)
+            {
+                if (dicColorReplacements.ContainsKey(objColorEntry.Value))
+                    continue;
+                GroupCollection lstColorValues = objColorEntry.Groups;
+                if (lstColorValues.Count < 3
+                    || !int.TryParse(lstColorValues[0].Value, out int intRed)
+                    || !int.TryParse(lstColorValues[1].Value, out int intGreen)
+                    || !int.TryParse(lstColorValues[2].Value, out int intBlue))
+                    continue;
+                Color objDarkModeColor = Color.FromArgb(intRed, intGreen, intBlue);
+                Color objInvertedColor = ColorManager.GenerateInverseDarkModeColor(objDarkModeColor);
+                dicColorReplacements.Add(objColorEntry.Value, "\\red" + objInvertedColor.R.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\green" + objInvertedColor.G.ToString(GlobalSettings.InvariantCultureInfo)
+                    + "\\blue" + objInvertedColor.B.ToString(GlobalSettings.InvariantCultureInfo) + ";");
+            }
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInputColorTable))
+            {
+                sbdInputColorTable.Append(strInputColorTable);
+                foreach (KeyValuePair<string, string> kvpReplace in dicColorReplacements)
+                {
+                    sbdInputColorTable.Replace(kvpReplace.Key, kvpReplace.Value);
+                }
+                return strInputPreColorTable + sbdInputColorTable.Append(strInputPostColorTable).ToString();
+            }
+        }
+
+        /// <summary>
+        /// Whether a string is an RTF document
         /// </summary>
         /// <param name="strInput">The string to check.</param>
         /// <returns>True if <paramref name="strInput"/> is an RTF document, False otherwise.</returns>
@@ -1736,7 +5164,7 @@ namespace Chummer
             if (strInputTrimmed.StartsWith("{/rtf1", StringComparison.Ordinal)
                 || strInputTrimmed.StartsWith(@"{\rtf1", StringComparison.Ordinal))
             {
-                return s_RtfStripperRegex.IsMatch(strInputTrimmed);
+                return s_RtfStripperRegex.Value.IsMatch(strInputTrimmed);
             }
 
             return false;
@@ -1749,29 +5177,569 @@ namespace Chummer
         /// <returns>True if the string contains HTML tags, False otherwise.</returns>
         public static bool ContainsHtmlTags(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && s_RgxHtmlTagExpression.IsMatch(strInput);
+            if (string.IsNullOrEmpty(strInput))
+                return false;
+            int intInputLength = strInput.Length;
+            int intIndex = strInput.IndexOf('<');
+            if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                return false;
+            // First check for special tags that are easy to identify: comments and doctypes
+            int intCommentOpener = strInput.IndexOf("<!--", intIndex, StringComparison.Ordinal);
+            if (intCommentOpener > 0 && intCommentOpener + 7 < intInputLength && strInput.IndexOf("-->", intCommentOpener + 4, StringComparison.Ordinal) > intCommentOpener)
+                return true;
+            int intDoctypeOpener = strInput.IndexOf("<!DOCTYPE", intIndex, StringComparison.Ordinal);
+            if (intDoctypeOpener > 0 && intDoctypeOpener + 10 < intInputLength && strInput.IndexOf('>', intDoctypeOpener + 9) > intDoctypeOpener)
+                return true;
+            int intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            while (intClosingIndex - intIndex > 1)
+            {
+                bool blnHasSlash = false;
+                bool blnValidTag = true;
+                for (int i = intIndex + 1; i < intClosingIndex; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (char.IsLetterOrDigit(chrLoop))
+                        continue; // Letters are generally allowed, digits have some restrictions but it's too expensive to check for those so let's not.
+                    switch (chrLoop)
+                    {
+                        case ' ':
+                            if (i > intIndex + 1)
+                                continue;
+                            break;
+                        case '/':
+                            // Slash only allowed as part of a closing tag
+                            if (!blnHasSlash && (i == intIndex + 1 || i == intClosingIndex - 1))
+                            {
+                                blnHasSlash = true;
+                                continue;
+                            }
+                            break;
+                        case '=':
+                            // Equals signs only valid as part of an attribute assignment
+                            if (i > intIndex + 1 && i < intClosingIndex - 1 && strInput[i+1] == '\"' && char.IsLetterOrDigit(strInput[i-1]))
+                                continue;
+                            break;
+                        case '\"':
+                            // If we have a quote, skip immediately to the next instance of a quote
+                            if (i < intClosingIndex - 1)
+                            {
+                                int intNextQuote = strInput.IndexOf('\"', i + 1, intClosingIndex - i - 1);
+                                if (intNextQuote > i)
+                                {
+                                    i = intNextQuote;
+                                    continue;
+                                }
+                            }
+                            break;
+                    }
+
+                    blnValidTag = false;
+                    break;
+                }
+                if (blnValidTag)
+                    return true;
+                if (intClosingIndex + 1 >= intInputLength)
+                    return false;
+                intIndex = strInput.IndexOf('<', intClosingIndex + 1);
+                if (intIndex < 0 || intIndex + 1 >= intInputLength)
+                    return false;
+                intClosingIndex = strInput.IndexOf('>', intIndex + 1);
+            }
+            return false;
         }
 
         /// <summary>
         /// Cleans a string of characters that could cause issues when saved in an xml file and then loaded back in
         /// </summary>
-        /// <param name="strInput"></param>
-        /// <returns></returns>
-        public static string CleanOfInvalidUnicodeChars(this string strInput)
+        public static string CleanOfXmlInvalidUnicodeChars(this string strInput)
         {
             return string.IsNullOrEmpty(strInput)
                 ? string.Empty
-                : GlobalSettings.InvalidUnicodeCharsExpression.Replace(strInput, string.Empty);
+                : strInput.FastEscape(s_achrXmlInvalidUnicodeChars);
         }
 
-        private static readonly HtmlTagsPattern s_RgxHtmlTagExpression = new HtmlTagsPattern();
+        /// <summary>
+        /// Checks if a string has characters that could cause issues when saved in an xml file and then loaded back in
+        /// </summary>
+        public static bool HasAnyXmlInvalidUnicodeChars(this string strInput)
+        {
+            return !string.IsNullOrEmpty(strInput) && strInput.IndexOfAny(s_achrXmlInvalidUnicodeChars) >= 0;
+        }
 
-        private static readonly LineEndingsPattern s_RgxLineEndingsExpression = new LineEndingsPattern();
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string(s).
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="intRating">Rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, int intRating)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, intRating, intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
 
-        private static readonly EscapedLineEndingsPattern s_RgxEscapedLineEndingsExpression = new EscapedLineEndingsPattern();
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        public static string ProcessFixedValuesString(this string strInput, Func<int> funcRating)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, funcRating(), intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating();
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = funcRating();
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = funcRating();
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = funcRating();
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        /// <summary>
+        /// Processes a string containing one or more FixedValues elements to return the appropriate value based on the input rating.
+        /// Is also able to handle cases where there are functions with commas inside of the FixedValues string.
+        /// </summary>
+        /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
+        /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<string> ProcessFixedValuesStringAsync(this string strInput, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
+            if (intFixedValuesIndex < 0)
+                return strInput;
+            if (intFixedValuesIndex == 0 && strInput[strInput.Length - 1] == ')' && strInput.LastIndexOf("FixedValues(", StringComparison.Ordinal) == 0)
+            {
+                // Simple case that is the most common, so handle separately: single FixedValues() entry that wraps around the entire string
+                strInput = strInput.TrimStartOnce("FixedValues(", true).TrimEndOnce(')');
+                int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndexInner < 0)
+                    return strInput;
+                return ProcessFixedValuesStringCore(strInput, await funcRating().ConfigureAwait(false), intIndexInner);
+            }
+            string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
+            string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
+            int intIndex = strSecondPart.IndexOfAny(s_achrParentheses);
+            if (intIndex < 0)
+            {
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating().ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+            if (strSecondPart[intIndex] != ')')
+            {
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                    if (intIndex < 0)
+                        break;
+                    switch (strSecondPart[intIndex])
+                    {
+                        case '(':
+                            ++intNumParentheses;
+                            break;
+                        case ')':
+                            --intNumParentheses;
+                            break;
+                    }
+                    ++intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
+                        if (intIndex < 0 || strSecondPart[intIndex] == ')')
+                            break;
+                        ++intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+
+                if (intIndex < 0)
+                {
+                    intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                    if (intIndex < 0)
+                        return strFirstPart + strSecondPart;
+                    int intRatingInner = await funcRating().ConfigureAwait(false);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                }
+            }
+
+            // Simple case: we just have to process the entire second half of the string as a single FixedValues
+            if (intIndex + 1 >= strSecondPart.Length)
+            {
+                strSecondPart = strSecondPart.Substring(0, intIndex);
+                intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
+                if (intIndex < 0)
+                    return strFirstPart + strSecondPart;
+                int intRatingInner = await funcRating().ConfigureAwait(false);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+            }
+
+            string strSecondPartA = strSecondPart.Substring(0, intIndex);
+            string strSecondPartB = intIndex + 2 < strSecondPart.Length ? strSecondPart.Substring(intIndex + 2) : string.Empty;
+            intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
+            if (intIndex < 0)
+                return strFirstPart + strSecondPartA + strSecondPartB;
+            int intRating = await funcRating().ConfigureAwait(false);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+        }
+
+        private static string ProcessFixedValuesStringCore(this string strInput, int intRating, int intIndex)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return string.Empty;
+            if (intIndex < 0)
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intIndex >= intInputLength)
+                return strInput;
+            // Function is more complicated than just splitting by commas because we need to be able to ignore commas that are inside of parentheses
+            if (intRating == int.MaxValue)
+            {
+                // Do the same thing as with intRating == 1, but backwards and looking at closed parantheses instead
+                intIndex = strInput.LastIndexOfAny(s_achrClosedParenthesesComma);
+                if (strInput[intIndex] == ',')
+                    return strInput.Substring(intIndex + 1);
+                --intIndex;
+                int intNumParentheses = 1;
+                while (intNumParentheses > 0)
+                {
+                    intIndex = strInput.LastIndexOfAny(s_achrParentheses, 0, intIndex + 1);
+                    // Unclosed parantheses before our last comma, so just seek to last comma and split from there
+                    if (intIndex <= 0)
+                    {
+                        intIndex = strInput.LastIndexOf(',');
+                        return intIndex < 0
+                            ? strInput
+                            : strInput.Substring(intIndex + 1);
+                    }
+                    switch (strInput[intIndex])
+                    {
+                        case '(':
+                            --intNumParentheses;
+                            break;
+                        case ')':
+                            ++intNumParentheses;
+                            break;
+                    }
+                    --intIndex;
+                    if (intNumParentheses == 0)
+                    {
+                        intIndex = strInput.LastIndexOfAny(s_achrClosedParenthesesComma, 0, intIndex + 1);
+                        if (intIndex <= 0)
+                            break;
+                        if (strInput[intIndex] == ',')
+                            return strInput.Substring(intIndex + 1);
+                        --intIndex;
+                        ++intNumParentheses;
+                    }
+                }
+            }
+            else
+            {
+                if (strInput[intIndex] != ',')
+                {
+                    ++intIndex;
+                    int intNumParentheses = 1;
+                    while (intNumParentheses > 0)
+                    {
+                        intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                        // Unclosed parantheses before our first comma, so return the entire string
+                        if (intIndex < 0 || intIndex == intInputLength - 1)
+                            break;
+                        switch (strInput[intIndex])
+                        {
+                            case '(':
+                                ++intNumParentheses;
+                                break;
+                            case ')':
+                                --intNumParentheses;
+                                break;
+                        }
+                        ++intIndex;
+                        if (intNumParentheses == 0)
+                        {
+                            intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                            if (intIndex < 0 || strInput[intIndex] == ',')
+                                break;
+                            ++intIndex;
+                            ++intNumParentheses;
+                        }
+                    }
+                }
+                if (intIndex < 0)
+                    return strInput;
+                if (intRating <= 1)
+                {
+                    return strInput.Substring(0, intIndex);
+                }
+                else
+                {
+                    int intLastCommaIndex = intIndex;
+                    for (int intCurrentCount = 2; intCurrentCount <= intRating; intCurrentCount++)
+                    {
+                        intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex + 1);
+                        if (intIndex < 0 || intIndex == intInputLength - 1)
+                            return strInput.Substring(intLastCommaIndex + 1);
+                        if (strInput[intIndex] == ',')
+                        {
+                            if (intCurrentCount == intRating)
+                                return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                            intLastCommaIndex = intIndex;
+                        }
+                        else
+                        {
+                            ++intIndex;
+                            int intNumParentheses = 1;
+                            while (intNumParentheses > 0)
+                            {
+                                intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
+                                // Unclosed parantheses before our first comma, so skip directly to next comma
+                                if (intIndex < 0 || intIndex == intInputLength - 1)
+                                {
+                                    intIndex = strInput.IndexOf(',', intLastCommaIndex + 1);
+                                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                                        return strInput.Substring(intLastCommaIndex + 1);
+                                    else if (intCurrentCount == intRating)
+                                        return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                                    intLastCommaIndex = intIndex;
+                                    break;
+                                }
+                                switch (strInput[intIndex])
+                                {
+                                    case '(':
+                                        ++intNumParentheses;
+                                        break;
+                                    case ')':
+                                        --intNumParentheses;
+                                        break;
+                                }
+                                ++intIndex;
+                                if (intNumParentheses == 0)
+                                {
+                                    intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex);
+                                    if (intIndex < 0 || intIndex == intInputLength - 1)
+                                        return strInput.Substring(intLastCommaIndex + 1);
+                                    if (strInput[intIndex] == ',')
+                                    {
+                                        if (intCurrentCount == intRating)
+                                            return strInput.Substring(intLastCommaIndex + 1, intIndex - intLastCommaIndex - 1);
+                                        intLastCommaIndex = intIndex;
+                                        break;
+                                    }
+                                    else
+                                    {
+                                        ++intIndex;
+                                        ++intNumParentheses;
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            return strInput;
+        }
+
+        // Treat as ReadOnlyCollection please, they are only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_achrWhiteSpaceAndQuotes = new[] { ' ', '\u00a0', '\u0085', '\t', '\n', '\v', '\f', '\r', '\"' };
+        private static readonly char[] s_achrParentheses = new[] { '(', ')' };
+        private static readonly char[] s_achrOpenParenthesesComma = new[] { '(', ',' };
+        private static readonly char[] s_achrClosedParenthesesComma = new[] { ')', ',' };
+        private static readonly char[] s_achrXmlInvalidUnicodeChars = new[]
+        {
+            '\u0000',
+            '\u0001',
+            '\u0002',
+            '\u0003',
+            '\u0004',
+            '\u0005',
+            '\u0006',
+            '\u0007',
+            '\u0008',
+            '\u000B',
+            '\u000C',
+            '\u000E',
+            '\u000F',
+            '\u0010',
+            '\u0011',
+            '\u0012',
+            '\u0013',
+            '\u0014',
+            '\u0015',
+            '\u0016',
+            '\u0017',
+            '\u0018',
+            '\u0019',
+            '\u001A',
+            '\u001B',
+            '\u001C',
+            '\u001D',
+            '\u001E',
+            '\u001F'
+        };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrLineEndingStrings = new[] { "\r\n", "\n\r", "\n", "\r" };
+
+        // Order is important so that we replace composites before chars
+        private static readonly string[] s_astrEscapedLineEndingStrings = new[] { "\\r\\n", "\\n\\r", "\\n", "\\r" };
 
         private static readonly DebuggableSemaphoreSlim s_RtbRtfManipulatorLock = new DebuggableSemaphoreSlim();
-        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox()));
+        private static readonly Lazy<RichTextBox> s_RtbRtfManipulator = new Lazy<RichTextBox>(() => Utils.RunOnMainThread(() => new RichTextBox(), token: CancellationToken.None));
 
         /// <summary>
         /// Strip RTF Tags from RTF Text.
@@ -1789,7 +5757,7 @@ namespace Chummer
                 return string.Empty;
             }
 
-            Match objMatch = s_RtfStripperRegex.Match(inputRtf);
+            Match objMatch = s_RtfStripperRegex.Value.Match(inputRtf);
 
             if (!objMatch.Success)
             {
@@ -1802,8 +5770,9 @@ namespace Chummer
             int intUCSkip = 1; // Number of ASCII characters to skip after a unicode character.
             int intCurSkip = 0; // Number of ASCII characters left to skip
 
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
+                sbdReturn.EnsureCapacity(inputRtf.Length);
                 for (; objMatch.Success; objMatch = objMatch.NextMatch())
                 {
                     token.ThrowIfCancellationRequested();
@@ -1945,7 +5914,13 @@ namespace Chummer
             }
         }
 
-        private static readonly RtfStripperPattern s_RtfStripperRegex = new RtfStripperPattern();
+        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
+            @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
+            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+
+        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => new Regex(
+            @"\\red(\d+)\\green(\d+)\\blue(\d+);",
+            RegexOptions.CultureInvariant | RegexOptions.Compiled));
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {
@@ -2012,12 +5987,12 @@ namespace Chummer
 
         /// <summary>
         /// Converts the specified string, which encodes binary data as base-64 digits, to an equivalent 8-bit unsigned integer array.
-        /// Nearly identical to Convert.FromBase64String(), but the byte array that's returned is from a shared ArrayPool instead of newly allocated.
+        /// Nearly identical to <see cref="Convert.FromBase64String(string)"/>, but the byte array that's returned is from <see cref="ArrayPool{byte}.Shared"/> instead of newly allocated.
         /// </summary>
         /// <param name="s">The string to convert.</param>
         /// <param name="arrayLength">Actual length of the array used. Important because ArrayPool array can be larger than the lengths requested</param>
         /// <param name="token">Cancellation token to listen to, if any.</param>
-        /// <returns>A rented array (from ArrayPool.Shared) of 8-bit unsigned integers that is equivalent to s.</returns>
+        /// <returns>A rented array (from <see cref="ArrayPool{byte}.Shared"/>) of 8-bit unsigned integers that is equivalent to s.</returns>
         /// <exception cref="ArgumentNullException">s is null.</exception>
         /// <exception cref="FormatException">The length of s, ignoring white-space characters, is not zero or a multiple of 4. -or-The format of s is invalid. s contains a non-base-64 character, more than two padding characters, or a non-white space-character among the padding characters.</exception>
         public static byte[] ToBase64PooledByteArray(this string s, out int arrayLength, CancellationToken token = default)
@@ -2177,7 +6152,7 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    goto IL_0097;
+                                    throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                 }
 
                                 if (num2 != 43)
@@ -2186,7 +6161,7 @@ namespace Chummer
                                     {
                                         if (num2 != 61)
                                         {
-                                            goto IL_0097;
+                                            throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                         }
 
                                         if (ptr == ptr3)
@@ -2263,11 +6238,6 @@ namespace Chummer
                                 ptr2 += 3;
                                 num = 255u;
                             }
-
-                            continue;
-                        IL_0097:
-                            throw new FormatException(
-                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                         }
 
                         if (num != 255)
@@ -2283,8 +6253,8 @@ namespace Chummer
 
         /// <summary>
         /// Reads the specified string that encodes binary data as base-64 digits into a stream directly.
-        /// Much more memory-efficient version of Convert.FromBase64String() if the byte array would just be immediately fed into a stream anyway.
-        /// However, much slower than using Convert.FromBase64String() or ToBase64PooledByteArray() because of unusable optimizations around writing to streams in unsafe code.
+        /// Much more memory-efficient version of <see cref="Convert.FromBase64String(string)"/> if the byte array would just be immediately fed into a stream anyway.
+        /// However, much slower than using <see cref="Convert.FromBase64String(string)"/> or <see cref="ToBase64PooledByteArray(string, out int, CancellationToken)"/> because of unusable optimizations around writing to streams in unsafe code.
         /// </summary>
         /// <param name="s">The string to convert and feed into <paramref name="stream"/>.</param>
         /// <param name="stream">Stream to hold the byte array of the base-64 decoded version of <paramref name="s"/>.</param>
@@ -2432,7 +6402,7 @@ namespace Chummer
                                         continue;
                                     }
 
-                                    goto IL_0097;
+                                    throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                 }
 
                                 if (num2 != 43)
@@ -2441,7 +6411,7 @@ namespace Chummer
                                     {
                                         if (num2 != 61)
                                         {
-                                            goto IL_0097;
+                                            throw new FormatException("The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                                         }
 
                                         if (ptr == ptr3)
@@ -2458,7 +6428,8 @@ namespace Chummer
                                                 return -1;
                                             }
 
-                                            stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8)}, 0, 2);
+                                            using (TemporaryArray<byte> aParams = new TemporaryArray<byte>((byte)(num >> 16), (byte)(num >> 8)))
+                                                stream.Write(aParams.RawArray, 0, 2);
                                             num = 255u;
                                             break;
                                         }
@@ -2511,14 +6482,10 @@ namespace Chummer
                                     return -1;
                                 }
 
-                                stream.Write(new[] {(byte) (num >> 16), (byte) (num >> 8), (byte) num}, 0, 3);
+                                using (TemporaryArray<byte> aParams = new TemporaryArray<byte>((byte)(num >> 16), (byte)(num >> 8), (byte)num))
+                                    stream.Write(aParams.RawArray, 0, 3);
                                 num = 255u;
                             }
-
-                            continue;
-                        IL_0097:
-                            throw new FormatException(
-                                "The input is not a valid Base-64 string as it contains a non-base 64 character, more than two padding characters, or an illegal character among the padding characters.");
                         }
 
                         if (num != 255)

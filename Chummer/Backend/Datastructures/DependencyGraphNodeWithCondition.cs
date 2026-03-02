@@ -18,6 +18,8 @@
  */
 
 using System;
+using System.Threading;
+using System.Threading.Tasks;
 
 namespace Chummer
 {
@@ -27,10 +29,25 @@ namespace Chummer
         {
             Node = objNode;
             DependencyCondition = funcDependencyCondition;
+            if (funcDependencyCondition == null)
+                DependencyConditionAsync = null;
+            else
+                DependencyConditionAsync = (arg1, token) => DefaultDependencyConditionAsync(funcDependencyCondition, arg1, token);
+        }
+
+        public DependencyGraphNodeWithCondition(DependencyGraphNode<T, T2> objNode, Func<T2, bool> funcDependencyCondition, Func<T2, CancellationToken, Task<bool>> funcDependencyConditionAsync)
+        {
+            Node = objNode;
+            DependencyCondition = funcDependencyCondition;
+            DependencyConditionAsync = funcDependencyConditionAsync;
         }
 
         public DependencyGraphNode<T, T2> Node { get; }
         public Func<T2, bool> DependencyCondition { get; }
+        public Func<T2, CancellationToken, Task<bool>> DependencyConditionAsync { get; }
+
+        private static Task<bool> DefaultDependencyConditionAsync(Func<T2, bool> myDependencyCondition, T2 obj, CancellationToken token) =>
+            token.IsCancellationRequested ? Task.FromCanceled<bool>(token) : Task.FromResult(myDependencyCondition(obj));
 
         public static bool operator ==(DependencyGraphNodeWithCondition<T, T2> objFirstEdge, DependencyGraphNodeWithCondition<T, T2> objSecondEdge)
         {

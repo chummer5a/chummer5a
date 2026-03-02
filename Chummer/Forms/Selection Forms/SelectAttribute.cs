@@ -26,6 +26,7 @@ namespace Chummer
     public partial class SelectAttribute : Form
     {
         private string _strReturnValue = string.Empty;
+        private bool _blnDoNotAffectMetatypeMaximum;
 
         private readonly string[] _lstAttributeAbbrevs;
 
@@ -37,18 +38,20 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
             _strReturnValue = cboAttribute.SelectedValue.ToString();
+            _blnDoNotAffectMetatypeMaximum = chkDoNotAffectMetatypeMaximum.Checked;
             DialogResult = DialogResult.OK;
             Close();
         }
 
         private async void SelectAttribute_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstAttributes))
             {
                 // Build the list of Attributes.
                 foreach (string strAbbrev in _lstAttributeAbbrevs)
@@ -60,7 +63,7 @@ namespace Chummer
                 }
 
                 await cboAttribute.PopulateWithListItemsAsync(lstAttributes).ConfigureAwait(false);
-                if (lstAttributes.Count >= 1)
+                if (lstAttributes.Count > 1)
                     await cboAttribute.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstAttributes.Count == 0)
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = false).ConfigureAwait(false);
@@ -100,7 +103,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Do not affect Metatype Maximum checkbox should be shown on the form.
+        /// Whether the Do not affect Metatype Maximum checkbox should be shown on the form.
         /// </summary>
         public bool ShowMetatypeMaximum
         {
@@ -108,9 +111,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Metatype Maximum value should be affected as well.
+        /// Whether the Metatype Maximum value should be affected as well.
         /// </summary>
-        public bool DoNotAffectMetatypeMaximum => chkDoNotAffectMetatypeMaximum.Checked;
+        public bool DoNotAffectMetatypeMaximum => _blnDoNotAffectMetatypeMaximum;
 
         #endregion Properties
     }

@@ -30,40 +30,42 @@ namespace Chummer
         private string _strForceCategory = string.Empty;
 
         public string WeaponType { get; set; }
-        
+
         private readonly Character _objCharacter;
 
         #region Control Events
 
         public SelectWeaponCategory(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void SelectWeaponCategory_Load(object sender, EventArgs e)
         {
             // Build a list of Weapon Categories found in the Weapons file.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
-                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths).ConfigureAwait(false);
+                XPathNavigator objXmlDocument = await XmlManager.LoadXPathAsync("weapons.xml", _objCharacter != null ? await
+                    (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetEnabledCustomDataDirectoryPathsAsync().ConfigureAwait(false) : null).ConfigureAwait(false);
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(OnlyCategory)
                              ? objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + OnlyCategory.CleanXPath() + ']')
-                             : await objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
+                                                      + OnlyCategory.CleanXPath() + "]")
+                             : objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     if (!string.IsNullOrEmpty(WeaponType) && objXmlCategory.Value != "Exotic Ranged Weapons")
                     {
-                        string strType = (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@type").ConfigureAwait(false))?.Value;
+                        string strType = objXmlCategory.SelectSingleNodeAndCacheExpression("@type")?.Value;
                         if (string.IsNullOrEmpty(strType) || strType != WeaponType)
                             continue;
                     }
 
                     string strInnerText = objXmlCategory.Value;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
 
@@ -84,7 +86,7 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ConfirmSelection(strSelect)).ConfigureAwait(false);
                         return;
                 }
-                
+
                 await cboCategory.PopulateWithListItemsAsync(lstCategory).ConfigureAwait(false);
                 await cboCategory.DoThreadSafeAsync(x =>
                 {

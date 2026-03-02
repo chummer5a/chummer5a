@@ -26,10 +26,11 @@ using System.Runtime.Serialization;
 namespace Chummer
 {
     /// <summary>
-    /// Like List that always only stores unique elements or a HashSet whose ordering is stored and tracked.
+    /// Like a List that always only stores unique elements or a HashSet whose ordering is stored and tracked.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public class OrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, ISerializable, IDeserializationCallback
+    [Serializable]
+    public sealed class OrderedSet<T> : ISet<T>, IList<T>, IReadOnlyList<T>, ISerializable, IDeserializationCallback
     {
         private readonly HashSet<T> _setData;
         private readonly List<T> _lstOrderedData;

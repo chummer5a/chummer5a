@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -43,25 +44,25 @@ namespace Chummer
 
         public SelectComplexForm(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            this.UpdateParentForToolTipControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer/complexforms");
-
             _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
-            if (_xmlOptionalComplexFormNode == null) return;
-            if (_objCharacter.MetavariantGuid != Guid.Empty)
+            if (_xmlOptionalComplexFormNode != null)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.SelectSingleNode("metavariants/metavariant[id = "
-                                                                                                 + _objCharacter.MetavariantGuid.ToString("D", GlobalSettings.InvariantCultureInfo).CleanXPath()
-                                                                                                 + ']');
-                if (xmlMetavariantNode != null)
-                    _xmlOptionalComplexFormNode = xmlMetavariantNode;
-            }
+                if (_objCharacter.MetavariantGuid != Guid.Empty)
+                {
+                    XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                    if (xmlMetavariantNode != null)
+                        _xmlOptionalComplexFormNode = xmlMetavariantNode;
+                }
 
-            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+                _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+            }
         }
 
         private async void SelectComplexForm_Load(object sender, EventArgs e)
@@ -80,7 +81,7 @@ namespace Chummer
             }
 
             // Display the Complex Form information.
-            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.SelectSingleNode("complexform[id = " + strSelectedComplexFormId.CleanXPath() + ']');
+            XPathNavigator xmlComplexForm = _xmlBaseComplexFormsNode.TryGetNodeByNameOrId("complexform", strSelectedComplexFormId);
             if (xmlComplexForm == null)
             {
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
@@ -91,7 +92,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("duration").ConfigureAwait(false))?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value.ToUpperInvariant())
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -101,7 +102,7 @@ namespace Chummer
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained").ConfigureAwait(false);
                         break;
 
-                    case "Special":
+                    case "SPECIAL":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                         break;
 
@@ -113,29 +114,29 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch ((await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("target").ConfigureAwait(false))?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value.ToUpperInvariant())
                 {
-                    case "Persona":
+                    case "PERSONA":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
                         break;
 
-                    case "Device":
+                    case "DEVICE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetDevice").ConfigureAwait(false);
                         break;
 
-                    case "File":
+                    case "FILE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetFile").ConfigureAwait(false);
                         break;
 
-                    case "Self":
+                    case "SELF":
                         strTarget = await LanguageManager.GetStringAsync("String_SpellRangeSelf").ConfigureAwait(false);
                         break;
 
-                    case "Sprite":
+                    case "SPRITE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetSprite").ConfigureAwait(false);
                         break;
 
-                    case "Host":
+                    case "HOST":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetHost").ConfigureAwait(false);
                         break;
 
@@ -150,7 +151,7 @@ namespace Chummer
 
                 await lblTarget.DoThreadSafeAsync(x => x.Text = strTarget).ConfigureAwait(false);
 
-                string strFv = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("fv").ConfigureAwait(false))?.Value.Replace('/', '÷').Replace('*', '×')
+                string strFv = xmlComplexForm.SelectSingleNodeAndCacheExpression("fv")?.Value.Replace('/', '÷').Replace('*', '×')
                                ?? string.Empty;
                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
@@ -170,23 +171,77 @@ namespace Chummer
                                                          "String_SpellRadiationPower")).ConfigureAwait(false);
                 }
 
-                await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
+                bool blnForce = strFv.StartsWith('L');
+                strFv = blnForce ? strFv.TrimStartOnce("L", true) : strFv;
+                //Navigator can't do math on a single value, so inject a mathable value.
+                strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
 
-                string strSource = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("source").ConfigureAwait(false))?.Value ??
+                string strToAppend = string.Empty;
+                int intFadingDv = 0;
+                string strSelectedComplexFormName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+                if (strFv.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+                {
+                    if (strFv.HasValuesNeedingReplacementForXPathProcessing())
+                    {
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                          out StringBuilder sbdFv))
+                        {
+                            sbdFv.Append('(', strFv, ')');
+                            foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
+                            {
+                                sbdFv.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
+                            }
+
+                            await _objCharacter.ProcessAttributesInXPathAsync(sbdFv).ConfigureAwait(false);
+                            strFv = sbdFv.ToString();
+                        }
+                    }
+                    (bool blnIsSuccess, object xprResult) = await CommonFunctions.EvaluateInvariantXPathAsync(strFv).ConfigureAwait(false);
+                    if (blnIsSuccess)
+                        intFadingDv = ((double)xprResult).StandardRound();
+                    else
+                        strToAppend = strFv;
+                }
+                else
+                {
+                    foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                            _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
+                        decValue += objImprovement.Value;
+                    intFadingDv = decValue.StandardRound();
+                }
+
+                // Fading always minimum 2
+                if (!blnForce && string.IsNullOrEmpty(strToAppend))
+                    intFadingDv = Math.Max(intFadingDv, 2);
+
+                if (blnForce)
+                {
+                    if (!string.IsNullOrEmpty(strToAppend))
+                        strFv += "L" + strToAppend;
+                    else
+                        strFv = string.Format(GlobalSettings.InvariantCultureInfo, "L{0:+0;-0;}", intFadingDv);
+                }
+                else if (!string.IsNullOrEmpty(strToAppend))
+                    strFv += strToAppend;
+                else
+                    strFv = intFadingDv.ToString(GlobalSettings.InvariantCultureInfo);
+
+                await lblFV.DoThreadSafeAsync(x => x.Text = strFv).ConfigureAwait(false);
+                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
+
+                string strSource = xmlComplexForm.SelectSingleNodeAndCacheExpression("source")?.Value ??
                                    await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
-                string strPage = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("altpage").ConfigureAwait(false))?.Value ??
-                                 (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("page").ConfigureAwait(false))?.Value ??
+                string strPage = xmlComplexForm.SelectSingleNodeAndCacheExpression("altpage")?.Value ??
+                                 xmlComplexForm.SelectSingleNodeAndCacheExpression("page")?.Value ??
                                  await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                string strSourceText = objSource.ToString();
-                await lblSource.DoThreadSafeAsync(x => x.Text = strSourceText).ConfigureAwait(false);
-                await lblSource.SetToolTipAsync(objSource.LanguageBookTooltip).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource, this).ConfigureAwait(false);
                 await lblTargetLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTarget)).ConfigureAwait(false);
                 await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration)).ConfigureAwait(false);
-                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSourceText)).ConfigureAwait(false);
-                await lblFVLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strFv)).ConfigureAwait(false);
+                await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text)).ConfigureAwait(false);
                 await tlpRight.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
             }
             finally
@@ -258,7 +313,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not the user wants to add another item after this one.
+        /// Whether the user wants to add another item after this one.
         /// </summary>
         public bool AddAgain => _blnAddAgain;
 
@@ -271,39 +326,38 @@ namespace Chummer
 
         #region Methods
 
-        private async ValueTask BuildComplexFormList(CancellationToken token = default)
+        private async Task BuildComplexFormList(CancellationToken token = default)
         {
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
             // Populate the Complex Form list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstComplexFormItems))
             {
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
-                             "complexform[" + strFilter + ']'))
+                             "complexform[" + strFilter + "]"))
                 {
-                    string strId = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("id", token: token).ConfigureAwait(false))?.Value;
+                    string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
                         continue;
 
                     if (!await xmlComplexForm.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         continue;
 
-                    string strName = (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
+                    string strName = xmlComplexForm.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
-                    if (_xmlOptionalComplexFormNode != null
-                        && await _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpressionAsync("complexform", token: token).ConfigureAwait(false) != null
-                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
+                    if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
+                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
                         continue;
 
                     lstComplexFormItems.Add(
-                        new ListItem(strId, (await xmlComplexForm.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                        new ListItem(strId, xmlComplexForm.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                 }
 
                 lstComplexFormItems.Sort(CompareListItems.CompareNames);

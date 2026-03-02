@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
@@ -91,8 +92,8 @@ namespace ChummerHub.Client.Sinners
             SaveSINnerIds(); //Save it!
         }
 
-        private static readonly LockingDictionary<string, SINner> s_dicCachedPluginFileSINners =
-            new LockingDictionary<string, SINner>();
+        private static readonly ConcurrentDictionary<string, SINner> s_dicCachedPluginFileSINners =
+            new ConcurrentDictionary<string, SINner>();
 
         public static void SaveFromPluginFile(string strPluginFileElement, Character character, SINner mySINnerLoading = null)
         {
@@ -104,7 +105,7 @@ namespace ChummerHub.Client.Sinners
             objReturn.MyCharacterCache.LoadFromFile(character.FileName);
             try
             {
-                objReturn.MySINnerFile = s_dicCachedPluginFileSINners.AddCheapOrGet(
+                objReturn.MySINnerFile = s_dicCachedPluginFileSINners.GetOrAdd(
                     strPluginFileElement, x => JsonConvert.DeserializeObject<SINner>(strPluginFileElement));
             }
             catch (Exception e)
@@ -136,10 +137,10 @@ namespace ChummerHub.Client.Sinners
 
 
         // ReSharper disable once InconsistentNaming
-        private static LockingDictionary<string, Guid> _SINnerIds;
+        private static ConcurrentDictionary<string, Guid> _SINnerIds;
 
         // ReSharper disable once InconsistentNaming
-        public static LockingDictionary<string, Guid> MySINnerIds
+        public static ConcurrentDictionary<string, Guid> MySINnerIds
         {
             get
             {
@@ -147,8 +148,8 @@ namespace ChummerHub.Client.Sinners
                     return _SINnerIds;
                 string save = Settings.Default.SINnerIds;
                 _SINnerIds = !string.IsNullOrEmpty(save)
-                    ? JsonConvert.DeserializeObject<LockingDictionary<string, Guid>>(save)
-                    : new LockingDictionary<string, Guid>();
+                    ? JsonConvert.DeserializeObject<ConcurrentDictionary<string, Guid>>(save)
+                    : new ConcurrentDictionary<string, Guid>();
                 return _SINnerIds;
             }
             set
@@ -207,7 +208,7 @@ namespace ChummerHub.Client.Sinners
                             ResultSinnerGetSINById found = null;
                             using (_ = Timekeeper.StartSyncron(
                                        "Checking if already online Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, await MyCharacter.GetFileNameAsync(token)))
                             {
                                 if (myState != null)
                                 {
@@ -217,7 +218,7 @@ namespace ChummerHub.Client.Sinners
                                     myState.myWorker?.ReportProgress(myState.CurrentProgress, myState);
                                 }
 
-                                if (MySINnerFile.DownloadedFromSINnersTime > MyCharacter.FileLastWriteTime)
+                                if (MySINnerFile.DownloadedFromSINnersTime > await MyCharacter.GetFileLastWriteTimeAsync(token))
                                 {
                                     if (myState != null)
                                     {
@@ -255,11 +256,11 @@ namespace ChummerHub.Client.Sinners
                                 myState.CurrentProgress += myState.ProgressSteps;
                             using (_ = Timekeeper.StartSyncron(
                                        "Setting Visibility for Chummer", op_uploadChummer,
-                                       CustomActivity.OperationType.DependencyOperation, MyCharacter.FileName))
+                                       CustomActivity.OperationType.DependencyOperation, await MyCharacter.GetFileNameAsync(token)))
                             {
                                 if (found?.CallSuccess == true)
                                 {
-                                    if (found.MySINner != null && found.MySINner.LastChange >= MyCharacter.FileLastWriteTime)
+                                    if (found.MySINner != null && found.MySINner.LastChange >= await MyCharacter.GetFileLastWriteTimeAsync(token))
                                     {
                                         if (myState != null)
                                         {
@@ -474,33 +475,21 @@ namespace ChummerHub.Client.Sinners
             string zipPath = Path.Combine(Settings.Default.TempDownloadPath, "SINner", MySINnerFile.Id + ".chum5z");
             if (PluginHandler.MySINnerLoading != null)
             {
-                if (blnSync)
-                {
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
-                }
-                else
-                {
-                    await MySINnerIds.TryRemoveAsync(MyCharacter.FileName, token).ConfigureAwait(false);
-                }
+                MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
             }
 
-            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob, token) == true)
+            if (MyCharacterCache?.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob) == true)
             {
                 MySINnerFile.Id = (Guid)sinidob;
             }
-            else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid, token))
+            else if (MySINnerIds.TryGetValue(MyCharacter.FileName, out Guid singuid))
                 MySINnerFile.Id = singuid;
             else
             {
                 if (PluginHandler.MySINnerLoading?.Id != null)
                 {
                     MySINnerFile = PluginHandler.MySINnerLoading;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        MySINnerIds.TryAdd(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value);
-                    else
-                        await MySINnerIds.TryAddAsync(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value, token);
+                    MySINnerIds.TryAdd(MyCharacter.FileName, PluginHandler.MySINnerLoading.Id.Value);
                     if (File.Exists(zipPath))
                         return zipPath;
                 }
@@ -606,22 +595,12 @@ namespace ChummerHub.Client.Sinners
                 if (MySINnerFile.Id != null)
                 {
                     Guid objTemp = MySINnerFile.Id.Value;
-                    if (blnSync)
-                        // ReSharper disable once MethodHasAsyncOverload
-                        MySINnerIds.AddOrUpdate(MyCharacter.FileName, objTemp, (x, y) => objTemp, token);
-                    else
-                        await MySINnerIds.AddOrUpdateAsync(MyCharacter.FileName, objTemp, (x, y) => objTemp, token);
-                }
-                else if (blnSync)
-                {
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    while (MySINnerIds.ContainsKey(MyCharacter.FileName))
-                        MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
+                    MySINnerIds.AddOrUpdate(MyCharacter.FileName, objTemp, (x, y) => objTemp);
                 }
                 else
                 {
-                    while (await MySINnerIds.ContainsKeyAsync(MyCharacter.FileName, token))
-                        await MySINnerIds.TryRemoveAsync(MyCharacter.FileName, token);
+                    while (MySINnerIds.ContainsKey(MyCharacter.FileName))
+                        MySINnerIds.TryRemove(MyCharacter.FileName, out Guid _);
                 }
 
                 SaveSINnerIds(); //Save it!
@@ -702,13 +681,14 @@ namespace ChummerHub.Client.Sinners
             foreach (string file in Directory.GetFiles(tempDir))
             {
                 FileInfo fi = new FileInfo(file);
-                if (fi.LastWriteTimeUtc < MyCharacter.FileLastWriteTime)
+                if (fi.LastWriteTimeUtc < (blnSync ? MyCharacter.FileLastWriteTime : await MyCharacter.GetFileLastWriteTimeAsync(token)))
                     File.Delete(file);
             }
 
-            if (string.IsNullOrEmpty(MyCharacter.FileName))
+            string strFileName = blnSync ? MyCharacter.FileName : await MyCharacter.GetFileNameAsync(token);
+            if (string.IsNullOrEmpty(strFileName))
                 return null;
-            string tempfile = Path.Combine(tempDir, MyCharacter.FileName);
+            string tempfile = Path.Combine(tempDir, strFileName);
             if (File.Exists(tempfile))
                 File.Delete(tempfile);
 
@@ -717,27 +697,28 @@ namespace ChummerHub.Client.Sinners
                 ? MyCharacter.DoOnSaveCompletedAsync.Remove(PluginHandler.MyOnSaveUpload)
                 : await MyCharacter.DoOnSaveCompletedAsync.RemoveAsync(PluginHandler.MyOnSaveUpload, token);
 
-            if (!File.Exists(MyCharacter.FileName))
+            strFileName = blnSync ? MyCharacter.FileName : await MyCharacter.GetFileNameAsync(token);
+            if (!File.Exists(strFileName))
             {
-                string path2 = MyCharacter.FileName.Substring(0, MyCharacter.FileName.LastIndexOf('\\'));
+                string path2 = strFileName.Substring(0, strFileName.LastIndexOf('\\'));
                 CreateDirectoryRecursively(path2);
 
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(MyCharacter.FileName, false, false, token);
+                    MyCharacter.Save(strFileName, false, false, token: token);
                 else
-                    await MyCharacter.SaveAsync(MyCharacter.FileName, false, false, token);
+                    await MyCharacter.SaveAsync(strFileName, false, false, token: token);
             }
             else
             {
                 if (blnSync)
                     // ReSharper disable once MethodHasAsyncOverload
-                    MyCharacter.Save(tempfile, false, false, token);
+                    MyCharacter.Save(tempfile, false, false, token: token);
                 else
-                    await MyCharacter.SaveAsync(tempfile, false, false, token);
+                    await MyCharacter.SaveAsync(tempfile, false, false, token: token);
             }
 
-            MySINnerFile.LastChange = MyCharacter.FileLastWriteTime;
+            MySINnerFile.LastChange = blnSync ? MyCharacter.FileLastWriteTime : await MyCharacter.GetFileLastWriteTimeAsync(token);
             if (readCallback)
             {
                 if (blnSync)

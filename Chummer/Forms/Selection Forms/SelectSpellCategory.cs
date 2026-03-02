@@ -28,7 +28,7 @@ namespace Chummer
     {
         private string _strSelectedCategory = string.Empty;
         private string _strForceCategory    = string.Empty;
-        private HashSet<string> _setExcludeCategories = Utils.StringHashSetPool.Get();
+        private HashSet<string> _setExcludeCategories;
 
         private readonly XPathNavigator _objXmlDocument;
 
@@ -36,28 +36,29 @@ namespace Chummer
 
         public SelectSpellCategory(Character objCharacter)
         {
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
+            _setExcludeCategories = Utils.StringHashSetPool.Get();
         }
 
         private async void SelectSpellCategory_Load(object sender, EventArgs e)
         {
             // Build the list of Spell Categories from the Spells file.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCategory))
             {
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
-                             : await _objXmlDocument.SelectAndCacheExpressionAsync("/chummer/categories/category").ConfigureAwait(false))
+                                                      + _strForceCategory.CleanXPath() + "]")
+                             : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if (_setExcludeCategories.Contains(strInnerText))
                         continue;
                     lstCategory.Add(new ListItem(strInnerText,
-                                                 (await objXmlCategory.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))?.Value
+                                                 objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value
                                                  ?? strInnerText));
                 }
 

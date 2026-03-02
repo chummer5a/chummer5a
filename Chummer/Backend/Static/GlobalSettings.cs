@@ -18,9 +18,12 @@
  */
 
 using System;
+using System.Buffers;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -30,12 +33,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using ExternalUtils.RegularExpressions;
 using iText.Kernel.Pdf;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
 using NLog;
-using Xoshiro.PRNG64;
 
 namespace Chummer
 {
@@ -85,6 +86,59 @@ namespace Chummer
         private PdfReader _objPdfReader;
         private PdfDocument _objPdfDocument;
 
+        public SourcebookInfo()
+        {
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfReader assigned to a file representing this SourcebookInfo.
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfReader">PdfReader object associated with the file.</param>
+        [CLSCompliant(false)]
+        public SourcebookInfo(string strPath, PdfReader objPdfReader)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
+            _objPdfDocument = new PdfDocument(objPdfReader);
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfDocument assigned to a file representing this SourcebookInfo.
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
+        [CLSCompliant(false)]
+        public SourcebookInfo(string strPath, PdfDocument objPdfDocument)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfDocument.GetReader() ?? throw new ArgumentException("objPdfDocument has no associated reader", nameof(objPdfDocument));
+            _objPdfDocument = objPdfDocument;
+        }
+
+        /// <summary>
+        /// Special constructor used when we have already created a PdfReader and PdfDocument assigned to a file representing this SourcebookInfo
+        /// </summary>
+        /// <param name="strPath">Path to the file.</param>
+        /// <param name="objPdfReader">PdfReader object associated with the file.</param>
+        /// <param name="objPdfDocument">PdfDocument object associated with the file.</param>
+        /// <exception cref="ArgumentException"><paramref name="objPdfDocument"/>'s associated reader is not the same value as<paramref name="objPdfReader"/>.</exception>
+        [CLSCompliant(false)]
+        public SourcebookInfo(string strPath, PdfReader objPdfReader, PdfDocument objPdfDocument)
+        {
+            if (string.IsNullOrEmpty(strPath))
+                throw new ArgumentNullException(nameof(strPath));
+            _strPath = strPath;
+            _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
+            if (objPdfDocument?.GetReader() != objPdfReader)
+                throw new ArgumentException("objPdfDocument reader is different from objPdfReader", nameof(objPdfDocument));
+            _objPdfDocument = objPdfDocument;
+        }
+
         #region Properties
 
         public string Code { get; set; } = string.Empty;
@@ -122,6 +176,7 @@ namespace Chummer
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Warn(e, $"Exception while loading {strPath}: " + e.Message);
                             Interlocked.Exchange(ref _objPdfDocument, null)?.Close();
                             Interlocked.Exchange(ref _objPdfReader, null)?.Close();
@@ -158,7 +213,7 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Global Settings. A single instance class since Settings are common for all characters, reduces execution time and memory usage.
+    /// Global Settings. A static class since these settings are common across all characters, reducing execution time and memory usage.
     /// </summary>
     public static class GlobalSettings
     {
@@ -171,6 +226,8 @@ namespace Chummer
         public static event EventHandler<TextEventArgs> MruChanged;
 
         public static event PropertyChangedEventHandler ClipboardChanged;
+
+        public static event PropertyChangedAsyncEventHandler ClipboardChangedAsync;
 
         public const int MaxMruSize = 10;
         private static readonly MostRecentlyUsedCollection<string> s_LstMostRecentlyUsedCharacters = new MostRecentlyUsedCollection<string>(MaxMruSize);
@@ -212,6 +269,7 @@ namespace Chummer
         private static string _strDefaultMasterIndexSetting = DefaultMasterIndexSettingDefaultValue;
         private static int _intSavedImageQuality = -1; // Jpeg compression with automatic quality
         private static ColorMode _eColorMode;
+        private static Color _objDefaultHasNotesColor = Color.Chocolate;
         private static bool _blnConfirmDelete = true;
         private static bool _blnConfirmKarmaExpense = true;
         private static bool _blnHideItemsOverAvailLimit = true;
@@ -225,21 +283,19 @@ namespace Chummer
         private static bool _blnPrintSkillsWithZeroRating = true;
         private static bool _blnInsertPdfNotesIfAvailable = true;
 
-        public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
 
-        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
-
         // Plugins information
-        private static readonly LockingDictionary<string, bool> s_dicPluginsEnabled = new LockingDictionary<string, bool>();
+        private static readonly ConcurrentDictionary<string, bool> s_dicPluginsEnabled = new ConcurrentDictionary<string, bool>();
 
-        public static LockingDictionary<string, bool> PluginsEnabledDic => s_dicPluginsEnabled;
+        public static ConcurrentDictionary<string, bool> PluginsEnabledDic => s_dicPluginsEnabled;
 
         // PDF information.
         private static string _strPdfAppPath = string.Empty;
 
         private static string _strPdfParameters = string.Empty;
-        private static readonly LockingDictionary<string, SourcebookInfo> s_DicSourcebookInfos = new LockingDictionary<string, SourcebookInfo>();
+        private static readonly ConcurrentDictionary<string, SourcebookInfo> s_DicSourcebookInfos = new ConcurrentDictionary<string, SourcebookInfo>();
+        private static readonly ConcurrentStringHashSet s_DicCustomSourcebookCodes = new ConcurrentStringHashSet();
         private static int s_intSourcebookInfosLoadingStatus;
         private static bool _blnUseLogging;
         private static UseAILogging _eUseLoggingApplicationInsights;
@@ -270,7 +326,7 @@ namespace Chummer
                     if (bool.TryParse(objRegistryResult.ToString(), out bool blnTemp))
                         blnStorage = blnTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strBoolName);
+                        objKey.DeleteValue(strBoolName, false);
                     return true;
                 }
             }
@@ -302,7 +358,7 @@ namespace Chummer
                     if (int.TryParse(objRegistryResult.ToString(), out int intTemp))
                         intStorage = intTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strIntName);
+                        objKey.DeleteValue(strIntName, false);
                     return true;
                 }
             }
@@ -333,7 +389,7 @@ namespace Chummer
                     if (decimal.TryParse(objRegistryResult.ToString(), NumberStyles.Any, InvariantCultureInfo, out decimal decTemp))
                         decStorage = decTemp;
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strDecName);
+                        objKey.DeleteValue(strDecName, false);
                     return true;
                 }
             }
@@ -363,7 +419,7 @@ namespace Chummer
                 {
                     strStorage = objRegistryResult.ToString();
                     if (blnDeleteAfterFetch)
-                        objKey.DeleteValue(strStringName);
+                        objKey.DeleteValue(strStringName, false);
                     return true;
                 }
             }
@@ -378,7 +434,7 @@ namespace Chummer
 
         static GlobalSettings()
         {
-            if (Utils.IsDesignerMode)
+            if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
             bool blnFirstEverLaunch = false;
@@ -390,7 +446,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ErrorMessage += ex;
+                ErrorMessage += ex.Demystify().ToString();
             }
             if (s_ObjBaseChummerKey == null)
                 return;
@@ -401,7 +457,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnLiveUpdateCleanCharacterFiles, "liveupdatecleancharacterfiles");
             LoadBoolFromRegistry(ref _lifeModuleEnabled, "lifemodule");
 
-            // Whether or not the app should use logging.
+            // Whether the app should use logging.
             LoadBoolFromRegistry(ref _blnUseLogging, "uselogging");
 
             try
@@ -421,14 +477,14 @@ namespace Chummer
             {
                 string useAI = "NotSet";
                 LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                switch (useAI)
+                switch (useAI.ToUpperInvariant())
                 {
-                    case "False":
+                    case "FALSE":
                         _eUseLoggingApplicationInsights = UseAILogging.NotSet;
                         break;
 
-                    case "True":
-                    case "Yes":
+                    case "TRUE":
+                    case "YES":
                         _eUseLoggingApplicationInsights = UseAILogging.Info;
                         break;
 
@@ -483,13 +539,18 @@ namespace Chummer
             else if (!blnFirstEverLaunch)
                 _eColorMode = ColorMode.Light;
 
-            // Whether or not dates should include the time.
+            int intColor = -1;
+            _objDefaultHasNotesColor = LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor")
+                ? Color.FromArgb(intColor)
+                : Color.Chocolate;
+
+            // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
             LoadBoolFromRegistry(ref _blnHideMasterIndex, "hidemasterindex");
             LoadBoolFromRegistry(ref _blnHideCharacterRoster, "hidecharacterroster");
             LoadBoolFromRegistry(ref _blnCreateBackupOnCareer, "createbackuponcareer");
 
-            // Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+            // Whether printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
             LoadBoolFromRegistry(ref _blnPrintToFileFirst, "printtofilefirst");
 
             // Print all Active Skills with a total value greater than 0 (as opposed to only printing those with a Rating higher than 0).
@@ -504,12 +565,12 @@ namespace Chummer
             // Print Notes.
             LoadBoolFromRegistry(ref _blnPrintNotes, "printnotes");
 
-            // Whether or not to insert scraped text from PDFs into the notes fields of newly added items
+            // Whether to insert scraped text from PDFs into the notes fields of newly added items
             LoadBoolFromRegistry(ref _blnInsertPdfNotesIfAvailable, "insertpdfnotesifavailable");
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
-            Utils.SetupWebBrowserRegistryKeys();
+            Utils.SetupWebBrowserRegistryKeys(_intEmulatedBrowserVersion);
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
@@ -530,32 +591,32 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
             LoadBoolFromRegistry(ref _blnSwitchTabsOnHoverScroll, "switchtabsonhoverscroll");
             LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
-            // Whether or not dice rolling is allowed for Skills.
+            // Whether dice rolling is allowed for Skills.
             LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
             // Language.
             string strLanguage = _strLanguage;
             if (LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                switch (strLanguage)
+                switch (strLanguage.ToUpperInvariant())
                 {
-                    case "en-us2":
+                    case "EN-US2":
                         strLanguage = DefaultLanguage;
                         break;
 
-                    case "de":
+                    case "DE":
                         strLanguage = "de-de";
                         break;
 
-                    case "fr":
+                    case "FR":
                         strLanguage = "fr-fr";
                         break;
 
-                    case "jp":
+                    case "JP":
                         strLanguage = "ja-jp";
                         break;
 
-                    case "zh":
+                    case "ZH":
                         strLanguage = "zh-cn";
                         break;
                 }
@@ -587,17 +648,18 @@ namespace Chummer
                 LoadStringFromRegistry(ref strPluginsJson, "plugins");
                 if (!string.IsNullOrEmpty(strPluginsJson))
                 {
-                    LockingDictionary<string, bool> dicTemp
-                        = Newtonsoft.Json.JsonConvert.DeserializeObject<LockingDictionary<string, bool>>(strPluginsJson);
+                    ConcurrentDictionary<string, bool> dicTemp
+                        = Newtonsoft.Json.JsonConvert.DeserializeObject<ConcurrentDictionary<string, bool>>(strPluginsJson);
                     if (dicTemp != null)
                     {
-                        Interlocked.Exchange(ref s_dicPluginsEnabled, dicTemp)?.Dispose();
+                        Interlocked.Exchange(ref s_dicPluginsEnabled, dicTemp);
                     }
                 }
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                e = e.Demystify();
+                Trace.TraceError(e.Message, e);
 #if DEBUG
                 throw;
                 /*
@@ -678,6 +740,7 @@ namespace Chummer
                                         {
                                             Program.ShowScrollableMessageBox(
                                                 string.Format(
+                                                    GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -711,7 +774,7 @@ namespace Chummer
             }
 
             // Add in default customdata directory's paths
-            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+            string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
             if (Directory.Exists(strCustomDataRootPath))
             {
                 foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
@@ -745,6 +808,7 @@ namespace Chummer
                                 {
                                     Program.ShowScrollableMessageBox(
                                         string.Format(
+                                            GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -787,8 +851,16 @@ namespace Chummer
                         s_LstFavoriteCharacters.Add(strFileName);
                 }
             }
-            s_LstFavoriteCharacters.CollectionChanged += LstFavoritedCharactersOnCollectionChanged;
+
             s_LstFavoriteCharacters.Sort();
+            for (int i = 1; i <= MaxMruSize; ++i)
+            {
+                if (i <= s_LstFavoriteCharacters.Count)
+                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo), s_LstFavoriteCharacters[i - 1]);
+                else
+                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+            }
+            s_LstFavoriteCharacters.CollectionChangedAsync += LstFavoritedCharactersOnCollectionChanged;
 
             for (int i = 1; i <= MaxMruSize; i++)
             {
@@ -800,7 +872,8 @@ namespace Chummer
                         s_LstMostRecentlyUsedCharacters.Add(strFileName);
                 }
             }
-            s_LstMostRecentlyUsedCharacters.CollectionChanged += LstMostRecentlyUsedCharactersOnCollectionChanged;
+
+            s_LstMostRecentlyUsedCharacters.CollectionChangedAsync += LstMostRecentlyUsedCharactersOnCollectionChanged;
 
             if (blnFirstEverLaunch)
                 ShowCharacterCustomDataWarning = false;
@@ -816,7 +889,7 @@ namespace Chummer
 
         #region Methods
 
-        public static async ValueTask SaveOptionsToRegistry(CancellationToken token = default)
+        public static async Task SaveOptionsToRegistry(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             try
@@ -831,6 +904,7 @@ namespace Chummer
                 objRegistry.SetValue("useloggingApplicationInsights", UseLoggingApplicationInsights.ToString());
                 objRegistry.SetValue("useloggingApplicationInsightsResetCounter", UseLoggingResetCounter);
                 objRegistry.SetValue("colormode", ColorModeSetting.ToString());
+                objRegistry.SetValue("defaulthasnotescolor", DefaultHasNotesColor.ToArgb().ToString(InvariantCultureInfo));
                 objRegistry.SetValue("language", Language);
                 objRegistry.SetValue("startupfullscreen", StartupFullscreen.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("singlediceroller", SingleDiceRoller.ToString(InvariantCultureInfo));
@@ -882,28 +956,23 @@ namespace Chummer
                 {
                     if (objSourceRegistry != null)
                     {
-                        LockingDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
-                        using (await EnterReadLock.EnterAsync(dicSourcebookInfos, token).ConfigureAwait(false))
+                        foreach (string strCustomSourcebookKey in s_DicCustomSourcebookCodes)
+                            objSourceRegistry.DeleteValue(strCustomSourcebookKey, false);
+
+                        IReadOnlyDictionary<string, SourcebookInfo> dicSourcebookInfos = await GetSourcebookInfosAsync(token).ConfigureAwait(false);
+                        foreach (KeyValuePair<string, SourcebookInfo> kvpSourcebookInfo in dicSourcebookInfos)
                         {
-                            await dicSourcebookInfos.ForEachAsync(x =>
-                            {
-                                // ReSharper disable once AccessToDisposedClosure
-                                objSourceRegistry.SetValue(x.Value.Code,
-                                                           x.Value.Path + '|'
-                                                                        + x.Value.Offset.ToString(
-                                                                            InvariantCultureInfo));
-                            }, token).ConfigureAwait(false);
+                            SourcebookInfo objSourcebookInfo = kvpSourcebookInfo.Value; // Set up this way to avoid race condition in underlying SourcebookInfos dictionary
+                            objSourceRegistry.SetValue(objSourcebookInfo.Code,
+                                objSourcebookInfo.Path + "|"
+                                                       + objSourcebookInfo.Offset.ToString(
+                                                           InvariantCultureInfo));
                         }
                     }
                 }
 
                 // Save the Custom Data Directory Info.
-                bool blnTemp;
-                using (RegistryKey objKey = objRegistry.OpenSubKey("CustomDataDirectory"))
-                    blnTemp = objKey != null;
-                if (blnTemp)
-                    objRegistry.DeleteSubKeyTree("CustomDataDirectory");
-
+                objRegistry.DeleteSubKeyTree("CustomDataDirectory", false);
                 using (RegistryKey objCustomDataDirectoryRegistry = objRegistry.CreateSubKey("CustomDataDirectory", true))
                 {
                     if (objCustomDataDirectoryRegistry != null)
@@ -924,18 +993,18 @@ namespace Chummer
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException e) when (e.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
-                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager.GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -944,7 +1013,7 @@ namespace Chummer
         #region Properties
 
         /// <summary>
-        /// Whether or not to create backups of characters before moving them to career mode. If true, a separate save file is created before marking the current character as created.
+        /// Whether to create backups of characters before moving them to career mode. If true, a separate save file is created before marking the current character as created.
         /// </summary>
         public static bool CreateBackupOnCareer
         {
@@ -971,7 +1040,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Master Index should be shown. If true, prevents the roster from being removed or hidden.
+        /// Whether the Master Index should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideMasterIndex
         {
@@ -980,7 +1049,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
+        /// Whether the Character Roster should be shown. If true, prevents the roster from being removed or hidden.
         /// </summary>
         public static bool HideCharacterRoster
         {
@@ -998,7 +1067,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Automatic Updates are enabled.
+        /// Whether Automatic Updates are enabled.
         /// </summary>
         public static bool AutomaticUpdate
         {
@@ -1007,7 +1076,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not live updates from the customdata directory are allowed.
+        /// Whether live updates from the customdata directory are allowed.
         /// </summary>
         public static bool LiveCustomData
         {
@@ -1028,7 +1097,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not confirmation messages are shown when deleting an object.
+        /// Whether confirmation messages are shown when deleting an object.
         /// </summary>
         public static bool ConfirmDelete
         {
@@ -1037,7 +1106,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not confirmation messages are shown for Karma Expenses.
+        /// Whether confirmation messages are shown for Karma Expenses.
         /// </summary>
         public static bool ConfirmKarmaExpense
         {
@@ -1055,7 +1124,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not numeric updowns can increment values of numericupdown controls by hovering over the control.
+        /// Whether numeric updowns can increment values of numericupdown controls by hovering over the control.
         /// </summary>
         public static bool AllowHoverIncrement
         {
@@ -1064,7 +1133,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not scrolling the mouse wheel while hovering over tab page labels switches tabs
+        /// Whether scrolling the mouse wheel while hovering over tab page labels switches tabs
         /// </summary>
         public static bool SwitchTabsOnHoverScroll
         {
@@ -1086,7 +1155,7 @@ namespace Chummer
             : NumericUpDownEx.InterceptMouseWheelMode.WhenFocus;
 
         /// <summary>
-        /// Whether or not dice rolling is allowed for Skills.
+        /// Whether dice rolling is allowed for Skills.
         /// </summary>
         public static bool AllowSkillDiceRolling
         {
@@ -1095,7 +1164,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the app should use logging.
+        /// Whether the app should use logging.
         /// </summary>
         public static bool UseLogging
         {
@@ -1148,7 +1217,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the app should use logging.
+        /// Whether the app should use logging.
         /// </summary>
         public static UseAILogging UseLoggingApplicationInsights
         {
@@ -1197,7 +1266,17 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not dates should include the time.
+        /// Default (light mode) color to use for if/when an item has notes.
+        /// If you are requesting this directly, you are probably doing something wrong. What you want is ColorManager.HasNotesColor instead.
+        /// </summary>
+        public static Color DefaultHasNotesColor
+        {
+            get => _objDefaultHasNotesColor;
+            set => _objDefaultHasNotesColor = value;
+        }
+
+        /// <summary>
+        /// Whether dates should include the time.
         /// </summary>
         public static bool DatesIncludeTime
         {
@@ -1206,7 +1285,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
+        /// Whether printouts should be sent to a file before loading them in the browser. This is a fix for getting printing to work properly on Linux using Wine.
         /// </summary>
         public static bool PrintToFileFirst
         {
@@ -1215,7 +1294,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not all Active Skills with a total score higher than 0 should be printed.
+        /// Whether all Active Skills with a total score higher than 0 should be printed.
         /// </summary>
         public static bool PrintSkillsWithZeroRating
         {
@@ -1224,7 +1303,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses should be printed on the character sheet.
+        /// Whether the Karma and Nuyen Expenses should be printed on the character sheet.
         /// </summary>
         public static bool PrintExpenses
         {
@@ -1233,7 +1312,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
+        /// Whether the Karma and Nuyen Expenses that have a cost of 0 should be printed on the character sheet.
         /// </summary>
         public static bool PrintFreeExpenses
         {
@@ -1242,7 +1321,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not Notes should be printed.
+        /// Whether Notes should be printed.
         /// </summary>
         public static bool PrintNotes
         {
@@ -1251,7 +1330,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to insert scraped text from PDFs into the Notes fields of newly added items.
+        /// Whether to insert scraped text from PDFs into the Notes fields of newly added items.
         /// </summary>
         public static bool InsertPdfNotesIfAvailable
         {
@@ -1268,7 +1347,7 @@ namespace Chummer
             set
             {
                 if (Interlocked.Exchange(ref _intEmulatedBrowserVersion, value) != value)
-                    Utils.SetupWebBrowserRegistryKeys();
+                    Utils.SetupWebBrowserRegistryKeys(value);
             }
         }
 
@@ -1296,39 +1375,53 @@ namespace Chummer
                 ChummerMainForm frmMain = Program.MainForm;
                 if (frmMain == null)
                     return;
-                frmMain.TranslateWinForm();
-                IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
-                if (lstToProcess != null)
+                try
                 {
-                    foreach (Form frmLoop in lstToProcess)
+                    frmMain.TranslateWinForm();
+                    IReadOnlyCollection<Form> lstToProcess = frmMain.OpenCharacterEditorForms;
+                    if (lstToProcess != null)
                     {
-                        frmLoop.TranslateWinForm();
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
                     }
+
+                    lstToProcess = frmMain.OpenCharacterSheetViewers;
+                    if (lstToProcess != null)
+                    {
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
+                    }
+
+                    lstToProcess = frmMain.OpenCharacterExportForms;
+                    if (lstToProcess != null)
+                    {
+                        foreach (Form frmLoop in lstToProcess)
+                        {
+                            frmLoop.TranslateWinForm();
+                        }
+                    }
+
+                    frmMain.PrintMultipleCharactersForm?.TranslateWinForm();
+                    frmMain.CharacterRoster?.TranslateWinForm();
+                    frmMain.MasterIndex?.TranslateWinForm();
+                    frmMain.RefreshAllTabTitles();
                 }
-                lstToProcess = frmMain.OpenCharacterSheetViewers;
-                if (lstToProcess != null)
+                catch (ObjectDisposedException)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
+                    //swallow this
                 }
-                lstToProcess = frmMain.OpenCharacterExportForms;
-                if (lstToProcess != null)
+                catch (OperationCanceledException)
                 {
-                    foreach (Form frmLoop in lstToProcess)
-                    {
-                        frmLoop.TranslateWinForm();
-                    }
+                    //swallow this
                 }
-                frmMain.PrintMultipleCharactersForm?.TranslateWinForm();
-                frmMain.CharacterRoster?.TranslateWinForm();
-                frmMain.MasterIndex?.TranslateWinForm();
-                frmMain.RefreshAllTabTitles();
             }
         }
 
-        public static async ValueTask SetLanguageAsync(string value, CancellationToken token = default)
+        public static async Task SetLanguageAsync(string value, CancellationToken token = default)
         {
             if (Interlocked.Exchange(ref _strLanguage, value) == value)
                 return;
@@ -1385,7 +1478,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the application should start in fullscreen mode.
+        /// Whether the application should start in fullscreen mode.
         /// </summary>
         public static bool StartupFullscreen
         {
@@ -1394,7 +1487,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not only a single instance of the Dice Roller should be allowed.
+        /// Whether only a single instance of the Dice Roller should be allowed.
         /// </summary>
         public static bool SingleDiceRoller
         {
@@ -1417,7 +1510,10 @@ namespace Chummer
         /// </summary>
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
-        private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
+        private static readonly XmlDocument s_xmlClipboard = new XmlDocument { XmlResolver = null };
+        private static readonly AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
+
+        private static ClipboardContentType _eClipboardContentType;
 
         /// <summary>
         /// XmlReaderSettings that should be used when reading almost Xml readable.
@@ -1430,28 +1526,179 @@ namespace Chummer
         public static XmlReaderSettings UnSafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false };
 
         /// <summary>
-        /// Regex that indicates whether a given string is a match for text that cannot be saved in XML. Match == true.
+        /// XmlReaderSettings that should be used when reading almost Xml readable.
         /// </summary>
-        [CLSCompliant(false)]
-        public static InvalidUnicodeCharsPattern InvalidUnicodeCharsExpression { get; } = new InvalidUnicodeCharsPattern();
+        public static XmlReaderSettings SafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, Async = true };
+
+        /// <summary>
+        /// XmlReaderSettings that should only be used if invalid characters are found.
+        /// </summary>
+        public static XmlReaderSettings UnSafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false, Async = true };
+
+        /// <summary>
+        /// Lock the clipboard for reading.
+        /// </summary>
+        public static IDisposable EnterClipboardReadLock(CancellationToken token = default) =>
+            _objClipboardLocker.EnterReadLock(token);
+
+        /// <summary>
+        /// Lock the clipboard for reading.
+        /// </summary>
+        public static Task<IAsyncDisposable> EnterClipboardReadLockAsync(CancellationToken token = default) =>
+            _objClipboardLocker.EnterReadLockAsync(token);
+
+        /// <summary>
+        /// Lock the clipboard for upgradeable reading.
+        /// </summary>
+        public static IDisposable EnterClipboardUpgradeableReadLock(CancellationToken token = default) =>
+            _objClipboardLocker.EnterUpgradeableReadLock(token);
+
+        /// <summary>
+        /// Lock the clipboard for upgradeable reading.
+        /// </summary>
+        public static Task<IAsyncDisposable> EnterClipboardUpgradeableReadLockAsync(CancellationToken token = default) =>
+            _objClipboardLocker.EnterUpgradeableReadLockAsync(token);
 
         /// <summary>
         /// Clipboard.
         /// </summary>
         public static XmlDocument Clipboard
         {
-            get => _xmlClipboard;
-            set
+            get
             {
-                if (Interlocked.Exchange(ref _xmlClipboard, value) != value)
+                using (_objClipboardLocker.EnterReadLock())
+                    return s_xmlClipboard;
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static void SetClipboard(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewOuterXml = value.OuterXmlViaPool(token);
+            using (_objClipboardLocker.EnterReadLock(token))
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+            }
+            using (_objClipboardLocker.EnterUpgradeableReadLock(token))
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+
+                using (_objClipboardLocker.EnterWriteLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    _eClipboardContentType = eType;
+                    s_xmlClipboard.RemoveAll();
+                    s_xmlClipboard.ImportNode(value, true);
+
+                    if (ClipboardChangedAsync != null)
+                        Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static async Task<XmlDocument> GetClipboardAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return s_xmlClipboard;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Clipboard.
+        /// </summary>
+        public static async Task SetClipboardAsync(XmlNode value, ClipboardContentType eType, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strNewOuterXml = value.OuterXmlViaPool(token);
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+
+                IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _eClipboardContentType = eType;
+                    s_xmlClipboard.RemoveAll();
+                    s_xmlClipboard.ImportNode(value, true);
+
+                    if (ClipboardChangedAsync != null)
+                        await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
+                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <summary>
         /// Type of data that is currently stored in the clipboard.
         /// </summary>
-        public static ClipboardContentType ClipboardContentType { get; set; }
+        public static ClipboardContentType ClipboardContentType
+        {
+            get
+            {
+                using (_objClipboardLocker.EnterReadLock())
+                    return _eClipboardContentType;
+            }
+        }
+
+        /// <summary>
+        /// Type of data that is currently stored in the clipboard.
+        /// </summary>
+        public static async Task<ClipboardContentType> GetClipboardContentTypeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _eClipboardContentType;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
 
         /// <summary>
         /// Default character sheet to use when printing.
@@ -1501,12 +1748,17 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static LockingDictionary<string, SourcebookInfo> SourcebookInfos
+        public static IReadOnlyDictionary<string, SourcebookInfo> SourcebookInfos
         {
             get
             {
                 // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-                LoadSourcebookInfos();
+                while (s_intSourcebookInfosLoadingStatus != 2)
+                {
+                    LoadSourcebookInfos();
+                    if (s_intSourcebookInfosLoadingStatus != 2)
+                        Utils.SafeSleep();
+                }
                 return s_DicSourcebookInfos;
             }
         }
@@ -1514,11 +1766,74 @@ namespace Chummer
         /// <summary>
         /// List of SourcebookInfo.
         /// </summary>
-        public static async Task<LockingDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
+        public static async Task<IReadOnlyDictionary<string, SourcebookInfo>> GetSourcebookInfosAsync(CancellationToken token = default)
         {
             // We need to generate s_DicSourcebookInfos outside of the constructor to avoid initialization cycles
-            await LoadSourcebookInfosAsync(token).ConfigureAwait(false);
+            while (s_intSourcebookInfosLoadingStatus != 2)
+            {
+                await LoadSourcebookInfosAsync(token).ConfigureAwait(false);
+                if (s_intSourcebookInfosLoadingStatus != 2)
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            }
             return s_DicSourcebookInfos;
+        }
+
+        public static void SetSourcebookInfos(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, bool blnDisposeOldInfos = true, CancellationToken token = default)
+        {
+            while (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 2) != 2)
+                Utils.SafeSleep(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (blnDisposeOldInfos)
+                {
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
+                        objInfo.Dispose();
+                }
+                else
+                    s_DicSourcebookInfos.Clear();
+                token.ThrowIfCancellationRequested();
+                foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    s_DicSourcebookInfos.TryAdd(objSourcebookInfo.Code, objSourcebookInfo);
+                }
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+            }
+        }
+
+        public static async Task SetSourcebookInfosAsync(IReadOnlyDictionary<string, SourcebookInfo> dicNewValues, bool blnDisposeOldInfos = true, CancellationToken token = default)
+        {
+            while (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 2) != 2)
+                await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (blnDisposeOldInfos)
+                {
+                    List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                    s_DicSourcebookInfos.Clear();
+                    foreach (SourcebookInfo objInfo in lstInfos)
+                        objInfo.Dispose();
+                }
+                else
+                    s_DicSourcebookInfos.Clear();
+                token.ThrowIfCancellationRequested();
+                foreach (SourcebookInfo objSourcebookInfo in dicNewValues.Values)
+                {
+                    token.ThrowIfCancellationRequested();
+                    s_DicSourcebookInfos.TryAdd(objSourcebookInfo.Code, objSourcebookInfo);
+                }
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+            }
         }
 
         private static void LoadSourcebookInfos(CancellationToken token = default)
@@ -1527,87 +1842,73 @@ namespace Chummer
                 return;
             try
             {
-                using (s_DicSourcebookInfos.LockObject.EnterWriteLock(token))
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
+                foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml", token: token)
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
                 {
-                    s_DicSourcebookInfos.Clear();
-                    Utils.SafelyRunSynchronously(async () => // Retrieve the SourcebookInfo objects.
+                    string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    SourcebookInfo objSource = new SourcebookInfo
                     {
-                        foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
-                                                                     .ConfigureAwait(false))
-                                                                 .SelectAndCacheExpressionAsync("/chummer/books/book", token: token)
-                                                                 .ConfigureAwait(false))
-                        {
-                            string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                                                           .ConfigureAwait(false))?.Value;
-                            if (string.IsNullOrEmpty(strCode))
-                                continue;
-                            SourcebookInfo objSource = new SourcebookInfo
-                            {
-                                Code = strCode
-                            };
+                        Code = strCode
+                    };
 
+                    try
+                    {
+                        string strTemp = string.Empty;
+                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                            && !string.IsNullOrEmpty(strTemp))
+                        {
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
                             try
                             {
-                                string strTemp = string.Empty;
-                                if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
-                                    && !string.IsNullOrEmpty(strTemp))
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
                                 {
-                                    string[] strParts = strTemp.Split('|');
-                                    objSource.Path = strParts[0];
-                                    if (string.IsNullOrEmpty(objSource.Path))
-                                    {
+                                    objSource.Path = string.Empty;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
                                         objSource.Path = string.Empty;
-                                        objSource.Offset = 0;
-                                    }
-                                    else
-                                    {
-                                        if (!File.Exists(objSource.Path))
-                                            objSource.Path = string.Empty;
-                                        if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                            objSource.Offset = intTmp;
-                                    }
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
                                 }
                             }
-                            catch (System.Security.SecurityException)
+                            finally
                             {
-                                //swallow this
+                                ArrayPool<string>.Shared.Return(strParts);
                             }
-                            catch (UnauthorizedAccessException)
-                            {
-                                //swallow this
-                            }
-
-                            await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
                         }
-                    }, token);
-                }
-            }
-            catch
-            {
-                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
-                throw;
-            }
-        }
-
-        private static async ValueTask LoadSourcebookInfosAsync(CancellationToken token = default)
-        {
-            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
-                return;
-            try
-            {
-                IAsyncDisposable objLocker = await s_DicSourcebookInfos.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
-                {
-                    await s_DicSourcebookInfos.ClearAsync(token).ConfigureAwait(false);
-                    foreach (XPathNavigator xmlBook in await (await XmlManager.LoadXPathAsync("books.xml", token: token)
-                                                                              .ConfigureAwait(false))
-                                                             .SelectAndCacheExpressionAsync(
-                                                                 "/chummer/books/book", token: token)
-                                                             .ConfigureAwait(false))
+                    }
+                    catch (System.Security.SecurityException)
                     {
-                        string strCode = (await xmlBook.SelectSingleNodeAndCacheExpressionAsync("code", token: token)
-                                                       .ConfigureAwait(false))?.Value;
-                        if (string.IsNullOrEmpty(strCode))
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
+
+                    s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                }
+
+                s_DicCustomSourcebookCodes.Clear();
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
+                {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
+                    foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
+                                     objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
+                                 .SelectAndCacheExpression("/chummer/books/book", token: token))
+                    {
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
                             continue;
                         SourcebookInfo objSource = new SourcebookInfo
                         {
@@ -1620,19 +1921,27 @@ namespace Chummer
                             if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
                                 && !string.IsNullOrEmpty(strTemp))
                             {
-                                string[] strParts = strTemp.Split('|');
-                                objSource.Path = strParts[0];
-                                if (string.IsNullOrEmpty(objSource.Path))
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
                                 {
-                                    objSource.Path = string.Empty;
-                                    objSource.Offset = 0;
-                                }
-                                else
-                                {
-                                    if (!File.Exists(objSource.Path))
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
                                         objSource.Path = string.Empty;
-                                    if (strParts.Length > 1 && int.TryParse(strParts[1], out int intTmp))
-                                        objSource.Offset = intTmp;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
                                 }
                             }
                         }
@@ -1645,18 +1954,344 @@ namespace Chummer
                             //swallow this
                         }
 
-                        await s_DicSourcebookInfos.AddAsync(strCode, objSource, token).ConfigureAwait(false);
+                        s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                        s_DicCustomSourcebookCodes.TryAdd(strCode);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch
             {
                 Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
                 throw;
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+            }
+        }
+
+        private static async Task LoadSourcebookInfosAsync(CancellationToken token = default)
+        {
+            if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) != 0)
+                return;
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                List<SourcebookInfo> lstInfos = s_DicSourcebookInfos.GetValuesToListSafe();
+                s_DicSourcebookInfos.Clear();
+                foreach (SourcebookInfo objInfo in lstInfos)
+                    objInfo.Dispose();
+                foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml", token: token)
+                             .ConfigureAwait(false))
+                         .SelectAndCacheExpression(
+                             "/chummer/books/book", token: token))
+                {
+                    string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                    if (string.IsNullOrEmpty(strCode))
+                        continue;
+                    SourcebookInfo objSource = new SourcebookInfo
+                    {
+                        Code = strCode
+                    };
+
+                    try
+                    {
+                        string strTemp = string.Empty;
+                        if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                            && !string.IsNullOrEmpty(strTemp))
+                        {
+                            string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                            try
+                            {
+                                objSource.Path = strParts[0];
+                                if (string.IsNullOrEmpty(objSource.Path))
+                                {
+                                    objSource.Path = string.Empty;
+                                    objSource.Offset = 0;
+                                }
+                                else
+                                {
+                                    if (!File.Exists(objSource.Path))
+                                        objSource.Path = string.Empty;
+                                    string strSecondPart = strParts[1];
+                                    if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                        objSource.Offset = intTmp;
+                                }
+                            }
+                            finally
+                            {
+                                ArrayPool<string>.Shared.Return(strParts);
+                            }
+                        }
+                    }
+                    catch (System.Security.SecurityException)
+                    {
+                        //swallow this
+                    }
+                    catch (UnauthorizedAccessException)
+                    {
+                        //swallow this
+                    }
+
+                    s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                }
+
+                s_DicCustomSourcebookCodes.Clear();
+                foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                             .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
+                {
+                    CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
+                    foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
+                                 await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
+                                     .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpression("/chummer/books/book", token: token))
+                    {
+                        string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)?.Value;
+                        if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                            continue;
+                        SourcebookInfo objSource = new SourcebookInfo
+                        {
+                            Code = strCode
+                        };
+
+                        try
+                        {
+                            string strTemp = string.Empty;
+                            if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                && !string.IsNullOrEmpty(strTemp))
+                            {
+                                string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                try
+                                {
+                                    objSource.Path = strParts[0];
+                                    if (string.IsNullOrEmpty(objSource.Path))
+                                    {
+                                        objSource.Path = string.Empty;
+                                        objSource.Offset = 0;
+                                    }
+                                    else
+                                    {
+                                        if (!File.Exists(objSource.Path))
+                                            objSource.Path = string.Empty;
+                                        string strSecondPart = strParts[1];
+                                        if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                            objSource.Offset = intTmp;
+                                    }
+                                }
+                                finally
+                                {
+                                    ArrayPool<string>.Shared.Return(strParts);
+                                }
+                            }
+                        }
+                        catch (System.Security.SecurityException)
+                        {
+                            //swallow this
+                        }
+                        catch (UnauthorizedAccessException)
+                        {
+                            //swallow this
+                        }
+
+                        s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                        s_DicCustomSourcebookCodes.TryAdd(strCode);
+                    }
+                }
+            }
+            catch
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                throw;
+            }
+            finally
+            {
+                Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+            }
+        }
+
+        public static void ReloadCustomSourcebookInfos(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            while (s_intSourcebookInfosLoadingStatus != 2)
+            {
+                if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) == 0)
+                {
+                    try
+                    {
+                        foreach (string strCode in s_DicCustomSourcebookCodes)
+                        {
+                            if (s_DicSourcebookInfos.TryRemove(strCode, out SourcebookInfo objInfo))
+                                objInfo.Dispose();
+                        }
+
+                        s_DicCustomSourcebookCodes.Clear();
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in SettingsManager.LoadedCharacterSettings)
+                        {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
+                            foreach (XPathNavigator xmlBook in XmlManager.LoadXPath("books.xml",
+                                             objCustomSettings.EnabledCustomDataDirectoryPaths, token: token)
+                                         .SelectAndCacheExpression("/chummer/books/book", token: token))
+                            {
+                                string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)
+                                    ?.Value;
+                                if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                                    continue;
+                                SourcebookInfo objSource = new SourcebookInfo
+                                {
+                                    Code = strCode
+                                };
+
+                                try
+                                {
+                                    string strTemp = string.Empty;
+                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                        && !string.IsNullOrEmpty(strTemp))
+                                    {
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
+                                        {
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
+                                                objSource.Path = string.Empty;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
+                                        }
+                                    }
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+                                    //swallow this
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    //swallow this
+                                }
+
+                                s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                                s_DicCustomSourcebookCodes.TryAdd(strCode);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                        throw;
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+                    }
+                }
+
+                if (s_intSourcebookInfosLoadingStatus != 2)
+                    Utils.SafeSleep(token);
+            }
+        }
+
+        public static async Task ReloadCustomSourcebookInfosAsync(CancellationToken token = default)
+        {
+            s_intSourcebookInfosLoadingStatus = 0;
+            while (s_intSourcebookInfosLoadingStatus != 2)
+            {
+                if (Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 1, 0) == 0)
+                {
+                    try
+                    {
+                        foreach (string strCode in s_DicCustomSourcebookCodes)
+                        {
+                            if (s_DicSourcebookInfos.TryRemove(strCode, out SourcebookInfo objInfo))
+                                objInfo.Dispose();
+                        }
+
+                        s_DicCustomSourcebookCodes.Clear();
+                        foreach (KeyValuePair<string, CharacterSettings> kvpCustomSettings in (await SettingsManager
+                                     .GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false)))
+                        {
+                            CharacterSettings objCustomSettings = kvpCustomSettings.Value; // Set up this way to avoid race condition in underlying dictionary
+                            foreach (XPathNavigator xmlBook in (await XmlManager.LoadXPathAsync("books.xml",
+                                         await objCustomSettings.GetEnabledCustomDataDirectoryPathsAsync(token)
+                                             .ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                     .SelectAndCacheExpression("/chummer/books/book", token: token))
+                            {
+                                string strCode = xmlBook.SelectSingleNodeAndCacheExpression("code", token: token)
+                                    ?.Value;
+                                if (string.IsNullOrEmpty(strCode) || s_DicSourcebookInfos.ContainsKey(strCode))
+                                    continue;
+                                SourcebookInfo objSource = new SourcebookInfo
+                                {
+                                    Code = strCode
+                                };
+
+                                try
+                                {
+                                    string strTemp = string.Empty;
+                                    if (LoadStringFromRegistry(ref strTemp, strCode, "Sourcebook")
+                                        && !string.IsNullOrEmpty(strTemp))
+                                    {
+                                        string[] strParts = strTemp.SplitFixedSizePooledArray(2, '|');
+                                        try
+                                        {
+                                            objSource.Path = strParts[0];
+                                            if (string.IsNullOrEmpty(objSource.Path))
+                                            {
+                                                objSource.Path = string.Empty;
+                                                objSource.Offset = 0;
+                                            }
+                                            else
+                                            {
+                                                if (!File.Exists(objSource.Path))
+                                                    objSource.Path = string.Empty;
+                                                string strSecondPart = strParts[1];
+                                                if (!string.IsNullOrEmpty(strSecondPart) && int.TryParse(strSecondPart, out int intTmp))
+                                                    objSource.Offset = intTmp;
+                                            }
+                                        }
+                                        finally
+                                        {
+                                            ArrayPool<string>.Shared.Return(strParts);
+                                        }
+                                    }
+                                }
+                                catch (System.Security.SecurityException)
+                                {
+                                    //swallow this
+                                }
+                                catch (UnauthorizedAccessException)
+                                {
+                                    //swallow this
+                                }
+
+                                s_DicSourcebookInfos.TryAdd(strCode, objSource);
+                                s_DicCustomSourcebookCodes.TryAdd(strCode);
+                            }
+                        }
+                    }
+                    catch
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 0, 1);
+                        throw;
+                    }
+                    finally
+                    {
+                        Interlocked.CompareExchange(ref s_intSourcebookInfosLoadingStatus, 2, 1);
+                    }
+                }
+
+                if (s_intSourcebookInfosLoadingStatus != 2)
+                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
             }
         }
 
@@ -1675,7 +2310,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not to show a warning that this Nightly build is special
+        /// Whether to show a warning that this Nightly build is special
         /// </summary>
         public static bool ShowCharacterCustomDataWarning
         {
@@ -1691,8 +2326,7 @@ namespace Chummer
                         return;
                     if (value)
                     {
-                        if (objRegistry.GetValueNames().Contains("charactercustomdatawarningshown"))
-                            objRegistry.DeleteValue("charactercustomdatawarningshown");
+                        objRegistry.DeleteValue("charactercustomdatawarningshown", false);
                     }
                     else
                     {
@@ -1714,7 +2348,7 @@ namespace Chummer
         public static string PdfArguments { get; internal set; }
 
         /// <summary>
-        /// Compression quality to use when saving images. int.MaxValue is PNG (Lossless), anything else that is positive is JPEG (Lossy),
+        /// Compression quality to use when saving images. <see cref="int.MaxValue"/> is PNG (Lossless), anything else that is positive is JPEG (Lossy),
         /// anything else that is negative is JPEG with quality set automatically based on the size of the image.
         /// </summary>
         public static int SavedImageQuality
@@ -1724,23 +2358,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
-        public static string ImageToBase64StringForStorage(Image objImageToSave)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string ImageToBase64StringForStorage(Image objImageToSave, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return SavedImageQuality == int.MaxValue
-                ? objImageToSave.ToBase64String()
-                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+                ? objImageToSave.ToBase64String(token: token)
+                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality, token);
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64StringAsync(token: token)
                 : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality, token: token);
@@ -1766,233 +2404,255 @@ namespace Chummer
 
         #region MRU Methods
 
-        private static void LstFavoritedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task LstFavoritedCharactersOnCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstFavoriteCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                    false);
-                            }
-
-                            break;
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    false);
                         }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                        }
+
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                            s_ObjBaseChummerKey.SetValue(
+                                "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                        else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= s_LstFavoriteCharacters.Count)
+                                if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
                                     s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
+                                        await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token)
+                                            .ConfigureAwait(false));
                                 else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
+                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                        false);
                             }
-
-                            break;
                         }
-                    case NotifyCollectionChangedAction.Replace:
-                        {
-                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                            if (!string.IsNullOrEmpty(strNewFile))
-                                s_ObjBaseChummerKey.SetValue(
-                                    "stickymru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                            else
-                            {
-                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                                {
-                                    if (i <= s_LstFavoriteCharacters.Count)
-                                        s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                     s_LstFavoriteCharacters[i - 1]);
-                                    else
-                                        s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                        false);
-                                }
-                            }
 
-                            break;
-                        }
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Move:
-                        {
-                            int intOldStartingIndex = e.OldStartingIndex;
-                            int intNewStartingIndex = e.NewStartingIndex;
-                            if (intOldStartingIndex == intNewStartingIndex)
-                                break;
-                            int intUpdateFrom;
-                            int intUpdateTo;
-                            if (intOldStartingIndex > intNewStartingIndex)
-                            {
-                                intUpdateFrom = intNewStartingIndex;
-                                intUpdateTo = intOldStartingIndex;
-                            }
-                            else
-                            {
-                                intUpdateFrom = intOldStartingIndex;
-                                intUpdateTo = intNewStartingIndex;
-                            }
-
-                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                            {
-                                s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
-                                                             s_LstFavoriteCharacters[i]);
-                            }
-
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
                         }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            s_ObjBaseChummerKey.SetValue("stickymru" + (i + 1).ToString(InvariantCultureInfo),
+                                await s_LstFavoriteCharacters.GetValueAtAsync(i, token).ConfigureAwait(false));
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstFavoriteCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstFavoriteCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstFavoriteCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("stickymru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstFavoriteCharacters.GetValueAtAsync(i - 1, token).ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("stickymru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("stickymru"));
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
-        private static void LstMostRecentlyUsedCharactersOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private static async Task LstMostRecentlyUsedCharactersOnCollectionChanged(object sender,
+            NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             try
             {
                 switch (e.Action)
                 {
                     case NotifyCollectionChangedAction.Add:
+                    {
+                        for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = e.NewStartingIndex + 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Remove:
+                    {
+                        for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
+                        {
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
+                        }
+
+                        break;
+                    }
+                    case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
+                        if (!string.IsNullOrEmpty(strNewFile))
+                        {
+                            s_ObjBaseChummerKey.SetValue(
+                                "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
+                        }
+                        else
                         {
                             for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
                             {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
+                                if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token)
+                                        .ConfigureAwait(false))
                                     s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
+                                        await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                            .ConfigureAwait(false));
                                 else
                                     s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                             }
-
-                            break;
                         }
-                    case NotifyCollectionChangedAction.Replace:
-                        {
-                            string strNewFile = e.NewItems.Count > 0 ? e.NewItems[0] as string : string.Empty;
-                            if (!string.IsNullOrEmpty(strNewFile))
-                            {
-                                s_ObjBaseChummerKey.SetValue(
-                                    "mru" + (e.OldStartingIndex + 1).ToString(InvariantCultureInfo), strNewFile);
-                            }
-                            else
-                            {
-                                for (int i = e.OldStartingIndex + 1; i <= MaxMruSize; ++i)
-                                {
-                                    if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                        s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                     s_LstMostRecentlyUsedCharacters[i - 1]);
-                                    else
-                                        s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                                }
-                            }
 
-                            break;
-                        }
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Move:
-                        {
-                            int intOldStartingIndex = e.OldStartingIndex;
-                            int intNewStartingIndex = e.NewStartingIndex;
-                            if (intOldStartingIndex == intNewStartingIndex)
-                                break;
-                            int intUpdateFrom;
-                            int intUpdateTo;
-                            if (intOldStartingIndex > intNewStartingIndex)
-                            {
-                                intUpdateFrom = intNewStartingIndex;
-                                intUpdateTo = intOldStartingIndex;
-                            }
-                            else
-                            {
-                                intUpdateFrom = intOldStartingIndex;
-                                intUpdateTo = intNewStartingIndex;
-                            }
-
-                            for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
-                            {
-                                s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
-                                                             s_LstMostRecentlyUsedCharacters[i]);
-                            }
-
+                    {
+                        int intOldStartingIndex = e.OldStartingIndex;
+                        int intNewStartingIndex = e.NewStartingIndex;
+                        if (intOldStartingIndex == intNewStartingIndex)
                             break;
+                        int intUpdateFrom;
+                        int intUpdateTo;
+                        if (intOldStartingIndex > intNewStartingIndex)
+                        {
+                            intUpdateFrom = intNewStartingIndex;
+                            intUpdateTo = intOldStartingIndex;
                         }
+                        else
+                        {
+                            intUpdateFrom = intOldStartingIndex;
+                            intUpdateTo = intNewStartingIndex;
+                        }
+
+                        for (int i = intUpdateFrom; i <= intUpdateTo; ++i)
+                        {
+                            s_ObjBaseChummerKey.SetValue("mru" + (i + 1).ToString(InvariantCultureInfo),
+                                await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i, token).ConfigureAwait(false));
+                        }
+
+                        break;
+                    }
                     case NotifyCollectionChangedAction.Reset:
+                    {
+                        for (int i = 1; i <= MaxMruSize; ++i)
                         {
-                            for (int i = 1; i <= MaxMruSize; ++i)
-                            {
-                                if (i <= s_LstMostRecentlyUsedCharacters.Count)
-                                    s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
-                                                                 s_LstMostRecentlyUsedCharacters[i - 1]);
-                                else
-                                    s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
-                            }
-
-                            break;
+                            if (i <= await s_LstMostRecentlyUsedCharacters.GetCountAsync(token).ConfigureAwait(false))
+                                s_ObjBaseChummerKey.SetValue("mru" + i.ToString(InvariantCultureInfo),
+                                    await s_LstMostRecentlyUsedCharacters.GetValueAtAsync(i - 1, token)
+                                        .ConfigureAwait(false));
+                            else
+                                s_ObjBaseChummerKey.DeleteValue("mru" + i.ToString(InvariantCultureInfo), false);
                         }
+
+                        break;
+                    }
                 }
 
                 MruChanged?.Invoke(null, new TextEventArgs("mru"));
             }
             catch (System.Security.SecurityException)
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (UnauthorizedAccessException)
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             catch (ArgumentNullException ex) when (ex.ParamName == nameof(Registry))
             {
-                Program.ShowScrollableMessageBox(
-                    LanguageManager.GetString("Message_Insufficient_Permissions_Warning_Registry"));
+                await Program.ShowScrollableMessageBoxAsync(
+                    await LanguageManager
+                        .GetStringAsync("Message_Insufficient_Permissions_Warning_Registry", token: token)
+                        .ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 

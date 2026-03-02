@@ -22,7 +22,7 @@
     <vehicle>
       <id>116f6efe-2bb0-4fd4-80de-c25d6fa721bd</id>
       <name>BMW M8</name>
-      <page>56</page>
+      <page>53</page>
       <source>R5</source>
       <accel>3</accel>
       <armor>11</armor>
@@ -42,6 +42,63 @@
         </gear>
       </gears>
       <seats>4</seats>
+    </vehicle>
+    <vehicle>
+      <id>2a4ccb56-333c-4503-b655-4ae3b22e3445</id>
+      <name>Chrysler-Nissan Bobcat</name>
+      <page>62</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>25000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+      </mods>
+      <seats>8</seats>
+    </vehicle>
+    <vehicle>
+      <id>af13aa1e-72ab-4edc-b35c-b708a9e0c9e6</id>
+      <name>Chrysler-Nissan Bobcat T</name>
+      <page>62</page>
+      <source>R5</source>
+      <accel>2</accel>
+      <armor>10</armor>
+      <avail>0</avail>
+      <body>15</body>
+      <category>Cars</category>
+      <cost>26000</cost>
+      <handling>3/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>7</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name>Standard Drone Rack (Small)</name>
+        <name>Standard Drone Rack (Micro)</name>
+        <name rating="6">Metahuman Adjustment</name>
+      </mods>
+      <seats>6</seats>
     </vehicle>
     <vehicle>
       <id>1a50c08f-6c44-4e2d-b15c-457cc98f10b9</id>
@@ -68,6 +125,34 @@
       <seats>5</seats>
     </vehicle>
     <vehicle>
+      <id>b74f04df-d389-4751-98cb-9e66fca1ef15</id>
+      <name>Mercury Cruiser-S</name>
+      <page>51</page>
+      <source>R5</source>
+      <accel>3</accel>
+      <armor>11</armor>
+      <avail>0</avail>
+      <body>14</body>
+      <category>Cars</category>
+      <cost>21900</cost>
+      <handling>4/3</handling>
+      <pilot>1</pilot>
+      <sensor>2</sensor>
+      <speed>3</speed>
+      <gears>
+        <gear>
+          <name>Sensor Array</name>
+          <rating>2</rating>
+          <maxrating>2</maxrating>
+        </gear>
+      </gears>
+      <mods>
+        <name select="Skylight">Special Equipment</name>
+        <name select="Integrated Video Displays">Special Equipment</name>
+      </mods>
+      <seats>5</seats>
+    </vehicle>
+    <vehicle>
       <id>1eb827c6-cda1-40fe-b855-8a1f41a34700</id>
       <name>Mercedes-Benz CityMog</name>
       <page>64</page>
@@ -76,7 +161,7 @@
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>44000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -100,7 +185,7 @@
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>42000</cost>
       <handling>5/4</handling>
       <pilot>2</pilot>
@@ -117,14 +202,14 @@
     </vehicle>
     <vehicle>
       <id>e0a63cca-ce9b-4b1b-b88b-1d496c37e82d</id>
-      <name>Mercedes-Benz CityMog Traveler</name>
+      <name>Mercedes-Benz CityMog CM Traveler</name>
       <page>64</page>
       <source>R5</source>
       <accel>1</accel>
       <armor>10</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>56000</cost>
       <handling>5/4</handling>
       <pilot>3</pilot>
@@ -144,14 +229,14 @@
     </vehicle>
     <vehicle>
       <id>04b54f68-d1df-42f7-a03e-0bc465e42024</id>
-      <name>Mercedes-Benz CityMog Elite</name>
+      <name>Mercedes-Benz CityMog CM Elite</name>
       <page>64</page>
       <source>R5</source>
       <accel>1</accel>
       <armor>12</armor>
       <avail>0</avail>
       <body>18</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>96000</cost>
       <handling>5/3</handling>
       <pilot>3</pilot>
@@ -178,7 +263,7 @@
       <armor>4</armor>
       <avail>0</avail>
       <body>12</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>18000</cost>
       <handling>3/2</handling>
       <pilot>1</pilot>
@@ -202,7 +287,7 @@
       <armor>6</armor>
       <avail>0</avail>
       <body>13</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>28000</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -230,7 +315,7 @@
       <armor>6</armor>
       <avail>0</avail>
       <body>13</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>19500</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -254,7 +339,7 @@
       <armor>6</armor>
       <avail>0</avail>
       <body>13</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>29500</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -278,7 +363,7 @@
       <armor>10</armor>
       <avail>12R</avail>
       <body>16</body>
-      <category>Cars</category>
+      <category>Trucks</category>
       <cost>65000</cost>
       <handling>3/3</handling>
       <pilot>2</pilot>
@@ -350,7 +435,7 @@
     </vehicle>
     <vehicle>
       <id>31a6d5b8-025e-4391-b302-ff4ae38ae196</id>
-      <name>Dodge Hurricane Crew Modell</name>
+      <name>Dodge Hurricane Crew</name>
       <page>57</page>
       <source>R5</source>
       <accel>2</accel>
@@ -374,7 +459,7 @@
     </vehicle>
     <vehicle>
       <id>6a8c2884-7ca3-4070-a87f-5aff00b852f8</id>
-      <name>Dodge Hurricane Security Modell</name>
+      <name>Dodge Hurricane Security</name>
       <page>57</page>
       <source>R5</source>
       <accel>2</accel>
@@ -422,6 +507,27 @@
     </vehicle>
   </vehicles>
   <mods>
+    <mod>
+      <id>1850e1ca-3d4a-482d-8eac-38956bf22edf</id>
+      <name>E-Foil</name>
+      <page>64</page>
+      <source>R5</source>
+      <avail>0</avail>
+      <category>Model-Specific</category>
+      <cost>2000</cost>
+      <rating>0</rating>
+      <slots>0</slots>
+      <required>
+        <vehicledetails>
+          <OR>
+            <name>Mercedes-Benz CityMog</name>
+            <name>Mercedes-Benz CityMog CM-X (Pickup)</name>
+            <name>Mercedes-Benz CityMog CM Traveler</name>
+            <name>Mercedes-Benz CityMog CM Elite</name>
+          </OR>
+        </vehicledetails>
+      </required>
+    </mod>
     <mod>
       <id>3433b962-0ed6-49e9-9807-0a160642ae91</id>
       <name>Ejection seat</name>

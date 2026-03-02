@@ -30,7 +30,8 @@ namespace Chummer.UI.Editors
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            if (!Utils.IsDesignerMode)
+            this.UpdateParentForToolTipControls();
+            if (!Utils.IsDesignerMode && !Utils.IsRunningInVisualStudio)
                 tsControls.Visible = false;
         }
 
@@ -142,6 +143,8 @@ namespace Chummer.UI.Editors
                 : Cursors.IBeam;
         }
 
+        public event EventHandler RtfContentChanged;
+
         #region Properties
 
         public string Rtf
@@ -182,23 +185,22 @@ namespace Chummer.UI.Editors
 
         private void tsbFont_Click(object sender, EventArgs e)
         {
-            using (FontDialog dlgNewFont = new FontDialog
+            using (FontDialog dlgNewFont = new FontDialog())
             {
-                Font = rtbContent.SelectionFont,
-                FontMustExist = true
-            })
-            {
+                dlgNewFont.Font = rtbContent.SelectionFont;
+                dlgNewFont.FontMustExist = true;
                 if (dlgNewFont.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionFont = dlgNewFont.Font;
-                UpdateButtons(sender, e);
             }
+            UpdateButtons(sender, e);
         }
 
         private void tsbForeColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog dlgNewColor = new ColorDialog { Color = rtbContent.SelectionColor })
+            using (ColorDialog dlgNewColor = new ColorDialog())
             {
+                dlgNewColor.Color = rtbContent.SelectionColor;
                 if (dlgNewColor.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionColor = dlgNewColor.Color;
@@ -207,8 +209,9 @@ namespace Chummer.UI.Editors
 
         private void tsbBackColor_Click(object sender, EventArgs e)
         {
-            using (ColorDialog dlgNewColor = new ColorDialog { Color = rtbContent.SelectionBackColor })
+            using (ColorDialog dlgNewColor = new ColorDialog())
             {
+                dlgNewColor.Color = rtbContent.SelectionBackColor;
                 if (dlgNewColor.ShowDialog(this) != DialogResult.OK)
                     return;
                 rtbContent.SelectionBackColor = dlgNewColor.Color;
@@ -314,5 +317,10 @@ namespace Chummer.UI.Editors
         }
 
         #endregion Control Methods
+
+        private void rtbContent_TextChanged(object sender, EventArgs e)
+        {
+            RtfContentChanged?.Invoke(sender, e);
+        }
     }
 }

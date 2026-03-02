@@ -20,6 +20,8 @@
 
 using System;
 using System.Collections;
+using System.Globalization;
+using System.Text;
 
 namespace SevenZip.CommandLineParser
 {
@@ -59,11 +61,6 @@ namespace SevenZip.CommandLineParser
         public bool WithMinus;
         public readonly ArrayList PostStrings = new ArrayList();
         public int PostCharIndex;
-
-        public SwitchResult()
-        {
-            ThereIs = false;
-        }
     }
 
     public class Parser
@@ -95,22 +92,23 @@ namespace SevenZip.CommandLineParser
                 int maxLen = kNoLen;
                 for (int switchIndex = 0; switchIndex < _switches.Length; switchIndex++)
                 {
-                    int switchLen = switchForms[switchIndex].IDString.Length;
+                    SwitchForm objLoopForm = switchForms[switchIndex];
+                    int switchLen = objLoopForm.IDString.Length;
                     if (switchLen <= maxLen || pos + switchLen > len)
                         continue;
-                    if (string.Compare(switchForms[switchIndex].IDString, 0,
-                            srcString, pos, switchLen, true) == 0)
+                    if (string.Compare(objLoopForm.IDString, 0,
+                            srcString, pos, switchLen, true, CultureInfo.InvariantCulture) == 0)
                     {
                         matchedSwitchIndex = switchIndex;
                         maxLen = switchLen;
                     }
                 }
                 if (maxLen == kNoLen)
-                    throw new Exception("maxLen == kNoLen");
+                    throw new ArgumentException("maxLen == kNoLen");
                 SwitchResult matchedSwitch = _switches[matchedSwitchIndex];
                 SwitchForm switchForm = switchForms[matchedSwitchIndex];
                 if (!switchForm.Multi && matchedSwitch.ThereIs)
-                    throw new Exception("switch must be single");
+                    throw new ArgumentException("switch must be single");
                 matchedSwitch.ThereIs = true;
                 pos += maxLen;
                 int tailSize = len - pos;
@@ -132,13 +130,13 @@ namespace SevenZip.CommandLineParser
                     case SwitchType.PostChar:
                         {
                             if (tailSize < switchForm.MinLen)
-                                throw new Exception("switch is not full");
-                            string charSet = switchForm.PostCharSet;
+                                throw new ArgumentException("switch is not full");
                             const int kEmptyCharValue = -1;
                             if (tailSize == 0)
                                 matchedSwitch.PostCharIndex = kEmptyCharValue;
                             else
                             {
+                                string charSet = switchForm.PostCharSet;
                                 int index = charSet.IndexOf(srcString[pos]);
                                 if (index < 0)
                                     matchedSwitch.PostCharIndex = kEmptyCharValue;
@@ -155,22 +153,26 @@ namespace SevenZip.CommandLineParser
                         {
                             int minLen = switchForm.MinLen;
                             if (tailSize < minLen)
-                                throw new Exception("switch is not full");
+                                throw new ArgumentException("switch is not full");
                             if (type == SwitchType.UnLimitedPostString)
                             {
                                 matchedSwitch.PostStrings.Add(srcString.Substring(pos));
                                 return true;
                             }
-                            string stringSwitch = srcString.Substring(pos, minLen);
-                            pos += minLen;
-                            for (int i = minLen; i < switchForm.MaxLen && pos < len; i++, pos++)
+                            using (new Chummer.FetchSafelyFromObjectPool<StringBuilder>(Chummer.Utils.StringBuilderPool, out StringBuilder sbdSwitch))
                             {
-                                char c = srcString[pos];
-                                if (IsItSwitchChar(c))
-                                    break;
-                                stringSwitch += c;
+                                sbdSwitch.EnsureCapacity(switchForm.MaxLen);
+                                sbdSwitch.Append(srcString, pos, minLen);
+                                pos += minLen;
+                                for (int i = minLen; i < switchForm.MaxLen && pos < len; i++, pos++)
+                                {
+                                    char c = srcString[pos];
+                                    if (IsItSwitchChar(c))
+                                        break;
+                                    sbdSwitch.Append(c);
+                                }
+                                matchedSwitch.PostStrings.Add(sbdSwitch.ToString());
                             }
-                            matchedSwitch.PostStrings.Add(stringSwitch);
                             break;
                         }
                 }
@@ -201,10 +203,11 @@ namespace SevenZip.CommandLineParser
         {
             for (int i = 0; i < commandForms.Length; i++)
             {
-                string id = commandForms[i].IDString;
-                if (commandForms[i].PostStringMode)
+                CommandForm objCommandForm = commandForms[i];
+                string id = objCommandForm.IDString;
+                if (objCommandForm.PostStringMode)
                 {
-                    if (commandString.IndexOf(id, StringComparison.Ordinal) == 0)
+                    if (commandString.StartsWith(id, StringComparison.Ordinal))
                     {
                         postString = commandString.Substring(id.Length);
                         return i;

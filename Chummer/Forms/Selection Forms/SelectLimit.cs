@@ -37,6 +37,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
@@ -54,16 +55,16 @@ namespace Chummer
         private async void SelectLimit_Load(object sender, EventArgs e)
         {
             // Build the list of Limits.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstLimitItems))
             {
                 foreach (string strLimit in _lstLimits)
                 {
                     lstLimitItems.Add(
                         new ListItem(strLimit, await LanguageManager.GetStringAsync("String_Limit" + strLimit + "Short").ConfigureAwait(false)));
                 }
-                
+
                 await cboLimit.PopulateWithListItemsAsync(lstLimitItems).ConfigureAwait(false);
-                if (lstLimitItems.Count >= 1)
+                if (lstLimitItems.Count > 1)
                     await cboLimit.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 else if (lstLimitItems.Count == 1)
                 {

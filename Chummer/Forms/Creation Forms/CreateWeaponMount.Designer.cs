@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class CreateWeaponMount
@@ -13,9 +15,31 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateInfoCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshComboBoxesCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objAddModCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource?.Dispose();
+                _lstMods.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -52,7 +76,7 @@ namespace Chummer
             this.treMods = new System.Windows.Forms.TreeView();
             this.cmdDeleteMod = new System.Windows.Forms.Button();
             this.cmdAddMod = new System.Windows.Forms.Button();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblSourceLabel = new System.Windows.Forms.Label();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpTopButtons = new System.Windows.Forms.TableLayoutPanel();
@@ -122,7 +146,6 @@ namespace Chummer
             this.cboVisibility.Name = "cboVisibility";
             this.cboVisibility.Size = new System.Drawing.Size(240, 21);
             this.cboVisibility.TabIndex = 22;
-            this.cboVisibility.TooltipText = "";
             this.cboVisibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblControl
@@ -146,7 +169,6 @@ namespace Chummer
             this.cboControl.Name = "cboControl";
             this.cboControl.Size = new System.Drawing.Size(240, 21);
             this.cboControl.TabIndex = 24;
-            this.cboControl.TooltipText = "";
             this.cboControl.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblSize
@@ -170,7 +192,6 @@ namespace Chummer
             this.cboSize.Name = "cboSize";
             this.cboSize.Size = new System.Drawing.Size(240, 21);
             this.cboSize.TabIndex = 26;
-            this.cboSize.TooltipText = "";
             this.cboSize.SelectedIndexChanged += new System.EventHandler(this.cboSize_SelectedIndexChanged);
             // 
             // lblFlexibility
@@ -194,7 +215,6 @@ namespace Chummer
             this.cboFlexibility.Name = "cboFlexibility";
             this.cboFlexibility.Size = new System.Drawing.Size(240, 21);
             this.cboFlexibility.TabIndex = 28;
-            this.cboFlexibility.TooltipText = "";
             this.cboFlexibility.SelectedIndexChanged += new System.EventHandler(this.comboBox_SelectedIndexChanged);
             // 
             // lblAvailabilityLabel
@@ -617,7 +637,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treMods;
         private System.Windows.Forms.Button cmdDeleteMod;
         private System.Windows.Forms.Button cmdAddMod;
-        private System.Windows.Forms.Label lblSource;
+        private LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpTopButtons;

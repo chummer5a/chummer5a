@@ -52,17 +52,15 @@ namespace Chummer.Backend
         public string GenerateInfo()
         {
             int intLength = -1;
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
             {
                 sbdReturn.AppendLine();
                 foreach (KeyValuePair<string, int> exception in _dicMap.Value.OrderBy(i => -i.Value))
                 {
-                    intLength = Math.Max((int)Math.Ceiling(Math.Log10(exception.Value)), intLength);
-                    sbdReturn.Append("\t\t")
-                             .Append(exception.Value.ToString(
+                    intLength = Math.Max(exception.Value.CeilingLog10(), intLength);
+                    sbdReturn.AppendLine("\t\t", exception.Value.ToString(
                                          "D" + intLength.ToString(GlobalSettings.InvariantCultureInfo),
-                                         GlobalSettings.InvariantCultureInfo)).Append(" - ")
-                             .AppendLine(exception.Key);
+                                         GlobalSettings.InvariantCultureInfo), " - ", exception.Key);
                 }
 
                 return sbdReturn.ToString();

@@ -25,13 +25,12 @@ namespace Chummer
     public static class BoolArrayExtensions
     {
         /// <summary>
-        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// Get the first element in a bool array that matches <paramref name="blnValue"/>.
         /// </summary>
         /// <param name="ablnArray">Array to search.</param>
         /// <param name="blnValue">Value for which to look.</param>
         /// <param name="intFrom">Index from which to start search (inclusive).</param>
         /// <param name="intTo">Index at which to end search (exclusive).</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this bool[] ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
@@ -39,6 +38,8 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(ablnArray));
             if (intTo > ablnArray.Length)
                 intTo = ablnArray.Length;
+            if (intFrom < 0)
+                intFrom = 0;
             for (; intFrom < intTo; ++intFrom)
             {
                 if (ablnArray[intFrom] == blnValue)

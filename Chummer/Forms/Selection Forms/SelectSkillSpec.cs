@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Windows.Forms;
 using System.Xml.XPath;
 using Chummer.Backend.Skills;
@@ -34,100 +35,114 @@ namespace Chummer
 
         #region Control Events
 
-        public SelectSpec(Skill skill)
+        public SelectSpec(Skill objSkill)
         {
-            _objSkill = skill ?? throw new ArgumentNullException(nameof(skill));
-            _objCharacter = skill.CharacterObject;
+            _objSkill = objSkill ?? throw new ArgumentNullException(nameof(objSkill));
+            _objCharacter = objSkill.CharacterObject;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", _objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
         private async void SelectSpec_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            string strSkillName = await _objSkill.GetNameAsync().ConfigureAwait(false);
+            XPathNavigator xmlParentSkill;
+            if (Mode == "Knowledge")
             {
-                lstItems.Add(new ListItem("Custom", string.Empty));
+                xmlParentSkill
+                    = _objXmlDocument.TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strSkillName)
+                      ?? _objXmlDocument.SelectSingleNode(
+                          "/chummer/knowledgeskills/skill[translate = " + strSkillName.CleanXPath() + "]");
+            }
+            else
+            {
+                xmlParentSkill = _objXmlDocument.TryGetNodeByNameOrId("/chummer/skills/skill", strSkillName,
+                                                                      await (await _objCharacter.GetSettingsAsync()
+                                                                              .ConfigureAwait(false)).BookXPathAsync()
+                                                                          .ConfigureAwait(false));
+            }
 
-                if (_objCharacter.Created || !_objCharacter.EffectiveBuildMethodUsesPriorityTables)
-                {
-                    await chkKarma.DoThreadSafeAsync(x =>
-                    {
-                        x.Checked = true;
-                        x.Visible = false;
-                    }).ConfigureAwait(false);
-                }
-
-                XPathNavigator xmlParentSkill;
-                if (Mode == "Knowledge")
-                {
-                    xmlParentSkill
-                        = _objXmlDocument.SelectSingleNode("/chummer/knowledgeskills/skill[name = "
-                                                           + _objSkill.Name.CleanXPath() + ']')
-                          ?? _objXmlDocument.SelectSingleNode(
-                              "/chummer/knowledgeskills/skill[translate = " + _objSkill.Name.CleanXPath() + ']');
-                }
-                else
-                {
-                    xmlParentSkill = _objXmlDocument.SelectSingleNode(
-                        "/chummer/skills/skill[name = " + _objSkill.Name.CleanXPath() + " and ("
-                        + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ")]");
-                }
-
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            {
                 // Populate the Skill's Specializations (if any).
-                XPathNodeIterator xmlSpecList = xmlParentSkill != null ? await xmlParentSkill.SelectAndCacheExpressionAsync("specs/spec").ConfigureAwait(false) : null;
+                XPathNodeIterator xmlSpecList = xmlParentSkill?.SelectAndCacheExpression("specs/spec");
                 if (xmlSpecList?.Count > 0)
                 {
                     foreach (XPathNavigator objXmlSpecialization in xmlSpecList)
                     {
                         string strInnerText = objXmlSpecialization.Value;
                         lstItems.Add(new ListItem(strInnerText,
-                                                  (await objXmlSpecialization.SelectSingleNodeAndCacheExpressionAsync("@translate").ConfigureAwait(false))
+                                                  objXmlSpecialization.SelectSingleNodeAndCacheExpression("@translate")
                                                                       ?.Value ?? strInnerText));
-
-                        if (_objSkill.SkillCategory != "Combat Active")
-                            continue;
-                        // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
-                        XPathNavigator objXmlWeaponDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml").ConfigureAwait(false);
-                        //Might need to include skill name or might miss some values?
-                        foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
-                                     "/chummer/weapons/weapon[(spec = " + strInnerText.CleanXPath() + " or spec2 = "
-                                     + strInnerText.CleanXPath() + ") and (" + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false)
-                                     + ")]"))
-                        {
-                            string strName = (await objXmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
-                            if (!string.IsNullOrEmpty(strName))
-                            {
-                                lstItems.Add(new ListItem(
-                                                 strName,
-                                                 (await objXmlWeapon
-                                                        .SelectSingleNodeAndCacheExpressionAsync("translate")
-                                                        .ConfigureAwait(false))?.Value
-                                                 ?? strName));
-                            }
-                        }
                     }
                 }
+
+                lstItems.Sort();
+
+                if (_objSkill.SkillCategory == "Combat Active")
+                {
+                    // Look through the Weapons file and grab the names of items that are part of the appropriate Category or use the matching Skill.
+                    XPathNavigator objXmlWeaponDocument = await _objCharacter.LoadDataXPathAsync("weapons.xml").ConfigureAwait(false);
+                    string strXPathFilter = string.Empty;
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                    {
+                        sbdFilter.Append("(category = ", strSkillName.CleanXPath());
+                        foreach (ListItem objSpec in lstItems)
+                        {
+                            string strLoopValue = objSpec.Value.ToString().CleanXPath();
+                            sbdFilter.Append(" or spec = ", strLoopValue, " or spec2 = ", strLoopValue);
+                        }
+                        strXPathFilter = sbdFilter.Append(") and ").ToString();
+                    }
+
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstWeaponItems))
+                    {
+                        //Might need to include skill name or might miss some values?
+                        foreach (XPathNavigator objXmlWeapon in objXmlWeaponDocument.Select(
+                                     "/chummer/weapons/weapon[" + strXPathFilter
+                                     + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false))
+                                             .BookXPathAsync().ConfigureAwait(false)
+                                     + "]"))
+                        {
+                            string strName = objXmlWeapon.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                            {
+                                lstWeaponItems.Add(new ListItem(
+                                                       strName,
+                                                       objXmlWeapon
+                                                           .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                       ?? strName));
+                            }
+                        }
+
+                        lstWeaponItems.Sort();
+                        lstItems.AddRange(lstWeaponItems);
+                    }
+                }
+
+                lstItems.Insert(0, new ListItem("Custom", string.Empty));
 
                 // Populate the lists.
                 await cboSpec.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+            }
 
-                // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
-                if (await cboSpec.DoThreadSafeFuncAsync(x => x.Items.Count == 1 && x.DropDownStyle == ComboBoxStyle.DropDownList).ConfigureAwait(false) && AllowAutoSelect)
-                    await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
+            // If there's only 1 value in the list, the character doesn't have a choice, so just accept it.
+            if (await cboSpec.DoThreadSafeFuncAsync(x => x.Items.Count == 1 && x.DropDownStyle == ComboBoxStyle.DropDownList).ConfigureAwait(false) && AllowAutoSelect)
+                await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
 
-                if (!string.IsNullOrEmpty(_strForceItem))
+            if (!string.IsNullOrEmpty(_strForceItem))
+            {
+                await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
+                if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
                 {
-                    await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = x.FindStringExact(_strForceItem)).ConfigureAwait(false);
-                    if (await cboSpec.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
-                    {
-                        await cboSpec.PopulateWithListItemsAsync((new ListItem(_strForceItem, _strForceItem)).Yield()).ConfigureAwait(false);
-                        await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
-                    }
-
-                    await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
+                    await cboSpec.PopulateWithListItemAsync(new ListItem(_strForceItem, _strForceItem)).ConfigureAwait(false);
+                    await cboSpec.DoThreadSafeAsync(x => x.SelectedIndex = 0).ConfigureAwait(false);
                 }
+
+                await this.DoThreadSafeAsync(x => x.AcceptForm()).ConfigureAwait(false);
             }
         }
 
@@ -158,9 +173,10 @@ namespace Chummer
         {
             get
             {
-                if (cboSpec.SelectedValue != null && cboSpec.SelectedValue.ToString() != "Custom")
+                string strSelected = cboSpec.SelectedValue?.ToString();
+                if (!string.IsNullOrEmpty(strSelected) && strSelected != "Custom")
                 {
-                    return cboSpec.SelectedValue.ToString();
+                    return strSelected;
                 }
 
                 return cboSpec.Text;
@@ -168,23 +184,14 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Whether or not the Form should be accepted if there is only one item left in the list.
+        /// Whether the Form should be accepted if there is only one item left in the list.
         /// </summary>
-        public bool AllowAutoSelect { get; set; } = true;
+        public bool AllowAutoSelect { get; } = true;
 
         /// <summary>
         /// Type of skill that we're selecting. Used to differentiate knowledge skills.
         /// </summary>
         public string Mode { get; set; }
-
-        /// <summary>
-        /// Whether or not to force the .
-        /// </summary>
-        public bool BuyWithKarma
-        {
-            get => chkKarma.Checked;
-            set => chkKarma.Checked = value;
-        }
 
         #endregion Properties
 

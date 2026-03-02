@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 using System;
+using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Composition;
 using System.Diagnostics;
@@ -95,10 +96,10 @@ namespace Chummer.Plugins
                     Name = "tsShowMySINners",
                     Tag = "Menu_ShowMySINners",
                     Text = "Show all my SINners",
-                    Size = new Size(177, 22),
-                    ImageDpi96 = Resources.group,
-                    ImageDpi192 = Resources.group1,
+                    Size = new Size(177, 22)
                 };
+                tsShowMySINners.BatchSetImages(Resources.group_16, Resources.group_20, Resources.group_24,
+                    Resources.group_32, Resources.group_48, Resources.group_64);
                 tsShowMySINners.Click += ShowMySINnersOnClick;
                 tsShowMySINners.UpdateLightDarkMode();
                 tsShowMySINners.TranslateToolStripItemsRecursively();
@@ -109,10 +110,10 @@ namespace Chummer.Plugins
                     Name = "tsSINnersCreateGroup",
                     Tag = "Menu_SINnersCreateGroup",
                     Text = "Create Group",
-                    Size = new Size(177, 22),
-                    ImageDpi96 = Resources.group,
-                    ImageDpi192 = Resources.group1,
+                    Size = new Size(177, 22)
                 };
+                tsSINnersCreateGroup.BatchSetImages(Resources.group_16, Resources.group_20, Resources.group_24,
+                    Resources.group_32, Resources.group_48, Resources.group_64);
                 tsSINnersCreateGroup.Click += SINnersCreateGroupOnClick;
                 tsSINnersCreateGroup.UpdateLightDarkMode();
                 tsSINnersCreateGroup.TranslateToolStripItemsRecursively();
@@ -125,10 +126,10 @@ namespace Chummer.Plugins
                         Name = "tsShareChummer",
                         Tag = "Menu_ShareChummer",
                         Text = "Share chummer",
-                        Size = new Size(177, 22),
-                        ImageDpi96 = Resources.link_add,
-                        ImageDpi192 = Resources.link_add1
+                        Size = new Size(177, 22)
                     };
+                    newShare.BatchSetImages(Resources.link_add_16, Resources.link_add_20, Resources.link_add_24,
+                        Resources.link_add_32, Resources.link_add_48, Resources.link_add_64);
                     newShare.Click += NewShareOnClick;
                     newShare.UpdateLightDarkMode();
                     newShare.TranslateToolStripItemsRecursively();
@@ -145,10 +146,10 @@ namespace Chummer.Plugins
                                 Name = "tsRemovePinnedChummer",
                                 Tag = "Menu_RemovePinnedChummer",
                                 Text = "remove from pinned Chummers",
-                                Size = new Size(177, 22),
-                                ImageDpi96 = Resources.user_delete,
-                                ImageDpi192 = Resources.user_delete1
+                                Size = new Size(177, 22)
                             };
+                            newFavorite.BatchSetImages(Resources.user_delete_16, Resources.user_delete_20, Resources.user_delete_24,
+                                Resources.user_delete_32, Resources.user_delete_48, Resources.user_delete_64);
                             newFavorite.Click += RemovePinnedOnClick;
                         }
                         else
@@ -158,10 +159,10 @@ namespace Chummer.Plugins
                                 Name = "tsAddPinnedChummer",
                                 Tag = "Menu_AddPinnedChummer",
                                 Text = "add to pinned Chummers",
-                                Size = new Size(177, 22),
-                                ImageDpi96 = Resources.user_add,
-                                ImageDpi192 = Resources.user_add1
+                                Size = new Size(177, 22)
                             };
+                            newFavorite.BatchSetImages(Resources.user_add_16, Resources.user_add_20, Resources.user_add_24,
+                                Resources.user_add_32, Resources.user_add_48, Resources.user_add_64);
                             newFavorite.Click += AddPinnedOnClick;
                         }
 
@@ -175,10 +176,10 @@ namespace Chummer.Plugins
                         Name = "tsDeleteFromSINners",
                         Tag = "Menu_DeleteFromSINners",
                         Text = "delete chummer from SINners registry",
-                        Size = new Size(177, 22),
-                        ImageDpi96 = Resources.delete,
-                        ImageDpi192 = Resources.delete1
+                        Size = new Size(177, 22)
                     };
+                    newDelete.BatchSetImages(Resources.delete_16, Resources.delete_20, Resources.delete_24,
+                        Resources.delete_32, Resources.delete_48, Resources.delete_64);
                     if (MainForm != null)
                         newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                     newDelete.UpdateLightDarkMode();
@@ -205,10 +206,10 @@ namespace Chummer.Plugins
                         Name = "tsShareChummerGroup",
                         Tag = "Menu_ShareChummerGroup",
                         Text = "Share chummer group",
-                        Size = new Size(177, 22),
-                        ImageDpi96 = Resources.link_add,
-                        ImageDpi192 = Resources.link_add1
+                        Size = new Size(177, 22)
                     };
+                    newShare.BatchSetImages(Resources.link_add_16, Resources.link_add_20, Resources.link_add_24,
+                        Resources.link_add_32, Resources.link_add_48, Resources.link_add_64);
                     newShare.Click += NewShareOnClick;
                     newShare.UpdateLightDarkMode();
                     newShare.TranslateToolStripItemsRecursively();
@@ -236,10 +237,10 @@ namespace Chummer.Plugins
                             Name = "tsAddPinnedGroup",
                             Tag = "Menu_AddPinnedGroup",
                             Text = "Pin Chummer",
-                            Size = new Size(177, 22),
-                            ImageDpi96 = Resources.user_add,
-                            ImageDpi192 = Resources.user_add1
+                            Size = new Size(177, 22)
                         };
+                        newFavorite.BatchSetImages(Resources.user_add_16, Resources.user_add_20, Resources.user_add_24,
+                            Resources.user_add_32, Resources.user_add_48, Resources.user_add_64);
                         newFavorite.Click += AddPinnedOnClick;
                     }
                     newFavorite.UpdateLightDarkMode();
@@ -260,11 +261,11 @@ namespace Chummer.Plugins
                             cmsRoster.Items.Remove(item);
                             DpiFriendlyToolStripMenuItem newDelete = new DpiFriendlyToolStripMenuItem(item.Text)
                             {
-                                ImageDpi96 = item.ImageDpi96,
-                                ImageDpi192 = item.ImageDpi192,
                                 Tag = item.Tag,
                                 Name = item.Name
                             };
+                            newDelete.BatchSetImages(item.ImageDpi96, item.ImageDpi120, item.ImageDpi144,
+                                item.ImageDpi192, item.ImageDpi288, item.ImageDpi384);
                             if (MainForm != null)
                                 newDelete.Click += MainForm.CharacterRoster.tsDelete_Click;
                             newDelete.UpdateLightDarkMode();
@@ -630,12 +631,12 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINSearch",
                     Text = "&SINner Search",
-                    ImageDpi96 = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINnerSearch",
-                    ImageDpi192 = Resources.group1,
+                    Tag = "Menu_Tools_SINnerSearch"
                 };
+                mnuSINnerSearchs.BatchSetImages(Resources.group_16, Resources.group_20, Resources.group_24,
+                    Resources.group_32, Resources.group_48, Resources.group_64);
                 mnuSINnerSearchs.Click += mnuSINnerSearchs_Click;
                 mnuSINnerSearchs.UpdateLightDarkMode(token: token);
                 mnuSINnerSearchs.TranslateToolStripItemsRecursively(token: token);
@@ -646,12 +647,12 @@ namespace Chummer.Plugins
             {
                 Name = "mnuSINnersArchetypes",
                 Text = "&Archetypes",
-                ImageDpi96 = Resources.group,
                 ImageTransparentColor = Color.Black,
                 Size = new Size(148, 22),
-                Tag = "Menu_Tools_SINnersArchetypes",
-                ImageDpi192 = Resources.group1,
+                Tag = "Menu_Tools_SINnersArchetypes"
             };
+            mnuSINnersArchetypes.BatchSetImages(Resources.group_16, Resources.group_20, Resources.group_24,
+                Resources.group_32, Resources.group_48, Resources.group_64);
             mnuSINnersArchetypes.Click += mnuSINnersArchetypes_Click;
             mnuSINnersArchetypes.UpdateLightDarkMode(token: token);
             mnuSINnersArchetypes.TranslateToolStripItemsRecursively(token: token);
@@ -663,12 +664,12 @@ namespace Chummer.Plugins
                 {
                     Name = "mnuSINners",
                     Text = "&SINners",
-                    ImageDpi96 = Resources.group,
                     ImageTransparentColor = Color.Black,
                     Size = new Size(148, 22),
-                    Tag = "Menu_Tools_SINners",
-                    ImageDpi192 = Resources.group1,
+                    Tag = "Menu_Tools_SINners"
                 };
+                mnuSINners.BatchSetImages(Resources.group_16, Resources.group_20, Resources.group_24,
+                    Resources.group_32, Resources.group_48, Resources.group_64);
                 mnuSINners.Click += mnuSINners_Click;
                 mnuSINners.UpdateLightDarkMode(token: token);
                 mnuSINners.TranslateToolStripItemsRecursively(token: token);
@@ -706,8 +707,8 @@ namespace Chummer.Plugins
                                                 ssgr.SinGroups.Where(a => a.Groupname == "Archetypes")).ToList());
                         foreach (TreeNode node in nodelist)
                         {
-                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node,
-                                                                   (key, oldValue) => node);
+                            MyTreeNodes2Add.AddOrUpdate(node.Name, node,
+                                (key, oldValue) => node);
                         }
 
                         await MainForm.CharacterRoster.RefreshPluginNodesAsync(this);
@@ -739,7 +740,7 @@ namespace Chummer.Plugins
             }
         }
 
-        public static readonly LockingDictionary<string, TreeNode> MyTreeNodes2Add = new LockingDictionary<string, TreeNode>();
+        public static readonly ConcurrentDictionary<string, TreeNode> MyTreeNodes2Add = new ConcurrentDictionary<string, TreeNode>();
 
         private void mnuSINners_Click(object sender, EventArgs ea)
         {
@@ -990,7 +991,8 @@ namespace Chummer.Plugins
                         IEnumerable<TreeNode> nodelist = ChummerHub.Client.Backend.Utils.CharacterRosterTreeNodifyGroupList(list);
                         foreach (TreeNode node in nodelist)
                         {
-                            await MyTreeNodes2Add.AddOrUpdateAsync(node.Name, node, (key, oldValue) => node, token);
+                            token.ThrowIfCancellationRequested();
+                            MyTreeNodes2Add.AddOrUpdate(node.Name, node, (key, oldValue) => node);
                         }
                         await MainForm.CharacterRoster.RefreshPluginNodesAsync(this, token);
                         MainForm.CharacterRoster.BringToFront();
@@ -1439,7 +1441,7 @@ namespace Chummer.Plugins
                             }
                             case CharacterCache objCache:
                             {
-                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob, token))
+                                if (objCache.MyPluginDataDic.TryGetValue("SINnerId", out object sinidob))
                                 {
                                     mySiNnerId = (Guid?) sinidob;
                                 }

@@ -24,18 +24,19 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Shared.Components
 {
-    public partial class DicePoolControl : UserControl
+    public partial class DicePoolControl : UserControl, IControlWithToolTip
     {
-        private int _intDicePool;
+        private readonly AsyncFriendlyReaderWriterLock _objDicePoolLockObject = new AsyncFriendlyReaderWriterLock();
+        private decimal _decDicePool;
         private bool _blnCanBeRolled = true;
-        private bool _blnCanEverBeRolled = Utils.IsDesignerMode;
+        private bool _blnCanEverBeRolled = Utils.IsDesignerMode || Utils.IsRunningInVisualStudio;
 
         public DicePoolControl()
         {
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-
+            this.UpdateParentForToolTipControls();
             CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
         }
@@ -50,19 +51,19 @@ namespace Chummer.UI.Shared.Components
             if (Program.MainForm == null)
                 return;
             Character objCharacter = null;
-            if (this.DoThreadSafeFunc(x => x.ParentForm) is CharacterShared frmParent)
+            if (await this.DoThreadSafeFuncAsync(x => x.ParentForm).ConfigureAwait(false) is CharacterShared frmParent)
                 objCharacter = frmParent.CharacterObject;
-            await Program.MainForm.OpenDiceRollerWithPool(objCharacter, DicePool).ConfigureAwait(false);
+            await Program.MainForm.OpenDiceRollerWithPool(objCharacter, (await GetDicePoolAsync().ConfigureAwait(false)).StandardRound()).ConfigureAwait(false);
         }
 
         public void SetLabelToolTip(string caption)
         {
-            lblDicePool.SetToolTip(caption);
+            lblDicePool.ToolTipText = caption;
         }
 
         public Task SetLabelToolTipAsync(string caption, CancellationToken token = default)
         {
-            return lblDicePool.SetToolTipAsync(caption, token);
+            return lblDicePool.SetToolTipTextAsync(caption, token);
         }
 
         public bool CanBeRolled
@@ -89,16 +90,88 @@ namespace Chummer.UI.Shared.Components
             }
         }
 
-        public int DicePool
+        public decimal DicePool
         {
-            get => _intDicePool;
+            get
+            {
+                using (_objDicePoolLockObject.EnterReadLock())
+                    return _decDicePool;
+            }
             set
             {
-                if (Interlocked.Exchange(ref _intDicePool, value) == value)
+                using (_objDicePoolLockObject.EnterReadLock())
+                {
+                    if (_decDicePool == value)
+                        return;
+                }
+                using (_objDicePoolLockObject.EnterUpgradeableReadLock())
+                {
+                    if (_decDicePool == value)
+                        return;
+                    using (_objDicePoolLockObject.EnterWriteLock())
+                    {
+                        _decDicePool = value;
+                    }
+                    lblDicePool.Text = CanBeRolled
+                        ? value.ToString(GlobalSettings.CultureInfo)
+                        : value.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
+                }
+            }
+        }
+
+        public async Task<decimal> GetDicePoolAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _decDicePool;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetDicePoolAsync(decimal value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decDicePool == value)
                     return;
-                lblDicePool.Text = CanBeRolled
-                    ? value.ToString(GlobalSettings.CultureInfo)
-                    : value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objDicePoolLockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_decDicePool == value)
+                    return;
+                IAsyncDisposable objLocker2 = await _objDicePoolLockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    _decDicePool = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+                string strText = CanBeRolled
+                        ? value.ToString(GlobalSettings.CultureInfo)
+                        : value.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
+                await lblDicePool.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -111,6 +184,21 @@ namespace Chummer.UI.Shared.Components
         public Task SetToolTipTextAsync(string value, CancellationToken token = default) =>
             lblDicePool.SetToolTipTextAsync(value, token);
 
+        public void UpdateToolTipParent()
+        {
+            lblDicePool.UpdateToolTipParent();
+            cmdRoll.UpdateToolTipParent();
+        }
+
         public ToolTip ToolTipObject => lblDicePool.ToolTipObject;
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            UpdateToolTipParent();
+        }
     }
 }

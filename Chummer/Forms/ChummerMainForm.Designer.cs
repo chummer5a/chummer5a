@@ -15,9 +15,19 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+#if !DEBUG
+                _objVersionUpdaterCancellationTokenSource?.Dispose();
+#endif
+                _tmrCharactersToOpenCheck?.Dispose();
+                _tmrPerformLayoutCheck?.Dispose();
+                _objGenericCancellationTokenSource?.Dispose();
+                _objFormOpeningSemaphore?.Dispose();
+                dlgOpenFile?.Dispose();
+                DisposeOpenForms();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -76,9 +86,13 @@ namespace Chummer
             this.mnuRestart = new Chummer.DpiFriendlyToolStripMenuItem();
             this.toolStripSeparator6 = new Chummer.ColorableToolStripSeparator();
             this.mnuToolsTranslator = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuXmlEditor = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuHeroLabImporter = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuMasterIndex = new Chummer.DpiFriendlyToolStripMenuItem();
             this.mnuCharacterRoster = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.mnuDataExporter = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.toolStripSeparator7 = new Chummer.ColorableToolStripSeparator();
+            this.mnuReportBug = new Chummer.DpiFriendlyToolStripMenuItem();
             this.windowsMenu = new System.Windows.Forms.ToolStripMenuItem();
             this.newWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
             this.closeWindowToolStripMenuItem = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -169,13 +183,13 @@ namespace Chummer
             // 
             // newToolStripMenuItem
             // 
-            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add;
-            this.newToolStripMenuItem.ImageDpi120 = null;
-            this.newToolStripMenuItem.ImageDpi144 = null;
-            this.newToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.user_add1;
-            this.newToolStripMenuItem.ImageDpi288 = null;
-            this.newToolStripMenuItem.ImageDpi384 = null;
-            this.newToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.user_add;
+            this.newToolStripMenuItem.Image = global::Chummer.Properties.Resources.user_add_16;
+            this.newToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.user_add_20;
+            this.newToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.user_add_24;
+            this.newToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.user_add_32;
+            this.newToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.user_add_48;
+            this.newToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.user_add_64;
+            this.newToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.user_add_16;
             this.newToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.newToolStripMenuItem.Name = "newToolStripMenuItem";
             this.newToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.N)));
@@ -186,13 +200,13 @@ namespace Chummer
             // 
             // mnuNewCritter
             // 
-            this.mnuNewCritter.Image = global::Chummer.Properties.Resources.ladybird_add;
-            this.mnuNewCritter.ImageDpi120 = null;
-            this.mnuNewCritter.ImageDpi144 = null;
-            this.mnuNewCritter.ImageDpi192 = global::Chummer.Properties.Resources.ladybird_add1;
-            this.mnuNewCritter.ImageDpi288 = null;
-            this.mnuNewCritter.ImageDpi384 = null;
-            this.mnuNewCritter.ImageDpi96 = global::Chummer.Properties.Resources.ladybird_add;
+            this.mnuNewCritter.Image = global::Chummer.Properties.Resources.ladybird_add_16;
+            this.mnuNewCritter.ImageDpi120 = global::Chummer.Properties.Resources.ladybird_add_20;
+            this.mnuNewCritter.ImageDpi144 = global::Chummer.Properties.Resources.ladybird_add_24;
+            this.mnuNewCritter.ImageDpi192 = global::Chummer.Properties.Resources.ladybird_add_32;
+            this.mnuNewCritter.ImageDpi288 = global::Chummer.Properties.Resources.ladybird_add_48;
+            this.mnuNewCritter.ImageDpi384 = global::Chummer.Properties.Resources.ladybird_add_64;
+            this.mnuNewCritter.ImageDpi96 = global::Chummer.Properties.Resources.ladybird_add_16;
             this.mnuNewCritter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuNewCritter.Name = "mnuNewCritter";
             this.mnuNewCritter.Size = new System.Drawing.Size(195, 22);
@@ -202,13 +216,13 @@ namespace Chummer
             // 
             // openToolStripMenuItem
             // 
-            this.openToolStripMenuItem.Image = global::Chummer.Properties.Resources.folder_page;
-            this.openToolStripMenuItem.ImageDpi120 = null;
-            this.openToolStripMenuItem.ImageDpi144 = null;
-            this.openToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.folder_page1;
-            this.openToolStripMenuItem.ImageDpi288 = null;
-            this.openToolStripMenuItem.ImageDpi384 = null;
-            this.openToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.folder_page;
+            this.openToolStripMenuItem.Image = global::Chummer.Properties.Resources.folder_page_16;
+            this.openToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.folder_page_20;
+            this.openToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.folder_page_24;
+            this.openToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.folder_page_32;
+            this.openToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.folder_page_48;
+            this.openToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.folder_page_64;
+            this.openToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.folder_page_16;
             this.openToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.openToolStripMenuItem.Name = "openToolStripMenuItem";
             this.openToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.O)));
@@ -219,13 +233,13 @@ namespace Chummer
             // 
             // mnuOpenForPrinting
             // 
-            this.mnuOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print;
-            this.mnuOpenForPrinting.ImageDpi120 = null;
-            this.mnuOpenForPrinting.ImageDpi144 = null;
-            this.mnuOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print1;
-            this.mnuOpenForPrinting.ImageDpi288 = null;
-            this.mnuOpenForPrinting.ImageDpi384 = null;
-            this.mnuOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print;
+            this.mnuOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print_16;
+            this.mnuOpenForPrinting.ImageDpi120 = global::Chummer.Properties.Resources.folder_print_20;
+            this.mnuOpenForPrinting.ImageDpi144 = global::Chummer.Properties.Resources.folder_print_24;
+            this.mnuOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print_32;
+            this.mnuOpenForPrinting.ImageDpi288 = global::Chummer.Properties.Resources.folder_print_48;
+            this.mnuOpenForPrinting.ImageDpi384 = global::Chummer.Properties.Resources.folder_print_64;
+            this.mnuOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print_16;
             this.mnuOpenForPrinting.Name = "mnuOpenForPrinting";
             this.mnuOpenForPrinting.Size = new System.Drawing.Size(195, 22);
             this.mnuOpenForPrinting.Tag = "Menu_Main_OpenForPrinting";
@@ -234,13 +248,13 @@ namespace Chummer
             // 
             // mnuOpenForExport
             // 
-            this.mnuOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go;
-            this.mnuOpenForExport.ImageDpi120 = null;
-            this.mnuOpenForExport.ImageDpi144 = null;
-            this.mnuOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go1;
-            this.mnuOpenForExport.ImageDpi288 = null;
-            this.mnuOpenForExport.ImageDpi384 = null;
-            this.mnuOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go;
+            this.mnuOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.mnuOpenForExport.ImageDpi120 = global::Chummer.Properties.Resources.folder_script_go_20;
+            this.mnuOpenForExport.ImageDpi144 = global::Chummer.Properties.Resources.folder_script_go_24;
+            this.mnuOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go_32;
+            this.mnuOpenForExport.ImageDpi288 = global::Chummer.Properties.Resources.folder_script_go_48;
+            this.mnuOpenForExport.ImageDpi384 = global::Chummer.Properties.Resources.folder_script_go_64;
+            this.mnuOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go_16;
             this.mnuOpenForExport.Name = "mnuOpenForExport";
             this.mnuOpenForExport.Size = new System.Drawing.Size(195, 22);
             this.mnuOpenForExport.Tag = "Menu_Main_OpenForExport";
@@ -262,13 +276,13 @@ namespace Chummer
             // 
             // printToolStripMenuItem
             // 
-            this.printToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer;
-            this.printToolStripMenuItem.ImageDpi120 = null;
-            this.printToolStripMenuItem.ImageDpi144 = null;
-            this.printToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
-            this.printToolStripMenuItem.ImageDpi288 = null;
-            this.printToolStripMenuItem.ImageDpi384 = null;
-            this.printToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.printToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer_16;
+            this.printToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.printer_20;
+            this.printToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.printer_24;
+            this.printToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.printer_32;
+            this.printToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.printer_48;
+            this.printToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.printer_64;
+            this.printToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.printer_16;
             this.printToolStripMenuItem.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.printToolStripMenuItem.Name = "printToolStripMenuItem";
             this.printToolStripMenuItem.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.P)));
@@ -278,13 +292,13 @@ namespace Chummer
             // 
             // mnuFilePrintMultiple
             // 
-            this.mnuFilePrintMultiple.Image = global::Chummer.Properties.Resources.printer_add;
-            this.mnuFilePrintMultiple.ImageDpi120 = null;
-            this.mnuFilePrintMultiple.ImageDpi144 = null;
-            this.mnuFilePrintMultiple.ImageDpi192 = global::Chummer.Properties.Resources.printer_add1;
-            this.mnuFilePrintMultiple.ImageDpi288 = null;
-            this.mnuFilePrintMultiple.ImageDpi384 = null;
-            this.mnuFilePrintMultiple.ImageDpi96 = global::Chummer.Properties.Resources.printer_add;
+            this.mnuFilePrintMultiple.Image = global::Chummer.Properties.Resources.printer_add_16;
+            this.mnuFilePrintMultiple.ImageDpi120 = global::Chummer.Properties.Resources.printer_add_20;
+            this.mnuFilePrintMultiple.ImageDpi144 = global::Chummer.Properties.Resources.printer_add_24;
+            this.mnuFilePrintMultiple.ImageDpi192 = global::Chummer.Properties.Resources.printer_add_32;
+            this.mnuFilePrintMultiple.ImageDpi288 = global::Chummer.Properties.Resources.printer_add_48;
+            this.mnuFilePrintMultiple.ImageDpi384 = global::Chummer.Properties.Resources.printer_add_64;
+            this.mnuFilePrintMultiple.ImageDpi96 = global::Chummer.Properties.Resources.printer_add_16;
             this.mnuFilePrintMultiple.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.mnuFilePrintMultiple.Name = "mnuFilePrintMultiple";
             this.mnuFilePrintMultiple.Size = new System.Drawing.Size(195, 22);
@@ -294,13 +308,13 @@ namespace Chummer
             // 
             // printSetupToolStripMenuItem
             // 
-            this.printSetupToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer_empty;
-            this.printSetupToolStripMenuItem.ImageDpi120 = null;
-            this.printSetupToolStripMenuItem.ImageDpi144 = null;
-            this.printSetupToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.printer_empty1;
-            this.printSetupToolStripMenuItem.ImageDpi288 = null;
-            this.printSetupToolStripMenuItem.ImageDpi384 = null;
-            this.printSetupToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.printer_empty;
+            this.printSetupToolStripMenuItem.Image = global::Chummer.Properties.Resources.printer_empty_16;
+            this.printSetupToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.printer_empty_20;
+            this.printSetupToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.printer_empty_24;
+            this.printSetupToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.printer_empty_32;
+            this.printSetupToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.printer_empty_48;
+            this.printSetupToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.printer_empty_64;
+            this.printSetupToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.printer_empty_16;
             this.printSetupToolStripMenuItem.Name = "printSetupToolStripMenuItem";
             this.printSetupToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.printSetupToolStripMenuItem.Text = "Print Setup";
@@ -308,13 +322,13 @@ namespace Chummer
             // 
             // mnuClearUnpinnedItems
             // 
-            this.mnuClearUnpinnedItems.Image = global::Chummer.Properties.Resources.delete;
-            this.mnuClearUnpinnedItems.ImageDpi120 = null;
-            this.mnuClearUnpinnedItems.ImageDpi144 = null;
-            this.mnuClearUnpinnedItems.ImageDpi192 = global::Chummer.Properties.Resources.delete1;
-            this.mnuClearUnpinnedItems.ImageDpi288 = null;
-            this.mnuClearUnpinnedItems.ImageDpi384 = null;
-            this.mnuClearUnpinnedItems.ImageDpi96 = global::Chummer.Properties.Resources.delete;
+            this.mnuClearUnpinnedItems.Image = global::Chummer.Properties.Resources.delete_16;
+            this.mnuClearUnpinnedItems.ImageDpi120 = global::Chummer.Properties.Resources.delete_20;
+            this.mnuClearUnpinnedItems.ImageDpi144 = global::Chummer.Properties.Resources.delete_24;
+            this.mnuClearUnpinnedItems.ImageDpi192 = global::Chummer.Properties.Resources.delete_32;
+            this.mnuClearUnpinnedItems.ImageDpi288 = global::Chummer.Properties.Resources.delete_48;
+            this.mnuClearUnpinnedItems.ImageDpi384 = global::Chummer.Properties.Resources.delete_64;
+            this.mnuClearUnpinnedItems.ImageDpi96 = global::Chummer.Properties.Resources.delete_16;
             this.mnuClearUnpinnedItems.Name = "mnuClearUnpinnedItems";
             this.mnuClearUnpinnedItems.Size = new System.Drawing.Size(195, 22);
             this.mnuClearUnpinnedItems.Tag = "Menu_Main_ClearUnpinnedItems";
@@ -329,13 +343,13 @@ namespace Chummer
             // 
             // mnuStickyMRU0
             // 
-            this.mnuStickyMRU0.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU0.ImageDpi120 = null;
-            this.mnuStickyMRU0.ImageDpi144 = null;
-            this.mnuStickyMRU0.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU0.ImageDpi288 = null;
-            this.mnuStickyMRU0.ImageDpi384 = null;
-            this.mnuStickyMRU0.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU0.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU0.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU0.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU0.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU0.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU0.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU0.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU0.Name = "mnuStickyMRU0";
             this.mnuStickyMRU0.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU0.Text = "[StickyMRU0]";
@@ -345,13 +359,13 @@ namespace Chummer
             // 
             // mnuStickyMRU1
             // 
-            this.mnuStickyMRU1.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU1.ImageDpi120 = null;
-            this.mnuStickyMRU1.ImageDpi144 = null;
-            this.mnuStickyMRU1.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU1.ImageDpi288 = null;
-            this.mnuStickyMRU1.ImageDpi384 = null;
-            this.mnuStickyMRU1.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU1.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU1.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU1.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU1.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU1.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU1.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU1.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU1.Name = "mnuStickyMRU1";
             this.mnuStickyMRU1.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU1.Text = "[StickyMRU1]";
@@ -361,13 +375,13 @@ namespace Chummer
             // 
             // mnuStickyMRU2
             // 
-            this.mnuStickyMRU2.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU2.ImageDpi120 = null;
-            this.mnuStickyMRU2.ImageDpi144 = null;
-            this.mnuStickyMRU2.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU2.ImageDpi288 = null;
-            this.mnuStickyMRU2.ImageDpi384 = null;
-            this.mnuStickyMRU2.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU2.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU2.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU2.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU2.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU2.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU2.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU2.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU2.Name = "mnuStickyMRU2";
             this.mnuStickyMRU2.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU2.Text = "[StickyMRU2]";
@@ -377,13 +391,13 @@ namespace Chummer
             // 
             // mnuStickyMRU3
             // 
-            this.mnuStickyMRU3.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU3.ImageDpi120 = null;
-            this.mnuStickyMRU3.ImageDpi144 = null;
-            this.mnuStickyMRU3.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU3.ImageDpi288 = null;
-            this.mnuStickyMRU3.ImageDpi384 = null;
-            this.mnuStickyMRU3.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU3.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU3.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU3.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU3.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU3.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU3.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU3.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU3.Name = "mnuStickyMRU3";
             this.mnuStickyMRU3.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU3.Text = "[StickyMRU3]";
@@ -393,13 +407,13 @@ namespace Chummer
             // 
             // mnuStickyMRU4
             // 
-            this.mnuStickyMRU4.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU4.ImageDpi120 = null;
-            this.mnuStickyMRU4.ImageDpi144 = null;
-            this.mnuStickyMRU4.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU4.ImageDpi288 = null;
-            this.mnuStickyMRU4.ImageDpi384 = null;
-            this.mnuStickyMRU4.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU4.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU4.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU4.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU4.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU4.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU4.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU4.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU4.Name = "mnuStickyMRU4";
             this.mnuStickyMRU4.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU4.Text = "[StickyMRU4]";
@@ -409,13 +423,13 @@ namespace Chummer
             // 
             // mnuStickyMRU5
             // 
-            this.mnuStickyMRU5.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU5.ImageDpi120 = null;
-            this.mnuStickyMRU5.ImageDpi144 = null;
-            this.mnuStickyMRU5.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU5.ImageDpi288 = null;
-            this.mnuStickyMRU5.ImageDpi384 = null;
-            this.mnuStickyMRU5.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU5.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU5.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU5.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU5.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU5.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU5.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU5.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU5.Name = "mnuStickyMRU5";
             this.mnuStickyMRU5.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU5.Text = "[StickyMRU5]";
@@ -425,13 +439,13 @@ namespace Chummer
             // 
             // mnuStickyMRU6
             // 
-            this.mnuStickyMRU6.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU6.ImageDpi120 = null;
-            this.mnuStickyMRU6.ImageDpi144 = null;
-            this.mnuStickyMRU6.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU6.ImageDpi288 = null;
-            this.mnuStickyMRU6.ImageDpi384 = null;
-            this.mnuStickyMRU6.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU6.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU6.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU6.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU6.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU6.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU6.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU6.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU6.Name = "mnuStickyMRU6";
             this.mnuStickyMRU6.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU6.Text = "[StickyMRU6]";
@@ -441,13 +455,13 @@ namespace Chummer
             // 
             // mnuStickyMRU7
             // 
-            this.mnuStickyMRU7.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU7.ImageDpi120 = null;
-            this.mnuStickyMRU7.ImageDpi144 = null;
-            this.mnuStickyMRU7.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU7.ImageDpi288 = null;
-            this.mnuStickyMRU7.ImageDpi384 = null;
-            this.mnuStickyMRU7.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU7.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU7.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU7.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU7.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU7.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU7.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU7.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU7.Name = "mnuStickyMRU7";
             this.mnuStickyMRU7.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU7.Text = "[StickyMRU7]";
@@ -457,13 +471,13 @@ namespace Chummer
             // 
             // mnuStickyMRU8
             // 
-            this.mnuStickyMRU8.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU8.ImageDpi120 = null;
-            this.mnuStickyMRU8.ImageDpi144 = null;
-            this.mnuStickyMRU8.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU8.ImageDpi288 = null;
-            this.mnuStickyMRU8.ImageDpi384 = null;
-            this.mnuStickyMRU8.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU8.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU8.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU8.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU8.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU8.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU8.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU8.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU8.Name = "mnuStickyMRU8";
             this.mnuStickyMRU8.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU8.Text = "[StickyMRU8]";
@@ -473,13 +487,13 @@ namespace Chummer
             // 
             // mnuStickyMRU9
             // 
-            this.mnuStickyMRU9.Image = global::Chummer.Properties.Resources.asterisk_orange;
-            this.mnuStickyMRU9.ImageDpi120 = null;
-            this.mnuStickyMRU9.ImageDpi144 = null;
-            this.mnuStickyMRU9.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange1;
-            this.mnuStickyMRU9.ImageDpi288 = null;
-            this.mnuStickyMRU9.ImageDpi384 = null;
-            this.mnuStickyMRU9.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange;
+            this.mnuStickyMRU9.Image = global::Chummer.Properties.Resources.asterisk_orange_16;
+            this.mnuStickyMRU9.ImageDpi120 = global::Chummer.Properties.Resources.asterisk_orange_20;
+            this.mnuStickyMRU9.ImageDpi144 = global::Chummer.Properties.Resources.asterisk_orange_24;
+            this.mnuStickyMRU9.ImageDpi192 = global::Chummer.Properties.Resources.asterisk_orange_32;
+            this.mnuStickyMRU9.ImageDpi288 = global::Chummer.Properties.Resources.asterisk_orange_48;
+            this.mnuStickyMRU9.ImageDpi384 = global::Chummer.Properties.Resources.asterisk_orange_64;
+            this.mnuStickyMRU9.ImageDpi96 = global::Chummer.Properties.Resources.asterisk_orange_16;
             this.mnuStickyMRU9.Name = "mnuStickyMRU9";
             this.mnuStickyMRU9.Size = new System.Drawing.Size(195, 22);
             this.mnuStickyMRU9.Text = "[StickyMRU9]";
@@ -656,13 +670,13 @@ namespace Chummer
             // 
             // exitToolStripMenuItem
             // 
-            this.exitToolStripMenuItem.Image = global::Chummer.Properties.Resources.door_out;
-            this.exitToolStripMenuItem.ImageDpi120 = null;
-            this.exitToolStripMenuItem.ImageDpi144 = null;
-            this.exitToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.door_out1;
-            this.exitToolStripMenuItem.ImageDpi288 = null;
-            this.exitToolStripMenuItem.ImageDpi384 = null;
-            this.exitToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.door_out;
+            this.exitToolStripMenuItem.Image = global::Chummer.Properties.Resources.door_out_16;
+            this.exitToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.door_out_20;
+            this.exitToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.door_out_24;
+            this.exitToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.door_out_32;
+            this.exitToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.door_out_48;
+            this.exitToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.door_out_64;
+            this.exitToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.door_out_16;
             this.exitToolStripMenuItem.Name = "exitToolStripMenuItem";
             this.exitToolStripMenuItem.Size = new System.Drawing.Size(195, 22);
             this.exitToolStripMenuItem.Tag = "Menu_Main_Exit";
@@ -680,25 +694,29 @@ namespace Chummer
             this.mnuRestart,
             this.toolStripSeparator6,
             this.mnuToolsTranslator,
+            this.mnuXmlEditor,
             this.mnuHeroLabImporter,
             this.mnuMasterIndex,
-            this.mnuCharacterRoster});
+            this.mnuCharacterRoster,
+            this.mnuDataExporter,
+            this.toolStripSeparator7,
+            this.mnuReportBug});
             this.toolsMenu.Name = "toolsMenu";
-            this.toolsMenu.Size = new System.Drawing.Size(46, 20);
+            this.toolsMenu.Size = new System.Drawing.Size(47, 20);
             this.toolsMenu.Tag = "Menu_Main_Tools";
             this.toolsMenu.Text = "&Tools";
             // 
             // mnuToolsDiceRoller
             // 
-            this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die;
-            this.mnuToolsDiceRoller.ImageDpi120 = null;
-            this.mnuToolsDiceRoller.ImageDpi144 = null;
-            this.mnuToolsDiceRoller.ImageDpi192 = global::Chummer.Properties.Resources.die1;
-            this.mnuToolsDiceRoller.ImageDpi288 = null;
-            this.mnuToolsDiceRoller.ImageDpi384 = null;
-            this.mnuToolsDiceRoller.ImageDpi96 = global::Chummer.Properties.Resources.die;
+            this.mnuToolsDiceRoller.Image = global::Chummer.Properties.Resources.die_16;
+            this.mnuToolsDiceRoller.ImageDpi120 = global::Chummer.Properties.Resources.die_20;
+            this.mnuToolsDiceRoller.ImageDpi144 = global::Chummer.Properties.Resources.die_24;
+            this.mnuToolsDiceRoller.ImageDpi192 = global::Chummer.Properties.Resources.die_32;
+            this.mnuToolsDiceRoller.ImageDpi288 = global::Chummer.Properties.Resources.die_48;
+            this.mnuToolsDiceRoller.ImageDpi384 = global::Chummer.Properties.Resources.die_64;
+            this.mnuToolsDiceRoller.ImageDpi96 = global::Chummer.Properties.Resources.die_16;
             this.mnuToolsDiceRoller.Name = "mnuToolsDiceRoller";
-            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsDiceRoller.Size = new System.Drawing.Size(202, 22);
             this.mnuToolsDiceRoller.Tag = "Menu_Main_DiceRoller";
             this.mnuToolsDiceRoller.Text = "&Dice Roller";
             this.mnuToolsDiceRoller.Click += new System.EventHandler(this.mnuToolsDiceRoller_Click);
@@ -707,64 +725,64 @@ namespace Chummer
             // 
             this.toolStripSeparator5.DefaultColorScheme = true;
             this.toolStripSeparator5.Name = "toolStripSeparator5";
-            this.toolStripSeparator5.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator5.Size = new System.Drawing.Size(199, 6);
             // 
             // mnuGlobalSettings
             // 
-            this.mnuGlobalSettings.Image = global::Chummer.Properties.Resources.cog_edit;
-            this.mnuGlobalSettings.ImageDpi120 = null;
-            this.mnuGlobalSettings.ImageDpi144 = null;
-            this.mnuGlobalSettings.ImageDpi192 = global::Chummer.Properties.Resources.cog_edit1;
-            this.mnuGlobalSettings.ImageDpi288 = null;
-            this.mnuGlobalSettings.ImageDpi384 = null;
-            this.mnuGlobalSettings.ImageDpi96 = global::Chummer.Properties.Resources.cog_edit;
+            this.mnuGlobalSettings.Image = global::Chummer.Properties.Resources.cog_edit_16;
+            this.mnuGlobalSettings.ImageDpi120 = global::Chummer.Properties.Resources.cog_edit_20;
+            this.mnuGlobalSettings.ImageDpi144 = global::Chummer.Properties.Resources.cog_edit_24;
+            this.mnuGlobalSettings.ImageDpi192 = global::Chummer.Properties.Resources.cog_edit_32;
+            this.mnuGlobalSettings.ImageDpi288 = global::Chummer.Properties.Resources.cog_edit_48;
+            this.mnuGlobalSettings.ImageDpi384 = global::Chummer.Properties.Resources.cog_edit_64;
+            this.mnuGlobalSettings.ImageDpi96 = global::Chummer.Properties.Resources.cog_edit_16;
             this.mnuGlobalSettings.Name = "mnuGlobalSettings";
-            this.mnuGlobalSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuGlobalSettings.Size = new System.Drawing.Size(202, 22);
             this.mnuGlobalSettings.Tag = "Menu_Main_Options";
             this.mnuGlobalSettings.Text = "&Global Settings";
             this.mnuGlobalSettings.Click += new System.EventHandler(this.mnuGlobalSettings_Click);
             // 
             // mnuCharacterSettings
             // 
-            this.mnuCharacterSettings.Image = global::Chummer.Properties.Resources.group_gear;
-            this.mnuCharacterSettings.ImageDpi120 = null;
-            this.mnuCharacterSettings.ImageDpi144 = null;
-            this.mnuCharacterSettings.ImageDpi192 = global::Chummer.Properties.Resources.group_gear1;
-            this.mnuCharacterSettings.ImageDpi288 = null;
-            this.mnuCharacterSettings.ImageDpi384 = null;
-            this.mnuCharacterSettings.ImageDpi96 = global::Chummer.Properties.Resources.group_gear;
+            this.mnuCharacterSettings.Image = global::Chummer.Properties.Resources.group_gear_16;
+            this.mnuCharacterSettings.ImageDpi120 = global::Chummer.Properties.Resources.group_gear_20;
+            this.mnuCharacterSettings.ImageDpi144 = global::Chummer.Properties.Resources.group_gear_24;
+            this.mnuCharacterSettings.ImageDpi192 = global::Chummer.Properties.Resources.group_gear_32;
+            this.mnuCharacterSettings.ImageDpi288 = global::Chummer.Properties.Resources.group_gear_48;
+            this.mnuCharacterSettings.ImageDpi384 = global::Chummer.Properties.Resources.group_gear_64;
+            this.mnuCharacterSettings.ImageDpi96 = global::Chummer.Properties.Resources.group_gear_16;
             this.mnuCharacterSettings.Name = "mnuCharacterSettings";
-            this.mnuCharacterSettings.Size = new System.Drawing.Size(171, 22);
+            this.mnuCharacterSettings.Size = new System.Drawing.Size(202, 22);
             this.mnuCharacterSettings.Tag = "Menu_Main_Character_Options";
             this.mnuCharacterSettings.Text = "&Character Settings";
             this.mnuCharacterSettings.Click += new System.EventHandler(this.mnuCharacterSettings_Click);
             // 
             // mnuToolsUpdate
             // 
-            this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh;
-            this.mnuToolsUpdate.ImageDpi120 = null;
-            this.mnuToolsUpdate.ImageDpi144 = null;
-            this.mnuToolsUpdate.ImageDpi192 = global::Chummer.Properties.Resources.database_refresh1;
-            this.mnuToolsUpdate.ImageDpi288 = null;
-            this.mnuToolsUpdate.ImageDpi384 = null;
-            this.mnuToolsUpdate.ImageDpi96 = global::Chummer.Properties.Resources.database_refresh;
+            this.mnuToolsUpdate.Image = global::Chummer.Properties.Resources.database_refresh_16;
+            this.mnuToolsUpdate.ImageDpi120 = global::Chummer.Properties.Resources.database_refresh_20;
+            this.mnuToolsUpdate.ImageDpi144 = global::Chummer.Properties.Resources.database_refresh_24;
+            this.mnuToolsUpdate.ImageDpi192 = global::Chummer.Properties.Resources.database_refresh_32;
+            this.mnuToolsUpdate.ImageDpi288 = global::Chummer.Properties.Resources.database_refresh_48;
+            this.mnuToolsUpdate.ImageDpi384 = global::Chummer.Properties.Resources.database_refresh_64;
+            this.mnuToolsUpdate.ImageDpi96 = global::Chummer.Properties.Resources.database_refresh_16;
             this.mnuToolsUpdate.Name = "mnuToolsUpdate";
-            this.mnuToolsUpdate.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsUpdate.Size = new System.Drawing.Size(202, 22);
             this.mnuToolsUpdate.Tag = "Menu_Main_Update";
             this.mnuToolsUpdate.Text = "Check for &Updates";
             this.mnuToolsUpdate.Click += new System.EventHandler(this.mnuToolsUpdate_Click);
             // 
             // mnuRestart
             // 
-            this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo;
-            this.mnuRestart.ImageDpi120 = null;
-            this.mnuRestart.ImageDpi144 = null;
-            this.mnuRestart.ImageDpi192 = global::Chummer.Properties.Resources.arrow_redo1;
-            this.mnuRestart.ImageDpi288 = null;
-            this.mnuRestart.ImageDpi384 = null;
-            this.mnuRestart.ImageDpi96 = global::Chummer.Properties.Resources.arrow_redo;
+            this.mnuRestart.Image = global::Chummer.Properties.Resources.arrow_redo_16;
+            this.mnuRestart.ImageDpi120 = global::Chummer.Properties.Resources.arrow_redo_20;
+            this.mnuRestart.ImageDpi144 = global::Chummer.Properties.Resources.arrow_redo_24;
+            this.mnuRestart.ImageDpi192 = global::Chummer.Properties.Resources.arrow_redo_32;
+            this.mnuRestart.ImageDpi288 = global::Chummer.Properties.Resources.arrow_redo_48;
+            this.mnuRestart.ImageDpi384 = global::Chummer.Properties.Resources.arrow_redo_64;
+            this.mnuRestart.ImageDpi96 = global::Chummer.Properties.Resources.arrow_redo_16;
             this.mnuRestart.Name = "mnuRestart";
-            this.mnuRestart.Size = new System.Drawing.Size(171, 22);
+            this.mnuRestart.Size = new System.Drawing.Size(202, 22);
             this.mnuRestart.Tag = "Menu_Main_Restart";
             this.mnuRestart.Text = "&Restart Chummer";
             this.mnuRestart.Click += new System.EventHandler(this.mnuRestart_Click);
@@ -773,67 +791,117 @@ namespace Chummer
             // 
             this.toolStripSeparator6.DefaultColorScheme = true;
             this.toolStripSeparator6.Name = "toolStripSeparator6";
-            this.toolStripSeparator6.Size = new System.Drawing.Size(168, 6);
+            this.toolStripSeparator6.Size = new System.Drawing.Size(199, 6);
             // 
             // mnuToolsTranslator
             // 
-            this.mnuToolsTranslator.Image = global::Chummer.Properties.Resources.locate;
-            this.mnuToolsTranslator.ImageDpi120 = null;
-            this.mnuToolsTranslator.ImageDpi144 = null;
-            this.mnuToolsTranslator.ImageDpi192 = global::Chummer.Properties.Resources.locate1;
-            this.mnuToolsTranslator.ImageDpi288 = global::Chummer.Properties.Resources.Locate_48;
-            this.mnuToolsTranslator.ImageDpi384 = null;
-            this.mnuToolsTranslator.ImageDpi96 = global::Chummer.Properties.Resources.locate;
+            this.mnuToolsTranslator.Image = global::Chummer.Properties.Resources.locate_16;
+            this.mnuToolsTranslator.ImageDpi120 = global::Chummer.Properties.Resources.locate_20;
+            this.mnuToolsTranslator.ImageDpi144 = global::Chummer.Properties.Resources.locate_24;
+            this.mnuToolsTranslator.ImageDpi192 = global::Chummer.Properties.Resources.locate_32;
+            this.mnuToolsTranslator.ImageDpi288 = global::Chummer.Properties.Resources.locate_48;
+            this.mnuToolsTranslator.ImageDpi384 = global::Chummer.Properties.Resources.locate_64;
+            this.mnuToolsTranslator.ImageDpi96 = global::Chummer.Properties.Resources.locate_16;
             this.mnuToolsTranslator.Name = "mnuToolsTranslator";
-            this.mnuToolsTranslator.Size = new System.Drawing.Size(171, 22);
+            this.mnuToolsTranslator.Size = new System.Drawing.Size(202, 22);
             this.mnuToolsTranslator.Tag = "Menu_Main_Translator";
             this.mnuToolsTranslator.Text = "&Translator";
             this.mnuToolsTranslator.Click += new System.EventHandler(this.mnuToolsTranslator_Click);
             // 
+            // mnuXmlEditor
+            // 
+            this.mnuXmlEditor.Image = global::Chummer.Properties.Resources.track_changes_edit_16;
+            this.mnuXmlEditor.ImageDpi120 = global::Chummer.Properties.Resources.track_changes_edit_20;
+            this.mnuXmlEditor.ImageDpi144 = global::Chummer.Properties.Resources.track_changes_edit_24;
+            this.mnuXmlEditor.ImageDpi192 = global::Chummer.Properties.Resources.track_changes_edit_32;
+            this.mnuXmlEditor.ImageDpi288 = global::Chummer.Properties.Resources.track_changes_edit_48;
+            this.mnuXmlEditor.ImageDpi384 = global::Chummer.Properties.Resources.track_changes_edit_64;
+            this.mnuXmlEditor.ImageDpi96 = global::Chummer.Properties.Resources.track_changes_edit_16;
+            this.mnuXmlEditor.Name = "mnuXmlEditor";
+            this.mnuXmlEditor.Size = new System.Drawing.Size(202, 22);
+            this.mnuXmlEditor.Tag = "Menu_Main_XmlEditor";
+            this.mnuXmlEditor.Text = "&XML Amendment Editor";
+            this.mnuXmlEditor.Click += new System.EventHandler(this.mnuXmlEditor_Click);
+            // 
             // mnuHeroLabImporter
             // 
-            this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.HeroLab_16;
-            this.mnuHeroLabImporter.ImageDpi120 = null;
-            this.mnuHeroLabImporter.ImageDpi144 = null;
-            this.mnuHeroLabImporter.ImageDpi192 = global::Chummer.Properties.Resources.HeroLab_32;
-            this.mnuHeroLabImporter.ImageDpi288 = global::Chummer.Properties.Resources.HeroLab_48;
-            this.mnuHeroLabImporter.ImageDpi384 = null;
-            this.mnuHeroLabImporter.ImageDpi96 = global::Chummer.Properties.Resources.HeroLab_16;
+            this.mnuHeroLabImporter.Image = global::Chummer.Properties.Resources.herolab_16;
+            this.mnuHeroLabImporter.ImageDpi120 = global::Chummer.Properties.Resources.herolab_20;
+            this.mnuHeroLabImporter.ImageDpi144 = global::Chummer.Properties.Resources.herolab_24;
+            this.mnuHeroLabImporter.ImageDpi192 = global::Chummer.Properties.Resources.herolab_32;
+            this.mnuHeroLabImporter.ImageDpi288 = global::Chummer.Properties.Resources.herolab_48;
+            this.mnuHeroLabImporter.ImageDpi384 = global::Chummer.Properties.Resources.herolab_64;
+            this.mnuHeroLabImporter.ImageDpi96 = global::Chummer.Properties.Resources.herolab_16;
             this.mnuHeroLabImporter.Name = "mnuHeroLabImporter";
-            this.mnuHeroLabImporter.Size = new System.Drawing.Size(171, 22);
+            this.mnuHeroLabImporter.Size = new System.Drawing.Size(202, 22);
             this.mnuHeroLabImporter.Tag = "Menu_Main_HeroLabImporter";
             this.mnuHeroLabImporter.Text = "&Hero Lab Importer";
             this.mnuHeroLabImporter.Click += new System.EventHandler(this.mnuHeroLabImporter_Click);
             // 
             // mnuMasterIndex
             // 
-            this.mnuMasterIndex.Image = global::Chummer.Properties.Resources.books;
-            this.mnuMasterIndex.ImageDpi120 = null;
-            this.mnuMasterIndex.ImageDpi144 = null;
-            this.mnuMasterIndex.ImageDpi192 = global::Chummer.Properties.Resources.books1;
-            this.mnuMasterIndex.ImageDpi288 = null;
-            this.mnuMasterIndex.ImageDpi384 = null;
-            this.mnuMasterIndex.ImageDpi96 = global::Chummer.Properties.Resources.books;
+            this.mnuMasterIndex.Image = global::Chummer.Properties.Resources.books_16;
+            this.mnuMasterIndex.ImageDpi120 = global::Chummer.Properties.Resources.books_20;
+            this.mnuMasterIndex.ImageDpi144 = global::Chummer.Properties.Resources.books_24;
+            this.mnuMasterIndex.ImageDpi192 = global::Chummer.Properties.Resources.books_32;
+            this.mnuMasterIndex.ImageDpi288 = global::Chummer.Properties.Resources.books_48;
+            this.mnuMasterIndex.ImageDpi384 = global::Chummer.Properties.Resources.books_64;
+            this.mnuMasterIndex.ImageDpi96 = global::Chummer.Properties.Resources.books_16;
             this.mnuMasterIndex.Name = "mnuMasterIndex";
-            this.mnuMasterIndex.Size = new System.Drawing.Size(171, 22);
+            this.mnuMasterIndex.Size = new System.Drawing.Size(202, 22);
             this.mnuMasterIndex.Tag = "Menu_Main_MasterIndex";
             this.mnuMasterIndex.Text = "&Master Index";
             this.mnuMasterIndex.Click += new System.EventHandler(this.mnuMasterIndex_Click);
             // 
             // mnuCharacterRoster
             // 
-            this.mnuCharacterRoster.Image = global::Chummer.Properties.Resources.group;
-            this.mnuCharacterRoster.ImageDpi120 = null;
-            this.mnuCharacterRoster.ImageDpi144 = null;
-            this.mnuCharacterRoster.ImageDpi192 = global::Chummer.Properties.Resources.group1;
-            this.mnuCharacterRoster.ImageDpi288 = null;
-            this.mnuCharacterRoster.ImageDpi384 = null;
-            this.mnuCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.group;
+            this.mnuCharacterRoster.Image = global::Chummer.Properties.Resources.group_16;
+            this.mnuCharacterRoster.ImageDpi120 = global::Chummer.Properties.Resources.group_20;
+            this.mnuCharacterRoster.ImageDpi144 = global::Chummer.Properties.Resources.group_24;
+            this.mnuCharacterRoster.ImageDpi192 = global::Chummer.Properties.Resources.group_32;
+            this.mnuCharacterRoster.ImageDpi288 = global::Chummer.Properties.Resources.group_48;
+            this.mnuCharacterRoster.ImageDpi384 = global::Chummer.Properties.Resources.group_64;
+            this.mnuCharacterRoster.ImageDpi96 = global::Chummer.Properties.Resources.group_16;
             this.mnuCharacterRoster.Name = "mnuCharacterRoster";
-            this.mnuCharacterRoster.Size = new System.Drawing.Size(171, 22);
+            this.mnuCharacterRoster.Size = new System.Drawing.Size(202, 22);
             this.mnuCharacterRoster.Tag = "Menu_Main_CharacterRoster";
             this.mnuCharacterRoster.Text = "Ch&aracter Roster";
             this.mnuCharacterRoster.Click += new System.EventHandler(this.mnuCharacterRoster_Click);
+            // 
+            // mnuDataExporter
+            // 
+            this.mnuDataExporter.Image = global::Chummer.Properties.Resources.database_go_16;
+            this.mnuDataExporter.ImageDpi120 = global::Chummer.Properties.Resources.database_go_20;
+            this.mnuDataExporter.ImageDpi144 = global::Chummer.Properties.Resources.database_go_24;
+            this.mnuDataExporter.ImageDpi192 = global::Chummer.Properties.Resources.database_go_32;
+            this.mnuDataExporter.ImageDpi288 = global::Chummer.Properties.Resources.database_go_48;
+            this.mnuDataExporter.ImageDpi384 = global::Chummer.Properties.Resources.database_go_64;
+            this.mnuDataExporter.ImageDpi96 = global::Chummer.Properties.Resources.database_go_16;
+            this.mnuDataExporter.Name = "mnuDataExporter";
+            this.mnuDataExporter.Size = new System.Drawing.Size(202, 22);
+            this.mnuDataExporter.Text = "Data &Exporter";
+            this.mnuDataExporter.Click += new System.EventHandler(this.mnuDataExporter_Click);
+            // 
+            // toolStripSeparator7
+            // 
+            this.toolStripSeparator7.DefaultColorScheme = true;
+            this.toolStripSeparator7.Name = "toolStripSeparator7";
+            this.toolStripSeparator7.Size = new System.Drawing.Size(199, 6);
+            // 
+            // mnuReportBug
+            // 
+            this.mnuReportBug.Image = global::Chummer.Properties.Resources.bug_16;
+            this.mnuReportBug.ImageDpi120 = global::Chummer.Properties.Resources.bug_20;
+            this.mnuReportBug.ImageDpi144 = global::Chummer.Properties.Resources.bug_24;
+            this.mnuReportBug.ImageDpi192 = global::Chummer.Properties.Resources.bug_32;
+            this.mnuReportBug.ImageDpi288 = global::Chummer.Properties.Resources.bug_48;
+            this.mnuReportBug.ImageDpi384 = global::Chummer.Properties.Resources.bug_64;
+            this.mnuReportBug.ImageDpi96 = global::Chummer.Properties.Resources.bug_16;
+            this.mnuReportBug.Name = "mnuReportBug";
+            this.mnuReportBug.Size = new System.Drawing.Size(202, 22);
+            this.mnuReportBug.Tag = "Menu_Main_ReportBug";
+            this.mnuReportBug.Text = "Report a &Bug";
+            this.mnuReportBug.Click += new System.EventHandler(this.mnuReportBug_Click);
             // 
             // windowsMenu
             // 
@@ -848,13 +916,13 @@ namespace Chummer
             // 
             // newWindowToolStripMenuItem
             // 
-            this.newWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_add;
-            this.newWindowToolStripMenuItem.ImageDpi120 = null;
-            this.newWindowToolStripMenuItem.ImageDpi144 = null;
-            this.newWindowToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_add1;
-            this.newWindowToolStripMenuItem.ImageDpi288 = null;
-            this.newWindowToolStripMenuItem.ImageDpi384 = null;
-            this.newWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_add;
+            this.newWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_add_16;
+            this.newWindowToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.application_add_20;
+            this.newWindowToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.application_add_24;
+            this.newWindowToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_add_32;
+            this.newWindowToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.application_add_48;
+            this.newWindowToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.application_add_64;
+            this.newWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_add_16;
             this.newWindowToolStripMenuItem.Name = "newWindowToolStripMenuItem";
             this.newWindowToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.newWindowToolStripMenuItem.Tag = "Menu_Main_NewWindow";
@@ -863,13 +931,13 @@ namespace Chummer
             // 
             // closeWindowToolStripMenuItem
             // 
-            this.closeWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_delete;
-            this.closeWindowToolStripMenuItem.ImageDpi120 = null;
-            this.closeWindowToolStripMenuItem.ImageDpi144 = null;
-            this.closeWindowToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_delete1;
-            this.closeWindowToolStripMenuItem.ImageDpi288 = null;
-            this.closeWindowToolStripMenuItem.ImageDpi384 = null;
-            this.closeWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_delete;
+            this.closeWindowToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_delete_16;
+            this.closeWindowToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.application_delete_20;
+            this.closeWindowToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.application_delete_24;
+            this.closeWindowToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_delete_32;
+            this.closeWindowToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.application_delete_48;
+            this.closeWindowToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.application_delete_64;
+            this.closeWindowToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_delete_16;
             this.closeWindowToolStripMenuItem.Name = "closeWindowToolStripMenuItem";
             this.closeWindowToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.closeWindowToolStripMenuItem.Tag = "Menu_Main_CloseWindow";
@@ -878,13 +946,13 @@ namespace Chummer
             // 
             // closeAllToolStripMenuItem
             // 
-            this.closeAllToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_cascade_delete;
-            this.closeAllToolStripMenuItem.ImageDpi120 = null;
-            this.closeAllToolStripMenuItem.ImageDpi144 = null;
-            this.closeAllToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_cascade_delete1;
-            this.closeAllToolStripMenuItem.ImageDpi288 = null;
-            this.closeAllToolStripMenuItem.ImageDpi384 = null;
-            this.closeAllToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_cascade_delete;
+            this.closeAllToolStripMenuItem.Image = global::Chummer.Properties.Resources.application_cascade_delete_16;
+            this.closeAllToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.application_cascade_delete_20;
+            this.closeAllToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.application_cascade_delete_24;
+            this.closeAllToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.application_cascade_delete_32;
+            this.closeAllToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.application_cascade_delete_48;
+            this.closeAllToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.application_cascade_delete_64;
+            this.closeAllToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.application_cascade_delete_16;
             this.closeAllToolStripMenuItem.Name = "closeAllToolStripMenuItem";
             this.closeAllToolStripMenuItem.Size = new System.Drawing.Size(150, 22);
             this.closeAllToolStripMenuItem.Tag = "Menu_Main_CloseAll";
@@ -907,13 +975,13 @@ namespace Chummer
             // 
             // mnuChummerWiki
             // 
-            this.mnuChummerWiki.Image = global::Chummer.Properties.Resources.world_go;
-            this.mnuChummerWiki.ImageDpi120 = null;
-            this.mnuChummerWiki.ImageDpi144 = null;
-            this.mnuChummerWiki.ImageDpi192 = global::Chummer.Properties.Resources.world_go1;
-            this.mnuChummerWiki.ImageDpi288 = null;
-            this.mnuChummerWiki.ImageDpi384 = null;
-            this.mnuChummerWiki.ImageDpi96 = global::Chummer.Properties.Resources.world_go;
+            this.mnuChummerWiki.Image = global::Chummer.Properties.Resources.world_go_16;
+            this.mnuChummerWiki.ImageDpi120 = global::Chummer.Properties.Resources.world_go_20;
+            this.mnuChummerWiki.ImageDpi144 = global::Chummer.Properties.Resources.world_go_24;
+            this.mnuChummerWiki.ImageDpi192 = global::Chummer.Properties.Resources.world_go_32;
+            this.mnuChummerWiki.ImageDpi288 = global::Chummer.Properties.Resources.world_go_48;
+            this.mnuChummerWiki.ImageDpi384 = global::Chummer.Properties.Resources.world_go_64;
+            this.mnuChummerWiki.ImageDpi96 = global::Chummer.Properties.Resources.world_go_16;
             this.mnuChummerWiki.Name = "mnuChummerWiki";
             this.mnuChummerWiki.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F1)));
             this.mnuChummerWiki.Size = new System.Drawing.Size(217, 22);
@@ -923,13 +991,13 @@ namespace Chummer
             // 
             // mnuChummerDiscord
             // 
-            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.discord_16px;
-            this.mnuChummerDiscord.ImageDpi120 = null;
-            this.mnuChummerDiscord.ImageDpi144 = null;
-            this.mnuChummerDiscord.ImageDpi192 = global::Chummer.Properties.Resources.discord_32px;
-            this.mnuChummerDiscord.ImageDpi288 = null;
-            this.mnuChummerDiscord.ImageDpi384 = null;
-            this.mnuChummerDiscord.ImageDpi96 = global::Chummer.Properties.Resources.discord_16px;
+            this.mnuChummerDiscord.Image = global::Chummer.Properties.Resources.discord_16;
+            this.mnuChummerDiscord.ImageDpi120 = global::Chummer.Properties.Resources.discord_20;
+            this.mnuChummerDiscord.ImageDpi144 = global::Chummer.Properties.Resources.discord_24;
+            this.mnuChummerDiscord.ImageDpi192 = global::Chummer.Properties.Resources.discord_32;
+            this.mnuChummerDiscord.ImageDpi288 = global::Chummer.Properties.Resources.discord_48;
+            this.mnuChummerDiscord.ImageDpi384 = global::Chummer.Properties.Resources.discord_64;
+            this.mnuChummerDiscord.ImageDpi96 = global::Chummer.Properties.Resources.discord_16;
             this.mnuChummerDiscord.Name = "mnuChummerDiscord";
             this.mnuChummerDiscord.ShortcutKeys = ((System.Windows.Forms.Keys)((System.Windows.Forms.Keys.Control | System.Windows.Forms.Keys.F2)));
             this.mnuChummerDiscord.Size = new System.Drawing.Size(217, 22);
@@ -945,13 +1013,13 @@ namespace Chummer
             // 
             // mnuHelpRevisionHistory
             // 
-            this.mnuHelpRevisionHistory.Image = global::Chummer.Properties.Resources.report;
-            this.mnuHelpRevisionHistory.ImageDpi120 = null;
-            this.mnuHelpRevisionHistory.ImageDpi144 = null;
-            this.mnuHelpRevisionHistory.ImageDpi192 = global::Chummer.Properties.Resources.report1;
-            this.mnuHelpRevisionHistory.ImageDpi288 = null;
-            this.mnuHelpRevisionHistory.ImageDpi384 = null;
-            this.mnuHelpRevisionHistory.ImageDpi96 = global::Chummer.Properties.Resources.report;
+            this.mnuHelpRevisionHistory.Image = global::Chummer.Properties.Resources.report_16;
+            this.mnuHelpRevisionHistory.ImageDpi120 = global::Chummer.Properties.Resources.report_20;
+            this.mnuHelpRevisionHistory.ImageDpi144 = global::Chummer.Properties.Resources.report_24;
+            this.mnuHelpRevisionHistory.ImageDpi192 = global::Chummer.Properties.Resources.report_32;
+            this.mnuHelpRevisionHistory.ImageDpi288 = global::Chummer.Properties.Resources.report_48;
+            this.mnuHelpRevisionHistory.ImageDpi384 = global::Chummer.Properties.Resources.report_64;
+            this.mnuHelpRevisionHistory.ImageDpi96 = global::Chummer.Properties.Resources.report_16;
             this.mnuHelpRevisionHistory.Name = "mnuHelpRevisionHistory";
             this.mnuHelpRevisionHistory.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpRevisionHistory.Tag = "Menu_Main_RevisionHistory";
@@ -960,28 +1028,28 @@ namespace Chummer
             // 
             // mnuHelpDumpshock
             // 
-            this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug;
-            this.mnuHelpDumpshock.ImageDpi120 = null;
-            this.mnuHelpDumpshock.ImageDpi144 = null;
-            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug1;
-            this.mnuHelpDumpshock.ImageDpi288 = null;
-            this.mnuHelpDumpshock.ImageDpi384 = null;
-            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug;
+            this.mnuHelpDumpshock.Image = global::Chummer.Properties.Resources.bug_fixing_16;
+            this.mnuHelpDumpshock.ImageDpi120 = global::Chummer.Properties.Resources.bug_fixing_20;
+            this.mnuHelpDumpshock.ImageDpi144 = global::Chummer.Properties.Resources.bug_fixing_24;
+            this.mnuHelpDumpshock.ImageDpi192 = global::Chummer.Properties.Resources.bug_fixing_32;
+            this.mnuHelpDumpshock.ImageDpi288 = global::Chummer.Properties.Resources.bug_fixing_48;
+            this.mnuHelpDumpshock.ImageDpi384 = global::Chummer.Properties.Resources.bug_fixing_64;
+            this.mnuHelpDumpshock.ImageDpi96 = global::Chummer.Properties.Resources.bug_fixing_16;
             this.mnuHelpDumpshock.Name = "mnuHelpDumpshock";
             this.mnuHelpDumpshock.Size = new System.Drawing.Size(217, 22);
             this.mnuHelpDumpshock.Tag = "Menu_Main_IssueTracker";
-            this.mnuHelpDumpshock.Text = "D&umpshock Thread";
+            this.mnuHelpDumpshock.Text = "Issue Tracker";
             this.mnuHelpDumpshock.Click += new System.EventHandler(this.mnuHelpDumpshock_Click);
             // 
             // aboutToolStripMenuItem
             // 
-            this.aboutToolStripMenuItem.Image = global::Chummer.Properties.Resources.information;
-            this.aboutToolStripMenuItem.ImageDpi120 = null;
-            this.aboutToolStripMenuItem.ImageDpi144 = null;
-            this.aboutToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.information1;
-            this.aboutToolStripMenuItem.ImageDpi288 = null;
-            this.aboutToolStripMenuItem.ImageDpi384 = null;
-            this.aboutToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.information;
+            this.aboutToolStripMenuItem.Image = global::Chummer.Properties.Resources.information_16;
+            this.aboutToolStripMenuItem.ImageDpi120 = global::Chummer.Properties.Resources.information_20;
+            this.aboutToolStripMenuItem.ImageDpi144 = global::Chummer.Properties.Resources.information_24;
+            this.aboutToolStripMenuItem.ImageDpi192 = global::Chummer.Properties.Resources.information_32;
+            this.aboutToolStripMenuItem.ImageDpi288 = global::Chummer.Properties.Resources.information_48;
+            this.aboutToolStripMenuItem.ImageDpi384 = global::Chummer.Properties.Resources.information_64;
+            this.aboutToolStripMenuItem.ImageDpi96 = global::Chummer.Properties.Resources.information_16;
             this.aboutToolStripMenuItem.Name = "aboutToolStripMenuItem";
             this.aboutToolStripMenuItem.Size = new System.Drawing.Size(217, 22);
             this.aboutToolStripMenuItem.Tag = "Menu_Main_About";
@@ -1007,13 +1075,13 @@ namespace Chummer
             // tsbNewCharacter
             // 
             this.tsbNewCharacter.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbNewCharacter.Image = global::Chummer.Properties.Resources.user_add;
-            this.tsbNewCharacter.ImageDpi120 = null;
-            this.tsbNewCharacter.ImageDpi144 = null;
-            this.tsbNewCharacter.ImageDpi192 = global::Chummer.Properties.Resources.user_add1;
-            this.tsbNewCharacter.ImageDpi288 = null;
-            this.tsbNewCharacter.ImageDpi384 = null;
-            this.tsbNewCharacter.ImageDpi96 = global::Chummer.Properties.Resources.user_add;
+            this.tsbNewCharacter.Image = global::Chummer.Properties.Resources.user_add_16;
+            this.tsbNewCharacter.ImageDpi120 = global::Chummer.Properties.Resources.user_add_20;
+            this.tsbNewCharacter.ImageDpi144 = global::Chummer.Properties.Resources.user_add_24;
+            this.tsbNewCharacter.ImageDpi192 = global::Chummer.Properties.Resources.user_add_32;
+            this.tsbNewCharacter.ImageDpi288 = global::Chummer.Properties.Resources.user_add_48;
+            this.tsbNewCharacter.ImageDpi384 = global::Chummer.Properties.Resources.user_add_64;
+            this.tsbNewCharacter.ImageDpi96 = global::Chummer.Properties.Resources.user_add_16;
             this.tsbNewCharacter.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbNewCharacter.Name = "tsbNewCharacter";
             this.tsbNewCharacter.Size = new System.Drawing.Size(23, 22);
@@ -1024,13 +1092,13 @@ namespace Chummer
             // tsbOpen
             // 
             this.tsbOpen.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbOpen.Image = global::Chummer.Properties.Resources.folder_page;
-            this.tsbOpen.ImageDpi120 = null;
-            this.tsbOpen.ImageDpi144 = null;
-            this.tsbOpen.ImageDpi192 = global::Chummer.Properties.Resources.folder_page1;
-            this.tsbOpen.ImageDpi288 = null;
-            this.tsbOpen.ImageDpi384 = null;
-            this.tsbOpen.ImageDpi96 = global::Chummer.Properties.Resources.folder_page;
+            this.tsbOpen.Image = global::Chummer.Properties.Resources.folder_page_16;
+            this.tsbOpen.ImageDpi120 = global::Chummer.Properties.Resources.folder_page_20;
+            this.tsbOpen.ImageDpi144 = global::Chummer.Properties.Resources.folder_page_24;
+            this.tsbOpen.ImageDpi192 = global::Chummer.Properties.Resources.folder_page_32;
+            this.tsbOpen.ImageDpi288 = global::Chummer.Properties.Resources.folder_page_48;
+            this.tsbOpen.ImageDpi384 = global::Chummer.Properties.Resources.folder_page_64;
+            this.tsbOpen.ImageDpi96 = global::Chummer.Properties.Resources.folder_page_16;
             this.tsbOpen.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOpen.Name = "tsbOpen";
             this.tsbOpen.Size = new System.Drawing.Size(23, 22);
@@ -1041,13 +1109,13 @@ namespace Chummer
             // tsbOpenForPrinting
             // 
             this.tsbOpenForPrinting.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print;
-            this.tsbOpenForPrinting.ImageDpi120 = null;
-            this.tsbOpenForPrinting.ImageDpi144 = null;
-            this.tsbOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print1;
-            this.tsbOpenForPrinting.ImageDpi288 = null;
-            this.tsbOpenForPrinting.ImageDpi384 = null;
-            this.tsbOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print;
+            this.tsbOpenForPrinting.Image = global::Chummer.Properties.Resources.folder_print_16;
+            this.tsbOpenForPrinting.ImageDpi120 = global::Chummer.Properties.Resources.folder_print_20;
+            this.tsbOpenForPrinting.ImageDpi144 = global::Chummer.Properties.Resources.folder_print_24;
+            this.tsbOpenForPrinting.ImageDpi192 = global::Chummer.Properties.Resources.folder_print_32;
+            this.tsbOpenForPrinting.ImageDpi288 = global::Chummer.Properties.Resources.folder_print_48;
+            this.tsbOpenForPrinting.ImageDpi384 = global::Chummer.Properties.Resources.folder_print_64;
+            this.tsbOpenForPrinting.ImageDpi96 = global::Chummer.Properties.Resources.folder_print_16;
             this.tsbOpenForPrinting.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOpenForPrinting.Name = "tsbOpenForPrinting";
             this.tsbOpenForPrinting.Size = new System.Drawing.Size(23, 22);
@@ -1058,13 +1126,13 @@ namespace Chummer
             // tsbOpenForExport
             // 
             this.tsbOpenForExport.DisplayStyle = System.Windows.Forms.ToolStripItemDisplayStyle.Image;
-            this.tsbOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go;
-            this.tsbOpenForExport.ImageDpi120 = null;
-            this.tsbOpenForExport.ImageDpi144 = null;
-            this.tsbOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go1;
-            this.tsbOpenForExport.ImageDpi288 = null;
-            this.tsbOpenForExport.ImageDpi384 = null;
-            this.tsbOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go;
+            this.tsbOpenForExport.Image = global::Chummer.Properties.Resources.folder_script_go_16;
+            this.tsbOpenForExport.ImageDpi120 = global::Chummer.Properties.Resources.folder_script_go_20;
+            this.tsbOpenForExport.ImageDpi144 = global::Chummer.Properties.Resources.folder_script_go_24;
+            this.tsbOpenForExport.ImageDpi192 = global::Chummer.Properties.Resources.folder_script_go_32;
+            this.tsbOpenForExport.ImageDpi288 = global::Chummer.Properties.Resources.folder_script_go_48;
+            this.tsbOpenForExport.ImageDpi384 = global::Chummer.Properties.Resources.folder_script_go_64;
+            this.tsbOpenForExport.ImageDpi96 = global::Chummer.Properties.Resources.folder_script_go_16;
             this.tsbOpenForExport.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsbOpenForExport.Name = "tsbOpenForExport";
             this.tsbOpenForExport.Size = new System.Drawing.Size(23, 22);
@@ -1099,7 +1167,7 @@ namespace Chummer
             this.tabForms.Size = new System.Drawing.Size(1264, 22);
             this.tabForms.TabIndex = 3;
             this.tabForms.Visible = false;
-            this.tabForms.SelectedIndexChanged += new System.EventHandler(this.tabForms_SelectedIndexChanged);
+            this.tabForms.SelectedIndexChanged += new System.EventHandler(tabForms_SelectedIndexChanged);
             this.tabForms.MouseClick += new System.Windows.Forms.MouseEventHandler(this.tabForms_MouseClick);
             // 
             // mnuProcessFile
@@ -1118,13 +1186,13 @@ namespace Chummer
             // 
             // tsSave
             // 
-            this.tsSave.Image = global::Chummer.Properties.Resources.disk;
-            this.tsSave.ImageDpi120 = null;
-            this.tsSave.ImageDpi144 = null;
-            this.tsSave.ImageDpi192 = global::Chummer.Properties.Resources.disk1;
-            this.tsSave.ImageDpi288 = null;
-            this.tsSave.ImageDpi384 = null;
-            this.tsSave.ImageDpi96 = global::Chummer.Properties.Resources.disk;
+            this.tsSave.Image = global::Chummer.Properties.Resources.disk_16;
+            this.tsSave.ImageDpi120 = global::Chummer.Properties.Resources.disk_20;
+            this.tsSave.ImageDpi144 = global::Chummer.Properties.Resources.disk_24;
+            this.tsSave.ImageDpi192 = global::Chummer.Properties.Resources.disk_32;
+            this.tsSave.ImageDpi288 = global::Chummer.Properties.Resources.disk_48;
+            this.tsSave.ImageDpi384 = global::Chummer.Properties.Resources.disk_64;
+            this.tsSave.ImageDpi96 = global::Chummer.Properties.Resources.disk_16;
             this.tsSave.ImageTransparentColor = System.Drawing.Color.Magenta;
             this.tsSave.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSave.MergeIndex = 3;
@@ -1136,13 +1204,13 @@ namespace Chummer
             // 
             // tsSaveAs
             // 
-            this.tsSaveAs.Image = global::Chummer.Properties.Resources.disk_multiple;
-            this.tsSaveAs.ImageDpi120 = null;
-            this.tsSaveAs.ImageDpi144 = null;
-            this.tsSaveAs.ImageDpi192 = global::Chummer.Properties.Resources.disk_multiple1;
-            this.tsSaveAs.ImageDpi288 = null;
-            this.tsSaveAs.ImageDpi384 = null;
-            this.tsSaveAs.ImageDpi96 = global::Chummer.Properties.Resources.disk_multiple;
+            this.tsSaveAs.Image = global::Chummer.Properties.Resources.disk_multiple_16;
+            this.tsSaveAs.ImageDpi120 = global::Chummer.Properties.Resources.disk_multiple_20;
+            this.tsSaveAs.ImageDpi144 = global::Chummer.Properties.Resources.disk_multiple_24;
+            this.tsSaveAs.ImageDpi192 = global::Chummer.Properties.Resources.disk_multiple_32;
+            this.tsSaveAs.ImageDpi288 = global::Chummer.Properties.Resources.disk_multiple_48;
+            this.tsSaveAs.ImageDpi384 = global::Chummer.Properties.Resources.disk_multiple_64;
+            this.tsSaveAs.ImageDpi96 = global::Chummer.Properties.Resources.disk_multiple_16;
             this.tsSaveAs.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsSaveAs.MergeIndex = 4;
             this.tsSaveAs.Name = "tsSaveAs";
@@ -1153,13 +1221,13 @@ namespace Chummer
             // 
             // tsClose
             // 
-            this.tsClose.Image = global::Chummer.Properties.Resources.cancel;
-            this.tsClose.ImageDpi120 = null;
-            this.tsClose.ImageDpi144 = null;
-            this.tsClose.ImageDpi192 = global::Chummer.Properties.Resources.cancel1;
-            this.tsClose.ImageDpi288 = null;
-            this.tsClose.ImageDpi384 = null;
-            this.tsClose.ImageDpi96 = global::Chummer.Properties.Resources.cancel;
+            this.tsClose.Image = global::Chummer.Properties.Resources.cancel_16;
+            this.tsClose.ImageDpi120 = global::Chummer.Properties.Resources.cancel_20;
+            this.tsClose.ImageDpi144 = global::Chummer.Properties.Resources.cancel_24;
+            this.tsClose.ImageDpi192 = global::Chummer.Properties.Resources.cancel_32;
+            this.tsClose.ImageDpi288 = global::Chummer.Properties.Resources.cancel_48;
+            this.tsClose.ImageDpi384 = global::Chummer.Properties.Resources.cancel_64;
+            this.tsClose.ImageDpi96 = global::Chummer.Properties.Resources.cancel_16;
             this.tsClose.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsClose.MergeIndex = 6;
             this.tsClose.Name = "tsClose";
@@ -1170,13 +1238,13 @@ namespace Chummer
             // 
             // tsPrint
             // 
-            this.tsPrint.Image = global::Chummer.Properties.Resources.printer;
-            this.tsPrint.ImageDpi120 = null;
-            this.tsPrint.ImageDpi144 = null;
-            this.tsPrint.ImageDpi192 = global::Chummer.Properties.Resources.printer1;
-            this.tsPrint.ImageDpi288 = null;
-            this.tsPrint.ImageDpi384 = null;
-            this.tsPrint.ImageDpi96 = global::Chummer.Properties.Resources.printer;
+            this.tsPrint.Image = global::Chummer.Properties.Resources.printer_16;
+            this.tsPrint.ImageDpi120 = global::Chummer.Properties.Resources.printer_20;
+            this.tsPrint.ImageDpi144 = global::Chummer.Properties.Resources.printer_24;
+            this.tsPrint.ImageDpi192 = global::Chummer.Properties.Resources.printer_32;
+            this.tsPrint.ImageDpi288 = global::Chummer.Properties.Resources.printer_48;
+            this.tsPrint.ImageDpi384 = global::Chummer.Properties.Resources.printer_64;
+            this.tsPrint.ImageDpi96 = global::Chummer.Properties.Resources.printer_16;
             this.tsPrint.MergeAction = System.Windows.Forms.MergeAction.Insert;
             this.tsPrint.MergeIndex = 8;
             this.tsPrint.Name = "tsPrint";
@@ -1240,6 +1308,7 @@ namespace Chummer
         private System.Windows.Forms.TabControl tabForms;
         private Chummer.ColorableToolStripSeparator toolStripSeparator5;
         private Chummer.ColorableToolStripSeparator toolStripSeparator6;
+        private Chummer.ColorableToolStripSeparator toolStripSeparator7;
         private System.Windows.Forms.ContextMenuStrip mnuProcessFile;
         private DpiFriendlyToolStripButton tsbNewCharacter;
         private DpiFriendlyToolStripButton tsbOpen;
@@ -1256,6 +1325,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem mnuToolsUpdate;
         private DpiFriendlyToolStripMenuItem mnuRestart;
         private DpiFriendlyToolStripMenuItem mnuToolsTranslator;
+        private DpiFriendlyToolStripMenuItem mnuXmlEditor;
         private DpiFriendlyToolStripMenuItem mnuHeroLabImporter;
         private DpiFriendlyToolStripMenuItem newToolStripMenuItem;
         private DpiFriendlyToolStripMenuItem mnuNewCritter;
@@ -1297,6 +1367,8 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem closeWindowToolStripMenuItem;
         private DpiFriendlyToolStripButton tsbOpenForPrinting;
         private DpiFriendlyToolStripButton tsbOpenForExport;
+        private DpiFriendlyToolStripMenuItem mnuDataExporter;
+        private DpiFriendlyToolStripMenuItem mnuReportBug;
     }
 }
 

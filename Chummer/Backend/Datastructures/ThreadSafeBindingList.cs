@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,25 +29,26 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Thread-safe-wrapped version of CachedBindingList, but also with constraints on the generic type so that it can only be used on a class with INotifyPropertyChanged.
-    /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
+    /// Thread-safe-wrapped version of <see cref="CachedBindingList{T}"/>, but also with constraints on the generic type so that it can only be used on a class with <see cref="INotifyPropertyChanged"/>.
+    /// Use <see cref="ThreadSafeObservableCollection{T}"/> instead for classes without <see cref="INotifyPropertyChanged"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T> where T : INotifyPropertyChanged
+    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
 
         private readonly CachedBindingList<T> _lstData;
 
-        public ThreadSafeBindingList()
+        public ThreadSafeBindingList(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
-            _lstData = new CachedBindingList<T>();
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
+            _lstData = new CachedBindingList<T>(LockObject);
         }
 
-        public ThreadSafeBindingList(IList<T> list)
+        public ThreadSafeBindingList(IList<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
-            _lstData = new CachedBindingList<T>(list);
+            LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
+            _lstData = new CachedBindingList<T>(LockObject, list);
         }
 
         /// <inheritdoc cref="List{T}.Count" />
@@ -54,15 +56,23 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData.Count;
             }
         }
 
-        public async ValueTask<int> GetCountAsync(CancellationToken token = default)
+        public async Task<int> GetCountAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.Count;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.GetCountAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
@@ -84,12 +94,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData[index];
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData[index].Equals(value))
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -99,27 +115,55 @@ namespace Chummer
             }
         }
 
-        public async ValueTask<T> GetValueAtAsync(int index, CancellationToken token = default)
+        public async Task<T> GetValueAtAsync(int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData[index];
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.GetValueAtAsync(index, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public async ValueTask SetValueAtAsync(int index, T value, CancellationToken token = default)
+        public async Task SetValueAtAsync(int index, T value, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (_lstData[index].Equals(value))
                     return;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_lstData[index].Equals(value))
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _lstData[index] = value;
+                    token.ThrowIfCancellationRequested();
+                    await _lstData.SetValueAtAsync(index, value, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -127,12 +171,17 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData[index];
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData[index].Equals(value))
+                        return;
+                }
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData[index].Equals(value))
                         return;
@@ -142,11 +191,48 @@ namespace Chummer
             }
         }
 
+        public bool SequenceEqual(ThreadSafeBindingList<T> other)
+        {
+            if (other == null)
+                return false;
+            using (other.LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock())
+            {
+                return _lstData.Count == other._lstData.Count
+                       && _lstData.SequenceEqual(other._lstData);
+            }
+        }
+
+        public async Task<bool> SequenceEqualAsync(ThreadSafeBindingList<T> other, CancellationToken token = default)
+        {
+            if (other == null)
+                return false;
+            IAsyncDisposable objLocker = await other.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    return _lstData.Count == other._lstData.Count
+                           && _lstData.SequenceEqual(other._lstData);
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public int Add(object value)
         {
             if (!(value is T objValue))
                 return -1;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 Add(objValue);
                 return _lstData.Count - 1;
@@ -160,12 +246,13 @@ namespace Chummer
                 _lstData.Add(item);
         }
 
-        public async ValueTask AddAsync(T item, CancellationToken token = default)
+        public async Task AddAsync(T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _lstData.Add(item);
+                token.ThrowIfCancellationRequested();
+                await _lstData.AddAsync(item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -180,11 +267,12 @@ namespace Chummer
                 _lstData.AddRange(collection);
         }
 
-        public async ValueTask AddRangeAsync(IEnumerable<T> collection, CancellationToken token = default)
+        public async Task AddRangeAsync(IEnumerable<T> collection, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
+                token.ThrowIfCancellationRequested();
                 _lstData.AddRange(collection);
             }
             finally
@@ -196,29 +284,45 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.BinarySearch(int, int, T, IComparer{T})" />
         public int BinarySearch(int index, int count, T item, IComparer<T> comparer)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.BinarySearch(index, count, item, comparer);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
         public int BinarySearch(T item, IComparer<T> comparer)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.BinarySearch(item, comparer);
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(int, int, T, IComparer{T})" />
-        public async ValueTask<int> BinarySearchAsync(int index, int count, T item, IComparer<T> comparer, CancellationToken token = default)
+        public async Task<int> BinarySearchAsync(int index, int count, T item, IComparer<T> comparer, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.BinarySearch(index, count, item, comparer);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.BinarySearch(T, IComparer{T})" />
-        public async ValueTask<int> BinarySearchAsync(T item, IComparer<T> comparer, CancellationToken token = default)
+        public async Task<int> BinarySearchAsync(T item, IComparer<T> comparer, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.BinarySearch(item, comparer);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Clear" />
@@ -229,12 +333,13 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Clear" />
-        public async ValueTask ClearAsync(CancellationToken token = default)
+        public async Task ClearAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _lstData.Clear();
+                token.ThrowIfCancellationRequested();
+                await _lstData.ClearAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -252,20 +357,28 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Contains" />
         public bool Contains(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.Contains(item);
         }
 
         /// <inheritdoc cref="List{T}.Contains" />
-        public async ValueTask<bool> ContainsAsync(T item, CancellationToken token = default)
+        public async Task<bool> ContainsAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.Contains(item);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.ContainsAsync(item, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public void CopyTo(Array array, int index)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 foreach (T objItem in _lstData)
                 {
@@ -275,30 +388,44 @@ namespace Chummer
             }
         }
 
-        public async ValueTask CopyToAsync(Array array, int index, CancellationToken token = default)
+        public async Task CopyToAsync(Array array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 foreach (T objItem in _lstData)
                 {
                     array.SetValue(objItem, index);
                     ++index;
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 _lstData.CopyTo(array, arrayIndex);
         }
 
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
-        public async ValueTask CopyToAsync(T[] array, int index, CancellationToken token = default)
+        public async Task CopyToAsync(T[] array, int index, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                _lstData.CopyTo(array, index);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                await _lstData.CopyToAsync(array, index, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc />
@@ -308,29 +435,46 @@ namespace Chummer
             return true;
         }
 
-        public async ValueTask<bool> TryAddAsync(T item, CancellationToken token = default)
+        public async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
             await AddAsync(item, token).ConfigureAwait(false);
             return true;
         }
 
         /// <inheritdoc />
-        public async ValueTask<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-            {
-                if (_lstData.Count == 0)
-                    return new Tuple<bool, T>(false, default);
-            }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
-                if (_lstData.Count > 0)
+                token.ThrowIfCancellationRequested();
+                if (_lstData.Count == 0)
+                    return new ValueTuple<bool, T>(false, default);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await _lstData.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                    T objReturn = _lstData[0];
-                    _lstData.RemoveAt(0);
-                    return new Tuple<bool, T>(true, objReturn);
+                    T objReturn = await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false);
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await _lstData.RemoveAtAsync(0, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+
+                    return new ValueTuple<bool, T>(true, objReturn);
                 }
             }
             finally
@@ -338,13 +482,13 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            return new Tuple<bool, T>(false, default);
+            return new ValueTuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 if (_lstData.Count == 0)
                 {
@@ -352,13 +496,17 @@ namespace Chummer
                     return false;
                 }
             }
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (_lstData.Count > 0)
                 {
                     // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
                     item = _lstData[0];
-                    _lstData.RemoveAt(0);
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _lstData.RemoveAt(0);
+                    }
+
                     return true;
                 }
             }
@@ -370,141 +518,221 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Exists" />
         public bool Exists(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.Exists(match);
         }
 
         /// <inheritdoc cref="List{T}.Exists" />
-        public async ValueTask<bool> ExistsAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<bool> ExistsAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Exists(match);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.Find" />
         public T Find(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.Find(match);
         }
 
         /// <inheritdoc cref="List{T}.Find" />
-        public async ValueTask<T> FindAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<T> FindAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.Find(match);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
         public List<T> FindAll(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindAll(match);
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
-        public async ValueTask<List<T>> FindAllAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<List<T>> FindAllAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindAll(match);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
         public int FindIndex(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
         public int FindIndex(int startIndex, Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
         public int FindIndex(int startIndex, int count, Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(Predicate{T})" />
-        public async ValueTask<int> FindIndexAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindIndexAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindIndex(match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindIndexAsync(match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, Predicate{T})" />
-        public async ValueTask<int> FindIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindIndex(startIndex, match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindIndexAsync(startIndex, match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindIndex(int, int, Predicate{T})" />
-        public async ValueTask<int> FindIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindIndex(startIndex, count, match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindIndexAsync(startIndex, count, match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLast" />
         public T FindLast(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindLast(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLast" />
-        public async ValueTask<T> FindLastAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<T> FindLastAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.FindLast(match);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
         public int FindLastIndex(Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindIndex(match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
         public int FindLastIndex(int startIndex, Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindIndex(startIndex, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
         public int FindLastIndex(int startIndex, int count, Predicate<T> match)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.FindLastIndex(startIndex, count, match);
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(Predicate{T})" />
-        public async ValueTask<int> FindLastIndexAsync(Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindLastIndexAsync(Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindIndex(match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindLastIndexAsync(match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, Predicate{T})" />
-        public async ValueTask<int> FindLastIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindLastIndexAsync(int startIndex, Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindIndex(startIndex, match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindLastIndexAsync(startIndex, match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.FindLastIndex(int, int, Predicate{T})" />
-        public async ValueTask<int> FindLastIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
+        public async Task<int> FindLastIndexAsync(int startIndex, int count, Predicate<T> match, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.FindLastIndex(startIndex, count, match);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.FindLastIndexAsync(startIndex, count, match, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <inheritdoc cref="List{T}.GetEnumerator" />
@@ -515,11 +743,37 @@ namespace Chummer
             return objReturn;
         }
 
-        public async ValueTask<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
+        public Task<IEnumerator<T>> GetEnumeratorAsync(CancellationToken token = default)
         {
-            LockingEnumerator<T> objReturn = await LockingEnumerator<T>.GetAsync(this, token).ConfigureAwait(false);
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<T>> tskReturn = LockingEnumerator<T>.GetAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<T>> Inner(Task<LockingEnumerator<T>> tskInner)
+            {
+                LockingEnumerator<T> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_lstData.GetEnumerator());
+                return objResult;
+            }
+        }
+
+        public IEnumerator<T> EnumerateWithSideEffects()
+        {
+            LockingEnumerator<T> objReturn = LockingEnumerator<T>.GetWithSideEffects(this);
             objReturn.SetEnumerator(_lstData.GetEnumerator());
             return objReturn;
+        }
+
+        public Task<IEnumerator<T>> EnumerateWithSideEffectsAsync(CancellationToken token = default)
+        {
+            // Needs to be like this (using async inner function) to make sure AsyncLocals for parents are set in proper location
+            Task<LockingEnumerator<T>> tskReturn = LockingEnumerator<T>.GetWithSideEffectsAsync(this, token);
+            return Inner(tskReturn);
+            async Task<IEnumerator<T>> Inner(Task<LockingEnumerator<T>> tskInner)
+            {
+                LockingEnumerator<T> objResult = await tskInner.ConfigureAwait(false);
+                objResult.SetEnumerator(_lstData.GetEnumerator());
+                return objResult;
+            }
         }
 
         public int IndexOf(object value)
@@ -532,15 +786,23 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
         public int IndexOf(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.IndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.IndexOf(T)" />
-        public async ValueTask<int> IndexOfAsync(T item, CancellationToken token = default)
+        public async Task<int> IndexOfAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.IndexOf(item);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.IndexOfAsync(item, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public void Insert(int index, object value)
@@ -558,12 +820,13 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.Insert" />
-        public async ValueTask InsertAsync(int index, T item, CancellationToken token = default)
+        public async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _lstData.Insert(index, item);
+                token.ThrowIfCancellationRequested();
+                await _lstData.InsertAsync(index, item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -574,15 +837,23 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.LastIndexOf(T)" />
         public int LastIndexOf(T item)
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.LastIndexOf(item);
         }
 
         /// <inheritdoc cref="List{T}.LastIndexOf(T)" />
-        public async ValueTask<int> LastIndexOfAsync(T item, CancellationToken token = default)
+        public async Task<int> LastIndexOfAsync(T item, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
-                return _lstData.LastIndexOf(item);
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await _lstData.LastIndexOfAsync(item, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         public void Remove(object value)
@@ -599,12 +870,13 @@ namespace Chummer
                 return _lstData.Remove(item);
         }
 
-        public async ValueTask<bool> RemoveAsync(T item, CancellationToken token = default)
+        public async Task<bool> RemoveAsync(T item, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                return _lstData.Remove(item);
+                token.ThrowIfCancellationRequested();
+                return await _lstData.RemoveAsync(item, token).ConfigureAwait(false);
             }
             finally
             {
@@ -620,12 +892,13 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.RemoveAt" />
-        public async ValueTask RemoveAtAsync(int index, CancellationToken token = default)
+        public async Task RemoveAtAsync(int index, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
-                _lstData.RemoveAt(index);
+                token.ThrowIfCancellationRequested();
+                await _lstData.RemoveAtAsync(index, token).ConfigureAwait(false);
             }
             finally
             {
@@ -636,14 +909,22 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
                 return _lstData.ToArray();
         }
 
-        public async ValueTask<T[]> ToArrayAsync(CancellationToken token = default)
+        public async Task<T[]> ToArrayAsync(CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
                 return _lstData.ToArray();
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private int _intIsDisposed;
@@ -656,6 +937,8 @@ namespace Chummer
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
+                using (LockObject.EnterWriteLock())
+                    _lstData.Dispose();
                 LockObject.Dispose();
             }
         }
@@ -673,6 +956,15 @@ namespace Chummer
             {
                 if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                     return;
+                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+                try
+                {
+                    await _lstData.DisposeAsync().ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
                 await LockObject.DisposeAsync().ConfigureAwait(false);
             }
         }
@@ -703,6 +995,12 @@ namespace Chummer
             }
         }
 
+        public event AsyncBeforeRemoveEventHandler BeforeRemoveAsync
+        {
+            add => _lstData.BeforeRemoveAsync += value;
+            remove => _lstData.BeforeRemoveAsync -= value;
+        }
+
         /// <inheritdoc cref="BindingList{T}.AddingNew" />
         public event AddingNewEventHandler AddingNew
         {
@@ -716,6 +1014,12 @@ namespace Chummer
                 using (LockObject.EnterWriteLock())
                     _lstData.AddingNew -= value;
             }
+        }
+
+        public event AsyncAddingNewEventHandler AddingNewAsync
+        {
+            add => _lstData.AddingNewAsync += value;
+            remove => _lstData.AddingNewAsync -= value;
         }
 
         /// <inheritdoc />
@@ -736,17 +1040,29 @@ namespace Chummer
             }
         }
 
+        public event AsyncListChangedEventHandler ListChangedAsync
+        {
+            add => _lstData.ListChangedAsync += value;
+            remove => _lstData.ListChangedAsync -= value;
+        }
+
         /// <inheritdoc cref="BindingList{T}.RaiseListChangedEvents" />
         public bool RaiseListChangedEvents
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData.RaiseListChangedEvents;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.RaiseListChangedEvents.Equals(value))
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.RaiseListChangedEvents.Equals(value))
                         return;
@@ -791,12 +1107,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData.AllowNew;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowNew.Equals(value))
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowNew.Equals(value))
                         return;
@@ -811,12 +1133,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData.AllowEdit;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowEdit.Equals(value))
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowEdit.Equals(value))
                         return;
@@ -831,12 +1159,18 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstData.AllowRemove;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_lstData.AllowRemove.Equals(value))
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (_lstData.AllowRemove.Equals(value))
                         return;
@@ -869,7 +1203,7 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="BindingList{T}.AddNew()" />
-        public async Task<object> AddNewAsync(CancellationToken token = default)
+        public async Task<T> AddNewAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
@@ -911,7 +1245,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ResetBindings();
+                await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -933,7 +1267,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                _lstData.ResetItem(position);
+                await _lstData.ResetItemAsync(position, token).ConfigureAwait(false);
             }
             finally
             {
@@ -959,86 +1293,98 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (EnterReadLock.Enter(LockObject))
+            if (length == 0)
+                return;
+            if (index + length > Count)
+                throw new InvalidOperationException(nameof(length));
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 if (index + length > _lstData.Count)
                     throw new InvalidOperationException(nameof(length));
-                if (length == 0)
-                    return;
+                IDisposable[] aobjLockers = _lstData[index] is IHasLockObject ? new IDisposable[length] : null;
                 T[] aobjSorted = new T[length];
                 for (int i = 0; i < length; ++i)
-                    aobjSorted[i] = _lstData[index + i];
-                Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
-                    {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
-                        {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = index + i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
+                    T objLoop = _lstData[index + i];
+                    aobjSorted[i] = objLoop;
+                    if (aobjLockers != null)
+                        aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
+                }
 
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                Array.Sort(aobjSorted, 0, length, objComparer);
+
+                if (aobjLockers != null)
+                {
+                    foreach (IDisposable objLocker in aobjLockers)
+                    {
+                        objLocker.Dispose();
+                    }
+                }
+
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < length; ++i)
+                        {
+                            _lstData[index + i] = aobjSorted[i];
                         }
                     }
-                    finally
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = length / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = length > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(length)
+                    : null;
+                try
+                {
+                    using (LockObject.EnterWriteLock())
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-                    }
-
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[length];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
+                            for (int i = 0; i < length; ++i)
                             {
-                                _lstData.ResetBindings();
-                                return;
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[index + i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[index + i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < length; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(index + i);
                             }
                         }
                     }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
-                    }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1051,82 +1397,97 @@ namespace Chummer
         {
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (EnterReadLock.Enter(LockObject))
+            if (Count == 0)
+                return;
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
-                    aobjSorted[i] = this[i];
-                Array.Sort(aobjSorted, funcComparison);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
+                    return;
+                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[intCollectionSize] : null;
+                T[] aobjSorted = new T[intCollectionSize];
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
-                    {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
-                        {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
+                    T objLoop = _lstData[i];
+                    aobjSorted[i] = objLoop;
+                    if (aobjLockers != null)
+                        aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
+                }
 
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                Array.Sort(aobjSorted, funcComparison);
+
+                if (aobjLockers != null)
+                {
+                    foreach (IDisposable objLocker in aobjLockers)
+                    {
+                        objLocker.Dispose();
+                    }
+                }
+
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < intCollectionSize; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
                         }
                     }
-                    finally
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = intCollectionSize / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                    : null;
+                try
+                {
+                    using (LockObject.EnterWriteLock())
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-                    }
-
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
+                            for (int i = 0; i < intCollectionSize; ++i)
                             {
-                                _lstData.ResetBindings();
-                                return;
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(i);
                             }
                         }
                     }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
-                    }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1140,82 +1501,97 @@ namespace Chummer
         /// interface implementation of each element.</param>
         public void Sort(IComparer<T> objComparer = null)
         {
-            using (EnterReadLock.Enter(LockObject))
+            if (Count == 0)
+                return;
+            using (LockObject.EnterUpgradeableReadLock())
             {
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
-                    aobjSorted[i] = this[i];
-                Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                using (LockObject.EnterWriteLock())
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
+                    return;
+                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[intCollectionSize] : null;
+                T[] aobjSorted = new T[intCollectionSize];
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
-                    {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
-                        {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
+                    T objLoop = _lstData[i];
+                    aobjSorted[i] = objLoop;
+                    if (aobjLockers != null)
+                        aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
+                }
 
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
+
+                if (aobjLockers != null)
+                {
+                    foreach (IDisposable objLocker in aobjLockers)
+                    {
+                        objLocker.Dispose();
+                    }
+                }
+
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    using (LockObject.EnterWriteLock())
+                    {
+                        for (int i = 0; i < intCollectionSize; ++i)
+                        {
+                            _lstData[i] = aobjSorted[i];
                         }
                     }
-                    finally
+                    return;
+                }
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = intCollectionSize / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                    : null;
+                try
+                {
+                    using (LockObject.EnterWriteLock())
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-                    }
-
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
+                            for (int i = 0; i < intCollectionSize; ++i)
                             {
-                                _lstData.ResetBindings();
-                                return;
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(i);
                             }
                         }
                     }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
-                    }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1236,93 +1612,120 @@ namespace Chummer
                 throw new ArgumentOutOfRangeException(nameof(index));
             if (length < 0)
                 throw new ArgumentOutOfRangeException(nameof(length));
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            if (index + length > await GetCountAsync(token).ConfigureAwait(false))
+                throw new InvalidOperationException(nameof(length));
+            if (length == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                if (index + length > _lstData.Count)
-                    throw new InvalidOperationException(nameof(length));
-                if (length == 0)
-                    return;
+                token.ThrowIfCancellationRequested();
+                Stack<IAsyncDisposable> stkLockers = _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(length) : null;
                 T[] aobjSorted = new T[length];
-                for (int i = 0; i < length; ++i)
-                    aobjSorted[i] = _lstData[index + i];
-                Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
+                    for (int i = 0; i < length; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objLoop = _lstData[index + i];
+                        aobjSorted[i] = objLoop;
+                        if (stkLockers != null && objLoop is IHasLockObject objLoopWithLocker)
+                            stkLockers.Push(await objLoopWithLocker.LockObject.EnterReadLockAsync(token)
+                                .ConfigureAwait(false));
+                    }
+
                     token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    Array.Sort(aobjSorted, 0, length, objComparer);
+                }
+                finally
+                {
+                    if (stkLockers != null)
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objLocker2 = stkLockers.Pop();
+                            if (objLocker2 != null)
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        for (int i = 0; i < length; ++i)
                         {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = index + i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            _lstData[index + i] = aobjSorted[i];
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    return;
+                }
+
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = length / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(length);
+                try
+                {
+                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        if (ablnItemChanged[i])
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
+                            for (int i = 0; i < length; ++i)
                             {
-                                _lstData.ResetBindings();
-                                return;
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[index + i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[index + i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < length; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(index + i, token).ConfigureAwait(false);
                             }
                         }
                     }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    finally
                     {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1335,89 +1738,120 @@ namespace Chummer
         {
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
-                    aobjSorted[i] = this[i];
-                Array.Sort(aobjSorted, funcComparison);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
+                    return;
+                Stack<IAsyncDisposable> stkLockers =
+                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(intCollectionSize) : null;
+                T[] aobjSorted = new T[intCollectionSize];
                 try
                 {
+                    for (int i = 0; i < intCollectionSize; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objLoop = _lstData[i];
+                        aobjSorted[i] = objLoop;
+                        if (stkLockers != null && objLoop is IHasLockObject objLoopWithLocker)
+                            stkLockers.Push(await objLoopWithLocker.LockObject.EnterReadLockAsync(token)
+                                .ConfigureAwait(false));
+                    }
+
                     token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    Array.Sort(aobjSorted, funcComparison);
+                }
+                finally
+                {
+                    if (stkLockers != null)
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objLocker3 = stkLockers.Pop();
+                            if (objLocker3 != null)
+                                await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                            _lstData[i] = aobjSorted[i];
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    return;
+                }
+
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = intCollectionSize / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(intCollectionSize);
+                try
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
                     {
-                        if (ablnItemChanged[i])
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
+                            for (int i = 0; i < intCollectionSize; ++i)
                             {
-                                _lstData.ResetBindings();
-                                return;
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
                             }
                         }
                     }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
+                    finally
                     {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1431,134 +1865,212 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task SortAsync(IComparer<T> objComparer = null, CancellationToken token = default)
         {
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            token.ThrowIfCancellationRequested();
+            if (await GetCountAsync(token).ConfigureAwait(false) == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
-                    aobjSorted[i] = this[i];
-                Array.Sort(aobjSorted, objComparer);
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-                IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
+                    return;
+                Stack<IAsyncDisposable> stkLockers =
+                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(intCollectionSize) : null;
+                T[] aobjSorted = new T[intCollectionSize];
                 try
                 {
+                    for (int i = 0; i < intCollectionSize; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T objLoop = _lstData[i];
+                        aobjSorted[i] = objLoop;
+                        if (stkLockers != null && objLoop is IHasLockObject objLoopWithLocker)
+                            stkLockers.Push(await objLoopWithLocker.LockObject.EnterReadLockAsync(token)
+                                .ConfigureAwait(false));
+                    }
+
                     token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
+                }
+                finally
+                {
+                    if (stkLockers != null)
+                    {
+                        while (stkLockers.Count > 0)
+                        {
+                            IAsyncDisposable objLocker2 = stkLockers.Pop();
+                            if (objLocker2 != null)
+                                await objLocker2.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                }
+
+                token.ThrowIfCancellationRequested();
+                if (!_lstData.RaiseListChangedEvents)
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
-                            T objLoop = aobjSorted[i];
-                            int intOldIndex = _lstData.IndexOf(objLoop);
-                            int intNewIndex = i;
-                            if (intOldIndex == intNewIndex)
-                                continue;
-                            if (intOldIndex > intNewIndex)
-                            {
-                                // Account for removal happening before removal
-                                --intOldIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intNewIndex; j <= intOldIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
-                            else
-                            {
-                                // Account for removal happening before removal
-                                --intNewIndex;
-                                if (blnOldRaiseListChangedEvents)
-                                {
-                                    for (int j = intOldIndex; j <= intNewIndex; ++j)
-                                        ablnItemChanged[j] = true;
-                                }
-                            }
+                            _lstData[i] = aobjSorted[i];
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
 
-                            _lstData.RemoveAt(intOldIndex);
-                            _lstData.Insert(intNewIndex, objLoop);
+                    return;
+                }
+
+                // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+                int intResetThreshold = intCollectionSize / 2;
+                int intCountChanges = 0;
+                // Not BitArray because read/write performance is much more important here than memory footprint
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(intCollectionSize);
+                try
+                {
+                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public void Move(int intOldIndex, int intNewIndex, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (intOldIndex == intNewIndex)
+                return;
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
+            using (LockObject.EnterUpgradeableReadLock(token))
+            {
+                using (LockObject.EnterWriteLock(token))
+                {
+                    bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                    try
+                    {
+                        _lstData.RaiseListChangedEvents = false;
+                        for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
+                                _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
                         }
                     }
                     finally
                     {
                         _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
                     }
-
-                    if (!blnOldRaiseListChangedEvents)
-                        return;
-                    // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                    int intResetThreshold = ablnItemChanged.Length / 2;
-                    int intCountTrues = 0;
-                    // ReSharper disable once ForCanBeConvertedToForeach
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                        {
-                            ++intCountTrues;
-                            if (intCountTrues >= intResetThreshold)
-                            {
-                                _lstData.ResetBindings();
-                                return;
-                            }
-                        }
-                    }
-
-                    for (int i = 0; i < ablnItemChanged.Length; ++i)
-                    {
-                        if (ablnItemChanged[i])
-                            _lstData.ResetItem(i);
-                    }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-        }
 
-        public void Move(int intOldIndex, int intNewIndex, CancellationToken token = default)
-        {
-            using (LockObject.EnterWriteLock(token))
-            {
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
-                try
+                if (Math.Abs(intOldIndex - intNewIndex) >= _lstData.Count)
                 {
-                    _lstData.RaiseListChangedEvents = false;
-                    int intParity = intOldIndex < intNewIndex ? 1 : -1;
+                    _lstData.ResetBindings();
+                }
+                else
+                {
                     for (int i = intOldIndex; i != intNewIndex; i += intParity)
                     {
-                        (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
-                            _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        _lstData.ResetItem(i);
                     }
-                }
-                finally
-                {
-                    _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
                 }
             }
         }
 
         public async Task MoveAsync(int intOldIndex, int intNewIndex, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            token.ThrowIfCancellationRequested();
+            if (intOldIndex == intNewIndex)
+                return;
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
-                    _lstData.RaiseListChangedEvents = false;
-                    int intParity = intOldIndex < intNewIndex ? 1 : -1;
-                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    token.ThrowIfCancellationRequested();
+                    bool blnOldRaiseListChangedEvents = _lstData.RaiseListChangedEvents;
+                    try
                     {
-                        (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
-                            _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        _lstData.RaiseListChangedEvents = false;
+                        for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            (_lstData[intOldIndex + intParity], _lstData[intOldIndex]) = (
+                                _lstData[intOldIndex], _lstData[intOldIndex + intParity]);
+                        }
+                    }
+                    finally
+                    {
+                        _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
                     }
                 }
                 finally
                 {
-                    _lstData.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+
+                if (Math.Abs(intOldIndex - intNewIndex) >= await _lstData.GetCountAsync(token).ConfigureAwait(false))
+                {
+                    await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                }
+                else
+                {
+                    for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                    {
+                        await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
+                    }
                 }
             }
             finally

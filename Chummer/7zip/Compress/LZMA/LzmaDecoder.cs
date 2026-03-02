@@ -22,6 +22,7 @@ using System;
 using System.IO;
 using System.Threading;
 using System.Threading.Tasks;
+using Chummer;
 using SevenZip.Compression.LZ;
 using SevenZip.Compression.RangeCoder;
 
@@ -217,16 +218,16 @@ namespace SevenZip.Compression.LZMA
         private void SetLiteralProperties(int lp, int lc)
         {
             if (lp > 8)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(lp));
             if (lc > 8)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(lc));
             m_LiteralDecoder.Create(lp, lc);
         }
 
         private void SetPosBitsProperties(int pb)
         {
             if (pb > Base.kNumPosStatesBitsMax)
-                throw new InvalidParamException();
+                throw new ArgumentOutOfRangeException(nameof(pb));
             unchecked
             {
                 uint numPosStates = (uint)1 << pb;
@@ -274,7 +275,7 @@ namespace SevenZip.Compression.LZMA
             m_PosAlignDecoder.Init();
         }
 
-        private async ValueTask InitAsync(Stream inStream, Stream outStream, CancellationToken token = default)
+        private async Task InitAsync(Stream inStream, Stream outStream, CancellationToken token = default)
         {
             await m_RangeDecoder.InitAsync(inStream, token).ConfigureAwait(false);
             await m_OutWindow.InitAsync(outStream, _solid, token).ConfigureAwait(false);
@@ -313,17 +314,16 @@ namespace SevenZip.Compression.LZMA
         public void Code(Stream inStream, Stream outStream,
                          long inSize, long outSize, ICodeProgress progress)
         {
-            Chummer.Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, inSize, outSize, progress, null, CancellationToken.None));
+            Utils.SafelyRunSynchronously(() => CodeCoreAsync(true, inStream, outStream, outSize, progress, null, CancellationToken.None));
         }
 
         public Task CodeAsync(Stream inStream, Stream outStream,
                               long inSize, long outSize, IAsyncCodeProgress progress, CancellationToken token = default)
         {
-            return CodeCoreAsync(false, inStream, outStream, inSize, outSize, null, progress, token);
+            return CodeCoreAsync(false, inStream, outStream, outSize, null, progress, token);
         }
 
-        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream,
-                                         long inSize, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
+        private async Task CodeCoreAsync(bool blnSync, Stream inStream, Stream outStream, long outSize, ICodeProgress progress, IAsyncCodeProgress progressAsync, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             if (blnSync)
@@ -345,7 +345,7 @@ namespace SevenZip.Compression.LZMA
                     if (nowPos64 < outSize64)
                     {
                         if (m_IsMatchDecoders[state.Index << Base.kNumPosStatesBitsMax].Decode(m_RangeDecoder) != 0)
-                            throw new DataErrorException();
+                            throw new ArgumentException("Input stream is not valid", nameof(inStream));
                         state.UpdateChar();
                         byte b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, 0, 0);
                         if (blnSync)
@@ -367,14 +367,12 @@ namespace SevenZip.Compression.LZMA
                             if (m_IsMatchDecoders[(state.Index << Base.kNumPosStatesBitsMax) + posState]
                                     .Decode(m_RangeDecoder) == 0)
                             {
-                                byte b;
                                 byte prevByte = m_OutWindow.GetByte(0);
-                                if (!state.IsCharState())
-                                    b = m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
-                                                                             (uint)nowPos64, prevByte,
-                                                                             m_OutWindow.GetByte(rep0));
-                                else
-                                    b = m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
+                                byte b = !state.IsCharState()
+                                    ? m_LiteralDecoder.DecodeWithMatchByte(m_RangeDecoder,
+                                        (uint)nowPos64, prevByte,
+                                        m_OutWindow.GetByte(rep0))
+                                    : m_LiteralDecoder.DecodeNormal(m_RangeDecoder, (uint)nowPos64, prevByte);
                                 token.ThrowIfCancellationRequested();
                                 if (blnSync)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -447,7 +445,7 @@ namespace SevenZip.Compression.LZMA
                                     rep1 = rep0;
                                     len = Base.kMatchMinLen + m_LenDecoder.Decode(m_RangeDecoder, posState);
                                     state.UpdateMatch();
-                                    uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState(len)].Decode(m_RangeDecoder);
+                                    uint posSlot = m_PosSlotDecoder[Base.GetLenToPosState((int)len)].Decode(m_RangeDecoder);
                                     if (posSlot >= Base.kStartPosModelIndex)
                                     {
                                         int numDirectBits = (int)((posSlot >> 1) - 1);
@@ -470,7 +468,7 @@ namespace SevenZip.Compression.LZMA
                                 {
                                     if (rep0 == 0xFFFFFFFF)
                                         break;
-                                    throw new DataErrorException();
+                                    throw new ArgumentException("Input stream is not valid", nameof(inStream));
                                 }
 
                                 token.ThrowIfCancellationRequested();
@@ -504,20 +502,12 @@ namespace SevenZip.Compression.LZMA
         public void SetDecoderProperties(byte[] properties)
         {
             if (properties.Length < 5)
-                throw new InvalidParamException();
-            int lc = properties[0] % 9;
-            int remainder = properties[0] / 9;
-            int lp = remainder % 5;
-            int pb = remainder / 5;
+                throw new ArgumentOutOfRangeException(nameof(properties));
+            int remainder = MathExtensions.DivRem(properties[0], 9, out int lc);
+            int pb = remainder.DivRem(5, out int lp);
             if (pb > Base.kNumPosStatesBitsMax)
-                throw new InvalidParamException();
-            uint dictionarySize = 0;
-            unchecked
-            {
-                for (int i = 0; i < 4; i++)
-                    dictionarySize += (uint)properties[1 + i] << (i * 8);
-            }
-
+                throw new ArgumentException("Incorrect number of bits used to store states.", nameof(properties));
+            uint dictionarySize = BitConverter.ToUInt32(properties, 1);
             SetDictionarySize(dictionarySize);
             SetLiteralProperties(lp, lc);
             SetPosBitsProperties(pb);
@@ -529,7 +519,7 @@ namespace SevenZip.Compression.LZMA
             return m_OutWindow.Train(stream);
         }
 
-        public ValueTask<bool> TrainAsync(Stream stream, CancellationToken token = default)
+        public Task<bool> TrainAsync(Stream stream, CancellationToken token = default)
         {
             _solid = true;
             return m_OutWindow.TrainAsync(stream, token);

@@ -15,9 +15,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                Utils.ListItemListPool.Return(ref _lstCategory);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -42,7 +44,7 @@ namespace Chummer
             this.cmdOK = new System.Windows.Forms.Button();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.lblRequiresProgram = new System.Windows.Forms.Label();
             this.lblRequiresProgramLabel = new System.Windows.Forms.Label();
             this.tlpTopRight = new System.Windows.Forms.TableLayoutPanel();
@@ -76,7 +78,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(239, 21);
             this.cboCategory.TabIndex = 36;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lstAIPrograms
@@ -374,7 +375,7 @@ namespace Chummer
         private System.Windows.Forms.TableLayoutPanel tlpRight;
         private ColorableCheckBox chkLimitList;
         private System.Windows.Forms.Label lblSourceLabel;
-        private System.Windows.Forms.Label lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblRequiresProgram;
         private System.Windows.Forms.Label lblRequiresProgramLabel;
         private System.Windows.Forms.Label lblSearchLabel;

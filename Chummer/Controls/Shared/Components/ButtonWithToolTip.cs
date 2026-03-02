@@ -17,17 +17,18 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer
 {
-    public class ButtonWithToolTip : DpiFriendlyImagedButton
+    public class ButtonWithToolTip : DpiFriendlyImagedButton, IControlWithToolTip
     {
         private readonly int _intToolTipWrap;
 
-        private readonly ToolTip _objToolTip;
+        private ToolTip _objToolTip;
 
         public ToolTip ToolTipObject => _objToolTip;
 
@@ -41,7 +42,7 @@ namespace Chummer
                 value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
                 if (Interlocked.Exchange(ref _strToolTipText, value) == value)
                     return;
-                this.DoThreadSafe(x => _objToolTip.SetToolTip(x, value.CleanForHtml()));
+                this.DoThreadSafe(x => _objToolTip?.SetToolTip(x, value.CleanForHtml()));
             }
         }
 
@@ -51,27 +52,36 @@ namespace Chummer
                 return Task.FromCanceled(token);
             value = _intToolTipWrap > 0 ? value.WordWrap(_intToolTipWrap) : value.WordWrap();
             return Interlocked.Exchange(ref _strToolTipText, value) != value
-                ? this.DoThreadSafeAsync(x => _objToolTip.SetToolTip(x, value.CleanForHtml()), token: token)
+                ? this.DoThreadSafeAsync(x => _objToolTip?.SetToolTip(x, value.CleanForHtml()), token: token)
                 : Task.CompletedTask;
         }
 
-        public ButtonWithToolTip() : this(ToolTipFactory.ToolTip)
+        public ButtonWithToolTip(int intToolTipWrap = -1) : base()
         {
-        }
-
-        public ButtonWithToolTip(ToolTip objToolTip, int intToolTipWrap = -1)
-        {
-            _objToolTip = objToolTip;
             _intToolTipWrap = intToolTipWrap;
+            _frmParent = FindForm();
+            _objToolTip = ToolTipFactory.GetToolTipForForm(_frmParent);
         }
 
-        protected override void Dispose(bool disposing)
+        private Form _frmParent;
+
+        public void UpdateToolTipParent()
         {
-            if (disposing && _objToolTip != null && _objToolTip != ToolTipFactory.ToolTip)
+            if (Interlocked.Exchange(ref _frmParent, FindForm()) != _frmParent)
             {
-                _objToolTip.Dispose();
+                ToolTip objOldToolTip = Interlocked.Exchange(ref _objToolTip, ToolTipFactory.GetToolTipForForm(_frmParent));
+                if (objOldToolTip != null || !string.IsNullOrEmpty(_strToolTipText))
+                    _objToolTip?.SetToolTip(this, _strToolTipText.CleanForHtml());
             }
-            base.Dispose(disposing);
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            UpdateToolTipParent();
         }
     }
 }

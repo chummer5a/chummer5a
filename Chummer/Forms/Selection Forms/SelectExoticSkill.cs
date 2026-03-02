@@ -33,21 +33,30 @@ namespace Chummer
     {
         private readonly Character _objCharacter;
         private string _strForceSkill;
+        private string _strSelectedExoticSkill;
+        private string _strSelectedExoticSkillSpecialization;
 
         #region Control Events
 
         public SelectExoticSkill(Character objCharacter)
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
+            this.UpdateParentForToolTipControls();
         }
 
-        private void cmdOK_Click(object sender, EventArgs e)
+        private async void cmdOK_Click(object sender, EventArgs e)
         {
-            DialogResult = DialogResult.OK;
-            Close();
+            _strSelectedExoticSkill = (await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString() ?? string.Empty;
+            _strSelectedExoticSkillSpecialization = (await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue).ConfigureAwait(false))?.ToString()
+                ?? await _objCharacter.ReverseTranslateExtraAsync(await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x =>
+            {
+                x.DialogResult = DialogResult.OK;
+                x.Close();
+            }).ConfigureAwait(false);
         }
 
         private void cmdCancel_Click(object sender, EventArgs e)
@@ -58,23 +67,23 @@ namespace Chummer
 
         private async void SelectExoticSkill_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
             {
                 // Build the list of Exotic Active Skills from the Skills file.
                 using (XmlNodeList objXmlSkillList = (await _objCharacter.LoadDataAsync("skills.xml").ConfigureAwait(false))
                                                                   .SelectNodes(
-                                                                      "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + ']'))
+                                                                      "/chummer/skills/skill[exotic = " + bool.TrueString.CleanXPath() + "]"))
                 {
                     if (objXmlSkillList?.Count > 0)
                     {
                         foreach (XmlNode objXmlSkill in objXmlSkillList)
                         {
-                            string strName = objXmlSkill["name"]?.InnerText;
+                            string strName = objXmlSkill["name"]?.InnerTextViaPool();
                             if (!string.IsNullOrEmpty(strName) && (string.IsNullOrEmpty(_strForceSkill)
                                                                    || strName.Equals(
                                                                        _strForceSkill,
                                                                        StringComparison.OrdinalIgnoreCase)))
-                                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerText ?? strName));
+                                lstSkills.Add(new ListItem(strName, objXmlSkill["translate"]?.InnerTextViaPool() ?? strName));
                         }
                     }
                 }
@@ -115,61 +124,74 @@ namespace Chummer
         /// <summary>
         /// Skill that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkill => cboCategory.SelectedValue?.ToString() ?? string.Empty;
+        public string SelectedExoticSkill => _strSelectedExoticSkill;
 
         /// <summary>
         /// Skill specialization that was selected in the dialogue.
         /// </summary>
-        public string SelectedExoticSkillSpecialisation => cboSkillSpecialisations.SelectedValue?.ToString()
-                                                           ?? _objCharacter.ReverseTranslateExtra(cboSkillSpecialisations.Text);
+        public string SelectedExoticSkillSpecialisation => _strSelectedExoticSkillSpecialization;
+
+        /// <summary>
+        /// Skill specialization that was selected in the dialogue.
+        /// </summary>
+        public async Task<string> GetSelectedExoticSkillSpecialisationAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strText = await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strText))
+                return strText;
+            return await _objCharacter.ReverseTranslateExtraAsync(
+                    await cboSkillSpecialisations.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
 
         #endregion Properties
 
-        private async ValueTask BuildList(CancellationToken token = default)
+        private async Task BuildList(CancellationToken token = default)
         {
             string strSelectedCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? string.Empty;
             if (string.IsNullOrEmpty(strSelectedCategory))
                 return;
+            CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
             XPathNodeIterator xmlWeaponList = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                                            .Select("/chummer/weapons/weapon[(category = "
-                                                                   + (strSelectedCategory + 's').CleanXPath()
+                                                                   + (strSelectedCategory + "s").CleanXPath()
                                                                    + " or useskill = "
-                                                                   + strSelectedCategory.CleanXPath() + ") and ("
-                                                                   + await _objCharacter.Settings.BookXPathAsync(false, token).ConfigureAwait(false) + ")]");
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
+                                                                   + strSelectedCategory.CleanXPath() + ") and "
+                                                                   + await objSettings.BookXPathAsync(false, token).ConfigureAwait(false) + "]");
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkillSpecializations))
             {
                 if (xmlWeaponList.Count > 0)
                 {
                     foreach (XPathNavigator xmlWeapon in xmlWeaponList)
                     {
-                        string strName = (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("name", token).ConfigureAwait(false))?.Value;
+                        string strName = xmlWeapon.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         if (!string.IsNullOrEmpty(strName))
                         {
                             lstSkillSpecializations.Add(
                                 new ListItem(
                                     strName,
-                                    (await xmlWeapon.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? strName));
+                                    xmlWeapon.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strName));
                         }
                     }
                 }
 
                 foreach (XPathNavigator xmlSpec in (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false))
                                                                 .Select("/chummer/skills/skill[name = "
-                                                                        + strSelectedCategory.CleanXPath() + " and ("
-                                                                        + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)
-                                                                        + ")]/specs/spec"))
+                                                                        + strSelectedCategory.CleanXPath() + " and "
+                                                                        + await objSettings.BookXPathAsync(token: token).ConfigureAwait(false)
+                                                                        + "]/specs/spec"))
                 {
                     string strName = xmlSpec.Value;
                     if (!string.IsNullOrEmpty(strName))
                     {
                         lstSkillSpecializations.Add(new ListItem(
                                                         strName,
-                                                        (await xmlSpec.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value
+                                                        xmlSpec.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value
                                                         ?? strName));
                     }
                 }
 
-                using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string> setExistingExoticSkills))
                 {
                     foreach (Skill objSkill in await (await _objCharacter.GetSkillsSectionAsync(token)

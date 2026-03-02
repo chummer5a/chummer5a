@@ -23,6 +23,7 @@
     <setting>
       <id>223a11ff-80e0-428b-89a9-6ef1c243b8b6</id>
       <name>Standard</name>
+      <gameplayoptionname>Standard</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -40,7 +41,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -84,7 +85,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -181,6 +181,7 @@
     <setting>
       <id>507eef8e-eba8-41ea-84c4-4282258fe669</id>
       <name>Street Level</name>
+      <gameplayoptionname>Street Level</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -198,7 +199,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -242,7 +243,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -339,6 +339,7 @@
     <setting>
       <id>33e5317f-12aa-416e-816e-3b8b6ad95712</id>
       <name>Prime Runner</name>
+      <gameplayoptionname>Prime Runner</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -356,7 +357,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -400,7 +401,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -497,6 +497,7 @@
     <setting>
       <id>4c34a8ed-2888-410c-afda-024475fa3c76</id>
       <name>Street Scum (BCDEE)</name>
+      <gameplayoptionname>Street Scum</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -514,7 +515,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -558,7 +559,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -655,6 +655,7 @@
     <setting>
       <id>9da22725-0596-4d68-ba2b-54f701e75e74</id>
       <name>Street Scum (CCDDE)</name>
+      <gameplayoptionname>Street Scum</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -672,7 +673,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -716,7 +717,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -813,6 +813,7 @@
     <setting>
       <id>9e1c2dec-d2fa-42a0-a842-8bf575943780</id>
       <name>High Life</name>
+      <gameplayoptionname>High Life</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -830,7 +831,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -874,7 +875,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -971,6 +971,7 @@
     <setting>
       <id>3509a807-68ee-4c18-b7d5-b130313b4b77</id>
       <name>Sum-to-Ten</name>
+      <gameplayoptionname>Sum-to-Ten</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -988,7 +989,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1032,7 +1033,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1130,6 +1130,7 @@
     <setting>
       <id>2ef9b098-4cd2-4c2b-8f3d-76164e3f4f8e</id>
       <name>Sum-to-Ten Improved</name>
+      <gameplayoptionname>Sum-to-Ten Improved</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1147,7 +1148,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1191,7 +1192,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1295,6 +1295,7 @@
     <setting>
       <id>fe7bb0d9-3cd9-4a75-825e-135b95a4f3ef</id>
       <name>Point Buy</name>
+      <gameplayoptionname>Point Buy</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1312,7 +1313,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1356,7 +1357,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1454,6 +1454,7 @@
     <setting>
       <id>8a31af6d-7137-4284-872b-7d8087e156c6</id>
       <name>Life Modules</name>
+      <gameplayoptionname>Life Modules</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1471,7 +1472,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1515,7 +1516,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1613,6 +1613,7 @@
     <setting>
       <id>0aa71387-6fe7-4b1b-b310-c968ca0cdc1f</id>
       <name>Standard (German)</name>
+      <gameplayoptionname>Standard</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1630,7 +1631,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1674,7 +1675,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1777,6 +1777,7 @@
     <setting>
       <id>6bf7add9-34ac-4538-96ac-8015279bf602</id>
       <name>Sum-to-Ten (German)</name>
+      <gameplayoptionname>Sum-to-Ten</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1794,7 +1795,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -1838,7 +1839,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -1942,6 +1942,7 @@
     <setting>
       <id>684d3d2b-53bd-4168-8153-a3baef7742fe</id>
       <name>Sum-to-Ten Improved (German)</name>
+      <gameplayoptionname>Sum-to-Ten Improved</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -1959,7 +1960,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2003,7 +2004,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -2112,6 +2112,7 @@
     <setting>
       <id>ae911699-a9ca-4c8e-9b38-9060b321ad49</id>
       <name>Point Buy (German)</name>
+      <gameplayoptionname>Point Buy</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -2129,7 +2130,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2173,7 +2174,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -2277,6 +2277,7 @@
     <setting>
       <id>67e25032-2a4e-42ca-97fa-69f7f608236c</id>
       <name>Full House</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -2294,7 +2295,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2338,7 +2339,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -2441,6 +2441,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -2496,6 +2498,7 @@
     <setting>
       <id>6305c737-565a-420f-867e-4724ff57110e</id>
       <name>Full House (Sum-to-Ten)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -2513,7 +2516,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2557,7 +2560,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -2660,6 +2662,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -2715,6 +2719,7 @@
     <setting>
       <id>c1af7214-e718-491e-82d2-e32408939c4a</id>
       <name>Full House (Sum-to-Ten Improved)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -2732,7 +2737,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -2776,7 +2781,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -2879,6 +2883,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -2939,6 +2945,7 @@
     <setting>
       <id>803dd14a-9b21-4224-84d5-202511d94008</id>
       <name>Full House (Point Buy)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -2956,7 +2963,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3000,7 +3007,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -3103,6 +3109,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -3158,6 +3166,7 @@
     <setting>
       <id>329afcaf-9d8d-4312-8e29-c1c3492114bb</id>
       <name>Full House (German)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -3175,7 +3184,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3219,7 +3228,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -3305,7 +3313,15 @@
         <book>DTR</book>
         <book>DT</book>
         <book>SOTG</book>
-        <book>DPVG</book>
+        <book>SOXG</book>
+        <book>DATG</book>
+        <book>GRST2019</book>
+        <book>SLG2</book>
+        <book>SLG3</book>
+        <book>SLG7</book>
+        <book>PBG</book>
+        <book>PGG</book>
+        <book>PZG</book>
         <book>FA</book>
         <book>GE</book>
         <book>GH3</book>
@@ -3324,6 +3340,7 @@
         <book>SHB</book>
         <book>SHB2</book>
         <book>SHB3</book>
+        <book>SHB4</book>
         <book>SSP</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -3331,6 +3348,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SW</book>
         <book>SAG</book>
@@ -3353,18 +3372,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3389,6 +3403,7 @@
     <setting>
       <id>2b747ad6-d90a-4aa3-8502-6c99cdc9397d</id>
       <name>Full House (Sum-to-Ten, German)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -3406,7 +3421,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3450,7 +3465,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -3536,7 +3550,15 @@
         <book>DTR</book>
         <book>DT</book>
         <book>SOTG</book>
-        <book>DPVG</book>
+        <book>SOXG</book>
+        <book>DATG</book>
+        <book>GRST2019</book>
+        <book>SLG2</book>
+        <book>SLG3</book>
+        <book>SLG7</book>
+        <book>PBG</book>
+        <book>PGG</book>
+        <book>PZG</book>
         <book>FA</book>
         <book>GE</book>
         <book>GH3</book>
@@ -3555,6 +3577,7 @@
         <book>SHB</book>
         <book>SHB2</book>
         <book>SHB3</book>
+        <book>SHB4</book>
         <book>SSP</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -3562,6 +3585,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SW</book>
         <book>SAG</book>
@@ -3584,18 +3609,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3620,6 +3640,7 @@
     <setting>
       <id>559f8285-d36e-4e2e-b16d-f6fd8e0cb8d1</id>
       <name>Full House (Sum-to-Ten Improved, German)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -3637,7 +3658,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3681,7 +3702,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -3767,7 +3787,15 @@
         <book>DTR</book>
         <book>DT</book>
         <book>SOTG</book>
-        <book>DPVG</book>
+        <book>SOXG</book>
+        <book>DATG</book>
+        <book>GRST2019</book>
+        <book>SLG2</book>
+        <book>SLG3</book>
+        <book>SLG7</book>
+        <book>PBG</book>
+        <book>PGG</book>
+        <book>PZG</book>
         <book>FA</book>
         <book>GE</book>
         <book>GH3</book>
@@ -3786,6 +3814,7 @@
         <book>SHB</book>
         <book>SHB2</book>
         <book>SHB3</book>
+        <book>SHB4</book>
         <book>SSP</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -3793,6 +3822,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SW</book>
         <book>SAG</book>
@@ -3815,18 +3846,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -3851,6 +3877,7 @@
     <setting>
       <id>ffe4d125-6937-4bbe-a1bd-8789feab927b</id>
       <name>Full House (Point Buy, German)</name>
+      <gameplayoptionname>Full House</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -3868,7 +3895,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -3912,7 +3939,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -3998,7 +4024,15 @@
         <book>DTR</book>
         <book>DT</book>
         <book>SOTG</book>
-        <book>DPVG</book>
+        <book>SOXG</book>
+        <book>DATG</book>
+        <book>GRST2019</book>
+        <book>SLG2</book>
+        <book>SLG3</book>
+        <book>SLG7</book>
+        <book>PBG</book>
+        <book>PGG</book>
+        <book>PZG</book>
         <book>FA</book>
         <book>GE</book>
         <book>GH3</book>
@@ -4017,6 +4051,7 @@
         <book>SHB</book>
         <book>SHB2</book>
         <book>SHB3</book>
+        <book>SHB4</book>
         <book>SSP</book>
         <book>SRM0803</book>
         <book>SRM0804</book>
@@ -4024,6 +4059,8 @@
         <book>SFME</book>
         <book>SFM</book>
         <book>SFCC</book>
+        <book>SFCR</book>
+        <book>SFMO</book>
         <book>SPS</book>
         <book>SW</book>
         <book>SAG</book>
@@ -4046,18 +4083,13 @@
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>Forbidden Arcana Stealth Errata</directoryname>
+          <directoryname>No Future Stealth Errata</directoryname>
           <order>2</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
         <customdatadirectoryname>
-          <directoryname>No Future Stealth Errata</directoryname>
-          <order>3</order>
-          <enabled>True</enabled>
-        </customdatadirectoryname>
-        <customdatadirectoryname>
           <directoryname>German Data Changes</directoryname>
-          <order>4</order>
+          <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
       </customdatadirectorynames>
@@ -4082,6 +4114,7 @@
     <setting>
       <id>b378aff1-62ea-420e-a7af-7b15086b2d82</id>
       <name>Newbie's Choice</name>
+      <gameplayoptionname>Newbie's Choice</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -4099,7 +4132,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4143,7 +4176,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -4247,6 +4279,7 @@
     <setting>
       <id>fb457227-21df-414d-a178-4ef41a2b5d19</id>
       <name>Newbie's Choice (German)</name>
+      <gameplayoptionname>Newbie's Choice</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -4264,7 +4297,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4308,7 +4341,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -4417,6 +4449,7 @@
     <setting>
       <id>636d419c-49d0-42c3-9090-416980841c20</id>
       <name>Shadowrun Missions Chicago</name>
+      <gameplayoptionname>Shadowrun Missions Chicago</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -4434,7 +4467,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4478,7 +4511,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -4633,6 +4665,7 @@
     <setting>
       <id>f16800fb-0c45-47be-bcc0-05862533e279</id>
       <name>Shadowrun Missions Chicago (Point Buy)</name>
+      <gameplayoptionname>Shadowrun Missions Chicago</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -4650,7 +4683,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4694,7 +4727,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -4849,6 +4881,7 @@
     <setting>
       <id>dc770cdd-0837-4d58-a1f2-8705972aa534</id>
       <name>Shadowrun Missions Neotokyo</name>
+      <gameplayoptionname>Shadowrun Missions Neotokyo</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -4866,7 +4899,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -4910,7 +4943,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -5070,6 +5102,7 @@
     <setting>
       <id>3bb81ab8-e752-4f80-92c2-645f26b3df93</id>
       <name>Shadowrun Missions Neotokyo (Point Buy)</name>
+      <gameplayoptionname>Shadowrun Missions Neotokyo</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -5087,7 +5120,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspiritexpression>{LOG}</compiledspiritexpression>
+      <registeredspriteexpression>{CHA}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5131,7 +5164,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -5293,6 +5325,7 @@
     <setting>
       <id>ada01e21-258b-43cc-a515-acf72daba6f4</id>
       <name>Neon Anarchy Prime Point Buy </name>
+      <gameplayoptionname>Neon Anarchy Prime</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -5310,7 +5343,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5352,7 +5385,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -5513,6 +5545,7 @@
     <setting>
       <id>332253d0-dc04-437d-91c6-4785ebc317c7</id>
       <name>Neon Anarchy Prime Sum-to-Ten</name>
+      <gameplayoptionname>Neon Anarchy Prime</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -5530,7 +5563,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5572,7 +5605,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -5733,6 +5765,7 @@
     <setting>
       <id>8a9e7098-3568-42f2-a430-d264b64cc248</id>
       <name>Neon Anarchy Prime</name>
+      <gameplayoptionname>Neon Anarchy Prime</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -5750,7 +5783,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -5792,7 +5825,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -5953,6 +5985,7 @@
     <setting>
       <id>d8ceff6b-eee6-47de-9b9b-22b404f356df</id>
       <name>Neon Anarchy Standard Point Buy</name>
+      <gameplayoptionname>Neon Anarchy Standard</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -5970,7 +6003,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6012,7 +6045,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -6173,6 +6205,7 @@
     <setting>
       <id>91429237-05d5-4e84-8ab0-f00f0e769f64</id>
       <name>Neon Anarchy Standard Sum-to-Ten</name>
+      <gameplayoptionname>Neon Anarchy Standard</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -6190,7 +6223,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6232,7 +6265,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>
@@ -6393,6 +6425,7 @@
     <setting>
       <id>6ffb1fba-6f2e-4bf8-a8e0-35045bec3e88</id>
       <name>Neon Anarchy Standard</name>
+      <gameplayoptionname>Neon Anarchy Standard</gameplayoptionname>
       <licenserestricted>False</licenserestricted>
       <morelethalgameplay>False</morelethalgameplay>
       <spiritforcebasedontotalmag>False</spiritforcebasedontotalmag>
@@ -6410,7 +6443,7 @@
       <knowledgepointsexpression>({INTUnaug} + {LOGUnaug}) * 2</knowledgepointsexpression>
       <chargenkarmatonuyenexpression>{Karma} * 2000 + {PriorityNuyen}</chargenkarmatonuyenexpression>
       <boundspiritexpression>{CHA}</boundspiritexpression>
-      <compiledspriteexpression>{LOG}</compiledspriteexpression>
+      <registeredspriteexpression>{LOG}</registeredspriteexpression>
       <dronearmormultiplierenabled>False</dronearmormultiplierenabled>
       <dronearmorflatnumber>2</dronearmorflatnumber>
       <nosinglearmorencumbrance>False</nosinglearmorencumbrance>
@@ -6452,7 +6485,6 @@
       <dontusecyberlimbcalculation>False</dontusecyberlimbcalculation>
       <alternatemetatypeattributekarma>False</alternatemetatypeattributekarma>
       <reverseattributepriorityorder>False</reverseattributepriorityorder>
-      <allowobsolescentupgrade>False</allowobsolescentupgrade>
       <allowbiowaresuites>False</allowbiowaresuites>
       <freespiritpowerpointsmag>False</freespiritpowerpointsmag>
       <compensateskillgroupkarmadifference>False</compensateskillgroupkarmadifference>

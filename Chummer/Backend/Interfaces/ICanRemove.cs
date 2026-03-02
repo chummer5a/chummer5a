@@ -17,10 +17,15 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System.Threading.Tasks;
+using System.Threading;
+
 namespace Chummer
 {
     public interface ICanRemove
     {
         bool Remove(bool blnConfirmDelete = true);
+
+        Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default);
     }
 }

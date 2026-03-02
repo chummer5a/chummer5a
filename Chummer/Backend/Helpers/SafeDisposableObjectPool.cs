@@ -100,7 +100,7 @@ namespace Chummer
                     throw;
                 }
             }
-            // Check that we're return an item that was originally in the pool
+            // Check that we're returning an item that was originally in the pool
             for (int i = 0; i < _aobjStoragePool.Length; ++i)
             {
                 if (ReferenceEquals(objLocal, _aobjStoragePool[i]))

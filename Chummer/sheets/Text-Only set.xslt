@@ -75,7 +75,7 @@
             <xsl:value-of select="nuyen" />
             <xsl:value-of select="$lang.NuyenSymbol" />
 
-          <xsl:if test="prioritymetatype != ''">
+          <xsl:if test="buildmethod = 'Priority' or buildmethod = 'SumtoTen'">
             <br />
             <br />== <xsl:value-of select="$lang.Priorities" /> ==
             <br /><xsl:value-of select="$lang.Metatype" />: <xsl:value-of select="prioritymetatype" />

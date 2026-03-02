@@ -30,7 +30,7 @@ using Timer = System.Windows.Forms.Timer;
 
 namespace Chummer
 {
-    public partial class Chummy : Form
+    public partial class Chummy : Form, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -44,6 +44,8 @@ namespace Chummer
         private readonly List<string> _lstUsedTips = new List<string>();
         private Point _oldMousePos = new Point(-1, -1);
         private Character _characterObject;
+        private readonly Timer _tmrDraw;
+        private readonly Timer _tmrTip;
 
         private readonly HtmlToolTip _myToolTip = new HtmlToolTip
         {
@@ -72,28 +74,24 @@ namespace Chummer
                 _thickPen = new Pen(Color.Black, (int) (3 * g.DpiY / 96.0f));
             }
 
-            Disposed += (sender, args) =>
-            {
-                _thickPen.Dispose();
-                _myToolTip.Dispose();
-            };
-
             Paint += panel1_Paint;
 
-            using (Timer tmrDraw = new Timer { Interval = 100 })
+            _tmrDraw = new Timer
             {
-                tmrDraw.Tick += tmr_DrawTick;
-                tmrDraw.Start();
-            }
-
-            using (Timer tmrTip = new Timer { Interval = 300000 })
+                Interval = 100
+            };
+            _tmrDraw.Tick += tmr_DrawTick;
+            _tmrTip = new Timer
             {
-                tmrTip.Tick += tmr_TipTick;
-                tmrTip.Start();
-            }
-
+                Interval = 300000
+            };
+            _tmrTip.Tick += tmr_TipTick;
+            
             _myToolTip.Show(LanguageManager.GetString("Chummy_Intro").WordWrap().CleanForHtml(), this, _mouthCenter);
             _objXmlDocument = (objCharacter?.LoadDataXPath("tips.xml") ?? XmlManager.LoadXPath("tips.xml")).SelectSingleNodeAndCacheExpression("/chummer/tips");
+
+            _tmrDraw.Start();
+            _tmrTip.Start();
         }
 
         #region Event Handlers

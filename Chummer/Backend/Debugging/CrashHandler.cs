@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -42,7 +43,7 @@ namespace Chummer.Backend
         {
             public DumpData(Exception ex)
             {
-                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString() ?? "No Exception Specified" } };
+                _dicPretendFiles = new Dictionary<string, string> { { "exception.txt", ex?.ToString().AnonymizePath() ?? "No Exception Specified" } };
 
                 _dicAttributes = new Dictionary<string, string>
                 {
@@ -52,14 +53,13 @@ namespace Chummer.Backend
 #else
                     {"visible-build-type", "RELEASE"},
 #endif
-                    {"commandline", Environment.CommandLine},
+                    {"commandline", Environment.CommandLine.AnonymizePath()},
                     {"visible-version", Application.ProductVersion},
-                    {"machine-name", Environment.MachineName},
-                    {"current-dir", Utils.GetStartupPath},
-                    {"application-dir", Application.ExecutablePath},
+                    {"chummer-version", Utils.CurrentChummerVersion.ToString()},
                     {"os-type", Environment.OSVersion.VersionString},
-                    {"visible-error-friendly", ex?.Message ?? "No description available"},
-                    {"visible-stacktrace", ex?.StackTrace ?? "No stack trace available"},
+                    {"human-readable-os-version", Utils.HumanReadableOSVersion},
+                    {"visible-error-friendly", ex?.Message.AnonymizePath() ?? "No description available"},
+                    {"visible-stacktrace", ex?.StackTrace.AnonymizePath() ?? "No stack trace available"},
                     {"installation-id", Properties.Settings.Default.UploadClientId.ToString() },
                     {"option-upload-logs-set", GlobalSettings.UseLoggingApplicationInsights.ToString() }
                 };
@@ -108,23 +108,28 @@ namespace Chummer.Backend
                     {
                         try
                         {
-                            _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
-                        }
-                        catch (Exception e)
-                        {
-                            _dicAttributes.Add("machine-id", e.ToString());
-                        }
+                            try
+                            {
+                                _dicAttributes.Add("machine-id", objCurrentVersionKey.GetValue("ProductId").ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                _dicAttributes.Add("machine-id", e.ToString());
+                            }
 
-                        try
-                        {
-                            _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                            try
+                            {
+                                _dicAttributes.Add("os-name", objCurrentVersionKey.GetValue("ProductName").ToString());
+                            }
+                            catch (Exception e)
+                            {
+                                _dicAttributes.Add("os-name", e.ToString());
+                            }
                         }
-                        catch (Exception e)
+                        finally
                         {
-                            _dicAttributes.Add("os-name", e.ToString());
+                            objCurrentVersionKey.Close();
                         }
-
-                        objCurrentVersionKey.Close();
                     }
                     obj64BitRegistryKey?.Close();
                 }
@@ -162,11 +167,12 @@ namespace Chummer.Backend
 
             internal void AddFile(string strFileName)
             {
-                if (_dicCapturedFiles.ContainsKey(strFileName))
+                string strKey = strFileName.AnonymizePath();
+                if (_dicCapturedFiles.ContainsKey(strKey))
                     return;
                 try
                 {
-                    _dicCapturedFiles.Add(strFileName, string.Empty);
+                    _dicCapturedFiles.Add(strKey, string.Empty);
                 }
                 catch (ArgumentException)
                 {
@@ -181,14 +187,14 @@ namespace Chummer.Backend
                 {
                     strContents = e.ToString();
                 }
-                _dicCapturedFiles[strFileName] = strContents;
+                _dicCapturedFiles[strKey] = strContents.AnonymizePath();
             }
 
             public void GetObjectData(SerializationInfo info, StreamingContext context)
             {
                 info.AddValue("_intProcessId", _intProcessId);
                 info.AddValue("_uintThreadId", _uintThreadId);
-                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo);
+                info.AddValue("_ptrExceptionInfo", _ptrExceptionInfo.ToInt64());
                 info.AddValue("_dicAttributes", _dicAttributes);
                 info.AddValue("_dicPretendFiles", _dicPretendFiles);
                 info.AddValue("_dicCapturedFiles", _dicCapturedFiles);
@@ -216,47 +222,60 @@ namespace Chummer.Backend
                 if (File.Exists(strChummerLog))
                     dump.AddFile(strChummerLog);
 
-                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc() + ".json");
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture) + ".json");
                 using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
-                using (JsonWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
+                using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
                 {
+                    objJsonWriter.Formatting = Formatting.Indented;
                     dump.SerializeJson(objJsonWriter);
                 }
 
-#if DEBUG
-                using (Process prcCrashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
-                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc()
-                                       + "\" --debug"))
-#else
-                using (Process prcCrashHandler
-                       = Process.Start(Path.Combine(Utils.GetStartupPath, "CrashHandler.exe"),
-                                       "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc() + "\""))
-#endif
+                string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
+                if (File.Exists(strCrashHandler))
                 {
-                    if (prcCrashHandler == null)
-                        return;
-                    prcCrashHandler.WaitForExit();
-                    if (prcCrashHandler.ExitCode != 0)
+                    string strArgs = "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture)
+#if DEBUG
+                        + "\" --debug";
+#else
+                        + "\"";
+#endif
+                    using (Process prcCrashHandler = Process.Start(strCrashHandler, strArgs))
                     {
-                        Program.ShowScrollableMessageBox(
-                            "Failed to create crash report because of an issue with the crash handler."
-                            + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion
-                            + Environment.NewLine + "Crash Handler crashed with exit code: "
-                            + prcCrashHandler.ExitCode + Environment.NewLine + "Crash information:"
-                            + Environment.NewLine + ex, "Failed to Create Crash Report", MessageBoxButtons.OK,
-                            MessageBoxIcon.Error);
+                        if (prcCrashHandler == null)
+                            return;
+                        prcCrashHandler.WaitForExit();
+                        if (prcCrashHandler.ExitCode != 0)
+                        {
+                            Program.ShowScrollableMessageBox(
+                                "Failed to create crash report because of an issue with the crash handler."
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
+                                + Environment.NewLine + "Crash Handler crashed with exit code: " + prcCrashHandler.ExitCode.ToString(CultureInfo.InvariantCulture)
+                                + Environment.NewLine + "Crash information:"
+                                + Environment.NewLine + ex.ToString().AnonymizePath(),
+                                "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                        }
                     }
+                }
+                else
+                {
+                    Program.ShowScrollableMessageBox(
+                                "Failed to create crash report because the crash handler was not found."
+                                + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
+                                + Environment.NewLine + "Crash information:"
+                                + Environment.NewLine + ex.ToString().AnonymizePath(),
+                                "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
             }
             catch (Exception nex)
             {
                 Program.ShowScrollableMessageBox(
-                    "Failed to create crash report." + Environment.NewLine + "Chummer crashed with version: "
-                    + Utils.CurrentChummerVersion + Environment.NewLine
-                    + "Here is some information to help the developers figure out why:" + Environment.NewLine + nex
-                    + Environment.NewLine + "Crash information:" + Environment.NewLine + ex,
+                    "Failed to create crash report."
+                    + Environment.NewLine + "Chummer crashed with version: " + Utils.CurrentChummerVersion.ToString()
+                    + Environment.NewLine + "Here is some information to help the developers figure out why:"
+                    + Environment.NewLine + nex.Demystify().ToString().AnonymizePath()
+                    + Environment.NewLine + "Crash information:" + Environment.NewLine
+                    + ex.ToString().AnonymizePath(),
                     "Failed to Create Crash Report", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }

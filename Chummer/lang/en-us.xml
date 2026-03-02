@@ -39,6 +39,14 @@
       <text>Chummer5 is currently not being run with permissions to modify registry values. Please make sure Chummer5 is being run by a user with appropriate access</text>
     </string>
     <string>
+      <key>MessageTitle_Load_Error_Generic</key>
+      <text>Error encountered while loading {0}</text>
+    </string>
+    <string>
+      <key>Message_Load_Error_CustomFile</key>
+      <text>Chummer5 has encountered an error while loading the following custom data file and will not attempt to load it again until the program is restarted:\n{0}\n\nThe details of the error are as follows:\n{1}</text>
+    </string>
+    <string>
       <key>Message_Load_Error_Warning</key>
       <text>Chummer5 encountered an error while loading the character.</text>
     </string>
@@ -61,6 +69,10 @@
     <string>
       <key>Message_File_Cannot_Be_Read_Accessed</key>
       <text>Chummer5 cannot access the following file:\n{0}\n\nPlease make sure that the file exists and that Chummer5 has permission to read from the location.</text>
+    </string>
+    <string>
+      <key>Message_File_Incorrect_Format</key>
+      <text>Chummer5 encountered an error when attempting to process the following file:\n{0}\n\nPlease make sure that the file is of the correct format for what the program requires.</text>
     </string>
     <string>
       <key>Message_Files_Cannot_Be_Removed</key>
@@ -115,6 +127,10 @@
     <string>
       <key>DialogFilter_ImagesPrefix</key>
       <text>All Image Files </text> <!-- Prefix only, actual file extensions depend on what codecs the user's computer supports -->
+    </string>
+    <string>
+      <key>DialogFilter_Zip</key>
+      <text>Zip Files (*.zip)|*.zip</text>
     </string>
     <string>
       <key>DialogFilter_All</key>
@@ -239,7 +255,7 @@
       <text>Open</text>
     </string>
     <string>
-      <key>Label_InitiativeDice</key>
+      <key>String_InitiativeDice</key>
       <text>Initiative Dice</text>
     </string>
     <string>
@@ -707,6 +723,38 @@
       <text>Cost:</text>
     </string>
     <string>
+      <key>Label_FilterByCost</key>
+      <text>Filter by Cost (¥)</text>
+    </string>
+    <string>
+      <key>Label_FilterByEssence</key>
+      <text>Filter by Essence</text>
+    </string>
+    <string>
+      <key>Label_FilterByCapacity</key>
+      <text>Filter by Capacity</text>
+    </string>
+    <string>
+      <key>Checkbox_UseCurrentEssence</key>
+      <text>Current ESS</text>
+    </string>
+    <string>
+      <key>Checkbox_UseCurrentNuyen</key>
+      <text>Current ¥</text>
+    </string>
+    <string>
+      <key>Label_Exact</key>
+      <text>Exact:</text>
+    </string>
+    <string>
+      <key>Label_Minimum</key>
+      <text>Minimum:</text>
+    </string>
+    <string>
+      <key>Label_Maximum</key>
+      <text>Maximum:</text>
+    </string>
+    <string>
       <key>Label_Accuracy</key>
       <text>Accuracy:</text>
     </string>
@@ -827,6 +875,42 @@
       <text>&amp;Search:</text>
     </string>
     <string>
+      <key>Checkbox_SelectQuality_XPathMode</key>
+      <text>XPath Mode</text>
+    </string>
+    <string>
+      <key>Tip_SelectQuality_XPathMode</key>
+      <text>Enable XPath mode for advanced filtering. When enabled, the search box accepts XPath expressions instead of text search.</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_AddQualityBonus</key>
+      <text>Add Quality Bonus</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_KarmaRange</key>
+      <text>Karma 5-10</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_RunFasterSource</key>
+      <text>Run Faster Source</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_SpellPoints</key>
+      <text>Can Buy with Spell Points</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_MetagenicOnly</key>
+      <text>Metagenic Only</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_PositiveOnly</key>
+      <text>Positive Qualities</text>
+    </string>
+    <string>
+      <key>String_SelectQuality_XPathQuery_NegativeOnly</key>
+      <text>Negative Qualities</text>
+    </string>
+    <string>
       <key>Label_Capacity</key>
       <text>Capacity:</text>
     </string>
@@ -943,6 +1027,10 @@
       <text>Force</text>
     </string>
     <string>
+      <key>String_Force_Potency</key>
+      <text>Force + Current Potency</text>
+    </string>
+    <string>
       <key>String_Level</key>
       <text>Level</text>
     </string>
@@ -1048,15 +1136,15 @@
     </string>
     <string>
       <key>String_Initiative</key>
-      <text>{0} +{1}d6</text>
+      <text>{0} + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiative</key>
-      <text>{0} + DP +{1}d6</text>
+      <text>{0} + DP + {1}d6</text>
     </string>
     <string>
       <key>String_MatrixInitiativeLong</key>
-      <text>{0} + Data Processing +{1}d6</text>
+      <text>{0} + Data Processing + {1}d6</text>
     </string>
     <string>
       <key>Checkbox_HideOverAvailLimit</key>
@@ -1157,6 +1245,14 @@
     <string>
       <key>String_BaseAttribute</key>
       <text>Base {0}</text>
+    </string>
+    <string>
+      <key>String_MinimumAttribute</key>
+      <text>Minimum {0}</text>
+    </string>
+    <string>
+      <key>String_MaximumAttribute</key>
+      <text>Maximum {0}</text>
     </string>
     <!-- End Region -->
     <!-- Region Printout Strings -->
@@ -1439,6 +1535,10 @@
       <text>Issue Tracker</text>
     </string>
     <string>
+      <key>Menu_Main_ReportBug</key>
+      <text>Report a &amp;Bug</text>
+    </string>
+    <string>
       <key>Menu_Main_File</key>
       <text>&amp;File</text>
     </string>
@@ -1547,6 +1647,10 @@
       <text>&amp;Translator</text>
     </string>
     <string>
+      <key>Menu_Main_XmlEditor</key>
+      <text>&amp;XML Amendment Editor</text>
+    </string>
+    <string>
       <key>Menu_Main_HeroLabImporter</key>
       <text>&amp;Hero Lab Importer</text>
     </string>
@@ -1557,6 +1661,10 @@
     <string>
       <key>Menu_Main_CharacterRoster</key>
       <text>Ch&amp;aracter Roster</text>
+    </string>
+    <string>
+      <key>Menu_Main_DataExporter</key>
+      <text>Data E&amp;xporter</text>
     </string>
     <string>
       <key>String_MetatypeLoadError</key>
@@ -2164,11 +2272,15 @@
     </string>
     <string>
       <key>Message_DeleteArmor</key>
-      <text>Are you sure you want to delete this Armor/Plugin?</text>
+      <text>Are you sure you want to delete this Armor?</text>
     </string>
     <string>
       <key>Message_DeleteArmorLocation</key>
       <text>Are you sure you want to delete this Armor Bundle? All of the Armor in this bundle will be moved to the Selected Armor container.</text>
+    </string>
+    <string>
+      <key>Message_DeleteArmorMod</key>
+      <text>Are you sure you want to delete this Armor Modification?</text>
     </string>
     <string>
       <key>Message_DeleteWeapon</key>
@@ -2177,6 +2289,10 @@
     <string>
       <key>Message_DeleteWeaponLocation</key>
       <text>Are you sure you want to delete this Weapon location? All of the Weapons in this location will be moved to the Selected Weapons container.</text>
+    </string>
+    <string>
+      <key>Message_DeleteWeaponAccessory</key>
+      <text>Are you sure you want to delete this Weapon Accessory/Modification?</text>
     </string>
     <string>
       <key>Message_DeleteWeaponMount</key>
@@ -2493,6 +2609,14 @@
     <string>
       <key>MessageTitle_CannotRemoveCyberware</key>
       <text>Cannot Remove Cyberware</text>
+    </string>
+    <string>
+      <key>String_SelectFolderForPDFScan</key>
+      <text>Select the folder to scan for PDF files. If there are multiple, select the topmost folder.</text>
+    </string>
+    <string>
+      <key>Message_ScanFoldersRecursively</key>
+      <text>Scan the selected folder recursively (also scan any folders within the selected folder)?</text>
     </string>
     <string>
       <key>MessageTitle_FoundPDFsInFolder</key>
@@ -3724,6 +3848,14 @@
       <text>Sold Vehicle Cyberware Plugin</text>
     </string>
     <string>
+      <key>String_ExpensePurchaseVehicleWeaponMount</key>
+      <text>Purchased Vehicle Weapon Mount</text>
+    </string>
+    <string>
+      <key>String_ExpenseSoldVehicleWeaponMount</key>
+      <text>Sold Vehicle Weapon Mount</text>
+    </string>
+    <string>
       <key>String_ExpensePurchaseCritterPower</key>
       <text>Purchased Critter Power</text>
     </string>
@@ -3962,6 +4094,10 @@
     <string>
       <key>String_DamageFlechette</key>
       <text>(f)</text>
+    </string>
+    <string>
+      <key>String_DamageFire</key>
+      <text>(fire)</text>
     </string>
     <string>
       <key>String_DamagePOrS</key>
@@ -4349,7 +4485,11 @@
     </string>
     <string>
       <key>String_NotSupported</key>
-      <text>"This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results."</text>
+      <text>Not Supported</text>
+    </string>
+    <string>
+      <key>Message_MetatypeNotSupported</key>
+      <text>This Race/Metavariant combination is incomplete and will be completed in a future release. Attempting to create a character with this combination may result in unexpected results.</text>
     </string>
     <string>
       <key>Warning_NoLimitFound</key>
@@ -5166,6 +5306,10 @@
       <text>Unequipped Modular Cyberware</text>
     </string>
     <string>
+      <key>Node_UnequippedModularBioware</key>
+      <text>Unequipped Modular Bioware</text>
+    </string>
+    <string>
       <key>Label_EssenceConsumption</key>
       <text>Essence Consumption</text>
     </string>
@@ -5795,6 +5939,10 @@
       <key>Checkbox_ShowChart</key>
       <text>Show Chart</text>
     </string>
+    <string>
+      <key>Message_UndoExpenseNotSupported</key>
+      <text>Undoing this type of expense is not currently supported. Please adjust the corresponding item(s) manually.</text>
+    </string>
     <!-- End Region-->
     <!-- Region Calendar Tab -->
     <string>
@@ -5815,7 +5963,7 @@
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}: Month {1}, Week {2}</text>
+      <text>{0}-W{1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Improvements Tab -->
@@ -6081,7 +6229,7 @@
     </string>
     <string>
       <key>Message_Options_ConfirmDetailedTelemetry</key>
-      <text>We greatly appreciate people sending us highly detailed logging information because it lets us really find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
+      <text>We greatly appreciate people sending us highly detailed logging information because it lets us find places to improve the program that otherwise would have been overlooked. However, such highly detailed logging makes your data significantly less anonymous, and for those on metered internet connections who use the program a lot, it may end causing non-insignificant amounts of interent traffic.\n\nDo you wish to proceed and enable highly detailed telemetry?</text>
     </string>
     <string>
       <key>MessageTitle_Options_ConfirmDetailedTelemetry</key>
@@ -6666,6 +6814,14 @@
       <key>Tip_Power_DoublePoints</key>
       <text>The Power Point cost for this Power has been increased because it has caused the Attribute to exceed your Metatype Maximum value by {0}. This cost increase only applies to the {0} points that have exceeded the Metatype Maximum.</text>
     </string>
+    <string>
+      <key>Tip_Power_PPperLevel</key>
+      <text>Power Points per Level</text>
+    </string>
+    <string>
+      <key>Tip_Power_Capped</key>
+      <text>[{0}] Capped to {1}</text>
+    </string>
     <!-- End Region-->
     <!-- Region Skills -->
     <string>
@@ -7179,6 +7335,26 @@
       <text>Select a Talent</text>
     </string>
     <string>
+      <key>Message_Metatype_NoTalentChoices</key>
+      <text>No valid Talent choices are available for the selected Metatype and Talent priority combination. This is likely due to customdata restrictions that disallow all available talent options. Please select a different Metatype or Talent priority, or review your customdata settings.</text>
+    </string>
+    <string>
+      <key>MessageTitle_Metatype_NoTalentChoices</key>
+      <text>No Talent Choices Available</text>
+    </string>
+    <string>
+      <key>Message_NoGradesAvailable</key>
+      <text>No grades are available for the selected item.</text>
+    </string>
+    <string>
+      <key>MessageTitle_NoGradesAvailable</key>
+      <text>No Grades Available</text>
+    </string>
+    <string>
+      <key>String_NoGradesAvailable</key>
+      <text>No grades available</text>
+    </string>
+    <string>
       <key>Message_Metatype_SelectSkill</key>
       <text>You must select a Skill/Skill Group before continuing.</text>
     </string>
@@ -7321,6 +7497,10 @@
     <string>
       <key>Label_Options_ColorMode</key>
       <text>Color Mode:</text>
+    </string>
+    <string>
+      <key>Label_Options_HasNotesColor</key>
+      <text>Default Color for Items with Notes:</text>
     </string>
     <string>
       <key>Checkbox_Options_AutomaticUpdates</key>
@@ -7559,8 +7739,12 @@
       <text>Enemies</text>
     </string>
     <string>
-      <key>Label_Options_Carryover</key>
-      <text>Carryover for New Character</text>
+      <key>Label_Options_Carryover_Nuyen</key>
+      <text>Max Nuyen Carry-Over</text>
+    </string>
+    <string>
+      <key>Label_Options_Carryover_Karma</key>
+      <text>Max Karma Carry-Over</text>
     </string>
     <string>
       <key>Label_Options_Initiation</key>
@@ -8131,6 +8315,10 @@
       <text>Lossy (JPG, Manual)</text>
     </string>
     <string>
+      <key>String_Fastest_Option</key>
+      <text>Fastest</text>
+    </string>
+    <string>
       <key>String_Fast_Option</key>
       <text>Fast</text>
     </string>
@@ -8141,6 +8329,10 @@
     <string>
       <key>String_Thorough_Option</key>
       <text>Thorough</text>
+    </string>
+    <string>
+      <key>String_Ultra_Option</key>
+      <text>Ultra</text>
     </string>
     <!-- End Region-->
     <!-- Region Character Options -->
@@ -8436,7 +8628,7 @@
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_Tenant</key>
-      <text>Primary Tenant</text>
+      <text>Split Costs</text>
     </string>
     <string>
       <key>Label_SelectAdvancedLifestyle_LPContribution</key>
@@ -8451,6 +8643,10 @@
     <string>
       <key>String_RestrictedItemsHidden</key>
       <text>* {0} item(s) are hidden by Cost or Availability limits *</text>
+    </string>
+    <string>
+      <key>String_RestrictedItemsHiddenMount</key>
+      <text>* {0} item(s) are hidden due to mount restrictions *</text>
     </string>
     <!-- End Region -->
     <!-- Region Select Armor Window -->
@@ -8539,6 +8735,10 @@
     <string>
       <key>MessageTitle_SelectBP_SwitchBuildMethods</key>
       <text>Switch Build Method?</text>
+    </string>
+    <string>
+      <key>String_ModifyEllipses</key>
+      <text>Modify...</text>
     </string>
     <!-- End Region-->
     <!-- Region Advanced Contact Options Window -->
@@ -8661,6 +8861,18 @@
     <string>
       <key>Message_BannedGrade</key>
       <text>You've selected a Grade that is banned by your gameplay options. Please select a valid Grade.</text>
+    </string>
+    <string>
+      <key>String_RestrictedItemsHiddenEssence</key>
+      <text>* {0} item(s) are hidden by Cost, Availability or Essence limits *</text>
+    </string>
+    <string>
+      <key>Checkbox_HideOverEssenceLimit</key>
+      <text>Hide Items Over Essence Limit</text>
+    </string>
+    <string>
+      <key>Label_MaxEssence</key>
+      <text>Max Essence:</text>
     </string>
     <!-- End Region-->
     <!-- Region Select Cyberware Suite Window -->
@@ -8818,8 +9030,12 @@
       <text>Advantage:</text>
     </string>
     <string>
-      <key>Label_SelectMetamagic_Disadvantage</key>
+      <key>Label_SelectMentorSpirit_Disadvantage</key>
       <text>Disadvantage:</text>
+    </string>
+    <string>
+      <key>Label_SelectMentorSpirit_Choices</key>
+      <text>Choices:</text>
     </string>
     <string>
       <key>Label_SelectMentor_ChooseOne</key>
@@ -9315,7 +9531,7 @@
     </string>
     <string>
       <key>Label_CalendarStart</key>
-      <text>Enter the year, month, and week number to start the calendar at.</text>
+      <text>Enter the year and week number at which to start the calendar.</text>
     </string>
     <string>
       <key>Label_Year</key>
@@ -9328,6 +9544,14 @@
     <string>
       <key>Label_Week</key>
       <text>Week:</text>
+    </string>
+    <string>
+      <key>Label_WeekSpansFollowingDates</key>
+      <text>This week spans the following dates:</text>
+    </string>
+    <string>
+      <key>String_DateSpan</key>
+      <text>{0} - {1}</text>
     </string>
     <!-- End Region-->
     <!-- Region Update Window -->
@@ -9576,6 +9800,10 @@
     <!-- End Region-->
     <!-- Region Export Window -->
     <string>
+      <key>Title_ExportData</key>
+      <text>Export Data Files to Archive</text>
+    </string>
+    <string>
       <key>Title_ExportCharacter</key>
       <text>Export Character</text>
     </string>
@@ -9602,6 +9830,10 @@
     <string>
       <key>String_Export_Blank</key>
       <text>Export {0}</text>
+    </string>
+    <string>
+      <key>Button_Export_SaveDataAs</key>
+      <text>Save Data Archive as</text>
     </string>
     <!-- End Region-->
     <!-- Region Create Spell Window -->
@@ -10124,6 +10356,10 @@
       <text>Chummer5a encountered an error when loading one or more improvements for this character. This is likely because a certain improvement present in an older version of Chummer has been significantly altered in a later version.\n\nThe issue can be fixed by re-applying only the improvements that caused issues.\n\nDo you wish to re-apply the problematic issues right now? If you do not, the issues can still be fixed by re-applying all improvements via Special > Re-apply Improvements.</text>
     </string>
     <string>
+      <key>Message_ImprovementLoadErrorPart2</key>
+      <text>\n\nThis affects the following items:\n</text>
+    </string>
+    <string>
       <key>String_SpecialModificationLimit</key>
       <text>Special Modification Limit</text>
     </string>
@@ -10214,6 +10450,10 @@
     <string>
       <key>String_Scanning_Pattern</key>
       <text>Scanning {0}...</text>
+    </string>
+    <string>
+      <key>String_Fallback_Pattern</key>
+      <text>Fallback {0}</text>
     </string>
     <string>
       <key>String_Initializing</key>
@@ -10339,27 +10579,27 @@
     <!-- End Region SINners Plugin-->
     <string>
       <key>String_ApplicationInsights_OnlyLocal</key>
-      <text>only local logging</text>
+      <text>Perform Only Local Logging</text>
     </string>
     <string>
       <key>String_ApplicationInsights_OnlyMetric</key>
-      <text>upload statistical data</text>
+      <text>Upload Only Statistical Data</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Crashes</key>
-      <text>upload crashes</text>
+      <text>Upload Crashes</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Info</key>
-      <text>upload some logs</text>
+      <text>Upload Crashes and Some Logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_Trace</key>
-      <text>upload detailed logs</text>
+      <text>Upload Crashes and Detailed Logs</text>
     </string>
     <string>
       <key>String_ApplicationInsights_NotSet</key>
-      <text>let chummer decide</text>
+      <text>Let Chummer Decide</text>
     </string>
     <string>
       <key>String_Chummy</key>
@@ -10433,6 +10673,10 @@
     <string>
       <key>Rating_Meters</key>
       <text>Meters</text>
+    </string>
+    <string>
+      <key>Rating_SqMeters</key>
+      <text>Square Meters</text>
     </string>
     <!-- End Region -->
     <string>
@@ -10768,6 +11012,256 @@
     <string>
       <key>String_GameplayOption</key>
       <text>Missing Gameplay Option</text>
+    </string>
+    <string>
+      <key>Label_GameplayOptionName</key>
+      <text>Gameplay Option Name:</text>
+    </string>
+    <string>
+      <key>Tip_GameplayOptionName</key>
+      <text>Enter the name of the gameplay option (e.g., 'Prime Runner', 'Street Scum', 'High Life') that this character setting represents. This is used by qualities and other elements as part of the Requirements system.</text>
+    </string>
+    <!-- XML Editor Strings -->
+    <string>
+      <key>Title_XmlAmendmentEditor</key>
+      <text>XML Amendment Editor</text>
+    </string>
+    <string>
+      <key>Label_SelectBaseXmlFile</key>
+      <text>Select Base XML File</text>
+    </string>
+    <string>
+      <key>Button_LoadBaseXml</key>
+      <text>Load Base XML</text>
+    </string>
+    <string>
+      <key>Label_BaseXml</key>
+      <text>Base XML (Read-Only)</text>
+    </string>
+    <string>
+      <key>Label_AmendmentXml</key>
+      <text>Amendment XML (Edit Here)</text>
+    </string>
+    <string>
+      <key>Button_PreviewAmendment</key>
+      <text>Preview Amendment Effects</text>
+    </string>
+    <string>
+      <key>Button_SaveAmendment</key>
+      <text>Save Amendment to File</text>
+    </string>
+    <string>
+      <key>Label_AmendSystemDocumentation</key>
+      <text>Amendment System Documentation</text>
+    </string>
+    <string>
+      <key>Label_ResultAndDiffPreview</key>
+      <text>Result and Diff Preview</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_LoadingFiles</key>
+      <text>Error loading XML files</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_LoadingFile</key>
+      <text>Error loading XML file</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_ApplyingAmendment</key>
+      <text>Error applying amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_SavingAmendment</key>
+      <text>Error saving amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_UnsavedChanges</key>
+      <text>You have unsaved changes. Do you want to save before closing?</text>
+    </string>
+    <string>
+      <key>XmlEditor_UnsavedChangesTitle</key>
+      <text>Unsaved Changes</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorSaving</key>
+      <text>Error saving: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_DataDirectoryNotFound</key>
+      <text>Data directory not found</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_LoadingAvailableFiles</key>
+      <text>Error loading available XML files</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoFileSelected</key>
+      <text>Please select an XML file</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoFileSelectedTitle</key>
+      <text>No File Selected</text>
+    </string>
+    <string>
+      <key>XmlEditor_FileNotFound</key>
+      <text>File not found: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_FileNotFoundTitle</key>
+      <text>File Not Found</text>
+    </string>
+    <string>
+      <key>XmlEditor_Title</key>
+      <text>XML Amendment Developer - {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_LoadInstructions</key>
+      <text>Load a base XML file and create an amendment to see the result here.</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseXml</key>
+      <text>Please load a base XML file first</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseXmlTitle</key>
+      <text>No Base XML</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoAmendment</key>
+      <text>Please enter amendment XML</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoAmendmentTitle</key>
+      <text>No Amendment</text>
+    </string>
+    <string>
+      <key>XmlEditor_InvalidXml</key>
+      <text>Invalid amendment XML: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_InvalidXmlTitle</key>
+      <text>XML Parse Error</text>
+    </string>
+    <string>
+      <key>XmlEditor_NothingToSave</key>
+      <text>No amendment to save</text>
+    </string>
+    <string>
+      <key>XmlEditor_NothingToSaveTitle</key>
+      <text>Nothing to Save</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseFile</key>
+      <text>No base file selected</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoBaseFileTitle</key>
+      <text>No Base File</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveTitle</key>
+      <text>Save Amendment File</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveSuccess</key>
+      <text>Amendment file saved successfully</text>
+    </string>
+    <string>
+      <key>XmlEditor_SaveSuccessTitle</key>
+      <text>Save Complete</text>
+    </string>
+    <string>
+      <key>XmlEditor_DiffInstructions</key>
+      <text>Load a base XML file and apply an amendment to see the diff here.</text>
+    </string>
+    <string>
+      <key>XmlEditor_Error_UpdatingDiff</key>
+      <text>Error updating diff preview</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorGeneratingDiff</key>
+      <text>Error generating diff: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_AmendmentChanges</key>
+      <text>=== AMENDMENT CHANGES ===</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoChanges</key>
+      <text>No changes detected.</text>
+    </string>
+    <string>
+      <key>XmlEditor_NoChangesDescription</key>
+      <text>The amendment did not modify the XML structure or values.</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorGeneratingCleanDiff</key>
+      <text>Error generating diff: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorComparingDocuments</key>
+      <text>Error comparing documents: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Added</key>
+      <text>+ Added: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Removed</key>
+      <text>- Removed: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_Modified</key>
+      <text>* Modified: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_OldValue</key>
+      <text>  - Old: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_NewValue</key>
+      <text>  + New: {0}</text>
+    </string>
+    <string>
+      <key>XmlEditor_RemovedAttribute</key>
+      <text>- Removed attribute: {0}@{1} = "{2}"</text>
+    </string>
+    <string>
+      <key>XmlEditor_ModifiedAttribute</key>
+      <text>* Modified attribute: {0}@{1}</text>
+    </string>
+    <string>
+      <key>XmlEditor_AddedAttribute</key>
+      <text>+ Added attribute: {0}@{1} = "{2}"</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorComparingNodes</key>
+      <text>Error comparing nodes at {0}: {1}</text>
+    </string>
+    <string>
+      <key>XmlEditor_ErrorFormattingNode</key>
+      <text>Error formatting XML node</text>
+    </string>
+    <string>
+      <key>XmlEditor_AmendmentTemplate</key>
+      <text>&lt;chummer&gt;\n
+  &lt;elements&gt;\n
+        &lt;element&gt;\n
+        &lt;id&gt;YOUR_ID_HERE&lt;/id&gt;\n
+        &lt;!-- &lt;name&gt;Item Name&lt;/name&gt; --&gt;\n
+        &lt;bonus&gt;\n
+        &lt;elementname amendoperation="remove" /&gt;\n
+        &lt;newelement amendoperation="addnode"&gt;\n
+        &lt;value&gt;new value&lt;/value&gt;\n
+        &lt;/newelement&gt;\n
+        &lt;/bonus&gt;\n
+        &lt;/element&gt;\n
+  &lt;/elements&gt;\n
+&lt;/chummer&gt;</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AllowLimitedSpellsForBareHandedAdept</key>
+      <text>Allow selecting Limited versions of spells for Barehanded Adept</text>
     </string>
   </strings>
 </chummer>

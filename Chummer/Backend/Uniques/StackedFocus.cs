@@ -33,14 +33,16 @@ namespace Chummer
     /// <summary>
     /// A Stacked Focus.
     /// </summary>
-    [DebuggerDisplay("{Name(GlobalSettings.DefaultLanguage)}")]
-    public sealed class StackedFocus : IHasLockObject
+    [DebuggerDisplay("{Name(\"en-us\")}")]
+    public sealed class StackedFocus : IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private bool _blnBonded;
         private Guid _guiGearId;
-        private readonly ThreadSafeList<Gear> _lstGear = new ThreadSafeList<Gear>(2);
+        private readonly ThreadSafeList<Gear> _lstGear;
         private readonly Character _objCharacter;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, and Load Methods
 
@@ -48,7 +50,9 @@ namespace Chummer
         {
             // Create the GUID for the new Focus.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstGear = new ThreadSafeList<Gear>(2, LockObject);
         }
 
         /// <summary>
@@ -59,7 +63,7 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("stackedfocus");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
@@ -83,7 +87,7 @@ namespace Chummer
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
-                _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
                 using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
                 {
                     if (nodGearList == null)
@@ -91,10 +95,59 @@ namespace Chummer
                     foreach (XmlNode nodGear in nodGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodGear);
-                        _lstGear.Add(objGear);
+                        try
+                        {
+                            objGear.Load(nodGear);
+                            _lstGear.Add(objGear);
+                        }
+                        catch
+                        {
+                            objGear.DeleteGear();
+                            throw;
+                        }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Load the Stacked Focus from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
+                using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+                {
+                    if (nodGearList != null)
+                    {
+                        foreach (XmlNode nodGear in nodGearList)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            try
+                            {
+                                await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
+                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -109,7 +162,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -121,33 +174,55 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiGearId.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
             set
             {
                 if (Guid.TryParse(value, out Guid guiTemp))
                 {
-                    using (EnterReadLock.Enter(LockObject))
-                        _guiGearId = guiTemp;
+                    using (LockObject.EnterReadLock())
+                    {
+                        if (_guiGearId == guiTemp)
+                            return;
+                    }
+
+                    using (LockObject.EnterUpgradeableReadLock())
+                    {
+                        if (_guiGearId == guiTemp)
+                            return;
+                        using (LockObject.EnterWriteLock())
+                            _guiGearId = guiTemp;
+                    }
                 }
             }
         }
 
         /// <summary>
-        /// Whether or not the Stacked Focus in Bonded.
+        /// Whether the Stacked Focus in Bonded.
         /// </summary>
         public bool Bonded
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _blnBonded;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
-                    _blnBonded = value;
+                using (LockObject.EnterReadLock())
+                {
+                    if (_blnBonded == value)
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_blnBonded == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                        _blnBonded = value;
+                }
             }
         }
 
@@ -158,8 +233,26 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return Gear.Sum(x => x.Rating);
+            }
+        }
+
+        /// <summary>
+        /// The Stacked Focus' total Force.
+        /// </summary>
+        public async Task<int> GetTotalForceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return await Gear.SumAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync();
             }
         }
 
@@ -171,7 +264,7 @@ namespace Chummer
             get
             {
                 decimal decCost = 0;
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objFocus in Gear)
                     {
@@ -268,11 +361,14 @@ namespace Chummer
                                 break;
                         }
 
-                        foreach (Improvement objLoopImprovement in _objCharacter.Improvements.Where(
-                                     x => x.ImprovedName == strFocusName
-                                          && (string.IsNullOrEmpty(x.Target) || strFocusExtra.Contains(x.Target))
-                                          && x.Enabled))
+                        _objCharacter.Improvements.ForEach(objLoopImprovement =>
                         {
+                            if (objLoopImprovement.ImprovedName != strFocusName
+                                || (!string.IsNullOrEmpty(objLoopImprovement.Target)
+                                    && !strFocusExtra.Contains(objLoopImprovement.Target))
+                                || !objLoopImprovement.Enabled)
+                                return;
+
                             switch (objLoopImprovement.ImproveType)
                             {
                                 case Improvement.ImprovementType.FocusBindingKarmaCost:
@@ -283,7 +379,7 @@ namespace Chummer
                                     decKarmaMultiplier += objLoopImprovement.Value;
                                     break;
                             }
-                        }
+                        });
 
                         decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
                     }
@@ -296,12 +392,14 @@ namespace Chummer
         /// <summary>
         /// The cost in Karma to bind this Stacked Focus.
         /// </summary>
-        public async ValueTask<int> GetBindingCostAsync(CancellationToken token = default)
+        public async Task<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                foreach (Gear objFocus in Gear)
+                token.ThrowIfCancellationRequested();
+                decCost += await Gear.SumAsync(async objFocus =>
                 {
                     // Each Focus costs an amount of Karma equal to their Force x specific Karma cost.
                     string strFocusName = objFocus.Name;
@@ -339,7 +437,7 @@ namespace Chummer
 
                         case "Counterspelling Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaCounterspellingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Banishing Focus":
@@ -359,7 +457,7 @@ namespace Chummer
 
                         case "Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Summoning Focus":
@@ -384,7 +482,7 @@ namespace Chummer
 
                         case "Disenchanting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaDisenchantingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Power Focus":
@@ -393,17 +491,17 @@ namespace Chummer
 
                         case "Flexible Signature Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaFlexibleSignatureFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Ritual Spellcasting Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaRitualSpellcastingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         case "Spell Shaping Focus":
                             decKarmaMultiplier = await objSettings.GetKarmaSpellShapingFocusAsync(token)
-                                                                  .ConfigureAwait(false);
+                                .ConfigureAwait(false);
                             break;
 
                         default:
@@ -432,8 +530,12 @@ namespace Chummer
                             }
                         }, token: token).ConfigureAwait(false);
 
-                    decCost += objFocus.Rating * decKarmaMultiplier + decExtraKarmaCost;
-                }
+                    return await objFocus.GetRatingAsync(token).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
+                }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return decCost.StandardRound();
@@ -444,14 +546,15 @@ namespace Chummer
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     foreach (Gear objGear in Gear)
                     {
-                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage)).Append(", ");
+                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage), ',', strSpace);
                     }
                 }
 
@@ -466,18 +569,25 @@ namespace Chummer
         /// <summary>
         /// Stacked Focus Name.
         /// </summary>
-        public async ValueTask<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                try
                 {
+                    token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
-                                                      .ConfigureAwait(false)).Append(", ");
+                                                      .ConfigureAwait(false), ',', strSpace);
                     }, token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // Remove the trailing comma.
@@ -490,7 +600,7 @@ namespace Chummer
 
         public string CurrentDisplayName => Name(GlobalSettings.CultureInfo, GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => NameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// List of Gear that make up the Stacked Focus.
@@ -499,7 +609,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstGear;
             }
         }
@@ -508,22 +618,29 @@ namespace Chummer
 
         #region Methods
 
-        public TreeNode CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus)
+        public async Task<TreeNode> CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            using (EnterReadLock.Enter(LockObject))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                TreeNode objNode = objGear.CreateTreeNode(cmsStackedFocus, null);
+                TreeNode objNode = await objGear.CreateTreeNode(cmsStackedFocus, null, token).ConfigureAwait(false);
 
                 objNode.Name = InternalId;
-                objNode.Text = LanguageManager.GetString("String_StackedFocus")
-                               + LanguageManager.GetString("String_Colon") + LanguageManager.GetString("String_Space")
-                               + CurrentDisplayName;
+                objNode.Text = await LanguageManager.GetStringAsync("String_StackedFocus", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
+                               + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                               + await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                 objNode.Tag = this;
                 objNode.Checked = Bonded;
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -534,7 +651,6 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock())
                 _lstGear.Dispose();
-            LockObject.Dispose();
         }
 
         /// <inheritdoc />
@@ -549,11 +665,9 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

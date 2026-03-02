@@ -26,18 +26,18 @@ namespace Chummer
 {
     public interface IAsyncReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>, IAsyncReadOnlyCollection<KeyValuePair<TKey, TValue>>
     {
-        ValueTask<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
+        Task<bool> ContainsKeyAsync(TKey key, CancellationToken token = default);
 
-        ValueTask<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
+        Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default);
 
-        ValueTask<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default);
+        Task<IReadOnlyCollection<TKey>> GetReadOnlyKeysAsync(CancellationToken token = default);
 
-        ValueTask<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default);
+        Task<IReadOnlyCollection<TValue>> GetReadOnlyValuesAsync(CancellationToken token = default);
     }
 
     public static class AsyncReadOnlyDictionaryExtensions
     {
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IAsyncDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -46,30 +46,50 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
                 = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objRightEnumerator.MoveNext())
+            try
             {
-                object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue)
-                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                if (!blnContains)
-                    return false;
-                if (!objValue.Equals(objRightEnumerator.Current.Value))
-                    return false;
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objRightEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objRightEnumerator.Dispose();
             }
 
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IAsyncReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -78,30 +98,50 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
-                    return false;
+                while (objLeftEnumerator.MoveNext())
+                {
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!await dicRight.ContainsKeyAsync(objKey, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
             }
 
             IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator
                 = await dicRight.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objRightEnumerator.MoveNext())
+            try
             {
-                object objKey = objRightEnumerator.Current.Key;
-                (bool blnContains, IComparable objValue)
-                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                if (!blnContains)
-                    return false;
-                if (!objValue.Equals(objRightEnumerator.Current.Value))
-                    return false;
+                while (objRightEnumerator.MoveNext())
+                {
+                    object objKey = objRightEnumerator.Current.Key;
+                    (bool blnContains, IComparable objValue)
+                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                    if (!blnContains)
+                        return false;
+                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objRightEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objRightEnumerator.Dispose();
             }
 
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -109,31 +149,38 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!dicRight.ContainsKey(objKey))
-                    return false;
-            }
-
-            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
-            {
-                while (objRightEnumerator.MoveNext())
+                while (objLeftEnumerator.MoveNext())
                 {
-                    object objKey = objRightEnumerator.Current.Key;
-                    (bool blnContains, IComparable objValue)
-                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                    if (!blnContains)
-                        return false;
-                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!dicRight.ContainsKey(objKey))
                         return false;
                 }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
+            }
+
+            foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)
+            {
+                object objKey = kvpRight.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(kvpRight.Value))
+                    return false;
             }
 
             return true;
         }
 
-        public static async ValueTask<bool> EqualsByValueAsync(
+        public static async Task<bool> EqualsByValueAsync(
             this IAsyncReadOnlyDictionary<object, IComparable> dicLeft,
             IReadOnlyDictionary<object, IComparable> dicRight, CancellationToken token = default)
         {
@@ -141,25 +188,32 @@ namespace Chummer
                 return false;
             IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator
                 = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
-            while (objLeftEnumerator.MoveNext())
+            try
             {
-                object objKey = objLeftEnumerator.Current.Key;
-                if (!dicRight.ContainsKey(objKey))
-                    return false;
-            }
-
-            using (IEnumerator<KeyValuePair<object, IComparable>> objRightEnumerator = dicRight.GetEnumerator())
-            {
-                while (objRightEnumerator.MoveNext())
+                while (objLeftEnumerator.MoveNext())
                 {
-                    object objKey = objRightEnumerator.Current.Key;
-                    (bool blnContains, IComparable objValue)
-                        = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
-                    if (!blnContains)
-                        return false;
-                    if (!objValue.Equals(objRightEnumerator.Current.Value))
+                    object objKey = objLeftEnumerator.Current.Key;
+                    if (!dicRight.ContainsKey(objKey))
                         return false;
                 }
+            }
+            finally
+            {
+                if (objLeftEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objLeftEnumerator.Dispose();
+            }
+
+            foreach (KeyValuePair<object, IComparable> kvpRight in dicRight)
+            {
+                object objKey = kvpRight.Key;
+                (bool blnContains, IComparable objValue)
+                    = await dicLeft.TryGetValueAsync(objKey, token).ConfigureAwait(false);
+                if (!blnContains)
+                    return false;
+                if (!objValue.Equals(kvpRight.Value))
+                    return false;
             }
 
             return true;

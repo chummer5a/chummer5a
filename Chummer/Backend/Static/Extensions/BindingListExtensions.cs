@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.ComponentModel;
 
@@ -26,16 +27,13 @@ namespace Chummer
     public static class BindingListExtensions
     {
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
-        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"/> generic interface.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
+        /// <param name="lstCollection">The list to sort.</param>
         /// <param name="index">The starting index of the range to sort.</param>
         /// <param name="length">The number of elements in the range to sort.</param>
-        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
-        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
-        /// interface implementation of each element.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"/> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"/> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
@@ -51,230 +49,240 @@ namespace Chummer
             T[] aobjSorted = new T[length];
             for (int i = 0; i < length; ++i)
                 aobjSorted[i] = lstCollection[index + i];
-            Array.Sort(aobjSorted, objComparer);
-            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-            // We're going to disable events while we work with the list, then call them all at once at the end
-            lstCollection.RaiseListChangedEvents = false;
-            for (int i = 0; i < aobjSorted.Length; ++i)
+            Array.Sort(aobjSorted, 0, length, objComparer);
+            if (!lstCollection.RaiseListChangedEvents)
             {
-                T objLoop = aobjSorted[i];
-                int intOldIndex = lstCollection.IndexOf(objLoop);
-                int intNewIndex = index + i;
-                if (intOldIndex == intNewIndex)
-                    continue;
-                if (intOldIndex > intNewIndex)
+                for (int i = 0; i < length; ++i)
                 {
-                    // Account for removal happening before removal
-                    --intOldIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    lstCollection[index + i] = aobjSorted[i];
+                }
+
+                return;
+            }
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            int intResetThreshold = length / 2;
+            int intCountChanges = 0;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = length > Utils.MaxStackLimit8BitTypes
+                ? ArrayPool<bool>.Shared.Rent(length)
+                : null;
+            try
+            {
+#pragma warning disable IDE0029 // Use coalesce expression
+                Span<bool> pblnItemChanged = ablnItemChanged != null
+                    ? ablnItemChanged
+                    : stackalloc bool[length];
+#pragma warning restore IDE0029 // Use coalesce expression
+                // We're going to disable events while we work with the list, then call them all at once at the end
+                lstCollection.RaiseListChangedEvents = false;
+                try
+                {
+                    for (int i = 0; i < length; ++i)
                     {
-                        for (int j = intNewIndex; j <= intOldIndex; ++j)
-                            ablnItemChanged[j] = true;
+                        T objLoop = aobjSorted[i];
+                        if (ReferenceEquals(objLoop, lstCollection[index + i]))
+                            continue;
+                        pblnItemChanged[i] = true;
+                        ++intCountChanges;
+                        lstCollection[index + i] = objLoop;
                     }
+                }
+                finally
+                {
+                    lstCollection.RaiseListChangedEvents = true;
+                }
+
+                if (intCountChanges >= intResetThreshold)
+                {
+                    lstCollection.ResetBindings();
                 }
                 else
                 {
-                    // Account for removal happening before removal
-                    --intNewIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    for (int i = 0; i < length; ++i)
                     {
-                        for (int j = intOldIndex; j <= intNewIndex; ++j)
-                            ablnItemChanged[j] = true;
-                    }
-                }
-                lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, objLoop);
-            }
-            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-            if (!blnOldRaiseListChangedEvents)
-                return;
-            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            int intResetThreshold = ablnItemChanged.Length / 2;
-            int intCountTrues = 0;
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
-            {
-                if (ablnItemChanged[i])
-                {
-                    ++intCountTrues;
-                    if (intCountTrues >= intResetThreshold)
-                    {
-                        lstCollection.ResetBindings();
-                        return;
+                        if (pblnItemChanged[i])
+                            lstCollection.ResetItem(index + i);
                     }
                 }
             }
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            finally
             {
-                if (ablnItemChanged[i])
-                    lstCollection.ResetItem(i);
+                if (ablnItemChanged != null)
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
             }
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified System.Comparison`1.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Comparison{T}"/>.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
-        /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
+        /// <param name="lstCollection">The list to sort.</param>
+        /// <param name="funcComparison">The <see cref="System.Comparison{T}"/> to use when comparing elements.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, Comparison<T> funcComparison)
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
             if (funcComparison == null)
                 throw new ArgumentNullException(nameof(funcComparison));
-            T[] aobjSorted = new T[lstCollection.Count];
-            for (int i = 0; i < lstCollection.Count; ++i)
+            int intCollectionSize = lstCollection.Count;
+            T[] aobjSorted = new T[intCollectionSize];
+            for (int i = 0; i < intCollectionSize; ++i)
                 aobjSorted[i] = lstCollection[i];
-            Array.Sort(aobjSorted, funcComparison);
-            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-            // We're going to disable events while we work with the list, then call them all at once at the end
-            lstCollection.RaiseListChangedEvents = false;
-            for (int i = 0; i < aobjSorted.Length; ++i)
+            Array.Sort(aobjSorted,funcComparison);
+            if (!lstCollection.RaiseListChangedEvents)
             {
-                T objLoop = aobjSorted[i];
-                int intOldIndex = lstCollection.IndexOf(objLoop);
-                int intNewIndex = i;
-                if (intOldIndex == intNewIndex)
-                    continue;
-                if (intOldIndex > intNewIndex)
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
-                    // Account for removal happening before removal
-                    --intOldIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    lstCollection[i] = aobjSorted[i];
+                }
+
+                return;
+            }
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            int intResetThreshold = intCollectionSize / 2;
+            int intCountChanges = 0;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                : null;
+            try
+            {
+#pragma warning disable IDE0029 // Use coalesce expression
+                Span<bool> pblnItemChanged = ablnItemChanged != null
+                    ? ablnItemChanged
+                    : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                // We're going to disable events while we work with the list, then call them all at once at the end
+                lstCollection.RaiseListChangedEvents = false;
+                try
+                {
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
-                        for (int j = intNewIndex; j <= intOldIndex; ++j)
-                            ablnItemChanged[j] = true;
+                        T objLoop = aobjSorted[i];
+                        if (ReferenceEquals(objLoop, lstCollection[i]))
+                            continue;
+                        pblnItemChanged[i] = true;
+                        ++intCountChanges;
+                        lstCollection[i] = objLoop;
                     }
+                }
+                finally
+                {
+                    lstCollection.RaiseListChangedEvents = true;
+                }
+
+                if (intCountChanges >= intResetThreshold)
+                {
+                    lstCollection.ResetBindings();
                 }
                 else
                 {
-                    // Account for removal happening before removal
-                    --intNewIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
-                        for (int j = intOldIndex; j <= intNewIndex; ++j)
-                            ablnItemChanged[j] = true;
-                    }
-                }
-                lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, objLoop);
-            }
-            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-            if (!blnOldRaiseListChangedEvents)
-                return;
-            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            int intResetThreshold = ablnItemChanged.Length / 2;
-            int intCountTrues = 0;
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
-            {
-                if (ablnItemChanged[i])
-                {
-                    ++intCountTrues;
-                    if (intCountTrues >= intResetThreshold)
-                    {
-                        lstCollection.ResetBindings();
-                        return;
+                        if (pblnItemChanged[i])
+                            lstCollection.ResetItem(i);
                     }
                 }
             }
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            finally
             {
-                if (ablnItemChanged[i])
-                    lstCollection.ResetItem(i);
+                if (ablnItemChanged != null)
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
             }
         }
 
         /// <summary>
-        /// Sorts the elements in a range of elements in an ObservableCollection using the specified
-        /// System.Collections.Generic.IComparer`1 generic interface.
+        /// Sorts the elements in a range of elements in a <see cref="System.ComponentModel.BindingList{T}"/> using the specified <see cref="System.Collections.Generic.IComparer{T}"/> generic interface.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection">The ObservableCollection to sort.</param>
-        /// <param name="objComparer">The System.Collections.Generic.IComparer`1 generic interface
-        /// implementation to use when comparing elements, or null to use the System.IComparable`1 generic
-        /// interface implementation of each element.</param>
+        /// <param name="lstCollection">The list to sort.</param>
+        /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"/> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"/> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, IComparer<T> objComparer = null) where T : IComparable
         {
             if (lstCollection == null)
                 throw new ArgumentNullException(nameof(lstCollection));
-            T[] aobjSorted = new T[lstCollection.Count];
-            for (int i = 0; i < lstCollection.Count; ++i)
+            int intCollectionSize = lstCollection.Count;
+            T[] aobjSorted = new T[intCollectionSize];
+            for (int i = 0; i < intCollectionSize; ++i)
                 aobjSorted[i] = lstCollection[i];
-            Array.Sort(aobjSorted, objComparer);
-            bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
-            // Not BitArray because read/write performance is much more important here than memory footprint
-            bool[] ablnItemChanged = blnOldRaiseListChangedEvents ? new bool[aobjSorted.Length] : null;
-            // We're going to disable events while we work with the list, then call them all at once at the end
-            lstCollection.RaiseListChangedEvents = false;
-            for (int i = 0; i < aobjSorted.Length; ++i)
+            Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
+            if (!lstCollection.RaiseListChangedEvents)
             {
-                T objLoop = aobjSorted[i];
-                int intOldIndex = lstCollection.IndexOf(objLoop);
-                int intNewIndex = i;
-                if (intOldIndex == intNewIndex)
-                    continue;
-                if (intOldIndex > intNewIndex)
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
-                    // Account for removal happening before removal
-                    --intOldIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    lstCollection[i] = aobjSorted[i];
+                }
+
+                return;
+            }
+            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
+            int intResetThreshold = intCollectionSize / 2;
+            int intCountChanges = 0;
+            // Not BitArray because read/write performance is much more important here than memory footprint
+            bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                : null;
+            try
+            {
+#pragma warning disable IDE0029 // Use coalesce expression
+                Span<bool> pblnItemChanged = ablnItemChanged != null
+                    ? ablnItemChanged
+                    : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                // We're going to disable events while we work with the list, then call them all at once at the end
+                lstCollection.RaiseListChangedEvents = false;
+                try
+                {
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
-                        for (int j = intNewIndex; j <= intOldIndex; ++j)
-                            ablnItemChanged[j] = true;
+                        T objLoop = aobjSorted[i];
+                        if (ReferenceEquals(objLoop, lstCollection[i]))
+                            continue;
+                        pblnItemChanged[i] = true;
+                        ++intCountChanges;
+                        lstCollection[i] = objLoop;
                     }
+                }
+                finally
+                {
+                    lstCollection.RaiseListChangedEvents = true;
+                }
+
+                if (intCountChanges >= intResetThreshold)
+                {
+                    lstCollection.ResetBindings();
                 }
                 else
                 {
-                    // Account for removal happening before removal
-                    --intNewIndex;
-                    if (blnOldRaiseListChangedEvents)
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
-                        for (int j = intOldIndex; j <= intNewIndex; ++j)
-                            ablnItemChanged[j] = true;
-                    }
-                }
-                lstCollection.RemoveAt(intOldIndex);
-                lstCollection.Insert(intNewIndex, objLoop);
-            }
-            lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
-            if (!blnOldRaiseListChangedEvents)
-                return;
-            // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-            int intResetThreshold = ablnItemChanged.Length / 2;
-            int intCountTrues = 0;
-            // ReSharper disable once ForCanBeConvertedToForeach
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
-            {
-                if (ablnItemChanged[i])
-                {
-                    ++intCountTrues;
-                    if (intCountTrues >= intResetThreshold)
-                    {
-                        lstCollection.ResetBindings();
-                        return;
+                        if (pblnItemChanged[i])
+                            lstCollection.ResetItem(i);
                     }
                 }
             }
-            for (int i = 0; i < ablnItemChanged.Length; ++i)
+            finally
             {
-                if (ablnItemChanged[i])
-                    lstCollection.ResetItem(i);
+                if (ablnItemChanged != null)
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
             }
         }
 
+        /// <summary>
+        /// Move a single item in a <see cref="System.ComponentModel.BindingList{T}"/> from one index to another.
+        /// If more than half of the list is changed, a <see cref="System.ComponentModel.ListChangedType.Reset"/> event is fired, otherwise it will be a series of <see cref="System.ComponentModel.ListChangedType.ItemChanged"/> events.
+        /// We cannot fire a <see cref="System.ComponentModel.ListChangedType.ItemMoved"/> because we do not have access to the internal methods required for us to be able to fire it instead of the others.
+        /// </summary>
+        /// <param name="lstCollection">The list in which the item is to be moved.</param>
+        /// <param name="intOldIndex">The current index where the item to be moved is located.</param>
+        /// <param name="intNewIndex">The new index to which the selected item should be moved.</param>
         public static void Move<T>(this BindingList<T> lstCollection, int intOldIndex, int intNewIndex)
         {
+            int intParity = intOldIndex < intNewIndex ? 1 : -1;
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
             try
             {
                 lstCollection.RaiseListChangedEvents = false;
-                int intParity = intOldIndex < intNewIndex ? 1 : -1;
                 for (int i = intOldIndex; i != intNewIndex; i += intParity)
                 {
                     (lstCollection[intOldIndex + intParity], lstCollection[intOldIndex]) = (lstCollection[intOldIndex], lstCollection[intOldIndex + intParity]);
@@ -283,6 +291,18 @@ namespace Chummer
             finally
             {
                 lstCollection.RaiseListChangedEvents = blnOldRaiseListChangedEvents;
+            }
+
+            if (Math.Abs(intOldIndex - intNewIndex) * 2 >= lstCollection.Count)
+            {
+                lstCollection.ResetBindings();
+            }
+            else
+            {
+                for (int i = intOldIndex; i != intNewIndex; i += intParity)
+                {
+                    lstCollection.ResetItem(i);
+                }
             }
         }
     }

@@ -49,7 +49,7 @@ namespace Chummer
         /// <summary>
         /// object creator
         /// </summary>
-        public NumericUpDownEx()
+        public NumericUpDownEx() : base()
         {
             // get a reference to the underlying UpDownButtons field
             // Underlying private type is System.Windows.Forms.UpDownBase+UpDownButtons
@@ -72,12 +72,6 @@ namespace Chummer
             _textbox.KeyDown += txt_KeyDown;
             _upDownButtons.MouseEnter += _mouseEnterLeave;
             _upDownButtons.MouseLeave += _mouseEnterLeave;
-            base.MouseEnter += _mouseEnterLeave;
-            base.MouseLeave += _mouseEnterLeave;
-            // DPI handler for margins (WinForms is buggy with handling scaling of margins on numeric up-downs)
-            ParentChanged += OnMarginChanged;
-            MarginChanged += OnMarginChanged;
-            DpiChangedAfterParent += OnMarginChanged;
         }
 
         private int _intSkipOnMarginChanged;
@@ -86,7 +80,36 @@ namespace Chummer
         private Padding _objSavedMargins;
         private bool _blnMarginsSaved;
 
-        private void OnMarginChanged(object sender, EventArgs e)
+        protected override void OnMouseEnter(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            _mouseEnterLeave(this, e);
+        }
+
+        protected override void OnMouseLeave(EventArgs e)
+        {
+            base.OnMouseEnter(e);
+            _mouseEnterLeave(this, e);
+        }
+
+        // DPI handler for margins (WinForms is buggy with handling scaling of margins on numeric up-downs)
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            OnMarginChangedCommon();
+        }
+        protected override void OnMarginChanged(EventArgs e)
+        {
+            base.OnMarginChanged(e);
+            OnMarginChangedCommon();
+        }
+        protected override void OnDpiChangedAfterParent(EventArgs e)
+        {
+            base.OnDpiChangedAfterParent(e);
+            OnMarginChangedCommon();
+        }
+
+        private void OnMarginChangedCommon()
         {
             if (_intSkipOnMarginChanged > 0)
                 return;
@@ -129,16 +152,6 @@ namespace Chummer
                 _blnMarginsSaved = true;
                 Interlocked.Decrement(ref _intSkipOnMarginChanged);
             }
-        }
-
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                _textbox?.Dispose();
-                _upDownButtons?.Dispose();
-            }
-            base.Dispose(disposing);
         }
 
         protected override void OnPaint(PaintEventArgs e)
@@ -495,13 +508,19 @@ namespace Chummer
         private int _intValue;
         private int _intMinimum;
         private int _intMaximum;
-        private readonly object _objIntValueLock = new object();
+        // Locks to ensure cached int values and decimal values are always in sync
+        private readonly object _objValueLock = new object();
+        private readonly object _objMinimumLock = new object();
+        private readonly object _objMaximumLock = new object();
 
         protected override void OnValueChanged(EventArgs e)
         {
-            lock (_objIntValueLock) // Lock ensures synchronicity
-                _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
-            base.OnValueChanged(e);
+            using (CursorWait.New(this))
+            {
+                lock (_objValueLock)
+                    _intValue = Math.Min(Math.Max(Value, int.MinValue), int.MaxValue).ToInt32();
+                base.OnValueChanged(e);
+            }
         }
 
         /// <summary>
@@ -514,10 +533,41 @@ namespace Chummer
         {
             get
             {
-                lock (_objIntValueLock) // Lock ensures synchronicity
+                lock (_objValueLock)
                     return _intValue;
             }
-            set => Value = value;
+            set
+            {
+                // Ensure value is within bounds before setting
+                // Use cached integer values to avoid overflow when Maximum/Minimum are outside Int32 range
+                int intAdjustedValue = Math.Max(Math.Min(value, MaximumAsInt), MinimumAsInt);
+                Value = intAdjustedValue;
+            }
+        }
+
+        /// <summary>
+        /// Current value of the spinbox. Defined separately
+        /// </summary>
+        public new decimal Value
+        {
+            get
+            {
+                lock (_objValueLock)
+                    return base.Value;
+            }
+            set
+            {
+                lock (_objValueLock)
+                {
+                    decimal decMaximum = Maximum;
+                    if (value > decMaximum)
+                        value = decMaximum;
+                    decimal decMinimum = Minimum;
+                    if (value < decMinimum)
+                        value = decMinimum;
+                    base.Value = value;
+                }
+            }
         }
 
         /// <summary>
@@ -528,7 +578,11 @@ namespace Chummer
         [Browsable(false)]
         public int MinimumAsInt
         {
-            get => _intMinimum;
+            get
+            {
+                lock (_objMinimumLock)
+                    return _intMinimum;
+            }
             set => Minimum = value;
         }
 
@@ -537,13 +591,20 @@ namespace Chummer
         /// </summary>
         public new decimal Minimum
         {
-            get => base.Minimum;
+            get
+            {
+                lock (_objMinimumLock)
+                    return base.Minimum;
+            }
             set
             {
-                if (value == base.Minimum)
-                    return;
-                _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
-                base.Minimum = value;
+                lock (_objMinimumLock)
+                {
+                    if (value == base.Minimum)
+                        return;
+                    _intMinimum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                    base.Minimum = value;
+                }
             }
         }
 
@@ -555,7 +616,11 @@ namespace Chummer
         [Browsable(false)]
         public int MaximumAsInt
         {
-            get => _intMaximum;
+            get
+            {
+                lock (_objMaximumLock)
+                    return _intMaximum;
+            }
             set => Maximum = value;
         }
 
@@ -564,13 +629,20 @@ namespace Chummer
         /// </summary>
         public new decimal Maximum
         {
-            get => base.Maximum;
+            get
+            {
+                lock (_objMaximumLock)
+                    return base.Maximum;
+            }
             set
             {
-                if (value == base.Maximum)
-                    return;
-                _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
-                base.Maximum = value;
+                lock (_objMaximumLock)
+                {
+                    if (value == base.Maximum)
+                        return;
+                    _intMaximum = Math.Min(Math.Max(value, int.MinValue), int.MaxValue).ToInt32();
+                    base.Maximum = value;
+                }
             }
         }
 
@@ -667,5 +739,6 @@ namespace Chummer
         }
 
         #endregion UpDownButtons visibility management
+
     }
 }

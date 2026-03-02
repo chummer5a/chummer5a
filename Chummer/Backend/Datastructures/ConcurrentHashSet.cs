@@ -65,13 +65,42 @@ namespace Chummer
         /// <inheritdoc />
         public IEnumerator<T> GetEnumerator()
         {
-            return DicInternal.Keys.GetEnumerator();
+            return new ConcurrentHashSetEnumerator(DicInternal.GetEnumerator());
         }
 
         /// <inheritdoc />
         IEnumerator IEnumerable.GetEnumerator()
         {
             return GetEnumerator();
+        }
+
+        private sealed class ConcurrentHashSetEnumerator : IEnumerator<T>
+        {
+            private readonly IEnumerator<KeyValuePair<T, bool>> _objInternalEnumerator;
+
+            public ConcurrentHashSetEnumerator(IEnumerator<KeyValuePair<T, bool>> objInternalEnumerator)
+            {
+                _objInternalEnumerator = objInternalEnumerator;
+            }
+
+            public void Dispose()
+            {
+                _objInternalEnumerator.Dispose();
+            }
+
+            public bool MoveNext()
+            {
+                return _objInternalEnumerator.MoveNext();
+            }
+
+            public void Reset()
+            {
+                _objInternalEnumerator.Reset();
+            }
+
+            public T Current => _objInternalEnumerator.Current.Key;
+
+            object IEnumerator.Current => Current;
         }
 
         /// <inheritdoc />
@@ -83,10 +112,10 @@ namespace Chummer
         /// <inheritdoc />
         public bool TryTake(out T item)
         {
-            if (!DicInternal.IsEmpty)
+            while (!DicInternal.IsEmpty)
             {
                 // FIFO to be compliant with how the default for BlockingCollection<T> is ConcurrentQueue
-                item = DicInternal.Keys.First();
+                item = DicInternal.First().Key;
                 if (DicInternal.TryRemove(item, out bool _))
                     return true;
             }
@@ -97,7 +126,8 @@ namespace Chummer
         /// <inheritdoc />
         public T[] ToArray()
         {
-            return DicInternal.Keys.ToArray();
+            // Don't use Keys collection directly because iterating over it does not lock the main dictionary against changes
+            return DicInternal.GetKeysToListSafe().ToArray();
         }
 
         /// <inheritdoc />
@@ -120,11 +150,24 @@ namespace Chummer
         public virtual void IntersectWith(IEnumerable<T> other)
         {
             HashSet<T> setOther = new HashSet<T>(other);
-            foreach (T item in DicInternal.Keys)
+            bool blnRemovalHappened;
+            List<T> lstKeysToDelete = new List<T>(Count);
+            do
             {
-                if (!setOther.Contains(item))
-                    DicInternal.TryRemove(item, out bool _);
+                blnRemovalHappened = false;
+                lstKeysToDelete.Clear();
+                foreach (KeyValuePair<T, bool> kvpItem in DicInternal) // Set up this way because working with Keys directly does not lock the dictionary
+                {
+                    if (!setOther.Contains(kvpItem.Key))
+                        lstKeysToDelete.Add(kvpItem.Key);
+                }
+                foreach (T item in lstKeysToDelete)
+                {
+                    if (!setOther.Contains(item)) // Double check
+                        blnRemovalHappened = DicInternal.TryRemove(item, out _) || blnRemovalHappened;
+                }
             }
+            while (blnRemovalHappened);
         }
 
         /// <inheritdoc />
@@ -141,8 +184,11 @@ namespace Chummer
         {
             foreach (T item in other)
             {
-                if (!DicInternal.TryAdd(item, false))
-                    DicInternal.TryRemove(item, out bool _);
+                while (!DicInternal.TryAdd(item, false))
+                {
+                    if (DicInternal.TryRemove(item, out bool _))
+                        break;
+                }
             }
         }
 
@@ -228,9 +274,9 @@ namespace Chummer
         {
             if (arrayIndex + DicInternal.Count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(arrayIndex));
-            for (int i = 0; i < DicInternal.Count; ++i)
+            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
-                array[arrayIndex] = DicInternal.Keys.ElementAt(i);
+                array[arrayIndex] = kvpLoop.Key;
                 ++arrayIndex;
             }
         }
@@ -246,15 +292,20 @@ namespace Chummer
         {
             if (index + DicInternal.Count > array.Length)
                 throw new ArgumentOutOfRangeException(nameof(index));
-            for (int i = 0; i < DicInternal.Count; ++i)
+            foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
-                array.SetValue(DicInternal.Keys.ElementAt(i), index);
+                array.SetValue(kvpLoop.Key, index);
                 ++index;
             }
         }
 
         /// <inheritdoc cref="ISet{T}.Count" />
         public int Count => DicInternal.Count;
+
+        /// <summary>Gets a value that indicates whether the ConcurrentHashSet is empty.</summary>
+        /// <returns>
+        /// <see langword="true" /> if the ConcurrentHashSet is empty; otherwise, <see langword="false" />.</returns>
+        public bool IsEmpty => DicInternal.IsEmpty;
 
         /// <inheritdoc />
         public object SyncRoot => throw new NotSupportedException();

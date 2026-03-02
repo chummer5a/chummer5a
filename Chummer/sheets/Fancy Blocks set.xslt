@@ -637,7 +637,7 @@
           <img src="data:image/jpeg;base64,{mainmugshotbase64}" class="mugshot" />
         </td></tr>
       </xsl:if>
-      <xsl:if test="prioritymetatype != ''">
+      <xsl:if test="buildmethod = 'Priority' or buildmethod = 'SumtoTen'">
         <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Priorities" />]</div></td></tr>
                         <tr><td><xsl:value-of select="$lang.Metatype" /></td><td><strong><xsl:value-of select="prioritymetatype" /></strong></td></tr>
                         <tr><td><xsl:value-of select="$lang.Attributes" /></td><td><strong><xsl:value-of select="priorityattributes" /></strong></td></tr>
@@ -2280,7 +2280,6 @@
           <tr>
             <td style="white-space:pre;">
                 <xsl:value-of select="year" /><xsl:text>, </xsl:text>
-                <xsl:value-of select="$lang.Month" /><xsl:text> </xsl:text><xsl:value-of select="month" /><xsl:text>, </xsl:text>
                 <xsl:value-of select="$lang.Week" /><xsl:text> </xsl:text><xsl:value-of select="week" />
             </td>
             <td style="width:100%;">

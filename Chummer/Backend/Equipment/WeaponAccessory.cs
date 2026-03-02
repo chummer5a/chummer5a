@@ -30,7 +30,6 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
-using Chummer.Backend.Attributes;
 using NLog;
 
 namespace Chummer.Backend.Equipment
@@ -38,8 +37,8 @@ namespace Chummer.Backend.Equipment
     /// <summary>
     /// Weapon Accessory.
     /// </summary>
-    [DebuggerDisplay("{DisplayName(GlobalSettings.DefaultLanguage)}")]
-    public sealed class WeaponAccessory : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable
+    [DebuggerDisplay("{DisplayName(\"en-us\")}")]
+    public sealed class WeaponAccessory : IHasInternalId, IHasName, IHasSourceId, IHasXmlDataNode, IHasNotes, ICanSell, ICanEquip, IHasSource, IHasRating, ICanSort, IHasWirelessBonus, IHasStolenProperty, ICanPaste, IHasGear, ICanBlackMarketDiscount, IDisposable, IAsyncDisposable, IHasCharacterObject
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -47,11 +46,12 @@ namespace Chummer.Backend.Equipment
         private Guid _guiSourceID;
         private readonly Character _objCharacter;
         private XmlNode _nodAllowGear;
-        private readonly TaggedObservableCollection<Gear> _lstGear = new TaggedObservableCollection<Gear>();
+        private readonly TaggedObservableCollection<Gear> _lstGear;
         private Weapon _objParent;
         private string _strName = string.Empty;
         private string _strMount = string.Empty;
         private string _strExtraMount = string.Empty;
+        private string _strAddMount = string.Empty;
         private string _strRC = string.Empty;
         private string _strDamage = string.Empty;
         private string _strDamageType = string.Empty;
@@ -70,11 +70,11 @@ namespace Chummer.Backend.Equipment
         private Color _colNotes = ColorManager.HasNotesColor;
         private string _strDicePool = string.Empty;
         private string _strRatingLabel = "String_Rating";
-        private int _intAccuracy;
-        private int _intMaxRating;
+        private string _strAccuracy;
+        private string _strMaxRating;
         private int _intRating;
         private int _intRCGroup;
-        private int _intReach;
+        private string _strReach;
         private int _intAmmoSlots;
         private string _strModifyAmmoCapacity;
         private bool _blnDeployable;
@@ -84,8 +84,9 @@ namespace Chummer.Backend.Equipment
         private bool _blnEquipped = true;
         private int _intAccessoryCostMultiplier = 1;
         private string _strExtra = string.Empty;
-        private int _intRangeBonus;
-        private int _intRangeModifier;
+        private string _strReplaceRange = string.Empty;
+        private string _strRangeBonus = "0";
+        private string _strRangeModifier = "0";
         private int _intSingleShot;
         private int _intShortBurst;
         private int _intLongBurst;
@@ -95,7 +96,8 @@ namespace Chummer.Backend.Equipment
         private string _strAmmoBonus = string.Empty;
         private int _intSortOrder;
         private bool _blnWirelessOn = true;
-        private XmlNode _nodWirelessBonus;
+        private XmlElement _nodWirelessBonus;
+        private XmlElement _nodWirelessWeaponBonus;
         private bool _blnStolen;
         private string _strParentID;
 
@@ -106,21 +108,22 @@ namespace Chummer.Backend.Equipment
             // Create the GUID for the new Weapon.
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
-
+            _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
             _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
         }
 
-        private void GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private async Task GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             bool blnDoEquipped = _objCharacter?.IsLoading == false && Equipped && Parent?.ParentVehicle == null;
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
 
                     break;
@@ -128,9 +131,9 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Remove:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     break;
@@ -138,23 +141,23 @@ namespace Chummer.Backend.Equipment
                 case NotifyCollectionChangedAction.Replace:
                     foreach (Gear objOldItem in e.OldItems)
                     {
-                        objOldItem.Parent = null;
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
                         if (blnDoEquipped)
-                            objOldItem.ChangeEquippedStatus(false);
+                            await objOldItem.ChangeEquippedStatusAsync(false, token: token).ConfigureAwait(false);
                     }
 
                     foreach (Gear objNewItem in e.NewItems)
                     {
-                        objNewItem.Parent = this;
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
                         if (blnDoEquipped)
-                            objNewItem.ChangeEquippedStatus(true);
+                            await objNewItem.ChangeEquippedStatusAsync(true, token: token).ConfigureAwait(false);
                     }
 
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
                     if (blnDoEquipped)
-                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                        await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                     break;
             }
         }
@@ -165,11 +168,38 @@ namespace Chummer.Backend.Equipment
         /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
         /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
         /// <param name="intRating">Rating of the Weapon Accessory.</param>
-        /// <param name="blnCreateChildren">Whether or not child items should be created.</param>
-        /// <param name="blnCreateImprovements">Whether or not bonuses should be created.</param>
-        /// <param name="blnSkipCost">Whether or not forms asking to determine variable costs should be displayed.</param>
-        public void Create(XmlNode objXmlAccessory, Tuple<string, string> strMount, int intRating, bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true)
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public void Create(XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
+            bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
         {
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlAccessory, strMount, intRating, blnSkipCost,
+                blnCreateChildren, blnCreateImprovements, token), token);
+        }
+
+        /// <summary>
+        /// Create a Weapon Accessory from an XmlNode and return the TreeNodes for it.
+        /// </summary>
+        /// <param name="objXmlAccessory">XmlNode to create the object from.</param>
+        /// <param name="strMount">Mount slot that the Weapon Accessory will consume.</param>
+        /// <param name="intRating">Rating of the Weapon Accessory.</param>
+        /// <param name="blnCreateChildren">Whether child items should be created.</param>
+        /// <param name="blnCreateImprovements">Whether bonuses should be created.</param>
+        /// <param name="blnSkipCost">Whether forms asking to determine variable costs should be displayed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task CreateAsync(XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
+            bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
+        {
+            return CreateCoreAsync(false, objXmlAccessory, strMount, intRating, blnSkipCost, blnCreateChildren,
+                blnCreateImprovements, token);
+        }
+
+        private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
+            bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (!objXmlAccessory.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
                 Log.Warn(new object[] { "Missing id field for weapon accessory xmlnode", objXmlAccessory });
@@ -183,10 +213,12 @@ namespace Chummer.Backend.Equipment
 
             _blnEquipped = blnCreateImprovements;
             objXmlAccessory.TryGetStringFieldQuickly("name", ref _strName);
-            _strMount = strMount?.Item1 ?? string.Empty;
-            _strExtraMount = strMount?.Item2 ?? string.Empty;
-            _intRating = intRating;
-            objXmlAccessory.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+            _strMount = strMount.Item1 ?? string.Empty;
+            _strExtraMount = strMount.Item2 ?? string.Empty;
+            objXmlAccessory.TryGetStringFieldQuickly("addmount", ref _strAddMount);
+            objXmlAccessory.TryGetStringFieldQuickly("rating", ref _strMaxRating);
+            _intRating = intRating; // Set first to make MaxRatingValue work properly
+            _intRating = Math.Min(intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             objXmlAccessory.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objXmlAccessory.TryGetStringFieldQuickly("avail", ref _strAvail);
             objXmlAccessory.TryGetStringFieldQuickly("weight", ref _strWeight);
@@ -199,40 +231,77 @@ namespace Chummer.Backend.Equipment
                     _strCost = "0";
                 if (_strCost.StartsWith("Variable(", StringComparison.Ordinal))
                 {
+                    string strFirstHalf = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                    string strSecondHalf = string.Empty;
+                    int intHyphenIndex = strFirstHalf.IndexOf('-');
+                    if (intHyphenIndex != -1)
+                    {
+                        if (intHyphenIndex + 1 < strFirstHalf.Length)
+                            strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                        strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                    }
                     decimal decMin;
                     decimal decMax = decimal.MaxValue;
-                    string strCost = _strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                    if (strCost.Contains('-'))
+                    if (intHyphenIndex != -1)
                     {
-                        string[] strValues = strCost.Split('-');
-                        decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                        decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
+                        decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
                     }
                     else
-                        decMin = Convert.ToDecimal(strCost.FastEscape('+'), GlobalSettings.InvariantCultureInfo);
+                        decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
 
                     if (decMin != 0 || decMax != decimal.MaxValue)
                     {
                         if (decMax > 1000000)
                             decMax = 1000000;
-                        using (ThreadSafeForm<SelectNumber> frmPickNumber
-                               = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
-                               {
-                                   Minimum = decMin,
-                                   Maximum = decMax,
-                                   Description = string.Format(
-                                       GlobalSettings.CultureInfo,
-                                       LanguageManager.GetString("String_SelectVariableCost"),
-                                       CurrentDisplayNameShort),
-                                   AllowCancel = false
-                               }))
+
+                        if (blnSync)
                         {
-                            if (frmPickNumber.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                   = ThreadSafeForm<SelectNumber>.Get(() => new SelectNumber(_objCharacter.Settings.MaxNuyenDecimals)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = string.Format(
+                                           GlobalSettings.CultureInfo,
+                                           LanguageManager.GetString("String_SelectVariableCost", token: token),
+                                           CurrentDisplayNameShort),
+                                       AllowCancel = false
+                                   }))
                             {
-                                _guiID = Guid.Empty;
-                                return;
+                                // ReSharper disable once MethodHasAsyncOverload
+                                if (frmPickNumber.ShowDialogSafe(_objCharacter, token) == DialogResult.Cancel)
+                                {
+                                    _guiID = Guid.Empty;
+                                    return;
+                                }
+                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
                             }
-                            _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
+                        else
+                        {
+                            string strDescription = string.Format(
+                                GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("String_SelectVariableCost", token: token).ConfigureAwait(false),
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                            int intDecimalPlaces = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaxNuyenDecimalsAsync(token).ConfigureAwait(false);
+                            using (ThreadSafeForm<SelectNumber> frmPickNumber
+                                   = await ThreadSafeForm<SelectNumber>.GetAsync(() => new SelectNumber(intDecimalPlaces)
+                                   {
+                                       Minimum = decMin,
+                                       Maximum = decMax,
+                                       Description = strDescription,
+                                       AllowCancel = false
+                                   }, token).ConfigureAwait(false))
+                            {
+                                if (await frmPickNumber.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                                {
+                                    _guiID = Guid.Empty;
+                                    return;
+                                }
+                                _strCost = frmPickNumber.MyForm.SelectedValue.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
                         }
                     }
                 }
@@ -250,8 +319,15 @@ namespace Chummer.Backend.Equipment
 
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
-                Notes = CommonFunctions.GetBookNotes(objXmlAccessory, Name, CurrentDisplayName, Source, Page,
-                    DisplayPage(GlobalSettings.Language), _objCharacter);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    Notes = CommonFunctions.GetBookNotes(objXmlAccessory, Name, CurrentDisplayName, Source,
+                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                        Page, DisplayPage(GlobalSettings.Language), _objCharacter, token);
+                else
+                    await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlAccessory, Name,
+                        await GetCurrentDisplayNameAsync(token).ConfigureAwait(false), Source, Page,
+                        await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false), _objCharacter, token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
 
             objXmlAccessory.TryGetStringFieldQuickly("rc", ref _strRC);
@@ -261,14 +337,18 @@ namespace Chummer.Backend.Equipment
             objXmlAccessory.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objXmlAccessory.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
             objXmlAccessory.TryGetStringFieldQuickly("ammoreplace", ref _strAmmoReplace);
-            objXmlAccessory.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
+            objXmlAccessory.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            if (_strAccuracy == "0" || _strAccuracy == "+0" || _strAccuracy == "-0")
+                _strAccuracy = string.Empty;
             objXmlAccessory.TryGetStringFieldQuickly("dicepool", ref _strDicePool);
             objXmlAccessory.TryGetStringFieldQuickly("damagetype", ref _strDamageType);
             objXmlAccessory.TryGetStringFieldQuickly("damage", ref _strDamage);
             objXmlAccessory.TryGetStringFieldQuickly("damagereplace", ref _strDamageReplace);
             objXmlAccessory.TryGetStringFieldQuickly("firemode", ref _strFireMode);
             objXmlAccessory.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
-            objXmlAccessory.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objXmlAccessory.TryGetStringFieldQuickly("reach", ref _strReach);
+            if (_strReach == "0" || _strReach == "+0" || _strReach == "-0")
+                _strReach = string.Empty;
             objXmlAccessory.TryGetStringFieldQuickly("ap", ref _strAP);
             objXmlAccessory.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
             string strTemp = string.Empty;
@@ -277,98 +357,150 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strFireMode))
                     _strFireMode = strTemp;
                 else if (!_strFireMode.Contains(strTemp))
-                    _strFireMode += '/' + strTemp;
+                    _strFireMode += "/" + strTemp;
             }
             objXmlAccessory.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objXmlAccessory.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objXmlAccessory.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
-            objXmlAccessory.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
-            objXmlAccessory.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
+            objXmlAccessory.TryGetStringFieldQuickly("replacerange", ref _strReplaceRange);
+            objXmlAccessory.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
+            objXmlAccessory.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objXmlAccessory.TryGetStringFieldQuickly("extra", ref _strExtra);
             objXmlAccessory.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objXmlAccessory.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             objXmlAccessory.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
 
             // Add any Gear that comes with the Weapon Accessory.
-            XmlNode xmlGearsNode = objXmlAccessory["gears"];
+            XmlElement xmlGearsNode = objXmlAccessory["gears"];
             if (xmlGearsNode != null && blnCreateChildren)
             {
-                XmlDocument objXmlGearDocument = _objCharacter.LoadData("gear.xml");
+                XmlDocument objXmlGearDocument = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData("gear.xml", token: token)
+                    : await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
                 using (XmlNodeList xmlGearsList = xmlGearsNode.SelectNodes("usegear"))
                 {
                     if (xmlGearsList != null)
                     {
                         foreach (XmlNode objXmlAccessoryGear in xmlGearsList)
                         {
-                            XmlNode objXmlAccessoryGearName = objXmlAccessoryGear["name"];
-                            XmlNode objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
-                            XmlAttributeCollection objXmlAccessoryGearNameAttributes = objXmlAccessoryGearName?.Attributes;
+                            XmlElement objXmlAccessoryGearName = objXmlAccessoryGear["name"];
+                            XmlElement objXmlAccessoryGearCategory = objXmlAccessoryGear["category"];
+                            XmlAttributeCollection objXmlAccessoryGearNameAttributes =
+                                objXmlAccessoryGearName?.Attributes;
                             int intGearRating = 0;
                             decimal decGearQty = 1;
-                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerText ?? string.Empty;
-                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerText ?? string.Empty;
-                            string strChildForceValue = objXmlAccessoryGearNameAttributes?["select"]?.InnerText ?? string.Empty;
-                            bool blnChildCreateChildren = objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerText != bool.FalseString;
-                            bool blnAddChildImprovements = blnCreateImprovements && objXmlAccessoryGearNameAttributes?["addimprovements"]?.InnerText != bool.FalseString;
+                            string strChildForceSource = objXmlAccessoryGear["source"]?.InnerTextViaPool(token) ?? string.Empty;
+                            string strChildForcePage = objXmlAccessoryGear["page"]?.InnerTextViaPool(token) ?? string.Empty;
+                            string strChildForceValue =
+                                objXmlAccessoryGearNameAttributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                            bool blnChildCreateChildren =
+                                objXmlAccessoryGearNameAttributes?["createchildren"]?.InnerTextViaPool(token) != bool.FalseString;
+                            bool blnAddChildImprovements = blnCreateImprovements &&
+                                                           objXmlAccessoryGearNameAttributes?["addimprovements"]
+                                                               ?.InnerTextViaPool(token) != bool.FalseString;
                             if (objXmlAccessoryGear["rating"] != null)
-                                intGearRating = Convert.ToInt32(objXmlAccessoryGear["rating"].InnerText, GlobalSettings.InvariantCultureInfo);
+                                int.TryParse(objXmlAccessoryGear["rating"].InnerTextViaPool(token), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out intGearRating);
                             if (objXmlAccessoryGearNameAttributes?["qty"] != null)
-                                decGearQty = Convert.ToDecimal(objXmlAccessoryGearNameAttributes["qty"].InnerText, GlobalSettings.InvariantCultureInfo);
+                            {
+                                decimal.TryParse(objXmlAccessoryGearNameAttributes["qty"].InnerTextViaPool(token), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decGearQty);
+                            }
                             string strFilter = "/chummer/gears/gear";
                             if (objXmlAccessoryGearName != null || objXmlAccessoryGearCategory != null)
                             {
-                                strFilter += '[';
+                                strFilter += "[";
                                 if (objXmlAccessoryGearName != null)
                                 {
-                                    strFilter += "name = " + objXmlAccessoryGearName.InnerText.CleanXPath();
+                                    strFilter += "name = " + objXmlAccessoryGearName.InnerTextViaPool(token).CleanXPath();
                                     if (objXmlAccessoryGearCategory != null)
-                                        strFilter += " and category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
+                                        strFilter += " and category = " +
+                                                     objXmlAccessoryGearCategory.InnerTextViaPool(token).CleanXPath();
                                 }
                                 else
-                                    strFilter += "category = " + objXmlAccessoryGearCategory.InnerText.CleanXPath();
-                                strFilter += ']';
-                            }
-                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
+                                    strFilter += "category = " + objXmlAccessoryGearCategory.InnerTextViaPool(token).CleanXPath();
 
-                            Gear objGear = new Gear(_objCharacter);
+                                strFilter += "]";
+                            }
+
+                            XmlNode objXmlGear = objXmlGearDocument.SelectSingleNode(strFilter);
 
                             List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                            objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue, blnAddChildImprovements, blnChildCreateChildren);
+                            Gear objGear = new Gear(_objCharacter);
+                            try
+                            {
+                                if (blnSync)
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                        blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                    objGear.Quantity = decGearQty;
+                                }
+                                else
+                                {
+                                    await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
+                                            blnAddChildImprovements, blnChildCreateChildren, token: token)
+                                        .ConfigureAwait(false);
+                                    await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
+                                }
 
-                            objGear.Quantity = decGearQty;
-                            objGear.Cost = "0";
-                            objGear.ParentID = InternalId;
-                            if (!string.IsNullOrEmpty(strChildForceSource))
-                                objGear.Source = strChildForceSource;
-                            if (!string.IsNullOrEmpty(strChildForcePage))
-                                objGear.Page = strChildForcePage;
-                            _lstGear.Add(objGear);
+                                objGear.Cost = "0";
+                                objGear.ParentID = InternalId;
+                                if (!string.IsNullOrEmpty(strChildForceSource))
+                                    objGear.Source = strChildForceSource;
+                                if (!string.IsNullOrEmpty(strChildForcePage))
+                                    objGear.Page = strChildForcePage;
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstGear.Add(objGear);
+                                else
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
 
-                            // Change the Capacity of the child if necessary.
-                            if (objXmlAccessoryGear["capacity"] != null)
-                                objGear.Capacity = '[' + objXmlAccessoryGear["capacity"].InnerText + ']';
+                                // Change the Capacity of the child if necessary.
+                                if (objXmlAccessoryGear["capacity"] != null)
+                                    objGear.Capacity = "[" + objXmlAccessoryGear["capacity"].InnerTextViaPool(token) + "]";
+                            }
+                            catch
+                            {
+                                if (blnSync)
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objGear.DeleteGear();
+                                else
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
             }
+
             _nodWirelessBonus = objXmlAccessory["wirelessbonus"];
+            _nodWirelessWeaponBonus = objXmlAccessory["wirelessweaponbonus"];
         }
 
         private SourceString _objCachedSourceDetail;
 
-        public SourceString SourceDetail
+        public SourceString SourceDetail =>
+            _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = SourceString.GetSourceString(Source,
+                    DisplayPage(GlobalSettings.Language),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter)
+                : _objCachedSourceDetail;
+
+        public async Task<SourceString> GetSourceDetailAsync(CancellationToken token = default)
         {
-            get
-            {
-                if (_objCachedSourceDetail == default)
-                    _objCachedSourceDetail = SourceString.GetSourceString(Source,
-                        DisplayPage(GlobalSettings.Language), GlobalSettings.Language, GlobalSettings.CultureInfo,
-                        _objCharacter);
-                return _objCachedSourceDetail;
-            }
+            token.ThrowIfCancellationRequested();
+            return _objCachedSourceDetail == default
+                ? _objCachedSourceDetail = await SourceString.GetSourceStringAsync(Source,
+                    await DisplayPageAsync(GlobalSettings.Language, token).ConfigureAwait(false),
+                    GlobalSettings.Language,
+                    GlobalSettings.CultureInfo,
+                    _objCharacter, token).ConfigureAwait(false)
+                : _objCachedSourceDetail;
         }
 
         /// <summary>
@@ -385,8 +517,9 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("mount", _strMount);
             objWriter.WriteElementString("extramount", _strExtraMount);
+            objWriter.WriteElementString("addmount", _strAddMount);
             objWriter.WriteElementString("rc", _strRC);
-            objWriter.WriteElementString("maxrating", _intMaxRating.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("maxrating", _strMaxRating);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("ratinglabel", _strRatingLabel);
             objWriter.WriteElementString("rcgroup", _intRCGroup.ToString(GlobalSettings.InvariantCultureInfo));
@@ -401,10 +534,10 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("included", _blnIncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("equipped", _blnEquipped.ToString(GlobalSettings.InvariantCultureInfo));
             if (_nodAllowGear != null)
-                objWriter.WriteRaw(_nodAllowGear.OuterXml);
+                objWriter.WriteRaw(_nodAllowGear.OuterXmlViaPool());
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
-            objWriter.WriteElementString("accuracy", _intAccuracy.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("accuracy", _strAccuracy);
             if (_lstGear.Count > 0)
             {
                 objWriter.WriteStartElement("gears");
@@ -419,13 +552,13 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("modifyammocapacity", _strModifyAmmoCapacity);
             objWriter.WriteElementString("damagetype", _strDamageType);
             objWriter.WriteElementString("damage", _strDamage);
-            objWriter.WriteElementString("reach", _intReach.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("reach", _strReach);
             objWriter.WriteElementString("damagereplace", _strDamageReplace);
             objWriter.WriteElementString("firemode", _strFireMode);
             objWriter.WriteElementString("firemodereplace", _strFireModeReplace);
             objWriter.WriteElementString("ap", _strAP);
             objWriter.WriteElementString("apreplace", _strAPReplace);
-            objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+            objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
             objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
             objWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("singleshot", _intSingleShot.ToString(GlobalSettings.InvariantCultureInfo));
@@ -433,15 +566,20 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("longburst", _intLongBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("fullburst", _intFullBurst.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("suppressive", _intSuppressive.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("rangebonus", _intRangeBonus.ToString(GlobalSettings.InvariantCultureInfo));
-            objWriter.WriteElementString("rangemodifier", _intRangeModifier.ToString(GlobalSettings.InvariantCultureInfo));
+            objWriter.WriteElementString("replacerange", _strReplaceRange);
+            objWriter.WriteElementString("rangebonus", _strRangeBonus);
+            objWriter.WriteElementString("rangemodifier", _strRangeModifier);
             objWriter.WriteElementString("extra", _strExtra);
             objWriter.WriteElementString("ammobonus", _strAmmoBonus);
             objWriter.WriteElementString("wirelesson", _blnWirelessOn.ToString(GlobalSettings.InvariantCultureInfo));
             if (_nodWirelessBonus != null)
-                objWriter.WriteRaw(_nodWirelessBonus.OuterXml);
+                objWriter.WriteRaw(_nodWirelessBonus.OuterXmlViaPool());
             else
                 objWriter.WriteElementString("wirelessbonus", string.Empty);
+            if (_nodWirelessWeaponBonus != null)
+                objWriter.WriteRaw(_nodWirelessWeaponBonus.OuterXmlViaPool());
+            else
+                objWriter.WriteElementString("wirelessweaponbonus", string.Empty);
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("parentid", _strParentID);
@@ -449,12 +587,29 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Weapon accessory from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy">Whether another node is being copied.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing weapon accessory.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Weapon accessory from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing weapon accessory.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -468,36 +623,46 @@ namespace Chummer.Backend.Equipment
                 _objCachedMyXPathNode = null;
             }
 
-            Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+            Lazy<XmlNode> objMyNode = null;
+            Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+            if (blnSync)
+                objMyNode = new Lazy<XmlNode>(() => this.GetNode(token));
+            else
+                objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("mount", ref _strMount);
             objNode.TryGetStringFieldQuickly("extramount", ref _strExtraMount);
+            objNode.TryGetStringFieldQuickly("addmount", ref _strAddMount);
             objNode.TryGetStringFieldQuickly("rc", ref _strRC);
             objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
             objNode.TryGetStringFieldQuickly("ratinglabel", ref _strRatingLabel);
             objNode.TryGetInt32FieldQuickly("rcgroup", ref _intRCGroup);
-            objNode.TryGetInt32FieldQuickly("accuracy", ref _intAccuracy);
-            if (!objNode.TryGetInt32FieldQuickly("maxrating", ref _intMaxRating))
+            objNode.TryGetStringFieldQuickly("accuracy", ref _strAccuracy);
+            if (_strAccuracy == "0" || _strAccuracy == "+0" || _strAccuracy == "-0")
+                _strAccuracy = string.Empty;
+            if (!objNode.TryGetStringFieldQuickly("maxrating", ref _strMaxRating))
             {
                 // Loading older save before maxrating was tracked for Weapon Accessories
-                objMyNode.Value?.TryGetInt32FieldQuickly("rating", ref _intMaxRating);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("rating", ref _strMaxRating);
             }
+            // Needed for legacy reasons
+            _intRating = Math.Min(_intRating, blnSync ? MaxRatingValue : await GetMaxRatingValueAsync(token).ConfigureAwait(false));
             objNode.TryGetStringFieldQuickly("conceal", ref _strConceal);
             objNode.TryGetBoolFieldQuickly("rcdeployable", ref _blnDeployable);
             objNode.TryGetStringFieldQuickly("avail", ref _strAvail);
             objNode.TryGetStringFieldQuickly("cost", ref _strCost);
             if (!objNode.TryGetStringFieldQuickly("weight", ref _strWeight))
-                objMyNode.Value?.TryGetStringFieldQuickly("weight", ref _strWeight);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("weight", ref _strWeight);
             objNode.TryGetBoolFieldQuickly("included", ref _blnIncludedInWeapon);
             objNode.TryGetBoolFieldQuickly("equipped", ref _blnEquipped);
             objNode.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
             // Compatibility sweep for older versions where some special modifications weren't flagged as such
-            if (!_blnSpecialModification && _objCharacter.LastSavedVersion < new Version(5, 212, 11) && _strName.Contains("Special Modification"))
+            if (!_blnSpecialModification && _objCharacter.LastSavedVersion < new ValueVersion(5, 212, 11) && _strName.Contains("Special Modification"))
             {
-                objMyNode.Value?.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
+                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetBoolFieldQuickly("specialmodification", ref _blnSpecialModification);
             }
             if (!_blnEquipped)
             {
@@ -515,18 +680,49 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetInt32FieldQuickly("ammoslots", ref _intAmmoSlots);
             objNode.TryGetStringFieldQuickly("modifyammocapacity", ref _strModifyAmmoCapacity);
 
-            XmlNode xmlGearsNode = objNode["gears"];
+            XmlElement xmlGearsNode = objNode["gears"];
             if (xmlGearsNode != null)
             {
                 using (XmlNodeList nodChildren = xmlGearsNode.SelectNodes("gear"))
                 {
                     if (nodChildren != null)
                     {
-                        foreach (XmlNode nodChild in nodChildren)
+                        if (blnSync)
                         {
-                            Gear objGear = new Gear(_objCharacter);
-                            objGear.Load(nodChild, blnCopy);
-                            _lstGear.Add(objGear);
+                            foreach (XmlNode nodChild in nodChildren)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                try
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objGear.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstGear.Add(objGear);
+                                }
+                                catch
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objGear.DeleteGear();
+                                    throw;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode nodChild in nodChildren)
+                            {
+                                Gear objGear = new Gear(_objCharacter);
+                                try
+                                {
+                                    await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
+                                    await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+                            }
                         }
                     }
                 }
@@ -546,7 +742,9 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("firemodereplace", ref _strFireModeReplace);
             objNode.TryGetStringFieldQuickly("ap", ref _strAP);
             objNode.TryGetStringFieldQuickly("apreplace", ref _strAPReplace);
-            objNode.TryGetInt32FieldQuickly("reach", ref _intReach);
+            objNode.TryGetStringFieldQuickly("reach", ref _strReach);
+            if (_strReach == "0" || _strReach == "+0" || _strReach == "-0")
+                _strReach = string.Empty;
             objNode.TryGetInt32FieldQuickly("accessorycostmultiplier", ref _intAccessoryCostMultiplier);
             string strTemp = string.Empty;
             if (objNode.TryGetStringFieldQuickly("addmode", ref strTemp))
@@ -554,28 +752,45 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(_strFireMode))
                     _strFireMode = strTemp;
                 else if (!_strFireMode.Contains(strTemp))
-                    _strFireMode += '/' + strTemp;
+                    _strFireMode += "/" + strTemp;
             }
             objNode.TryGetInt32FieldQuickly("singleshot", ref _intSingleShot);
             objNode.TryGetInt32FieldQuickly("shortburst", ref _intShortBurst);
             objNode.TryGetInt32FieldQuickly("longburst", ref _intLongBurst);
             objNode.TryGetInt32FieldQuickly("fullburst", ref _intFullBurst);
             objNode.TryGetInt32FieldQuickly("suppressive", ref _intSuppressive);
-            objNode.TryGetInt32FieldQuickly("rangebonus", ref _intRangeBonus);
-            objNode.TryGetInt32FieldQuickly("rangemodifier", ref _intRangeModifier);
+            objNode.TryGetStringFieldQuickly("replacerange", ref _strReplaceRange);
+            objNode.TryGetStringFieldQuickly("rangebonus", ref _strRangeBonus);
+            objNode.TryGetStringFieldQuickly("rangemodifier", ref _strRangeModifier);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
             objNode.TryGetStringFieldQuickly("ammobonus", ref _strAmmoBonus);
             objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+            XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+            objNode.TryGetNodeWithSourceFallback("wirelessbonus", ref _nodWirelessBonus, objSourceNode);
+            objNode.TryGetNodeWithSourceFallback("wirelessweaponbonus", ref _nodWirelessWeaponBonus, objSourceNode);
             objNode.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
             if (blnCopy)
             {
-                if (!Equipped)
+                if (blnSync)
                 {
-                    _blnEquipped = true;
-                    Equipped = false;
+                    if (!Equipped)
+                    {
+                        _blnEquipped = true;
+                        Equipped = false;
+                    }
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    RefreshWirelessBonuses();
                 }
-                RefreshWirelessBonuses();
+                else
+                {
+                    if (!Equipped)
+                    {
+                        _blnEquipped = true;
+                        await SetEquippedAsync(false, token).ConfigureAwait(false);
+                    }
+                    await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -586,7 +801,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="objCulture">Culture in which to print.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
+        public async Task Print(XmlWriter objWriter, CultureInfo objCulture, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
@@ -596,22 +811,29 @@ namespace Chummer.Backend.Equipment
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("name", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("mount", Mount, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("extramount", ExtraMount, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("rc", RC, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("conceal", TotalConcealability.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("addmount", AddMount, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("damage", (await GetTotalDamageAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("rc", (await GetTotalRCAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ap", (await GetTotalAPAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("conceal", (await GetTotalConcealabilityAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("avail", await TotalAvailAsync(objCulture, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(_objCharacter.Settings.NuyenFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(_objCharacter.Settings.WeightFormat, objCulture), token).ConfigureAwait(false);
+                string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("owncost", (await GetOwnCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
+                string strWeightFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetWeightFormatAsync(token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("weight", TotalWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("ownweight", OwnWeight.ToString(strWeightFormat, objCulture), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("included", IncludedInWeapon.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("source", await _objCharacter.LanguageBookShortAsync(Source, strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("accuracy", Accuracy.ToString("+#,0;-#,0;0", objCulture), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("accuracy", (await GetTotalAccuracyAsync(token).ConfigureAwait(false)).ToString("+#,0.##;-#,0.##;0.##", objCulture), token).ConfigureAwait(false);
                 if (GearChildren.Count > 0)
                 {
                     // <gears>
@@ -630,7 +852,7 @@ namespace Chummer.Backend.Equipment
                     }
                 }
                 if (GlobalSettings.PrintNotes)
-                    await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
             finally
             {
@@ -684,6 +906,11 @@ namespace Chummer.Backend.Equipment
         public XmlNode WirelessBonus => _nodWirelessBonus;
 
         /// <summary>
+        /// XmlNode for the wireless bonuses (if any) this accessory provides specifically to its parent weapon.
+        /// </summary>
+        public XmlNode WirelessWeaponBonus => _nodWirelessWeaponBonus;
+
+        /// <summary>
         /// Name.
         /// </summary>
         public string Name
@@ -734,6 +961,19 @@ namespace Chummer.Backend.Equipment
             set => _strDamage = value;
         }
 
+        public decimal TotalDamage
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(Damage, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalDamageAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(Damage, () => GetRatingAsync(token), token);
+        }
+
         /// <summary>
         /// The Accessory replaces the weapon's damage value.
         /// </summary>
@@ -761,6 +1001,19 @@ namespace Chummer.Backend.Equipment
             set => _strAP = value;
         }
 
+        public decimal TotalAP
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(AP, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalAPAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(AP, () => GetRatingAsync(token), token);
+        }
+
         /// <summary>
         /// Whether the Accessory only grants a Recoil Bonus while deployed.
         /// </summary>
@@ -769,12 +1022,38 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Accuracy.
         /// </summary>
-        public int Accuracy => _intAccuracy;
+        public string Accuracy => _strAccuracy;
+
+        public decimal TotalAccuracy
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(Accuracy, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalAccuracyAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(Accuracy, () => GetRatingAsync(token), token);
+        }
 
         /// <summary>
         /// Accessory modifies Reach by this value.
         /// </summary>
-        public int Reach => _intReach;
+        public string Reach => _strReach;
+
+        public decimal TotalReach
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(Reach, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalReachAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(Reach, () => GetRatingAsync(token), token);
+        }
 
         /// <summary>
         /// Accessory replaces the AP of the parent weapon with this value.
@@ -817,13 +1096,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should appear on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            return objNode != null ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? Name : Name;
+            return objNode != null ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name : Name;
         }
 
         /// <summary>
@@ -831,7 +1110,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CurrentDisplayNameShort => DisplayNameShort(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -843,7 +1122,7 @@ namespace Chummer.Backend.Equipment
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + _objCharacter.TranslateExtra(Extra, strLanguage) + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
             }
 
             return strReturn;
@@ -852,13 +1131,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public async ValueTask<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
             if (!string.IsNullOrEmpty(Extra))
             {
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
             }
 
             return strReturn;
@@ -869,7 +1148,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CurrentDisplayName => DisplayName(GlobalSettings.Language);
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) =>
             DisplayNameAsync(GlobalSettings.Language, token);
 
         /// <summary>
@@ -891,12 +1170,34 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Mount slot added (if any).
+        /// </summary>
+        public string AddMount
+        {
+            get => _strAddMount;
+            set => _strAddMount = value;
+        }
+
+        /// <summary>
         /// Recoil.
         /// </summary>
         public string RC
         {
             get => _strRC;
             set => _strRC = value;
+        }
+
+        public decimal TotalRC
+        {
+            get
+            {
+                return ProcessRatingStringAsDec(RC, () => Rating);
+            }
+        }
+
+        public Task<decimal> GetTotalRCAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(RC, () => GetRatingAsync(token), token);
         }
 
         /// <summary>
@@ -913,71 +1214,17 @@ namespace Chummer.Backend.Equipment
             set => _strConceal = value;
         }
 
-        public int TotalConcealability
+        public decimal TotalConcealability
         {
             get
             {
-                int intReturn = 0;
-
-                string strConceal = Concealability;
-                if (strConceal.Contains("Rating"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    try
-                    {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strConceal);
-                        if (blnIsSuccess)
-                            intReturn = ((double)objProcess).StandardRound();
-                    }
-                    catch (OverflowException)
-                    {
-                        // swallow this
-                    }
-                    catch (InvalidCastException)
-                    {
-                        // swallow this
-                    }
-                }
-                else if (!string.IsNullOrEmpty(strConceal) && !int.TryParse(strConceal, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
-                {
-                    intReturn = 0;
-                }
-                return intReturn;
+                return ProcessRatingStringAsDec(Concealability, () => Rating);
             }
         }
 
-        public async ValueTask<int> GetTotalConcealabilityAsync(CancellationToken token = default)
+        public Task<decimal> GetTotalConcealabilityAsync(CancellationToken token = default)
         {
-            int intReturn = 0;
-
-            string strConceal = Concealability;
-            if (strConceal.Contains("Rating"))
-            {
-                // If the cost is determined by the Rating, evaluate the expression.
-                strConceal = strConceal.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                try
-                {
-                    (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strConceal, token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intReturn = ((double) objProcess).StandardRound();
-                }
-                catch (OverflowException)
-                {
-                    // swallow this
-                }
-                catch (InvalidCastException)
-                {
-                    // swallow this
-                }
-            }
-            else if (!string.IsNullOrEmpty(strConceal)
-                     && !int.TryParse(strConceal, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
-            {
-                intReturn = 0;
-            }
-
-            return intReturn;
+            return ProcessRatingStringAsDecAsync(Concealability, () => GetRatingAsync(token), token);
         }
 
         /// <summary>
@@ -985,11 +1232,30 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public int Rating
         {
-            get => _intRating;
+            get => Math.Min(_intRating, MaxRatingValue);
             set
             {
+                value = Math.Min(value, MaxRatingValue);
                 if (Interlocked.Exchange(ref _intRating, value) == value)
                     return;
+                if (Parent.Equipped && Parent.ParentVehicle == null && (Weight.ContainsAny("FixedValues", "Rating") || GearChildren.Any(x => x.Equipped && x.Weight.Contains("Parent Rating"))))
+                {
+                    bool blnDoPropertyChange = true;
+                    Weapon objWeapon = Parent;
+                    for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
+                    {
+                        objWeapon = objParent;
+                        if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                        {
+                            blnDoPropertyChange = false;
+                            break;
+                        }
+                    }
+                    if (blnDoPropertyChange)
+                    {
+                        _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
+                    }
+                }
                 if (GearChildren.Count > 0)
                 {
                     foreach (Gear objChild in GearChildren.Where(x => x.MaxRating.Contains("Parent") || x.MinRating.Contains("Parent")))
@@ -1003,19 +1269,355 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Maximum Rating of the Weapon Accessory
+        /// Rating.
         /// </summary>
-        public int MaxRating
+        public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
-            get => _intMaxRating;
-            set
+            token.ThrowIfCancellationRequested();
+            return Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Rating.
+        /// </summary>
+        public async Task SetRatingAsync(int value, CancellationToken token = default)
+        {
+            value = Math.Min(value, await GetMaxRatingValueAsync(token).ConfigureAwait(false));
+            if (Interlocked.Exchange(ref _intRating, value) == value)
+                return;
+            if (Parent.Equipped && Parent.ParentVehicle == null
+                && (Weight.ContainsAny("FixedValues", "Rating")
+                    || await GearChildren.AnyAsync(x => x.Equipped && x.Weight.Contains("Parent Rating"), token).ConfigureAwait(false)))
             {
-                _intMaxRating = value;
-                if (Rating > value)
+                bool blnDoPropertyChange = true;
+                Weapon objWeapon = Parent;
+                for (Weapon objParent = objWeapon.Parent; objParent != null; objParent = objWeapon.Parent)
                 {
-                    Rating = value;
+                    objWeapon = objParent;
+                    if (!objWeapon.Equipped || objWeapon.ParentVehicle != null)
+                    {
+                        blnDoPropertyChange = false;
+                        break;
+                    }
+                }
+                if (blnDoPropertyChange)
+                {
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
                 }
             }
+            if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
+            {
+                await GearChildren.ForEachAsync(async objChild =>
+                {
+                    if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
+                        return;
+                    // This will update a child's rating if it would become out of bounds due to its parent's rating changing
+                    await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                }, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Maximum Rating of the Weapon Accessory
+        /// </summary>
+        public string MaxRating
+        {
+            get => _strMaxRating;
+            set => _strMaxRating = value;
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public int MaxRatingValue
+        {
+            get
+            {
+                string strExpression = MaxRating;
+                if (string.IsNullOrEmpty(strExpression))
+                    return int.MaxValue;
+                return string.IsNullOrEmpty(strExpression) ? int.MaxValue : ProcessRatingString(strExpression, _intRating);
+            }
+            set => MaxRating = value.ToString(GlobalSettings.InvariantCultureInfo);
+        }
+
+        /// <summary>
+        /// Maximum Rating (value form).
+        /// </summary>
+        public Task<int> GetMaxRatingValueAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<int>(token);
+            string strExpression = MaxRating;
+            return string.IsNullOrEmpty(strExpression) ? Task.FromResult(int.MaxValue) : ProcessRatingStringAsync(strExpression, _intRating, token);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, int intRating)
+        {
+            return ProcessRatingString(strExpression, () => intRating);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private int ProcessRatingString(string strExpression, Func<int> funcRating)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating).StandardRound();
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating)
+        {
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+        }
+
+        /// <summary>
+        /// Processes a string into a decimal based on logical processing.
+        /// </summary>
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        {
+            blnIsSuccess = true;
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                blnIsSuccess = false;
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        Func<string> funcPhysicalLimitString = null;
+                        bool blnGetPhysicalLimitString = strExpression.Contains("Physical") || strExpression.Contains("Missile");
+                        Weapon objParent = Parent;
+                        if (objParent != null)
+                        {
+                            Lazy<int> intParentRating = new Lazy<int>(() => objParent.Rating);
+                            sbdValue.CheapReplace(strExpression, "{Parent Rating}",
+                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Parent Rating",
+                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "{Weapon Rating}",
+                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Weapon Rating",
+                                () => intParentRating.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            Lazy<decimal> decParentCost = new Lazy<decimal>(() => objParent.OwnCost);
+                            sbdValue.CheapReplace(strExpression, "{Weapon Cost}", () => decParentCost.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Weapon Cost", () => decParentCost.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            Lazy<decimal> decParentTotalCost = new Lazy<decimal>(() => objParent.MultipliableCost(this));
+                            sbdValue.CheapReplace(strExpression, "{Weapon Total Cost}", () => decParentTotalCost.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Weapon Total Cost", () => decParentTotalCost.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParent.OwnWeight);
+                            sbdValue.CheapReplace(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Weapon Weight", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this));
+                            sbdValue.CheapReplace(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.CheapReplace(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
+                            objParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            if (blnGetPhysicalLimitString)
+                            {
+                                if (objParent.ParentVehicle != null)
+                                {
+                                    funcPhysicalLimitString = () =>
+                                    {
+                                        string strHandling = objParent.ParentVehicle.TotalHandling;
+                                        int intSlashIndex = strHandling.IndexOf('/');
+                                        if (intSlashIndex != -1)
+                                            strHandling = strHandling.Substring(0, intSlashIndex);
+                                        return strHandling;
+                                    };
+                                }
+                                else
+                                    funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                            }
+                        }
+                        else
+                        {
+                            sbdValue.Replace("{Parent Rating}", "0")
+                                .Replace("Parent Rating", "0")
+                                .Replace("{Weapon Rating}", "0")
+                                .Replace("Weapon Rating", "0")
+                                .Replace("{Weapon Cost}", "0")
+                                .Replace("Weapon Cost", "0")
+                                .Replace("{Weapon Total Cost}", "0")
+                                .Replace("Weapon Total Cost", "0")
+                                .Replace("{Weapon Weight}", "0")
+                                .Replace("Weapon Weight", "0")
+                                .Replace("{Weapon Total Weight}", "0")
+                                .Replace("Weapon Total Weight", "0");
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                            if (blnGetPhysicalLimitString)
+                                funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
+                        }
+                        sbdValue.CheapReplace("{Rating}", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                        sbdValue.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
+                        if (funcPhysicalLimitString != null)
+                        {
+                            string strPhysicalLimit = funcPhysicalLimitString();
+                            sbdValue.Replace("{Missile}", strPhysicalLimit);
+                            sbdValue.Replace("Missile", strPhysicalLimit);
+                            sbdValue.Replace("{Physical}", strPhysicalLimit);
+                            sbdValue.Replace("Physical", strPhysicalLimit);
+                        }
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                object objProcess;
+                (blnIsSuccess, objProcess)
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+
+            return decValue;
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private Task<int> ProcessRatingStringAsync(string strExpression, int intRating, CancellationToken token = default)
+        {
+            return ProcessRatingStringAsync(strExpression, () => Task.FromResult(intRating), token);
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<int> ProcessRatingStringAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return (await ProcessRatingStringAsDecAsync(strExpression, funcRating, token).ConfigureAwait(false)).StandardRound();
+        }
+
+        /// <summary>
+        /// Processes a string into an int based on logical processing.
+        /// </summary>
+        private async Task<decimal> ProcessRatingStringAsDecAsync(string strExpression, Func<Task<int>> funcRating, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strExpression))
+                return 0;
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
+            {
+                if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
+                {
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
+                    {
+                        sbdValue.Append(strExpression);
+                        Func<Task<string>> funcPhysicalLimitString = null;
+                        bool blnGetPhysicalLimitString = strExpression.Contains("Physical") || strExpression.Contains("Missile");
+                        Weapon objParent = Parent;
+                        if (objParent != null)
+                        {
+                            Microsoft.VisualStudio.Threading.AsyncLazy<int> intParentRating = new Microsoft.VisualStudio.Threading.AsyncLazy<int>(() => objParent.GetRatingAsync(token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Rating}",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Rating",
+                                async () => (await intParentRating.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => objParent.GetOwnCostAsync(token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Cost",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Cost}",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Cost",
+                                async () => (await decParentCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            Microsoft.VisualStudio.Threading.AsyncLazy<decimal> decParentTotalCost = new Microsoft.VisualStudio.Threading.AsyncLazy<decimal>(() => objParent.MultipliableCostAsync(this, token), Utils.JoinableTaskFactory);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Parent Total Cost}",
+                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Total Cost",
+                                async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            Lazy<decimal> decParentWeight = new Lazy<decimal>(() => objParent.OwnWeight);
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Weight}", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Weight", () => decParentWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this, token));
+                            await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await objParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            if (blnGetPhysicalLimitString)
+                            {
+                                if (objParent.ParentVehicle != null)
+                                {
+                                    funcPhysicalLimitString = async () =>
+                                    {
+                                        string strHandling = await objParent.ParentVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                                        int intSlashIndex = strHandling.IndexOf('/');
+                                        if (intSlashIndex != -1)
+                                            strHandling = strHandling.Substring(0, intSlashIndex);
+                                        return strHandling;
+                                    };
+                                }
+                                else
+                                    funcPhysicalLimitString = async () =>
+                                    (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                        .InvariantCultureInfo);
+                            }
+                        }
+                        else
+                        {
+                            sbdValue.Replace("{Parent Rating}", "0")
+                                .Replace("Parent Rating", "0")
+                                .Replace("{Weapon Rating}", "0")
+                                .Replace("Weapon Rating", "0")
+                                .Replace("{Weapon Cost}", "0")
+                                .Replace("Weapon Cost", "0")
+                                .Replace("{Weapon Total Cost}", "0")
+                                .Replace("Weapon Total Cost", "0")
+                                .Replace("{Weapon Weight}", "0")
+                                .Replace("Weapon Weight", "0")
+                                .Replace("{Weapon Total Weight}", "0")
+                                .Replace("Weapon Total Weight", "0");
+                            Vehicle.FillAttributesInXPathWithDummies(sbdValue);
+                            await _objCharacter
+                                .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            if (blnGetPhysicalLimitString)
+                                funcPhysicalLimitString = async () =>
+                                    (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
+                                        .InvariantCultureInfo);
+                        }
+                        await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        await sbdValue.CheapReplaceAsync(strExpression, "Rating", async () => (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                        if (funcPhysicalLimitString != null)
+                        {
+                            string strPhysicalLimit = await funcPhysicalLimitString().ConfigureAwait(false);
+                            sbdValue.Replace("{Missile}", strPhysicalLimit);
+                            sbdValue.Replace("Missile", strPhysicalLimit);
+                            sbdValue.Replace("{Physical}", strPhysicalLimit);
+                            sbdValue.Replace("Physical", strPhysicalLimit);
+                        }
+                        strExpression = sbdValue.ToString();
+                    }
+                }
+                (bool blnIsSuccess, object objProcess)
+                            = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
+                if (blnIsSuccess)
+                    decValue = Convert.ToDecimal((double)objProcess);
+            }
+
+            return decValue;
         }
 
         public string RatingLabel
@@ -1090,19 +1692,17 @@ namespace Chummer.Backend.Equipment
         /// <param name="strLanguage">Language file keyword to use.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        public async ValueTask<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
+        public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Page;
             XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
-            string s = objNode != null
-                ? (await objNode.SelectSingleNodeAndCacheExpressionAsync("altpage", token: token).ConfigureAwait(false))?.Value ?? Page
-                : Page;
-            return !string.IsNullOrWhiteSpace(s) ? s : Page;
+            string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
+            return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
         }
 
         /// <summary>
-        /// Whether or not this Accessory is part of the base weapon configuration.
+        /// Whether this Accessory is part of the base weapon configuration.
         /// </summary>
         public bool IncludedInWeapon
         {
@@ -1111,7 +1711,7 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Whether or not this Accessory is installed and contributing towards the Weapon's stats.
+        /// Whether this Accessory is installed and contributing towards the Weapon's stats.
         /// </summary>
         public bool Equipped
         {
@@ -1124,7 +1724,7 @@ namespace Chummer.Backend.Equipment
                 Weapon objParent = Parent;
                 if (objParent.Equipped && objParent.ParentVehicle == null)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         if (objGear.Equipped)
                         {
@@ -1134,17 +1734,49 @@ namespace Chummer.Backend.Equipment
 
                     if (_objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
                                                               || GearChildren.DeepAny(
-                                                                  x => x.Children,
-                                                                  x => !string.IsNullOrEmpty(x.Weight))))
+                                                                  x => x.Children.Where(y => y.Equipped),
+                                                                  x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
                         _objCharacter.OnPropertyChanged(nameof(Character.TotalCarriedWeight));
                 }
                 else
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false);
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Whether this Accessory is installed and contributing towards the Weapon's stats.
+        /// </summary>
+        public async Task SetEquippedAsync(bool value, CancellationToken token = default)
+        {
+            if (_blnEquipped == value)
+                return;
+            _blnEquipped = value;
+            Weapon objParent = Parent;
+            if (objParent.Equipped && objParent.ParentVehicle == null)
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                {
+                    if (objGear.Equipped)
+                    {
+                        await objGear.ChangeEquippedStatusAsync(value, true, token).ConfigureAwait(false);
+                    }
+                }, token).ConfigureAwait(false);
+
+                if (_objCharacter?.IsLoading == false && (!string.IsNullOrEmpty(Weight)
+                                                          || await GearChildren.DeepAnyAsync(
+                                                              x => x.Children,
+                                                              x => x.Equipped && !string.IsNullOrEmpty(x.Weight), token: token).ConfigureAwait(false)))
+                    await _objCharacter.OnPropertyChangedAsync(nameof(Character.TotalCarriedWeight), token).ConfigureAwait(false);
+            }
+            else
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                    objGear.ChangeEquippedStatusAsync(false, token: token), token: token).ConfigureAwait(false);
             }
         }
 
@@ -1157,6 +1789,21 @@ namespace Chummer.Backend.Equipment
             set => _strNotes = value;
         }
 
+        public Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
+            return Task.FromResult(_strNotes);
+        }
+
+        public Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _strNotes = value;
+            return Task.CompletedTask;
+        }
+
         /// <summary>
         /// Forecolor to use for Notes in treeviews.
         /// </summary>
@@ -1164,6 +1811,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _colNotes;
             set => _colNotes = value;
+        }
+
+        public Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<Color>(token);
+            return Task.FromResult(_colNotes);
+        }
+
+        public Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            _colNotes = value;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -1174,7 +1836,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability in the program's current language.
         /// </summary>
-        public ValueTask<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
+        public Task<string> GetDisplayTotalAvailAsync(CancellationToken token = default) => TotalAvailAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
         /// <summary>
         /// Total Availability.
@@ -1187,7 +1849,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Calculated Availability of the Vehicle.
         /// </summary>
-        public async ValueTask<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
+        public async Task<string> TotalAvailAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
             return await (await TotalAvailTupleAsync(token: token).ConfigureAwait(false)).ToStringAsync(objCulture, strLanguage, token).ConfigureAwait(false);
         }
@@ -1203,11 +1865,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = strAvail.ProcessFixedValuesString(() => Rating);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -1216,28 +1874,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
-                    {
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev,
-                                              () => objLoopAttribute.TotalValue.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                        sbdAvail.CheapReplace(strAvail, objLoopAttribute.Abbrev + "Base",
-                                              () => objLoopAttribute.TotalBase.ToString(
-                                                  GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdAvail.ToString());
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
-                }
+                intAvail += ProcessRatingString(strAvail, () => Rating);
             }
 
             if (blnCheckChildren)
@@ -1258,6 +1895,8 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
+            intAvail += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true).StandardRound();
+
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
             if (intAvail < 0)
                 intAvail = 0;
@@ -1268,7 +1907,7 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Availability as a triple.
         /// </summary>
-        public async ValueTask<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
+        public async Task<AvailabilityValue> TotalAvailTupleAsync(bool blnCheckChildren = true, CancellationToken token = default)
         {
             bool blnModifyParentAvail = false;
             string strAvail = Avail;
@@ -1276,11 +1915,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                if (strAvail.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strAvail.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strAvail = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -1289,63 +1924,25 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAvail))
-                {
-                    sbdAvail.Append(strAvail.TrimStart('+'));
-                    sbdAvail.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-
-                    AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-                    await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                    {
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev,
-                                                         async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                        await sbdAvail.CheapReplaceAsync(strAvail, objLoopAttribute.Abbrev + "Base",
-                                                         async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                             .ConfigureAwait(false)).ToString(
-                                                             GlobalSettings.InvariantCultureInfo), token: token)
-                                      .ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
-                    (bool blnIsSuccess, object objProcess)
-                        = await CommonFunctions.EvaluateInvariantXPathAsync(sbdAvail.ToString(), token).ConfigureAwait(false);
-                    if (blnIsSuccess)
-                        intAvail += ((double)objProcess).StandardRound();
-                }
+                intAvail += await ProcessRatingStringAsync(strAvail, () => GetRatingAsync(token), token).ConfigureAwait(false);
             }
 
             if (blnCheckChildren)
             {
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
-                intAvail += await GearChildren.SumAsync(async objChild =>
+                intAvail += await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
                 {
-                    if (objChild.ParentID == InternalId)
-                        return 0;
                     AvailabilityValue objLoopAvailTuple
                         = await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                     if (objLoopAvailTuple.Suffix == 'F')
                         chrLastAvailChar = 'F';
                     else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
                         chrLastAvailChar = 'R';
-                    return objLoopAvailTuple.AddToParent ? objLoopAvailTuple.Value : 0;
+                    return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
                 }, token).ConfigureAwait(false);
             }
+
+            intAvail += (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound();
 
             // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
             if (intAvail < 0)
@@ -1366,17 +1963,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// A List of the Gear attached to the Cyberware.
         /// </summary>
-        public TaggedObservableCollection<Gear> GearChildren
-        {
-            get
-            {
-                using (EnterReadLock.Enter(_objCharacter.LockObject))
-                    return _lstGear;
-            }
-        }
+        public TaggedObservableCollection<Gear> GearChildren => _lstGear;
 
         /// <summary>
-        /// Whether or not the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// Whether the Armor's cost should be discounted by 10% through the Black Market Pipeline Quality.
         /// </summary>
         public bool DiscountCost
         {
@@ -1396,18 +1986,33 @@ namespace Chummer.Backend.Equipment
                     return;
                 if (value.ParentVehicle != null)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(false);
                     }
                 }
                 else if (Equipped)
                 {
-                    foreach (Gear objGear in GearChildren)
+                    foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                     {
                         objGear.ChangeEquippedStatus(true);
                     }
                 }
+            }
+        }
+
+        public async Task SetParentAsync(Weapon value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (Interlocked.Exchange(ref _objParent, value) == value || value == null)
+                return;
+            if (value.ParentVehicle != null)
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(false, token: token), token).ConfigureAwait(false);
+            }
+            else if (Equipped)
+            {
+                await GearChildren.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(true, token: token), token).ConfigureAwait(false);
             }
         }
 
@@ -1419,11 +2024,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total cost of the Weapon Accessory.
         /// </summary>
-        public async ValueTask<decimal> GetTotalCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostAsync(token).ConfigureAwait(false)
-                   + await GearChildren.SumAsync(g => g.GetTotalCostAsync(token).AsTask(), token).ConfigureAwait(false);
+                   + await GearChildren.SumAsync(g => g.GetTotalCostAsync(token), token).ConfigureAwait(false);
         }
 
         public decimal StolenTotalCost => CalculatedStolenTotalCost(true);
@@ -1440,14 +2045,14 @@ namespace Chummer.Backend.Equipment
             return OwnCost + decPlugin;
         }
 
-        public ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
+        public Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(true, token);
 
-        public ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
+        public Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default) => CalculatedStolenTotalCostAsync(false, token);
 
-        public async ValueTask<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
+        public async Task<decimal> CalculatedStolenTotalCostAsync(bool blnStolen, CancellationToken token = default)
         {
             decimal decPlugin = await GearChildren
-                                      .SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token).AsTask(), token)
+                                      .SumAsync(g => g.CalculatedStolenTotalCostAsync(blnStolen, token), token)
                                       .ConfigureAwait(false);
             if (Stolen != blnStolen)
                 return decPlugin;
@@ -1465,42 +2070,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (IncludedInWeapon)
                     return 0;
-                decimal decReturn = 0;
-                string strCostExpr = Cost;
-                if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-                {
-                    sbdCost.Append(strCostExpr.TrimStart('+'));
-                    sbdCost.CheapReplace(strCostExpr, "Rating",
-                                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.CheapReplace(strCostExpr, "Weapon Cost",
-                                         () => (Parent?.OwnCost ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdCost.CheapReplace(strCostExpr, "Weapon Total Cost",
-                                         () => (Parent?.MultipliableCost(this) ?? 0.0m).ToString(
-                                             GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
-                    {
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev,
-                                             () => objLoopAttribute.TotalValue.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                        sbdCost.CheapReplace(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                             () => objLoopAttribute.TotalBase.ToString(
-                                                 GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdCost.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-                }
-
+                decimal decReturn = ProcessRatingStringAsDec(Cost, () => Rating);
                 if (DiscountCost)
                     decReturn *= 0.9m;
                 if (Parent != null)
@@ -1508,10 +2078,17 @@ namespace Chummer.Backend.Equipment
                     decReturn *= Parent.AccessoryMultiplier;
                     if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
                     {
-                        string[] astrParentDoubledCostModificationSlots = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                        if (astrParentDoubledCostModificationSlots.Contains(Mount) || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                        bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                        foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                         {
-                            decReturn *= 2;
+                            if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                            {
+                                decReturn *= 2;
+                                if (blnBreakAfterFound)
+                                    break;
+                                else
+                                    blnBreakAfterFound = true;
+                            }
                         }
                     }
                 }
@@ -1523,70 +2100,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The cost of just the Weapon Accessory itself.
         /// </summary>
-        public async ValueTask<decimal> GetOwnCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (IncludedInWeapon)
                 return 0;
-            decimal decReturn = 0;
-            string strCostExpr = Cost;
-            if (strCostExpr.StartsWith("FixedValues(", StringComparison.Ordinal))
-            {
-                string[] strValues = strCostExpr.TrimStartOnce("FixedValues(", true).TrimEndOnce(')')
-                                                .Split(',', StringSplitOptions.RemoveEmptyEntries);
-                strCostExpr = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-            }
-
-            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCost))
-            {
-                sbdCost.Append(strCostExpr.TrimStart('+'));
-                await sbdCost.CheapReplaceAsync(strCostExpr, "Rating",
-                                                () => Rating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCostExpr, "Weapon Cost",
-                                                async () => (Parent != null
-                                                    ? await Parent.GetOwnCostAsync(token).ConfigureAwait(false)
-                                                    : 0.0m).ToString(GlobalSettings.InvariantCultureInfo),
-                                                token: token).ConfigureAwait(false);
-                await sbdCost.CheapReplaceAsync(strCostExpr, "Weapon Total Cost",
-                                                async () => (Parent != null
-                                                    ? await Parent.MultipliableCostAsync(this, token).ConfigureAwait(false)
-                                                    : 0.0m).ToString(
-                                                    GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-
-                AttributeSection objAttributeSection = await _objCharacter.GetAttributeSectionAsync(token).ConfigureAwait(false);
-                await (await objAttributeSection.GetAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                {
-                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                }, token).ConfigureAwait(false);
-                await (await objAttributeSection.GetSpecialAttributeListAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopAttribute =>
-                {
-                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev,
-                                                    async () => (await objLoopAttribute.GetTotalValueAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                    await sbdCost.CheapReplaceAsync(strCostExpr, objLoopAttribute.Abbrev + "Base",
-                                                    async () => (await objLoopAttribute.GetTotalBaseAsync(token)
-                                                        .ConfigureAwait(false)).ToString(
-                                                        GlobalSettings.InvariantCultureInfo), token: token)
-                                 .ConfigureAwait(false);
-                }, token).ConfigureAwait(false);
-
-                (bool blnIsSuccess, object objProcess)
-                    = await CommonFunctions.EvaluateInvariantXPathAsync(sbdCost.ToString(), token).ConfigureAwait(false);
-                if (blnIsSuccess)
-                    decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-            }
-
+            decimal decReturn = await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token).ConfigureAwait(false);
             if (DiscountCost)
                 decReturn *= 0.9m;
             if (Parent != null)
@@ -1594,12 +2113,17 @@ namespace Chummer.Backend.Equipment
                 decReturn *= Parent.AccessoryMultiplier;
                 if (!string.IsNullOrEmpty(Parent.DoubledCostModificationSlots))
                 {
-                    string[] astrParentDoubledCostModificationSlots
-                        = Parent.DoubledCostModificationSlots.Split('/', StringSplitOptions.RemoveEmptyEntries);
-                    if (astrParentDoubledCostModificationSlots.Contains(Mount)
-                        || astrParentDoubledCostModificationSlots.Contains(ExtraMount))
+                    bool blnBreakAfterFound = string.IsNullOrEmpty(Mount) || string.IsNullOrEmpty(ExtraMount);
+                    foreach (string strDoubledCostSlot in Parent.DoubledCostModificationSlots.SplitNoAlloc('/', StringSplitOptions.RemoveEmptyEntries))
                     {
-                        decReturn *= 2;
+                        if (strDoubledCostSlot == Mount || strDoubledCostSlot == ExtraMount)
+                        {
+                            decReturn *= 2;
+                            if (blnBreakAfterFound)
+                                break;
+                            else
+                                blnBreakAfterFound = true;
+                        }
                     }
                 }
             }
@@ -1621,62 +2145,27 @@ namespace Chummer.Backend.Equipment
             {
                 if (IncludedInWeapon)
                     return 0;
-                string strWeightExpression = Weight;
-                if (string.IsNullOrEmpty(strWeightExpression))
-                    return 0;
-
-                decimal decReturn = 0;
-                if (strWeightExpression.StartsWith("FixedValues(", StringComparison.Ordinal))
-                {
-                    string[] strValues = strWeightExpression.TrimStartOnce("FixedValues(", true).TrimEndOnce(')').Split(',', StringSplitOptions.RemoveEmptyEntries);
-                    strWeightExpression = strValues[Math.Max(Math.Min(Rating, strValues.Length) - 1, 0)];
-                }
-
-                using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdWeight))
-                {
-                    sbdWeight.Append(strWeightExpression.TrimStart('+'));
-                    sbdWeight.CheapReplace(strWeightExpression, "Rating",
-                                           () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.CheapReplace(strWeightExpression, "Weapon Weight",
-                                           () => (Parent?.OwnWeight ?? 0.0m).ToString(GlobalSettings.InvariantCultureInfo));
-                    sbdWeight.CheapReplace(strWeightExpression, "Weapon Total Weight",
-                                           () => (Parent?.MultipliableWeight(this) ?? 0.0m).ToString(
-                                               GlobalSettings.InvariantCultureInfo));
-
-                    foreach (CharacterAttrib objLoopAttribute in _objCharacter.AttributeSection.AttributeList.Concat(
-                                 _objCharacter.AttributeSection.SpecialAttributeList))
-                    {
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev,
-                                               () => objLoopAttribute.TotalValue.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                        sbdWeight.CheapReplace(strWeightExpression, objLoopAttribute.Abbrev + "Base",
-                                               () => objLoopAttribute.TotalBase.ToString(
-                                                   GlobalSettings.InvariantCultureInfo));
-                    }
-
-                    (bool blnIsSuccess, object objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
-                    if (blnIsSuccess)
-                        decReturn = Convert.ToDecimal(objProcess, GlobalSettings.InvariantCultureInfo);
-                }
-
-                return decReturn;
+                return ProcessRatingStringAsDec(Weight, () => Rating);
             }
         }
 
         /// <summary>
         /// Dice Pool modifier.
         /// </summary>
-        public int DicePool
+        public decimal DicePool
         {
             get
             {
-                if (string.IsNullOrEmpty(DicePoolString))
-                    return 0;
-                int.TryParse(DicePoolString, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
-                    out int intReturn);
-                return intReturn;
+                return ProcessRatingStringAsDec(DicePoolString, () => Rating);
             }
+        }
+
+        /// <summary>
+        /// Dice Pool modifier.
+        /// </summary>
+        public Task<decimal> GetDicePoolAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(DicePoolString, () => GetRatingAsync(token), token);
         }
 
         private string DicePoolString => _strDicePool;
@@ -1690,38 +2179,17 @@ namespace Chummer.Backend.Equipment
             set => _strAmmoBonus = value;
         }
 
-        public int TotalAmmoBonus
+        public decimal TotalAmmoBonus
         {
             get
             {
-                int intReturn = 0;
-
-                string strAmmoBonus = AmmoBonus;
-                if (strAmmoBonus.Contains("Rating"))
-                {
-                    // If the cost is determined by the Rating, evaluate the expression.
-                    strAmmoBonus = strAmmoBonus.Replace("Rating", Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    try
-                    {
-                        (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strAmmoBonus);
-                        if (blnIsSuccess)
-                            intReturn = ((double)objProcess).StandardRound();
-                    }
-                    catch (OverflowException)
-                    {
-                        // swallow this
-                    }
-                    catch (InvalidCastException)
-                    {
-                        // swallow this
-                    }
-                }
-                else if (!string.IsNullOrEmpty(strAmmoBonus) && !int.TryParse(strAmmoBonus, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intReturn))
-                {
-                    intReturn = 0;
-                }
-                return intReturn;
+                return ProcessRatingStringAsDec(AmmoBonus, () => Rating);
             }
+        }
+
+        public Task<decimal> GetTotalAmmoBonusAsync(CancellationToken token = default)
+        {
+            return ProcessRatingStringAsDecAsync(AmmoBonus, () => GetRatingAsync(token), token);
         }
 
         /// <summary>
@@ -1768,14 +2236,19 @@ namespace Chummer.Backend.Equipment
         public int Suppressive => _intSuppressive;
 
         /// <summary>
+        /// If not empty, overrides the parent weapon's range type with this entry.
+        /// </summary>
+        public string ReplaceRange => _strReplaceRange;
+
+        /// <summary>
         /// Range bonus granted by the Accessory.
         /// </summary>
-        public int RangeBonus => _intRangeBonus;
+        public string RangeBonus => _strRangeBonus;
 
         /// <summary>
         /// Range Dicepool modifier granted by the Accessory.
         /// </summary>
-        public int RangeModifier => _intRangeModifier;
+        public string RangeModifier => _strRangeModifier;
 
         /// <summary>
         /// Value that was selected during an ImprovementManager dialogue.
@@ -1804,18 +2277,17 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/accessories/accessory[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/accessories/accessory[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                                        .CleanXPath()
-                                        + ']');
+            XmlDocument objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadData("weapons.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/accessories/accessory", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/accessories/accessory", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
             return objReturn;
@@ -1830,25 +2302,24 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            objReturn = (blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? _objCharacter.LoadDataXPath("weapons.xml", strLanguage, token: token)
-                    : await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false))
-                .SelectSingleNode(SourceID == Guid.Empty
-                                      ? "/chummer/accessories/accessory[name = "
-                                        + Name.CleanXPath() + ']'
-                                      : "/chummer/accessories/accessory[id = "
-                                        + SourceIDString.CleanXPath() + " or id = "
-                                        + SourceIDString.ToUpperInvariant()
-                                                        .CleanXPath()
-                                        + ']');
+            XPathNavigator objDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? _objCharacter.LoadDataXPath("weapons.xml", strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync("weapons.xml", strLanguage, token: token).ConfigureAwait(false);
+            if (SourceID != Guid.Empty)
+                objReturn = objDoc.TryGetNodeById("/chummer/accessories/accessory", SourceID);
+            if (objReturn == null)
+            {
+                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/accessories/accessory", Name);
+                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+            }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
             return objReturn;
         }
 
         /// <summary>
-        /// Whether or not this Accessory's wireless bonus is enabled
+        /// Whether this Accessory's wireless bonus is enabled
         /// </summary>
         public bool WirelessOn
         {
@@ -1880,11 +2351,11 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public void RefreshWirelessBonuses()
         {
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped && Parent.WirelessOn)
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.DisableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -1894,12 +2365,13 @@ namespace Chummer.Backend.Equipment
 
                     ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.WeaponAccessory, InternalId + "Wireless", WirelessBonus, Rating, CurrentDisplayNameShort);
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = strSelectedValue;
                 }
                 else
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                     {
                         ImprovementManager.EnableImprovements(_objCharacter,
                             _objCharacter.Improvements.Where(x =>
@@ -1915,20 +2387,20 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in GearChildren)
+            foreach (Gear objGear in GearChildren.AsEnumerableWithSideEffects())
                 objGear.RefreshWirelessBonuses();
         }
 
         /// <summary>
         /// Toggle the Wireless Bonus for this weapon accessory.
         /// </summary>
-        public async ValueTask RefreshWirelessBonusesAsync(CancellationToken token = default)
+        public async Task RefreshWirelessBonusesAsync(CancellationToken token = default)
         {
-            if (!string.IsNullOrEmpty(WirelessBonus?.InnerText))
+            if (!WirelessBonus.IsNullOrInnerTextIsEmpty())
             {
                 if (WirelessOn && Equipped && Parent.WirelessOn)
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.DisableImprovementsAsync(_objCharacter,
                                                                           await _objCharacter.Improvements.ToListAsync(x =>
@@ -1938,16 +2410,17 @@ namespace Chummer.Backend.Equipment
 
                     await ImprovementManager.CreateImprovementsAsync(_objCharacter,
                                                                      Improvement.ImprovementSource.WeaponAccessory,
-                                                                     InternalId + "Wireless", WirelessBonus, Rating,
+                                                                     InternalId + "Wireless", WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false),
                                                                      await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                                                                      token: token).ConfigureAwait(false);
 
-                    if (!string.IsNullOrEmpty(ImprovementManager.SelectedValue) && string.IsNullOrEmpty(_strExtra))
-                        _strExtra = ImprovementManager.SelectedValue;
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = strSelectedValue;
                 }
                 else
                 {
-                    if (WirelessBonus.SelectSingleNode("@mode")?.Value == "replace")
+                    if (WirelessBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace")
                     {
                         await ImprovementManager.EnableImprovementsAsync(_objCharacter,
                                                                          await _objCharacter.Improvements.ToListAsync(x =>
@@ -1966,8 +2439,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            foreach (Gear objGear in GearChildren)
-                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1977,7 +2449,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="sbdAvailItems">StringBuilder used to list names of gear that are currently over the availability limit.</param>
         /// <param name="sbdRestrictedItems">StringBuilder used to list names of gear that are being used for Restricted Gear.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async ValueTask<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
+        public async Task<int> CheckRestrictedGear(IDictionary<int, int> dicRestrictedGearLimits, StringBuilder sbdAvailItems, StringBuilder sbdRestrictedItems, CancellationToken token = default)
         {
             int intRestrictedCount = 0;
             if (!IncludedInWeapon)
@@ -1985,8 +2457,8 @@ namespace Chummer.Backend.Equipment
                 AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
                 if (!objTotalAvail.AddToParent)
                 {
-                    int intAvailInt = objTotalAvail.Value;
-                    if (intAvailInt > _objCharacter.Settings.MaximumAvailability)
+                    int intAvailInt = await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
+                    if (intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
                     {
                         int intLowestValidRestrictedGearAvail = -1;
                         foreach (int intValidAvail in dicRestrictedGearLimits.Keys)
@@ -1998,31 +2470,30 @@ namespace Chummer.Backend.Equipment
 
                         string strNameToUse = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         if (Parent != null)
-                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ')';
+                            strNameToUse += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await Parent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) + ")";
 
                         if (intLowestValidRestrictedGearAvail >= 0
                             && dicRestrictedGearLimits[intLowestValidRestrictedGearAvail] > 0)
                         {
                             --dicRestrictedGearLimits[intLowestValidRestrictedGearAvail];
-                            sbdRestrictedItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdRestrictedItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                         else
                         {
                             dicRestrictedGearLimits.Remove(intLowestValidRestrictedGearAvail);
                             ++intRestrictedCount;
-                            sbdAvailItems.AppendLine().Append("\t\t").Append(strNameToUse);
+                            sbdAvailItems.AppendLine().Append("\t\t", strNameToUse);
                         }
                     }
                 }
             }
 
             intRestrictedCount += await GearChildren
-                                        .SumAsync(
-                                            async objChild =>
-                                                await objChild
-                                                      .CheckRestrictedGear(
-                                                          dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
-                                                          token).ConfigureAwait(false), token: token)
+                                        .SumAsync(objChild =>
+                                                objChild
+                                                    .CheckRestrictedGear(
+                                                        dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems,
+                                                        token), token: token)
                                         .ConfigureAwait(false);
 
             return intRestrictedCount;
@@ -2031,21 +2502,21 @@ namespace Chummer.Backend.Equipment
         public decimal DeleteWeaponAccessory(bool blnDoRemoval = true)
         {
             if (blnDoRemoval)
-                Parent.WeaponAccessories.Remove(this);
+                Parent?.WeaponAccessories.Remove(this);
             // Remove any children the Gear may have.
-            decimal decReturn = GearChildren.Sum(x => x.DeleteGear(false));
+            decimal decReturn = GearChildren.AsEnumerableWithSideEffects().Sum(x => x.DeleteGear(false));
 
             DisposeSelf();
 
             return decReturn;
         }
 
-        public async ValueTask<decimal> DeleteWeaponAccessoryAsync(bool blnDoRemoval = true, CancellationToken token = default)
+        public async Task<decimal> DeleteWeaponAccessoryAsync(bool blnDoRemoval = true, CancellationToken token = default)
         {
-            if (blnDoRemoval)
+            if (blnDoRemoval && Parent != null)
                 await Parent.WeaponAccessories.RemoveAsync(this, token).ConfigureAwait(false);
             // Remove any children the Gear may have.
-            decimal decReturn = await GearChildren.SumAsync(x => x.DeleteGearAsync(false, token).AsTask(), token).ConfigureAwait(false);
+            decimal decReturn = await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token).ConfigureAwait(false);
 
             await DisposeSelfAsync().ConfigureAwait(false);
 
@@ -2054,31 +2525,32 @@ namespace Chummer.Backend.Equipment
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, CancellationToken token = default)
         {
-            if (IncludedInWeapon && !string.IsNullOrEmpty(Source) && !_objCharacter.Settings.BookEnabled(Source))
+            token.ThrowIfCancellationRequested();
+            if (IncludedInWeapon && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode
             {
                 Name = InternalId,
-                Text = CurrentDisplayName,
+                Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                 Tag = this,
                 ContextMenuStrip = cmsWeaponAccessory,
-                ForeColor = PreferredColor,
-                ToolTipText = Notes.WordWrap()
+                ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            foreach (Gear objGear in GearChildren)
+            await GearChildren.ForEachAsync(async objGear =>
             {
-                TreeNode objLoopNode = objGear.CreateTreeNode(cmsWeaponAccessoryGear, null);
+                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsWeaponAccessoryGear, null, token).ConfigureAwait(false);
                 if (objLoopNode != null)
                 {
                     lstChildNodes.Add(objLoopNode);
                     objNode.Expand();
                 }
-            }
+            }, token).ConfigureAwait(false);
 
             return objNode;
         }
@@ -2089,7 +2561,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!string.IsNullOrEmpty(Notes))
                 {
-                    return IncludedInWeapon
+                    return IncludedInWeapon || !string.IsNullOrEmpty(ParentID)
                         ? ColorManager.GenerateCurrentModeDimmedColor(NotesColor)
                         : ColorManager.GenerateCurrentModeColor(NotesColor);
                 }
@@ -2097,6 +2569,20 @@ namespace Chummer.Backend.Equipment
                     ? ColorManager.GrayText
                     : ColorManager.WindowText;
             }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
+            {
+                return IncludedInWeapon || !string.IsNullOrEmpty(ParentID)
+                    ? ColorManager.GenerateCurrentModeDimmedColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false));
+            }
+            return IncludedInWeapon || !string.IsNullOrEmpty(ParentID)
+                    ? ColorManager.GrayText
+                    : ColorManager.WindowText;
         }
 
         #endregion UI Methods
@@ -2107,34 +2593,91 @@ namespace Chummer.Backend.Equipment
         {
             if (IncludedInWeapon)
                 return false;
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponAccessory")))
                 return false;
             DeleteWeaponAccessory();
             return true;
         }
 
-        public bool Sell(decimal percentage, bool blnConfirmDelete)
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (IncludedInWeapon)
                 return false;
-            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeapon")))
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteWeaponAccessory", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
                 return false;
+            await DeleteWeaponAccessoryAsync(token: token).ConfigureAwait(false);
+            return true;
+        }
 
+        public bool Sell(decimal decPercentage, bool blnConfirmDelete)
+        {
             if (!_objCharacter.Created)
-            {
-                DeleteWeaponAccessory();
-                return true;
-            }
+                return Remove(blnConfirmDelete);
+            if (IncludedInWeapon)
+                return false;
+            if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteWeaponAccessory")))
+                return false;
 
             // Create the Expense Log Entry for the sale.
             Weapon objParent = Parent;
-            decimal decOriginal = objParent?.TotalCost ?? TotalCost;
-            decimal decAmount = DeleteWeaponAccessory() * percentage;
-            decAmount += (decOriginal - (objParent?.TotalCost ?? 0)) * percentage;
+            decimal decAmount;
+            if (objParent != null)
+            {
+                decimal decOriginal = objParent.TotalCost;
+                decAmount = DeleteWeaponAccessory() * decPercentage;
+                decAmount += (decOriginal - objParent.TotalCost) * decPercentage;
+            }
+            else
+            {
+                decimal decOriginal = TotalCost;
+                decAmount = (DeleteWeaponAccessory() + decOriginal) * decPercentage;
+            }
             ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
-            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + ' ' + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
+            objExpense.Create(decAmount, LanguageManager.GetString("String_ExpenseSoldWeaponAccessory") + " " + CurrentDisplayNameShort, ExpenseType.Nuyen, DateTime.Now);
             _objCharacter.ExpenseEntries.AddWithSort(objExpense);
             _objCharacter.Nuyen += decAmount;
+            return true;
+        }
+
+        public async Task<bool> SellAsync(decimal decPercentage, bool blnConfirmDelete,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                return await RemoveAsync(blnConfirmDelete, token).ConfigureAwait(false);
+
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteWeaponAccessory", token: token).ConfigureAwait(false),
+                        token).ConfigureAwait(false))
+                return false;
+
+            Weapon objParent = Parent;
+            decimal decAmount;
+            if (objParent != null)
+            {
+                decimal decOriginal = await objParent.GetTotalCostAsync(token).ConfigureAwait(false);
+                decAmount = await DeleteWeaponAccessoryAsync(token: token).ConfigureAwait(false) * decPercentage;
+                decAmount += (decOriginal - await objParent.GetTotalCostAsync(token).ConfigureAwait(false)) * decPercentage;
+            }
+            else
+            {
+                decimal decOriginal = await GetTotalCostAsync(token).ConfigureAwait(false);
+                decAmount = (await DeleteWeaponAccessoryAsync(token: token).ConfigureAwait(false) + decOriginal) * decPercentage;
+            }
+
+            // Create the Expense Log Entry for the sale.
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
+            objExpense.Create(decAmount,
+                await LanguageManager.GetStringAsync("String_ExpenseSoldWeaponAccessory", token: token).ConfigureAwait(false) +
+                " " + await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), ExpenseType.Nuyen,
+                DateTime.Now);
+            await _objCharacter.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+            await _objCharacter.ModifyNuyenAsync(decAmount, token).ConfigureAwait(false);
             return true;
         }
 
@@ -2145,38 +2688,45 @@ namespace Chummer.Backend.Equipment
             SourceDetail.SetControl(sourceControl);
         }
 
-        public Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
+        public async Task SetSourceDetailAsync(Control sourceControl, CancellationToken token = default)
         {
             if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                 _objCachedSourceDetail = default;
-            return SourceDetail.SetControlAsync(sourceControl, token);
+            await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
         }
 
-        public bool AllowPasteXml
+        public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
-            get
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                switch (GlobalSettings.ClipboardContentType)
+                token.ThrowIfCancellationRequested();
+                switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Gear:
-                        XPathNavigator checkNode = GlobalSettings.Clipboard.SelectSingleNode("/character/gears/gear")?.CreateNavigator();
+                        XPathNavigator checkNode =
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator(
+                                "/character/gears/gear", token);
                         if (checkNode == null)
                             return false;
-                        string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category")?.Value;
+                        string strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("category", token)?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearCategoryList = AllowGear?.SelectNodes("gearcategory");
-                            if (xmlGearCategoryList?.Count > 0 && xmlGearCategoryList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == strCheckValue))
+                            if (xmlGearCategoryList?.Count > 0 && xmlGearCategoryList.Cast<XmlNode>()
+                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
                             {
                                 return true;
                             }
                         }
 
-                        strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("name")?.Value;
+                        strCheckValue = checkNode.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                         if (!string.IsNullOrEmpty(strCheckValue))
                         {
                             XmlNodeList xmlGearNameList = AllowGear?.SelectNodes("gearname");
-                            if (xmlGearNameList?.Count > 0 && xmlGearNameList.Cast<XmlNode>().Any(objAllowed => objAllowed.InnerText == strCheckValue))
+                            if (xmlGearNameList?.Count > 0 && xmlGearNameList.Cast<XmlNode>()
+                                    .Any(objAllowed => objAllowed.InnerTextViaPool(token) == strCheckValue))
                             {
                                 return true;
                             }
@@ -2188,18 +2738,22 @@ namespace Chummer.Backend.Equipment
                         return false;
                 }
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
-        public bool AllowPasteObject(object input)
+        public Task<bool> AllowPasteObject(object input, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             throw new NotImplementedException();
         }
 
         /// <inheritdoc />
         public void Dispose()
         {
-            foreach (Gear objChild in _lstGear)
-                objChild.Dispose();
+            _lstGear.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             DisposeSelf();
         }
 
@@ -2211,8 +2765,7 @@ namespace Chummer.Backend.Equipment
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            foreach (Gear objChild in _lstGear)
-                await objChild.DisposeAsync().ConfigureAwait(false);
+            await _lstGear.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             await DisposeSelfAsync().ConfigureAwait(false);
         }
 
@@ -2220,5 +2773,7 @@ namespace Chummer.Backend.Equipment
         {
             return _lstGear.DisposeAsync();
         }
+
+        public Character CharacterObject => _objCharacter;
     }
 }

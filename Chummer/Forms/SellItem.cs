@@ -24,6 +24,8 @@ namespace Chummer
 {
     public partial class SellItem : Form
     {
+        private decimal _decSellPercent;
+
         #region Control Events
 
         public SellItem()
@@ -31,10 +33,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private void cmdOK_Click(object sender, EventArgs e)
         {
+            _decSellPercent = nudPercent.DoThreadSafeFunc(x => x.Value) / 100.0m;
             DialogResult = DialogResult.OK;
             Close();
         }
@@ -52,7 +56,7 @@ namespace Chummer
         /// <summary>
         /// The percentage the item will be sold at.
         /// </summary>
-        public decimal SellPercent => nudPercent.DoThreadSafeFunc(x => x.Value) / 100.0m;
+        public decimal SellPercent => _decSellPercent;
 
         #endregion Properties
     }

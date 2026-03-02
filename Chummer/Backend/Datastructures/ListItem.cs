@@ -190,6 +190,8 @@ namespace Chummer
         private int _intColumnToSort;
         private SortOrder _eOrderOfSort;
 
+        private readonly char[] _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
+
         public int Compare(object x, object y)
         {
             if (_eOrderOfSort == SortOrder.None)
@@ -233,8 +235,8 @@ namespace Chummer
                 }
                 else
                 {
-                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
-                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape(LanguageManager.GetString("String_NuyenSymbol").ToCharArray());
+                    string strX = objListViewX?.SubItems[_intColumnToSort].Text.FastEscape(_achrCachedNuyenSymbols);
+                    string strY = objListViewY?.SubItems[_intColumnToSort].Text.FastEscape(_achrCachedNuyenSymbols);
                     if (decimal.TryParse(strX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
                             out decimal decX) &&
                         decimal.TryParse(strY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo,
@@ -278,6 +280,10 @@ namespace Chummer
         private int _intColumnToSort;
         private SortOrder _objOrderOfSort;
 
+        private readonly char[] _achrCachedNuyenSymbols = LanguageManager.GetString("String_NuyenSymbol").ToCharArray();
+        private readonly string _strCachedRestrictedSymbol = LanguageManager.GetString("String_AvailRestricted");
+        private readonly string _strCachedForbiddenSymbol = LanguageManager.GetString("String_AvailForbidden");
+
         public int Compare(object x, object y)
         {
             if (_objOrderOfSort == SortOrder.None)
@@ -292,14 +298,14 @@ namespace Chummer
             // Compare the two items
             string strX = datagridviewrowX?.Cells[_intColumnToSort].Value.ToString();
             string strY = datagridviewrowY?.Cells[_intColumnToSort].Value.ToString();
-            string strNumberX = strX?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+            string strNumberX = strX?.TrimEnd(_achrCachedNuyenSymbols)
                                     .TrimEnd('+')
-                                    .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
-                                    .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
-            string strNumberY = strY?.TrimEnd(LanguageManager.GetString("String_NuyenSymbol").ToCharArray())
+                                    .TrimEndOnce(_strCachedRestrictedSymbol)
+                                    .TrimEndOnce(_strCachedForbiddenSymbol);
+            string strNumberY = strY?.TrimEnd(_achrCachedNuyenSymbols)
                                     .TrimEnd('+')
-                                    .TrimEndOnce(LanguageManager.GetString("String_AvailRestricted"))
-                                    .TrimEndOnce(LanguageManager.GetString("String_AvailForbidden"));
+                                    .TrimEndOnce(_strCachedRestrictedSymbol)
+                                    .TrimEndOnce(_strCachedForbiddenSymbol);
             if (decimal.TryParse(strNumberX, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decX))
             {
                 if (decimal.TryParse(strNumberY, System.Globalization.NumberStyles.Any, GlobalSettings.CultureInfo, out decimal decY))

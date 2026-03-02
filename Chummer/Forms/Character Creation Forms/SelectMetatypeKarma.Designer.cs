@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 using System.Windows;
 using System.Windows.Forms;
 
@@ -17,9 +18,29 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetatypesCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetavariantsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshSelectedMetavariantCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -68,7 +89,7 @@ namespace Chummer
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.cboMetavariant = new Chummer.ElasticComboBox();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
@@ -183,7 +204,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(303, 21);
             this.cboCategory.TabIndex = 66;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshMetatypesControl);
             // 
             // lblQualitiesLabel
@@ -480,7 +500,6 @@ namespace Chummer
             this.cboPossessionMethod.Name = "cboPossessionMethod";
             this.cboPossessionMethod.Size = new System.Drawing.Size(119, 21);
             this.cboPossessionMethod.TabIndex = 65;
-            this.cboPossessionMethod.TooltipText = "";
             this.cboPossessionMethod.Visible = false;
             // 
             // lblForceLabel
@@ -564,7 +583,6 @@ namespace Chummer
             this.cboMetavariant.Name = "cboMetavariant";
             this.cboMetavariant.Size = new System.Drawing.Size(347, 21);
             this.cboMetavariant.TabIndex = 59;
-            this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
             // lblSourceLabel
@@ -713,7 +731,7 @@ namespace Chummer
         private Panel pnlQualities;
         private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal Label lblSourceLabel;
-        internal Label lblSource;
+        internal Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
         internal Button cmdCancel;
         internal Button cmdOK;

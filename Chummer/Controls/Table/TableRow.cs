@@ -33,16 +33,11 @@ namespace Chummer.UI.Table
         public TableRow()
         {
             InitializeComponent();
-            Layout += (sender, evt) => DoLayout();
         }
 
         private async void OnLoad(object sender, EventArgs eventArgs)
         {
             await UpdateAsync(Index, Selected).ConfigureAwait(false);
-        }
-
-        protected virtual void DoLayout()
-        {
         }
 
         protected virtual void Update(int intIndex, bool blnSelected)
@@ -58,19 +53,19 @@ namespace Chummer.UI.Table
             }
         }
 
-        protected virtual async ValueTask UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
+        protected virtual Task UpdateAsync(int intIndex, bool blnSelected, CancellationToken token = default)
         {
             if (blnSelected)
             {
-                Color objHighlightColor = await ColorManager.GetHighlightAsync(token).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token).ConfigureAwait(false);
+                Color objHighlightColor = ColorManager.Highlight;
+                return this.DoThreadSafeAsync(x => x.BackColor = objHighlightColor, token: token);
             }
             else
             {
                 Color objColor = (intIndex & 1) == 0
-                    ? await ColorManager.GetControlLightestAsync(token).ConfigureAwait(false)
-                    : await ColorManager.GetControlAsync(token).ConfigureAwait(false);
-                await this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token).ConfigureAwait(false);
+                    ? ColorManager.ControlLightest
+                    : ColorManager.Control;
+                return this.DoThreadSafeAsync(x => x.BackColor = objColor, token: token);
             }
         }
 
@@ -94,6 +89,15 @@ namespace Chummer.UI.Table
                     return;
                 Update(Index, Selected);
             }
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
         }
     }
 }

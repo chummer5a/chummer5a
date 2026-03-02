@@ -19,12 +19,12 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
 using System.Text.RegularExpressions;
 using System.Threading;
-using ExternalUtils.RegularExpressions.TranslateExceptionTelemetryProcessor;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -76,6 +76,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 if (!exceptionTelemetry.Properties.ContainsKey("Message"))
                     exceptionTelemetry.Properties.Add("Message", ex.Message);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
@@ -87,6 +88,7 @@ namespace Chummer
         {
             if (exception == null)
                 return string.Empty;
+            exception = exception.Demystify();
             Assembly a = exception.GetType().Assembly;
             ResourceManager rm = new ResourceManager(a.GetName().Name, a);
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);
@@ -108,12 +110,12 @@ namespace Chummer
                 else if (!string.IsNullOrEmpty(translated))
                 {
                     string pattern = Regex.Escape(message);
-                    pattern = s_RgxFirstReplacePattern.Replace(pattern, "(?<group$1>.*)");
+                    pattern = s_RgxFirstReplacePattern.Value.Replace(pattern, "(?<group$1>.*)");
 
                     Regex regex = new Regex(pattern);
 
                     string replacePattern = translated;
-                    replacePattern = s_RgxSecondReplacePattern.Replace(replacePattern, "${group$1}");
+                    replacePattern = s_RgxSecondReplacePattern.Value.Replace(replacePattern, "${group$1}");
                     replacePattern = replacePattern.Replace("\\$", "$");
 
                     result = regex.Replace(result, replacePattern);
@@ -123,9 +125,9 @@ namespace Chummer
             return result;
         }
 
-        private static readonly FirstReplacePattern s_RgxFirstReplacePattern
-            = new FirstReplacePattern();
-        private static readonly SecondReplacePattern s_RgxSecondReplacePattern
-            = new SecondReplacePattern();
+        private static readonly Lazy<Regex> s_RgxFirstReplacePattern = new Lazy<Regex>(() => new Regex(@"\\{([0-9]+)\}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        private static readonly Lazy<Regex> s_RgxSecondReplacePattern = new Lazy<Regex>(() => new Regex("{([0-9]+)}",
+            RegexOptions.IgnoreCase | RegexOptions.Multiline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
     }
 }

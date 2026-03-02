@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class MasterIndex
@@ -13,9 +15,44 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadContentCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objItemsSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objCharacterSettingSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericFormClosingCancellationTokenSource?.Dispose();
+                _objLoadContentLocker?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(ref _lstItems);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -42,7 +79,7 @@ namespace Chummer
             this.cboFile = new Chummer.ElasticComboBox();
             this.lstItems = new System.Windows.Forms.ListBox();
             this.tlpGameplayOption = new System.Windows.Forms.TableLayoutPanel();
-            this.cmdEditCharacterSetting = new Chummer.ButtonWithToolTip();
+            this.cmdEditCharacterSetting = new System.Windows.Forms.Button();
             this.lblCharacterSetting = new System.Windows.Forms.Label();
             this.cboCharacterSetting = new Chummer.ElasticComboBox();
             this.tlpMain.SuspendLayout();
@@ -215,7 +252,6 @@ namespace Chummer
             this.cboFile.Name = "cboFile";
             this.cboFile.Size = new System.Drawing.Size(319, 21);
             this.cboFile.TabIndex = 0;
-            this.cboFile.TooltipText = "";
             this.cboFile.SelectedIndexChanged += new System.EventHandler(this.RefreshList);
             // 
             // lstItems
@@ -254,20 +290,13 @@ namespace Chummer
             this.cmdEditCharacterSetting.AutoSize = true;
             this.cmdEditCharacterSetting.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdEditCharacterSetting.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdEditCharacterSetting.Image = null;
-            this.cmdEditCharacterSetting.ImageDpi120 = null;
-            this.cmdEditCharacterSetting.ImageDpi144 = null;
-            this.cmdEditCharacterSetting.ImageDpi192 = null;
-            this.cmdEditCharacterSetting.ImageDpi288 = null;
-            this.cmdEditCharacterSetting.ImageDpi384 = null;
-            this.cmdEditCharacterSetting.ImageDpi96 = null;
             this.cmdEditCharacterSetting.Location = new System.Drawing.Point(683, 3);
             this.cmdEditCharacterSetting.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdEditCharacterSetting.Name = "cmdEditCharacterSetting";
             this.cmdEditCharacterSetting.Size = new System.Drawing.Size(80, 23);
             this.cmdEditCharacterSetting.TabIndex = 20;
+            this.cmdEditCharacterSetting.Tag = "String_ModifyEllipses";
             this.cmdEditCharacterSetting.Text = "Modify...";
-            this.cmdEditCharacterSetting.ToolTipText = "";
             this.cmdEditCharacterSetting.UseVisualStyleBackColor = true;
             this.cmdEditCharacterSetting.Click += new System.EventHandler(this.cmdEditCharacterSetting_Click);
             // 
@@ -292,7 +321,6 @@ namespace Chummer
             this.cboCharacterSetting.Name = "cboCharacterSetting";
             this.cboCharacterSetting.Size = new System.Drawing.Size(603, 21);
             this.cboCharacterSetting.TabIndex = 21;
-            this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // MasterIndex
@@ -339,7 +367,7 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtNotes;
         private System.Windows.Forms.TableLayoutPanel tlpGameplayOption;
         private System.Windows.Forms.Label lblCharacterSetting;
-        private ButtonWithToolTip cmdEditCharacterSetting;
+        private System.Windows.Forms.Button cmdEditCharacterSetting;
         private ElasticComboBox cboCharacterSetting;
     }
 }

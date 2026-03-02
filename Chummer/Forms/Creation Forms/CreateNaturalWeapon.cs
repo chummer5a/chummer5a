@@ -23,11 +23,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml.XPath;
+using Chummer.Backend.Attributes;
 using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
-    public partial class CreateNaturalWeapon : Form
+    public partial class CreateNaturalWeapon : Form, IHasCharacterObject
     {
         private readonly XPathNavigator _objXmlPowersDocument;
         private readonly XPathNavigator _objXmlSkillsDocument;
@@ -35,40 +36,45 @@ namespace Chummer
         private readonly Character _objCharacter;
         private Weapon _objWeapon;
 
+        public Character CharacterObject => _objCharacter;
+
         #region Control Events
 
         public CreateNaturalWeapon(Character objCharacter)
         {
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objXmlPowersDocument = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _objXmlSkillsDocument = _objCharacter.LoadDataXPath("skills.xml").SelectSingleNodeAndCacheExpression("/chummer");
 
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             MoveControls();
         }
 
         private async void CreateNaturalWeapon_Load(object sender, EventArgs e)
         {
             // Load the list of Combat Active Skills and populate the Skills list.
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSkills))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVBase))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstDVType))
             {
-                foreach (XPathNavigator objXmlSkill in await _objXmlSkillsDocument.SelectAndCacheExpressionAsync(
-                             "skills/skill[category = \"Combat Active\"]").ConfigureAwait(false))
+                foreach (XPathNavigator objXmlSkill in _objXmlSkillsDocument.SelectAndCacheExpression(
+                             "skills/skill[category = \"Combat Active\"]"))
                 {
-                    string strName = (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                    string strName = objXmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                     if (!string.IsNullOrEmpty(strName))
                         lstSkills.Add(new ListItem(
                                           strName,
-                                          (await objXmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                          objXmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value
                                           ?? strName));
                 }
 
-                lstDVBase.Add(new ListItem("({STR}/2)", '(' + _objCharacter.STR.DisplayAbbrev + "/2)"));
-                lstDVBase.Add(new ListItem("({STR})", '(' + _objCharacter.STR.DisplayAbbrev + ')'));
+                CharacterAttrib objAttribute = await _objCharacter.GetAttributeAsync("STR").ConfigureAwait(false);
+                string strAbbrev = await objAttribute.GetCurrentDisplayAbbrevAsync().ConfigureAwait(false);
+                lstDVBase.Add(new ListItem("({STR}/2)", "(" + strAbbrev + "/2)"));
+                lstDVBase.Add(new ListItem("({STR})", "(" + strAbbrev + ")"));
                 for (int i = 1; i <= 20; ++i)
                 {
                     lstDVBase.Add(new ListItem(i.ToString(GlobalSettings.InvariantCultureInfo),
@@ -121,7 +127,7 @@ namespace Chummer
             nudReach.Left = lblReach.Left + intWidth + 6;
         }
 
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             // Assemble the DV from the fields.
             string strDamage = await cboDVBase.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
@@ -131,7 +137,7 @@ namespace Chummer
                 if (intDVMod < 0)
                     strDamage += intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
                 else
-                    strDamage += '+' + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
+                    strDamage += "+" + intDVMod.ToString(GlobalSettings.InvariantCultureInfo);
             }
             strDamage += await cboDVType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
 
@@ -141,36 +147,42 @@ namespace Chummer
             if (intAP == 0)
                 strAP = "0";
             else if (intAP > 0)
-                strAP = '+' + intAP.ToString(GlobalSettings.InvariantCultureInfo);
+                strAP = "+" + intAP.ToString(GlobalSettings.InvariantCultureInfo);
             else
                 strAP = intAP.ToString(GlobalSettings.InvariantCultureInfo);
 
             // Get the information for the Natural Weapon Critter Power.
-            XPathNavigator objPower = await _objXmlPowersDocument.SelectSingleNodeAndCacheExpressionAsync("powers/power[name = \"Natural Weapon\"]", token).ConfigureAwait(false);
+            XPathNavigator objPower = _objXmlPowersDocument.SelectSingleNodeAndCacheExpression("powers/power[name = \"Natural Weapon\"]", token);
 
             if (objPower != null)
             {
                 // Create the Weapon.
-                _objWeapon = new Weapon(_objCharacter)
+                _objWeapon = new Weapon(_objCharacter);
+                try
                 {
-                    Name = txtName.Text,
-                    Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
-                    RangeType = "Melee",
-                    Reach = await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false),
-                    Accuracy = "Physical",
-                    Damage = strDamage,
-                    AP = strAP,
-                    Mode = "0",
-                    RC = "0",
-                    Concealability = 0,
-                    Avail = "0",
-                    Cost = "0",
-                    Ammo = "0",
-                    UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false),
-                    Source = (await objPower.SelectSingleNodeAndCacheExpressionAsync("source", token: token).ConfigureAwait(false))?.Value ?? "SR5",
-                    Page = (await objPower.SelectSingleNodeAndCacheExpressionAsync("page", token: token).ConfigureAwait(false))?.Value ?? "0"
-                };
-                _objWeapon.CreateClips();
+                    _objWeapon.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    _objWeapon.Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+                    _objWeapon.RangeType = "Melee";
+                    _objWeapon.Reach = (await nudReach.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
+                    _objWeapon.Accuracy = "Physical";
+                    _objWeapon.Damage = strDamage;
+                    _objWeapon.AP = strAP;
+                    _objWeapon.Mode = "0";
+                    _objWeapon.RC = "0";
+                    _objWeapon.Concealability = "0";
+                    _objWeapon.Avail = "0";
+                    _objWeapon.Cost = "0";
+                    _objWeapon.Ammo = "0";
+                    _objWeapon.UseSkill = await cboSkill.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                    _objWeapon.Source = objPower.SelectSingleNodeAndCacheExpression("source", token: token)?.Value ?? "SR5";
+                    _objWeapon.Page = objPower.SelectSingleNodeAndCacheExpression("page", token: token)?.Value ?? "0";
+                    await _objWeapon.CreateClipsAsync(token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await _objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
 
                 await this.DoThreadSafeAsync(x =>
                 {

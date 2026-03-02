@@ -61,7 +61,7 @@ namespace SevenZip.Compression.LZ
             }
         }
 
-        public async ValueTask InitAsync(Stream stream, bool solid, CancellationToken token = default)
+        public async Task InitAsync(Stream stream, bool solid, CancellationToken token = default)
         {
             await ReleaseStreamAsync(token).ConfigureAwait(false);
             _stream = stream;
@@ -87,12 +87,20 @@ namespace SevenZip.Compression.LZ
                     uint curSize = _windowSize - _pos;
                     if (size < curSize)
                         curSize = size;
-                    int numReadBytes = stream.Read(_buffer, (int) _pos, (int) curSize);
+                    uint numReadBytes;
+                    if (curSize > int.MaxValue)
+                    {
+                        int intToRead1 = (int)(curSize / 2);
+                        int intToRead2 = intToRead1 + (int)(curSize & 1);
+                        numReadBytes = (uint)stream.Read(_buffer, (int)_pos, intToRead1) + (uint)stream.Read(_buffer, (int)(_pos - intToRead1), intToRead2);
+                    }
+                    else
+                        numReadBytes = (uint)stream.Read(_buffer, (int)_pos, (int)curSize);
                     if (numReadBytes == 0)
                         return false;
-                    size -= (uint) numReadBytes;
-                    _pos += (uint) numReadBytes;
-                    _streamPos += (uint) numReadBytes;
+                    size -= numReadBytes;
+                    _pos +=  numReadBytes;
+                    _streamPos += numReadBytes;
                     if (_pos == _windowSize)
                         _streamPos = _pos = 0;
                 }
@@ -100,7 +108,7 @@ namespace SevenZip.Compression.LZ
             return true;
         }
 
-        public async ValueTask<bool> TrainAsync(Stream stream, CancellationToken token = default)
+        public async Task<bool> TrainAsync(Stream stream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -116,12 +124,23 @@ namespace SevenZip.Compression.LZ
                     uint curSize = _windowSize - _pos;
                     if (size < curSize)
                         curSize = size;
-                    int numReadBytes = await stream.ReadAsync(_buffer, (int)_pos, (int)curSize, token).ConfigureAwait(false);
+                    uint numReadBytes;
+                    if (curSize > int.MaxValue)
+                    {
+                        int intToRead1 = (int)(curSize / 2);
+                        int intToRead2 = intToRead1 + (int)(curSize & 1);
+                        Task<int> tskRead1 = stream.ReadAsync(_buffer, (int)_pos, intToRead1, token);
+                        Task<int> tskRead2 = stream.ReadAsync(_buffer, (int)(_pos - intToRead1), intToRead2, token);
+                        await Task.WhenAll(tskRead1, tskRead2).ConfigureAwait(false);
+                        numReadBytes = (uint)await tskRead1.ConfigureAwait(false) + (uint)await tskRead2.ConfigureAwait(false);
+                    }
+                    else
+                        numReadBytes = (uint)await stream.ReadAsync(_buffer, (int)_pos, (int)curSize, token).ConfigureAwait(false);
                     if (numReadBytes == 0)
                         return false;
-                    size -= (uint)numReadBytes;
-                    _pos += (uint)numReadBytes;
-                    _streamPos += (uint)numReadBytes;
+                    size -= numReadBytes;
+                    _pos += numReadBytes;
+                    _streamPos += numReadBytes;
                     if (_pos == _windowSize)
                         _streamPos = _pos = 0;
                 }
@@ -135,7 +154,7 @@ namespace SevenZip.Compression.LZ
             _stream = null;
         }
 
-        public async ValueTask ReleaseStreamAsync(CancellationToken token = default)
+        public async Task ReleaseStreamAsync(CancellationToken token = default)
         {
             await FlushAsync(token).ConfigureAwait(false);
             _stream = null;
@@ -146,45 +165,64 @@ namespace SevenZip.Compression.LZ
             uint size = _pos - _streamPos;
             if (size == 0)
                 return;
-            _stream.Write(_buffer, (int)_streamPos, (int)size);
+            if (size > int.MaxValue)
+            {
+                int intToWrite1 = (int)(size / 2);
+                int intToWrite2 = intToWrite1 + (int)(size & 1);
+                _stream.Write(_buffer, (int)_streamPos, intToWrite1);
+                _stream.Write(_buffer, (int)(_streamPos - intToWrite1), intToWrite2);
+            }
+            else
+                _stream.Write(_buffer, (int)_streamPos, (int)size);
             if (_pos >= _windowSize)
                 _pos = 0;
             _streamPos = _pos;
         }
 
-        public async ValueTask FlushAsync(CancellationToken token = default)
+        public async Task FlushAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             uint size = _pos - _streamPos;
             if (size == 0)
                 return;
-            await _stream.WriteAsync(_buffer, (int)_streamPos, (int)size, token).ConfigureAwait(false);
+            if (size > int.MaxValue)
+            {
+                int intToWrite1 = (int)(size / 2);
+                int intToWrite2 = intToWrite1 + (int)(size & 1);
+                await _stream.WriteAsync(_buffer, (int)_streamPos, intToWrite1, token).ConfigureAwait(false);
+                await _stream.WriteAsync(_buffer, (int)(_streamPos - intToWrite1), intToWrite2, token).ConfigureAwait(false);
+            }
+            else
+                await _stream.WriteAsync(_buffer, (int)_streamPos, (int)size, token).ConfigureAwait(false);
             if (_pos >= _windowSize)
                 _pos = 0;
             _streamPos = _pos;
         }
 
         [CLSCompliant(false)]
-        public void CopyBlock(uint distance, uint len)
+        public unsafe void CopyBlock(uint distance, uint len)
         {
             unchecked
             {
                 uint pos = _pos - distance - 1;
                 if (pos >= _windowSize)
                     pos += _windowSize;
-                for (; len > 0; len--)
+                fixed (byte* pchrBuffer = _buffer)
                 {
-                    if (pos >= _windowSize)
-                        pos = 0;
-                    _buffer[_pos++] = _buffer[pos++];
-                    if (_pos >= _windowSize)
-                        Flush();
+                    for (; len > 0; len--)
+                    {
+                        if (pos >= _windowSize)
+                            pos = 0;
+                        _buffer[_pos++] = *(pchrBuffer + pos++);
+                        if (_pos >= _windowSize)
+                            Flush();
+                    }
                 }
             }
         }
 
         [CLSCompliant(false)]
-        public async ValueTask CopyBlockAsync(uint distance, uint len, CancellationToken token = default)
+        public async Task CopyBlockAsync(uint distance, uint len, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             unchecked
@@ -210,12 +248,12 @@ namespace SevenZip.Compression.LZ
                 Flush();
         }
 
-        public async ValueTask PutByteAsync(byte b, CancellationToken token = default)
+        public Task PutByteAsync(byte b, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             _buffer[_pos++] = b;
-            if (_pos >= _windowSize)
-                await FlushAsync(token).ConfigureAwait(false);
+            return _pos >= _windowSize ? FlushAsync(token) : Task.CompletedTask;
         }
 
         [CLSCompliant(false)]

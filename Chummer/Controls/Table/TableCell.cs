@@ -17,7 +17,10 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Drawing;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace Chummer.UI.Table
@@ -30,8 +33,6 @@ namespace Chummer.UI.Table
         {
             ContentField = content;
             InitializeComponent();
-            if (content != null)
-                Disposed += (sender, args) => content.Dispose();
             Alignment = Alignment.Left;
         }
 
@@ -43,13 +44,25 @@ namespace Chummer.UI.Table
         public object Value { get; private set; }
 
         /// <summary>
-        /// called when a item is updated
+        /// Called when a item is updated
         /// </summary>
-        /// <param name="newValue">the extracted value, if there is a extractor in the column,
-        /// the associated item otherwise</param>
+        /// <param name="newValue">the extracted value, if there is a extractor in the column, the associated item otherwise</param>
         protected internal virtual void UpdateValue(object newValue)
         {
             Value = newValue;
+        }
+
+        /// <summary>
+        /// Called when a item is updated
+        /// </summary>
+        /// <param name="newValue">the extracted value, if there is a extractor in the column, the associated item otherwise</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected internal virtual Task UpdateValueAsync(object newValue, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            Value = newValue;
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -104,5 +117,14 @@ namespace Chummer.UI.Table
         }
 
         internal Control Content => ContentField;
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
+        }
     }
 }

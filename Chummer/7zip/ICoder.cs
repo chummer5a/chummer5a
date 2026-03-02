@@ -24,26 +24,6 @@ using System.Threading.Tasks;
 
 namespace SevenZip
 {
-    /// <summary>
-    /// The exception that is thrown when an error in input stream occurs during decoding.
-    /// </summary>
-    internal class DataErrorException : ApplicationException
-    {
-        public DataErrorException() : base("Data Error")
-        {
-        }
-    }
-
-    /// <summary>
-    /// The exception that is thrown when the value of an argument is outside the allowable range.
-    /// </summary>
-    internal class InvalidParamException : ApplicationException
-    {
-        public InvalidParamException() : base("Invalid Parameter")
-        {
-        }
-    }
-
     public interface ICodeProgress
     {
         /// <summary>
@@ -95,7 +75,7 @@ namespace SevenZip
         /// <param name="progress">
         /// callback progress reference.
         /// </param>
-        /// <exception cref="SevenZip.DataErrorException">
+        /// <exception cref="ArgumentException">
         /// if input stream is not valid
         /// </exception>
         void Code(System.IO.Stream inStream, System.IO.Stream outStream,
@@ -122,7 +102,7 @@ namespace SevenZip
         /// <param name="token">
         /// cancellation token to use for the coding.
         /// </param>
-        /// <exception cref="SevenZip.DataErrorException">
+        /// <exception cref="ArgumentException">
         /// if input stream is not valid
         /// </exception>
         Task CodeAsync(System.IO.Stream inStream, System.IO.Stream outStream,

@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -33,43 +34,50 @@ using Microsoft.IO;
 namespace Chummer
 {
     // ReSharper disable once InconsistentNaming
-    public partial class CreateImprovement : Form
+    public partial class CreateImprovement : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
-        private readonly XmlDocument _objDocument;
+        private readonly XPathNavigator _objImprovementsDocumentImprovementsNode;
         private string _strSelect = string.Empty;
         private readonly string _strCustomGroup;
+        private readonly string _strAugLabelText;
+        private string _strSelectXPathXml = string.Empty;
+        private string _strSelectXPathExpression = string.Empty;
+        private bool _blnPopulatingSelectValue;
+
+        public Character CharacterObject => _objCharacter;
 
         #region Control Events
 
         public CreateImprovement(Character objCharacter, string strCustomGroup = "")
         {
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-            _objCharacter = objCharacter;
+            this.UpdateParentForToolTipControls();
             _strCustomGroup = strCustomGroup;
-            _objDocument = objCharacter.LoadData("improvements.xml");
+            _strAugLabelText = lblAug.Text;
+            _objImprovementsDocumentImprovementsNode = objCharacter.LoadDataXPath("improvements.xml").SelectSingleNode("/chummer/improvements");
         }
 
         private async void CreateImprovement_Load(object sender, EventArgs e)
         {
-            using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstTypes))
             {
                 // Populate the Improvement Type list.
-                XmlNodeList objXmlImprovementList = _objDocument.SelectNodes("/chummer/improvements/improvement");
-                if (objXmlImprovementList?.Count > 0)
+                foreach (XPathNavigator objXmlImprovement in _objImprovementsDocumentImprovementsNode.Select("improvement"))
                 {
-                    foreach (XmlNode objXmlImprovement in objXmlImprovementList)
+                    string strId = objXmlImprovement.SelectSingleNodeAndCacheExpression("id")?.Value;
+                    if (!string.IsNullOrEmpty(strId))
                     {
-                        string strId = objXmlImprovement["id"]?.InnerText;
-                        if (!string.IsNullOrEmpty(strId))
-                        {
-                            lstTypes.Add(new ListItem(strId,
-                                                      objXmlImprovement["translate"]?.InnerText
-                                                      ?? objXmlImprovement["name"]?.InnerText
-                                                      ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false)));
-                        }
+                        lstTypes.Add(new ListItem(strId,
+                                                  objXmlImprovement
+                                                      .SelectSingleNodeAndCacheExpression("translate")?.Value
+                                                  ?? objXmlImprovement
+                                                      .SelectSingleNodeAndCacheExpression("name")?.Value
+                                                  ?? await LanguageManager.GetStringAsync("String_Unknown")
+                                                                          .ConfigureAwait(false)));
                     }
                 }
 
@@ -95,10 +103,20 @@ namespace Chummer
                     {
                         if (x.Visible)
                         {
-                            // specificattribute stores the Value in Augmented instead.
-                            x.Value = EditImprovementObject.CustomId == "specificattribute"
-                                ? EditImprovementObject.Augmented
-                                : EditImprovementObject.Value;
+                            switch (EditImprovementObject.ImproveType)
+                            {
+                                // Attribute improvements store the Value in Augmented instead.
+                                case Improvement.ImprovementType.Attribute:
+                                    x.Value = EditImprovementObject.Augmented;
+                                    break;
+                                // Adept power level improvements store the Value in Rating instead.
+                                case Improvement.ImprovementType.AdeptPowerFreeLevels:
+                                    x.Value = EditImprovementObject.Rating;
+                                    break;
+                                default:
+                                    x.Value = EditImprovementObject.Value;
+                                    break;
+                            }
                         }
                     }).ConfigureAwait(false);
 
@@ -107,11 +125,13 @@ namespace Chummer
                     {
                         await txtSelect.DoThreadSafeAsync(x => x.Text = EditImprovementObject.ImprovedName).ConfigureAwait(false);
                         // get the selection type of improvement and generate translation
-                        XmlNode objFetchNode = _objDocument.SelectSingleNode(
-                            "/chummer/improvements/improvement[id = "
-                            + cboImprovemetType.SelectedValue.ToString().CleanXPath() + "]/fields/field");
+                        XPathNavigator xmlImprovementNode
+                            = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId(
+                                "improvement",
+                                await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false), blnIdIsGuid: false);
+                        XPathNavigator objFetchNode = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field");
                         string strText
-                            = await TranslateField(objFetchNode?.InnerText, EditImprovementObject.ImprovedName).ConfigureAwait(false);
+                            = await TranslateField(objFetchNode?.Value, EditImprovementObject.ImprovedName).ConfigureAwait(false);
                         await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
                     }
                 }
@@ -129,9 +149,9 @@ namespace Chummer
             Close();
         }
 
-        private void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
+        private async void cboImprovemetType_SelectedIndexChanged(object sender, EventArgs e)
         {
-            XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + cboImprovemetType.SelectedValue.ToString().CleanXPath() + ']');
+            string strSelectedId = cboImprovemetType.SelectedValue?.ToString();
 
             lblVal.Visible = false;
             lblMin.Visible = false;
@@ -145,6 +165,11 @@ namespace Chummer
             chkApplyToRating.Checked = false;
             chkFree.Visible = false;
             chkFree.Checked = false;
+            lblAug.Text = _strAugLabelText;
+            cboSelectValue.Visible = false;
+            cboSelectValue.DataSource = null;
+            _strSelectXPathXml = string.Empty;
+            _strSelectXPathExpression = string.Empty;
 
             lblSelect.Visible = false;
             txtSelect.Visible = false;
@@ -154,56 +179,78 @@ namespace Chummer
             cmdChangeSelection.Visible = false;
             _strSelect = string.Empty;
 
-            if (objFetchNode == null) return;
-            XmlNodeList xmlNodeList = objFetchNode.SelectNodes("fields/field");
-            if (xmlNodeList != null)
-                foreach (XmlNode objNode in xmlNodeList)
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
+
+            XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedId, blnIdIsGuid: false);
+            if (objFetchNode == null)
+                return;
+            foreach (XPathNavigator objNode in objFetchNode.Select("fields/field"))
+            {
+                switch (objNode.Value)
                 {
-                    switch (objNode.InnerText)
-                    {
-                        case "val":
-                            lblVal.Visible = true;
-                            nudVal.Visible = true;
-                            break;
+                    case "val":
+                        lblVal.Visible = true;
+                        nudVal.Visible = true;
+                        break;
 
-                        case "min":
-                            lblMin.Visible = true;
-                            nudMin.Visible = true;
-                            break;
+                    case "min":
+                        lblMin.Visible = true;
+                        nudMin.Visible = true;
+                        break;
 
-                        case "max":
-                            lblMax.Visible = true;
-                            nudMax.Visible = true;
-                            break;
+                    case "max":
+                        lblMax.Visible = true;
+                        nudMax.Visible = true;
+                        break;
 
-                        case "aug":
-                            lblAug.Visible = true;
-                            nudAug.Visible = true;
-                            break;
+                    case "aug":
+                        lblAug.Visible = true;
+                        nudAug.Visible = true;
+                        break;
 
-                        case "applytorating":
-                            chkApplyToRating.Visible = true;
-                            break;
+                    case "percent":
+                        lblAug.Visible = true;
+                        nudAug.Visible = true;
+                        lblAug.Text = "Percent:";
+                        break;
 
-                        case "free":
-                            chkFree.Visible = true;
-                            break;
+                    case "applytorating":
+                        chkApplyToRating.Visible = true;
+                        break;
 
-                        default:
-                            if (objNode.InnerText.StartsWith("Select", StringComparison.OrdinalIgnoreCase))
+                    case "free":
+                        chkFree.Visible = true;
+                        break;
+
+                    default:
+                        if (objNode.Value.StartsWith("Select", StringComparison.OrdinalIgnoreCase))
+                        {
+                            lblSelect.Visible = true;
+                            _strSelect = objNode.Value;
+                            if (_strSelect == "SelectXPath")
                             {
-                                lblSelect.Visible = true;
+                                _strSelectXPathXml = objNode.SelectSingleNodeAndCacheExpression("@xml")?.Value ?? string.Empty;
+                                _strSelectXPathExpression = objNode.SelectSingleNodeAndCacheExpression("@xpath")?.Value ?? string.Empty;
+                                cboSelectValue.Visible = true;
+                            }
+                            else
+                            {
                                 txtTranslateSelection.Visible = true;
                                 cmdChangeSelection.Visible = true;
-                                _strSelect = objNode.InnerText;
                             }
-                            break;
-                    }
+                        }
+                        break;
                 }
+            }
 
             // Display the help information.
-            txtHelp.Text = objFetchNode["altpage"]?.InnerText ?? objFetchNode["page"]?.InnerText;
+            txtHelp.Text = objFetchNode.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objFetchNode.SelectSingleNodeAndCacheExpression("page")?.Value;
             chkIgnoreLimits.Visible = _strSelect == "SelectAdeptPower";
+            if (cboSelectValue.Visible)
+            {
+                await PopulateSelectValueComboAsync(_strSelectXPathXml, _strSelectXPathExpression).ConfigureAwait(false);
+            }
         }
 
         private async void cmdChangeSelection_Click(object sender, EventArgs e)
@@ -211,32 +258,30 @@ namespace Chummer
             switch (_strSelect)
             {
                 case "SelectActionDicePool":
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstActions))
                     {
-                        foreach (XPathNavigator xmlAction in await (await _objCharacter.LoadDataXPathAsync("actions.xml").ConfigureAwait(false))
-                                                                   .SelectAndCacheExpressionAsync(
-                                                                       "/chummer/actions/action").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlAction in (await _objCharacter.LoadDataXPathAsync("actions.xml").ConfigureAwait(false))
+                                                                   .SelectAndCacheExpression(
+                                                                       "/chummer/actions/action"))
                         {
-                            string strName = (await xmlAction.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlAction.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstActions.Add(new ListItem(
                                                    strName,
-                                                   (await xmlAction.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                                   xmlAction.SelectSingleNodeAndCacheExpression("translate")?.Value
                                                    ?? strName));
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectAction").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> frmSelectAction = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                               {
-                                   Description = strDescription
-                               }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> frmSelectAction = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await frmSelectAction.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             frmSelectAction.MyForm.SetDropdownItemsMode(lstActions);
 
                             if (await frmSelectAction.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = frmSelectAction.MyForm.SelectedName;
+                                string strSelect = await frmSelectAction.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -251,16 +296,16 @@ namespace Chummer
                         List<string> lstAbbrevs = new List<string>(Backend.Attributes.AttributeSection.AttributeStrings);
 
                         lstAbbrevs.Remove("ESS");
-                        if (!_objCharacter.MAGEnabled)
+                        if (!await _objCharacter.GetMAGEnabledAsync().ConfigureAwait(false))
                         {
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!_objCharacter.IsMysticAdept || !_objCharacter.Settings.MysAdeptSecondMAGAttribute)
+                        else if (!await _objCharacter.GetIsMysticAdeptAsync().ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("MAGAdept");
-                        if (!_objCharacter.RESEnabled)
+                        if (!await _objCharacter.GetRESEnabledAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("RES");
-                        if (!_objCharacter.DEPEnabled)
+                        if (!await _objCharacter.GetDEPEnabledAsync().ConfigureAwait(false))
                             lstAbbrevs.Remove("DEP");
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectAttribute").ConfigureAwait(false);
@@ -293,9 +338,13 @@ namespace Chummer
                                 string strSelectedId = frmPickMetamagic.MyForm.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
                                 {
-                                    string strEchoName = (await _objCharacter.LoadDataXPathAsync("echoes.xml").ConfigureAwait(false))
-                                                                             .SelectSingleNode(
-                                                                                 "/chummer/echoes/echo[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    XPathNavigator xmlEchoNode
+                                        = (await _objCharacter.LoadDataXPathAsync("echoes.xml").ConfigureAwait(false))
+                                        .TryGetNodeByNameOrId(
+                                            "/chummer/echoes/echo", strSelectedId);
+                                    string strEchoName = xmlEchoNode != null
+                                        ? xmlEchoNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                        : string.Empty;
                                     if (!string.IsNullOrEmpty(strEchoName))
                                     {
                                         await txtSelect.DoThreadSafeAsync(x => x.Text = strEchoName).ConfigureAwait(false);
@@ -330,9 +379,13 @@ namespace Chummer
                                 string strSelectedId = frmPickMetamagic.MyForm.SelectedMetamagic;
                                 if (!string.IsNullOrEmpty(strSelectedId))
                                 {
-                                    string strMetamagicName = (await _objCharacter.LoadDataXPathAsync("metamagic.xml").ConfigureAwait(false))
-                                                                      .SelectSingleNode(
-                                                                          "/chummer/metamagics/metamagic[id = " + strSelectedId.CleanXPath() + "]/name")?.Value;
+                                    XPathNavigator xmlMetamagicNode
+                                        = (await _objCharacter.LoadDataXPathAsync("metamagic.xml").ConfigureAwait(false))
+                                        .TryGetNodeByNameOrId(
+                                            "/chummer/metamagics/metamagic", strSelectedId);
+                                    string strMetamagicName = xmlMetamagicNode != null
+                                        ? xmlMetamagicNode.SelectSingleNodeAndCacheExpression("name")?.Value
+                                        : string.Empty;
                                     if (!string.IsNullOrEmpty(strMetamagicName))
                                     {
                                         await txtSelect.DoThreadSafeAsync(x => x.Text = strMetamagicName).ConfigureAwait(false);
@@ -433,9 +486,9 @@ namespace Chummer
                 {
                     string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill").ConfigureAwait(false);
                     using (ThreadSafeForm<SelectSkill> frmPickSkill =
-                           await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(_objCharacter)
-                                                                          { Description = strDescription }).ConfigureAwait(false))
+                           await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(_objCharacter)).ConfigureAwait(false))
                     {
+                        await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                         if (await frmPickSkill.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                         {
                             string strSelect = frmPickSkill.MyForm.SelectedSkill;
@@ -449,62 +502,66 @@ namespace Chummer
                 }
                 case "SelectKnowSkill":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstDropdownItems))
                     {
                         string strFilter = string.Empty;
-                        using (new FetchSafelyFromPool<HashSet<string>>(Utils.StringHashSetPool,
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                    out HashSet<string> setProcessedSkillNames))
                         {
-                            foreach (KnowledgeSkill objKnowledgeSkill in _objCharacter.SkillsSection.KnowledgeSkills)
+                            await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objKnowledgeSkill =>
                             {
                                 lstDropdownItems.Add(
-                                    new ListItem(objKnowledgeSkill.Name, await objKnowledgeSkill.GetCurrentDisplayNameAsync().ConfigureAwait(false)));
+                                    new ListItem(objKnowledgeSkill.Name,
+                                                 await objKnowledgeSkill.GetCurrentDisplayNameAsync()
+                                                                        .ConfigureAwait(false)));
                                 setProcessedSkillNames.Add(objKnowledgeSkill.Name);
-                            }
+                            }).ConfigureAwait(false);
 
-                            using (new FetchSafelyFromPool<StringBuilder>(Utils.StringBuilderPool,
-                                       out StringBuilder sbdFilters))
+                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                       out StringBuilder sbdFilter))
                             {
                                 if (setProcessedSkillNames.Count > 0)
                                 {
-                                    sbdFilters.Append("not(");
+                                    sbdFilter.Append("not(");
                                     foreach (string strName in setProcessedSkillNames)
                                     {
-                                        sbdFilters.Append("name = ").Append(strName.CleanXPath()).Append(" or ");
+                                        sbdFilter.Append("name = ", strName.CleanXPath(), " or ");
                                     }
 
-                                    sbdFilters.Length -= 4;
-                                    sbdFilters.Append(')');
+                                    sbdFilter.Length -= 4;
+                                    sbdFilter.Append(')');
                                 }
 
-                                if (sbdFilters.Length > 0)
-                                    strFilter = '[' + sbdFilters.ToString() + ']';
-                            }
+                                if (sbdFilter.Length > 0)
+                                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                                        strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
+                                }
                         }
 
                         foreach (XPathNavigator xmlSkill in (await _objCharacter.LoadDataXPathAsync("skills.xml").ConfigureAwait(false))
-                                 .Select("/chummer/knowledgeskills/skill"
+                                 .Select("/chummer/knowledgeskills/skill[not(hide)]"
                                          + strFilter))
                         {
-                            string strName = (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSkill.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstDropdownItems.Add(
                                     new ListItem(
                                         strName,
-                                        (await xmlSkill.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value ??
+                                        xmlSkill.SelectSingleNodeAndCacheExpression("translate")?.Value ??
                                         strName));
                         }
 
                         lstDropdownItems.Sort(CompareListItems.CompareNames);
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSkill").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> frmPickSkill = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> frmPickSkill = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             frmPickSkill.MyForm.SetDropdownItemsMode(lstDropdownItems);
                             if (await frmPickSkill.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = frmPickSkill.MyForm.SelectedItem;
+                                string strSelect = await frmPickSkill.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -548,30 +605,31 @@ namespace Chummer
                 }
                 case "SelectComplexForm":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstComplexForms))
                     {
-                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync(
+                        foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync(
                                                                       "complexforms.xml").ConfigureAwait(false))
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/complexforms/complexform").ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/complexforms/complexform"))
                         {
-                            string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstComplexForms.Add(new ListItem(
                                     strName,
-                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                    xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
                                     ?? strName));
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectComplexForm").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> selectComplexForm = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> selectComplexForm = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await selectComplexForm.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             selectComplexForm.MyForm.SetDropdownItemsMode(lstComplexForms);
 
                             if (await selectComplexForm.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = selectComplexForm.MyForm.SelectedName;
+                                string strSelect = await selectComplexForm.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -583,29 +641,30 @@ namespace Chummer
                 }
                 case "SelectSpell":
                 {
-                    using (new FetchSafelyFromPool<List<ListItem>>(Utils.ListItemListPool,
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                out List<ListItem> lstSpells))
                     {
-                        foreach (XPathNavigator xmlSpell in await (await _objCharacter.LoadDataXPathAsync("spells.xml").ConfigureAwait(false))
-                                                                  .SelectAndCacheExpressionAsync(
-                                                                      "/chummer/spells/spell").ConfigureAwait(false))
+                        foreach (XPathNavigator xmlSpell in (await _objCharacter.LoadDataXPathAsync("spells.xml").ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(
+                                                                      "/chummer/spells/spell"))
                         {
-                            string strName = (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("name").ConfigureAwait(false))?.Value;
+                            string strName = xmlSpell.SelectSingleNodeAndCacheExpression("name")?.Value;
                             if (!string.IsNullOrEmpty(strName))
                                 lstSpells.Add(new ListItem(
                                     strName,
-                                    (await xmlSpell.SelectSingleNodeAndCacheExpressionAsync("translate").ConfigureAwait(false))?.Value
+                                    xmlSpell.SelectSingleNodeAndCacheExpression("translate")?.Value
                                     ?? strName));
                         }
 
                         string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpell").ConfigureAwait(false);
-                        using (ThreadSafeForm<SelectItem> selectSpell = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem { Description = strDescription }).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> selectSpell = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
                         {
+                            await selectSpell.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
                             selectSpell.MyForm.SetDropdownItemsMode(lstSpells);
 
                             if (await selectSpell.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
                             {
-                                string strSelect = selectSpell.MyForm.SelectedName;
+                                string strSelect = await selectSpell.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
                                 await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
                                 string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
                                 await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
@@ -655,11 +714,12 @@ namespace Chummer
                             string strSelectedId = frmPickPower.MyForm.SelectedPower;
                             if (!string.IsNullOrEmpty(strSelectedId))
                             {
-                                string strPowerName = (await _objCharacter.LoadDataXPathAsync("powers.xml").ConfigureAwait(false))
-                                                          .SelectSingleNode(
-                                                              "/chummer/powers/power[id = "
-                                                              + frmPickPower.MyForm.SelectedPower.CleanXPath() + "]/name")
-                                                          ?.Value;
+                                string strPowerName
+                                    = (await _objCharacter.LoadDataXPathAsync("powers.xml").ConfigureAwait(false))
+                                      .TryGetNodeByNameOrId(
+                                          "/chummer/powers/power", frmPickPower.MyForm.SelectedPower)
+                                      ?.SelectSingleNode("name")
+                                      ?.Value;
                                 if (!string.IsNullOrEmpty(strPowerName))
                                 {
                                     await txtSelect.DoThreadSafeAsync(x => x.Text = strPowerName).ConfigureAwait(false);
@@ -680,6 +740,67 @@ namespace Chummer
                         }
                     }
                     break;
+                case "SelectXPath":
+                {
+                    // Get the current improvement type and find the SelectXPath field node
+                    string strSelectedType = cboImprovemetType.SelectedValue?.ToString() ?? string.Empty;
+                    if (string.IsNullOrEmpty(strSelectedType))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "SelectXPath field requires xml and xpath attributes.",
+                            await LanguageManager.GetStringAsync("MessageTitle_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "Configuration Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                        break;
+                    }
+
+                    XPathNavigator xmlImprovementNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
+                    XPathNavigator xmlSelectXPathField = xmlImprovementNode?.SelectSingleNodeAndCacheExpression("fields/field[. = 'SelectXPath']");
+                        
+                    string strSelectXPathXml = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xml")?.Value ?? string.Empty;
+                    string strSelectXPathExpression = xmlSelectXPathField?.SelectSingleNodeAndCacheExpression("@xpath")?.Value ?? string.Empty;
+
+                    if (string.IsNullOrEmpty(strSelectXPathXml) || string.IsNullOrEmpty(strSelectXPathExpression))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this,
+                            await LanguageManager.GetStringAsync("Message_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "SelectXPath field requires xml and xpath attributes.",
+                            await LanguageManager.GetStringAsync("MessageTitle_Improvement_SelectXPath_Configuration", token: default).ConfigureAwait(false) ?? "Configuration Error",
+                            MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                        break;
+                    }
+
+                    using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                               out List<ListItem> lstItems))
+                    {
+                        // Load items from the specified XML file using the xpath expression
+                        foreach (XPathNavigator xmlItem in (await _objCharacter.LoadDataXPathAsync(strSelectXPathXml).ConfigureAwait(false))
+                                                                  .SelectAndCacheExpression(strSelectXPathExpression))
+                        {
+                            string strName = xmlItem.SelectSingleNodeAndCacheExpression("name")?.Value;
+                            if (!string.IsNullOrEmpty(strName))
+                                lstItems.Add(new ListItem(
+                                    strName,
+                                    xmlItem.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                    ?? strName));
+                        }
+
+                        string strDescription = await LanguageManager.GetStringAsync("Title_SelectItem").ConfigureAwait(false);
+                        using (ThreadSafeForm<SelectItem> selectItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem()).ConfigureAwait(false))
+                        {
+                            await selectItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription).ConfigureAwait(false);
+                            selectItem.MyForm.SetDropdownItemsMode(lstItems);
+
+                            if (await selectItem.ShowDialogSafeAsync(this).ConfigureAwait(false) == DialogResult.OK)
+                            {
+                                string strSelect = await selectItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName).ConfigureAwait(false);
+                                await txtSelect.DoThreadSafeAsync(x => x.Text = strSelect).ConfigureAwait(false);
+                                string strTranslateSelection = await TranslateField(_strSelect, strSelect).ConfigureAwait(false);
+                                await txtTranslateSelection.DoThreadSafeAsync(x => x.Text = strTranslateSelection).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    break;
+                }
             }
         }
 
@@ -690,121 +811,144 @@ namespace Chummer
         /// <summary>
         /// Accept the values on the Form and create the required XML data.
         /// </summary>
-        private async ValueTask AcceptForm(CancellationToken token = default)
+        private async Task AcceptForm(CancellationToken token = default)
         {
             // Make sure a value has been selected if necessary.
             if (await txtTranslateSelection.DoThreadSafeFuncAsync(x => x.Visible, token: token).ConfigureAwait(false) && string.IsNullOrEmpty(await txtSelect.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                return;
+            }
+            if (await cboSelectValue.DoThreadSafeFuncAsync(x => x.Visible, token: token).ConfigureAwait(false) && await cboSelectValue.DoThreadSafeFuncAsync(x => x.SelectedIndex < 0, token: token).ConfigureAwait(false))
+            {
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_SelectItem", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_SelectItem", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 return;
             }
 
+            string strName = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             // Make sure a value has been provided for the name.
-            if (string.IsNullOrEmpty(await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false)))
+            if (string.IsNullOrEmpty(strName))
             {
-                Program.ShowScrollableMessageBox(this, await LanguageManager.GetStringAsync("Message_ImprovementName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error);
+                await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_ImprovementName", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_ImprovementName", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                 await txtName.DoThreadSafeAsync(x => x.Focus(), token: token).ConfigureAwait(false);
                 return;
             }
 
-            XmlDocument objBonusXml = new XmlDocument { XmlResolver = null };
-            using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+            string strSelectedType = await cboImprovemetType
+                                           .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token)
+                                           .ConfigureAwait(false);
+
+            string strGuid;
+            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objBonusXml))
             {
-                using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                 {
-                    // Build the XML for the Improvement.
-                    XmlNode objFetchNode = _objDocument.SelectSingleNode("/chummer/improvements/improvement[id = " + await cboImprovemetType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString().CleanXPath(), token: token).ConfigureAwait(false) + ']');
-                    string strInternal = objFetchNode?["internal"]?.InnerText;
-                    if (string.IsNullOrEmpty(strInternal))
-                        return;
-                    await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-                    // <bonus>
-                    XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus", token: token).ConfigureAwait(false);
-                    try
+                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                     {
-                        // <whatever element>
-                        XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal, token: token).ConfigureAwait(false);
+                        // Build the XML for the Improvement.
+                        XPathNavigator objFetchNode = _objImprovementsDocumentImprovementsNode.TryGetNodeByNameOrId("improvement", strSelectedType, blnIdIsGuid: false);
+                        if (objFetchNode == null)
+                            return;
+                        string strInternal = objFetchNode.SelectSingleNodeAndCacheExpression("internal", token)?.Value;
+                        if (string.IsNullOrEmpty(strInternal))
+                            return;
+                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                        // <bonus>
+                        XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus", token: token).ConfigureAwait(false);
                         try
                         {
-                            // Retrieve the XML data from the document and replace the values as necessary.
-                            XmlAttributeCollection xmlAttributeCollection = objFetchNode["xml"]?.Attributes;
-                            if (xmlAttributeCollection != null)
+                            // <whatever element>
+                            XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal, token: token).ConfigureAwait(false);
+                            try
                             {
-                                foreach (XmlAttribute xmlAttribute in xmlAttributeCollection)
+                                // Retrieve the XML data from the document and replace the values as necessary.
+                                foreach (XPathNavigator xmlAttribute in objFetchNode.SelectAndCacheExpression("xml/@*", token))
                                 {
                                     await objWriter.WriteAttributeStringAsync(
                                         xmlAttribute.LocalName, xmlAttribute.Value, token: token).ConfigureAwait(false);
                                 }
+
+                                // ReSharper disable once PossibleNullReferenceException
+                                string strXml
+                                    = await objFetchNode.SelectSingleNodeAndCacheExpression("xml", token).Value
+                                        .CheapReplaceAsync("{val}",
+                                                           () => nudVal.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{min}",
+                                                           () => nudMin.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{max}",
+                                                           () => nudMax.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{aug}",
+                                                           () => nudAug.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{percent}",
+                                                           () => nudAug.DoThreadSafeFuncAsync(
+                                                               x => x.Value.ToString(
+                                                                   GlobalSettings.InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{free}",
+                                                           () =>
+                                                               chkFree.DoThreadSafeFuncAsync(
+                                                                   x => x.Checked.ToString(
+                                                                       GlobalSettings
+                                                                           .InvariantCultureInfo), token: token),
+                                                           token: token)
+                                        .CheapReplaceAsync("{select}",
+                                                           () => txtSelect
+                                                               .DoThreadSafeFuncAsync(
+                                                                   x => x.Text, token: token), token: token)
+                                        .CheapReplaceAsync(
+                                            "{applytorating}",
+                                            async () =>
+                                                await chkApplyToRating
+                                                      .DoThreadSafeFuncAsync(x => x.Checked, token: token)
+                                                      .ConfigureAwait(false)
+                                                    ? "<applytorating>True</applytorating>"
+                                                    : string.Empty, token: token).ConfigureAwait(false);
+                                await objWriter.WriteRawAsync(strXml).ConfigureAwait(false);
+
+                                // Write the rest of the document.
                             }
-
-                            // ReSharper disable once PossibleNullReferenceException
-                            string strXml = await objFetchNode["xml"].InnerText
-                                                                     .CheapReplaceAsync("{val}",
-                                                                         () => nudVal.DoThreadSafeFuncAsync(
-                                                                             x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
-                                                                     .CheapReplaceAsync("{min}",
-                                                                         () => nudMin.DoThreadSafeFuncAsync(
-                                                                             x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
-                                                                     .CheapReplaceAsync("{max}",
-                                                                         () => nudMax.DoThreadSafeFuncAsync(
-                                                                             x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
-                                                                     .CheapReplaceAsync("{aug}",
-                                                                         () => nudAug.DoThreadSafeFuncAsync(
-                                                                             x => x.Value.ToString(
-                                                                                 GlobalSettings.InvariantCultureInfo), token: token), token: token)
-                                                                     .CheapReplaceAsync("{free}",
-                                                                         () =>
-                                                                             chkFree.DoThreadSafeFuncAsync(
-                                                                                 x => x.Checked.ToString(
-                                                                                     GlobalSettings
-                                                                                         .InvariantCultureInfo), token: token), token: token)
-                                                                     .CheapReplaceAsync("{select}",
-                                                                         () => txtSelect
-                                                                             .DoThreadSafeFuncAsync(
-                                                                                 x => x.Text, token: token), token: token)
-                                                                     .CheapReplaceAsync(
-                                                                         "{applytorating}",
-                                                                         async () =>
-                                                                             await chkApplyToRating
-                                                                                 .DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false)
-                                                                                 ? "<applytorating>True</applytorating>"
-                                                                                 : string.Empty, token: token).ConfigureAwait(false);
-                            await objWriter.WriteRawAsync(strXml).ConfigureAwait(false);
-
-                            // Write the rest of the document.
+                            finally
+                            {
+                                // </whatever element>
+                                await objInternalNode.DisposeAsync().ConfigureAwait(false);
+                            }
                         }
                         finally
                         {
-                            // </whatever element>
-                            await objInternalNode.DisposeAsync().ConfigureAwait(false);
+                            // </bonus>
+                            await objBonusNode.DisposeAsync().ConfigureAwait(false);
                         }
+                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                        await objWriter.FlushAsync().ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </bonus>
-                        await objBonusNode.DisposeAsync().ConfigureAwait(false);
-                    }
-                    await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                    await objWriter.FlushAsync().ConfigureAwait(false);
-                }
 
-                objStream.Position = 0;
+                    objStream.Position = 0;
 
                     // Read it back in as an XmlDocument.
-                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                    objBonusXml.Load(objXmlReader);
+                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                    using (XmlReader objXmlReader = XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                        objBonusXml.Load(objXmlReader);
+                }
+
+                // Pluck out the bonus information.
+                XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
+
+                // Pass it to the Improvement Manager so that it can be added to the character.
+                strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
+                await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, strFriendlyName: strName, token: token).ConfigureAwait(false);
             }
-
-            // Pluck out the bonus information.
-            XmlNode objNode = objBonusXml.SelectSingleNode("/bonus");
-
-            // Pass it to the Improvement Manager so that it can be added to the character.
-            string strGuid = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
-            await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, strGuid, objNode, 1, txtName.Text, token: token).ConfigureAwait(false);
 
             // If an Improvement was passed in, remove it from the character.
             string strNotes = string.Empty;
@@ -812,19 +956,19 @@ namespace Chummer
             if (EditImprovementObject != null)
             {
                 // Copy the notes over to the new item.
-                strNotes = EditImprovementObject.Notes;
+                strNotes = await EditImprovementObject.GetNotesAsync(token).ConfigureAwait(false);
                 intOrder = EditImprovementObject.SortOrder;
                 await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Custom, EditImprovementObject.SourceName, token).ConfigureAwait(false);
             }
 
             // Find the newly-created Improvement and attach its custom name.
-            Improvement objImprovement = _objCharacter.Improvements.FirstOrDefault(imp => imp.SourceName == strGuid);
+            Improvement objImprovement = await _objCharacter.Improvements.FirstOrDefaultAsync(imp => imp.SourceName == strGuid, token).ConfigureAwait(false);
             if (objImprovement != null)
             {
-                objImprovement.CustomName = txtName.Text;
-                objImprovement.CustomId = cboImprovemetType.SelectedValue.ToString();
+                objImprovement.CustomName = strName;
+                objImprovement.CustomId = strSelectedType;
                 objImprovement.Custom = true;
-                objImprovement.Notes = strNotes;
+                await objImprovement.SetNotesAsync(strNotes, token).ConfigureAwait(false);
                 objImprovement.SortOrder = intOrder;
                 objImprovement.CustomGroup = _strCustomGroup;
                 NewImprovement = objImprovement;
@@ -845,7 +989,7 @@ namespace Chummer
         /// <param name="strToTranslate"> The string which to translate. Usually name. Guid in the case of adept powers.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns></returns>
-        private async ValueTask<string> TranslateField(string strImprovementType, string strToTranslate, CancellationToken token = default)
+        private async Task<string> TranslateField(string strImprovementType, string strToTranslate, CancellationToken token = default)
         {
             XPathNavigator objXmlNode;
             switch (strImprovementType)
@@ -855,80 +999,85 @@ namespace Chummer
                 case "SelectMentalAttribute":
                 case "SelectSpecialAttribute":
                     return strToTranslate == "MAGAdept"
-                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false) + ')'
+                    ? await LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token).ConfigureAwait(false) + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_DescAdept", token: token).ConfigureAwait(false) + ")"
                     : await LanguageManager.GetStringAsync("String_Attribute" + strToTranslate + "Short", token: token).ConfigureAwait(false);
 
                 case "SelectSkill":
                     if (await ExoticSkill.IsExoticSkillNameAsync(_objCharacter, strToTranslate, token).ConfigureAwait(false))
                     {
-                        string[] astrToTranslateParts = strToTranslate.Split('(', StringSplitOptions.RemoveEmptyEntries);
-                        astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
-                        astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
+                        string[] astrToTranslateParts = strToTranslate.SplitFixedSizePooledArray('(', 2, StringSplitOptions.RemoveEmptyEntries);
+                        try
+                        {
+                            astrToTranslateParts[0] = astrToTranslateParts[0].Trim();
+                            astrToTranslateParts[1] = astrToTranslateParts[1].Substring(0, astrToTranslateParts[1].Length - 1);
 
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/skills/skill[name = " + astrToTranslateParts[0].CleanXPath() + ']');
-                        string strFirstPartTranslated = objXmlNode != null
-                            ? ((await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value
-                               ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value
-                               ?? astrToTranslateParts[0])
-                            : astrToTranslateParts[0];
+                            objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", astrToTranslateParts[0]);
+                            string strFirstPartTranslated = objXmlNode != null
+                                ? objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
+                                  ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
+                                  ?? astrToTranslateParts[0]
+                                : astrToTranslateParts[0];
 
-                        return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '(' + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ')';
+                            return strFirstPartTranslated + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(astrToTranslateParts[1], token: token).ConfigureAwait(false) + ")";
+                        }
+                        finally
+                        {
+                            ArrayPool<string>.Shared.Return(astrToTranslateParts);
+                        }
                     }
-                    else
-                    {
-                        objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/skills/skill[name = " + strToTranslate.CleanXPath() + ']');
-                        if (objXmlNode == null)
-                            return strToTranslate;
-                        return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
-                    }
+
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/skills/skill", strToTranslate);
+                    if (objXmlNode == null)
+                        return strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectKnowSkill":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/knowledgeskills/skill[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/knowledgeskills/skill", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSkillGroup":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("skills.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/skillgroups/name[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectWeaponCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectSpellCategory":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer/categories/category[. = " + strToTranslate.CleanXPath() + "]", token: token);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("@translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync(".", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("@translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression(".", token: token)?.Value ?? strToTranslate;
 
                 case "SelectAdeptPower":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("powers.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/powers/power[id = " + strToTranslate.CleanXPath() + " or name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectMetamagic":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/metamagics/metamagic[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metamagics/metamagic", strToTranslate);
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 case "SelectEcho":
-                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("echoes.xml", token: token).ConfigureAwait(false)).SelectSingleNode("/chummer/echoes/echo[name = " + strToTranslate.CleanXPath() + ']');
+                    objXmlNode = (await _objCharacter.LoadDataXPathAsync("echoes.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/echoes/echo", strToTranslate.CleanXPath());
                     if (objXmlNode == null)
                         return strToTranslate;
-                    return (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("translate", token: token).ConfigureAwait(false))?.Value ?? (await objXmlNode.SelectSingleNodeAndCacheExpressionAsync("name", token: token).ConfigureAwait(false))?.Value ?? strToTranslate;
+                    return objXmlNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? objXmlNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value ?? strToTranslate;
 
                 default:
                     return strToTranslate;
@@ -936,6 +1085,50 @@ namespace Chummer
         }
 
         #endregion Methods
+
+        private async Task PopulateSelectValueComboAsync(string strXmlFile, string strXPathExpression)
+        {
+            if (string.IsNullOrEmpty(strXmlFile) || string.IsNullOrEmpty(strXPathExpression))
+                return;
+
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
+            {
+                foreach (XPathNavigator xmlItem in (await _objCharacter.LoadDataXPathAsync(strXmlFile).ConfigureAwait(false))
+                                                       .SelectAndCacheExpression(strXPathExpression))
+                {
+                    string strName = xmlItem.SelectSingleNodeAndCacheExpression("name")?.Value;
+                    if (string.IsNullOrEmpty(strName))
+                        strName = xmlItem.Value;
+                    if (!string.IsNullOrEmpty(strName))
+                        lstItems.Add(new ListItem(
+                            strName,
+                            xmlItem.SelectSingleNodeAndCacheExpression("translate")?.Value
+                            ?? strName));
+                }
+
+                lstItems.Sort(CompareListItems.CompareNames);
+                _blnPopulatingSelectValue = true;
+                await cboSelectValue.PopulateWithListItemsAsync(lstItems).ConfigureAwait(false);
+                await cboSelectValue.DoThreadSafeAsync(x => x.SelectedIndex = -1).ConfigureAwait(false);
+                _blnPopulatingSelectValue = false;
+            }
+
+            string strCurrent = await txtSelect.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strCurrent))
+                await cboSelectValue.DoThreadSafeAsync(x => x.SelectedValue = strCurrent).ConfigureAwait(false);
+        }
+
+        private void cboSelectValue_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (_blnPopulatingSelectValue || !cboSelectValue.Visible)
+                return;
+
+            string strSelected = cboSelectValue.SelectedValue?.ToString() ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelected))
+                return;
+
+            txtSelect.Text = strSelected;
+        }
 
         #region Properties
 

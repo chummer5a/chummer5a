@@ -33,8 +33,8 @@ namespace Chummer
     /// <summary>
     /// A Location.
     /// </summary>
-    [DebuggerDisplay("{nameof(Name)}")]
-    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject
+    [DebuggerDisplay("{" + nameof(Name) + "}")]
+    public sealed class Location : IHasInternalId, IHasName, IHasNotes, ICanRemove, ICanSort, IHasLockObject, IHasCharacterObject
     {
         private Guid _guiID;
         private string _strName;
@@ -42,7 +42,9 @@ namespace Chummer
         private Color _colNotes = ColorManager.HasNotesColor;
         private int _intSortOrder;
         private readonly Character _objCharacter;
-        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren = new ThreadSafeObservableCollection<IHasLocation>();
+        private readonly ThreadSafeObservableCollection<IHasLocation> _lstChildren;
+
+        public Character CharacterObject => _objCharacter; // readonly member, no locking needed
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -50,10 +52,12 @@ namespace Chummer
         {
             // Create the GUID for the new art.
             _guiID = Guid.NewGuid();
-            _objCharacter = objCharacter;
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            LockObject = objCharacter.LockObject;
+            _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.CollectionChangedAsync += ChildrenOnCollectionChanged;
             Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
@@ -65,12 +69,12 @@ namespace Chummer
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 objWriter.WriteStartElement("location");
                 objWriter.WriteElementString("guid", _guiID.ToString("D", GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("name", _strName);
-                objWriter.WriteElementString("notes", _strNotes.CleanOfInvalidUnicodeChars());
+                objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
                 objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteEndElement();
@@ -78,7 +82,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Metamagic from the XmlNode.
+        /// Load the Location from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
@@ -88,7 +92,7 @@ namespace Chummer
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
-                    _strName = objNode.InnerText;
+                    _strName = objNode.InnerTextViaPool();
                 }
                 else
                 {
@@ -108,24 +112,77 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Load the Location from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                {
+                    _guiID = Guid.NewGuid();
+                    _strName = objNode.InnerTextViaPool(token);
+                }
+                else
+                {
+                    objNode.TryGetStringFieldQuickly("name", ref _strName);
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                    string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                    objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                    _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                }
+
+                objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
+                if (Parent != null)
+                {
+                    if (Parent is IAsyncCollection<Location> objParentAsync)
+                    {
+                        if (!await objParentAsync.ContainsAsync(this, token).ConfigureAwait(false))
+                            await objParentAsync.AddAsync(this, token).ConfigureAwait(false);
+                    }
+                    else if (!Parent.Contains(this))
+                        Parent.Add(this);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
-        public void Print(XmlWriter objWriter, string strLanguageToPrint)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
                 return;
-            using (EnterReadLock.Enter(LockObject))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                objWriter.WriteStartElement("location");
-                objWriter.WriteElementString("guid", InternalId);
-                objWriter.WriteElementString("name", DisplayNameShort(strLanguageToPrint));
-                objWriter.WriteElementString("fullname", DisplayName(strLanguageToPrint));
-                objWriter.WriteElementString("name_english", Name);
+                token.ThrowIfCancellationRequested();
+                await objWriter.WriteStartElementAsync("location", token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
-                    objWriter.WriteElementString("notes", Notes);
-                objWriter.WriteEndElement();
+                    await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -140,7 +197,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _guiID.ToString("D", GlobalSettings.InvariantCultureInfo);
             }
         }
@@ -152,12 +209,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strName;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _strName = value;
             }
         }
@@ -171,9 +228,9 @@ namespace Chummer
         /// </summary>
         public string DisplayNameShort(string strLanguage = "")
         {
-            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase))
                 return Name;
-            using (EnterReadLock.Enter(LockObject))
+            using (LockObject.EnterReadLock())
             {
                 return _objCharacter.TranslateExtra(
                     !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
@@ -192,12 +249,12 @@ namespace Chummer
             return DisplayNameShort(strLanguage);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default)
         {
             return DisplayNameAsync(GlobalSettings.Language, token);
         }
 
-        public ValueTask<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
+        public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default)
         {
             return DisplayNameShortAsync(GlobalSettings.Language, token);
         }
@@ -205,12 +262,14 @@ namespace Chummer
         /// <summary>
         /// The name of the object as it should be displayed on printouts (translated name only).
         /// </summary>
-        public async ValueTask<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
+        public async Task<string> DisplayNameShortAsync(string strLanguage = "", CancellationToken token = default)
         {
-            if (string.IsNullOrEmpty(strLanguage) || strLanguage == GlobalSettings.Language)
+            if (string.IsNullOrEmpty(strLanguage) || strLanguage.Equals(GlobalSettings.Language, StringComparison.OrdinalIgnoreCase))
                 return Name;
-            using (await EnterReadLock.EnterAsync(LockObject, token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 return await _objCharacter.TranslateExtraAsync(
                     !GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
                         ? await LanguageManager
@@ -218,12 +277,16 @@ namespace Chummer
                                 .ConfigureAwait(false)
                         : Name, strLanguage, token: token).ConfigureAwait(false);
             }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         /// <summary>
         /// The name of the object as it should be displayed in lists. Name (Extra).
         /// </summary>
-        public ValueTask<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
+        public Task<string> DisplayNameAsync(string strLanguage = "", CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
@@ -237,13 +300,57 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _strNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_strNotes == value)
+                        return;
+                }
+                using (LockObject.EnterUpgradeableReadLock())
                     _strNotes = value;
+            }
+        }
+
+        public async Task<string> GetNotesAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _strNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesAsync(string value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_strNotes == value)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _strNotes = value;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -254,13 +361,77 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _colNotes;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                }
+
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (_colNotes == value)
+                        return;
+                    using (LockObject.EnterWriteLock())
+                    {
+                        _colNotes = value;
+                    }
+                }
+            }
+        }
+
+        public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _colNotes;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (value == _colNotes)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (_colNotes == value)
+                    return;
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
                     _colNotes = value;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -271,12 +442,12 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _intSortOrder;
             }
             set
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterUpgradeableReadLock())
                     _intSortOrder = value;
             }
         }
@@ -285,7 +456,7 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                     return _lstChildren;
             }
         }
@@ -296,22 +467,28 @@ namespace Chummer
 
         #region UI Methods
 
-        public TreeNode CreateTreeNode(ContextMenuStrip cmsLocation)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsLocation, CancellationToken token = default)
         {
-            using (EnterReadLock.Enter(LockObject))
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
-                string strText = CurrentDisplayName;
+                token.ThrowIfCancellationRequested();
                 TreeNode objNode = new TreeNode
                 {
                     Name = InternalId,
-                    Text = strText,
+                    Text = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
                     Tag = this,
                     ContextMenuStrip = cmsLocation,
-                    ForeColor = PreferredColor,
-                    ToolTipText = Notes.WordWrap()
+                    ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
+                    ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
 
                 return objNode;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -319,12 +496,28 @@ namespace Chummer
         {
             get
             {
-                using (EnterReadLock.Enter(LockObject))
+                using (LockObject.EnterReadLock())
                 {
                     return !string.IsNullOrEmpty(Notes)
                         ? ColorManager.GenerateCurrentModeColor(NotesColor)
                         : ColorManager.WindowText;
                 }
+            }
+        }
+
+        public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
+                    ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
+                    : ColorManager.WindowText;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -336,8 +529,10 @@ namespace Chummer
                 objOldItem.Location = null;
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -362,10 +557,9 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children)
-                        objItem.Location = this;
-                    break;
+                    return Children.ForEachWithSideEffectsAsync(x => x.Location = this, token);
             }
+            return Task.CompletedTask;
         }
 
         public bool Remove(bool blnConfirmDelete = true)
@@ -373,12 +567,30 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteGearLocation")))
                 return false;
 
-            foreach (IHasLocation item in Children)
+            foreach (IHasLocation item in Children.AsEnumerableWithSideEffects())
                 item.Location = null;
 
             bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
 
             Dispose();
+
+            return blnReturn;
+        }
+
+        public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (blnConfirmDelete && !await CommonFunctions
+                    .ConfirmDeleteAsync(
+                        await LanguageManager.GetStringAsync("Message_DeleteGearLocation", token: token)
+                            .ConfigureAwait(false), token).ConfigureAwait(false))
+                return false;
+
+            await Children.ForEachWithSideEffectsAsync(x => x.Location = null, token: token).ConfigureAwait(false);
+
+            bool blnReturn = Parent?.Contains(this) != true || Parent.Remove(this);
+
+            await DisposeAsync().ConfigureAwait(false);
 
             return blnReturn;
         }
@@ -402,11 +614,9 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
-
-            await LockObject.DisposeAsync().ConfigureAwait(false);
         }
 
         /// <inheritdoc />
-        public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
+        public AsyncFriendlyReaderWriterLock LockObject { get; }
     }
 }

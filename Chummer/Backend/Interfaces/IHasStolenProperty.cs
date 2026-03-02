@@ -30,8 +30,8 @@ namespace Chummer
 
         decimal NonStolenTotalCost { get; }
 
-        ValueTask<decimal> GetStolenTotalCostAsync(CancellationToken token = default);
+        Task<decimal> GetStolenTotalCostAsync(CancellationToken token = default);
 
-        ValueTask<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default);
+        Task<decimal> GetNonStolenTotalCostAsync(CancellationToken token = default);
     }
 }

@@ -103,6 +103,8 @@
                                         <xs:element name="inheritattributes" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="limbslot" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="limbslotcount" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="minagility" type="xs:integer" minOccurs="0" maxOccurs="1" />
+                                        <xs:element name="minstrength" type="xs:integer" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="minrating" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="notes" type="xs:string" minOccurs="0" maxOccurs="1" />
                                         <xs:element name="rating" type="xs:string" minOccurs="0" maxOccurs="1" />
