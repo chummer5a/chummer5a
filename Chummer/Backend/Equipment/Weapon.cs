@@ -5910,7 +5910,7 @@ namespace Chummer.Backend.Equipment
                                     }
                                 }
                             }
-                            else if (objGear.WeaponBonus != null)
+                            else if (objChild.WeaponBonus != null)
                             {
                                 string strFireMode = objChild.WeaponBonus["firemode"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strFireMode))
