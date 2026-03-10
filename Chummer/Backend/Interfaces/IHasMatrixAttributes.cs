@@ -26,6 +26,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer.Backend.Equipment;
 
 namespace Chummer
 {
@@ -90,6 +91,16 @@ namespace Chummer
         string ModAttributeArray { get; set; }
 
         IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes { get; }
+
+        /// <summary>
+        /// When slaved, the device that is the PAN master (commlink, cyberdeck, or RCC). Otherwise this device.
+        /// </summary>
+        IHasMatrixAttributes GetEffectiveDevice();
+
+        /// <summary>
+        /// When slaved, the device that is the PAN master. Otherwise this device.
+        /// </summary>
+        Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default);
     }
 
     public static class MatrixAttributes
@@ -118,6 +129,85 @@ namespace Chummer
                 return 0;
             return await objThis.GetBaseMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false) +
                    await objThis.GetBonusMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Get the effective value of a Matrix attribute (from master when slaved, else own total).
+        /// </summary>
+        public static int GetEffectiveMatrixAttribute(this IHasMatrixAttributes objThis, string strAttributeName)
+        {
+            if (objThis == null)
+                return 0;
+            IHasMatrixAttributes objEffective = objThis.GetEffectiveDevice();
+            return objEffective?.GetTotalMatrixAttribute(strAttributeName) ?? 0;
+        }
+
+        /// <summary>
+        /// Get the effective value of a Matrix attribute (from master when slaved, else own total).
+        /// </summary>
+        public static async Task<int> GetEffectiveMatrixAttributeAsync(this IHasMatrixAttributes objThis,
+            string strAttributeName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objThis == null)
+                return 0;
+            IHasMatrixAttributes objEffective = await objThis.GetEffectiveDeviceAsync(token).ConfigureAwait(false);
+            return objEffective != null
+                ? await objEffective.GetTotalMatrixAttributeAsync(strAttributeName, token).ConfigureAwait(false)
+                : 0;
+        }
+
+        /// <summary>
+        /// Whether this device can act as a PAN/WAN master (commlink, cyberdeck, RCC, Living Persona, or headware commlink).
+        /// </summary>
+        public static bool IsValidSlaveMaster(this IHasMatrixAttributes objThis)
+        {
+            if (objThis == null)
+                return false;
+            if (objThis is Gear objGear)
+                return objGear.Category == "Commlinks" || objGear.Category == "Cyberdecks" ||
+                       objGear.Category == "Rigger Command Consoles" || objGear.Name == "Living Persona";
+            if (objThis is Vehicle)
+                return false;
+            if (objThis is Cyberware objCyber)
+                return objCyber.IsCommlink; // only headware commlinks can be PAN masters
+            return false;
+        }
+
+        /// <summary>
+        /// Whether this device can act as a PAN/WAN master.
+        /// </summary>
+        public static Task<bool> IsValidSlaveMasterAsync(this IHasMatrixAttributes objThis, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Task.FromResult(IsValidSlaveMaster(objThis));
+        }
+
+        /// <summary>
+        /// Get list of (InternalId, DisplayName) for all devices that can be slave masters on the character, excluding the given device.
+        /// </summary>
+        public static List<(string Id, string Name)> GetSlaveMasterOptions(Character objCharacter, string strExcludeDeviceId = null)
+        {
+            var lst = new List<(string, string)>();
+            if (objCharacter == null)
+                return lst;
+            foreach (Gear objGear in objCharacter.Gear.GetAllDescendants(x => x.Children))
+            {
+                if (!objGear.IsValidSlaveMaster())
+                    continue;
+                if (strExcludeDeviceId == objGear.InternalId)
+                    continue;
+                lst.Add((objGear.InternalId, objGear.CurrentDisplayName));
+            }
+            foreach (Cyberware objCyber in objCharacter.Cyberware.GetAllDescendants(x => x.Children))
+            {
+                if (!objCyber.IsValidSlaveMaster())
+                    continue;
+                if (strExcludeDeviceId == objCyber.InternalId)
+                    continue;
+                lst.Add((objCyber.InternalId, objCyber.CurrentDisplayName));
+            }
+            return lst;
         }
 
         /// <summary>

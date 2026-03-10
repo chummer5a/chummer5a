@@ -88,6 +88,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private string _strGearName = string.Empty;
         private string _strParentID = string.Empty;
+        private string _strSlaveToMasterId = string.Empty;
         private int _intMatrixCMBonus;
         private int _intMatrixCMFilled;
         private string _strForcedValue = string.Empty;
@@ -1602,6 +1603,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("matrixcmbonus",
                 _intMatrixCMBonus.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("slavetomasterid", _strSlaveToMasterId);
             objWriter.WriteElementString("allowrename", _blnAllowRename.ToString(GlobalSettings.InvariantCultureInfo));
             if (_intChildCostMultiplier != 1)
                 objWriter.WriteElementString("childcostmultiplier",
@@ -1775,6 +1777,8 @@ namespace Chummer.Backend.Equipment
                     _strParentID = Guid.NewGuid().ToString("D", GlobalSettings.InvariantCultureInfo);
                 }
             }
+
+            objNode.TryGetStringFieldQuickly("slavetomasterid", ref _strSlaveToMasterId);
 
             using (XmlNodeList nodChildren = objNode.SelectNodes("children/gear"))
             {
@@ -3802,6 +3806,48 @@ namespace Chummer.Backend.Equipment
             return intReturn;
         }
 
+        /// <inheritdoc />
+        public IHasMatrixAttributes GetEffectiveDevice()
+        {
+            if (string.IsNullOrEmpty(_strSlaveToMasterId) || _objCharacter == null)
+                return this;
+            Gear objGear = _objCharacter.Gear.DeepFindById(_strSlaveToMasterId);
+            if (objGear != null && objGear.IsValidSlaveMaster())
+                return objGear;
+            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            {
+                if (objVehicle.InternalId == _strSlaveToMasterId && objVehicle.IsValidSlaveMaster())
+                    return objVehicle;
+            }
+            Cyberware objCyberware = _objCharacter.Cyberware.DeepFindById(_strSlaveToMasterId);
+            if (objCyberware != null && objCyberware.IsValidSlaveMaster())
+                return objCyberware;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public async Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(_strSlaveToMasterId) || _objCharacter == null)
+                return this;
+            ThreadSafeObservableCollection<Gear> lstGear = await _objCharacter.GetGearAsync(token).ConfigureAwait(false);
+            Gear objGear = lstGear.DeepFindById(_strSlaveToMasterId);
+            if (objGear != null && objGear.IsValidSlaveMaster())
+                return objGear;
+            ThreadSafeObservableCollection<Vehicle> lstVehicles = await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false);
+            foreach (Vehicle objVehicle in lstVehicles)
+            {
+                if (objVehicle.InternalId == _strSlaveToMasterId && objVehicle.IsValidSlaveMaster())
+                    return objVehicle;
+            }
+            ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
+            Cyberware objCyberware = lstCyberware.DeepFindById(_strSlaveToMasterId);
+            if (objCyberware != null && objCyberware.IsValidSlaveMaster())
+                return objCyberware;
+            return this;
+        }
+
         /// <summary>
         /// Location.
         /// </summary>
@@ -4028,6 +4074,19 @@ namespace Chummer.Backend.Equipment
             set
             {
                 if (Interlocked.Exchange(ref _strParentID, value) != value)
+                    OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// InternalId of the PAN master this device is slaved to (commlink, cyberdeck, or RCC). Empty when not slaved.
+        /// </summary>
+        public string SlaveToMasterId
+        {
+            get => _strSlaveToMasterId;
+            set
+            {
+                if (Interlocked.Exchange(ref _strSlaveToMasterId, value) != value)
                     OnPropertyChanged();
             }
         }

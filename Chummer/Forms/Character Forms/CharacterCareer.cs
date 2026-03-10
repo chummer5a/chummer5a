@@ -16728,6 +16728,415 @@ namespace Chummer
             }
         }
 
+        private async void trePANWAN_AfterSelect(object sender, TreeViewEventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                await RefreshPANWANDetails(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow
+            }
+        }
+
+        private async Task RefreshPANWANDetails(CancellationToken token = default)
+        {
+            TreeNode objNode = await trePANWAN.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
+            if (objNode?.Tag == null)
+            {
+                string strPrompt = await LanguageManager.GetStringAsync("String_PANWAN_SelectNode", token: token).ConfigureAwait(false);
+                await panPANWANDetails.DoThreadSafeAsync(x =>
+                {
+                    x.Controls.Clear();
+                    x.SuspendLayout();
+                    x.Controls.Add(new Label
+                    {
+                        Text = strPrompt,
+                        AutoSize = true,
+                        MaximumSize = new Size(400, 4096),
+                        Dock = DockStyle.Top,
+                        Padding = new Padding(0, 6, 0, 0)
+                    });
+                    x.ResumeLayout(true);
+                    x.Visible = true;
+                    x.PerformLayout();
+                    x.Refresh();
+                }, token).ConfigureAwait(false);
+                return;
+            }
+
+            object objTag = objNode.Tag;
+            if (objTag is string strFolder)
+            {
+                // "Slaved" or "Programs" folder – show parent master summary
+                TreeNode objParent = await trePANWAN.DoThreadSafeFuncAsync(() => objNode.Parent, token).ConfigureAwait(false);
+                object objMaster = objParent?.Tag;
+                if (objMaster is Gear objGearMaster)
+                    await BuildPANWANDetailPanelForMaster(objGearMaster, null, token).ConfigureAwait(false);
+                else if (objMaster is Cyberware objCyberMaster)
+                    await BuildPANWANDetailPanelForMaster(null, objCyberMaster, token).ConfigureAwait(false);
+                return;
+            }
+
+            if (objTag is Gear objGear)
+            {
+                TreeNode objParent = await trePANWAN.DoThreadSafeFuncAsync(() => objNode.Parent, token).ConfigureAwait(false);
+                object objParentTag = objParent?.Tag;
+                if (objParentTag is string strParentFolder && strParentFolder == "Programs")
+                {
+                    await BuildPANWANDetailPanelForProgram(objGear, token).ConfigureAwait(false);
+                    return;
+                }
+                if (objParentTag is string strSlavedFolder && strSlavedFolder == "Slaved")
+                {
+                    await BuildPANWANDetailPanelForSlavedDevice(objGear, token).ConfigureAwait(false);
+                    return;
+                }
+                // Top-level: master device (Gear that is a valid master)
+                await BuildPANWANDetailPanelForMaster(objGear, null, token).ConfigureAwait(false);
+                return;
+            }
+
+            if (objTag is Vehicle objVehicle)
+            {
+                await BuildPANWANDetailPanelForSlavedDevice(objVehicle, token).ConfigureAwait(false);
+                return;
+            }
+
+            if (objTag is Cyberware objCyber)
+            {
+                await BuildPANWANDetailPanelForMaster(null, objCyber, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Get matrix attribute label + value rows for display. useEffective: show effective (master) values when slaved.
+        /// </summary>
+        private async Task<List<(string Label, string Value)>> GetMatrixAttributeRowsAsync(IHasMatrixAttributes objDevice, bool useEffective, CancellationToken token = default)
+        {
+            if (objDevice == null)
+                return new List<(string, string)>();
+
+            string[] attrNames = { "Device Rating", "Attack", "Sleaze", "Data Processing", "Firewall", "Program Limit" };
+            string[] labelKeys = { "Label_DeviceRating", "Label_Attack", "Label_Sleaze", "Label_DataProcessing", "Label_Firewall", "Label_ProgramLimit" };
+            var lst = new List<(string, string)>(attrNames.Length);
+            for (int i = 0; i < attrNames.Length; i++)
+            {
+                int val = useEffective
+                    ? await objDevice.GetEffectiveMatrixAttributeAsync(attrNames[i], token).ConfigureAwait(false)
+                    : await objDevice.GetTotalMatrixAttributeAsync(attrNames[i], token).ConfigureAwait(false);
+                string labelText = await LanguageManager.GetStringAsync(labelKeys[i], token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(labelText))
+                    labelText = attrNames[i];
+                lst.Add((labelText, val.ToString(GlobalSettings.CultureInfo)));
+            }
+            return lst;
+        }
+
+        private static GroupBox CreateMatrixAttributesGroupBox(string title, List<(string Label, string Value)> rows)
+        {
+            var gpb = new GroupBox
+            {
+                Text = title,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                Padding = new Padding(6, 4, 6, 6),
+                MinimumSize = new Size(200, 0)
+            };
+            var tlp = new TableLayoutPanel
+            {
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                ColumnCount = 2,
+                Padding = Padding.Empty,
+                Margin = Padding.Empty
+            };
+            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.AutoSize));
+            tlp.ColumnStyles.Add(new ColumnStyle(SizeType.Absolute, 40));
+            for (int i = 0; i < rows.Count; i++)
+            {
+                tlp.RowStyles.Add(new RowStyle(SizeType.AutoSize));
+                tlp.Controls.Add(new Label { Text = rows[i].Label, AutoSize = true, Margin = new Padding(0, 2, 8, 2) }, 0, i);
+                tlp.Controls.Add(new Label { Text = rows[i].Value, AutoSize = true, Margin = new Padding(0, 2, 0, 2) }, 1, i);
+            }
+            gpb.Controls.Add(tlp);
+            tlp.Dock = DockStyle.Top;
+            return gpb;
+        }
+
+        private async Task BuildPANWANDetailPanelForMaster(Gear objGearMaster, Cyberware objCyberMaster, CancellationToken token = default)
+        {
+            IHasMatrixAttributes objMaster = objGearMaster ?? (IHasMatrixAttributes)objCyberMaster;
+            string strMasterId = objGearMaster?.InternalId ?? objCyberMaster?.InternalId ?? string.Empty;
+            string strMasterName = objGearMaster != null
+                ? await objGearMaster.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)
+                : await objCyberMaster.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+
+            int slavedCount = 0;
+            int programCount = 0;
+            foreach (Gear objGear in CharacterObject.Gear.GetAllDescendants(x => x.Children))
+            {
+                if (objGear.SlaveToMasterId == strMasterId)
+                    slavedCount++;
+            }
+            foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+            {
+                if (objVehicle.SlaveToMasterId == strMasterId)
+                    slavedCount++;
+            }
+            if (objGearMaster != null)
+            {
+                foreach (Gear objChild in objGearMaster.Children)
+                {
+                    if (objChild.IsProgram)
+                        programCount++;
+                }
+            }
+            else if (objCyberMaster?.GearChildren != null)
+            {
+                foreach (Gear objChild in objCyberMaster.GearChildren)
+                {
+                    if (objChild.IsProgram)
+                        programCount++;
+                }
+            }
+
+            var lstMatrixRows = await GetMatrixAttributeRowsAsync(objMaster, false, token).ConfigureAwait(false);
+            string strSlavedLabel = await LanguageManager.GetStringAsync("Node_PANWAN_SlavedDevices", token: token).ConfigureAwait(false);
+            string strProgramsLabel = await LanguageManager.GetStringAsync("Node_PANWAN_Programs", token: token).ConfigureAwait(false);
+            string strMatrixTitle = await LanguageManager.GetStringAsync("String_Matrix", token: token).ConfigureAwait(false);
+            string strSummary = strSlavedLabel + ": " + slavedCount.ToString(GlobalSettings.CultureInfo) + Environment.NewLine
+                + strProgramsLabel + ": " + programCount.ToString(GlobalSettings.CultureInfo);
+
+            await panPANWANDetails.DoThreadSafeAsync(x =>
+            {
+                x.Controls.Clear();
+                x.SuspendLayout();
+                var lblName = new Label
+                {
+                    Text = strMasterName,
+                    AutoSize = true,
+                    MaximumSize = new Size(400, 4096),
+                    Dock = DockStyle.Top,
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, SystemFonts.DefaultFont.Size, FontStyle.Bold),
+                    Padding = new Padding(0, 0, 0, 4)
+                };
+                x.Controls.Add(lblName);
+                GroupBox gpbMatrix = CreateMatrixAttributesGroupBox(strMatrixTitle, lstMatrixRows);
+                gpbMatrix.Dock = DockStyle.Top;
+                x.Controls.Add(gpbMatrix);
+                var lblSummary = new Label
+                {
+                    Text = strSummary,
+                    AutoSize = true,
+                    MaximumSize = new Size(400, 4096),
+                    Dock = DockStyle.Top,
+                    Padding = new Padding(0, 6, 0, 0)
+                };
+                x.Controls.Add(lblSummary);
+                x.ResumeLayout(true);
+                x.Visible = true;
+                x.PerformLayout();
+                x.Refresh();
+            }, token).ConfigureAwait(false);
+        }
+
+        private async Task BuildPANWANDetailPanelForProgram(Gear objProgram, CancellationToken token = default)
+        {
+            string strName = await objProgram.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            string strCategory = await objProgram.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+            string strDetail = strName;
+            if (!string.IsNullOrEmpty(strCategory))
+                strDetail += Environment.NewLine + strCategory;
+            if (objProgram.Rating > 0)
+            {
+                string strRatingLabel = await LanguageManager.GetStringAsync(objProgram.RatingLabel, token: token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strRatingLabel))
+                    strRatingLabel = await LanguageManager.GetStringAsync("String_Rating", token: token).ConfigureAwait(false);
+                strDetail += Environment.NewLine + strRatingLabel + ": " + objProgram.Rating.ToString(GlobalSettings.CultureInfo);
+            }
+            await panPANWANDetails.DoThreadSafeAsync(x =>
+            {
+                x.Controls.Clear();
+                x.SuspendLayout();
+                var lblName = new Label
+                {
+                    Text = strDetail,
+                    AutoSize = true,
+                    MaximumSize = new Size(400, 4096),
+                    Dock = DockStyle.Top,
+                    Padding = new Padding(0, 6, 0, 0)
+                };
+                x.Controls.Add(lblName);
+                x.ResumeLayout(true);
+                x.Visible = true;
+                x.PerformLayout();
+                x.Refresh();
+            }, token).ConfigureAwait(false);
+        }
+
+        private async Task BuildPANWANDetailPanelForSlavedDevice(object objDevice, CancellationToken token = default)
+        {
+            IHasMatrixAttributes objHasMatrix = null;
+            string strName;
+            string strMasterId = string.Empty;
+            if (objDevice is Gear objGear)
+            {
+                objHasMatrix = objGear;
+                strName = await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                strMasterId = objGear.SlaveToMasterId ?? string.Empty;
+            }
+            else if (objDevice is Vehicle objVehicle)
+            {
+                objHasMatrix = objVehicle;
+                strName = await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                strMasterId = objVehicle.SlaveToMasterId ?? string.Empty;
+            }
+            else
+            {
+                strName = string.Empty;
+            }
+
+            string strSlaveTo = await LanguageManager.GetStringAsync("Label_SlaveTo", token: token).ConfigureAwait(false);
+            string strMasterName = string.Empty;
+            if (!string.IsNullOrEmpty(strMasterId))
+            {
+                Gear objMasterGear = CharacterObject.Gear.DeepFindById(strMasterId);
+                Cyberware objMasterCyber = CharacterObject.Cyberware.DeepFindById(strMasterId);
+                if (objMasterGear != null)
+                    strMasterName = await objMasterGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                else if (objMasterCyber != null)
+                    strMasterName = await objMasterCyber.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+        }
+            if (string.IsNullOrEmpty(strMasterName))
+                strMasterName = await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false);
+
+            var lstMatrixRows = objHasMatrix != null
+                ? await GetMatrixAttributeRowsAsync(objHasMatrix, useEffective: true, token).ConfigureAwait(false)
+                : new List<(string Label, string Value)>();
+            string strMatrixTitle = await LanguageManager.GetStringAsync("String_Matrix", token: token).ConfigureAwait(false);
+            string strEffectiveNote = await LanguageManager.GetStringAsync("Label_Effective", token: token).ConfigureAwait(false);
+
+            await panPANWANDetails.DoThreadSafeAsync(x =>
+            {
+                x.Controls.Clear();
+                x.SuspendLayout();
+                var lblName = new Label
+                {
+                    Text = strName,
+                    AutoSize = true,
+                    MaximumSize = new Size(400, 4096),
+                    Dock = DockStyle.Top,
+                    Font = new Font(SystemFonts.DefaultFont.FontFamily, SystemFonts.DefaultFont.Size, FontStyle.Bold),
+                    Padding = new Padding(0, 0, 0, 4)
+                };
+                x.Controls.Add(lblName);
+                var lblSlaveTo = new Label
+                {
+                    Text = strSlaveTo + " " + strMasterName,
+                    AutoSize = true,
+                    MaximumSize = new Size(400, 4096),
+                    Dock = DockStyle.Top,
+                    Padding = new Padding(0, 2, 0, 6)
+                };
+                x.Controls.Add(lblSlaveTo);
+                if (lstMatrixRows.Count > 0)
+                {
+                    var lblEffective = new Label
+                    {
+                        Text = "(" + strEffectiveNote + ")",
+                        AutoSize = true,
+                        Dock = DockStyle.Top,
+                        Padding = new Padding(0, 0, 0, 2),
+                        ForeColor = SystemColors.GrayText
+                    };
+                    x.Controls.Add(lblEffective);
+                    GroupBox gpbMatrix = CreateMatrixAttributesGroupBox(strMatrixTitle, lstMatrixRows);
+                    gpbMatrix.Dock = DockStyle.Top;
+                    x.Controls.Add(gpbMatrix);
+                }
+                x.ResumeLayout(true);
+                x.Visible = true;
+                x.PerformLayout();
+                x.Refresh();
+            }, token).ConfigureAwait(false);
+        }
+
+        private async Task RefreshPANWANTreeAsync(CancellationToken token = default)
+        {
+            if (CharacterObject == null)
+                return;
+
+            string strSlaved = await LanguageManager.GetStringAsync("Node_PANWAN_SlavedDevices", token: token).ConfigureAwait(false);
+            string strPrograms = await LanguageManager.GetStringAsync("Node_PANWAN_Programs", token: token).ConfigureAwait(false);
+
+            var lstMasters = MatrixAttributes.GetSlaveMasterOptions(CharacterObject, null);
+            var lstRootNodes = new List<TreeNode>();
+
+            foreach ((string strMasterId, string strMasterName) in lstMasters)
+            {
+                Gear objGearMaster = CharacterObject.Gear.DeepFindById(strMasterId);
+                Cyberware objCyberMaster = CharacterObject.Cyberware.DeepFindById(strMasterId);
+                if (objGearMaster == null && objCyberMaster == null)
+                    continue;
+
+                object objMaster = objGearMaster ?? (object)objCyberMaster;
+                var nodMaster = new TreeNode(strMasterName) { Tag = objMaster };
+
+                var nodSlaved = new TreeNode(strSlaved) { Tag = "Slaved" };
+                foreach (Gear objGear in CharacterObject.Gear.GetAllDescendants(x => x.Children))
+                {
+                    if (objGear.SlaveToMasterId == strMasterId)
+                        nodSlaved.Nodes.Add(new TreeNode(await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)) { Tag = objGear });
+                }
+                foreach (Vehicle objVehicle in CharacterObject.Vehicles)
+                {
+                    if (objVehicle.SlaveToMasterId == strMasterId)
+                        nodSlaved.Nodes.Add(new TreeNode(await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)) { Tag = objVehicle });
+                }
+                nodMaster.Nodes.Add(nodSlaved);
+
+                var nodPrograms = new TreeNode(strPrograms) { Tag = "Programs" };
+                if (objGearMaster != null)
+                {
+                    foreach (Gear objChild in objGearMaster.Children)
+                    {
+                        if (objChild.IsProgram)
+                            nodPrograms.Nodes.Add(new TreeNode(await objChild.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)) { Tag = objChild });
+                    }
+                }
+                else if (objCyberMaster?.GearChildren != null)
+                {
+                    foreach (Gear objChild in objCyberMaster.GearChildren)
+                    {
+                        if (objChild.IsProgram)
+                            nodPrograms.Nodes.Add(new TreeNode(await objChild.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)) { Tag = objChild });
+                    }
+                }
+                nodMaster.Nodes.Add(nodPrograms);
+                lstRootNodes.Add(nodMaster);
+            }
+
+            await trePANWAN.DoThreadSafeAsync(x =>
+            {
+                x.BeginUpdate();
+                try
+                {
+                    x.Nodes.Clear();
+                    foreach (TreeNode nod in lstRootNodes)
+                        x.Nodes.Add(nod);
+                    x.ExpandAll();
+                }
+                finally
+                {
+                    x.EndUpdate();
+                }
+            }, token).ConfigureAwait(false);
+        }
+
         private async void chkArmorEquipped_CheckedChanged(object sender, EventArgs e)
         {
             if (IsRefreshing || SkipUpdate)
@@ -17420,6 +17829,118 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 // swallow this
+            }
+        }
+
+        private async Task EnsureGearSlaveToControlsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lblGearSlaveToLabel != null)
+                return;
+            await this.DoThreadSafeAsync(() =>
+            {
+                if (lblGearSlaveToLabel != null)
+                    return;
+                lblGearSlaveToLabel = new Label
+                {
+                    AutoSize = true,
+                    Text = LanguageManager.GetString("Label_SlaveTo"),
+                    Tag = "Label_SlaveTo",
+                    Visible = false
+                };
+                cboGearSlaveTo = new ElasticComboBox
+                {
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Visible = false,
+                    MinimumSize = new System.Drawing.Size(120, 0)
+                };
+                cboGearSlaveTo.SelectedIndexChanged += cboGearSlaveTo_SelectedIndexChanged;
+                lblGearEffective = new Label
+                {
+                    AutoSize = true,
+                    Visible = false
+                };
+                flpGearMatrixCheckBoxes.Controls.Add(lblGearSlaveToLabel);
+                flpGearMatrixCheckBoxes.Controls.Add(cboGearSlaveTo);
+                flpGearMatrixCheckBoxes.Controls.Add(lblGearEffective);
+            }, token).ConfigureAwait(false);
+        }
+
+        private async void cboGearSlaveTo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                if (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Gear objGear)
+                {
+                    string strNewValue = await cboGearSlaveTo.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, GenericToken).ConfigureAwait(false);
+                    if (objGear.SlaveToMasterId != strNewValue)
+                    {
+                        objGear.SlaveToMasterId = strNewValue;
+                        await RefreshSelectedGear(GenericToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow
+            }
+        }
+
+        private async Task EnsureVehicleSlaveToControlsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lblVehicleSlaveToLabel != null)
+                return;
+            await this.DoThreadSafeAsync(() =>
+            {
+                if (lblVehicleSlaveToLabel != null)
+                    return;
+                lblVehicleSlaveToLabel = new Label
+                {
+                    AutoSize = true,
+                    Text = LanguageManager.GetString("Label_SlaveTo"),
+                    Tag = "Label_SlaveTo",
+                    Visible = false
+                };
+                cboVehicleSlaveTo = new ElasticComboBox
+                {
+                    DropDownStyle = ComboBoxStyle.DropDownList,
+                    Visible = false,
+                    MinimumSize = new System.Drawing.Size(120, 0)
+                };
+                cboVehicleSlaveTo.SelectedIndexChanged += cboVehicleSlaveTo_SelectedIndexChanged;
+                lblVehicleEffective = new Label
+                {
+                    AutoSize = true,
+                    Visible = false
+                };
+                flpVehiclesMatrixCheckBoxes.Controls.Add(lblVehicleSlaveToLabel);
+                flpVehiclesMatrixCheckBoxes.Controls.Add(cboVehicleSlaveTo);
+                flpVehiclesMatrixCheckBoxes.Controls.Add(lblVehicleEffective);
+            }, token).ConfigureAwait(false);
+        }
+
+        private async void cboVehicleSlaveTo_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (IsRefreshing || SkipUpdate)
+                return;
+            try
+            {
+                if (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, GenericToken).ConfigureAwait(false) is Vehicle objVehicle)
+                {
+                    string strNewValue = await cboVehicleSlaveTo.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString() ?? string.Empty, GenericToken).ConfigureAwait(false);
+                    if (objVehicle.SlaveToMasterId != strNewValue)
+                    {
+                        objVehicle.SlaveToMasterId = strNewValue;
+                        await RefreshSelectedVehicle(GenericToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow
             }
         }
 
@@ -20111,6 +20632,8 @@ namespace Chummer
                 return;
             try
             {
+                if (tabStreetGearTabs.SelectedTab == tabPANWAN)
+                    await RefreshPANWANTreeAsync(GenericToken).ConfigureAwait(false);
                 await RefreshPasteStatus(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
@@ -20175,6 +20698,11 @@ namespace Chummer
                     {
                         treActiveView = treCustomDrugs;
                     }
+                    // PAN/WAN Tab.
+                    else if (tabStreetGearTabs.SelectedTab == tabPANWAN)
+                    {
+                        treActiveView = trePANWAN;
+                }
                 }
                 // Cyberware Tab.
                 else if (tabCharacterTabs.SelectedTab == tabCyberware)
@@ -23543,6 +24071,50 @@ namespace Chummer
                                                          .ConfigureAwait(false);
                         }
 
+                        // Slave to (PAN master) and effective attributes
+                        await EnsureGearSlaveToControlsAsync(token).ConfigureAwait(false);
+                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSlaveMasters))
+                        {
+                            lstSlaveMasters.Add(new ListItem(string.Empty,
+                                await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)));
+                            foreach ((string strMasterId, string strMasterName) in MatrixAttributes.GetSlaveMasterOptions(CharacterObject, objGear.InternalId))
+                                lstSlaveMasters.Add(new ListItem(strMasterId, strMasterName));
+                            IsRefreshing = true;
+                            try
+                            {
+                                await cboGearSlaveTo.PopulateWithListItemsAsync(lstSlaveMasters, token).ConfigureAwait(false);
+                                await cboGearSlaveTo.DoThreadSafeAsync(x =>
+                                {
+                                    x.SelectedValue = objGear.SlaveToMasterId;
+                                    if (x.SelectedIndex == -1)
+                                        x.SelectedIndex = 0;
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
+                            }
+                            finally
+                            {
+                                IsRefreshing = false;
+                            }
+                        }
+                        await lblGearSlaveToLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                        bool blnSlaved = !string.IsNullOrEmpty(objGear.SlaveToMasterId);
+                        if (blnSlaved)
+                        {
+                            int intEffFirewall = await objGear.GetEffectiveMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                            int intEffDR = await objGear.GetEffectiveMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
+                            string strEffective = await LanguageManager.GetStringAsync("Label_Effective", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + ' '
+                                + await LanguageManager.GetStringAsync("Label_Firewall", token: token).ConfigureAwait(false) + ' ' + intEffFirewall.ToString(GlobalSettings.CultureInfo)
+                                + ", " + await LanguageManager.GetStringAsync("Label_DeviceRating", token: token).ConfigureAwait(false) + ' ' + intEffDR.ToString(GlobalSettings.CultureInfo);
+                            await lblGearEffective.DoThreadSafeAsync(x =>
+                            {
+                                x.Text = strEffective;
+                                x.Visible = true;
+                            }, token).ConfigureAwait(false);
+                        }
+                        else
+                            await lblGearEffective.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+
                         string strNodeText = await objGear.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                         await treGear.DoThreadSafeAsync(() => objSelectedNode.Text = strNodeText, token)
                                      .ConfigureAwait(false);
@@ -25289,6 +25861,50 @@ namespace Chummer
                                 x.Checked = blnIsActiveCommlink;
                                 x.Visible = blnIsCommlink;
                             }, token).ConfigureAwait(false);
+
+                            // Slave to (PAN master, e.g. RCC) and effective attributes
+                            await EnsureVehicleSlaveToControlsAsync(token).ConfigureAwait(false);
+                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstVehicleSlaveMasters))
+                            {
+                                lstVehicleSlaveMasters.Add(new ListItem(string.Empty,
+                                    await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)));
+                                foreach ((string strMasterId, string strMasterName) in MatrixAttributes.GetSlaveMasterOptions(CharacterObject, objVehicle.InternalId))
+                                    lstVehicleSlaveMasters.Add(new ListItem(strMasterId, strMasterName));
+                                IsRefreshing = true;
+                                try
+                                {
+                                    await cboVehicleSlaveTo.PopulateWithListItemsAsync(lstVehicleSlaveMasters, token).ConfigureAwait(false);
+                                    await cboVehicleSlaveTo.DoThreadSafeAsync(x =>
+                                    {
+                                        x.SelectedValue = objVehicle.SlaveToMasterId;
+                                        if (x.SelectedIndex == -1)
+                                            x.SelectedIndex = 0;
+                                        x.Visible = true;
+                                    }, token).ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    IsRefreshing = false;
+                                }
+                            }
+                            await lblVehicleSlaveToLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
+                            bool blnVehicleSlaved = !string.IsNullOrEmpty(objVehicle.SlaveToMasterId);
+                            if (blnVehicleSlaved)
+                            {
+                                int intEffFirewall = await objVehicle.GetEffectiveMatrixAttributeAsync("Firewall", token).ConfigureAwait(false);
+                                int intEffDR = await objVehicle.GetEffectiveMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false);
+                                string strEffective = await LanguageManager.GetStringAsync("Label_Effective", token: token).ConfigureAwait(false)
+                                    + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false) + ' '
+                                    + await LanguageManager.GetStringAsync("Label_Firewall", token: token).ConfigureAwait(false) + ' ' + intEffFirewall.ToString(GlobalSettings.CultureInfo)
+                                    + ", " + await LanguageManager.GetStringAsync("Label_DeviceRating", token: token).ConfigureAwait(false) + ' ' + intEffDR.ToString(GlobalSettings.CultureInfo);
+                                await lblVehicleEffective.DoThreadSafeAsync(x =>
+                                {
+                                    x.Text = strEffective;
+                                    x.Visible = true;
+                                }, token).ConfigureAwait(false);
+                            }
+                            else
+                                await lblVehicleEffective.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
 
                             token.ThrowIfCancellationRequested();
                             await UpdateSensor(objVehicle, token).ConfigureAwait(false);

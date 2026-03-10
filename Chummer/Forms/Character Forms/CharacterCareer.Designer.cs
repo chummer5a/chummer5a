@@ -1037,6 +1037,10 @@ namespace Chummer
             this.btnCreateCustomDrug = new System.Windows.Forms.Button();
             this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
+            this.tabPANWAN = new System.Windows.Forms.TabPage();
+            this.tlpPANWAN = new System.Windows.Forms.TableLayoutPanel();
+            this.trePANWAN = new System.Windows.Forms.TreeView();
+            this.panPANWANDetails = new System.Windows.Forms.Panel();
             this.tlpLifestyleDetails = new System.Windows.Forms.TableLayoutPanel();
             this.treLifestyles = new System.Windows.Forms.TreeView();
             this.flpLifestyleDetails = new System.Windows.Forms.FlowLayoutPanel();
@@ -1623,6 +1627,8 @@ namespace Chummer
             this.flpDrugQty.SuspendLayout();
             this.tlpDrugDescriptionButtons.SuspendLayout();
             this.tabLifestyle.SuspendLayout();
+            this.tabPANWAN.SuspendLayout();
+            this.tlpPANWAN.SuspendLayout();
             this.tlpLifestyleDetails.SuspendLayout();
             this.flpLifestyleDetails.SuspendLayout();
             this.gpbLifestyleCommon.SuspendLayout();
@@ -11530,6 +11536,7 @@ namespace Chummer
             this.tabStreetGearTabs.Controls.Add(this.tabWeapons);
             this.tabStreetGearTabs.Controls.Add(this.tabDrugs);
             this.tabStreetGearTabs.Controls.Add(this.tabLifestyle);
+            this.tabStreetGearTabs.Controls.Add(this.tabPANWAN);
             this.tabStreetGearTabs.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tabStreetGearTabs.Location = new System.Drawing.Point(0, 0);
             this.tabStreetGearTabs.Name = "tabStreetGearTabs";
@@ -16800,6 +16807,54 @@ namespace Chummer
             this.tabLifestyle.TabIndex = 0;
             this.tabLifestyle.Tag = "Tab_Lifestyle";
             this.tabLifestyle.Text = "Lifestyles";
+            // 
+            // tabPANWAN
+            // 
+            this.tabPANWAN.BackColor = System.Drawing.SystemColors.Control;
+            this.tabPANWAN.Controls.Add(this.tlpPANWAN);
+            this.tabPANWAN.Location = new System.Drawing.Point(4, 22);
+            this.tabPANWAN.Name = "tabPANWAN";
+            this.tabPANWAN.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPANWAN.Size = new System.Drawing.Size(969, 605);
+            this.tabPANWAN.TabIndex = 6;
+            this.tabPANWAN.Tag = "Tab_PANWAN";
+            this.tabPANWAN.Text = "PAN / WAN";
+            this.tabPANWAN.UseVisualStyleBackColor = true;
+            // 
+            // tlpPANWAN
+            // 
+            this.tlpPANWAN.ColumnCount = 2;
+            this.tlpPANWAN.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 35F));
+            this.tlpPANWAN.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 65F));
+            this.tlpPANWAN.Controls.Add(this.trePANWAN, 0, 0);
+            this.tlpPANWAN.Controls.Add(this.panPANWANDetails, 1, 0);
+            this.tlpPANWAN.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpPANWAN.Location = new System.Drawing.Point(3, 3);
+            this.tlpPANWAN.Name = "tlpPANWAN";
+            this.tlpPANWAN.RowCount = 1;
+            this.tlpPANWAN.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpPANWAN.Size = new System.Drawing.Size(963, 599);
+            this.tlpPANWAN.TabIndex = 0;
+            // 
+            // trePANWAN
+            // 
+            this.trePANWAN.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.trePANWAN.HideSelection = false;
+            this.trePANWAN.Name = "trePANWAN";
+            this.trePANWAN.ShowNodeToolTips = true;
+            this.trePANWAN.Size = new System.Drawing.Size(331, 593);
+            this.trePANWAN.TabIndex = 0;
+            this.trePANWAN.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePANWAN_AfterSelect);
+            // 
+            // panPANWANDetails
+            // 
+            this.panPANWANDetails.AutoScroll = true;
+            this.panPANWANDetails.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.panPANWANDetails.Location = new System.Drawing.Point(334, 3);
+            this.panPANWANDetails.Name = "panPANWANDetails";
+            this.panPANWANDetails.Padding = new System.Windows.Forms.Padding(6, 0, 0, 0);
+            this.panPANWANDetails.Size = new System.Drawing.Size(626, 593);
+            this.panPANWANDetails.TabIndex = 1;
             // 
             // tlpLifestyleDetails
             // 
@@ -22938,6 +22993,8 @@ namespace Chummer
             this.tlpCyberwareButtons.PerformLayout();
             this.tabStreetGear.ResumeLayout(false);
             this.tabStreetGearTabs.ResumeLayout(false);
+            this.tabPANWAN.ResumeLayout(false);
+            this.tlpPANWAN.ResumeLayout(false);
             this.tabGear.ResumeLayout(false);
             this.tabGear.PerformLayout();
             this.tlpGear.ResumeLayout(false);
@@ -23938,6 +23995,10 @@ namespace Chummer
         private SplitButton cmdDeleteWeapon;
         private SplitButton cmdFireWeapon;
         private TabPage tabLifestyle;
+        private TabPage tabPANWAN;
+        private TableLayoutPanel tlpPANWAN;
+        private TreeView trePANWAN;
+        private Panel panPANWANDetails;
         private Label lblLifestyleCostLabel;
         private Label lblLifestyleCost;
         private Label lblLifestyleQualities;
@@ -24171,6 +24232,9 @@ namespace Chummer
         private UI.Editors.RtfEditor rtfGameNotes;
         private FlowLayoutPanel flpCyberwareMatrixCheckBoxes;
         private FlowLayoutPanel flpVehiclesMatrixCheckBoxes;
+        private Label lblVehicleSlaveToLabel;
+        private ElasticComboBox cboVehicleSlaveTo;
+        private Label lblVehicleEffective;
         private System.Windows.Forms.TableLayoutPanel tlpAlias;
         private System.Windows.Forms.TableLayoutPanel tlpCommonRightSide;
         private LabelWithToolTip lblAstralReputationTotal;
@@ -24230,6 +24294,9 @@ namespace Chummer
         private Label lblGearSleazeLabel;
         private Label lblGearDataProcessingLabel;
         private Label lblGearFirewallLabel;
+        private Label lblGearSlaveToLabel;
+        private ElasticComboBox cboGearSlaveTo;
+        private Label lblGearEffective;
         private FlowLayoutPanel flpGearMatrixCheckBoxes;
         private TabControl tabGearCM;
         private TabPage tabGearMatrixCM;

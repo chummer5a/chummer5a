@@ -9066,7 +9066,19 @@ namespace Chummer.Backend.Equipment
                     string strName = Name;
                     string strDisplayName = CurrentDisplayName;
                     Gear objAutosoft = null;
-                    if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    // If drone is slaved to an RCC, use that RCC's autosofts first
+                    if (ParentVehicle != null)
+                    {
+                        IHasMatrixAttributes objMaster = ParentVehicle.GetEffectiveDevice();
+                        if (objMaster != ParentVehicle && objMaster is Gear objRcc && objRcc.Category == "Rigger Command Consoles")
+                        {
+                            objAutosoft = objRcc.Children.DeepFirstOrDefault(
+                                x => x.Children.Where(y => y.Equipped),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName));
+                        }
+                    }
+                    if (objAutosoft == null && _objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
                     {
                         objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
                             x => x.Children.Where(y => y.Equipped),
@@ -9474,7 +9486,19 @@ namespace Chummer.Backend.Equipment
                     string strName = Name;
                     string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                     Gear objAutosoft = null;
-                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    // If drone is slaved to an RCC, use that RCC's autosofts first
+                    if (ParentVehicle != null)
+                    {
+                        IHasMatrixAttributes objMaster = await ParentVehicle.GetEffectiveDeviceAsync(token).ConfigureAwait(false);
+                        if (objMaster != ParentVehicle && objMaster is Gear objRcc && objRcc.Category == "Rigger Command Consoles")
+                        {
+                            objAutosoft = await objRcc.Children.DeepFirstOrDefaultAsync(
+                                async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                        }
+                    }
+                    if (objAutosoft == null && await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
                     {
                         objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
                             async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
@@ -10557,7 +10581,19 @@ namespace Chummer.Backend.Equipment
                         string strName = Name;
                         string strDisplayName = CurrentDisplayName;
                         Gear objAutosoft = null;
-                        if (_objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                        // If drone is slaved to an RCC, use that RCC's autosofts first (match GetDicePool logic)
+                        if (ParentVehicle != null)
+                        {
+                            IHasMatrixAttributes objMaster = ParentVehicle.GetEffectiveDevice();
+                            if (objMaster != ParentVehicle && objMaster is Gear objRcc && objRcc.Category == "Rigger Command Consoles")
+                            {
+                                objAutosoft = objRcc.Children.DeepFirstOrDefault(
+                                    x => x.Children.Where(y => y.Equipped),
+                                    x => x.Name == strAutosoft && x.Equipped &&
+                                         (x.Extra == strName || x.Extra == strDisplayName));
+                            }
+                        }
+                        if (objAutosoft == null && _objCharacter.ActiveCommlink is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
                         {
                             objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
                                 x => x.Children.Where(y => y.Equipped),
@@ -11209,7 +11245,19 @@ namespace Chummer.Backend.Equipment
                     string strName = Name;
                     string strDisplayName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
                     Gear objAutosoft = null;
-                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
+                    // If drone is slaved to an RCC, use that RCC's autosofts first (match GetDicePool logic)
+                    if (ParentVehicle != null)
+                    {
+                        IHasMatrixAttributes objMaster = await ParentVehicle.GetEffectiveDeviceAsync(token).ConfigureAwait(false);
+                        if (objMaster != ParentVehicle && objMaster is Gear objRcc && objRcc.Category == "Rigger Command Consoles")
+                        {
+                            objAutosoft = await objRcc.Children.DeepFirstOrDefaultAsync(
+                                async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
+                                x => x.Name == strAutosoft && x.Equipped &&
+                                     (x.Extra == strName || x.Extra == strDisplayName), token: token).ConfigureAwait(false);
+                        }
+                    }
+                    if (objAutosoft == null && await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) is Gear objCommlink && objCommlink.Category == "Rigger Command Consoles")
                     {
                         objAutosoft = await _objCharacter.Gear.DeepFirstOrDefaultAsync(
                             async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
@@ -12002,6 +12050,21 @@ namespace Chummer.Backend.Equipment
                 IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
                 return objThis != null ? objThis.ChildrenWithMatrixAttributes : Children;
             }
+        }
+
+        /// <inheritdoc />
+        public IHasMatrixAttributes GetEffectiveDevice()
+        {
+            IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
+            return objThis?.GetEffectiveDevice() ?? this;
+        }
+
+        /// <inheritdoc />
+        public async Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IHasMatrixAttributes objThis = GetMatrixAttributesOverride;
+            return objThis != null ? await objThis.GetEffectiveDeviceAsync(token).ConfigureAwait(false) : this;
         }
 
         /// <summary>

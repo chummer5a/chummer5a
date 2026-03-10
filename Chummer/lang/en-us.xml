@@ -943,6 +943,18 @@
       <text>Firewall:</text>
     </string>
     <string>
+      <key>Label_ProgramLimit</key>
+      <text>Program Limit:</text>
+    </string>
+    <string>
+      <key>Label_SlaveTo</key>
+      <text>Slave to:</text>
+    </string>
+    <string>
+      <key>Label_Effective</key>
+      <text>Effective</text>
+    </string>
+    <string>
       <key>Label_BiofeedbackFilter</key>
       <text>Biofeedback Filter:</text>
     </string>
@@ -2105,6 +2117,22 @@
     <string>
       <key>Tab_Gear</key>
       <text>Gear</text>
+    </string>
+    <string>
+      <key>Tab_PANWAN</key>
+      <text>PAN / WAN</text>
+    </string>
+    <string>
+      <key>Node_PANWAN_SlavedDevices</key>
+      <text>Slaved Devices</text>
+    </string>
+    <string>
+      <key>Node_PANWAN_Programs</key>
+      <text>Programs</text>
+    </string>
+    <string>
+      <key>String_PANWAN_SelectNode</key>
+      <text>Select a master device or slaved device to view details.</text>
     </string>
     <string>
       <key>Tab_Pets</key>

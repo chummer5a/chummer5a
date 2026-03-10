@@ -2645,6 +2645,16 @@ namespace Chummer.Backend.Equipment
 
         public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => Children;
 
+        /// <inheritdoc />
+        public IHasMatrixAttributes GetEffectiveDevice() => this;
+
+        /// <inheritdoc />
+        public Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Task.FromResult<IHasMatrixAttributes>(this);
+        }
+
         /// <summary>
         /// Commlink's Limit for how many Programs they can run.
         /// </summary>

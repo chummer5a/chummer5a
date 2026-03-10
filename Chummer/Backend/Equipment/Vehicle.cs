@@ -86,6 +86,7 @@ namespace Chummer.Backend.Equipment
         private bool _blnDiscountCost;
         private bool _blnDealerConnectionDiscount;
         private string _strParentID = string.Empty;
+        private string _strSlaveToMasterId = string.Empty;
 
         private readonly Character _objCharacter;
 
@@ -1025,6 +1026,7 @@ namespace Chummer.Backend.Equipment
             objWriter.WriteElementString("source", _strSource);
             objWriter.WriteElementString("page", _strPage);
             objWriter.WriteElementString("parentid", _strParentID);
+            objWriter.WriteElementString("slavetomasterid", _strSlaveToMasterId);
             objWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("physicalcmfilled", _intPhysicalCMFilled.ToString(GlobalSettings.InvariantCultureInfo));
@@ -1257,6 +1259,7 @@ namespace Chummer.Backend.Equipment
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
             objNode.TryGetStringFieldQuickly("parentid", ref _strParentID);
+            objNode.TryGetStringFieldQuickly("slavetomasterid", ref _strSlaveToMasterId);
             objNode.TryGetInt32FieldQuickly("matrixcmfilled", ref _intMatrixCMFilled);
             objNode.TryGetInt32FieldQuickly("physicalcmfilled", ref _intPhysicalCMFilled);
             objNode.TryGetStringFieldQuickly("vehiclename", ref _strVehicleName);
@@ -2354,6 +2357,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _strParentID;
             set => _strParentID = value;
+        }
+
+        /// <summary>
+        /// InternalId of the PAN master this vehicle/drone is slaved to (commlink, cyberdeck, or RCC). Empty when not slaved.
+        /// </summary>
+        public string SlaveToMasterId
+        {
+            get => _strSlaveToMasterId;
+            set => _strSlaveToMasterId = value;
         }
 
         /// <summary>
@@ -4994,6 +5006,48 @@ namespace Chummer.Backend.Equipment
         }
 
         public IEnumerable<IHasMatrixAttributes> ChildrenWithMatrixAttributes => GearChildren.Concat<IHasMatrixAttributes>(Weapons);
+
+        /// <inheritdoc />
+        public IHasMatrixAttributes GetEffectiveDevice()
+        {
+            if (string.IsNullOrEmpty(_strSlaveToMasterId) || _objCharacter == null)
+                return this;
+            Gear objGear = _objCharacter.Gear.DeepFindById(_strSlaveToMasterId);
+            if (objGear != null && objGear.IsValidSlaveMaster())
+                return objGear;
+            foreach (Vehicle objVehicle in _objCharacter.Vehicles)
+            {
+                if (objVehicle.InternalId == _strSlaveToMasterId && objVehicle.IsValidSlaveMaster())
+                    return objVehicle;
+            }
+            Cyberware objCyberware = _objCharacter.Cyberware.DeepFindById(_strSlaveToMasterId);
+            if (objCyberware != null && objCyberware.IsValidSlaveMaster())
+                return objCyberware;
+            return this;
+        }
+
+        /// <inheritdoc />
+        public async Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(_strSlaveToMasterId) || _objCharacter == null)
+                return this;
+            ThreadSafeObservableCollection<Gear> lstGear = await _objCharacter.GetGearAsync(token).ConfigureAwait(false);
+            Gear objGear = lstGear.DeepFindById(_strSlaveToMasterId);
+            if (objGear != null && objGear.IsValidSlaveMaster())
+                return objGear;
+            ThreadSafeObservableCollection<Vehicle> lstVehicles = await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false);
+            foreach (Vehicle objVehicle in lstVehicles)
+            {
+                if (objVehicle.InternalId == _strSlaveToMasterId && objVehicle.IsValidSlaveMaster())
+                    return objVehicle;
+            }
+            ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
+            Cyberware objCyberware = lstCyberware.DeepFindById(_strSlaveToMasterId);
+            if (objCyberware != null && objCyberware.IsValidSlaveMaster())
+                return objCyberware;
+            return this;
+        }
 
         #endregion Complex Properties
 

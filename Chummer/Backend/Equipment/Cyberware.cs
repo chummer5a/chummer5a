@@ -11220,6 +11220,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <inheritdoc />
+        public IHasMatrixAttributes GetEffectiveDevice() => this;
+
+        /// <inheritdoc />
+        public Task<IHasMatrixAttributes> GetEffectiveDeviceAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Task.FromResult<IHasMatrixAttributes>(this);
+        }
+
         #endregion Complex Properties
 
         #region Methods
