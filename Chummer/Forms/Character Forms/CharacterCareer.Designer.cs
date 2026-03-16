@@ -1034,6 +1034,7 @@ namespace Chummer
             this.btnDecreaseDrugQty = new Chummer.ButtonWithToolTip();
             this.lblDrugCostLabel = new System.Windows.Forms.Label();
             this.tlpDrugDescriptionButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.btnAddDrug = new System.Windows.Forms.Button();
             this.btnCreateCustomDrug = new System.Windows.Forms.Button();
             this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
@@ -16749,22 +16750,39 @@ namespace Chummer
             this.tlpDrugDescription.SetColumnSpan(this.tlpDrugDescriptionButtons, 2);
             this.tlpDrugDescriptionButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpDrugDescriptionButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDrugDescriptionButtons.Controls.Add(this.btnCreateCustomDrug, 0, 0);
-            this.tlpDrugDescriptionButtons.Controls.Add(this.btnDeleteCustomDrug, 1, 0);
+            this.tlpDrugDescriptionButtons.Controls.Add(this.btnAddDrug, 0, 0);
+            this.tlpDrugDescriptionButtons.Controls.Add(this.btnCreateCustomDrug, 1, 0);
+            this.tlpDrugDescriptionButtons.Controls.Add(this.btnDeleteCustomDrug, 0, 1);
             this.tlpDrugDescriptionButtons.Location = new System.Drawing.Point(0, 0);
             this.tlpDrugDescriptionButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpDrugDescriptionButtons.Name = "tlpDrugDescriptionButtons";
-            this.tlpDrugDescriptionButtons.RowCount = 1;
+            this.tlpDrugDescriptionButtons.RowCount = 2;
+            this.tlpDrugDescriptionButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpDrugDescriptionButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpDrugDescriptionButtons.Size = new System.Drawing.Size(236, 29);
             this.tlpDrugDescriptionButtons.TabIndex = 101;
+            // 
+            // btnAddDrug
+            // 
+            this.btnAddDrug.AutoSize = true;
+            this.btnAddDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAddDrug.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnAddDrug.Location = new System.Drawing.Point(3, 3);
+            this.btnAddDrug.MinimumSize = new System.Drawing.Size(80, 0);
+            this.btnAddDrug.Name = "btnAddDrug";
+            this.btnAddDrug.Size = new System.Drawing.Size(112, 23);
+            this.btnAddDrug.TabIndex = 0;
+            this.btnAddDrug.Tag = "Button_AddDrug";
+            this.btnAddDrug.Text = "Add drug";
+            this.btnAddDrug.UseVisualStyleBackColor = true;
+            this.btnAddDrug.Click += new System.EventHandler(this.btnAddDrug_Click);
             // 
             // btnCreateCustomDrug
             // 
             this.btnCreateCustomDrug.AutoSize = true;
             this.btnCreateCustomDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnCreateCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnCreateCustomDrug.Location = new System.Drawing.Point(3, 3);
+            this.btnCreateCustomDrug.Location = new System.Drawing.Point(121, 3);
             this.btnCreateCustomDrug.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnCreateCustomDrug.Name = "btnCreateCustomDrug";
             this.btnCreateCustomDrug.Size = new System.Drawing.Size(112, 23);
@@ -16779,7 +16797,7 @@ namespace Chummer
             this.btnDeleteCustomDrug.AutoSize = true;
             this.btnDeleteCustomDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.btnDeleteCustomDrug.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(121, 3);
+            this.btnDeleteCustomDrug.Location = new System.Drawing.Point(3, 18);
             this.btnDeleteCustomDrug.MinimumSize = new System.Drawing.Size(80, 0);
             this.btnDeleteCustomDrug.Name = "btnDeleteCustomDrug";
             this.btnDeleteCustomDrug.Size = new System.Drawing.Size(112, 23);
@@ -23974,6 +23992,7 @@ namespace Chummer
         private Label lblDrugNameLabel;
         private Button btnDeleteCustomDrug;
         private TreeView treCustomDrugs;
+        private Button btnAddDrug;
         private Button btnCreateCustomDrug;
         private FlowLayoutPanel flpDrugQty;
         private Label lblDrugQty;

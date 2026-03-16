@@ -1662,193 +1662,168 @@ namespace Chummer.Backend.Equipment
 
         /// <summary>
         /// Creates the improvements necessary to 'activate' a given drug.
-        /// TODO: I'm really not happy with the lack of extensibility on this.
-        /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
-        /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
         /// </summary>
         public async Task GenerateImprovement(CancellationToken token = default)
         {
             if (await _objCharacter.Improvements.AnyAsync(ig => ig.SourceName == InternalId, token: token)
                     .ConfigureAwait(false))
                 return;
+
             await (await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false)).AddAsync(Name, token).ConfigureAwait(false);
-            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + "-" +
-                                   strSpace;
-            List<Improvement> lstImprovements = new List<Improvement>(16);
-            foreach (KeyValuePair<string, decimal> kvpAttribute in await GetAttributesAsync(token).ConfigureAwait(false))
+
+            XmlNode objBonusNode = Components.Count > 0
+                ? await BuildCustomDrugBonusNodeAsync(token).ConfigureAwait(false)
+                : await GetPreBuiltBonusNodeAsync(token).ConfigureAwait(false);
+            if (objBonusNode == null)
+                return;
+            if (!await ImprovementManager.CreateImprovementsAsync(
+                    _objCharacter,
+                    Improvement.ImprovementSource.Drug,
+                    InternalId,
+                    objBonusNode,
+                    intRating: 1,
+                    Name,
+                    blnAddImprovementsToCharacter: true,
+                    token).ConfigureAwait(false))
+                return;
+            foreach (Improvement objImprovement in await _objCharacter.Improvements.ToListAsync(token).ConfigureAwait(false))
             {
-                if (kvpAttribute.Value != 0)
+                if (objImprovement.SourceName != InternalId)
+                    continue;
+                objImprovement.CustomGroup = Name;
+                objImprovement.Custom = true;
+                await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Build a &lt;bonus&gt; XmlNode from custom drug components (attributes, limits, initiative, qualities). Applies Narco to attribute bonuses.
+        /// </summary>
+        private async Task<XmlNode> BuildCustomDrugBonusNodeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlDocument objDoc = new XmlDocument();
+            XmlNode nodBonus = objDoc.CreateElement("bonus");
+
+            bool blnNarco = await _objCharacter.Qualities.AnyAsync(
+                q => q.Name.Equals("Narco", StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+
+            foreach (var kvp in await GetAttributesAsync(token).ConfigureAwait(false))
+            {
+                if (kvp.Value == 0)
+                    continue;
+                decimal value = kvp.Value;
+                if (blnNarco && value > 0)
+                    value += 1;
+                XmlNode nodAttr = objDoc.CreateElement("attribute");
+                nodAttr.AppendChild(objDoc.CreateElement("name")).InnerText = kvp.Key;
+                nodAttr.AppendChild(objDoc.CreateElement("value")).InnerText = value.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodAttr);
+            }
+
+            foreach (var kvp in await GetLimitsAsync(token).ConfigureAwait(false))
+            {
+                if (kvp.Value == 0)
+                    continue;
+                XmlNode nodLimit = objDoc.CreateElement("limit");
+                nodLimit.AppendChild(objDoc.CreateElement("name")).InnerText = kvp.Key;
+                nodLimit.AppendChild(objDoc.CreateElement("value")).InnerText = kvp.Value.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodLimit);
+            }
+
+            int initiative = await GetInitiativeAsync(token).ConfigureAwait(false);
+            if (initiative != 0)
+            {
+                XmlNode nodIni = objDoc.CreateElement("initiative");
+                nodIni.InnerText = initiative.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodIni);
+            }
+
+            int initiativeDice = await GetInitiativeDiceAsync(token).ConfigureAwait(false);
+            if (initiativeDice != 0)
+            {
+                XmlNode nodDice = objDoc.CreateElement("initiativedice");
+                nodDice.InnerText = initiativeDice.ToString(GlobalSettings.InvariantCultureInfo);
+                nodBonus.AppendChild(nodDice);
+            }
+
+            foreach (XmlNode objXmlQuality in await GetQualitiesAsync(token).ConfigureAwait(false))
+            {
+                string qualityName = objXmlQuality?.InnerText?.Trim();
+                if (string.IsNullOrEmpty(qualityName))
+                    continue;
+                XmlElement nodQuality = objDoc.CreateElement("quality");
+                nodQuality.InnerText = qualityName;
+                string ratingAttr = objXmlQuality.Attributes?["rating"]?.InnerText?.Trim();
+                nodQuality.SetAttribute("rating", !string.IsNullOrEmpty(ratingAttr) ? ratingAttr : "1");
+                string strSelect = objXmlQuality.Attributes?["select"]?.InnerText?.Trim();
+                if (!string.IsNullOrEmpty(strSelect))
+                    nodQuality.SetAttribute("select", strSelect);
+                nodBonus.AppendChild(nodQuality);
+            }
+
+            return nodBonus.ChildNodes.Count > 0 ? nodBonus : null;
+        }
+
+        /// <summary>
+        /// For pre-built (template) drugs: get the &lt;bonus&gt; node from drugs.xml or drugcomponents.xml. Returns null if not a pre-built drug or not found.
+        /// </summary>
+        private async Task<XmlNode> GetPreBuiltBonusNodeAsync(CancellationToken token = default)
+        {
+            if (SourceID == Guid.Empty)
+                return null;
+            XmlDocument objDoc = await _objCharacter.LoadDataAsync("drugs.xml", token: token).ConfigureAwait(false);
+            XmlNode objDrug = objDoc?.TryGetNodeById("/chummer/drugs/drug", SourceID);
+            if (objDrug == null)
+            {
+                objDoc = await _objCharacter.LoadDataAsync("drugcomponents.xml", token: token).ConfigureAwait(false);
+                objDrug = objDoc?.TryGetNodeById("/chummer/drugs/drug", SourceID);
+            }
+            return objDrug?["bonus"];
+        }
+
+        /// <summary>
+        /// Populate this drug from a pre-built template (drugs.xml) and selected grade. Use for adding a catalog drug to the character.
+        /// </summary>
+        public void LoadFromPreBuiltTemplate(XPathNavigator xmlDrug, Grade grade)
+        {
+            if (xmlDrug == null)
+                return;
+            xmlDrug.TryGetField("id", Guid.TryParse, out _guiSourceID);
+            _strName = xmlDrug.SelectSingleNodeAndCacheExpression("name")?.Value ?? string.Empty;
+            _strCategory = xmlDrug.SelectSingleNodeAndCacheExpression("category")?.Value ?? "Drugs";
+            _strSource = xmlDrug.SelectSingleNodeAndCacheExpression("source")?.Value ?? string.Empty;
+            _strPage = xmlDrug.SelectSingleNodeAndCacheExpression("page")?.Value ?? string.Empty;
+            decimal.TryParse(xmlDrug.SelectSingleNodeAndCacheExpression("cost")?.Value, NumberStyles.Any,
+                GlobalSettings.InvariantCultureInfo, out _decCost);
+            if (grade != null)
+            {
+                _decCost *= grade.Cost;
+                _intAddictionThreshold = grade.AddictionThreshold;
+                Grade = grade;
+            }
+            string strAvail = xmlDrug.SelectSingleNodeAndCacheExpression("avail")?.Value ?? "0";
+            if (grade != null && grade.Avail != 0)
+            {
+                char suffix = strAvail.Length > 0 && (strAvail[strAvail.Length - 1] == 'R' || strAvail[strAvail.Length - 1] == 'F')
+                    ? strAvail[strAvail.Length - 1]
+                    : (char)0;
+                string numPart = suffix != 0 ? strAvail.Substring(0, strAvail.Length - 1).TrimStart('+', '-') : strAvail;
+                string prefix = strAvail.StartsWith("+") ? "+" : (strAvail.StartsWith("-") ? "-" : "");
+                if (int.TryParse(numPart, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int av))
                 {
-                    lstImprovements.Add(new Improvement(_objCharacter)
-                    {
-                        ImproveSource = Improvement.ImprovementSource.Drug,
-                        ImproveType = Improvement.ImprovementType.Attribute,
-                        SourceName = InternalId,
-                        Augmented = kvpAttribute.Value,
-                        ImprovedName = kvpAttribute.Key,
-                        CustomName =
-                        strNamePrefix + await LanguageManager.GetStringAsync("String_Attribute" + kvpAttribute.Key + "Short", token: token).ConfigureAwait(false)
-                                      + strSpace +
-                                      kvpAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
-                    });
+                    av += grade.Avail;
+                    if (av < 0) av = 0;
+                    _strAvailability = prefix + av.ToString(GlobalSettings.InvariantCultureInfo) + (suffix != 0 ? suffix.ToString() : string.Empty);
                 }
+                else
+                    _strAvailability = strAvail;
             }
-
-            foreach (KeyValuePair<string, int> objLimit in await GetLimitsAsync(token).ConfigureAwait(false))
-            {
-                if (objLimit.Value == 0) continue;
-                Improvement i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    SourceName = InternalId,
-                    CustomName = strNamePrefix + await LanguageManager
-                                                   .GetStringAsync("Node_" + objLimit.Key, token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
-                };
-                await i.SetValueAsync(objLimit.Value, token).ConfigureAwait(false);
-                switch (objLimit.Key.ToUpperInvariant())
-                {
-                    case "PHYSICAL":
-                        i.ImproveType = Improvement.ImprovementType.PhysicalLimit;
-                        break;
-
-                    case "MENTAL":
-                        i.ImproveType = Improvement.ImprovementType.MentalLimit;
-                        break;
-
-                    case "SOCIAL":
-                        i.ImproveType = Improvement.ImprovementType.SocialLimit;
-                        break;
-                }
-
-                lstImprovements.Add(i);
-            }
-
-            int intInitiative = await GetInitiativeAsync(token).ConfigureAwait(false);
-            if (intInitiative != 0)
-            {
-                Improvement i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    SourceName = InternalId,
-                    ImproveType = Improvement.ImprovementType.Initiative,
-                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_AttributeINILong", token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + intInitiative.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
-                };
-                await i.SetValueAsync(intInitiative, token).ConfigureAwait(false);
-                lstImprovements.Add(i);
-            }
-
-            int intInitiativeDice = await GetInitiativeDiceAsync(token).ConfigureAwait(false);
-            if (intInitiativeDice != 0)
-            {
-                Improvement i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    SourceName = InternalId,
-                    ImproveType = Improvement.ImprovementType.InitiativeDice,
-                    CustomName = strNamePrefix + await LanguageManager
-                                                   .GetStringAsync("String_InitiativeDice", token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + intInitiativeDice.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
-                };
-                await i.SetValueAsync(intInitiativeDice, token).ConfigureAwait(false);
-                lstImprovements.Add(i);
-            }
-
-            List<XmlNode> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
-            if (lstQualities.Count > 0)
-            {
-                XmlDocument objXmlDocument =
-                    await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-                foreach (XmlNode objXmlAddQuality in lstQualities)
-                {
-                    XmlNode objXmlSelectedQuality =
-                        objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerTextViaPool(token));
-                    if (objXmlSelectedQuality == null)
-                        continue;
-                    XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
-                    string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
-
-                    string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerTextViaPool(token);
-                    int intCount = string.IsNullOrEmpty(strRating)
-                        ? 1
-                        : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, 1, token)
-                            .ConfigureAwait(false);
-                    bool blnDoesNotContributeToBP =
-                        !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerTextViaPool(token), bool.TrueString,
-                            StringComparison.OrdinalIgnoreCase);
-
-                    for (int i = 0; i < intCount; ++i)
-                    {
-                        // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlAddQuality.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
-                            await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
-                                strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token)
-                                    .ConfigureAwait(false), strIgnoreQuality: Name, token: token).ConfigureAwait(false))
-                        {
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Quality objAddQuality = new Quality(_objCharacter);
-                            try
-                            {
-                                await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement,
-                                    lstWeapons,
-                                    strForceValue, Name, token).ConfigureAwait(false);
-
-                                if (blnDoesNotContributeToBP)
-                                {
-                                    await objAddQuality.SetBPAsync(0, token).ConfigureAwait(false);
-                                    await objAddQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
-                                }
-
-                                await _objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);
-                                foreach (Weapon objWeapon in lstWeapons)
-                                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                Improvement objImprovement = new Improvement(_objCharacter)
-                                {
-                                    ImprovedName = objAddQuality.InternalId,
-                                    ImproveSource = Improvement.ImprovementSource.Drug,
-                                    SourceName = InternalId,
-                                    ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                    CustomName =
-                                        strNamePrefix + await LanguageManager
-                                                          .GetStringAsync("String_Quality", token: token)
-                                                          .ConfigureAwait(false)
-                                                      + strSpace + await objAddQuality.GetNameAsync(token)
-                                                          .ConfigureAwait(false)
-                                };
-                                lstImprovements.Add(objImprovement);
-                            }
-                            catch
-                            {
-                                await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                        }
-                        else
-                        {
-                            throw new AbortedException();
-                        }
-                    }
-                }
-            }
-
-            foreach (Improvement i in lstImprovements)
-            {
-                i.CustomGroup = Name;
-                i.Custom = true;
-                await i.SetEnabledAsync(false, token).ConfigureAwait(false);
-                // This is initially set to false make sure no property changers are triggered
-                i.SetupComplete = true;
-            }
-
-            _objCharacter.Improvements.AddRange(lstImprovements);
+            else
+                _strAvailability = strAvail;
+            _decQty = 1;
+            _objCachedMyXmlNode = null;
+            _objCachedMyXPathNode = null;
         }
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)

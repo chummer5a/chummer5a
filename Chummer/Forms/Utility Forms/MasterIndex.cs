@@ -65,6 +65,7 @@ namespace Chummer
             "critterpowers.xml",
             "cyberware.xml",
             "drugcomponents.xml",
+            "drugs.xml",
             "echoes.xml",
             "gear.xml",
             "lifemodules.xml",

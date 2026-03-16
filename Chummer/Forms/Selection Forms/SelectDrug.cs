@@ -45,14 +45,17 @@ namespace Chummer
         private bool _blnLockGrade;
         private int _intLoading = 1;
 
-        private const string _strNodeXPath = "Drugs/Drug";
+        private const string _strNodeXPath = "drugs/drug";
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
         private HashSet<string> _setDisallowedGrades;
         private string _strForceGrade = string.Empty;
         private HashSet<string> _setBlackMarketMaps;
+        /// <summary>Drug components.xml: grades and black market. Used for grade list and cost/avail modifiers.</summary>
         private readonly XPathNavigator _xmlBaseDrugDataNode;
+        /// <summary>Drugs.xml: pre-built drug catalog. Used for the drug list. Falls back to _xmlBaseDrugDataNode if not available.</summary>
+        private readonly XPathNavigator _xmlDrugCatalogNode;
 
         #region Control Events
 
@@ -64,6 +67,8 @@ namespace Chummer
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
             _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            XPathNavigator xmlDrugsDoc = objCharacter.LoadDataXPath("drugs.xml");
+            _xmlDrugCatalogNode = xmlDrugsDoc?.SelectSingleNodeAndCacheExpression("/chummer") ?? _xmlBaseDrugDataNode;
             _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setDisallowedGrades = Utils.StringHashSetPool.Get();
@@ -201,7 +206,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strSelectedId))
                 {
                     // Retrieve the information for the selected piece of Drug.
-                    xmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
+                    xmlDrug = _xmlDrugCatalogNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
                 }
 
                 string strForceGrade;
@@ -601,7 +606,7 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strSelectedId))
             {
                 // Retrieve the information for the selected piece of Drug.
-                objXmlDrug = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
+                objXmlDrug = _xmlDrugCatalogNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
             }
             if (objXmlDrug == null)
             {
@@ -842,7 +847,7 @@ namespace Chummer
                     = 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false)
                     / 100.0m;
                 decimal decNuyen = blnFree || !blnShowOnlyAffordItems ? decimal.MaxValue : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                foreach (XPathNavigator xmlDrug in _xmlBaseDrugDataNode.Select(_strNodeXPath + strFilter))
+                foreach (XPathNavigator xmlDrug in _xmlDrugCatalogNode.Select(_strNodeXPath + strFilter))
                 {
                     bool blnIsForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade", token) == null;
                     if (objCurrentGrade != null && blnIsForceGrade && objCurrentGrade.Name.ContainsAny(
@@ -984,7 +989,7 @@ namespace Chummer
                     MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return;
             }
-            XPathNavigator objDrugNode = _xmlBaseDrugDataNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
+            XPathNavigator objDrugNode = _xmlDrugCatalogNode.TryGetNodeByNameOrId(_strNodeXPath, strSelectedId);
             if (objDrugNode == null)
                 return;
 

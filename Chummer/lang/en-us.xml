@@ -5570,6 +5570,10 @@
       <text>Components:</text>
     </string>
     <string>
+      <key>Button_AddDrug</key>
+      <text>Add drug</text>
+    </string>
+    <string>
       <key>Button_CreateCustomDrug</key>
       <text>Create Custom Drug</text>
     </string>

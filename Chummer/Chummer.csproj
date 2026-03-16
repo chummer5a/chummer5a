@@ -735,6 +735,9 @@
     <None Update="customdata\Krime Stopper Shotgun Weapon Category\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </None>
+    <None Update="data\drugs.xml">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
     </None>

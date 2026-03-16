@@ -29109,6 +29109,51 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender, GenericToken).ConfigureAwait(false);
         }
 
+        private async void btnAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ThreadSafeForm<SelectDrug> form
+                       = await ThreadSafeForm<SelectDrug>.GetAsync(
+                           () => new SelectDrug(CharacterObject), GenericToken).ConfigureAwait(false))
+                {
+                    if (await form.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false) == DialogResult.Cancel)
+                        return;
+
+                    string strSelectedId = form.MyForm.SelectedDrug;
+                    Grade objGrade = form.MyForm.SelectedGrade;
+                    if (string.IsNullOrEmpty(strSelectedId) || objGrade == null)
+                        return;
+
+                    XPathNavigator xmlDoc = CharacterObject.LoadDataXPath("drugs.xml");
+                    if (xmlDoc == null)
+                        return;
+                    XPathNavigator xmlChummer = xmlDoc.SelectSingleNodeAndCacheExpression("/chummer");
+                    XPathNavigator xmlDrug = xmlChummer?.TryGetNodeByNameOrId("drugs/drug", strSelectedId);
+                    if (xmlDrug == null)
+                        return;
+
+                    Drug objDrug = new Drug(CharacterObject);
+                    objDrug.LoadFromPreBuiltTemplate(xmlDrug, objGrade);
+                    try
+                    {
+                        await CharacterObject.Drugs.AddAsync(objDrug, GenericToken).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objDrug.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
+                    await RefreshDrugs(treCustomDrugs, token: GenericToken).ConfigureAwait(false);
+                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void btnCreateCustomDrug_Click(object sender, EventArgs e)
         {
             try
