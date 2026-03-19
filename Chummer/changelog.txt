@@ -1,5 +1,6 @@
 Future Build 227
-Application Changes:
+Cyberware:
+- Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
 
 Build 226
 Application Changes:

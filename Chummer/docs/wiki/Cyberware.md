@@ -62,6 +62,90 @@ cyberware.xml (and custom_cyberware.xml, see [Custom Data Files](Custom-Data-Fil
 
 **bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword if Ratings are enabled. See [Improvement Manager](Improvement-Manager) for more information.
 
+## Pair Bonuses
+
+Some cyberware entries can grant additional bonuses when the character has other matching cyberware equipped.
+
+### `pairbonus` / `pairinclude`
+
+* **`pairbonus`** (optional): A bonus node that is only applied when this cyberware has a valid partner from `pairinclude`.
+* **`pairinclude`**: A list of `<name>` entries specifying which other cyberware names count as valid partners.
+
+The character refresh logic applies `pairbonus` using a parity/alternation rule over the set of eligible partners, so the resulting bonus is applied once per eligible pair (rather than once per item).
+
+#### Example (cyberlimb condition monitor)
+
+```xml
+<pairbonus>
+  <conditionmonitor>
+    <physical>1</physical>
+  </conditionmonitor>
+</pairbonus>
+
+<pairinclude>
+  <name>Obvious Lower Arm</name>
+  <name>Synthetic Lower Arm</name>
+</pairinclude>
+```
+
+### `includeself`
+
+`pairinclude` normally counts this cyberware itself as a partner unless `includeself="False"` is specified.
+
+## Wireless Bonuses
+
+Cyberware can optionally grant bonuses that only apply (or apply differently) when `wirelesson` is enabled and when matching other cyberware is present.
+
+### `wirelessbonus` / `wirelesspairbonus`
+
+* **`wirelessbonus`** (optional): Like `bonus`, but only applies when the cyberware’s `wirelesson` is enabled.
+* **`wirelesspairbonus`** (optional): A paired version of `wirelessbonus` that only applies when the cyberware’s `wirelesson` is enabled *and* this cyberware has a wireless partner.
+
+`wirelesspairbonus` can specify `mode="replace"`:
+
+* In **`mode="replace"`**, `wirelesspairbonus` replaces this cyberware’s base bonus contributions when (and only when) a valid wireless partner is present.
+  * Replacement is typically implemented via `precedence` values such as `precedence="0"` for the base bonus and `precedence="1"` for the wireless-pair variant.
+  * When at least one valid partner exists, the refresh logic enables the wireless-pair (`precedence1`) Improvements and disables the base (`precedence0`) Improvements for every item participating in the replacement.
+  * When no valid partner exists, the refresh logic removes the wireless-pair Improvements and re-enables the base Improvements.
+* If `mode="replace"` is not specified (or is any other value), the wireless-pair bonus follows the normal paired/parity behavior (one application per eligible pair), and it does not perform the precedence swap.
+
+### Partner selection: `wirelesspairinclude`
+
+`wirelesspairbonus` pairing is determined using `wirelesspairinclude`:
+
+* `wirelesspairinclude` lists one or more `<name>` entries that define which other cyberware names count as valid partners.
+* `wirelesspairinclude` normally counts this cyberware itself as a valid partner unless `includeself="False"` is specified.
+
+#### Example (Reaction Enhancers <-> Wired Reflexes)
+
+```xml
+<!-- Reaction Enhancers -->
+<wirelesspairbonus mode="replace">
+  <specificattribute precedence="1">
+    <name>REA</name>
+    <val>Rating</val>
+    <aug>FixedValues(0,0,1)</aug>
+  </specificattribute>
+</wirelesspairbonus>
+
+<wirelesspairinclude includeself="False">
+  <name>Wired Reflexes</name>
+</wirelesspairinclude>
+
+<!-- Wired Reflexes -->
+<wirelesspairbonus mode="replace">
+  <specificattribute precedence="1">
+    <name>REA</name>
+    <val>Rating</val>
+    <aug>FixedValues(0,0,1)</aug>
+  </specificattribute>
+</wirelesspairbonus>
+
+<wirelesspairinclude includeself="False">
+  <name>Reaction Enhancers</name>
+</wirelesspairinclude>
+```
+
 **forcegrade** (optional): forces the Cyberware to be added using the Grade specified. This must match one of the Grades specified in the [**Grades** Node](#grade "Grades Node").
 
 **subsystems** (optional): By default, Cyberware may only have plugins from their own Category. This is used to specify additional Categories of Cyberware that can be added to this piece of Cyberware. See [**Subsystems** Node](#subsystems "Subsystems Node") for more information.

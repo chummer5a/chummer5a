@@ -1020,7 +1020,7 @@ namespace Chummer.Backend.Equipment
 
                         foreach (XPathNavigator objPairNameNode in xmlPairInclude.SelectAndCacheExpression("name", token))
                         {
-                            _lstIncludeInPairBonus.Add(objPairNameNode.Value);
+                            _lstIncludeInWirelessPairBonus.Add(objPairNameNode.Value);
                         }
                     }
                     else
@@ -2603,6 +2603,33 @@ namespace Chummer.Backend.Equipment
                             {
                                 foreach (XmlNode xmlNameNode in xmlNameList)
                                     _lstIncludeInWirelessPairBonus.Add(xmlNameNode.InnerTextViaPool(token));
+                            }
+                        }
+
+                        // Self-heal shim for older save files where <wirelesspairinclude/> could be present but empty.
+                        // If that happens, wireless pair stacking won't compute because IncludeWirelessPair stays empty.
+                        if (_lstIncludeInWirelessPairBonus.Count == 0
+                            && _objCharacter.LastSavedVersion <= new ValueVersion(5, 226, 0))
+                        {
+                            XmlElement xmlSourceWirelessPairIncludeNode =
+                                (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))
+                                ?["wirelesspairinclude"];
+
+                            if (xmlSourceWirelessPairIncludeNode != null)
+                            {
+                                string strIncludeSelfValue = xmlSourceWirelessPairIncludeNode.GetAttribute("includeself");
+                                if (string.IsNullOrEmpty(strIncludeSelfValue)
+                                    || !strIncludeSelfValue.Equals(bool.FalseString, StringComparison.OrdinalIgnoreCase))
+                                    _lstIncludeInWirelessPairBonus.Add(Name);
+
+                                using (XmlNodeList xmlSourceNameList = xmlSourceWirelessPairIncludeNode.SelectNodes("name"))
+                                {
+                                    if (xmlSourceNameList?.Count > 0)
+                                    {
+                                        foreach (XmlNode xmlNameNode in xmlSourceNameList)
+                                            _lstIncludeInWirelessPairBonus.Add(xmlNameNode.InnerTextViaPool(token));
+                                    }
+                                }
                             }
                         }
                     }
@@ -4532,6 +4559,11 @@ namespace Chummer.Backend.Equipment
                                 x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
                                      x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
                             int intCount = lstPairableCyberwares.Count;
+                            bool blnWirelessPairReplaceModeAll =
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace"
+                                && lstPairableCyberwares.All(x =>
+                                    !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace");
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -4552,7 +4584,7 @@ namespace Chummer.Backend.Equipment
 
                             string strSourceNameToUse = InternalId + "WirelessPair";
                             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, strSourceNameToUse);
-                            if ((intCount & 1) == 1)
+                            if (blnWirelessPairReplaceModeAll ? intCount > 0 : (intCount & 1) == 1)
                             {
                                 if (WirelessPairBonus?.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                 {
@@ -4573,9 +4605,12 @@ namespace Chummer.Backend.Equipment
                                 strSourceNameToUse = objLoopCyberware.InternalId + "WirelessPair";
                                 ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, strSourceNameToUse);
                                 if (objLoopCyberware.WirelessPairBonus.IsNullOrInnerTextIsEmpty())
+                                {
+                                    --intCount;
                                     continue;
+                                }
                                 // Go down the list and create pair bonuses for every second item
-                                if (intCount > 0 && (intCount & 1) == 0)
+                                if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
                                     if (objLoopCyberware.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                     {
@@ -4631,8 +4666,13 @@ namespace Chummer.Backend.Equipment
                             // This cyberware should not be included in the count to make things easier (we want to get the same number regardless of whether we call this before or after the actual equipping).
                             List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(x => x.Children,
                                 x => !ReferenceEquals(x, this) && IncludeWirelessPair.Contains(x.Name) && x.Extra == Extra &&
-                                     x.IsModularCurrentlyEquipped && WirelessOn).ToList();
+                                     x.IsModularCurrentlyEquipped && x.WirelessOn).ToList();
                             int intCount = lstPairableCyberwares.Count;
+                            bool blnWirelessPairReplaceModeAll =
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace"
+                                && lstPairableCyberwares.All(x =>
+                                    !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace");
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -4651,7 +4691,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "WirelessPair");
-                            if ((intCount & 1) == 1 && WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
+                            if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                             {
                                 ImprovementManager.EnableImprovements(_objCharacter,
                                                                           _objCharacter.Improvements
@@ -4664,9 +4704,12 @@ namespace Chummer.Backend.Equipment
                                 string strSourceNameToUse = objLoopCyberware.InternalId + "WirelessPair";
                                 ImprovementManager.RemoveImprovements(_objCharacter, objLoopCyberware.SourceType, strSourceNameToUse);
                                 if (objLoopCyberware.WirelessPairBonus.IsNullOrInnerTextIsEmpty())
+                                {
+                                    --intCount;
                                     continue;
+                                }
                                 // Go down the list and create pair bonuses for every second item
-                                if (intCount > 0 && (intCount & 1) == 0)
+                                if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
                                     if (objLoopCyberware.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode")?.Value == "replace")
                                     {
@@ -4771,6 +4814,11 @@ namespace Chummer.Backend.Equipment
                                                                                  .ConfigureAwait(false) && x.WirelessOn,
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
+                            bool blnWirelessPairReplaceModeAll =
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
+                                && lstPairableCyberwares.All(x =>
+                                    !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace");
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -4789,7 +4837,7 @@ namespace Chummer.Backend.Equipment
                                 intCount = (intCount > 0).ToInt32();
                             }
 
-                            if ((intCount & 1) == 1)
+                            if (blnWirelessPairReplaceModeAll ? intCount > 0 : (intCount & 1) == 1)
                             {
                                 if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
                                         ?.Value == "replace")
@@ -4819,9 +4867,12 @@ namespace Chummer.Backend.Equipment
                                     _objCharacter, objLoopCyberware.SourceType,
                                     strSourceNameToUse, token).ConfigureAwait(false);
                                 if (objLoopCyberware.WirelessPairBonus.IsNullOrInnerTextIsEmpty())
+                                {
+                                    --intCount;
                                     continue;
+                                }
                                 // Go down the list and create pair bonuses for every second item
-                                if (intCount > 0 && (intCount & 1) == 0)
+                                if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
                                     if (objLoopCyberware.WirelessPairBonus
                                             .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
@@ -4903,6 +4954,11 @@ namespace Chummer.Backend.Equipment
                                                                                  .ConfigureAwait(false) && x.WirelessOn,
                                         token).ConfigureAwait(false);
                             int intCount = lstPairableCyberwares.Count;
+                            bool blnWirelessPairReplaceModeAll =
+                                WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace"
+                                && lstPairableCyberwares.All(x =>
+                                    !x.WirelessPairBonus.IsNullOrInnerTextIsEmpty() &&
+                                    x.WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value == "replace");
                             // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                             if (!string.IsNullOrEmpty(Location) && IncludeWirelessPair.All(x => x == Name))
                             {
@@ -4922,7 +4978,7 @@ namespace Chummer.Backend.Equipment
 
                             await ImprovementManager.RemoveImprovementsAsync(
                                 _objCharacter, SourceType, InternalId + "WirelessPair", token).ConfigureAwait(false);
-                            if ((intCount & 1) == 1 && WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
+                            if (WirelessPairBonus.SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)
                                     ?.Value == "replace")
                             {
                                 await ImprovementManager.EnableImprovementsAsync(_objCharacter,
@@ -4940,9 +4996,12 @@ namespace Chummer.Backend.Equipment
                                     _objCharacter, objLoopCyberware.SourceType,
                                     strSourceNameToUse, token).ConfigureAwait(false);
                                 if (objLoopCyberware.WirelessPairBonus.IsNullOrInnerTextIsEmpty())
+                                {
+                                    --intCount;
                                     continue;
+                                }
                                 // Go down the list and create pair bonuses for every second item
-                                if (intCount > 0 && (intCount & 1) == 0)
+                                if (blnWirelessPairReplaceModeAll || (intCount > 0 && (intCount & 1) == 0))
                                 {
                                     if (objLoopCyberware.WirelessPairBonus
                                             .SelectSingleNodeAndCacheExpressionAsNavigator("@mode", token)?.Value ==
