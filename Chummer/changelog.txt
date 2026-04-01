@@ -1,6 +1,7 @@
 Future Build 227
 Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
+- Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
 
 Build 226
 Application Changes:
