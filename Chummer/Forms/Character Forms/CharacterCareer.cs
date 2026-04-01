@@ -29396,14 +29396,49 @@ namespace Chummer
                         string strName = await objCyberware.GetCurrentDisplayNameShortAsync(GenericToken)
                             .ConfigureAwait(false);
                         Improvement.ImprovementSource eSourceType = await objCyberware.GetSourceTypeAsync(GenericToken).ConfigureAwait(false);
+
+                        Cyberware objParentCyberware = await objCyberware.GetParentAsync(GenericToken).ConfigureAwait(false);
+                        decimal decParentCapacityForUpgrade = decimal.MinValue;
+                        if (objParentCyberware != null)
+                        {
+                            decParentCapacityForUpgrade = await objParentCyberware.GetCapacityRemainingAsync(GenericToken).ConfigureAwait(false);
+
+                            // Add back the capacity currently used by the item being upgraded so the picker reflects "replacement" capacity.
+                            string strCurrentCapacity = objCyberware.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo);
+                            if (!string.IsNullOrEmpty(strCurrentCapacity) && strCurrentCapacity != "*")
+                            {
+                                int intSplitPos = strCurrentCapacity.IndexOf("/[", StringComparison.Ordinal);
+                                if (intSplitPos >= 0)
+                                {
+                                    int intEnd = strCurrentCapacity.LastIndexOf(']');
+                                    if (intEnd > intSplitPos + 2)
+                                        strCurrentCapacity = strCurrentCapacity.Substring(intSplitPos + 2, intEnd - (intSplitPos + 2));
+                                }
+                                else
+                                {
+                                    strCurrentCapacity = strCurrentCapacity.Trim('[', ']');
+                                }
+
+                                if (decimal.TryParse(strCurrentCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCurrentCapacity))
+                                    decParentCapacityForUpgrade += decCurrentCapacity;
+                            }
+                        }
                         using (ThreadSafeForm<SelectCyberware> frmCyberware
                                = await ThreadSafeForm<SelectCyberware>.GetAsync(
-                                   () => new SelectCyberware(CharacterObject, eSourceType)
+                                   () => new SelectCyberware(CharacterObject, eSourceType, objParentCyberware)
                                    {
                                        DefaultSearchText = strName,
                                        Upgrading = true
                                    }, GenericToken).ConfigureAwait(false))
                         {
+                            if (objParentCyberware != null)
+                            {
+                                frmCyberware.MyForm.ForcedGrade = await objParentCyberware.GetGradeAsync(GenericToken).ConfigureAwait(false);
+                                frmCyberware.MyForm.Subsystems = objParentCyberware.AllowedSubsystems;
+                                frmCyberware.MyForm.LockGrade();
+                                if (decParentCapacityForUpgrade != decimal.MinValue)
+                                    await frmCyberware.MyForm.SetMaximumCapacityAsync(decParentCapacityForUpgrade, GenericToken).ConfigureAwait(false);
+                            }
                             if (await frmCyberware.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
