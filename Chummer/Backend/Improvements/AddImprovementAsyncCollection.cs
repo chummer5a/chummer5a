@@ -2306,12 +2306,12 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strAttrib = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strAttrib))
             {
                 await CreateImprovementAsync(strAttrib, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Attributelevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.Attributelevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else if (bonusNode["options"] != null)
             {
@@ -2382,7 +2382,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 SelectedValue = strSelected;
 
                 await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Attributelevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.Attributelevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {
@@ -2396,17 +2396,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkill = string.Empty;
-            int intValue = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else if (bonusNode["selectskill"] != null)
             {
                 strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, token: token).ConfigureAwait(false)).Item1;
                 SelectedValue = strSkill;
-                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {
@@ -2552,7 +2552,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 string strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, true, token).ConfigureAwait(false)).Item1;
                 SelectedValue = strSkill;
-                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, (int)decVal.StandardRound(), token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decVal, token: token).ConfigureAwait(false);
             }
             else
             {
@@ -2575,19 +2575,19 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkillGroup = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup))
             {
                 await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else if (bonusNode["selectskillgroup"] != null)
             {
                 strSkillGroup = await ImprovementManager.DoSelectSkillGroupAsync(bonusNode["selectskillgroup"], _objCharacter, _strFriendlyName, token).ConfigureAwait(false);
                 SelectedValue = strSkillGroup;
                 await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {

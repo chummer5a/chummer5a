@@ -2221,12 +2221,12 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strAttrib = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strAttrib))
             {
                 CreateImprovement(strAttrib, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Attributelevel, _strUnique, value);
+                    Improvement.ImprovementType.Attributelevel, _strUnique, decValue);
             }
             else if (bonusNode["options"] != null)
             {
@@ -2296,7 +2296,7 @@ namespace Chummer
                 SelectedValue = strSelected;
 
                 CreateImprovement(SelectedValue, _objImprovementSource, SourceName,
-                                  Improvement.ImprovementType.Attributelevel, _strUnique, value);
+                                  Improvement.ImprovementType.Attributelevel, _strUnique, decValue);
             }
             else
             {
@@ -2309,17 +2309,17 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkill = string.Empty;
-            int intValue = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue);
             }
             else if (bonusNode["selectskill"] != null)
             {
                 strSkill = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName).Item1;
                 SelectedValue = strSkill;
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue);
             }
             else
             {
@@ -2458,7 +2458,7 @@ namespace Chummer
             {
                 string strSkill = ImprovementManager.DoSelectSkill(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, true).Item1;
                 SelectedValue = strSkill;
-                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, (int)decVal.StandardRound());
+                CreateImprovement(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decVal);
             }
             else
             {
@@ -2479,19 +2479,19 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkillGroup = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup))
             {
                 CreateImprovement(strSkillGroup, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value);
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue);
             }
             else if (bonusNode["selectskillgroup"] != null)
             {
                 strSkillGroup = ImprovementManager.DoSelectSkillGroup(bonusNode["selectskillgroup"], _objCharacter, _strFriendlyName);
                 SelectedValue = strSkillGroup;
                 CreateImprovement(strSkillGroup, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value);
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue);
             }
             else
             {

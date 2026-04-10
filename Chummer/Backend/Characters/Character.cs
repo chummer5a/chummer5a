@@ -2917,7 +2917,7 @@ namespace Chummer
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillLevel,
                                                                  string.Empty,
-                                                                 CommonFunctions.ExpressionToInt(
+                                                                 CommonFunctions.ExpressionToDecimal(
                                                                      strRating, intForce, 0, 0, token), token: token);
                         }
                         catch
@@ -3073,7 +3073,7 @@ namespace Chummer
                             ImprovementManager.CreateImprovement(this, strName,
                                                                  Improvement.ImprovementSource.Metatype, string.Empty,
                                                                  Improvement.ImprovementType.SkillLevel, string.Empty,
-                                                                 CommonFunctions.ExpressionToInt(
+                                                                 CommonFunctions.ExpressionToDecimal(
                                                                      strRating, intForce, 0, 0, token), token: token);
                         }
                         catch
@@ -3701,7 +3701,7 @@ namespace Chummer
                                     Improvement.ImprovementSource.Metatype, string.Empty,
                                     Improvement.ImprovementType.SkillLevel,
                                     string.Empty,
-                                    await CommonFunctions.ExpressionToIntAsync(
+                                    await CommonFunctions.ExpressionToDecimalAsync(
                                         strRating, intForce, 0, 0, token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false);
                         }
@@ -3869,7 +3869,7 @@ namespace Chummer
                             await ImprovementManager.CreateImprovementAsync(this, strName,
                                     Improvement.ImprovementSource.Metatype, string.Empty,
                                     Improvement.ImprovementType.SkillLevel, string.Empty,
-                                    await CommonFunctions.ExpressionToIntAsync(
+                                    await CommonFunctions.ExpressionToDecimalAsync(
                                         strRating, intForce, 0, 0, token).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false);
                         }
