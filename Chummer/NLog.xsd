@@ -1194,7 +1194,10 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="category" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
+          <xs:element name="onOverflow" type="NLog.Targets.DebuggerTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1211,10 +1214,33 @@
             <xs:documentation>Footer.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="category" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>The category of the message.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute" />
+        <xs:attribute name="maxMessageSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum message size in number of characters. On limit breach then P:NLog.Targets.DebuggerTarget.OnOverflow action is activated.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onOverflow" type="NLog.Targets.DebuggerTargetOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.DebuggerTarget.MaxMessageSize</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:simpleType name="NLog.Targets.DebuggerTargetOverflowAction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Truncate" />
+      <xs:enumeration value="Split" />
+      <xs:enumeration value="Discard" />
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="DebugSystem">
     <xs:complexContent>
       <xs:extension base="Target">
@@ -1299,7 +1325,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -2939,7 +2965,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -4067,6 +4093,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
+          <xs:element name="expect100Continue" type="xs:boolean" minOccurs="0" maxOccurs="1" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="header" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="includeBOM" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4084,6 +4111,11 @@
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="expect100Continue" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to expect http 100-Continue behavior, where the client sends headers and expects a 100-Continue response from the server before sending the request body.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -4366,6 +4398,7 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4376,19 +4409,24 @@
           <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
         </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4537,6 +4575,7 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4550,19 +4589,24 @@
           <xs:element name="state" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
           <xs:element name="timestampFormat" type="xs:string" minOccurs="0" maxOccurs="1" default="o" />
         </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4620,6 +4664,7 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="indentJson" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="maxRecursionLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
@@ -4635,9 +4680,14 @@
           <xs:element name="splunkSourceName" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="splunkSourceType" type="Layout" minOccurs="0" maxOccurs="1" />
         </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="indentJson" type="xs:boolean">
@@ -4868,7 +4918,7 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">
@@ -4918,7 +4968,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -4992,7 +5042,7 @@
     </xs:attribute>
     <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -5057,7 +5107,7 @@
     </xs:attribute>
     <xs:attribute name="includeEventProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+        <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
