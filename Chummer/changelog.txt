@@ -6,6 +6,9 @@ Cyberware:
 Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
 
+Changed/New Strings:
+- String_GroupContactAbbrev
+
 Build 226
 Application Changes:
 - The program no longer crashes when attempting to open characters from outside the program (e.g. by double-clicking a Chummer5a save file).

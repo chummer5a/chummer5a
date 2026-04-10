@@ -2217,8 +2217,11 @@ namespace Chummer
             get
             {
                 using (LockObject.EnterReadLock())
-                    return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})",
-                                         Connection, Loyalty);
+                {
+                    return "(" + Connection.ToString(GlobalSettings.CultureInfo)
+                        + "/" + Loyalty.ToString(GlobalSettings.CultureInfo)
+                        + (IsGroup ? LanguageManager.GetString("String_GroupContactAbbrev") + ")" : ")");
+                }
             }
         }
 
@@ -2228,9 +2231,9 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return string.Format(GlobalSettings.CultureInfo, IsGroup ? "({0}/{1}G)" : "({0}/{1})",
-                                     await GetConnectionAsync(token).ConfigureAwait(false),
-                                     await GetLoyaltyAsync(token).ConfigureAwait(false));
+                return "(" + (await GetConnectionAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
+                        + "/" + (await GetLoyaltyAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)
+                        + (IsGroup ? await LanguageManager.GetStringAsync("String_GroupContactAbbrev", token: token).ConfigureAwait(false) + ")" : ")");
             }
             finally
             {
