@@ -286,9 +286,9 @@ namespace Chummer
                             }
                         }
 
-                        async Task SetPrioritySelectionAsync(ComboBox comboBox, string priority, CancellationToken token)
+                        Task SetPrioritySelectionAsync(ComboBox comboBox, string priority, CancellationToken token)
                         {
-                            await comboBox.DoThreadSafeAsync(x =>
+                            return comboBox.DoThreadSafeAsync(x =>
                             {
                                 int intIndex = -1;
                                 if (!string.IsNullOrEmpty(priority))
@@ -297,7 +297,7 @@ namespace Chummer
                                     intIndex = 0;
                                 if (intIndex >= 0)
                                     x.SelectedIndex = intIndex;
-                            }, token).ConfigureAwait(false);
+                            }, token);
                         }
 
                         // Set Priority defaults.

@@ -2251,7 +2251,7 @@ namespace Chummer
                         {
                             x.OnlyGroup = strForcedValue;
                             x.Opacity = 0;
-                        });
+                        }, token);
                     else
                         await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
                         {
@@ -2262,7 +2262,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strExclude))
                 {
                     if (blnSync)
-                        frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
+                        frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude, token);
                     else
                         await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token).ConfigureAwait(false);
                 }
