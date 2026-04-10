@@ -7513,7 +7513,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAccuracyAdd = WirelessWeaponBonus["accuracy"]?.InnerTextViaPool();
                     if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                        sbdBonusAccuracy.Append('(', strAccuracyAdd.TrimStart('+'), ')');
+                        sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
                 }
 
                 List<string> lstNonStackingAccessoryBonuses = new List<string>(WeaponAccessories.Count);
@@ -7754,7 +7754,7 @@ namespace Chummer.Backend.Equipment
                     // Adjust the Weapon's Damage.
                     string strAccuracyAdd = WirelessWeaponBonus["accuracy"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strAccuracyAdd) && strAccuracyAdd != "0" && strAccuracyAdd != "+0" && strAccuracyAdd != "-0")
-                        sbdBonusAccuracy.Append('(', strAccuracyAdd.TrimStart('+'), ')');
+                        sbdBonusAccuracy.Append("+(", strAccuracyAdd.TrimStart('+'), ')');
                 }
 
                 List<string> lstNonStackingAccessoryBonuses = new List<string>(await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false));
