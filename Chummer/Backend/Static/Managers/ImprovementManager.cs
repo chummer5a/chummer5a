@@ -1456,7 +1456,7 @@ namespace Chummer
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token);
 
                 //Log.Exit("ValueToInt");
                 return blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
@@ -1527,7 +1527,7 @@ namespace Chummer
                 //Log.Info("strReturn = " + strReturn);
 
                 // Treat this as a decimal value so any fractions can be rounded down. This is currently only used by the Boosted Reflexes Cyberware from SR2050.
-                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token).ConfigureAwait(false);
+                (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strReturn, token);
 
                 //Log.Exit("ValueToInt");
                 return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
@@ -1550,9 +1550,20 @@ namespace Chummer
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+            return DoSelectSkillCore(xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
-                blnIsKnowledgeSkill, token), token);
+                blnIsKnowledgeSkill, token);
+        }
+
+        /// <summary>
+        /// Synchronous core entry point for skill selection.
+        /// </summary>
+        private static ValueTuple<string, bool> DoSelectSkillCore(XmlNode xmlBonusNode, Character objCharacter,
+            int intRating, string strFriendlyName, bool blnIsKnowledgeSkill = false,
+            CancellationToken token = default)
+        {
+            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreCommonAsync(true, xmlBonusNode, objCharacter,
+                intRating, strFriendlyName, blnIsKnowledgeSkill, token), token);
         }
 
         /// <summary>
@@ -1568,11 +1579,21 @@ namespace Chummer
         public static Task<ValueTuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+            return DoSelectSkillCoreAsync(xmlBonusNode, objCharacter, intRating, strFriendlyName,
                 blnIsKnowledgeSkill, token);
         }
 
-        private static async Task<ValueTuple<string, bool>> DoSelectSkillCoreAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
+        /// <summary>
+        /// Asynchronous core entry point for skill selection.
+        /// </summary>
+        private static Task<ValueTuple<string, bool>> DoSelectSkillCoreAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
+                                           string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
+        {
+            return DoSelectSkillCoreCommonAsync(false, xmlBonusNode, objCharacter, intRating, strFriendlyName,
+                blnIsKnowledgeSkill, token);
+        }
+
+        private static async Task<ValueTuple<string, bool>> DoSelectSkillCoreCommonAsync(bool blnSync, XmlNode xmlBonusNode, Character objCharacter, int intRating,
                                            string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -1591,7 +1612,7 @@ namespace Chummer
                     intMinimumRating = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? ValueToInt(objCharacter, strMinimumRating, intRating, token)
-                        : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token).ConfigureAwait(false);
+                        : await ValueToIntAsync(objCharacter, strMinimumRating, intRating, token);
                 int intMaximumRating = int.MaxValue;
                 string strMaximumRating = xmlBonusNode.Attributes?["maximumrating"]?.InnerTextViaPool(token);
                 string strPrompt = xmlBonusNode.Attributes?["prompt"]?.InnerTextViaPool(token) ?? string.Empty;
@@ -1600,7 +1621,7 @@ namespace Chummer
                     intMaximumRating = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? ValueToInt(objCharacter, strMaximumRating, intRating, token)
-                        : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token).ConfigureAwait(false);
+                        : await ValueToIntAsync(objCharacter, strMaximumRating, intRating, token);
 
                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                                 out HashSet<string>
@@ -1756,7 +1777,7 @@ namespace Chummer
                                                         }
 
                                                         setProcessedSkillNames.Add(strName);
-                                                    }, token).ConfigureAwait(false);
+                                                    }, token);
                                             }
 
                                             if (!string.IsNullOrEmpty(strPrompt)
@@ -1902,7 +1923,7 @@ namespace Chummer
                                                    }, token).ConfigureAwait(false))
                                         {
                                             if (!blnSync)
-                                                await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                                                await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token);
                                             if (setAllowedNames != null && string.IsNullOrWhiteSpace(strPrompt))
                                                 frmPickSkill.MyForm.SetGeneralItemsMode(lstDropdownItems);
                                             else
@@ -1919,7 +1940,7 @@ namespace Chummer
 
                                             strSelectedSkill = blnSync
                                                 ? frmPickSkill.MyForm.SelectedItem
-                                                : await frmPickSkill.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                                                : await frmPickSkill.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token);
                                         }
                                     }
                                 }
@@ -1987,7 +2008,7 @@ namespace Chummer
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.SkillsSection.GetActiveSkill(strForcedValue, token)
                             : await (await objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
-                                .GetActiveSkillAsync(strForcedValue, token).ConfigureAwait(false);
+                                .GetActiveSkillAsync(strForcedValue, token);
                         if (objExistingSkill == null)
                         {
                             if (intMinimumRating > 0)
@@ -2135,7 +2156,7 @@ namespace Chummer
                                : await ThreadSafeForm<SelectSkill>.GetAsync(() => new SelectSkill(objCharacter, strFriendlyName), token).ConfigureAwait(false))
                     {
                         if (!blnSync)
-                            await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                            await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token);
                         string strMinimumRating = xmlBonusNode
                                 .SelectSingleNodeAndCacheExpressionAsNavigator("@minimumrating", token)?.Value;
                         if (!string.IsNullOrWhiteSpace(strMinimumRating))
@@ -2207,17 +2228,64 @@ namespace Chummer
         public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
             CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter,
-                strFriendlyName, token), token);
+            return DoSelectSkillGroupCore(xmlBonusNode, objCharacter, strFriendlyName, token);
         }
 
         public static Task<string> DoSelectSkillGroupAsync(XmlNode xmlBonusNode, Character objCharacter,
             string strFriendlyName, CancellationToken token = default)
         {
-            return DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter, strFriendlyName, token);
+            return DoSelectSkillGroupCoreAsync(xmlBonusNode, objCharacter, strFriendlyName, token);
         }
 
-        private static async Task<string> DoSelectSkillGroupCoreAsync(bool blnSync, XmlNode xmlBonusNode,
+        /// <summary>
+        /// Synchronous core entry point for skill-group selection.
+        /// </summary>
+        private static string DoSelectSkillGroupCore(XmlNode xmlBonusNode, Character objCharacter,
+            string strFriendlyName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlBonusNode == null)
+                throw new ArgumentNullException(nameof(xmlBonusNode));
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+
+            string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                ? string.Format(GlobalSettings.CultureInfo,
+                    LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
+                    strFriendlyName)
+                : LanguageManager.GetString("String_Improvement_SelectSkillGroup", token: token);
+
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup =
+                   ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(objCharacter)
+                   {
+                       Description = strDescription
+                   }))
+            {
+                string strForcedValue = GetForcedValue(objCharacter);
+                if (!string.IsNullOrEmpty(strForcedValue))
+                {
+                    frmPickSkillGroup.MyForm.DoThreadSafe(x =>
+                    {
+                        x.OnlyGroup = strForcedValue;
+                        x.Opacity = 0;
+                    });
+                }
+
+                if (!string.IsNullOrEmpty(strExclude))
+                    frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
+
+                if (frmPickSkillGroup.ShowDialogSafe(objCharacter, token) == DialogResult.Cancel)
+                    throw new AbortedException();
+
+                return frmPickSkillGroup.MyForm.SelectedSkillGroup;
+            }
+        }
+
+        /// <summary>
+        /// Asynchronous core entry point for skill-group selection.
+        /// </summary>
+        private static async Task<string> DoSelectSkillGroupCoreAsync(XmlNode xmlBonusNode,
             Character objCharacter, string strFriendlyName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -2225,54 +2293,45 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(xmlBonusNode));
             if (objCharacter == null)
                 throw new ArgumentNullException(nameof(objCharacter));
+
             string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
             string strDescription = !string.IsNullOrEmpty(strFriendlyName)
-                ? (blnSync
-                    ? string.Format(GlobalSettings.CultureInfo,
-                        LanguageManager.GetString("String_Improvement_SelectSkillGroupName", token: token),
-                        strFriendlyName)
-                    : string.Format(GlobalSettings.CultureInfo,
-                        await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token).ConfigureAwait(false),
-                        strFriendlyName))
-                : (blnSync
-                    ? LanguageManager.GetString("String_Improvement_SelectSkillGroup", token: token)
-                    : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token).ConfigureAwait(false));
-            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup = blnSync
-                       ? ThreadSafeForm<SelectSkillGroup>.Get(() => new SelectSkillGroup(objCharacter) { Description = strDescription })
-                       : await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(objCharacter), token).ConfigureAwait(false))
+                ? string.Format(GlobalSettings.CultureInfo,
+                    await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroupName", token: token)
+                        .ConfigureAwait(false),
+                    strFriendlyName)
+                : await LanguageManager.GetStringAsync("String_Improvement_SelectSkillGroup", token: token)
+                    .ConfigureAwait(false);
+
+            using (ThreadSafeForm<SelectSkillGroup> frmPickSkillGroup =
+                   await ThreadSafeForm<SelectSkillGroup>.GetAsync(() => new SelectSkillGroup(objCharacter), token)
+                       .ConfigureAwait(false))
             {
-                if (!blnSync)
-                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token)
+                    .ConfigureAwait(false);
+
                 string strForcedValue = GetForcedValue(objCharacter);
                 if (!string.IsNullOrEmpty(strForcedValue))
                 {
-                    if (blnSync)
-                        frmPickSkillGroup.MyForm.DoThreadSafe(x =>
-                        {
-                            x.OnlyGroup = strForcedValue;
-                            x.Opacity = 0;
-                        });
-                    else
-                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
-                        {
-                            x.OnlyGroup = strForcedValue;
-                            x.Opacity = 0;
-                        }, token).ConfigureAwait(false);
+                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x =>
+                    {
+                        x.OnlyGroup = strForcedValue;
+                        x.Opacity = 0;
+                    }, token);
                 }
+
                 if (!string.IsNullOrEmpty(strExclude))
                 {
-                    if (blnSync)
-                        frmPickSkillGroup.MyForm.DoThreadSafe(x => x.ExcludeCategory = strExclude);
-                    else
-                        await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token).ConfigureAwait(false);
+                    await frmPickSkillGroup.MyForm.DoThreadSafeAsync(x => x.ExcludeCategory = strExclude, token)
+                        .ConfigureAwait(false);
                 }
-                if ((blnSync
-                        ? frmPickSkillGroup.ShowDialogSafe(objCharacter, token)
-                        : await frmPickSkillGroup.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)) ==
-                    DialogResult.Cancel)
+
+                if (await frmPickSkillGroup.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false)
+                    == DialogResult.Cancel)
                 {
                     throw new AbortedException();
                 }
+
                 return frmPickSkillGroup.MyForm.SelectedSkillGroup;
             }
         }
@@ -2452,7 +2511,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     Rollback(objCharacter, token);
                                                 else
-                                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                    await RollbackAsync(objCharacter, token);
                                                 return false;
                                             }
 
@@ -2470,7 +2529,7 @@ namespace Chummer
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 Rollback(objCharacter, token);
                                             else
-                                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                await RollbackAsync(objCharacter, token);
                                             return false;
                                         }
 
@@ -2574,7 +2633,7 @@ namespace Chummer
                                                     // ReSharper disable once MethodHasAsyncOverload
                                                     Rollback(objCharacter, token);
                                                 else
-                                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                    await RollbackAsync(objCharacter, token);
                                                 return false;
                                             }
 
@@ -2600,7 +2659,7 @@ namespace Chummer
                                                 if (!blnSync)
                                                     await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = string.Format(GlobalSettings.CultureInfo,
                                                                strSelectText,
-                                                               strFriendlyName), token).ConfigureAwait(false);
+                                                               strFriendlyName), token);
                                                 if (Convert.ToBoolean(
                                                         nodBonus.SelectSingleNodeAndCacheExpressionAsNavigator(
                                                             "selecttext/@allowedit", token)?.Value,
@@ -2625,7 +2684,7 @@ namespace Chummer
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         Rollback(objCharacter, token);
                                                     else
-                                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                                        await RollbackAsync(objCharacter, token);
                                                     return false;
                                                 }
 
@@ -2718,7 +2777,7 @@ namespace Chummer
                                             .ConfigureAwait(false);
                                         if (blnSuccess)
                                             continue;
-                                        await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                        await RollbackAsync(objCharacter, token);
                                         sbdTrace.AppendLine("Bonus processing unsuccessful, returning.");
                                         return false;
                                     }
@@ -2730,7 +2789,7 @@ namespace Chummer
 #endif
                                 {
                                     Utils.BreakIfDebug();
-                                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                    await RollbackAsync(objCharacter, token);
                                     throw;
                                 }
                             }
@@ -2751,7 +2810,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 Commit(objCharacter, token);
                             else
-                                await CommitAsync(objCharacter, token).ConfigureAwait(false);
+                                await CommitAsync(objCharacter, token);
                             sbdTrace.AppendLine("Finished committing improvements");
                         }
                         else
@@ -2762,7 +2821,7 @@ namespace Chummer
                                 // ReSharper disable once MethodHasAsyncOverload
                                 Rollback(objCharacter, token);
                             else
-                                await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                                await RollbackAsync(objCharacter, token);
                             sbdTrace.AppendLine("Returned from scheduled Rollback");
                         }
 
@@ -2878,7 +2937,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await objImprovementMethod.Invoke(bonusNode, token).ConfigureAwait(false);
+                        await objImprovementMethod.Invoke(bonusNode, token);
                     }
                     finally
                     {
@@ -2887,7 +2946,7 @@ namespace Chummer
                 }
                 catch (AbortedException)
                 {
-                    await RollbackAsync(objCharacter, token).ConfigureAwait(false);
+                    await RollbackAsync(objCharacter, token);
                     return new ValueTuple<bool, string>(false, strSourceName);
                 }
 
@@ -2967,7 +3026,7 @@ namespace Chummer
                     if (blnSync)
                         objImprovement.Enabled = true;
                     else
-                        await objImprovement.SetEnabledAsync(true, token).ConfigureAwait(false);
+                        await objImprovement.SetEnabledAsync(true, token);
                 }
 
                 bool blnCharacterHasSkillsoftAccess
@@ -3028,8 +3087,8 @@ namespace Chummer
                                                            .ContainsAsync(objKnowledgeSkill, token)
                                                            .ConfigureAwait(false))
                                         await objCharacter.SkillsSection.KnowledgeSkills
-                                                          .AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                                }, token).ConfigureAwait(false);
+                                                          .AddAsync(objKnowledgeSkill, token);
+                                }, token);
                             }
 
                             break;
@@ -3064,7 +3123,7 @@ namespace Chummer
                                                                   .AddAsync(objKnowledgeSkill, token)
                                                                   .ConfigureAwait(false);
                                             }
-                                        }, token).ConfigureAwait(false);
+                                        }, token);
                                 }
                             }
                         }
@@ -3080,21 +3139,21 @@ namespace Chummer
                                         if (blnSync)
                                             objCharacter.MAGEnabled = true;
                                         else
-                                            await objCharacter.SetMAGEnabledAsync(true, token).ConfigureAwait(false);
+                                            await objCharacter.SetMAGEnabledAsync(true, token);
                                         break;
 
                                     case "RES":
                                         if (blnSync)
                                             objCharacter.RESEnabled = true;
                                         else
-                                            await objCharacter.SetRESEnabledAsync(true, token).ConfigureAwait(false);
+                                            await objCharacter.SetRESEnabledAsync(true, token);
                                         break;
 
                                     case "DEP":
                                         if (blnSync)
                                             objCharacter.DEPEnabled = true;
                                         else
-                                            await objCharacter.SetDEPEnabledAsync(true, token).ConfigureAwait(false);
+                                            await objCharacter.SetDEPEnabledAsync(true, token);
                                         break;
                                 }
                             }
@@ -3112,35 +3171,35 @@ namespace Chummer
                                             if (blnSync)
                                                 objCharacter.MagicianEnabled = true;
                                             else
-                                                await objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetMagicianEnabledAsync(true, token);
                                             break;
 
                                         case "ADEPT":
                                             if (blnSync)
                                                 objCharacter.AdeptEnabled = true;
                                             else
-                                                await objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetAdeptEnabledAsync(true, token);
                                             break;
 
                                         case "TECHNOMANCER":
                                             if (blnSync)
                                                 objCharacter.TechnomancerEnabled = true;
                                             else
-                                                await objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetTechnomancerEnabledAsync(true, token);
                                             break;
 
                                         case "ADVANCED PROGRAMS":
                                             if (blnSync)
                                                 objCharacter.AdvancedProgramsEnabled = true;
                                             else
-                                                await objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetAdvancedProgramsEnabledAsync(true, token);
                                             break;
 
                                         case "CRITTER":
                                             if (blnSync)
                                                 objCharacter.CritterEnabled = true;
                                             else
-                                                await objCharacter.SetCritterEnabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetCritterEnabledAsync(true, token);
                                             break;
                                     }
 
@@ -3153,14 +3212,14 @@ namespace Chummer
                                             if (blnSync)
                                                 objCharacter.CyberwareDisabled = true;
                                             else
-                                                await objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetCyberwareDisabledAsync(true, token);
                                             break;
 
                                         case "INITIATION":
                                             if (blnSync)
                                                 objCharacter.InitiationForceDisabled = true;
                                             else
-                                                await objCharacter.SetInitiationForceDisabledAsync(true, token).ConfigureAwait(false);
+                                                await objCharacter.SetInitiationForceDisabledAsync(true, token);
                                             break;
                                     }
 
@@ -3176,7 +3235,7 @@ namespace Chummer
                                 if (blnSync)
                                     objCharacter.PrototypeTranshuman = 1;
                                 else
-                                    await objCharacter.SetPrototypeTranshumanAsync(1, token).ConfigureAwait(false);
+                                    await objCharacter.SetPrototypeTranshumanAsync(1, token);
                             }
                             else if (blnSync)
                             {
@@ -3186,8 +3245,8 @@ namespace Chummer
                             }
                             else
                             {
-                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
-                                await objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
+                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(decValue, token);
                             }
                             break;
 
@@ -3196,7 +3255,7 @@ namespace Chummer
                                 = blnSync
                                     ? objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName)
                                     : await objCharacter.Contacts.FirstOrDefaultAsync(
-                                        c => c.UniqueId == strImprovedName, token).ConfigureAwait(false);
+                                        c => c.UniqueId == strImprovedName, token);
                             if (objNewContact != null)
                             {
                                 // TODO: Add code to disable contact
@@ -3208,7 +3267,7 @@ namespace Chummer
                             Art objArt = blnSync
                                 ? objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName)
                                 : await objCharacter.Arts.FirstOrDefaultAsync(
-                                    x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    x => x.InternalId == strImprovedName, token);
                             if (objArt != null)
                             {
                                 Improvement.ImprovementSource eSource = objArt.SourceType;
@@ -3236,7 +3295,7 @@ namespace Chummer
                             Metamagic objMetamagic = blnSync
                                 ? objCharacter.Metamagics.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Metamagics.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMetamagic != null)
                             {
                                 Improvement.ImprovementSource eSource
@@ -3301,7 +3360,7 @@ namespace Chummer
                             MentorSpirit objMentor = blnSync
                                 ? objCharacter.MentorSpirits.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.MentorSpirits.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMentor != null)
                             {
                                 if (blnSync)
@@ -3330,7 +3389,7 @@ namespace Chummer
                             Gear objGear = blnSync
                                 ? objCharacter.Gear.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Gear.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objGear != null)
                             {
                                 if (blnSync)
@@ -3359,7 +3418,7 @@ namespace Chummer
                                 if (blnSync)
                                     objWeapon.Equipped = true;
                                 else
-                                    await objWeapon.SetEquippedAsync(true, token).ConfigureAwait(false);
+                                    await objWeapon.SetEquippedAsync(true, token);
                             }
 
                             break;
@@ -3368,7 +3427,7 @@ namespace Chummer
                             Spell objSpell = blnSync
                                 ? objCharacter.Spells.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Spells.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objSpell != null)
                             {
                                 if (blnSync)
@@ -3395,7 +3454,7 @@ namespace Chummer
                             ComplexForm objComplexForm = blnSync
                                 ? objCharacter.ComplexForms.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.ComplexForms.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objComplexForm != null)
                             {
                                 if (blnSync)
@@ -3424,7 +3483,7 @@ namespace Chummer
                             MartialArt objMartialArt = blnSync
                                 ? objCharacter.MartialArts.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.MartialArts.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMartialArt != null)
                             {
                                 if (blnSync)
@@ -3496,7 +3555,7 @@ namespace Chummer
                             {
                                 foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
                                 {
-                                    await objSkill.SetForceDisabledAsync(false, token).ConfigureAwait(false);
+                                    await objSkill.SetForceDisabledAsync(false, token);
                                 }
                             }
                         }
@@ -3506,7 +3565,7 @@ namespace Chummer
                             Quality objQuality = blnSync
                                 ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Qualities.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objQuality != null)
                             {
                                 if (blnSync)
@@ -3543,7 +3602,7 @@ namespace Chummer
                             AIProgram objProgram = blnSync
                                 ? objCharacter.AIPrograms.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.AIPrograms.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objProgram != null)
                             {
                                 if (blnSync)
@@ -3573,7 +3632,7 @@ namespace Chummer
                             Cyberware objCyberware = blnSync
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
                                 objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
@@ -3669,7 +3728,7 @@ namespace Chummer
                     if (blnSync)
                         objImprovement.Enabled = false;
                     else
-                        await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
+                        await objImprovement.SetEnabledAsync(false, token);
                 }
 
                 // Now that the entire list is deleted from the character's improvements list, we do the checking of duplicates and extra effects
@@ -3686,7 +3745,7 @@ namespace Chummer
                                                                && x.ImproveType == eImprovementType
                                                                && x.SourceName != strSourceName
                                                                && x.Enabled, token)
-                        : await objCharacter.Improvements.AnyAsync(
+                        : objCharacter.Improvements.Any(
                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                && x.ImproveType == eImprovementType
                                                                && x.SourceName != strSourceName
@@ -3770,21 +3829,21 @@ namespace Chummer
                                         if (blnSync)
                                             objCharacter.MAGEnabled = false;
                                         else
-                                            await objCharacter.SetMAGEnabledAsync(false, token).ConfigureAwait(false);
+                                            await objCharacter.SetMAGEnabledAsync(false, token);
                                         break;
 
                                     case "RES":
                                         if (blnSync)
                                             objCharacter.RESEnabled = false;
                                         else
-                                            await objCharacter.SetRESEnabledAsync(false, token).ConfigureAwait(false);
+                                            await objCharacter.SetRESEnabledAsync(false, token);
                                         break;
 
                                     case "DEP":
                                         if (blnSync)
                                             objCharacter.DEPEnabled = false;
                                         else
-                                            await objCharacter.SetDEPEnabledAsync(false, token).ConfigureAwait(false);
+                                            await objCharacter.SetDEPEnabledAsync(false, token);
                                         break;
                                 }
                             }
@@ -3804,35 +3863,35 @@ namespace Chummer
                                                 if (blnSync)
                                                     objCharacter.MagicianEnabled = false;
                                                 else
-                                                    await objCharacter.SetMagicianEnabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetMagicianEnabledAsync(false, token);
                                                 break;
 
                                             case "ADEPT":
                                                 if (blnSync)
                                                     objCharacter.AdeptEnabled = false;
                                                 else
-                                                    await objCharacter.SetAdeptEnabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetAdeptEnabledAsync(false, token);
                                                 break;
 
                                             case "TECHNOMANCER":
                                                 if (blnSync)
                                                     objCharacter.TechnomancerEnabled = false;
                                                 else
-                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetTechnomancerEnabledAsync(false, token);
                                                 break;
 
                                             case "ADVANCED PROGRAMS":
                                                 if (blnSync)
                                                     objCharacter.AdvancedProgramsEnabled = false;
                                                 else
-                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetAdvancedProgramsEnabledAsync(false, token);
                                                 break;
 
                                             case "CRITTER":
                                                 if (blnSync)
                                                     objCharacter.CritterEnabled = false;
                                                 else
-                                                    await objCharacter.SetCritterEnabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetCritterEnabledAsync(false, token);
                                                 break;
                                         }
 
@@ -3845,14 +3904,14 @@ namespace Chummer
                                                 if (blnSync)
                                                     objCharacter.CyberwareDisabled = false;
                                                 else
-                                                    await objCharacter.SetCyberwareDisabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetCyberwareDisabledAsync(false, token);
                                                 break;
 
                                             case "INITIATION":
                                                 if (blnSync)
                                                     objCharacter.InitiationForceDisabled = false;
                                                 else
-                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token).ConfigureAwait(false);
+                                                    await objCharacter.SetInitiationForceDisabledAsync(false, token);
                                                 break;
                                         }
 
@@ -3871,7 +3930,7 @@ namespace Chummer
                                     if (blnSync)
                                         objCharacter.PrototypeTranshuman = 0;
                                     else
-                                        await objCharacter.SetPrototypeTranshumanAsync(0, token).ConfigureAwait(false);
+                                        await objCharacter.SetPrototypeTranshumanAsync(0, token);
                                 }
                             }
                             else if (blnSync)
@@ -3882,8 +3941,8 @@ namespace Chummer
                             }
                             else
                             {
-                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token).ConfigureAwait(false);
-                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token).ConfigureAwait(false);
+                                decimal decValue = await ValueToDecAsync(objCharacter, strImprovedName, objImprovement.Rating, token);
+                                await objCharacter.ModifyPrototypeTranshumanAsync(-decValue, token);
                             }
 
                             break;
@@ -3896,7 +3955,7 @@ namespace Chummer
                                 = blnSync
                                     ? objCharacter.Contacts.FirstOrDefault(c => c.UniqueId == strImprovedName)
                                     : await objCharacter.Contacts.FirstOrDefaultAsync(
-                                        c => c.UniqueId == strImprovedName, token).ConfigureAwait(false);
+                                        c => c.UniqueId == strImprovedName, token);
                             if (objNewContact != null)
                             {
                                 // TODO: Add code to disable contact
@@ -3908,7 +3967,7 @@ namespace Chummer
                             Art objArt = blnSync
                                 ? objCharacter.Arts.FirstOrDefault(x => x.InternalId == strImprovedName)
                                 : await objCharacter.Arts.FirstOrDefaultAsync(
-                                    x => x.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    x => x.InternalId == strImprovedName, token);
                             if (objArt != null)
                             {
                                 Improvement.ImprovementSource eSource = objArt.SourceType;
@@ -3936,7 +3995,7 @@ namespace Chummer
                             Metamagic objMetamagic = blnSync
                                 ? objCharacter.Metamagics.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Metamagics.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMetamagic != null)
                             {
                                 Improvement.ImprovementSource eSource
@@ -4001,7 +4060,7 @@ namespace Chummer
                             MentorSpirit objMentor = blnSync
                                 ? objCharacter.MentorSpirits.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.MentorSpirits.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMentor != null)
                             {
                                 if (blnSync)
@@ -4030,7 +4089,7 @@ namespace Chummer
                             Gear objGear = blnSync
                                 ? objCharacter.Gear.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Gear.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objGear != null)
                             {
                                 if (blnSync)
@@ -4059,7 +4118,7 @@ namespace Chummer
                                 if (blnSync)
                                     objWeapon.Equipped = false;
                                 else
-                                    await objWeapon.SetEquippedAsync(false, token).ConfigureAwait(false);
+                                    await objWeapon.SetEquippedAsync(false, token);
                             }
                             break;
 
@@ -4067,7 +4126,7 @@ namespace Chummer
                             Spell objSpell = blnSync
                                 ? objCharacter.Spells.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Spells.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objSpell != null)
                             {
                                 if (blnSync)
@@ -4094,7 +4153,7 @@ namespace Chummer
                             ComplexForm objComplexForm = blnSync
                                 ? objCharacter.ComplexForms.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.ComplexForms.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objComplexForm != null)
                             {
                                 if (blnSync)
@@ -4123,7 +4182,7 @@ namespace Chummer
                             MartialArt objMartialArt = blnSync
                                 ? objCharacter.MartialArts.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.MartialArts.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objMartialArt != null)
                             {
                                 if (blnSync)
@@ -4224,7 +4283,7 @@ namespace Chummer
                                     foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
                                     {
                                         if (!setSkillsToKeepEnabled.Contains(objSkill))
-                                            await objSkill.SetForceDisabledAsync(true, token).ConfigureAwait(false);
+                                            await objSkill.SetForceDisabledAsync(true, token);
                                     }
                                 }
                             }
@@ -4235,7 +4294,7 @@ namespace Chummer
                             Quality objQuality = blnSync
                                 ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Qualities.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objQuality != null)
                             {
                                 if (blnSync)
@@ -4272,7 +4331,7 @@ namespace Chummer
                             AIProgram objProgram = blnSync
                                 ? objCharacter.AIPrograms.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.AIPrograms.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objProgram != null)
                             {
                                 if (blnSync)
@@ -4302,7 +4361,7 @@ namespace Chummer
                             Cyberware objCyberware = blnSync
                                 ? objCharacter.Cyberware.FirstOrDefault(o => o.InternalId == strImprovedName)
                                 : await objCharacter.Cyberware.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                    o => o.InternalId == strImprovedName, token);
                             if (objCyberware != null && objCyberware.SourceID != Cyberware.EssenceHoleGUID &&
                                 objCyberware.SourceID != Cyberware.EssenceAntiHoleGUID)
                             {
@@ -4733,7 +4792,7 @@ namespace Chummer
                         {
                             objImprovementList.Add(objImprovement);
                         }
-                    }, token).ConfigureAwait(false);
+                    }, token);
                 }
                 else
                 {
@@ -4810,7 +4869,7 @@ namespace Chummer
                         {
                             objImprovementList.Add(objImprovement);
                         }
-                    }, token).ConfigureAwait(false);
+                    }, token);
                 }
                 else
                 {
@@ -4839,7 +4898,7 @@ namespace Chummer
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
+            return Utils.SafelyRunSynchronously(() => RemoveImprovementsCoreAsync(true, objCharacter, objImprovementList, blnReapplyImprovements,
                                                     blnAllowDuplicatesFromSameSource, token), token);
         }
 
@@ -4963,11 +5022,11 @@ namespace Chummer
                         {
                             string strSourceName = objImprovement.SourceName;
                             // ReSharper disable once MethodHasAsyncOverload
-                            blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
+                            blnHasDuplicate = objCharacter.Improvements.Any(
                                 x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                    && x.ImproveType == eImprovementType
                                                                    && x.SourceName != strSourceName
-                                                                   && x.Enabled, token).ConfigureAwait(false);
+                                                                   && x.Enabled, token);
                             if (!blnHasDuplicate)
                             {
                                 switch (eImprovementType)
@@ -4975,14 +5034,14 @@ namespace Chummer
                                     case Improvement.ImprovementType.Skillsoft:
                                     case Improvement.ImprovementType.Activesoft:
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && x.ImproveType == Improvement.ImprovementType.Hardwire
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled, token).ConfigureAwait(false);
+                                                                               && x.Enabled, token);
                                         break;
                                     case Improvement.ImprovementType.Hardwire:
-                                        blnHasDuplicate = await objCharacter.Improvements.AnyAsync(
+                                        blnHasDuplicate = objCharacter.Improvements.Any(
                                             x => x.UniqueName == strUniqueName && x.ImprovedName == strImprovedName
                                                                                && (x.ImproveType
                                                                                    == Improvement.ImprovementType.Skillsoft
@@ -4990,7 +5049,7 @@ namespace Chummer
                                                                                    == Improvement.ImprovementType
                                                                                        .Activesoft)
                                                                                && x.SourceName != strSourceName
-                                                                               && x.Enabled, token).ConfigureAwait(false);
+                                                                               && x.Enabled, token);
                                         break;
                                 }
                             }
