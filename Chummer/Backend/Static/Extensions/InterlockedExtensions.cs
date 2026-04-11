@@ -74,7 +74,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.CompareExchange(ref long, long, long)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static ulong CompareExchange(ref ulong lngLocation, ulong lngValue, ulong lngComparand)
@@ -88,7 +87,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.CompareExchange(ref int, int, int)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static uint CompareExchange(ref uint intLocation, uint intValue, uint intComparand)
@@ -109,7 +107,6 @@ namespace Chummer
         /// <returns>The original value in <paramref name="eLocation"/>.</returns>
         /// <exception cref="System.NullReferenceException">The address of <paramref name="eLocation"/> is a null pointer</exception>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         public static TEnum Exchange<TEnum>(ref TEnum eLocation, TEnum eValue)
             where TEnum : struct, Enum
@@ -146,7 +143,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Exchange(ref long, long)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static ulong Exchange(ref ulong lngLocation, ulong lngValue)
@@ -159,7 +155,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Exchange(ref int, int)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static uint Exchange(ref uint intLocation, uint intValue)
@@ -172,7 +167,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Add(ref long, long)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static ulong Add(ref ulong lngLocation, ulong lngValue)
@@ -188,7 +182,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Add(ref int, int)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static uint Add(ref uint intLocation, uint intValue)
@@ -204,7 +197,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Increment(ref long)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static ulong Increment(ref ulong lngLocation)
@@ -219,7 +211,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Increment(ref int)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static uint Increment(ref uint intLocation)
@@ -234,7 +225,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Decrement(ref long)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static ulong Decrement(ref ulong lngLocation)
@@ -249,7 +239,6 @@ namespace Chummer
 
         /// <inheritdoc cref="Interlocked.Decrement(ref int)"/>>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [ReliabilityContract(Consistency.WillNotCorruptState, Cer.Success)]
         [SecuritySafeCritical]
         [CLSCompliant(false)]
         public static uint Decrement(ref uint intLocation)

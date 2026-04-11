@@ -30,3 +30,6 @@ indent_size=2:warning
 indent_style=space
 indent_size=2
 tab_width=4
+
+[*.{cs,vb}]
+dotnet_diagnostic.WFO1000.severity = warning
