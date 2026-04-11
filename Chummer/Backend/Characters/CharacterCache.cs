@@ -63,7 +63,7 @@ namespace Chummer
         private SafeAsyncEventHandler _onMyDoubleClick;
         private SafeAsyncEventHandler _onMyContextMenuDeleteClick;
         private SafeAsyncEventHandler<TreeViewEventArgs> _onMyAfterSelect;
-        private SafeAsyncEventHandler<Tuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
+        private SafeAsyncEventHandler<ValueTuple<KeyEventArgs, TreeNode>> _onMyKeyDown;
 
         public AsyncFriendlyReaderWriterLock LockObject { get; } = new AsyncFriendlyReaderWriterLock();
 
@@ -524,13 +524,16 @@ namespace Chummer
             SetDefaultEventHandlers();
         }
 
+        /// <summary>
+        /// Syntactic sugar to call <see cref="CopyFrom(CharacterCache)"/> immediately after the constructor.
+        /// </summary>
         public CharacterCache(CharacterCache objExistingCache) : this()
         {
             CopyFrom(objExistingCache);
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() synchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFile(string)"/> immediately after the constructor.
         /// </summary>
         public CharacterCache(string strFile) : this()
         {
@@ -538,23 +541,39 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar to call CopyFrom() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="CopyFromAsync(CharacterCache, CancellationToken)"/> immediately after the constructor.
         /// </summary>
-        public static async Task<CharacterCache> CreateFromFileAsync(CharacterCache objExistingCache, CancellationToken token = default)
+        public static async Task<CharacterCache> CreateCopyFromAsync(CharacterCache objExistingCache, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.CopyFromAsync(objExistingCache, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         /// <summary>
-        /// Syntactic sugar to call LoadFromFile() asynchronously immediately after the constructor.
+        /// Syntactic sugar to call <see cref="LoadFromFileAsync(string, CancellationToken)"/> immediately after the constructor.
         /// </summary>
         public static async Task<CharacterCache> CreateFromFileAsync(string strFile, CancellationToken token = default)
         {
             CharacterCache objReturn = new CharacterCache();
-            await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
-            return objReturn;
+            try
+            {
+                await objReturn.LoadFromFileAsync(strFile, token).ConfigureAwait(false);
+                return objReturn;
+            }
+            catch
+            {
+                await objReturn.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
         }
 
         public void CopyFrom(CharacterCache objExistingCache)
@@ -671,7 +690,7 @@ namespace Chummer
         [JsonIgnore]
         [XmlIgnore]
         [IgnoreDataMember]
-        public SafeAsyncEventHandler<Tuple<KeyEventArgs, TreeNode>> OnMyKeyDown
+        public SafeAsyncEventHandler<ValueTuple<KeyEventArgs, TreeNode>> OnMyKeyDown
         {
             get
             {
@@ -683,61 +702,58 @@ namespace Chummer
         public async Task OnDefaultDoubleClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strFilePath = string.Empty;
+            Character objOpenCharacter;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 string strFileName = await GetFileNameAsync(token).ConfigureAwait(false);
-                Character objOpenCharacter = await Program.OpenCharacters
+                objOpenCharacter = await Program.OpenCharacters
                     .FirstOrDefaultAsync(x => string.Equals(x.FileName, strFileName, StringComparison.Ordinal), token)
                     .ConfigureAwait(false);
                 if (objOpenCharacter == null)
                 {
-                    string strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
-                    using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
-                               .CreateAndShowProgressBarAsync(
-                                   strFilePath, Character.NumLoadingSections, token)
-                               .ConfigureAwait(false))
-                        objOpenCharacter = await Program
-                            .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
-                            .ConfigureAwait(false);
+                    strFilePath = await GetFilePathAsync(token).ConfigureAwait(false);
                 }
-
-                if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
-                    await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            if (!string.IsNullOrEmpty(strFilePath))
+            {
+                using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
+                               .CreateAndShowProgressBarAsync(
+                                   strFilePath, Character.NumLoadingSections, token)
+                               .ConfigureAwait(false))
+                    objOpenCharacter = await Program
+                        .LoadCharacterAsync(strFilePath, frmLoadingBar: frmLoadingBar.MyForm, token: token)
+                        .ConfigureAwait(false);
+            }
+
+            if (!await Program.SwitchToOpenCharacter(objOpenCharacter, token).ConfigureAwait(false))
+                await Program.OpenCharacter(objOpenCharacter, token: token).ConfigureAwait(false);
         }
 
         public async Task OnDefaultContextMenuDeleteClick(object sender, EventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            if (sender is TreeNode t)
             {
-                token.ThrowIfCancellationRequested();
-                if (sender is TreeNode t)
+                switch (t.Parent.Tag?.ToString())
                 {
-                    switch (t.Parent.Tag?.ToString())
-                    {
-                        case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            break;
+                    case "Recent":
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        break;
 
-                        case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
-                                .ConfigureAwait(false);
-                            break;
-                    }
+                    case "Favorite":
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token)
+                            .ConfigureAwait(false);
+                        break;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -780,7 +796,7 @@ namespace Chummer
                     {
                         XPathDocument xmlDoc = blnSync
                             ? LoadXPathDocument()
-                            : await Task.Run(LoadXPathDocumentAsync, token).ConfigureAwait(false);
+                            : await LoadXPathDocumentAsync().ConfigureAwait(false);
 
                         XPathDocument LoadXPathDocument()
                         {
@@ -851,7 +867,7 @@ namespace Chummer
                                                        .ConfigureAwait(false) +
                                   await LanguageManager.GetStringAsync("String_Space", token: token)
                                                        .ConfigureAwait(false);
-                            _strSettingsFile = strTemp + '[' + strSettings + ']';
+                            _strSettingsFile = strTemp + "[" + strSettings + "]";
                         }
                     }
                     else
@@ -890,10 +906,10 @@ namespace Chummer
                         Image imgNewMugshot;
                         if (blnSync)
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            using (Image imgMugshot = strMugshotBase64.ToImage())
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                imgNewMugshot = imgMugshot.GetCompressedImage();
+                            // ReSharper disable once MethodHasAsyncOverload
+                            using (Image imgMugshot = strMugshotBase64.ToImage(token))
+                                // ReSharper disable once MethodHasAsyncOverload
+                                imgNewMugshot = imgMugshot.GetCompressedImage(token: token);
                         }
                         else
                         {
@@ -959,8 +975,8 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(ErrorText))
                 {
-                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + '(' +
-                                LanguageManager.GetString("String_Error") + ')';
+                    strReturn = Path.GetFileNameWithoutExtension(FileName) + strSpace + "(" +
+                                LanguageManager.GetString("String_Error") + ")";
                 }
                 else
                 {
@@ -975,8 +991,8 @@ namespace Chummer
                     string strBuildMethod = LanguageManager.GetString("String_" + BuildMethod, false);
                     if (string.IsNullOrEmpty(strBuildMethod))
                         strBuildMethod = LanguageManager.GetString("String_Unknown");
-                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
-                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ')';
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
+                                 + LanguageManager.GetString(Created ? "Title_CareerMode" : "Title_CreateMode") + ")";
                 }
 
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
@@ -986,16 +1002,16 @@ namespace Chummer
                     if (Program.MainForm.OpenCharacterEditorForms?.Any(
                             x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
-                        strMarker += '*';
+                        strMarker += "*";
                     if (Program.MainForm.OpenCharacterSheetViewers?.Any(
                             x => x.CharacterObjects.Any(y =>
                                 !y.IsDisposed && string.Equals(y.FileName, strFilePath,
                                     StringComparison.Ordinal))) == true)
-                        strMarker += '^';
+                        strMarker += "^";
                     if (Program.MainForm.OpenCharacterExportForms?.Any(
                             x => !x.CharacterObject.IsDisposed && string.Equals(x.CharacterObject.FileName, strFilePath,
                                 StringComparison.Ordinal)) == true)
-                        strMarker += '\'';
+                        strMarker += "\'";
                     if (!string.IsNullOrEmpty(strMarker))
                         strReturn = strMarker + strSpace + strReturn;
                 }
@@ -1023,7 +1039,7 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strErrorText))
                 {
                     strReturn = Path.GetFileNameWithoutExtension(await GetFileNameAsync(token).ConfigureAwait(false))
-                        + strSpace + '(' + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ')';
+                        + strSpace + "(" + await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false) + ")";
                 }
                 else
                 {
@@ -1041,12 +1057,12 @@ namespace Chummer
                     if (string.IsNullOrEmpty(strBuildMethod))
                         strBuildMethod = await LanguageManager.GetStringAsync("String_Unknown", token: token)
                             .ConfigureAwait(false);
-                    strReturn += strSpace + '(' + strBuildMethod + strSpace + '-' + strSpace
+                    strReturn += strSpace + "(" + strBuildMethod + strSpace + "-" + strSpace
                                  + await LanguageManager
                                      .GetStringAsync(await GetCreatedAsync(token).ConfigureAwait(false)
                                         ? "Title_CareerMode"
                                         : "Title_CreateMode", token: token)
-                                     .ConfigureAwait(false) + ')';
+                                     .ConfigureAwait(false) + ")";
                 }
 
                 if (blnAddMarkerIfOpen && Program.MainForm != null)
@@ -1062,7 +1078,7 @@ namespace Chummer
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
-                        strMarker += '*';
+                        strMarker += "*";
                     ThreadSafeObservableCollection<CharacterSheetViewer> lstToProcess2
                         = Program.MainForm.OpenCharacterSheetViewers;
                     if (lstToProcess2 != null && await lstToProcess2
@@ -1071,7 +1087,7 @@ namespace Chummer
                                     async y => !y.IsDisposed && string.Equals(
                                         await y.GetFileNameAsync(token).ConfigureAwait(false), strFilePath,
                                         StringComparison.Ordinal), token), token).ConfigureAwait(false))
-                        strMarker += '^';
+                        strMarker += "^";
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                         = Program.MainForm.OpenCharacterExportForms;
                     if (lstToProcess3 != null && await lstToProcess3
@@ -1081,7 +1097,7 @@ namespace Chummer
                                                await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
-                        strMarker += '\'';
+                        strMarker += "\'";
                     if (!string.IsNullOrEmpty(strMarker))
                         strReturn = strMarker + strSpace + strReturn;
                 }
@@ -1094,30 +1110,21 @@ namespace Chummer
             return strReturn;
         }
 
-        public async Task OnDefaultKeyDown(object sender, Tuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
+        public async Task OnDefaultKeyDown(object sender, ValueTuple<KeyEventArgs, TreeNode> args, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            if (args.Item1.KeyCode == Keys.Delete)
             {
-                token.ThrowIfCancellationRequested();
-                if (args?.Item1.KeyCode == Keys.Delete)
+                switch (args.Item2.Parent.Tag.ToString())
                 {
-                    switch (args.Item2.Parent.Tag.ToString())
-                    {
-                        case "Recent":
-                            await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            break;
+                    case "Recent":
+                        await GlobalSettings.MostRecentlyUsedCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        break;
 
-                        case "Favorite":
-                            await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-                            break;
-                    }
+                    case "Favorite":
+                        await GlobalSettings.FavoriteCharacters.RemoveAsync(await GetFilePathAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        break;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

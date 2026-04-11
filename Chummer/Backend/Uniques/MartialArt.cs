@@ -156,7 +156,7 @@ namespace Chummer
                         foreach (KeyValuePair<INotifyMultiplePropertiesChangedAsync, HashSet<string>> kvpToUpdate in
                                  dicChangedProperties)
                         {
-                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value.ToList(), token)
+                            await kvpToUpdate.Key.OnMultiplePropertiesChangedAsync(kvpToUpdate.Value, token)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -207,7 +207,7 @@ namespace Chummer
                 objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerTextIsTrueString() == true;
 
                 if (objXmlArtNode["bonus"] != null)
                 {
@@ -258,7 +258,7 @@ namespace Chummer
                 objXmlArtNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
 
-                _blnIsQuality = objXmlArtNode["isquality"]?.InnerText == bool.TrueString;
+                _blnIsQuality = objXmlArtNode["isquality"]?.InnerTextIsTrueString() == true;
 
                 if (objXmlArtNode["bonus"] != null)
                 {
@@ -356,10 +356,33 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Martial Art from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -371,7 +394,8 @@ namespace Chummer
 
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    // ReSharper disable once MethodHasAsyncOverload
+                    (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
@@ -384,11 +408,25 @@ namespace Chummer
                 {
                     if (xmlLegacyTechniqueList != null)
                     {
-                        foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                        if (blnSync)
                         {
-                            MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                            objTechnique.Load(nodTechnique);
-                            _lstTechniques.Add(objTechnique);
+                            foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                            {
+                                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                _lstTechniques.Add(objTechnique);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
+                            {
+                                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                await objTechnique.LoadAsync(nodTechnique, token).ConfigureAwait(false);
+                                await _lstTechniques.AddAsync(objTechnique, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -397,11 +435,25 @@ namespace Chummer
                 {
                     if (xmlTechniqueList != null)
                     {
-                        foreach (XmlNode nodTechnique in xmlTechniqueList)
+                        if (blnSync)
                         {
-                            MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                            objTechnique.Load(nodTechnique);
-                            _lstTechniques.Add(objTechnique);
+                            foreach (XmlNode nodTechnique in xmlTechniqueList)
+                            {
+                                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                _lstTechniques.Add(objTechnique);
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode nodTechnique in xmlTechniqueList)
+                            {
+                                MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
+                                await objTechnique.LoadAsync(nodTechnique, token).ConfigureAwait(false);
+                                await _lstTechniques.AddAsync(objTechnique, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -411,6 +463,13 @@ namespace Chummer
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -979,7 +1038,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (IsQuality && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+                if (IsQuality && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                     return null;
 
                 TreeNode objNode = new TreeNode
@@ -1070,7 +1129,7 @@ namespace Chummer
                                 objExpense.Create(intKarmaCost * -1,
                                     await LanguageManager.GetStringAsync(
                                         "String_ExpenseLearnMartialArt", token: token).ConfigureAwait(false)
-                                    + ' '
+                                    + " "
                                     + await objMartialArt.GetCurrentDisplayNameShortAsync(token)
                                         .ConfigureAwait(false),
                                     ExpenseType.Karma,
@@ -1088,7 +1147,7 @@ namespace Chummer
                         }
                         catch
                         {
-                            await objMartialArt.DisposeAsync().ConfigureAwait(false);
+                            await objMartialArt.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
                             throw;
                         }
 

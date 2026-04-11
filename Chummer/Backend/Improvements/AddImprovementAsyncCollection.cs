@@ -105,7 +105,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(SelectedValue))
                 SelectedValue = selectedValue;
             else
-                SelectedValue += ", " + selectedValue;
+                SelectedValue += ", " + selectedValue; // Do not use localized value for space because we expect the selected value to be in English
             return CreateImprovementAsync(selectedValue, _objImprovementSource, SourceName, improvementType, _strUnique, token: token);
         }
 
@@ -127,34 +127,22 @@ namespace Chummer
 
 #pragma warning disable IDE1006 // Naming Styles
 
-        public static Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
+public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
+            token.ThrowIfCancellationRequested();
             if (bonusNode == null)
-                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            /*
-            //List of qualities to work with
-            Guid[] all =
-            {
-                new Guid("9ac85feb-ae1e-4996-8514-3570d411e1d5"), //national
-                new Guid("d9479e5c-d44a-45b9-8fb4-d1e08a9487b2"), //dirty criminal
-                new Guid("318d2edd-833b-48c5-a3e1-343bf03848a5"), //Limited
-                new Guid("e00623e1-54b0-4a91-b234-3c7e141deef4") //Corp
-            };
-            */
+                throw new ArgumentNullException(nameof(bonusNode));
 
-            //Add to list
-            //retrieve list
-            //sort list
-            //find active instance
-            //if active = list[top]
-            //    return
-            //else
-            //    remove active
-            //  add list[top]
-            //    set list[top] active
-            return Task.CompletedTask;
+            // Get the level value from the bonus node
+            int intLevel = await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+
+            // Get the quality group from the group attribute (e.g., "SINner", "TrustFund")
+            string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token) ?? string.Empty;
+
+            // Create an improvement that tracks this quality level
+            await CreateImprovementAsync(strGroup, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.QualityLevel, _strUnique,
+                intLevel, 1, 0, 0, 0, 0, token: token).ConfigureAwait(false);
         }
 
         // Dummy Method for SelectText
@@ -173,7 +161,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Surprise, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task spellresistance(XmlNode bonusNode, CancellationToken token = default)
@@ -182,7 +170,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task mentalmanipulationresist(XmlNode bonusNode, CancellationToken token = default)
@@ -191,7 +179,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentalManipulationResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task physicalmanipulationresist(XmlNode bonusNode, CancellationToken token = default)
@@ -200,7 +188,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalManipulationResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task manaillusionresist(XmlNode bonusNode, CancellationToken token = default)
@@ -209,7 +197,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ManaIllusionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task physicalillusionresist(XmlNode bonusNode, CancellationToken token = default)
@@ -218,7 +206,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalIllusionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task detectionspellresist(XmlNode bonusNode, CancellationToken token = default)
@@ -227,7 +215,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DetectionSpellResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task directmanaspellresist(XmlNode bonusNode, CancellationToken token = default)
@@ -236,7 +224,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task directphysicalspellresist(XmlNode bonusNode, CancellationToken token = default)
@@ -245,7 +233,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreasebodresist(XmlNode bonusNode, CancellationToken token = default)
@@ -254,7 +242,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreaseagiresist(XmlNode bonusNode, CancellationToken token = default)
@@ -263,7 +251,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreaserearesist(XmlNode bonusNode, CancellationToken token = default)
@@ -272,7 +260,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreasestrresist(XmlNode bonusNode, CancellationToken token = default)
@@ -281,7 +269,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreasecharesist(XmlNode bonusNode, CancellationToken token = default)
@@ -290,7 +278,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreaseintresist(XmlNode bonusNode, CancellationToken token = default)
@@ -299,7 +287,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreaselogresist(XmlNode bonusNode, CancellationToken token = default)
@@ -308,7 +296,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task decreasewilresist(XmlNode bonusNode, CancellationToken token = default)
@@ -317,7 +305,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task enableattribute(XmlNode bonusNode, CancellationToken token = default)
@@ -325,7 +313,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            switch (bonusNode["name"]?.InnerText)
+            switch (bonusNode["name"]?.InnerTextViaPool(token).ToUpperInvariant())
             {
                 case "MAG":
                     await CreateImprovementAsync("MAG", _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
@@ -396,34 +384,34 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlEnable in xmlEnableList)
                     {
-                        switch (xmlEnable.InnerText)
+                        switch (xmlEnable.InnerTextViaPool(token).ToUpperInvariant())
                         {
-                            case "magician":
+                            case "MAGICIAN":
                                 await _objCharacter.SetMagicianEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Magician", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "adept":
+                            case "ADEPT":
                                 await _objCharacter.SetAdeptEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Adept", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab",
                                     0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "technomancer":
+                            case "TECHNOMANCER":
                                 await _objCharacter.SetTechnomancerEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Technomancer", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "advanced programs":
+                            case "ADVANCED PROGRAMS":
                                 await _objCharacter.SetAdvancedProgramsEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Advanced Programs", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "critter":
+                            case "CRITTER":
                                 await _objCharacter.SetCritterEnabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Critter", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "enabletab", 0, 0, token: token).ConfigureAwait(false);
@@ -446,15 +434,15 @@ namespace Chummer
                 {
                     foreach (XmlNode xmlDisable in xmlDisableList)
                     {
-                        switch (xmlDisable.InnerText)
+                        switch (xmlDisable.InnerTextViaPool(token).ToUpperInvariant())
                         {
-                            case "cyberware":
+                            case "CYBERWARE":
                                 await _objCharacter.SetCyberwareDisabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Cyberware", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0, token: token).ConfigureAwait(false);
                                 break;
 
-                            case "initiation":
+                            case "INITIATION":
                                 await _objCharacter.SetInitiationForceDisabledAsync(true, token).ConfigureAwait(false);
                                 await CreateImprovementAsync("Initiation", _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialTab,
                                     "disabletab", 0, 0, token: token).ConfigureAwait(false);
@@ -491,7 +479,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.MyForm.SelectedName;
+                    SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                 }
             }
 
@@ -520,7 +508,7 @@ namespace Chummer
                     if (xmlTraditionsBaseChummerNode != null)
                     {
                         foreach (XPathNavigator xmlTradition in xmlTraditionsBaseChummerNode.Select(
-                                     "traditions/tradition[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + ']'))
+                                     "traditions/tradition[" + await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false) + "]"))
                         {
                             string strName = xmlTradition.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                             if (!string.IsNullOrEmpty(strName))
@@ -551,7 +539,7 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.MyForm.SelectedName;
+                        SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -567,7 +555,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             //Check if valid attrib
-            string strBonusNodeText = bonusNode.InnerText;
+            string strBonusNodeText = bonusNode.InnerTextViaPool(token);
             if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Contains(strBonusNodeText))
             {
                 await CreateImprovementAsync(strBonusNodeText, _objImprovementSource, SourceName, Improvement.ImprovementType.Seeker, _strUnique, 0, 0, token: token).ConfigureAwait(false);
@@ -578,6 +566,18 @@ namespace Chummer
             }
         }
 
+        public async Task cyberlimbattributebonus(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
+            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+
+            await CreateImprovementAsync(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberlimbAttributeBonus, _strUnique, decValue, 0, token: token).ConfigureAwait(false);
+        }
+
         public Task blockskillcategorydefaulting(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
@@ -585,7 +585,7 @@ namespace Chummer
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             // Expected values are either a Skill Name or an empty string.
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName,
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName,
                               Improvement.ImprovementType.BlockSkillCategoryDefault, _strUnique, token: token);
         }
 
@@ -595,8 +595,8 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerText ?? string.Empty;
-            string strSelect = bonusNode.InnerText;
+            string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strSelect = bonusNode.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strSelect))
             {
                 string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
@@ -640,7 +640,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strSelectedSkill = bonusNode.InnerText;
+            string strSelectedSkill = bonusNode.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strSelectedSkill))
             {
                 string strForcedValue = ForcedValue;
@@ -660,7 +660,7 @@ namespace Chummer
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             // Expected values are either a Skill Name or an empty string.
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName,
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AllowSkillDefault, _strUnique, token: token);
         }
 
@@ -676,13 +676,14 @@ namespace Chummer
 
             (string strSelectedSkill, bool blnIsKnowledgeSkill) = await ImprovementManager.DoSelectSkillAsync(bonusNode, _objCharacter, _intRating, _strFriendlyName, token: token).ConfigureAwait(false);
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
 
             SelectedValue = strSelectedSkill;
 
-            string strVal = bonusNode["val"]?.InnerText;
-            string strMax = bonusNode["max"]?.InnerText;
-            bool blnDisableSpec = bonusNode.InnerXml.Contains("disablespecializationeffects");
+            string strVal = bonusNode["val"]?.InnerTextViaPool(token);
+            string strMax = bonusNode["max"]?.InnerTextViaPool(token);
+            bool blnDisableSpec = false;
+            bonusNode.TryGetBoolFieldQuickly("disablespecializationeffects", ref blnDisableSpec);
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
@@ -719,33 +720,42 @@ namespace Chummer
                 }
                 else
                 {
-                    bool blnAllowUpgrade = !bonusNode.InnerXml.Contains("disableupgrades");
+                    bool blnAllowUpgrade = true;
+                    bonusNode.TryGetBoolFieldQuickly("disableupgrades", ref blnAllowUpgrade);
                     KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedSkill, blnAllowUpgrade);
-                    await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                    // We've found the selected Skill.
-                    if (!string.IsNullOrEmpty(strVal))
+                    try
                     {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty,
-                            blnAddToRating, token: token).ConfigureAwait(false);
-                    }
+                        await _objCharacter.SkillsSection.KnowledgeSkills.AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                        // We've found the selected Skill.
+                        if (!string.IsNullOrEmpty(strVal))
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty,
+                                blnAddToRating, token: token).ConfigureAwait(false);
+                        }
 
-                    if (blnDisableSpec)
-                    {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.DisableSpecializationEffects,
-                            _strUnique, token: token).ConfigureAwait(false);
-                    }
+                        if (blnDisableSpec)
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.DisableSpecializationEffects,
+                                _strUnique, token: token).ConfigureAwait(false);
+                        }
 
-                    if (!string.IsNullOrEmpty(strMax))
+                        if (!string.IsNullOrEmpty(strMax))
+                        {
+                            await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
+                                Improvement.ImprovementType.Skill,
+                                _strUnique,
+                                0, 1, 0, await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0, string.Empty,
+                                blnAddToRating, token: token).ConfigureAwait(false);
+                        }
+                    }
+                    catch
                     {
-                        await CreateImprovementAsync(objKnowledgeSkill.DictionaryKey, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.Skill,
-                            _strUnique,
-                            0, 1, 0, await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0, string.Empty,
-                            blnAddToRating, token: token).ConfigureAwait(false);
+                        await objKnowledgeSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                        throw;
                     }
                 }
             }
@@ -829,7 +839,7 @@ namespace Chummer
 
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
-                strExclude = bonusNode.Attributes["excludecategory"].InnerText;
+                strExclude = bonusNode.Attributes["excludecategory"].InnerTextViaPool(token);
 
             string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
                 ? string.Format(GlobalSettings.CultureInfo,
@@ -858,9 +868,9 @@ namespace Chummer
                 SelectedValue = frmPickSkillGroup.MyForm.SelectedSkillGroup;
             }
 
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
 
-            string strBonus = bonusNode["bonus"]?.InnerText;
+            string strBonus = bonusNode["bonus"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroup,
@@ -893,7 +903,7 @@ namespace Chummer
                             if (xmlAttributeList?.Count > 0)
                             {
                                 foreach (XmlNode objSubNode in xmlAttributeList)
-                                    lstAbbrevs.Add(objSubNode.InnerText);
+                                    lstAbbrevs.Add(objSubNode.InnerTextViaPool(token));
                             }
                             else
                             {
@@ -903,7 +913,7 @@ namespace Chummer
                                     if (xmlAttributeList2?.Count > 0)
                                     {
                                         foreach (XmlNode objSubNode in xmlAttributeList2)
-                                            lstAbbrevs.Remove(objSubNode.InnerText);
+                                            lstAbbrevs.Remove(objSubNode.InnerTextViaPool(token));
                                     }
                                 }
                             }
@@ -915,7 +925,7 @@ namespace Chummer
                             lstAbbrevs.Remove("MAG");
                             lstAbbrevs.Remove("MAGAdept");
                         }
-                        else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                        else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                             lstAbbrevs.Remove("MAGAdept");
 
                         if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -983,19 +993,19 @@ namespace Chummer
                         int intAugMax = 0;
 
                         // Extract the modifiers.
-                        string strTemp = objXmlAttribute["min"]?.InnerText;
+                        string strTemp = objXmlAttribute["min"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strTemp))
                             int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intMin);
-                        strTemp = objXmlAttribute["val"]?.InnerText;
+                        strTemp = objXmlAttribute["val"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strTemp))
                             int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intAug);
-                        strTemp = objXmlAttribute["max"]?.InnerText;
+                        strTemp = objXmlAttribute["max"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strTemp))
                             int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intMax);
-                        strTemp = objXmlAttribute["aug"]?.InnerText;
+                        strTemp = objXmlAttribute["aug"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strTemp))
                             int.TryParse(strTemp, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                          out intAugMax);
@@ -1030,7 +1040,7 @@ namespace Chummer
                             continue;
                         if (sdbValue.Length > 0)
                         {
-                            sdbValue.Append(',').Append(strSpace);
+                            sdbValue.Append(',', strSpace);
                         }
 
                         sdbValue.AppendFormat(GlobalSettings.CultureInfo, "{0}{1}({2})", s, strSpace, i);
@@ -1054,7 +1064,7 @@ namespace Chummer
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Add(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerTextViaPool(token));
                 }
                 else
                 {
@@ -1064,7 +1074,7 @@ namespace Chummer
                         if (xmlAttributeList2?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList2)
-                                lstAbbrevs.Remove(objSubNode.InnerText);
+                                lstAbbrevs.Remove(objSubNode.InnerTextViaPool(token));
                         }
                     }
                 }
@@ -1076,7 +1086,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1140,16 +1150,16 @@ namespace Chummer
             int intAugMax = 0;
 
             // Extract the modifiers.
-            string strTemp = bonusNode["min"]?.InnerXml;
+            string strTemp = bonusNode["min"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 intMin = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-            strTemp = bonusNode["val"]?.InnerXml;
+            strTemp = bonusNode["val"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 decAug = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-            strTemp = bonusNode["max"]?.InnerXml;
+            strTemp = bonusNode["max"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 intMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-            strTemp = bonusNode["aug"]?.InnerXml;
+            strTemp = bonusNode["aug"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 intAugMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
 
@@ -1176,7 +1186,7 @@ namespace Chummer
                 if (xmlDefinedLimits?.Count > 0)
                 {
                     foreach (XmlNode objXmlAttribute in xmlDefinedLimits)
-                        strLimits.Add(objXmlAttribute.InnerText);
+                        strLimits.Add(objXmlAttribute.InnerTextViaPool(token));
                 }
                 else
                 {
@@ -1192,7 +1202,7 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlAttribute in xmlExcludeLimits)
                     {
-                        strLimits.Remove(objXmlAttribute.InnerText);
+                        strLimits.Remove(objXmlAttribute.InnerTextViaPool(token));
                     }
                 }
             }
@@ -1231,37 +1241,37 @@ namespace Chummer
                 int intAugMax = 0;
 
                 // Extract the modifiers.
-                string strTemp = bonusNode["min"]?.InnerXml;
+                string strTemp = bonusNode["min"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
                     intMin = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-                strTemp = bonusNode["val"]?.InnerXml;
+                strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
                     decAug = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-                strTemp = bonusNode["max"]?.InnerXml;
+                strTemp = bonusNode["max"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
                     intMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-                strTemp = bonusNode["aug"]?.InnerXml;
+                strTemp = bonusNode["aug"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
                     intAugMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
 
                 string strLimit = frmPickLimit.MyForm.SelectedLimit;
 
-                // string strBonus = bonusNode["value"].InnerText;
+                // string strBonus = bonusNode["value"].InnerTextViaPool(token);
                 Improvement.ImprovementType eType;
 
-                switch (strLimit)
+                switch (strLimit.ToUpperInvariant())
                 {
-                    case "Mental":
+                    case "MENTAL":
                         {
                             eType = Improvement.ImprovementType.MentalLimit;
                             break;
                         }
-                    case "Social":
+                    case "SOCIAL":
                         {
                             eType = Improvement.ImprovementType.SocialLimit;
                             break;
                         }
-                    case "Physical":
+                    case "PHYSICAL":
                         {
                             eType = Improvement.ImprovementType.PhysicalLimit;
                             break;
@@ -1293,7 +1303,7 @@ namespace Chummer
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Add(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerTextViaPool(token));
                 }
                 else
                 {
@@ -1303,7 +1313,7 @@ namespace Chummer
                         if (xmlAttributeList2?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList2)
-                                lstAbbrevs.Remove(objSubNode.InnerText);
+                                lstAbbrevs.Remove(objSubNode.InnerTextViaPool(token));
                         }
                     }
                 }
@@ -1315,7 +1325,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1358,7 +1368,7 @@ namespace Chummer
                 }
             }
 
-            string strLimitToSkill = bonusNode["limittoskill"]?.InnerText;
+            string strLimitToSkill = bonusNode["limittoskill"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strLimitToSkill))
             {
                 SelectedTarget = strLimitToSkill;
@@ -1373,12 +1383,10 @@ namespace Chummer
                         _strFriendlyName)
                     : await LanguageManager.GetStringAsync("String_Improvement_SelectSkill", token: token).ConfigureAwait(false);
                 using (ThreadSafeForm<SelectSkill> frmPickSkill = await ThreadSafeForm<SelectSkill>.GetAsync(() =>
-                           new SelectSkill(_objCharacter)
-                           {
-                               Description = strDescription
-                           }, token).ConfigureAwait(false))
+                           new SelectSkill(_objCharacter), token).ConfigureAwait(false))
                 {
-                    string strTemp = bonusNode["skillgroup"]?.InnerText;
+                    await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                    string strTemp = bonusNode["skillgroup"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
@@ -1388,17 +1396,17 @@ namespace Chummer
                             frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
                         {
-                            strTemp = bonusNode["skillcategory"]?.InnerText;
+                            strTemp = bonusNode["skillcategory"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strTemp))
                                 frmPickSkill.MyForm.OnlyCategory = strTemp;
                             else
                             {
-                                strTemp = bonusNode["excludecategory"]?.InnerText;
+                                strTemp = bonusNode["excludecategory"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strTemp))
                                     frmPickSkill.MyForm.ExcludeCategory = strTemp;
                                 else
                                 {
-                                    strTemp = bonusNode["limittoattribute"]?.InnerText;
+                                    strTemp = bonusNode["limittoattribute"]?.InnerTextViaPool(token);
                                     if (!string.IsNullOrEmpty(strTemp))
                                         frmPickSkill.MyForm.LinkedAttribute = strTemp;
                                 }
@@ -1433,7 +1441,7 @@ namespace Chummer
                 if (xmlAttributeList?.Count > 0)
                 {
                     foreach (XmlNode objSubNode in xmlAttributeList)
-                        lstAbbrevs.Add(objSubNode.InnerText);
+                        lstAbbrevs.Add(objSubNode.InnerTextViaPool(token));
                 }
                 else
                 {
@@ -1443,7 +1451,7 @@ namespace Chummer
                         if (xmlAttributeList2?.Count > 0)
                         {
                             foreach (XmlNode objSubNode in xmlAttributeList2)
-                                lstAbbrevs.Remove(objSubNode.InnerText);
+                                lstAbbrevs.Remove(objSubNode.InnerTextViaPool(token));
                         }
                     }
                 }
@@ -1455,7 +1463,7 @@ namespace Chummer
                 lstAbbrevs.Remove("MAG");
                 lstAbbrevs.Remove("MAGAdept");
             }
-            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+            else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                 lstAbbrevs.Remove("MAGAdept");
 
             if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -1499,7 +1507,7 @@ namespace Chummer
                 }
             }
 
-            string strLimitToSkill = bonusNode["limittoskill"]?.InnerText;
+            string strLimitToSkill = bonusNode["limittoskill"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strLimitToSkill))
             {
                 SelectedTarget = strLimitToSkill;
@@ -1514,12 +1522,10 @@ namespace Chummer
                         _strFriendlyName)
                     : await LanguageManager.GetStringAsync("String_Improvement_SelectSkill", token: token).ConfigureAwait(false);
                 using (ThreadSafeForm<SelectSkill> frmPickSkill = await ThreadSafeForm<SelectSkill>.GetAsync(() =>
-                           new SelectSkill(_objCharacter)
-                           {
-                               Description = strDescription
-                           }, token).ConfigureAwait(false))
+                           new SelectSkill(_objCharacter), token).ConfigureAwait(false))
                 {
-                    string strTemp = bonusNode["skillgroup"]?.InnerText;
+                    await frmPickSkill.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                    string strTemp = bonusNode["skillgroup"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strTemp))
                         frmPickSkill.MyForm.OnlySkillGroup = strTemp;
                     else
@@ -1529,17 +1535,17 @@ namespace Chummer
                             frmPickSkill.MyForm.LimitToCategories = xmlSkillCategories;
                         else
                         {
-                            strTemp = bonusNode["skillcategory"]?.InnerText;
+                            strTemp = bonusNode["skillcategory"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strTemp))
                                 frmPickSkill.MyForm.OnlyCategory = strTemp;
                             else
                             {
-                                strTemp = bonusNode["excludecategory"]?.InnerText;
+                                strTemp = bonusNode["excludecategory"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strTemp))
                                     frmPickSkill.MyForm.ExcludeCategory = strTemp;
                                 else
                                 {
-                                    strTemp = bonusNode["limittoattribute"]?.InnerText;
+                                    strTemp = bonusNode["limittoattribute"]?.InnerTextViaPool(token);
                                     if (!string.IsNullOrEmpty(strTemp))
                                         frmPickSkill.MyForm.LinkedAttribute = strTemp;
                                 }
@@ -1558,7 +1564,7 @@ namespace Chummer
             }
 
             // TODO: Allow selection of specializations through frmSelectSkillSpec
-            string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
+            string strSpec = bonusNode["spec"]?.InnerTextViaPool(token) ?? string.Empty;
 
             await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.SwapSkillSpecAttribute, _strUnique,
                 0, 1, 0, 0, 0, 0, strSpec, false, SelectedTarget, token: token).ConfigureAwait(false);
@@ -1574,7 +1580,7 @@ namespace Chummer
             // Display the Select Spell window.
             using (ThreadSafeForm<SelectSpell> frmPickSpell = await ThreadSafeForm<SelectSpell>.GetAsync(() => new SelectSpell(_objCharacter), token).ConfigureAwait(false))
             {
-                string strCategory = bonusNode.Attributes?["category"]?.InnerText;
+                string strCategory = bonusNode.Attributes?["category"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strCategory))
                     frmPickSpell.MyForm.LimitCategory = strCategory;
 
@@ -1584,7 +1590,7 @@ namespace Chummer
                     frmPickSpell.MyForm.Opacity = 0;
                 }
 
-                frmPickSpell.MyForm.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerText == bool.TrueString;
+                frmPickSpell.MyForm.IgnoreRequirements = bonusNode.Attributes?["ignorerequirements"]?.InnerTextIsTrueString() == true;
 
                 // Make sure the dialogue window was not canceled.
                 if (await frmPickSpell.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
@@ -1602,7 +1608,7 @@ namespace Chummer
             if (node == null)
                 throw new AbortedException();
 
-            SelectedValue = node["name"]?.InnerText;
+            SelectedValue = node["name"]?.InnerTextViaPool(token);
 
             // Check for SelectText.
             string strExtra = string.Empty;
@@ -1611,7 +1617,7 @@ namespace Chummer
             {
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
-                    node["translate"]?.InnerText ?? node["name"]?.InnerText);
+                    node["translate"]?.InnerTextViaPool(token) ?? node["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                        {
                            Description = strDescription
@@ -1626,18 +1632,23 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                await spell.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
-            }
-            spell.Grade = -1;
-            await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
+                await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Grade = -1;
+                await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await spell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Spell to the Character.
@@ -1649,7 +1660,7 @@ namespace Chummer
 
             XmlDocument objXmlSpellDocument = await _objCharacter.LoadDataAsync("spells.xml", token: token).ConfigureAwait(false);
 
-            XmlNode node = objXmlSpellDocument.TryGetNodeByNameOrId("/chummer/spells/spell", bonusNode.InnerText) ?? throw new AbortedException();
+            XmlNode node = objXmlSpellDocument.TryGetNodeByNameOrId("/chummer/spells/spell", bonusNode.InnerTextViaPool(token)) ?? throw new AbortedException();
             // Check for SelectText.
             string strExtra = string.Empty;
             XPathNavigator xmlSelectText = node.SelectSingleNodeAndCacheExpressionAsNavigator("bonus/selecttext", token);
@@ -1657,7 +1668,7 @@ namespace Chummer
             {
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
-                    node["translate"]?.InnerText ?? node["name"]?.InnerText);
+                    node["translate"]?.InnerTextViaPool(token) ?? node["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                        {
                            Description = strDescription
@@ -1674,22 +1685,27 @@ namespace Chummer
             }
 
             Spell spell = new Spell(_objCharacter);
-            await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
-            if (spell.InternalId.IsEmptyGuid())
+            try
             {
-                await spell.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
-            }
-            spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerText == bool.TrueString;
-            spell.Extended = bonusNode.Attributes?["extended"]?.InnerText == bool.TrueString;
-            spell.Limited = bonusNode.Attributes?["limited"]?.InnerText == bool.TrueString;
-            spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerText == bool.TrueString || bonusNode.Attributes?["usesunarmed"]?.InnerText == bool.TrueString;
-            spell.Grade = -1;
-            await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
+                await spell.CreateAsync(node, strExtra, token: token).ConfigureAwait(false);
+                if (spell.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                spell.Alchemical = bonusNode.Attributes?["alchemical"]?.InnerTextIsTrueString() == true;
+                spell.Extended = bonusNode.Attributes?["extended"]?.InnerTextIsTrueString() == true;
+                spell.Limited = bonusNode.Attributes?["limited"]?.InnerTextIsTrueString() == true;
+                spell.BarehandedAdept = bonusNode.Attributes?["barehandedadept"]?.InnerTextIsTrueString() == true || bonusNode.Attributes?["usesunarmed"]?.InnerTextIsTrueString() == true;
+                spell.Grade = -1;
+                await _objCharacter.Spells.AddAsync(spell, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Spell,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(spell.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Spell,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await spell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Select a Complex Form.
@@ -1722,22 +1738,27 @@ namespace Chummer
             XmlNode node = objXmlDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexforms", strSelectedComplexForm)
                            ?? throw new AbortedException();
 
-            SelectedValue = node["name"]?.InnerText;
+            SelectedValue = node["name"]?.InnerTextViaPool(token);
 
             ComplexForm objComplexform = new ComplexForm(_objCharacter);
-            await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexform.InternalId.IsEmptyGuid())
+            try
             {
-                await objComplexform.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
+                await objComplexform.CreateAsync(node, token: token).ConfigureAwait(false);
+                if (objComplexform.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexform.Grade = -1;
+
+                await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-            objComplexform.Grade = -1;
-
-            await _objCharacter.ComplexForms.AddAsync(objComplexform, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objComplexform.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objComplexform.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific ComplexForm to the Character.
@@ -1749,22 +1770,27 @@ namespace Chummer
 
             XmlDocument objXmlComplexFormDocument = await _objCharacter.LoadDataAsync("complexforms.xml", token: token).ConfigureAwait(false);
 
-            XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerText) ?? throw new AbortedException();
+            XmlNode node = objXmlComplexFormDocument.TryGetNodeByNameOrId("/chummer/complexforms/complexform", bonusNode.InnerTextViaPool(token)) ?? throw new AbortedException();
 
             ComplexForm objComplexForm = new ComplexForm(_objCharacter);
-            await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
-            if (objComplexForm.InternalId.IsEmptyGuid())
+            try
             {
-                await objComplexForm.DisposeAsync().ConfigureAwait(false);
-                throw new AbortedException();
+                await objComplexForm.CreateAsync(node, token: token).ConfigureAwait(false);
+                if (objComplexForm.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+                objComplexForm.Grade = -1;
+
+                await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.ComplexForm,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-            objComplexForm.Grade = -1;
-
-            await _objCharacter.ComplexForms.AddAsync(objComplexForm, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objComplexForm.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.ComplexForm,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objComplexForm.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1788,12 +1814,12 @@ namespace Chummer
 
             async Task<Gear> Purchase(XmlNode xmlGearNode, Gear objParent = null)
             {
-                string strName = xmlGearNode["name"]?.InnerText ?? string.Empty;
-                string strCategory = xmlGearNode["category"]?.InnerText ?? string.Empty;
+                string strName = xmlGearNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strCategory = xmlGearNode["category"]?.InnerTextViaPool(token) ?? string.Empty;
                 string strFilter = "/chummer/gears/gear";
                 if (!string.IsNullOrEmpty(strName) || !string.IsNullOrEmpty(strCategory))
                 {
-                    strFilter += '[';
+                    strFilter += "[";
                     if (!string.IsNullOrEmpty(strName))
                     {
                         strFilter += "name = " + strName.CleanXPath();
@@ -1802,7 +1828,7 @@ namespace Chummer
                     }
                     else
                         strFilter += "category = " + strCategory.CleanXPath();
-                    strFilter += ']';
+                    strFilter += "]";
                 }
 
                 XmlNode xmlGearDataNode = (await _objCharacter.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false)).SelectSingleNode(strFilter) ?? throw new AbortedException();
@@ -1812,46 +1838,54 @@ namespace Chummer
                     intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
                 decimal decQty = 1.0m;
                 if (xmlGearNode["quantity"] != null)
-                    decQty = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlGearNode["quantity"].InnerText, _intRating, token).ConfigureAwait(false);
+                    decQty = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlGearNode["quantity"].InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
 
                 // Create the new piece of Gear.
                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                 Gear objNewGearToCreate = new Gear(_objCharacter);
-                await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, token: token).ConfigureAwait(false);
-
-                if (objNewGearToCreate.InternalId.IsEmptyGuid())
-                    throw new AbortedException();
-
-                await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
-
-                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-                if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                try
                 {
-                    await objNewGearToCreate.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, token: token).ConfigureAwait(false);
+
+                    if (objNewGearToCreate.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    await objNewGearToCreate.SetQuantityAsync(decQty, token).ConfigureAwait(false);
+
+                    // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                    if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewGearToCreate.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                    {
+                        await objNewGearToCreate.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                    }
+
+                    if (xmlGearNode["fullcost"] == null)
+                        objNewGearToCreate.Cost = "0";
+                    // Create any Weapons that came with this Gear.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                    objNewGearToCreate.ParentID = SourceName;
+                    if (objParent != null)
+                    {
+                        await objParent.Children.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
+                        await objNewGearToCreate.SetParentAsync(objParent, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.Gear.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
+                    }
+
+                    await CreateImprovementAsync(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
+                        Improvement.ImprovementType.Gear,
+                        _strUnique, token: token).ConfigureAwait(false);
+                    return objNewGearToCreate;
                 }
-
-                if (xmlGearNode["fullcost"] == null)
-                    objNewGearToCreate.Cost = "0";
-                // Create any Weapons that came with this Gear.
-                foreach (Weapon objWeapon in lstWeapons)
-                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-                objNewGearToCreate.ParentID = SourceName;
-                if (objParent != null)
+                catch
                 {
-                    await objParent.Children.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
-                    await objNewGearToCreate.SetParentAsync(objParent, token).ConfigureAwait(false);
+                    await objNewGearToCreate.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
                 }
-                else
-                {
-                    await _objCharacter.Gear.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
-                }
-
-                await CreateImprovementAsync(objNewGearToCreate.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Gear,
-                    _strUnique, token: token).ConfigureAwait(false);
-                return objNewGearToCreate;
             }
         }
 
@@ -1862,38 +1896,46 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strName = bonusNode["name"]?.InnerText ?? throw new AbortedException();
+            string strName = bonusNode["name"]?.InnerTextViaPool(token) ?? throw new AbortedException();
             XmlNode node = (await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/weapons/weapon", strName) ?? throw new AbortedException();
 
             // Create the new piece of Gear.
             List<Weapon> lstWeapons = new List<Weapon>(1);
 
             Weapon objNewWeapon = new Weapon(_objCharacter);
-            await objNewWeapon.CreateAsync(node, lstWeapons, token: token).ConfigureAwait(false);
-
-            if (objNewWeapon.InternalId.IsEmptyGuid())
-                throw new AbortedException();
-
-            // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
-            if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false))
+            try
             {
-                await objNewWeapon.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                await objNewWeapon.CreateAsync(node, lstWeapons, token: token).ConfigureAwait(false);
+
+                if (objNewWeapon.InternalId.IsEmptyGuid())
+                    throw new AbortedException();
+
+                // If a Commlink has just been added, see if the character already has one. If not, make it the active Commlink.
+                if (await _objCharacter.GetActiveCommlinkAsync(token).ConfigureAwait(false) == null && await objNewWeapon.GetIsCommlinkAsync(token).ConfigureAwait(false))
+                {
+                    await objNewWeapon.SetActiveCommlinkAsync(_objCharacter, true, token).ConfigureAwait(false);
+                }
+
+                if (bonusNode["fullcost"] == null)
+                    objNewWeapon.Cost = "0";
+
+                // Create any Weapons that came with this Gear.
+                foreach (Weapon objWeapon in lstWeapons)
+                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                objNewWeapon.ParentID = SourceName;
+
+                await _objCharacter.Weapons.AddAsync(objNewWeapon, token).ConfigureAwait(false);
+
+                await CreateImprovementAsync(objNewWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique, token: token).ConfigureAwait(false);
             }
-
-            if (bonusNode["fullcost"] == null)
-                objNewWeapon.Cost = "0";
-
-            // Create any Weapons that came with this Gear.
-            foreach (Weapon objWeapon in lstWeapons)
-                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-            objNewWeapon.ParentID = SourceName;
-
-            await _objCharacter.Weapons.AddAsync(objNewWeapon, token).ConfigureAwait(false);
-
-            await CreateImprovementAsync(objNewWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique, token: token).ConfigureAwait(false);
+            catch
+            {
+                await objNewWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Add a specific Gear to the Character.
@@ -1903,33 +1945,39 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            Weapon objWeapon = new Weapon(_objCharacter)
+            Weapon objWeapon = new Weapon(_objCharacter);
+            try
             {
-                Name = bonusNode["name"]?.InnerText ?? _strFriendlyName,
-                Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false),
-                RangeType = "Melee",
-                Reach = bonusNode["reach"]?.InnerText ?? "0",
-                Accuracy = bonusNode["accuracy"]?.InnerText ?? "Physical",
-                Damage = bonusNode["damage"]?.InnerText ?? "({STR})S",
-                AP = bonusNode["ap"]?.InnerText ?? "0",
-                Mode = "0",
-                RC = "0",
-                Concealability = "0",
-                Avail = "0",
-                Cost = "0",
-                Ammo = "0",
-                UseSkill = bonusNode["useskill"]?.InnerText ?? string.Empty,
-                Source = bonusNode["source"]?.InnerText ?? "SR5",
-                Page = bonusNode["page"]?.InnerText ?? "0",
-                ParentID = SourceName
-            };
-            objWeapon.CreateClips();
+                objWeapon.Name = bonusNode["name"]?.InnerTextViaPool(token) ?? _strFriendlyName;
+                objWeapon.Category = await LanguageManager.GetStringAsync("Tab_Critter", GlobalSettings.DefaultLanguage, token: token).ConfigureAwait(false);
+                objWeapon.RangeType = "Melee";
+                objWeapon.Reach = bonusNode["reach"]?.InnerTextViaPool(token) ?? "0";
+                objWeapon.Accuracy = bonusNode["accuracy"]?.InnerTextViaPool(token) ?? "Physical";
+                objWeapon.Damage = bonusNode["damage"]?.InnerTextViaPool(token) ?? "({STR})S";
+                objWeapon.AP = bonusNode["ap"]?.InnerTextViaPool(token) ?? "0";
+                objWeapon.Mode = "0";
+                objWeapon.RC = "0";
+                objWeapon.Concealability = "0";
+                objWeapon.Avail = "0";
+                objWeapon.Cost = "0";
+                objWeapon.Ammo = "0";
+                objWeapon.UseSkill = bonusNode["useskill"]?.InnerTextViaPool(token) ?? string.Empty;
+                objWeapon.Source = bonusNode["source"]?.InnerTextViaPool(token) ?? "SR5";
+                objWeapon.Page = bonusNode["page"]?.InnerTextViaPool(token) ?? "0";
+                objWeapon.ParentID = SourceName;
+                await objWeapon.CreateClipsAsync(token).ConfigureAwait(false);
 
-            await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objWeapon.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.Weapon,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objWeapon.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.Weapon,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // Select an AI program.
@@ -1970,7 +2018,7 @@ namespace Chummer
             {
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
-                    xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText);
+                    xmlProgram["translate"]?.InnerTextViaPool(token) ?? xmlProgram["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                        {
                            Description = strDescription
@@ -2038,7 +2086,7 @@ namespace Chummer
             {
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
-                    xmlProgram["translate"]?.InnerText ?? xmlProgram["name"]?.InnerText);
+                    xmlProgram["translate"]?.InnerTextViaPool(token) ?? xmlProgram["name"]?.InnerTextViaPool(token));
                 using (ThreadSafeForm<SelectText> frmPickText = await ThreadSafeForm<SelectText>.GetAsync(() => new SelectText
                        {
                            Description = strDescription
@@ -2075,17 +2123,17 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
 
-            string strMode = bonusNode["type"]?.InnerText ?? "all";
+            string strMode = bonusNode["type"]?.InnerTextViaPool(token) ?? "all";
 
             List<Contact> lstSelectedContacts;
-            switch (strMode)
+            switch (strMode.ToUpperInvariant())
             {
-                case "all":
+                case "ALL":
                     lstSelectedContacts = await (await _objCharacter.GetContactsAsync(token).ConfigureAwait(false)).ToListAsync(token).ConfigureAwait(false);
                     break;
 
-                case "group":
-                case "nongroup":
+                case "GROUP":
+                case "NONGROUP":
                     {
                         bool blnGroup = strMode == "group";
                         //Select any contact where IsGroup equals blnGroup
@@ -2115,7 +2163,7 @@ namespace Chummer
                 if (await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                     throw new AbortedException();
 
-                Contact objSelectedContact = int.TryParse(frmSelect.MyForm.SelectedItem, out int intIndex)
+                Contact objSelectedContact = int.TryParse(await frmSelect.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false), out int intIndex)
                     ? lstSelectedContacts[intIndex]
                     : throw new AbortedException();
 
@@ -2142,7 +2190,7 @@ namespace Chummer
                 }
                 else
                 {
-                    SelectedValue += ", " + objSelectedContact.Name;
+                    SelectedValue += "," + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await objSelectedContact.GetNameAsync(token).ConfigureAwait(false);
                 }
             }
         }
@@ -2164,25 +2212,41 @@ namespace Chummer
             bool group = bonusNode["group"] != null;
             bool canwrite = bonusNode["canwrite"] != null;
             Contact contact = new Contact(_objCharacter, !canwrite);
-            await contact.SetIsGroupAsync(group, token).ConfigureAwait(false);
-            await contact.SetLoyaltyAsync(intLoyalty, token).ConfigureAwait(false);
-            await contact.SetConnectionAsync(intConnection, token).ConfigureAwait(false);
-            await _objCharacter.Contacts.AddAsync(contact, token).ConfigureAwait(false);
+            try
+            {
+                await contact.SetIsGroupAsync(group, token).ConfigureAwait(false);
+                await contact.SetLoyaltyAsync(intLoyalty, token).ConfigureAwait(false);
+                await contact.SetConnectionAsync(intConnection, token).ConfigureAwait(false);
+                await _objCharacter.Contacts.AddAsync(contact, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.AddContact, contact.UniqueId, token: token).ConfigureAwait(false);
 
-            if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
-            {
-                decimal decForcedLoyalty = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty, token: token).ConfigureAwait(false);
+                if (bonusNode.TryGetStringFieldQuickly("forcedloyalty", ref strTemp))
+                {
+                    decimal decForcedLoyalty = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForcedLoyalty, _strUnique, decForcedLoyalty, token: token).ConfigureAwait(false);
+                }
+                if (bonusNode["free"] != null)
+                {
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique, token: token).ConfigureAwait(false);
+                }
+                if (bonusNode["forcegroup"] != null)
+                {
+                    await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique, token: token).ConfigureAwait(false);
+                }
             }
-            if (bonusNode["free"] != null)
+            catch
             {
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactMakeFree, _strUnique, token: token).ConfigureAwait(false);
-            }
-            if (bonusNode["forcegroup"] != null)
-            {
-                await CreateImprovementAsync(contact.UniqueId, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactForceGroup, _strUnique, token: token).ConfigureAwait(false);
+                try
+                {
+                    await _objCharacter.Contacts.RemoveAsync(contact, CancellationToken.None).ConfigureAwait(false);
+                }
+                catch
+                {
+                    //swallow this
+                }
+                await contact.DisposeAsync().ConfigureAwait(false);
+                throw;
             }
         }
 
@@ -2199,16 +2263,16 @@ namespace Chummer
             decimal decAug = 0;
             int intMax = 0;
             int intAugMax = 0;
-            string strAttribute = bonusNode["name"]?.InnerText;
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool(token);
 
             // Extract the modifiers.
-            string strTemp = bonusNode["min"]?.InnerXml;
+            string strTemp = bonusNode["min"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 intMin = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-            strTemp = bonusNode["val"]?.InnerXml;
+            strTemp = bonusNode["val"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 decAug = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
-            strTemp = bonusNode["max"]?.InnerXml;
+            strTemp = bonusNode["max"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 if (strTemp.EndsWith("-natural", StringComparison.Ordinal))
@@ -2219,7 +2283,7 @@ namespace Chummer
                 else
                     intMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
             }
-            strTemp = bonusNode["aug"]?.InnerXml;
+            strTemp = bonusNode["aug"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
                 intAugMax = await ImprovementManager.ValueToIntAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
 
@@ -2242,18 +2306,18 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strAttrib = string.Empty;
-            int value = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref value);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strAttrib))
             {
                 await CreateImprovementAsync(strAttrib, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Attributelevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.Attributelevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else if (bonusNode["options"] != null)
             {
                 List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
                 foreach (XmlNode objSubNode in bonusNode["options"])
-                    lstAbbrevs.Add(objSubNode.InnerText);
+                    lstAbbrevs.Add(objSubNode.InnerTextViaPool(token));
 
                 lstAbbrevs.Remove("ESS");
                 if (!await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
@@ -2261,7 +2325,7 @@ namespace Chummer
                     lstAbbrevs.Remove("MAG");
                     lstAbbrevs.Remove("MAGAdept");
                 }
-                else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await _objCharacter.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                else if (!await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false) || !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
                     lstAbbrevs.Remove("MAGAdept");
 
                 if (!await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false))
@@ -2318,11 +2382,11 @@ namespace Chummer
                 SelectedValue = strSelected;
 
                 await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.Attributelevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.Attributelevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {
-                Log.Error(new object[] { "attributelevel", bonusNode.OuterXml });
+                Log.Error(new object[] { "attributelevel", bonusNode.OuterXmlViaPool(token) });
             }
         }
 
@@ -2332,15 +2396,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkill = string.Empty;
-            int intValue = 1;
-            bonusNode.TryGetInt32FieldQuickly("val", ref intValue);
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
             if (bonusNode.TryGetStringFieldQuickly("name", ref strSkill))
             {
-                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, intValue, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
+            }
+            else if (bonusNode["selectskill"] != null)
+            {
+                strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, token: token).ConfigureAwait(false)).Item1;
+                SelectedValue = strSkill;
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {
-                Log.Error(new object[] { "skilllevel", bonusNode.OuterXml });
+                Log.Error(new object[] { "skilllevel", bonusNode.OuterXmlViaPool(token) });
             }
         }
 
@@ -2349,11 +2419,28 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strPush = bonusNode.InnerText;
+            string strPush = bonusNode.InnerTextViaPool(token);
             if (!string.IsNullOrWhiteSpace(strPush))
             {
                 (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
             }
+        }
+
+        public Task pushtextforqualitygroup(XmlNode bonusNode, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (bonusNode == null)
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
+            
+            string strPush = bonusNode.InnerTextViaPool(token);
+            string strQualityGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token) ?? string.Empty;
+            
+            if (!string.IsNullOrWhiteSpace(strPush) && !string.IsNullOrEmpty(strQualityGroup))
+            {
+                return _objCharacter.PushTextForQualityGroupAsync(strQualityGroup, strPush, token);
+            }
+            return Task.CompletedTask;
         }
 
         public async Task activesoft(XmlNode bonusNode, CancellationToken token = default)
@@ -2370,7 +2457,7 @@ namespace Chummer
             if (blnKnowledgeSkill)
                 throw new AbortedException();
             SelectedValue = strSelectedValue;
-            string strVal = bonusNode["val"]?.InnerText;
+            string strVal = bonusNode["val"]?.InnerTextViaPool(token);
             (bool blnIsExotic, string strExoticSkillName)
                 = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, strSelectedValue, token).ConfigureAwait(false);
             if (blnIsExotic)
@@ -2406,14 +2493,21 @@ namespace Chummer
             if (bonusNode["addknowledge"] != null)
             {
                 KnowledgeSkill objKnowledgeSkill = new KnowledgeSkill(_objCharacter, strSelectedValue, false);
-
-                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                try
                 {
-                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
-                }
+                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                    if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                    {
+                        await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objKnowledgeSkill, token).ConfigureAwait(false);
+                    }
 
-                await CreateImprovementAsync(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await CreateImprovementAsync(objKnowledgeSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+                catch
+                {
+                    await objKnowledgeSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
             }
         }
 
@@ -2428,17 +2522,24 @@ namespace Chummer
                 ? (await ImprovementManager.DoSelectSkillAsync(bonusNode, _objCharacter, _intRating, _strFriendlyName, true, token).ConfigureAwait(false)).Item1
                 : strForcedValue;
 
-            string strVal = bonusNode["val"]?.InnerText;
+            string strVal = bonusNode["val"]?.InnerTextViaPool(token);
 
             KnowledgeSkill objSkill = new KnowledgeSkill(_objCharacter, SelectedValue, false);
-
-            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
-            if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+            try
             {
-                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
-            }
+                await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
+                if (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.SkillsoftAccess, token: token).ConfigureAwait(false) > 0)
+                {
+                    await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddAsync(objSkill, token).ConfigureAwait(false);
+                }
 
-            await CreateImprovementAsync(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objSkill.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillsoft, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         public async Task knowledgeskilllevel(XmlNode bonusNode, CancellationToken token = default)
@@ -2446,11 +2547,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //Theoretically life modules, right now we just give out free points and let people sort it out themselves.
-            //Going to be fun to do the real way, from a computer science perspective, but i don't feel like using 2 weeks on that now
-
-            decimal decVal = bonusNode["val"] != null ? await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"].InnerText, _intRating, token).ConfigureAwait(false) : 1;
-            await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique, decVal, token: token).ConfigureAwait(false);
+            decimal decVal = bonusNode["val"] != null ? await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"].InnerTextViaPool(token), _intRating, token).ConfigureAwait(false) : 1;
+            if (bonusNode["selectskill"] != null)
+            {
+                string strSkill = (await ImprovementManager.DoSelectSkillAsync(bonusNode["selectskill"], _objCharacter, _intRating, _strFriendlyName, true, token).ConfigureAwait(false)).Item1;
+                SelectedValue = strSkill;
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillLevel, _strUnique, decVal, token: token).ConfigureAwait(false);
+            }
+            else
+            {
+                await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique, decVal, token: token).ConfigureAwait(false);
+            }
         }
 
         public async Task knowledgeskillpoints(XmlNode bonusNode, CancellationToken token = default)
@@ -2459,7 +2566,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.Value, _intRating, token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.Value, _intRating, token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task skillgrouplevel(XmlNode bonusNode, CancellationToken token = default)
@@ -2468,16 +2575,23 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strSkillGroup = string.Empty;
-            int value = 1;
-            if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup) &&
-                bonusNode.TryGetInt32FieldQuickly("val", ref value))
+            decimal decValue = 1;
+            bonusNode.TryGetDecFieldQuickly("val", ref decValue);
+            if (bonusNode.TryGetStringFieldQuickly("name", ref strSkillGroup))
             {
                 await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, value, token: token).ConfigureAwait(false);
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
+            }
+            else if (bonusNode["selectskillgroup"] != null)
+            {
+                strSkillGroup = await ImprovementManager.DoSelectSkillGroupAsync(bonusNode["selectskillgroup"], _objCharacter, _strFriendlyName, token).ConfigureAwait(false);
+                SelectedValue = strSkillGroup;
+                await CreateImprovementAsync(strSkillGroup, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.SkillGroupLevel, _strUnique, decValue, token: token).ConfigureAwait(false);
             }
             else
             {
-                Log.Error(new object[] { "skillgrouplevel", bonusNode.OuterXml });
+                Log.Error(new object[] { "skillgrouplevel", bonusNode.OuterXmlViaPool(token) });
             }
         }
 
@@ -2488,7 +2602,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenMaxBP, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Apply a bonus/penalty to physical limit.
@@ -2499,7 +2613,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync("Physical", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalLimit,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Apply a bonus/penalty to mental limit.
@@ -2510,7 +2624,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync("Mental", _objImprovementSource, SourceName, Improvement.ImprovementType.MentalLimit,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Apply a bonus/penalty to social limit.
@@ -2521,7 +2635,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Change the amount of Nuyen the character has at creation time (this can put the character over the amount they're normally allowed).
@@ -2530,9 +2644,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strCondition = bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(strCondition, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Improve Condition Monitors.
@@ -2541,14 +2655,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strTemp = bonusNode["physical"]?.InnerText;
+            string strTemp = bonusNode["physical"]?.InnerTextViaPool(token);
             // Physical Condition.
             if (!string.IsNullOrEmpty(strTemp))
             {
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCM, _strUnique,
                     await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
-            strTemp = bonusNode["stun"]?.InnerText;
+            strTemp = bonusNode["stun"]?.InnerTextViaPool(token);
             // Stun Condition.
             if (!string.IsNullOrEmpty(strTemp))
             {
@@ -2561,12 +2675,12 @@ namespace Chummer
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThreshold, strUseUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
 
             // Condition Monitor Threshold Offset. (Additional boxes appear before the FIRST Condition Monitor penalty)
@@ -2574,24 +2688,24 @@ namespace Chummer
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMThresholdOffset,
-                    strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
             // Condition Monitor Threshold Offset that must be shared between the two. (Additional boxes appear before the FIRST Condition Monitor penalty)
             objNode = bonusNode["sharedthresholdoffset"];
             if (objNode != null)
             {
                 string strUseUnique = _strUnique;
-                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerText;
+                string strPrecendenceString = objNode.Attributes["precedence"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strPrecendenceString))
                     strUseUnique = "precedence" + strPrecendenceString;
 
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMSharedThresholdOffset,
-                    strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
 
             // Condition Monitor Overflow.
@@ -2599,7 +2713,7 @@ namespace Chummer
             if (objNode != null)
             {
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CMOverflow, _strUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, objNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -2611,79 +2725,79 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             // Device Rating.
-            string strBonus = bonusNode["devicerating"]?.InnerText;
+            string strBonus = bonusNode["devicerating"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDeviceRating, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Program Limit.
-            strBonus = bonusNode["programlimit"]?.InnerText;
+            strBonus = bonusNode["programlimit"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaProgramLimit, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Attack.
-            strBonus = bonusNode["attack"]?.InnerText;
+            strBonus = bonusNode["attack"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaAttack, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Sleaze.
-            strBonus = bonusNode["sleaze"]?.InnerText;
+            strBonus = bonusNode["sleaze"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaSleaze, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Data Processing.
-            strBonus = bonusNode["dataprocessing"]?.InnerText;
+            strBonus = bonusNode["dataprocessing"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaDataProcessing, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Firewall.
-            strBonus = bonusNode["firewall"]?.InnerText;
+            strBonus = bonusNode["firewall"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaFirewall, _strUnique, token: token).ConfigureAwait(false);
             }
 
             // Matrix CM.
-            strBonus = bonusNode["matrixcm"]?.InnerText;
+            strBonus = bonusNode["matrixcm"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
                 strBonus = strBonus.ProcessFixedValuesString(_intRating);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
-                    strBonus = '+' + strBonus;
+                    strBonus = "+" + strBonus;
                 await CreateImprovementAsync(strBonus, _objImprovementSource, SourceName, Improvement.ImprovementType.LivingPersonaMatrixCM, _strUnique, token: token).ConfigureAwait(false);
             }
         }
@@ -2694,17 +2808,17 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-            string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+            bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
 
             string strUseUnique = _strUnique;
-            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecendenceString))
                 strUseUnique = "precedence" + strPrecendenceString;
 
-            string strBonusNodeName = bonusNode["name"]?.InnerText;
+            string strBonusNodeName = bonusNode["name"]?.InnerTextViaPool(token);
             // Record the improvement.
-            string strTemp = bonusNode["bonus"]?.InnerXml;
+            string strTemp = bonusNode["bonus"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 await CreateImprovementAsync(strBonusNodeName, _objImprovementSource, SourceName,
@@ -2718,7 +2832,7 @@ namespace Chummer
                     strUseUnique, 0, 1, 0, 0, 0, 0, string.Empty, false, string.Empty, strCondition, token).ConfigureAwait(false);
             }
 
-            strTemp = bonusNode["max"]?.InnerText;
+            strTemp = bonusNode["max"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 await CreateImprovementAsync(strBonusNodeName, _objImprovementSource, SourceName,
@@ -2726,7 +2840,7 @@ namespace Chummer
                     0,
                     string.Empty, blnAddToRating, string.Empty, strCondition, token).ConfigureAwait(false);
             }
-            strTemp = bonusNode["misceffect"]?.InnerText;
+            strTemp = bonusNode["misceffect"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strTemp))
             {
                 await CreateImprovementAsync(strBonusNodeName, _objImprovementSource, SourceName,
@@ -2751,7 +2865,7 @@ namespace Chummer
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             // Expected values are either a Skill Name or an empty string.
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName,
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.RemoveSkillCategoryDefaultPenalty, _strUnique, token: token);
         }
 
@@ -2762,7 +2876,7 @@ namespace Chummer
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             // Expected values are either a Skill Name or an empty string.
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName,
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.RemoveSkillGroupDefaultPenalty, _strUnique, token: token);
         }
 
@@ -2773,7 +2887,7 @@ namespace Chummer
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
             // Expected values are either a Skill Name or an empty string.
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName,
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.RemoveSkillDefaultPenalty, _strUnique, token: token);
         }
 
@@ -2783,16 +2897,24 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlArt = (await _objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/martialarts/martialart", bonusNode.InnerText);
+            XmlNode objXmlArt = (await _objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/martialarts/martialart", bonusNode.InnerTextViaPool(token));
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
-            await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
-            objMartialArt.IsQuality = true;
-            await (await _objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).AddAsync(objMartialArt, token).ConfigureAwait(false);
+            try
+            {
+                await objMartialArt.CreateAsync(objXmlArt, token).ConfigureAwait(false);
+                objMartialArt.IsQuality = true;
+                await (await _objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false)).AddAsync(objMartialArt, token).ConfigureAwait(false);
 
-            await CreateImprovementAsync(objMartialArt.InternalId, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.MartialArt,
-                _strUnique, token: token).ConfigureAwait(false);
+                await CreateImprovementAsync(objMartialArt.InternalId, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.MartialArt,
+                    _strUnique, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objMartialArt.DeleteMartialArtAsync(token: CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
         }
 
         // The Improvement adds a limit modifier
@@ -2801,9 +2923,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strLimit = bonusNode["limit"]?.InnerText;
-            decimal decBonus = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerXml, _intRating, token).ConfigureAwait(false);
-            string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+            string strLimit = bonusNode["limit"]?.InnerTextViaPool(token);
+            decimal decBonus = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
 
             LimitModifier objLimitModifier = new LimitModifier(_objCharacter);
             objLimitModifier.Create(_strFriendlyName, decBonus.StandardRound(), strLimit, strCondition, false);
@@ -2819,15 +2941,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strName = bonusNode["name"]?.InnerText;
+            string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
-                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
-                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
+                string strExclude = bonusNode["exclude"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                 await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.SkillCategory, _strUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token),
                         _intRating, token).ConfigureAwait(false), 1, 0,
                     0,
                     0, 0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition, token: token).ConfigureAwait(false);
@@ -2840,15 +2962,15 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strName = bonusNode["name"]?.InnerText;
+            string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
-                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
-                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
+                string strExclude = bonusNode["exclude"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                 await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.SkillGroup, _strUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token),
                         _intRating, token).ConfigureAwait(false), 1, 0, 0, 0,
                     0, !string.IsNullOrEmpty(strExclude) ? strExclude : string.Empty, blnAddToRating, strCondition: strCondition, token: token).ConfigureAwait(false);
             }
@@ -2865,15 +2987,15 @@ namespace Chummer
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
-            string strName = bonusNode["name"]?.InnerText;
+            string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
-                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
-                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
+                string strExclude = bonusNode["exclude"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                 await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.SkillAttribute, strUseUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token),
                         _intRating, token).ConfigureAwait(false), 1,
                     0, 0, 0, 0, strExclude,
                     blnAddToRating, strCondition: strCondition, token: token).ConfigureAwait(false);
@@ -2891,15 +3013,15 @@ namespace Chummer
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
-            string strName = bonusNode["name"]?.InnerText;
+            string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
-                bool blnAddToRating = bonusNode["applytorating"]?.InnerText == bool.TrueString;
-                string strExclude = bonusNode["exclude"]?.InnerText ?? string.Empty;
-                string strCondition = bonusNode["condition"]?.InnerText ?? string.Empty;
+                bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
+                string strExclude = bonusNode["exclude"]?.InnerTextViaPool(token) ?? string.Empty;
+                string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                 await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.SkillLinkedAttribute, strUseUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerXml,
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token),
                         _intRating, token).ConfigureAwait(false), 1,
                     0, 0, 0, 0, strExclude,
                     blnAddToRating, strCondition: strCondition, token: token).ConfigureAwait(false);
@@ -2914,7 +3036,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Armor modifiers.
@@ -2924,21 +3046,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Armor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Fire Armor modifiers.
@@ -2948,21 +3070,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FireArmor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Cold Armor modifiers.
@@ -2972,21 +3094,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ColdArmor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Electricity Armor modifiers.
@@ -2996,21 +3118,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ElectricityArmor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Acid Armor modifiers.
@@ -3020,21 +3142,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AcidArmor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Falling Armor modifiers.
@@ -3044,21 +3166,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FallingArmor, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Dodge modifiers.
@@ -3068,21 +3190,21 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
             {
                 strUseUnique = "precedence" + strPrecedence;
             }
             else
             {
-                string strGroup = bonusNode.Attributes?["group"]?.InnerText;
+                string strGroup = bonusNode.Attributes?["group"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strGroup))
                 {
                     strUseUnique = "group" + strGroup;
                 }
             }
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Dodge, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Reach modifiers.
@@ -3091,9 +3213,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strWeapon = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
+            string strWeapon = bonusNode.Attributes?["name"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
-                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Unarmed Damage Value modifiers.
@@ -3103,7 +3225,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Unarmed Damage Value Physical.
@@ -3123,7 +3245,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Unarmed Armor Penetration.
@@ -3133,7 +3255,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Initiative modifiers.
@@ -3143,7 +3265,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiative, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Initiative Pass modifiers. Only the highest one ever applies. Legacy method for old characters.
@@ -3159,12 +3281,12 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = bonusNode.Name;
-            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
                 strUseUnique = "precedence" + strPrecedence;
 
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDice,
-                strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                strUseUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Initiative Dice modifiers. Only the highest one ever applies. Legacy method for old characters.
@@ -3180,7 +3302,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDiceAdd, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Matrix Initiative modifiers.
@@ -3190,7 +3312,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiative, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
@@ -3206,7 +3328,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
-                "matrixinitiativepass", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                "matrixinitiativepass", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Matrix Initiative Pass modifiers. Legacy method for old characters.
@@ -3223,7 +3345,18 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+        }
+
+        public async Task availability(XmlNode bonusNode, CancellationToken token = default)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            // If the Lifestyle node is present, we restrict to a specific lifestyle type.
+            string strForId = bonusNode.Attributes?["id"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
+            await CreateImprovementAsync(strForId, _objImprovementSource, SourceName, Improvement.ImprovementType.Availability, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for Lifestyle cost modifiers.
@@ -3233,9 +3366,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            await CreateImprovementAsync(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
+            await CreateImprovementAsync(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.LifestyleCost, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for basic Lifestyle cost modifiers.
@@ -3245,9 +3379,10 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
-            string baseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerText ?? string.Empty;
-            await CreateImprovementAsync(baseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerTextViaPool(token) ?? string.Empty;
+            string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
+            await CreateImprovementAsync(strBaseLifestyle, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicLifestyleCost, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Check for Genetech Cost modifiers.
@@ -3257,7 +3392,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
-                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Genetech Cost modifiers.
@@ -3267,7 +3402,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechEssMultiplier,
-                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Basic Bioware Essence Cost modifiers.
@@ -3278,7 +3413,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicBiowareEssCost,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
@@ -3288,7 +3423,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
@@ -3298,7 +3433,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Cyberware Essence Cost modifiers that stack additively with base modifiers like grade.
@@ -3308,7 +3443,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
@@ -3318,7 +3453,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Non-Retroactive Bioware Essence Cost modifiers that stack additively with base modifiers like grade.
@@ -3328,7 +3463,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCostNonRetroactive, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Non-Retroactive Bioware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
@@ -3338,7 +3473,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Non-Retroactive Cyberware Essence Cost modifiers that stack additively with base modifiers like grade.
@@ -3348,7 +3483,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCostNonRetroactive, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Non-Retroactive Cyberware Essence Cost modifiers that stack multiplicatively with base modifiers like grade.
@@ -3358,7 +3493,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Prototype Transhuman modifiers.
@@ -3367,9 +3502,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false);
+            decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             await _objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
-            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating, token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating, token: token).ConfigureAwait(false);
         }
 
         // Check for Friends In High Places modifiers.
@@ -3401,7 +3536,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
                 _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for MadeMan modifiers.
@@ -3450,14 +3585,14 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strValue = bonusNode["availability"]?.InnerText;
-            string strCount = bonusNode["amount"]?.InnerText;
+            string strValue = bonusNode["availability"]?.InnerTextViaPool(token);
+            string strCount = bonusNode["amount"]?.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strCount))
             {
                 strCount = "1";
                 // Needed for legacy purposes when re-applying improvements
                 if (string.IsNullOrEmpty(strValue))
-                    strValue = bonusNode.InnerText;
+                    strValue = bonusNode.InnerTextViaPool(token);
             }
 
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
@@ -3473,7 +3608,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Ambidextrous modifiers.
@@ -3487,43 +3622,45 @@ namespace Chummer
         }
 
         // Check for Weapon Category DV modifiers.
-        public async Task weaponcategorydv(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponcategorydv(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDV, token);
+        }
+
+        public Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryDice, token);
+        }
+
+        public Task weaponcategoryap(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAP, token);
+        }
+
+        public Task weaponcategoryaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryAccuracy, token);
+        }
+
+        public Task weaponcategoryreach(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponCategoryImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponCategoryReach, token);
+        }
+
+        /// <summary>
+        /// Consolidated async method for creating weapon category improvements with full WeaponCategoryDV support.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        /// <param name="token">Cancellation token</param>
+        private async Task CreateWeaponCategoryImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            //TODO: FIX THIS
-            /*
-             * I feel like talking a little bit about improvementmanager at
-             * this point. It is an interesting class. First of all, it
-             * manages to throw out everything we ever learned about OOP
-             * and create a class based on functional programming.
-             *
-             * That is true, it is a class, based on manipulating a single
-             * list on another class.
-             *
-             * But at least there is a reference to it somewhere right?
-             *
-             * No, you create one wherever you need it, meaning there are
-             * tens of instances of this class, all operating on the same
-             * list
-             *
-             * After that, it is just plain stupid.
-             * If you have an list of xmlNodes and some might be the same
-             * it checks if a specific node exists (sometimes even by text
-             * comparison on .OuterXml) and then runs specific code for
-             * each. If it is there multiple times either of those 2 things
-             * happen.
-             *
-             * 1. Sad, nothing we can do, guess you have to survive
-             * 2. Lets create a foreach in that specific part of the code
-             *
-             * Fuck ImprovementManager, kill it with fire, burn the ashes
-             * and feed what remains to a dragon that eats unholy
-             * abominations
-             */
 
             string strSelectedValue = string.Empty;
+            decimal decValue = 0;
             if (bonusNode["selectskill"] != null)
             {
                 bool blnKnowledgeSkill;
@@ -3533,196 +3670,115 @@ namespace Chummer
                 {
                     throw new AbortedException();
                 }
-
-                Power objPower = await _objCharacter.Powers.FirstOrDefaultAsync(p => p.InternalId == SourceName, token).ConfigureAwait(false);
-                if (objPower != null)
-                    await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
+                decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             }
-            else if (bonusNode["selectcategories"] != null)
-            {
-                using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategories"))
+            else if (bonusNode["selectcategory"] != null)
+            {   
+                // Display the Select Category window and record which Category was selected.
+                using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
+                                                               out List<ListItem> lstGeneralItems))
                 {
-                    if (xmlSelectCategoryList?.Count > 0)
+                    XmlElement xmlSelectCategory = bonusNode["selectcategory"];
+                    using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
                     {
-                        foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
+                        if (xmlCategoryList?.Count > 0)
                         {
-                            // Display the Select Category window and record which Category was selected.
-                            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                           out List<ListItem> lstGeneralItems))
+                            foreach (XmlNode objXmlCategory in xmlCategoryList)
                             {
-                                using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                                {
-                                    if (xmlCategoryList?.Count > 0)
-                                    {
-                                        foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                        {
-                                            string strInnerText = objXmlCategory.InnerText;
-                                            lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                             await _objCharacter.TranslateExtraAsync(
-                                                                                 strInnerText, GlobalSettings.Language,
-                                                                                 "weapons.xml", token).ConfigureAwait(false)));
-                                        }
-                                    }
-                                }
-
-                                string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                                   ? string.Format(GlobalSettings.CultureInfo,
-                                                       await LanguageManager.GetStringAsync(
-                                                           "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
-                                                   : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
-                                using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
-                                           new SelectItem
-                                           {
-                                               Description = strDescription
-                                           }, token).ConfigureAwait(false))
-                                {
-                                    frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                    if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                        || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                        ForcedValue = string.Empty;
-
-                                    if (!string.IsNullOrEmpty(ForcedValue))
-                                    {
-                                        frmPickCategory.MyForm.Opacity = 0;
-                                        frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                    }
-
-                                    // Make sure the dialogue window was not canceled.
-                                    if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                    {
-                                        throw new AbortedException();
-                                    }
-
-                                    strSelectedValue = frmPickCategory.MyForm.SelectedItem;
-                                }
+                                string strInnerText = objXmlCategory.InnerTextViaPool(token);
+                                lstGeneralItems.Add(new ListItem(strInnerText,
+                                                                 await _objCharacter.TranslateExtraAsync(
+                                                                     strInnerText, GlobalSettings.Language,
+                                                                     "weapons.xml", token).ConfigureAwait(false)));
                             }
-
-                            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
-                            {
-                                if (objPower.InternalId == SourceName)
-                                {
-                                    await objPower.SetExtraAsync(SelectedValue, token).ConfigureAwait(false);
-                                }
-                            }, token).ConfigureAwait(false);
                         }
+                    }
+
+                    string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
+                        ? string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false), _strFriendlyName)
+                        : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
+                    using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
+                               new SelectItem(), token).ConfigureAwait(false))
+                    {
+                        await frmPickCategory.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                        frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
+
+                        if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
+                            || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
+                            ForcedValue = string.Empty;
+
+                        if (!string.IsNullOrEmpty(ForcedValue))
+                        {
+                            frmPickCategory.MyForm.Opacity = 0;
+                            frmPickCategory.MyForm.ForceItem(ForcedValue);
+                        }
+
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        {
+                            throw new AbortedException();
+                        }
+
+                        strSelectedValue = await frmPickCategory.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                        decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, xmlSelectCategory["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
                     }
                 }
             }
             else if (bonusNode["name"] != null)
             {
-                strSelectedValue = bonusNode["name"].InnerText;
+                strSelectedValue = bonusNode["name"].InnerTextViaPool(token);
+                decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             }
             else
             {
                 Utils.BreakIfDebug();
             }
+
             SelectedValue = strSelectedValue;
             await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.WeaponCategoryDV, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerXml, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                improvementType, _strUnique, decValue, token: token).ConfigureAwait(false);
         }
 
-        public async Task weaponcategorydice(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificdice(XmlNode bonusNode, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            using (XmlNodeList xmlSelectCategoryList = bonusNode.SelectNodes("selectcategory"))
-            {
-                if (xmlSelectCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlSelectCategory in xmlSelectCategoryList)
-                    {
-                        string strSelectedValue;
-                        // Display the Select Category window and record which Category was selected.
-                        using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstGeneralItems))
-                        {
-                            using (XmlNodeList xmlCategoryList = xmlSelectCategory.SelectNodes("category"))
-                            {
-                                if (xmlCategoryList?.Count > 0)
-                                {
-                                    foreach (XmlNode objXmlCategory in xmlCategoryList)
-                                    {
-                                        string strInnerText = objXmlCategory.InnerText;
-                                        lstGeneralItems.Add(new ListItem(strInnerText,
-                                                                         await _objCharacter.TranslateExtraAsync(
-                                                                             strInnerText, GlobalSettings.Language,
-                                                                             "weapons.xml", token).ConfigureAwait(false)));
-                                    }
-                                }
-                            }
-
-                            string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
-                                ? string.Format(GlobalSettings.CultureInfo,
-                                    await LanguageManager.GetStringAsync(
-                                        "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false),
-                                    _strFriendlyName)
-                                : await LanguageManager.GetStringAsync("Title_SelectWeaponCategory", token: token).ConfigureAwait(false);
-                            using (ThreadSafeForm<SelectItem> frmPickCategory = await ThreadSafeForm<SelectItem>.GetAsync(() =>
-                                       new SelectItem
-                                       {
-                                           Description = strDescription
-                                       }, token).ConfigureAwait(false))
-                            {
-                                frmPickCategory.MyForm.SetGeneralItemsMode(lstGeneralItems);
-
-                                if (ForcedValue.StartsWith("Adept:", StringComparison.Ordinal)
-                                    || ForcedValue.StartsWith("Magician:", StringComparison.Ordinal))
-                                    ForcedValue = string.Empty;
-
-                                if (!string.IsNullOrEmpty(ForcedValue))
-                                {
-                                    frmPickCategory.MyForm.Opacity = 0;
-                                    frmPickCategory.MyForm.ForceItem(ForcedValue);
-                                }
-
-                                // Make sure the dialogue window was not canceled.
-                                if (await frmPickCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
-                                {
-                                    throw new AbortedException();
-                                }
-
-                                strSelectedValue = frmPickCategory.MyForm.SelectedItem;
-                            }
-                        }
-
-                        SelectedValue = strSelectedValue;
-                        await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
-                        {
-                            if (objPower.InternalId == SourceName)
-                            {
-                                await objPower.SetExtraAsync(strSelectedValue, token).ConfigureAwait(false);
-                            }
-                        }, token).ConfigureAwait(false);
-
-                        await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, xmlSelectCategory["value"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    }
-                }
-            }
-
-            using (XmlNodeList xmlCategoryList = bonusNode.SelectNodes("category"))
-            {
-                if (xmlCategoryList?.Count > 0)
-                {
-                    foreach (XmlNode xmlCategory in xmlCategoryList)
-                    {
-                        await CreateImprovementAsync(xmlCategory["name"]?.InnerText, _objImprovementSource, SourceName,
-                            Improvement.ImprovementType.WeaponCategoryDice, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, xmlCategory["value"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    }
-                }
-            }
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDice, token);
         }
 
-        public async Task weaponspecificdice(XmlNode bonusNode, CancellationToken token = default)
+        public Task weaponspecificdv(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificDV, token);
+        }
+
+        public Task weaponspecificap(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAP, token);
+        }
+
+        public Task weaponspecificaccuracy(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificAccuracy, token);
+        }
+
+        public Task weaponspecificrange(XmlNode bonusNode, CancellationToken token = default)
+        {
+            return CreateWeaponSpecificImprovementAsync(bonusNode, Improvement.ImprovementType.WeaponSpecificRange, token);
+        }
+
+        /// <summary>
+        /// Consolidated async method for creating weapon-specific improvements.
+        /// </summary>
+        /// <param name="bonusNode">The XML node containing the improvement data</param>
+        /// <param name="improvementType">The type of improvement to create</param>
+        /// <param name="token">Cancellation token</param>
+        private async Task CreateWeaponSpecificImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
             {
-                string strType = bonusNode.Attributes?["type"]?.InnerText;
+                string strType = bonusNode.Attributes?["type"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strType))
                 {
                     await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async objWeapon =>
@@ -3745,11 +3801,9 @@ namespace Chummer
                             "String_Improvement_SelectSkillNamed", token: token).ConfigureAwait(false),
                         _strFriendlyName)
                     : await LanguageManager.GetStringAsync("Title_SelectWeapon", token: token).ConfigureAwait(false);
-                using (ThreadSafeForm<SelectItem> frmPickWeapon = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, token).ConfigureAwait(false))
+                using (ThreadSafeForm<SelectItem> frmPickWeapon = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
+                    await frmPickWeapon.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     frmPickWeapon.MyForm.SetGeneralItemsMode(lstGeneralItems);
                     if (!string.IsNullOrEmpty(ForcedValue))
                     {
@@ -3764,7 +3818,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    string strSelected = frmPickWeapon.MyForm.SelectedItem;
+                    string strSelected = await frmPickWeapon.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
 
                     objSelectedWeapon = await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(x => x.InternalId == strSelected, token).ConfigureAwait(false);
                     if (objSelectedWeapon == null)
@@ -3775,8 +3829,8 @@ namespace Chummer
 
                 SelectedValue = objSelectedWeapon.Name;
                 await CreateImprovementAsync(objSelectedWeapon.InternalId, _objImprovementSource, SourceName,
-                    Improvement.ImprovementType.WeaponSpecificDice, _strUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    improvementType, _strUnique,
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -3798,7 +3852,7 @@ namespace Chummer
                 }
                 XmlNode xmlMentor = (await _objCharacter.LoadDataAsync("mentors.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
-                SelectedValue = xmlMentor["name"]?.InnerText ?? string.Empty;
+                SelectedValue = xmlMentor["name"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
@@ -3809,9 +3863,7 @@ namespace Chummer
                     await objMentor.CreateAsync(xmlMentor, Improvement.ImprovementType.MentorSpirit, string.Empty,
                         frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2, token).ConfigureAwait(false);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
 
                     await _objCharacter.MentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
                 }
@@ -3848,7 +3900,7 @@ namespace Chummer
 
                 XmlNode xmlMentor = (await _objCharacter.LoadDataAsync("paragons.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/mentors/mentor", frmPickMentorSpirit.MyForm.SelectedMentor)
                                     ?? throw new AbortedException();
-                SelectedValue = xmlMentor["name"]?.InnerText ?? string.Empty;
+                SelectedValue = xmlMentor["name"]?.InnerTextViaPool(token) ?? string.Empty;
 
                 string strHoldValue = SelectedValue;
 
@@ -3859,9 +3911,7 @@ namespace Chummer
                     await objMentor.CreateAsync(xmlMentor, Improvement.ImprovementType.Paragon, string.Empty,
                         frmPickMentorSpirit.MyForm.Choice1, frmPickMentorSpirit.MyForm.Choice2, token).ConfigureAwait(false);
                     if (objMentor.InternalId.IsEmptyGuid())
-                    {
                         throw new AbortedException();
-                    }
                     await _objCharacter.MentorSpirits.AddAsync(objMentor, token).ConfigureAwait(false);
                 }
                 catch
@@ -3884,7 +3934,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink,
-                "smartlink", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                "smartlink", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Adapsin bonus.
@@ -3936,7 +3986,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            string strGradeName = bonusNode.InnerText;
+            string strGradeName = bonusNode.InnerTextViaPool(token);
             return CreateImprovementAsync(strGradeName, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableBiowareGrade,
                 "disablebiowaregrade", token: token);
         }
@@ -3948,7 +3998,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            string strGradeName = bonusNode.InnerText;
+            string strGradeName = bonusNode.InnerTextViaPool(token);
             return CreateImprovementAsync(strGradeName, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableCyberwareGrade,
                 "disablecyberwaregrade", token: token);
         }
@@ -3959,17 +4009,25 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strCategory = bonusNode["category"]?.InnerText;
+            string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
-                string strTemp = bonusNode["val"]?.InnerText;
+                string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                strTemp = bonusNode["percent"]?.InnerText;
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplier, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
+                strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.WalkMultiplierPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -3979,17 +4037,25 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strCategory = bonusNode["category"]?.InnerText;
+            string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
-                string strTemp = bonusNode["val"]?.InnerText;
+                string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                strTemp = bonusNode["percent"]?.InnerText;
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplier, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
+                strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.RunMultiplierPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -3999,17 +4065,25 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strCategory = bonusNode["category"]?.InnerText;
+            string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
-                string strTemp = bonusNode["val"]?.InnerText;
+                string strTemp = bonusNode["val"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                strTemp = bonusNode["percent"]?.InnerText;
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonus, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
+                strTemp = bonusNode["percent"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strTemp))
-                    await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                {
+                    decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, strTemp, _intRating, token).ConfigureAwait(false);
+                    if (decValue != 0.0m)
+                        await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, Improvement.ImprovementType.SprintBonusPercent, _strUnique,
+                            decValue, token: token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -4020,7 +4094,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreePositiveQualities, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for free Negative Qualities.
@@ -4030,7 +4104,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeNegativeQualities, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Select Side.
@@ -4064,7 +4138,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpiritPowerPoints, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Adept Power Points.
@@ -4074,7 +4148,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Adept Powers
@@ -4088,31 +4162,38 @@ namespace Chummer
             {
                 ForcedValue = string.Empty;
 
-                string strPowerName = bonusNode["name"]?.InnerText;
+                string strPowerName = bonusNode["name"]?.InnerTextViaPool(token);
 
                 if (!string.IsNullOrEmpty(strPowerName))
                 {
+                    Power objBoostedPower;
+                    XmlNode objXmlPower = (await _objCharacter.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
                     // Check if the character already has this power
                     Power objNewPower = new Power(_objCharacter);
-                    XmlNode objXmlPower = (await _objCharacter.LoadDataAsync("powers.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/powers/power", strPowerName);
-                    if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
+                    try
+                    {
+                        if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
+                            throw new AbortedException();
+                        string strNewPowerName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
+                        string strNewPowerExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
+                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
+                    }
+                    catch
                     {
                         await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
-                        throw new AbortedException();
+                        throw;
                     }
-
-                    Power objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     if (objBoostedPower == null)
                     {
                         await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AddAsync(objNewPower, token).ConfigureAwait(false);
                         objBoostedPower = objNewPower;
                     }
 
-                    int.TryParse(bonusNode["val"]?.InnerText, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intLevels);
+                    int.TryParse(bonusNode["val"]?.InnerTextViaPool(token), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intLevels);
                     if (!objBoostedPower.LevelsEnabled)
                         intLevels = 1;
                     await CreateImprovementAsync(objNewPower.Name, _objImprovementSource, SourceName,
-                        !string.IsNullOrWhiteSpace(bonusNode["pointsperlevel"]?.InnerText)
+                        !string.IsNullOrWhiteSpace(bonusNode["pointsperlevel"]?.InnerTextViaPool(token))
                             ? Improvement.ImprovementType.AdeptPowerFreePoints
                             : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
                         intLevels, token: token).ConfigureAwait(false);
@@ -4146,20 +4227,20 @@ namespace Chummer
                         foreach (XmlNode objNode in objXmlPowerList)
                         {
                             XmlNode objXmlPower;
-                            int intLevels = await ImprovementManager.ValueToIntAsync(_objCharacter, objNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false);
-                            string strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
+                            int intLevels = await ImprovementManager.ValueToIntAsync(_objCharacter, objNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+                            string strPointsPerLevel = objNode["pointsperlevel"]?.InnerTextViaPool(token);
                             // Display the Select Power window and record which Power was selected.
                             using (ThreadSafeForm<SelectPower> frmPickPower = await ThreadSafeForm<SelectPower>.GetAsync(() => new SelectPower(_objCharacter), token).ConfigureAwait(false))
                             {
                                 frmPickPower.MyForm.ForBonus = true;
-                                frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerText == bool.TrueString;
+                                frmPickPower.MyForm.IgnoreLimits = objNode["ignorerating"]?.InnerTextIsTrueString() == true;
 
                                 if (!string.IsNullOrEmpty(strPointsPerLevel))
                                     frmPickPower.MyForm.PointsPerLevel = await ImprovementManager.ValueToDecAsync(_objCharacter, strPointsPerLevel, _intRating, token).ConfigureAwait(false);
-                                string strLimit = objNode["limit"]?.InnerText.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                                string strLimit = objNode["limit"]?.InnerTextViaPool(token).Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                                 if (!string.IsNullOrEmpty(strLimit))
                                     frmPickPower.MyForm.LimitToRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strLimit, _intRating, token).ConfigureAwait(false);
-                                string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerText;
+                                string strLimitToPowers = objNode.Attributes?["limittopowers"]?.InnerTextViaPool(token);
                                 if (!string.IsNullOrEmpty(strLimitToPowers))
                                     frmPickPower.MyForm.LimitToPowers = strLimitToPowers;
 
@@ -4173,18 +4254,27 @@ namespace Chummer
                                               ?? throw new AbortedException();
                             }
 
+                            bool blnHasPower;
+                            string strName;
+                            string strExtra;
                             // If no, add the power and mark it free or give it free levels
                             Power objNewPower = new Power(_objCharacter);
-                            if (!await objNewPower.CreateAsync(objXmlPower, token: token).ConfigureAwait(false))
+                            try
                             {
-                                await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
-                                throw new AbortedException();
+                                if (!await objNewPower.CreateAsync(objXmlPower, 0, bonusNode["bonusoverride"], token: token).ConfigureAwait(false))
+                                    throw new AbortedException();
+
+                                SelectedValue = await objNewPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                strName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
+                                strExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
+                                blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
+                                    async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
                             }
-
-                            SelectedValue = await objNewPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-
-                            bool blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
-                                async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == await objNewPower.GetNameAsync(token).ConfigureAwait(false) && await objPower.GetExtraAsync(token).ConfigureAwait(false) == await objNewPower.GetExtraAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            catch
+                            {
+                                await objNewPower.DeletePowerAsync(CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
 
                             if (!blnHasPower)
                             {
@@ -4196,10 +4286,10 @@ namespace Chummer
                                 await objNewPower.DeletePowerAsync(token).ConfigureAwait(false);
                             }
 
-                            await CreateImprovementAsync(objNewPower.Name, _objImprovementSource, SourceName,
+                            await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 !string.IsNullOrWhiteSpace(strPointsPerLevel)
                                     ? Improvement.ImprovementType.AdeptPowerFreePoints
-                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, objNewPower.Extra, 0,
+                                    : Improvement.ImprovementType.AdeptPowerFreeLevels, strExtra, 0,
                                 intLevels, token: token).ConfigureAwait(false);
                         }
                     }
@@ -4214,7 +4304,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task addart(XmlNode bonusNode, CancellationToken token = default)
@@ -4222,10 +4312,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedArt = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/arts/art", bonusNode.InnerText);
+            XmlNode objXmlSelectedArt = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/arts/art", bonusNode.InnerTextViaPool(token));
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+            if (bonusNode.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
                 (objXmlSelectedArt != null && await objXmlSelectedArt.CreateNavigator().RequirementsMetAsync(_objCharacter, strLocalName: _strFriendlyName, token: token).ConfigureAwait(false)))
             {
                 Art objAddArt = new Art(_objCharacter);
@@ -4259,13 +4349,13 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlAddArt in xmlArtList)
                         {
-                            string strLoopName = objXmlAddArt.InnerText;
+                            string strLoopName = objXmlAddArt.InnerTextViaPool(token);
                             XmlNode objXmlArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/arts/art", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlArt != null && await objXmlAddArt.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                             {
-                                lstArts.Add(new ListItem(objXmlArt["id"]?.InnerText,
-                                    objXmlArt["translate"]?.InnerText ?? strLoopName));
+                                lstArts.Add(new ListItem(objXmlArt["id"]?.InnerTextViaPool(token),
+                                    objXmlArt["translate"]?.InnerTextViaPool(token) ?? strLoopName));
                             }
                         }
 
@@ -4285,12 +4375,12 @@ namespace Chummer
                             if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                                 throw new AbortedException();
 
-                            objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", frmPickItem.MyForm.SelectedItem)
+                            objXmlSelectedArt = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                                                 ?? throw new AbortedException();
                         }
                     }
 
-                    string strSelectedName = objXmlSelectedArt["name"]?.InnerText;
+                    string strSelectedName = objXmlSelectedArt["name"]?.InnerTextViaPool(token);
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                 }
@@ -4325,13 +4415,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            XmlNode objXmlSelectedMetamagic = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metamagics/metamagic", bonusNode.InnerText);
+            XmlNode objXmlSelectedMetamagic = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metamagics/metamagic", bonusNode.InnerTextViaPool(token));
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
-            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+            if (bonusNode.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
                 (objXmlSelectedMetamagic != null && await objXmlSelectedMetamagic.CreateNavigator()
                     .RequirementsMetAsync(_objCharacter, strLocalName: _strFriendlyName, token: token).ConfigureAwait(false)))
             {
-                string strForcedValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
+                string strForcedValue = bonusNode.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                 Metamagic objAddMetamagic = new Metamagic(_objCharacter);
                 await objAddMetamagic.CreateAsync(objXmlSelectedMetamagic, Improvement.ImprovementSource.Metamagic, strForcedValue, token).ConfigureAwait(false);
                 objAddMetamagic.Grade = -1;
@@ -4364,14 +4454,14 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                         {
-                            string strLoopName = objXmlAddMetamagic.InnerText;
+                            string strLoopName = objXmlAddMetamagic.InnerTextViaPool(token);
                             XmlNode objXmlMetamagic
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlMetamagic != null && await objXmlAddMetamagic.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                             {
-                                lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerText,
-                                    objXmlMetamagic["translate"]?.InnerText
+                                lstMetamagics.Add(new ListItem(objXmlMetamagic["id"]?.InnerTextViaPool(token),
+                                    objXmlMetamagic["translate"]?.InnerTextViaPool(token)
                                     ?? strLoopName));
                             }
                         }
@@ -4392,19 +4482,19 @@ namespace Chummer
                             if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                                 throw new AbortedException();
 
-                            objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", frmPickItem.MyForm.SelectedItem)
+                            objXmlSelectedMetamagic = objXmlDocument.TryGetNodeByNameOrId("/chummer/metamagics/metamagic", await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                                                       ?? throw new AbortedException();
                         }
                     }
 
-                    string strSelectedName = objXmlSelectedMetamagic["name"]?.InnerText;
+                    string strSelectedName = objXmlSelectedMetamagic["name"]?.InnerTextViaPool(token);
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                     foreach (XmlNode objXmlAddMetamagic in xmlMetamagicList)
                     {
-                        if (strSelectedName == objXmlAddMetamagic.InnerText)
+                        if (strSelectedName == objXmlAddMetamagic.InnerTextViaPool(token))
                         {
-                            strForceValue = objXmlAddMetamagic.Attributes?["select"]?.InnerText ?? string.Empty;
+                            strForceValue = objXmlAddMetamagic.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                             break;
                         }
                     }
@@ -4442,13 +4532,13 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("echoes.xml", token: token).ConfigureAwait(false);
-            XmlNode objXmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", bonusNode.InnerText);
+            XmlNode objXmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", bonusNode.InnerTextViaPool(token));
 
             // Makes sure we aren't over our limits for this particular echo from this overall source
-            if (bonusNode.Attributes?["forced"]?.InnerText == bool.TrueString ||
+            if (bonusNode.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
                 (objXmlSelectedEcho != null && await objXmlSelectedEcho.CreateNavigator().RequirementsMetAsync(_objCharacter, strLocalName: _strFriendlyName, token: token).ConfigureAwait(false)))
             {
-                string strForceValue = bonusNode.Attributes?["select"]?.InnerText ?? string.Empty;
+                string strForceValue = bonusNode.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                 Metamagic objAddEcho = new Metamagic(_objCharacter);
                 await objAddEcho.CreateAsync(objXmlSelectedEcho, Improvement.ImprovementSource.Echo, strForceValue, token).ConfigureAwait(false);
                 objAddEcho.Grade = -1;
@@ -4481,14 +4571,14 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlAddEcho in xmlEchoList)
                         {
-                            string strLoopName = objXmlAddEcho.InnerText;
+                            string strLoopName = objXmlAddEcho.InnerTextViaPool(token);
                             XmlNode objXmlEcho = objXmlDocument.TryGetNodeByNameOrId(
                                 "/chummer/metamagics/metamagic", strLoopName);
                             // Makes sure we aren't over our limits for this particular metamagic from this overall source
                             if (objXmlEcho != null && await objXmlAddEcho.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                             {
-                                lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerText,
-                                    objXmlEcho["translate"]?.InnerText ?? strLoopName));
+                                lstEchoes.Add(new ListItem(objXmlEcho["id"]?.InnerTextViaPool(token),
+                                    objXmlEcho["translate"]?.InnerTextViaPool(token) ?? strLoopName));
                             }
                         }
 
@@ -4508,19 +4598,19 @@ namespace Chummer
                             if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                                 throw new AbortedException();
 
-                            xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", frmPickItem.MyForm.SelectedItem)
+                            xmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                                               ?? throw new AbortedException();
                         }
                     }
 
-                    string strSelectedName = xmlSelectedEcho["name"]?.InnerText;
+                    string strSelectedName = xmlSelectedEcho["name"]?.InnerTextViaPool(token);
                     if (string.IsNullOrEmpty(strSelectedName))
                         throw new AbortedException();
                     foreach (XmlNode objXmlAddEcho in xmlEchoList)
                     {
-                        if (strSelectedName == objXmlAddEcho.InnerText)
+                        if (strSelectedName == objXmlAddEcho.InnerTextViaPool(token))
                         {
-                            strForceValue = objXmlAddEcho.Attributes?["select"]?.InnerText ?? string.Empty;
+                            strForceValue = objXmlAddEcho.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
                             break;
                         }
                     }
@@ -4559,12 +4649,12 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecendenceString))
                 strUseUnique = "precedence" + strPrecendenceString;
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Skillwire,
                 strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Hardwires.
@@ -4582,7 +4672,7 @@ namespace Chummer
                 = await ExoticSkill.IsExoticSkillNameTupleAsync(_objCharacter, strSelectedValue, token).ConfigureAwait(false);
             if (blnIsExotic)
             {
-                if (!string.IsNullOrEmpty(bonusNode.InnerText))
+                if (!bonusNode.IsNullOrInnerTextIsEmpty())
                 {
                     // Make sure we have the exotic skill in the list if we're adding an activesoft
                     Skill objExistingSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync(strSelectedValue, token).ConfigureAwait(false);
@@ -4599,7 +4689,7 @@ namespace Chummer
                     await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
                         Improvement.ImprovementType.Hardwire,
                         _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
             }
             else
@@ -4607,7 +4697,7 @@ namespace Chummer
                 await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName,
                     Improvement.ImprovementType.Hardwire,
                     strSelectedValue,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -4618,7 +4708,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DamageResistance, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Judge Intentions.
@@ -4628,7 +4718,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentions, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Judge Intentions (offense only, i.e. doing the judging).
@@ -4638,7 +4728,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentionsOffense, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Judge Intentions (defense only, i.e. being judged).
@@ -4648,7 +4738,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentionsDefense, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Composure.
@@ -4658,7 +4748,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Composure, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Lift and Carry.
@@ -4668,7 +4758,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LiftAndCarry, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Memory.
@@ -4678,7 +4768,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Memory, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Fatigue Resist.
@@ -4688,7 +4778,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FatigueResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Radiation Resist.
@@ -4698,7 +4788,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RadiationResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Sonic Attacks Resist.
@@ -4708,7 +4798,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SonicResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Contact-vector Toxins Resist.
@@ -4718,7 +4808,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinContactResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Ingestion-vector Toxins Resist.
@@ -4728,7 +4818,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinIngestionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Inhalation-vector Toxins Resist.
@@ -4738,7 +4828,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInhalationResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Injection-vector Toxins Resist.
@@ -4748,7 +4838,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInjectionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Contact-vector Pathogens Resist.
@@ -4758,7 +4848,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenContactResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Ingestion-vector Pathogens Resist.
@@ -4768,7 +4858,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenIngestionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Inhalation-vector Pathogens Resist.
@@ -4778,7 +4868,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInhalationResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Injection-vector Pathogens Resist.
@@ -4788,7 +4878,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInjectionResist, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Contact-vector Toxins Immunity.
@@ -4878,7 +4968,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionFirstTime, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Psychological Addiction if you are not addicted.
@@ -4888,7 +4978,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionFirstTime, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Physiological Addiction Resist if you are addicted.
@@ -4898,7 +4988,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Psychological Addiction if you are addicted.
@@ -4908,7 +4998,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Recovery Dice from Stun CM Damage.
@@ -4918,7 +5008,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StunCMRecovery, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Recovery Dice from Physical CM Damage.
@@ -4928,7 +5018,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCMRecovery, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Whether Essence is added to Recovery Dice from Stun CM Damage.
@@ -4958,7 +5048,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Concealability, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Drain Resistance.
@@ -4968,7 +5058,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainResistance, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Drain Value.
@@ -4977,8 +5067,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Fading Resistance.
@@ -4988,7 +5078,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingResistance, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Fading Value.
@@ -4997,8 +5087,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingValue, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingValue, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Notoriety.
@@ -5008,7 +5098,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Notoriety, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Street Cred bonuses.
@@ -5018,7 +5108,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCred, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Street Cred Multiplier bonuses.
@@ -5028,7 +5118,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCredMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Complex Form Limit.
@@ -5038,7 +5128,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ComplexFormLimit, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Spell Limit.
@@ -5048,7 +5138,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellLimit, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Free Spells.
@@ -5060,10 +5150,10 @@ namespace Chummer
             XmlAttributeCollection objNodeAttributes = bonusNode.Attributes;
             if (objNodeAttributes != null)
             {
-                string strSpellTypeLimit = objNodeAttributes["limit"]?.InnerText ?? string.Empty;
+                string strSpellTypeLimit = objNodeAttributes["limit"]?.InnerTextViaPool(token) ?? string.Empty;
                 if (objNodeAttributes["attribute"] != null)
                 {
-                    CharacterAttrib att = await _objCharacter.GetAttributeAsync(objNodeAttributes["attribute"].InnerText, token: token).ConfigureAwait(false);
+                    CharacterAttrib att = await _objCharacter.GetAttributeAsync(objNodeAttributes["attribute"].InnerTextViaPool(token), token: token).ConfigureAwait(false);
                     if (att != null)
                     {
                         await CreateImprovementAsync(att.Abbrev, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsATT, strSpellTypeLimit, token: token).ConfigureAwait(false);
@@ -5071,19 +5161,19 @@ namespace Chummer
                 }
                 else if (objNodeAttributes["skill"] != null)
                 {
-                    string strKey = objNodeAttributes["skill"].InnerText;
+                    string strKey = objNodeAttributes["skill"].InnerTextViaPool(token);
                     await CreateImprovementAsync(strKey, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpellsSkill, strSpellTypeLimit, token: token).ConfigureAwait(false);
                 }
                 else
                 {
                     await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, _strUnique,
-                        await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
             }
             else
             {
                 await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpells, _strUnique,
-                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             }
         }
 
@@ -5098,8 +5188,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategory, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellCategory, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for dicepool bonuses for a specific Spell.
@@ -5108,8 +5198,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["id"]?.InnerText ?? bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellDicePool, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["id"]?.InnerTextViaPool(token) ?? bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDicePool, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Spell Category Drain bonuses.
@@ -5118,11 +5208,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string s = bonusNode["category"]?.InnerText ?? SelectedValue;
+            string s = bonusNode["category"]?.InnerTextViaPool(token) ?? SelectedValue;
             if (string.IsNullOrWhiteSpace(s))
                 throw new AbortedException();
             await CreateImprovementAsync(s, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategoryDrain, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                Improvement.ImprovementType.SpellCategoryDrain, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Spell Category Damage bonuses.
@@ -5131,8 +5221,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["category"]?.InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellCategoryDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["category"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellCategoryDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Spell descriptor Damage bonuses.
@@ -5141,8 +5231,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["descriptor"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Spell descriptor drain bonuses.
@@ -5151,8 +5241,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["descriptor"]?.InnerText, _objImprovementSource, SourceName,
-                Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["descriptor"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
+                Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Throwing Range bonuses.
@@ -5162,7 +5252,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRange, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Throwing Range bonuses.
@@ -5172,7 +5262,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRangeSTR, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Throwing STR bonuses.
@@ -5182,7 +5272,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowSTR, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Skillsoft access.
@@ -5192,12 +5282,12 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             string strUseUnique = _strUnique;
-            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerText;
+            string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecendenceString))
                 strUseUnique = "precedence" + strPrecendenceString;
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillsoftAccess, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
             await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).AddRangeAsync(await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetKnowsoftSkillsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
@@ -5248,7 +5338,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
@@ -5258,7 +5348,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyT100, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting MAG rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
@@ -5268,7 +5358,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting RES rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
@@ -5278,7 +5368,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyRESOnlyT100, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value for the purposes of affecting DEP rating (input value is 100x the actual value, so essence penalty of -0.25 would be input as "25").
@@ -5288,7 +5378,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for special attribute burn modifiers that stack additively.
@@ -5298,7 +5388,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttBurn, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for special attribute burn modifiers that stack multiplicatively.
@@ -5308,7 +5398,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Maximum Essence which will permanently modify the character's Maximum Essence value.
@@ -5318,7 +5408,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssenceMax, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Check for Select Sprite.
@@ -5337,8 +5427,8 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlNode in objXmlNodeList)
                         {
-                            string strName = objXmlNode["name"]?.InnerText;
-                            lstCritters.Add(new ListItem(strName, objXmlNode["translate"]?.InnerText ?? strName));
+                            string strName = objXmlNode["name"]?.InnerTextViaPool(token);
+                            lstCritters.Add(new ListItem(strName, objXmlNode["translate"]?.InnerTextViaPool(token) ?? strName));
                         }
                     }
                 }
@@ -5352,7 +5442,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.MyForm.SelectedItem;
+                    SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                 }
 
                 await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName,
@@ -5372,13 +5462,11 @@ namespace Chummer
             if (nodeList.Count > 0)
             {
                 string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
-                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, token).ConfigureAwait(false))
+                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
+                    await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     frmPickItem.MyForm.SetGeneralItemsMode(nodeList.OfType<XPathNavigator>().Select(objNode =>
-                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? objNode.Value)));
+                        new ListItem(objNode.Value, objNode.SelectSingleNodeAndCacheExpression("@translate", token)?.Value ?? objNode.Value)));
 
                     if (!string.IsNullOrEmpty(LimitSelection))
                     {
@@ -5392,7 +5480,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.MyForm.SelectedName;
+                    SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                 }
             }
 
@@ -5414,11 +5502,11 @@ namespace Chummer
             string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false);
             XPathNodeIterator objXmlNodeList;
-            if (!string.IsNullOrEmpty(bonusNode.InnerText))
+            if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
                 objXmlNodeList
                     = objXmlDocument.Select(
-                        "/chummer/armors/armor[starts-with(name, " + bonusNode.InnerText.CleanXPath() + ") and ("
+                        "/chummer/armors/armor[starts-with(name, " + bonusNode.InnerTextViaPool(token).CleanXPath() + ") and ("
                         + strFilter + ") and mods[name = 'Custom Fit']]");
             }
             else
@@ -5427,7 +5515,7 @@ namespace Chummer
                     objXmlDocument.Select("/chummer/armors/armor[(" + strFilter + ") and mods[name = 'Custom Fit']]");
             }
 
-            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ')' + SkillFilter(filter) + ']');
+            //.SelectNodes("/chummer/skills/skill[not(exotic = 'True') and (" + strFilter + ")" + SkillFilter(filter) + "]");
 
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstArmors))
             {
@@ -5447,11 +5535,9 @@ namespace Chummer
                 if (lstArmors.Count > 0)
                 {
                     string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false), _strFriendlyName);
-                    using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                           {
-                               Description = strDescription
-                           }, token).ConfigureAwait(false))
+                    using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                     {
+                        await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                         frmPickItem.MyForm.SetGeneralItemsMode(lstArmors);
 
                         if (!string.IsNullOrEmpty(LimitSelection))
@@ -5466,7 +5552,7 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.MyForm.SelectedItem;
+                        SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -5485,7 +5571,7 @@ namespace Chummer
                 LimitSelection = ForcedValue;
 
             // Display the Select Item window and record the value that was entered.
-            string strCategory = bonusNode["category"]?.InnerText;
+            string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             string strBookXPath = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             XPathNodeIterator objXmlNodeList = (await _objCharacter.LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false)).Select(!string.IsNullOrEmpty(strCategory)
                 ? "/chummer/cyberwares/cyberware[(category = " + strCategory.CleanXPath() + ") and (" + strBookXPath + ")]"
@@ -5510,11 +5596,9 @@ namespace Chummer
                 string strDescription = string.Format(GlobalSettings.CultureInfo,
                     await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                     _strFriendlyName);
-                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, token).ConfigureAwait(false))
+                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
+                    await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     frmPickItem.MyForm.SetGeneralItemsMode(list);
 
                     if (!string.IsNullOrEmpty(LimitSelection))
@@ -5529,7 +5613,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.MyForm.SelectedItem;
+                    SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                 }
             }
 
@@ -5587,7 +5671,7 @@ namespace Chummer
                         if (!blnIncludeUnarmed && objWeapon.Name == "Unarmed Attack")
                             continue;
                         if (!string.IsNullOrEmpty(strWeaponDetails)
-                            && (await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("self::node()[" + strWeaponDetails + ']') == null)
+                            && (await objWeapon.GetNodeXPathAsync(token: token).ConfigureAwait(false))?.SelectSingleNode("self::node()[" + strWeaponDetails + "]") == null)
                             continue;
                         lstWeapons.Add(new ListItem(objWeapon.InternalId,
                                                     await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false)));
@@ -5608,11 +5692,9 @@ namespace Chummer
                         string strDescription = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("String_Improvement_SelectText", token: token).ConfigureAwait(false),
                             _strFriendlyName);
-                        using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                               {
-                                   Description = strDescription
-                               }, token).ConfigureAwait(false))
+                        using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                         {
+                            await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                             frmPickItem.MyForm.SetGeneralItemsMode(lstWeapons);
 
                             if (!string.IsNullOrEmpty(LimitSelection))
@@ -5627,7 +5709,7 @@ namespace Chummer
                                 throw new AbortedException();
                             }
 
-                            SelectedValue = frmPickItem.MyForm.SelectedName;
+                            SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                         }
                     }
                     else
@@ -5656,7 +5738,7 @@ namespace Chummer
             int powerCount = 1;
             if (string.IsNullOrEmpty(strForcePower) && bonusNode.Attributes?["count"] != null)
             {
-                string strCount = bonusNode.Attributes?["count"]?.InnerText;
+                string strCount = bonusNode.Attributes?["count"]?.InnerTextViaPool(token);
                 if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strCount = await _objCharacter.ProcessAttributesInXPathAsync(strCount, token: token).ConfigureAwait(false);
@@ -5669,19 +5751,19 @@ namespace Chummer
 
             for (int i = 0; i < powerCount; i++)
             {
-                List<Tuple<string, string>> lstPowerExtraPairs;
+                List<ValueTuple<string, string>> lstPowerExtraPairs;
                 using (XmlNodeList xmlOptionalPowerList = bonusNode.SelectNodes("optionalpower"))
                 {
-                    lstPowerExtraPairs = new List<Tuple<string, string>>(xmlOptionalPowerList?.Count ?? 0);
+                    lstPowerExtraPairs = new List<ValueTuple<string, string>>(xmlOptionalPowerList?.Count ?? 0);
                     if (xmlOptionalPowerList?.Count > 0)
                     {
                         foreach (XmlNode objXmlOptionalPower in xmlOptionalPowerList)
                         {
-                            string strPower = objXmlOptionalPower.InnerText;
+                            string strPower = objXmlOptionalPower.InnerTextViaPool(token);
                             if (string.IsNullOrEmpty(strForcePower) || strForcePower == strPower)
                             {
-                                lstPowerExtraPairs.Add(new Tuple<string, string>(strPower,
-                                    objXmlOptionalPower.Attributes?["select"]?.InnerText));
+                                lstPowerExtraPairs.Add(new ValueTuple<string, string>(strPower,
+                                    objXmlOptionalPower.Attributes?["select"]?.InnerTextViaPool(token)));
                             }
                         }
                     }
@@ -5729,16 +5811,16 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlPower in xmlPowerList)
                     {
-                        XmlNode objXmlCritterPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", objXmlPower.InnerText);
+                        XmlNode objXmlCritterPower = objXmlDocument.TryGetNodeByNameOrId("/chummer/powers/power", objXmlPower.InnerTextViaPool(token));
                         CritterPower objPower = new CritterPower(_objCharacter);
                         string strForcedValue = string.Empty;
                         int intRating = 0;
                         if (objXmlPower.Attributes?.Count > 0)
                         {
-                            string strRating = objXmlPower.Attributes["rating"]?.InnerText;
+                            string strRating = objXmlPower.Attributes["rating"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strRating))
                                 intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, _intRating, token).ConfigureAwait(false);
-                            strForcedValue = objXmlPower.Attributes["select"]?.InnerText;
+                            strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token);
                         }
 
                         await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, token).ConfigureAwait(false);
@@ -5762,9 +5844,9 @@ namespace Chummer
                 {
                     foreach (XmlNode objXmlPower in xmlPowerList)
                     {
-                        await CreateImprovementAsync(objXmlPower["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPowerLevel,
+                        await CreateImprovementAsync(objXmlPower["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPowerLevel,
                             _strUnique,
-                            await ImprovementManager.ValueToDecAsync(_objCharacter, objXmlPower["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                            await ImprovementManager.ValueToDecAsync(_objCharacter, objXmlPower["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     }
                 }
             }
@@ -5776,7 +5858,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task dealerconnection(XmlNode bonusNode, CancellationToken token = default)
@@ -5792,8 +5874,8 @@ namespace Chummer
                     {
                         foreach (XmlNode objNode in objXmlList)
                         {
-                            string strText = objNode.InnerText;
-                            if ((await ImprovementManager
+                            string strText = objNode.InnerTextViaPool(token);
+                            if (!string.IsNullOrEmpty(strText) && (await ImprovementManager
                                     .GetCachedImprovementListForValueOfAsync(_objCharacter,
                                         Improvement.ImprovementType.DealerConnection, token: token).ConfigureAwait(false))
                                 .TrueForAll(x => x.UniqueName != strText))
@@ -5827,7 +5909,7 @@ namespace Chummer
                         throw new AbortedException();
                     }
 
-                    SelectedValue = frmPickItem.MyForm.SelectedItem;
+                    SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                 }
 
                 // Create the Improvement.
@@ -5841,7 +5923,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            List<string> options = bonusNode.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
+            List<string> options = bonusNode.InnerTextViaPool(token).SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
             string final;
             switch (options.Count)
             {
@@ -5871,7 +5953,7 @@ namespace Chummer
                                 throw new AbortedException();
                             }
 
-                            final = frmSelect.MyForm.SelectedItem;
+                            final = await frmSelect.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                         }
 
                         break;
@@ -5880,14 +5962,14 @@ namespace Chummer
 
             if (Enum.TryParse(final, out SkillsSection.FilterOption skills))
             {
-                string strName = bonusNode.Attributes?["name"]?.InnerText ?? string.Empty;
+                string strName = bonusNode.Attributes?["name"]?.InnerTextViaPool(token) ?? string.Empty;
                 await _objCharacter.SkillsSection.AddSkillsAsync(skills, strName, token).ConfigureAwait(false);
                 await CreateImprovementAsync(skills.ToString(), _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialSkills, _strUnique, strTarget: strName, token: token).ConfigureAwait(false);
             }
             else
             {
                 Utils.BreakIfDebug();
-                Log.Warn(new object[] { "Failed to parse", "specialskills", bonusNode.OuterXml });
+                Log.Warn(new object[] { "Failed to parse", "specialskills", bonusNode.OuterXmlViaPool(token) });
             }
         }
 
@@ -5904,17 +5986,17 @@ namespace Chummer
                     foreach (XmlNode objXmlAddQuality in xmlQualityList)
                     {
                         if (objXmlAddQuality.NodeType == XmlNodeType.Comment) continue;
-                        XmlNode objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerText);
+                        XmlNode objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerTextViaPool(token));
                         if (objXmlSelectedQuality == null)
                         {
                             Utils.BreakIfDebug();
                         }
-                        string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerText ?? string.Empty;
+                        string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
 
-                        string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerText;
+                        string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerTextViaPool(token);
                         int intCount = string.IsNullOrEmpty(strRating) ? 1 : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, _intRating, token).ConfigureAwait(false);
-                        bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerText, bool.TrueString, StringComparison.OrdinalIgnoreCase);
-                        bool blnForced = objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString;
+                        bool blnDoesNotContributeToBP = !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerTextViaPool(token), bool.TrueString, StringComparison.OrdinalIgnoreCase);
+                        bool blnForced = objXmlAddQuality.Attributes?["forced"]?.InnerTextIsTrueString() == true;
                         await AddQuality(intCount, blnForced, objXmlSelectedQuality, strForceValue, blnDoesNotContributeToBP, token: token).ConfigureAwait(false);
                     }
                 }
@@ -5935,15 +6017,15 @@ namespace Chummer
                     {
                         foreach (XmlNode objXmlAddQuality in xmlQualityList)
                         {
-                            string strName = objXmlAddQuality.InnerText;
+                            string strName = objXmlAddQuality.InnerTextViaPool(token);
                             XmlNode objXmlQuality
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strName);
                             // Makes sure we aren't over our limits for this particular quality from this overall source
-                            if (objXmlAddQuality.Attributes?["forced"]?.InnerText == bool.TrueString ||
+                            if (objXmlAddQuality.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
                                 (objXmlQuality != null && await objXmlQuality.CreateNavigator().RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false)))
                             {
                                 lstQualities.Add(
-                                    new ListItem(strName, objXmlQuality?["translate"]?.InnerText ?? strName));
+                                    new ListItem(strName, objXmlQuality?["translate"]?.InnerTextViaPool(token) ?? strName));
                             }
                         }
                     }
@@ -5967,10 +6049,11 @@ namespace Chummer
                     // Don't do anything else if the form was canceled.
                     if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                         throw new AbortedException();
+                    string strSelected = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                     objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId(
-                        "/chummer/qualities/quality", frmPickItem.MyForm.SelectedItem);
+                        "/chummer/qualities/quality", strSelected);
                     objXmlBonusQuality
-                        = bonusNode.SelectSingleNode("quality[. = " + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
+                        = bonusNode.SelectSingleNode("quality[. = " + strSelected.CleanXPath() + "]");
                 }
 
                 int intQualityDiscount = 0;
@@ -5987,15 +6070,15 @@ namespace Chummer
                             foreach (XmlNode objXmlAddQuality in xmlQualityNodeList)
                             {
                                 strForceDiscountValue = objXmlAddQuality.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value ?? string.Empty;
-                                string strName = objXmlAddQuality.InnerText;
+                                string strName = objXmlAddQuality.InnerTextViaPool(token);
 
                                 XmlNode objXmlQuality
                                     = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strName);
                                 if (objXmlQuality != null)
                                 {
-                                    string strDisplayName = objXmlQuality["translate"]?.InnerText ?? strName;
+                                    string strDisplayName = objXmlQuality["translate"]?.InnerTextViaPool(token) ?? strName;
                                     if (!string.IsNullOrWhiteSpace(strForceDiscountValue))
-                                        strDisplayName += " (" + strForceDiscountValue + ')';
+                                        strDisplayName += " (" + strForceDiscountValue + ")";
                                     lstQualities.Add(new ListItem(strName, strDisplayName));
                                 }
                             }
@@ -6019,37 +6102,37 @@ namespace Chummer
                         // Don't do anything else if the form was canceled.
                         if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                             throw new AbortedException();
-                        if (frmPickItem.MyForm.SelectedItem != "None")
+                        string strSelected = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                        if (strSelected != "None")
                         {
                             objXmlSelectedQuality
                                 = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality",
-                                                                      frmPickItem.MyForm.SelectedItem);
+                                                                      strSelected);
                             objXmlBonusQuality
                                 = bonusNode.SelectSingleNode("discountqualities/quality[. = "
-                                                             + frmPickItem.MyForm.SelectedItem.CleanXPath() + ']');
+                                                             + strSelected.CleanXPath() + "]");
                             intQualityDiscount
                                 = await ImprovementManager.ValueToIntAsync(_objCharacter, objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@discount", token)?.Value, _intRating, token).ConfigureAwait(false);
+                            strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
                             List<Weapon> lstWeapons = new List<Weapon>(1);
                             Quality discountQuality = new Quality(_objCharacter);
-                            await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
                             try
                             {
-                                strForceDiscountValue = objXmlBonusQuality?.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value;
+                                await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
                                 await discountQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
                                     strForceDiscountValue, _strFriendlyName, token).ConfigureAwait(false);
                                 await CreateImprovementAsync(discountQuality.InternalId, _objImprovementSource, SourceName,
                                     Improvement.ImprovementType.SpecificQuality, _strUnique, token: token).ConfigureAwait(false);
+                                await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).AddAsync(discountQuality, token).ConfigureAwait(false);
+                                // Create any Weapons that came with this ware.
+                                foreach (Weapon objWeapon in lstWeapons)
+                                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
                             }
                             catch
                             {
-                                await discountQuality.DisposeAsync().ConfigureAwait(false);
+                                await discountQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                                 throw;
                             }
-
-                            await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).AddAsync(discountQuality, token).ConfigureAwait(false);
-                            // Create any Weapons that came with this ware.
-                            foreach (Weapon objWeapon in lstWeapons)
-                                await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -6068,13 +6151,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            string strSkill = bonusNode["skill"]?.InnerText ?? string.Empty;
+            string strSkill = bonusNode["skill"]?.InnerTextViaPool(token) ?? string.Empty;
             Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
             if (objSkill != null)
             {
                 // Create the Improvement.
-                string strSpec = bonusNode["spec"]?.InnerText ?? string.Empty;
-                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                string strSpec = bonusNode["spec"]?.InnerTextViaPool(token) ?? string.Empty;
+                SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                 try
                 {
                     await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objSpec, token).ConfigureAwait(false);
@@ -6099,7 +6182,7 @@ namespace Chummer
             {
                 foreach (XmlNode objNode in xmlSkillsList)
                 {
-                    Skill objSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync(objNode.InnerText, token).ConfigureAwait(false);
+                    Skill objSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetActiveSkillAsync(objNode.InnerTextViaPool(token), token).ConfigureAwait(false);
                     if (objSkill != null)
                     {
                         lstSkills.Add(objSkill);
@@ -6108,7 +6191,7 @@ namespace Chummer
             }
             else
             {
-                Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(bonusNode["skill"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(bonusNode["skill"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
                 if (objSkill != null)
                 {
                     lstSkills.Add(objSkill);
@@ -6120,11 +6203,11 @@ namespace Chummer
                 foreach (Skill objSkill in lstSkills)
                 {
                     // Create the Improvement.
-                    string strSpec = bonusNode["spec"]?.InnerText;
+                    string strSpec = bonusNode["spec"]?.InnerTextViaPool(token);
                     await CreateImprovementAsync(await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillSpecializationOption, strSpec, token: token).ConfigureAwait(false);
                     if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetFreeMartialArtSpecializationAsync(token).ConfigureAwait(false) && _objImprovementSource == Improvement.ImprovementSource.MartialArt)
                     {
-                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, strSpec);
+                        SkillSpecialization objSpec = new SkillSpecialization(_objCharacter, objSkill, strSpec);
                         try
                         {
                             await objSkill.Specializations.AddAsync(objSpec, token).ConfigureAwait(false);
@@ -6146,7 +6229,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellRange, token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.AllowSpellRange, token);
         }
 
         public async Task allowspellcategory(XmlNode bonusNode, CancellationToken token = default)
@@ -6154,9 +6237,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            if (!string.IsNullOrEmpty(bonusNode.InnerXml))
+            if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
-                await CreateImprovementAsync(bonusNode.InnerText, Improvement.ImprovementType.AllowSpellCategory, token).ConfigureAwait(false);
+                await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.AllowSpellCategory, token).ConfigureAwait(false);
             }
             else
             {
@@ -6184,7 +6267,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellRange, token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.LimitSpellRange, token);
         }
 
         public async Task limitspellcategory(XmlNode bonusNode, CancellationToken token = default)
@@ -6192,9 +6275,9 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            if (!string.IsNullOrEmpty(bonusNode.InnerXml))
+            if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
-                await CreateImprovementAsync(bonusNode.InnerText, Improvement.ImprovementType.LimitSpellCategory, token).ConfigureAwait(false);
+                await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.LimitSpellCategory, token).ConfigureAwait(false);
             }
             else
             {
@@ -6205,7 +6288,7 @@ namespace Chummer
                            Description = strDescription
                        }, token).ConfigureAwait(false))
                 {
-                    frmPickSpellCategory.MyForm.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerText.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
+                    frmPickSpellCategory.MyForm.SetExcludeCategories(bonusNode.Attributes?["exclude"]?.InnerTextViaPool(token).SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries));
 
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickSpellCategory.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
@@ -6225,25 +6308,23 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             // Display the Select Spell window.
             string strSelected;
-            if (!string.IsNullOrWhiteSpace(bonusNode.InnerText))
+            if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
-                strSelected = bonusNode.InnerText;
+                strSelected = bonusNode.InnerTextViaPool(token);
             }
             else
             {
                 string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpellDescriptor", token: token).ConfigureAwait(false);
-                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, token).ConfigureAwait(false))
+                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
+                    await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strSelected = frmPickItem.MyForm.SelectedItem;
+                    strSelected = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                 }
             }
             await CreateImprovementAsync(strSelected, Improvement.ImprovementType.LimitSpellDescriptor, token).ConfigureAwait(false);
@@ -6256,25 +6337,23 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             // Display the Select Spell window.
             string strSelected;
-            if (!string.IsNullOrWhiteSpace(bonusNode.InnerText))
+            if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
-                strSelected = bonusNode.InnerText;
+                strSelected = bonusNode.InnerTextViaPool(token);
             }
             else
             {
                 string strDescription = await LanguageManager.GetStringAsync("Title_SelectSpellDescriptor", token: token).ConfigureAwait(false);
-                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
-                       {
-                           Description = strDescription
-                       }, token).ConfigureAwait(false))
+                using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                 {
+                    await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                     // Make sure the dialogue window was not canceled.
                     if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                     {
                         throw new AbortedException();
                     }
 
-                    strSelected = frmPickItem.MyForm.SelectedItem;
+                    strSelected = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                 }
             }
             await CreateImprovementAsync(strSelected, Improvement.ImprovementType.BlockSpellDescriptor, token).ConfigureAwait(false);
@@ -6349,7 +6428,7 @@ namespace Chummer
             {
                 foreach (XmlNode n in xmlAllowedSpirits)
                 {
-                    setAllowed.Add(n.InnerText);
+                    setAllowed.Add(n.InnerTextViaPool(token));
                 }
 
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
@@ -6371,7 +6450,7 @@ namespace Chummer
                         foreach (XPathNavigator xmlSpirit in (await _objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
                                                                           .Select(
                                                                               "/chummer/critters/critter[category = "
-                                                                              + strCritterCategory.CleanXPath() + ']'))
+                                                                              + strCritterCategory.CleanXPath() + "]"))
                         {
                             string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
                             if (setAllowed.All(l => strSpiritName != l) && setAllowed.Count != 0)
@@ -6391,15 +6470,16 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
+                        string strSelected = await frmSelect.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
                         if (addToSelectedValue)
                         {
                             if (string.IsNullOrEmpty(SelectedValue))
-                                SelectedValue = frmSelect.MyForm.SelectedItem;
+                                SelectedValue = strSelected;
                             else
-                                SelectedValue += ", " + frmSelect.MyForm.SelectedItem;
+                                SelectedValue += ", " + strSelected; // Do not use localized value for space because we expect the selected value to be in English
                         }
 
-                        await CreateImprovementAsync(frmSelect.MyForm.SelectedItem, _objImprovementSource, SourceName, impType,
+                        await CreateImprovementAsync(strSelected, _objImprovementSource, SourceName, impType,
                             _strUnique, token: token).ConfigureAwait(false);
                     }
                 }
@@ -6415,7 +6495,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
 
             Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
-            string strSpeed = bonusNode["speed"]?.InnerText;
+            string strSpeed = bonusNode["speed"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strSpeed))
             {
                 switch (strSpeed.ToUpperInvariant())
@@ -6430,8 +6510,8 @@ namespace Chummer
                 }
             }
 
-            string strNodeValText = bonusNode["val"]?.InnerText;
-            string strCategory = bonusNode["category"]?.InnerText;
+            string strNodeValText = bonusNode["val"]?.InnerTextViaPool(token);
+            string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
                 await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName, imp, _strUnique,
@@ -6459,8 +6539,8 @@ namespace Chummer
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
-            await CreateImprovementAsync(bonusNode["limbslot"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, strUseUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["limbslot"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AddLimb, strUseUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task attributekarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6468,13 +6548,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AttributeKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task activeskillkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6482,13 +6562,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ActiveSkillKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgroupkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6496,13 +6576,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task knowledgeskillkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6510,13 +6590,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task knowledgeskillkarmacostmin(XmlNode bonusNode, CancellationToken token = default)
@@ -6526,11 +6606,11 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public Task skilldisable(XmlNode bonusNode, CancellationToken token = default)
@@ -6539,7 +6619,16 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillDisable, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillDisable, _strUnique, token: token);
+        }
+
+        public Task skillenablemovement(XmlNode bonusNode, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (bonusNode == null)
+                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillEnableMovement, _strUnique, token: token);
         }
 
         public Task skillgroupdisable(XmlNode bonusNode, CancellationToken token = default)
@@ -6548,7 +6637,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupDisable, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupDisable, _strUnique, token: token);
         }
 
         public async Task skillgroupdisablechoice(XmlNode bonusNode, CancellationToken token = default)
@@ -6570,9 +6659,10 @@ namespace Chummer
                         {
                             foreach (XmlNode objXmlGroup in objXmlGroups)
                             {
-                                lstSkills.Add(new ListItem(objXmlGroup.InnerText,
+                                string strInnerText = objXmlGroup.InnerTextViaPool(token);
+                                lstSkills.Add(new ListItem(strInnerText,
                                                            await _objCharacter.TranslateExtraAsync(
-                                                               objXmlGroup.InnerText, GlobalSettings.Language,
+                                                               strInnerText, GlobalSettings.Language,
                                                                "skills.xml", token).ConfigureAwait(false)));
                             }
                         }
@@ -6595,10 +6685,10 @@ namespace Chummer
                     string strDescription = await LanguageManager.GetStringAsync("String_DisableSkillGroupPrompt", token: token).ConfigureAwait(false);
                     using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem
                            {
-                               Description = strDescription,
                                AllowAutoSelect = false
                            }, token).ConfigureAwait(false))
                     {
+                        await frmPickItem.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                         frmPickItem.MyForm.SetGeneralItemsMode(lstSkills);
 
                         // Make sure the dialogue window was not canceled.
@@ -6607,7 +6697,7 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.MyForm.SelectedName;
+                        SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                     }
                 }
             }
@@ -6622,7 +6712,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryDisable, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryDisable, _strUnique, token: token);
         }
 
         public async Task skillgroupcategorykarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6630,13 +6720,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategorykarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6644,13 +6734,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategoryKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategoryspecializationkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6658,13 +6748,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task attributepointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6672,13 +6762,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AttributePointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task activeskillpointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6686,13 +6776,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ActiveSkillPointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgrouppointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6700,13 +6790,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupPointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task knowledgeskillpointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6714,13 +6804,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillPointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgroupcategorypointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6728,13 +6818,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryPointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategorypointcost(XmlNode bonusNode, CancellationToken token = default)
@@ -6742,13 +6832,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategoryPointCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newspellkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6756,11 +6846,11 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerText ?? string.Empty,
+            await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerTextViaPool(token) ?? string.Empty,
                 _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0,
                 0, 0, 0, string.Empty, false, string.Empty,
-                bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newcomplexformkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6769,7 +6859,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newaiprogramkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6778,7 +6868,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newaiadvancedprogramkarmacost(XmlNode bonusNode, CancellationToken token = default)
@@ -6787,7 +6877,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task attributekarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6795,10 +6885,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeKarmaCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task activeskillkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6806,10 +6896,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgroupkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6817,26 +6907,26 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task knowledgeskillkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgroupcategorykarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6844,13 +6934,13 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName,
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1,
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategorykarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6858,10 +6948,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategoryspecializationkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6869,10 +6959,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task attributepointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6880,10 +6970,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributePointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AttributePointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task activeskillpointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6891,10 +6981,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillPointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillPointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgrouppointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6902,10 +6992,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupPointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupPointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task knowledgeskillpointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6913,10 +7003,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillgroupcategorypointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6924,10 +7014,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task skillcategorypointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6935,10 +7025,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryPointCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerText, _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerText, _intRating, token).ConfigureAwait(false),
-                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryPointCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
+                0, 0, string.Empty, false, string.Empty, bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newspellkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6946,8 +7036,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newcomplexformkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6956,7 +7046,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newaiprogramkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6965,7 +7055,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public async Task newaiadvancedprogramkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
@@ -6974,7 +7064,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
 
         public Task blockskillspecializations(XmlNode bonusNode, CancellationToken token = default)
@@ -6983,7 +7073,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillSpecializations, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillSpecializations, _strUnique, token: token);
         }
 
         public Task blockskillcategoryspecializations(XmlNode bonusNode, CancellationToken token = default)
@@ -6992,7 +7082,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillCategorySpecializations, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.BlockSkillCategorySpecializations, _strUnique, token: token);
         }
 
         // Flat modifier to cost of binding a focus
@@ -7001,8 +7091,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaCost, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty, token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaCost, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerTextViaPool(token) ?? string.Empty, token: token).ConfigureAwait(false);
         }
 
         // Flat modifier to the number that is multiplied by a focus' rating to get the focus' binding karma cost
@@ -7011,8 +7101,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaMultiplier, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerText ?? string.Empty, token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaMultiplier, _strUnique,
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerTextViaPool(token) ?? string.Empty, token: token).ConfigureAwait(false);
         }
 
         public Task magicianswaydiscount(XmlNode bonusNode, CancellationToken token = default)
@@ -7041,10 +7131,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(bonusNode));
             XmlNode node;
             Improvement.ImprovementSource eSource;
-            string strName = bonusNode["name"]?.InnerText;
+            string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strName))
                 throw new AbortedException();
-            if (bonusNode["type"]?.InnerText == "bioware")
+            if (bonusNode["type"]?.InnerTextViaPool(token) == "bioware")
             {
                 node = (await _objCharacter.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/biowares/bioware", strName);
                 eSource = Improvement.ImprovementSource.Bioware;
@@ -7057,9 +7147,9 @@ namespace Chummer
 
             if (node == null)
                 throw new AbortedException();
-            string strRating = bonusNode["rating"]?.InnerText;
+            string strRating = bonusNode["rating"]?.InnerTextViaPool(token);
             int intRating = string.IsNullOrEmpty(strRating) ? 1 : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, _intRating, token).ConfigureAwait(false);
-            string strSourceId = node["id"]?.InnerText;
+            string strSourceId = node["id"]?.InnerTextViaPool(token);
             string strImprovedName = strSourceId;
             if (string.Equals(strSourceId, Cyberware.EssenceAntiHoleGuidString, StringComparison.OrdinalIgnoreCase))
             {
@@ -7071,33 +7161,52 @@ namespace Chummer
             }
             else
             {
+                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(bonusNode["grade"]?.InnerTextViaPool(token), _objImprovementSource,
+                        _objCharacter, token).ConfigureAwait(false);
                 // Create the new piece of ware.
-                Cyberware objCyberware = new Cyberware(_objCharacter);
                 List<Weapon> lstWeapons = new List<Weapon>(1);
                 List<Vehicle> lstVehicles = new List<Vehicle>(1);
-
-                Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(bonusNode["grade"]?.InnerText, _objImprovementSource,
-                    _objCharacter, token).ConfigureAwait(false);
-                await objCyberware.CreateAsync(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
-                    ForcedValue, token: token).ConfigureAwait(false);
-
-                if (objCyberware.InternalId.IsEmptyGuid())
+                Cyberware objCyberware = new Cyberware(_objCharacter);
+                try
                 {
-                    await objCyberware.DisposeAsync().ConfigureAwait(false);
-                    throw new AbortedException();
+                    await objCyberware.CreateAsync(node, objGrade, eSource, intRating, lstWeapons, lstVehicles, true, true,
+                        ForcedValue, token: token).ConfigureAwait(false);
+
+                    if (objCyberware.InternalId.IsEmptyGuid())
+                        throw new AbortedException();
+
+                    objCyberware.Cost = "0";
+                    objCyberware.ParentID = SourceName;
+
+                    await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
+                    // Create any Weapons that came with this ware.
+                    foreach (Weapon objWeapon in lstWeapons)
+                        await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
+                    // Create any Vehicles that came with this ware.
+                    foreach (Vehicle objVehicle in lstVehicles)
+                        await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).AddAsync(objVehicle, token).ConfigureAwait(false);
+                    strImprovedName = objCyberware.InternalId;
                 }
+                catch
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
 
-                objCyberware.Cost = "0";
-                objCyberware.ParentID = SourceName;
-
-                await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).AddAsync(objCyberware, token).ConfigureAwait(false);
-                // Create any Weapons that came with this ware.
-                foreach (Weapon objWeapon in lstWeapons)
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).AddAsync(objWeapon, token).ConfigureAwait(false);
-                // Create any Vehicles that came with this ware.
-                foreach (Vehicle objVehicle in lstVehicles)
-                    await (await _objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).AddAsync(objVehicle, token).ConfigureAwait(false);
-                strImprovedName = objCyberware.InternalId;
+                    if (lstVehicles.Count > 0)
+                    {
+                        foreach (Vehicle objVehicle in lstVehicles)
+                        {
+                            await objVehicle.DeleteVehicleAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
+                    await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
             }
 
             await CreateImprovementAsync(strImprovedName, _objImprovementSource, SourceName,
@@ -7110,7 +7219,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task weaponrangemodifier(XmlNode bonusNode, CancellationToken token = default)
@@ -7118,7 +7227,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
-            await CreateImprovementAsync(bonusNode["name"]?.InnerText ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponRangeModifier, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponRangeModifier, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task weaponskillaccuracy(XmlNode bonusNode, CancellationToken token = default)
@@ -7140,11 +7249,11 @@ namespace Chummer
                         throw new AbortedException();
                 }
                 else
-                    strSelectedValue = bonusNode["name"]?.InnerText ?? string.Empty;
+                    strSelectedValue = bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
             }
 
             SelectedValue = strSelectedValue;
-            string strVal = bonusNode["value"]?.InnerText;
+            string strVal = bonusNode["value"]?.InnerTextViaPool(token);
 
             await CreateImprovementAsync(strSelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponSkillAccuracy, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -7156,7 +7265,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task specialmodificationlimit(XmlNode bonusNode, CancellationToken token = default)
@@ -7165,7 +7274,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public Task cyberadeptdaemon(XmlNode bonusNode, CancellationToken token = default)
@@ -7192,7 +7301,7 @@ namespace Chummer
             }
             else if (bonusNode["name"] != null)
             {
-                SelectedValue = bonusNode["name"].InnerText;
+                SelectedValue = bonusNode["name"].InnerTextViaPool(token);
             }
             else
             {
@@ -7203,11 +7312,11 @@ namespace Chummer
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdXPath))
                     {
-                        sbdXPath.Append("actions/action[").Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
-                        string strCategory = bonusNode.Attributes?["category"]?.InnerText ?? string.Empty;
+                        sbdXPath.Append("actions/action[", await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                        string strCategory = bonusNode.Attributes?["category"]?.InnerTextViaPool(token) ?? string.Empty;
                         if (!string.IsNullOrEmpty(strCategory))
                         {
-                            sbdXPath.Append(" and category = ").Append(strCategory.CleanXPath());
+                            sbdXPath.Append(" and category = ", strCategory.CleanXPath());
                         }
                         sbdXPath.Append(']');
                         if (xmlActionsBaseNode != null)
@@ -7243,12 +7352,12 @@ namespace Chummer
                             throw new AbortedException();
                         }
 
-                        SelectedValue = frmPickItem.MyForm.SelectedName;
+                        SelectedValue = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
                     }
                 }
             }
             await CreateImprovementAsync(SelectedValue, _objImprovementSource, SourceName, Improvement.ImprovementType.ActionDicePool,
-                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task contactkarma(XmlNode bonusNode, CancellationToken token = default)
@@ -7257,7 +7366,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaDiscount, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task contactkarmaminimum(XmlNode bonusNode, CancellationToken token = default)
@@ -7266,7 +7375,7 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
-                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerText, _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         // Enable Sprite Fettering.
@@ -7295,7 +7404,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AllowCritterPowerCategory, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AllowCritterPowerCategory, _strUnique, token: token);
         }
 
         public Task limitcritterpowercategory(XmlNode bonusNode, CancellationToken token = default)
@@ -7304,7 +7413,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.LimitCritterPowerCategory, _strUnique, token: token);
         }
 
         public Task attributemaxclamp(XmlNode bonusNode, CancellationToken token = default)
@@ -7313,7 +7422,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeMaxClamp, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeMaxClamp, _strUnique, token: token);
         }
 
         public async Task metamagiclimit(XmlNode bonusNode, CancellationToken token = default)
@@ -7327,10 +7436,10 @@ namespace Chummer
                 foreach (XmlNode child in xmlMetamagicsList)
                 {
                     int intRating = -1;
-                    string strGrade = child.Attributes?["grade"]?.InnerText;
+                    string strGrade = child.Attributes?["grade"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strGrade))
                         intRating = await ImprovementManager.ValueToIntAsync(_objCharacter, strGrade, _intRating, token).ConfigureAwait(false);
-                    await CreateImprovementAsync(child.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating, token: token).ConfigureAwait(false);
+                    await CreateImprovementAsync(child.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.MetamagicLimit, _strUnique, 0, intRating, token: token).ConfigureAwait(false);
                 }
             }
         }
@@ -7341,7 +7450,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.DisableQuality, _strUnique, token: token);
         }
 
         public Task freequality(XmlNode bonusNode, CancellationToken token = default)
@@ -7350,7 +7459,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             if (bonusNode == null)
                 return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
-            return CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique, token: token);
+            return CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.FreeQuality, _strUnique, token: token);
         }
 
         public async Task selectexpertise(XmlNode bonusNode, CancellationToken token = default)
@@ -7368,10 +7477,10 @@ namespace Chummer
             // Select the actual specialization to add as an expertise
             using (ThreadSafeForm<SelectItem> frmPickItem = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
             {
-                string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerText;
+                string strLimitToSpecialization = bonusNode.Attributes?["limittospecialization"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strLimitToSpecialization))
                     frmPickItem.MyForm.SetDropdownItemsMode(strLimitToSpecialization.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim())
-                        .Where(x => objSkill.Specializations.All(y => y.Name != x)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml"))));
+                        .Where(x => objSkill.Specializations.All(y => y.Name != x, token)).Select(x => new ListItem(x, _objCharacter.TranslateExtra(x, GlobalSettings.Language, "skills.xml", token: token))));
                 else
                     frmPickItem.MyForm.SetGeneralItemsMode(objSkill.CGLSpecializations);
                 if (!string.IsNullOrEmpty(ForcedValue))
@@ -7380,15 +7489,16 @@ namespace Chummer
                 frmPickItem.MyForm.AllowAutoSelect = !string.IsNullOrEmpty(ForcedValue);
 
                 // Make sure the dialogue window was not canceled.
-                if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel || string.IsNullOrEmpty(frmPickItem.MyForm.SelectedName))
+                string strSelected = await frmPickItem.MyForm.DoThreadSafeFuncAsync(x => x.SelectedName, token).ConfigureAwait(false);
+                if (await frmPickItem.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel || string.IsNullOrEmpty(strSelected))
                 {
                     throw new AbortedException();
                 }
 
-                SelectedValue = frmPickItem.MyForm.SelectedName;
+                SelectedValue = strSelected;
             }
             // Create the Improvement.
-            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, SelectedValue, true, true);
+            SkillSpecialization objExpertise = new SkillSpecialization(_objCharacter, objSkill, SelectedValue, true, true);
             try
             {
                 await (await objSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(objExpertise, token).ConfigureAwait(false);
@@ -7414,7 +7524,7 @@ namespace Chummer
             int intMaxForce = int.MaxValue;
             if (bonusNode.TryGetStringFieldQuickly("force", ref strDummy))
                 intMaxForce = await ImprovementManager.ValueToIntAsync(_objCharacter, strDummy, _intRating, token).ConfigureAwait(false);
-            await CreateImprovementAsync(bonusNode.InnerText, _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount, token: token).ConfigureAwait(false);
+            await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.PenaltyFreeSustain, _strUnique, intMaxForce, intCount, token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -7428,7 +7538,7 @@ namespace Chummer
                 return Task.FromCanceled(token);
             return bonusNode == null
                 ? Task.FromException(new ArgumentNullException(nameof(bonusNode)))
-                : CreateImprovementAsync(bonusNode.Attributes?["spell"]?.InnerText ?? string.Empty, bonusNode.InnerText,
+                : CreateImprovementAsync(bonusNode.Attributes?["spell"]?.InnerTextViaPool(token) ?? string.Empty, bonusNode.InnerTextViaPool(token),
                     Improvement.ImprovementType.ReplaceSkillSpell, token);
         }
 
@@ -7480,7 +7590,7 @@ namespace Chummer
                     }
                     catch
                     {
-                        await objAddQuality.DisposeAsync().ConfigureAwait(false);
+                        await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
                         throw;
                     }
                 }

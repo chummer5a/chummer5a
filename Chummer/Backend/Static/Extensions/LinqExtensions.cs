@@ -29,7 +29,71 @@ namespace Chummer
     public static class LinqExtensions
     {
         /// <summary>
-        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Version of <see cref="Enumerable.ElementAt{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}"/>.
+        /// </summary>
+        public static T ElementAtBetter<T>(this IEnumerable<T> source, int index)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (source is IReadOnlyList<T> list1)
+                return list1[index];
+            // Just in case we have classes that inherit from IList but not from IReadOnlyList
+            if (source is IList<T> list2)
+                return list2[index];
+            if (index < 0)
+                throw new ArgumentOutOfRangeException(nameof(index));
+            using (IEnumerator<T> enumerator = source.GetEnumerator())
+            {
+                while (enumerator.MoveNext())
+                {
+                    if (index-- == 0)
+                        return enumerator.Current;
+                }
+            }
+            throw new ArgumentOutOfRangeException(nameof(index));
+        }
+
+        /// <summary>
+        /// Version of <see cref="Enumerable.ElementAtOrDefault{TSource}(IEnumerable{TSource}, int)"/> that also supports <see cref="IReadOnlyList{T}"/>.
+        /// </summary>
+        public static T ElementAtOrDefaultBetter<T>(this IEnumerable<T> source, int index)
+        {
+            if (source == null)
+                throw new ArgumentNullException(nameof(source));
+            if (index >= 0)
+            {
+                if (source is IReadOnlyList<T> list1)
+                {
+                    if (index < list1.Count)
+                    {
+                        return list1[index];
+                    }
+                }
+                // Just in case we have classes that inherit from IList but not from IReadOnlyList
+                else if (source is IList<T> list2)
+                {
+                    if (index < list2.Count)
+                    {
+                        return list2[index];
+                    }
+                }
+                else
+                {
+                    using (IEnumerator<T> enumerator = source.GetEnumerator())
+                    {
+                        while (enumerator.MoveNext())
+                        {
+                            if (index-- == 0)
+                                return enumerator.Current;
+                        }
+                    }
+                }
+            }
+            return default;
+        }
+
+        /// <summary>
+        /// Similar to <see cref="Enumerable.Aggregate{TSource}(IEnumerable{TSource}, Func{TSource, TSource, TSource})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TSource DeepAggregate<TSource, T2>(this IEnumerable<TSource> objParentList, Func<TSource, T2> funcGetChildrenMethod, Func<TSource, TSource, TSource> funcAggregate) where T2 : IEnumerable<TSource>
         {
@@ -41,7 +105,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Aggregate{TSource, TAccumulate}(IEnumerable{TSource}, TAccumulate, Func{TAccumulate, TSource, TAccumulate})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TAccumulate DeepAggregate<TSource, TAccumulate, T2>(this IEnumerable<TSource> objParentList, Func<TSource, T2> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate) where T2 : IEnumerable<TSource>
         {
@@ -53,7 +117,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Aggregate(), but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Aggregate{TSource, TAccumulate, TResult}(IEnumerable{TSource}, TAccumulate, Func{TAccumulate, TSource, TAccumulate}, Func{TAccumulate, TResult})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static TResult DeepAggregate<TSource, TAccumulate, TResult, T2>(this IEnumerable<TSource> objParentList, Func<TSource, T2> funcGetChildrenMethod, TAccumulate seed, Func<TAccumulate, TSource, TAccumulate> funcAggregate, Func<TAccumulate, TResult> resultSelector) where T2 : IEnumerable<TSource>
         {
@@ -67,9 +131,11 @@ namespace Chummer
         /// </summary>
         /// <param name="first">First collection to compare.</param>
         /// <param name="second">Second collection to compare.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if <paramref name="first"/> and <paramref name="second"/> are of the same size and have the same contents, false otherwise.</returns>
-        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second)
+        public static bool CollectionEqual<T>([NotNull] this IReadOnlyCollection<T> first, [NotNull] IReadOnlyCollection<T> second, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (first.Count != second.Count)
                 return false;
             // Use built-in, faster implementations if they are available
@@ -77,11 +143,12 @@ namespace Chummer
                 return setFirst.SetEquals(second);
             if (second is ISet<T> setSecond)
                 return setSecond.SetEquals(first);
-            if (first.GetOrderInvariantEnsembleHashCodeSmart() != second.GetOrderInvariantEnsembleHashCodeSmart())
+            if (first.GetOrderInvariantEnsembleHashCodeSmart(token) != second.GetOrderInvariantEnsembleHashCodeSmart(token))
                 return false;
             List<T> lstTemp = second.ToList();
             foreach (T item in first)
             {
+                token.ThrowIfCancellationRequested();
                 if (!lstTemp.Remove(item))
                     return false;
             }
@@ -188,7 +255,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's All(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.All{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAll<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -198,7 +265,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Any(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static bool DeepAny<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -208,7 +275,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Count(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -225,7 +292,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Count() without predicate, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Count{TSource}(IEnumerable{TSource})"/>, but deep searches the list, counting up the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static int DeepCount<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
@@ -234,15 +301,19 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's First(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.First{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
+        public static T DeepFirst<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
+            token.ThrowIfCancellationRequested();
             foreach (T objLoopChild in objParentList)
             {
+                token.ThrowIfCancellationRequested();
                 if (predicate(objLoopChild))
                     return objLoopChild;
-                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate);
+                token.ThrowIfCancellationRequested();
+                T objReturn = funcGetChildrenMethod(objLoopChild).DeepFirstOrDefault(funcGetChildrenMethod, predicate, token);
+                token.ThrowIfCancellationRequested();
                 if (objReturn?.Equals(default(T)) == false)
                     return objReturn;
             }
@@ -250,7 +321,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's FirstOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepFirstOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
@@ -272,7 +343,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Last(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -283,7 +354,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Last() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Last{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLast<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
@@ -294,7 +365,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's LastOrDefault(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -313,7 +384,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's LastOrDefault() without a predicate, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource})"/>, but deep searches the list, returning the last element out of the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static T DeepLastOrDefault<T, T2>(this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod) where T2 : IEnumerable<T>
         {
@@ -334,7 +405,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to LINQ's Where(), but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
+        /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static IEnumerable<T> DeepWhere<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate) where T2 : IEnumerable<T>
         {
@@ -493,10 +564,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -540,10 +611,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<int>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<int>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -559,7 +630,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -587,10 +658,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -634,10 +705,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<long>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<long>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -653,7 +724,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -681,10 +752,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -728,10 +799,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<float>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<float>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -747,7 +818,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -775,10 +846,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -822,10 +893,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<double>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<double>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -841,7 +912,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -869,10 +940,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0));
+                        return funcSelector.Invoke(objTemp.ElementAtBetter(0));
 
                     default:
-                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -916,10 +987,10 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0)), token);
+                        return Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objTemp.ElementAtBetter(0)), token);
 
                     default:
-                        lstTasks = new List<Task<decimal>>(Math.Max(Utils.MaxParallelBatchSize, objTemp.Count));
+                        lstTasks = new List<Task<decimal>>(Math.Min(Utils.MaxParallelBatchSize, objTemp.Count));
                         break;
                 }
             }
@@ -935,7 +1006,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(() => funcSelector.Invoke(objCurrent), token));
+                        lstTasks.Add(funcSelector.Invoke(objCurrent));
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -963,7 +1034,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1011,7 +1082,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1031,7 +1102,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1059,7 +1137,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1107,7 +1185,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1127,7 +1205,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1155,7 +1240,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1203,7 +1288,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1223,7 +1308,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1251,7 +1343,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1299,7 +1391,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1319,7 +1411,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1347,7 +1446,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1395,7 +1494,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return funcPredicate(objFirstElement) ? Utils.SafelyRunSynchronously(() => funcSelector.Invoke(objFirstElement), token) : 0;
 
                     default:
@@ -1415,7 +1514,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => funcPredicate(objCurrent) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (funcPredicate(objInnerCurrent))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1443,7 +1549,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1463,7 +1569,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1491,7 +1604,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1511,7 +1624,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<int> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1539,7 +1659,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1559,7 +1679,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1587,7 +1714,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1607,7 +1734,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<long> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1635,7 +1769,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1655,7 +1789,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1683,7 +1824,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1703,7 +1844,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<float> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1731,7 +1879,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1751,7 +1899,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1779,7 +1934,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1799,7 +1954,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<double> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1827,7 +1989,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(() => funcPredicate(objFirstElement), token) ? funcSelector.Invoke(objFirstElement) : 0;
 
                     default:
@@ -1847,7 +2009,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? funcSelector.Invoke(objCurrent) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return funcSelector.Invoke(objInnerCurrent);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 
@@ -1875,7 +2044,7 @@ namespace Chummer
                         return 0;
 
                     case 1:
-                        T objFirstElement = objTemp is IReadOnlyList<T> objTemp2 ? objTemp2[0] : objTemp.ElementAt(0);
+                        T objFirstElement = objTemp.ElementAtBetter(0);
                         return Utils.SafelyRunSynchronously(async () => await funcPredicate(objFirstElement).ConfigureAwait(false) ? await funcSelector.Invoke(objFirstElement).ConfigureAwait(false) : 0, token);
 
                     default:
@@ -1895,7 +2064,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         T objCurrent = objEnumerator.Current;
-                        lstTasks.Add(Task.Run(async () => await funcPredicate(objCurrent).ConfigureAwait(false) ? await funcSelector.Invoke(objCurrent).ConfigureAwait(false) : 0, token));
+                        lstTasks.Add(GetValue(objCurrent, token));
+                        async Task<decimal> GetValue(T objInnerCurrent, CancellationToken innerToken)
+                        {
+                            innerToken.ThrowIfCancellationRequested();
+                            if (await funcPredicate(objInnerCurrent).ConfigureAwait(false))
+                                return await funcSelector.Invoke(objInnerCurrent).ConfigureAwait(false);
+                            return default;
+                        }
                         blnMoveNext = objEnumerator.MoveNext();
                     }
 

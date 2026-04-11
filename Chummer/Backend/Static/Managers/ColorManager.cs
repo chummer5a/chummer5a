@@ -45,11 +45,11 @@ namespace Chummer
     {
         // The setting for whether stuff uses dark mode or light mode is accessible purely through a specific registry key
         // So we save that key for accessing both at startup and should the setting be changed while Chummer is running
-        private static readonly RegistryKey s_ObjPersonalizeKey = null;
+        private static readonly RegistryKey s_ObjPersonalizeKey;
 
         // While events that trigger on changes to a registry value are possible, they're a PITA in C#.
         // Checking for dark mode on a timer interval is less elegant, but also easier to set up, track, and debug.
-        private static readonly Timer s_TmrDarkModeCheckerTimer = null;
+        private static readonly Timer s_TmrDarkModeCheckerTimer;
 
         static ColorManager()
         {
@@ -389,12 +389,10 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Inverse operation of GetDarkModeVersion(). If a color is fed through that function, and the result is then fed through this one, the final result should be the original color.
-        /// Note that because GetDarkModeVersion() always does some amount of desaturation and lightening, not all colors are valid results of GetDarkModeVersion().
-        /// This function should therefore *not* be used as a kind of GetLightModeVersion() of a dark mode color directly.
+        /// Inverse operation of <see cref="GetDarkModeVersion(Color)"/>. If a color is fed through that function, and the result is then fed through this one, the final result should be the original color.
+        /// Note that because <see cref="GetDarkModeVersion(Color)"/> always does some amount of desaturation and lightening, not all colors are valid results of <see cref="GetDarkModeVersion(Color)"/>.
+        /// This function should therefore *not* be used as a kind of "GetLightModeVersion" of a dark mode color directly.
         /// </summary>
-        /// <param name="objColor"></param>
-        /// <returns></returns>
         private static Color InverseGetDarkModeVersion(Color objColor)
         {
             float fltHue = objColor.GetHue() / 360.0f;
@@ -452,7 +450,12 @@ namespace Chummer
             void ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                objControl.DoThreadSafe((x, y) => x.ForeColor = SystemColors.ControlText, token);
+                objControl.DoThreadSafe((x, y) =>
+                {
+                    x.ForeColor = SystemColors.ControlText;
+                    if (x is ButtonBase z)
+                        z.UseVisualStyleBackColor = true;
+                }, token);
             }
             switch (objControl)
             {
@@ -928,7 +931,12 @@ namespace Chummer
             Task ApplyButtonStyle()
             {
                 // Buttons look weird if colored based on anything other than the default color scheme in dark mode
-                return objControl.DoThreadSafeAsync(x => x.ForeColor = SystemColors.ControlText, token);
+                return objControl.DoThreadSafeAsync(x =>
+                {
+                    x.ForeColor = SystemColors.ControlText;
+                    if (x is ButtonBase z)
+                        z.UseVisualStyleBackColor = true;
+                }, token);
             }
             switch (objControl)
             {

@@ -59,6 +59,30 @@ namespace Chummer
         {
         }
 
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                _dicTaggedAddedDelegates.Clear();
+                _dicTaggedAddedAsyncDelegates.Clear();
+                _dicTaggedAddedBeforeClearDelegates.Clear();
+                _dicTaggedAddedAsyncBeforeClearDelegates.Clear();
+            }
+            base.Dispose(disposing);
+        }
+
+        protected override ValueTask DisposeAsync(bool disposing)
+        {
+            if (disposing)
+            {
+                _dicTaggedAddedDelegates.Clear();
+                _dicTaggedAddedAsyncDelegates.Clear();
+                _dicTaggedAddedBeforeClearDelegates.Clear();
+                _dicTaggedAddedAsyncBeforeClearDelegates.Clear();
+            }
+            return base.DisposeAsync(disposing);
+        }
+
         /// <summary>
         /// Use in place of CollectionChanged Adder
         /// </summary>

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
@@ -32,18 +33,18 @@ namespace Chummer
         private readonly XPathNavigator _objXmlDocument;
         private bool _blnLoading = true;
         private int _intSkipRefresh;
-        private readonly Spell _objSpell;
+        private readonly Character _objCharacter;
+        private Spell _objSpell;
 
         #region Control Events
 
         public CreateSpell(Character objCharacter)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            _objSpell = new Spell(objCharacter);
+            _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = objCharacter.LoadDataXPath("spells.xml");
         }
 
@@ -993,16 +994,15 @@ namespace Chummer
             {
                 await chkModifier.DoThreadSafeAsync(x =>
                 {
-                    if (x.Visible && x.Checked)
+                    if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                     {
                         if (x == chkModifier3 && strCategory == "Combat")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else if (x == chkModifier6 && strCategory == "Manipulation")
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                     * intNumberOfEffects;
+                            intDV += intDummy * intNumberOfEffects;
                         else
-                            intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                            intDV += intDummy;
                     }
                 }, token: token).ConfigureAwait(false);
             }
@@ -1012,16 +1012,15 @@ namespace Chummer
                 {
                     await chkModifier.DoThreadSafeAsync(x =>
                     {
-                        if (x.Visible && x.Checked)
+                        if (x.Visible && x.Checked && int.TryParse(x.Tag.ToString(), NumberStyles.Integer,
+                                GlobalSettings.InvariantCultureInfo, out int intDummy))
                         {
                             if (x == chkModifier3 && strCategory == "Combat")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else if (x == chkModifier6 && strCategory == "Manipulation")
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo)
-                                         * intNumberOfEffects;
+                                intDV += intDummy * intNumberOfEffects;
                             else
-                                intDV += Convert.ToInt32(x.Tag.ToString(), GlobalSettings.InvariantCultureInfo);
+                                intDV += intDummy;
                         }
                     }, token: token).ConfigureAwait(false);
                 }
@@ -1031,7 +1030,7 @@ namespace Chummer
             if (strCategory == "Health" && await chkModifier1.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
             {
                 // Health Spells use (Damage Value) as their base.
-                strBase = '(' + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false) + ')';
+                strBase = "(" + await LanguageManager.GetStringAsync("String_SpellDamageValue", token: token).ConfigureAwait(false) + ")";
             }
             else
             {
@@ -1041,7 +1040,7 @@ namespace Chummer
 
             string strDV = intDV.ToString(GlobalSettings.InvariantCultureInfo);
             if (intDV > 0)
-                strDV = '+' + strDV;
+                strDV = "+" + strDV;
             if (intDV == 0)
                 strDV = string.Empty;
             string strText = await (strBase + strDV).Replace('/', '÷').Replace('*', '×')
@@ -1245,21 +1244,31 @@ namespace Chummer
             if (!string.IsNullOrEmpty(strDescriptors))
                 strDescriptors = strDescriptors.Substring(0, strDescriptors.Length - 2);
 
-            _objSpell.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            _objSpell.Source = "SM";
-            _objSpell.Page = "159";
-            _objSpell.Category = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
-            _objSpell.Descriptors = strDescriptors;
-            _objSpell.Range = strRange;
-            _objSpell.Type = await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
-            _objSpell.Limited = await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
-            if (_objSpell.Category == "Combat")
-                _objSpell.Damage = await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? "P" : "S";
-            _objSpell.DvBase = await CalculateDrain(token).ConfigureAwait(false);
-            string strExtra = await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strExtra))
-                _objSpell.Extra = strExtra;
-            _objSpell.Duration = await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+            Spell objSpell = new Spell(_objCharacter);
+            try
+            {
+                objSpell.Name = await txtName.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                objSpell.Source = "SM";
+                objSpell.Page = "159";
+                objSpell.Category = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                objSpell.Descriptors = strDescriptors;
+                objSpell.Range = strRange;
+                objSpell.Type = await cboType.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+                objSpell.Limited = await chkLimited.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
+                if (objSpell.Category == "Combat")
+                    objSpell.Damage = await chkModifier4.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? "P" : "S";
+                objSpell.DvBase = await CalculateDrain(token).ConfigureAwait(false);
+                string strExtra = await txtRestriction.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strExtra))
+                    objSpell.Extra = strExtra;
+                objSpell.Duration = await cboDuration.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objSpell.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                throw;
+            }
+            _objSpell = objSpell;
 
             await this.DoThreadSafeAsync(x =>
             {

@@ -44,7 +44,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
+        /// Slower but idiot-proof compared to <see cref="GetWithAllDependentsUnsafe(T2, T)"/>.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -72,7 +72,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
+        /// Slower but idiot-proof compared to <see cref="GetWithAllDependentsUnsafe(T2, T)"/>.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -174,7 +174,7 @@ namespace Chummer
 
         /// <summary>
         /// Dictionary of nodes in the graph. This is where the graph is actually stored, and doubles as a fast way to get any node in the graph.
-        /// It's an IReadOnlyDictionary because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.
+        /// It's an <see cref="IReadOnlyDictionary{TKey,TValue}"/> because dependency graphs are intended to be set up once based on a blueprint called as part of the constructor.
         /// </summary>
         public IReadOnlyDictionary<T, DependencyGraphNode<T, T2>> NodeDictionary => _dicNodeDictionary;
 
@@ -182,7 +182,6 @@ namespace Chummer
         /// Attempts to add a copy of a DependencyGraphNode to the internal dictionary.
         /// </summary>
         /// <param name="objDependencyGraphNode"></param>
-        /// <returns></returns>
         public DependencyGraphNode<T, T2> TryAddCopyToDictionary(DependencyGraphNode<T, T2> objDependencyGraphNode)
         {
             if (objDependencyGraphNode == null)

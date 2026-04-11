@@ -62,7 +62,6 @@ namespace Chummer
             this.cboPower.Name = "cboPower";
             this.cboPower.Size = new System.Drawing.Size(280, 21);
             this.cboPower.TabIndex = 1;
-            this.cboPower.TooltipText = "";
             // 
             // lblDescription
             // 

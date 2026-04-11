@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Diagnostics;
 using System.Globalization;
 using System.Reflection;
 using System.Resources;
@@ -75,6 +76,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 if (!exceptionTelemetry.Properties.ContainsKey("Message"))
                     exceptionTelemetry.Properties.Add("Message", ex.Message);
                 if (!exceptionTelemetry.Properties.ContainsKey("Translated"))
@@ -86,6 +88,7 @@ namespace Chummer
         {
             if (exception == null)
                 return string.Empty;
+            exception = exception.Demystify();
             Assembly a = exception.GetType().Assembly;
             ResourceManager rm = new ResourceManager(a.GetName().Name, a);
             ResourceSet rsOriginal = rm.GetResourceSet(Thread.CurrentThread.CurrentUICulture, true, true);

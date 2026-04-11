@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     public sealed partial class DataExporter
@@ -13,9 +15,25 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRepopulateCharacterSettingsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource?.Dispose();
+                dlgSaveFile?.Dispose();
+                _objExportSemaphore?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -195,6 +213,7 @@ namespace Chummer
             this.cmdExportClose.Tag = "String_Export_And_Close";
             this.cmdExportClose.Text = "Export and Close";
             this.cmdExportClose.UseVisualStyleBackColor = true;
+            this.cmdExportClose.Click += new System.EventHandler(this.cmdExportClose_Click);
             // 
             // cmdEditCharacterSetting
             // 
@@ -242,7 +261,6 @@ namespace Chummer
             this.cboCharacterSetting.Name = "cboCharacterSetting";
             this.cboCharacterSetting.Size = new System.Drawing.Size(443, 21);
             this.cboCharacterSetting.TabIndex = 8;
-            this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // cboLanguage
@@ -255,7 +273,6 @@ namespace Chummer
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(507, 21);
             this.cboLanguage.TabIndex = 107;
-            this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // cboBuildMethod
@@ -264,7 +281,6 @@ namespace Chummer
             this.cboBuildMethod.Name = "cboBuildMethod";
             this.cboBuildMethod.Size = new System.Drawing.Size(121, 21);
             this.cboBuildMethod.TabIndex = 0;
-            this.cboBuildMethod.TooltipText = "";
             // 
             // nudMaxAvail
             // 
@@ -289,7 +305,6 @@ namespace Chummer
             this.cboGamePlay.Name = "cboGamePlay";
             this.cboGamePlay.Size = new System.Drawing.Size(121, 21);
             this.cboGamePlay.TabIndex = 0;
-            this.cboGamePlay.TooltipText = "";
             // 
             // lblStartingKarma
             // 

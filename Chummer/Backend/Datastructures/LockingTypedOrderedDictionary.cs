@@ -252,6 +252,17 @@ namespace Chummer
             }
         }
 
+        public bool Contains(ValueTuple<TKey, TValue> item)
+        {
+            (TKey objKey, TValue objValue) = item;
+            using (LockObject.EnterReadLock())
+            {
+                if (!_dicUnorderedData.TryGetValue(objKey, out TValue objExistingValue))
+                    return false;
+                return Equals(objExistingValue, default(TValue)) ? Equals(objValue, default(TValue)) : objExistingValue.Equals(objValue);
+            }
+        }
+
         /// <inheritdoc cref="Dictionary{TKey, TValue}.ContainsKey" />
         public bool ContainsKey(TKey key)
         {
@@ -371,6 +382,13 @@ namespace Chummer
             Add(objKey, objValue);
         }
 
+        /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
+        public void Add(ValueTuple<TKey, TValue> item)
+        {
+            (TKey objKey, TValue objValue) = item;
+            Add(objKey, objValue);
+        }
+
         /// <inheritdoc />
         public void Add(TKey key, TValue value)
         {
@@ -388,6 +406,13 @@ namespace Chummer
 
         /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
         public Task AddAsync(Tuple<TKey, TValue> item, CancellationToken token = default)
+        {
+            (TKey objKey, TValue objValue) = item;
+            return AddAsync(objKey, objValue, token);
+        }
+
+        /// <inheritdoc cref="Dictionary{TKey, TValue}.Add" />
+        public Task AddAsync(ValueTuple<TKey, TValue> item, CancellationToken token = default)
         {
             (TKey objKey, TValue objValue) = item;
             return AddAsync(objKey, objValue, token);
@@ -461,6 +486,21 @@ namespace Chummer
                 foreach (TKey objKey in _lstIndexes)
                 {
                     array[i + arrayIndex] = new Tuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                    ++i;
+                }
+            }
+        }
+
+        public void CopyTo(ValueTuple<TKey, TValue>[] array, int arrayIndex)
+        {
+            using (LockObject.EnterReadLock())
+            {
+                if (arrayIndex + _lstIndexes.Count >= array.Length)
+                    throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+                int i = 0;
+                foreach (TKey objKey in _lstIndexes)
+                {
+                    array[i + arrayIndex] = new ValueTuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
                     ++i;
                 }
             }
@@ -1518,14 +1558,14 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async Task<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstIndexes.Count == 0)
-                    return new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                    return new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
             }
             finally
             {
@@ -1565,9 +1605,9 @@ namespace Chummer
             }
 
             return blnTakeSuccessful
-                ? new Tuple<bool, KeyValuePair<TKey, TValue>>(
+                ? new ValueTuple<bool, KeyValuePair<TKey, TValue>>(
                     true, new KeyValuePair<TKey, TValue>(objKeyToTake, objValue))
-                : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                : new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
         }
 
         /// <inheritdoc />
@@ -1873,6 +1913,11 @@ namespace Chummer
             return item != null && Contains(item) && Remove(item.Item1);
         }
 
+        public bool Remove(ValueTuple<TKey, TValue> item)
+        {
+            return Contains(item) && Remove(item.Item1);
+        }
+
         public void Remove(object key)
         {
             switch (key)
@@ -2070,6 +2115,10 @@ namespace Chummer
 
                     case Tuple<TKey, TValue> objTuple when key is int intKey:
                         this[intKey] = new KeyValuePair<TKey, TValue>(objTuple.Item1, objTuple.Item2);
+                        break;
+
+                    case ValueTuple<TKey, TValue> objValueTuple when key is int intKey:
+                        this[intKey] = new KeyValuePair<TKey, TValue>(objValueTuple.Item1, objValueTuple.Item2);
                         break;
 
                     default:
@@ -2316,6 +2365,14 @@ namespace Chummer
                     : -1;
         }
 
+        public int IndexOf(ValueTuple<TKey, TValue> item)
+        {
+            using (LockObject.EnterReadLock())
+                return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
+                    ? _lstIndexes.IndexOf(item.Item1)
+                    : -1;
+        }
+
         public int LastIndexOf(TKey key)
         {
             using (LockObject.EnterReadLock())
@@ -2336,6 +2393,14 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
                 return item != null && _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
+                    ? _lstIndexes.LastIndexOf(item.Item1)
+                    : -1;
+        }
+
+        public int LastIndexOf(ValueTuple<TKey, TValue> item)
+        {
+            using (LockObject.EnterReadLock())
+                return _dicUnorderedData.TryGetValue(item.Item1, out TValue objValue) && objValue.Equals(item.Item2)
                     ? _lstIndexes.LastIndexOf(item.Item1)
                     : -1;
         }
@@ -2419,15 +2484,15 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
-        public List<Tuple<TKey, TValue>> FindAll(Predicate<Tuple<TKey, TValue>> predicate, CancellationToken token = default)
+        public List<ValueTuple<TKey, TValue>> FindAll(Predicate<ValueTuple<TKey, TValue>> predicate, CancellationToken token = default)
         {
             using (LockObject.EnterReadLock(token))
             {
-                List<Tuple<TKey, TValue>> lstReturn = new List<Tuple<TKey, TValue>>(_lstIndexes.Count);
+                List<ValueTuple<TKey, TValue>> lstReturn = new List<ValueTuple<TKey, TValue>>(_lstIndexes.Count);
                 foreach (TKey objKey in _lstIndexes)
                 {
-                    Tuple<TKey, TValue> tupLoop
-                        = new Tuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                    ValueTuple<TKey, TValue> tupLoop
+                        = new ValueTuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
                     if (predicate(tupLoop))
                         lstReturn.Add(tupLoop);
                 }
@@ -2481,17 +2546,17 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="List{T}.FindAll" />
-        public async Task<List<Tuple<TKey, TValue>>> FindAllAsync(Predicate<Tuple<TKey, TValue>> predicate, CancellationToken token = default)
+        public async Task<List<ValueTuple<TKey, TValue>>> FindAllAsync(Predicate<ValueTuple<TKey, TValue>> predicate, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Tuple<TKey, TValue>> lstReturn = new List<Tuple<TKey, TValue>>(_lstIndexes.Count);
+                List<ValueTuple<TKey, TValue>> lstReturn = new List<ValueTuple<TKey, TValue>>(_lstIndexes.Count);
                 foreach (TKey objKey in _lstIndexes)
                 {
-                    Tuple<TKey, TValue> tupLoop
-                        = new Tuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
+                    ValueTuple<TKey, TValue> tupLoop
+                        = new ValueTuple<TKey, TValue>(objKey, _dicUnorderedData[objKey]);
                     if (predicate(tupLoop))
                         lstReturn.Add(tupLoop);
                 }
@@ -2526,8 +2591,28 @@ namespace Chummer
 
         public void Insert(int index, Tuple<TKey, TValue> item)
         {
-            if (item == null)
+            if (item == default)
                 throw new ArgumentNullException(nameof(item));
+            using (LockObject.EnterReadLock())
+            {
+                if (_dicUnorderedData.ContainsKey(item.Item1))
+                    throw new ArgumentException(null, nameof(item));
+            }
+
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_dicUnorderedData.ContainsKey(item.Item1))
+                    throw new ArgumentException(null, nameof(item));
+                using (LockObject.EnterWriteLock())
+                {
+                    _dicUnorderedData.Add(item.Item1, item.Item2);
+                    _lstIndexes.Insert(index, item.Item1);
+                }
+            }
+        }
+
+        public void Insert(int index, ValueTuple<TKey, TValue> item)
+        {
             using (LockObject.EnterReadLock())
             {
                 if (_dicUnorderedData.ContainsKey(item.Item1))
@@ -2729,7 +2814,7 @@ namespace Chummer
             }
         }
 
-        public void Sort(Comparison<Tuple<TKey, TValue>> comparison)
+        public void Sort(Comparison<ValueTuple<TKey, TValue>> comparison)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -2747,8 +2832,8 @@ namespace Chummer
                         }
 
                         using (LockObject.EnterWriteLock())
-                            _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                            _lstIndexes.Sort((x, y) => comparison(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                     }
                     finally
                     {
@@ -2761,8 +2846,8 @@ namespace Chummer
                 else
                 {
                     using (LockObject.EnterWriteLock())
-                        _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        _lstIndexes.Sort((x, y) => comparison(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                 }
             }
         }
@@ -2837,7 +2922,7 @@ namespace Chummer
             }
         }
 
-        public void Sort(IComparer<Tuple<TKey, TValue>> comparer)
+        public void Sort(IComparer<ValueTuple<TKey, TValue>> comparer)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -2855,8 +2940,8 @@ namespace Chummer
                         }
 
                         using (LockObject.EnterWriteLock())
-                            _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                            _lstIndexes.Sort((x, y) => comparer.Compare(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                     }
                     finally
                     {
@@ -2869,8 +2954,8 @@ namespace Chummer
                 else
                 {
                     using (LockObject.EnterWriteLock())
-                        _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        _lstIndexes.Sort((x, y) => comparer.Compare(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                 }
             }
         }
@@ -2947,7 +3032,7 @@ namespace Chummer
             }
         }
 
-        public void Sort(int index, int count, IComparer<Tuple<TKey, TValue>> comparer)
+        public void Sort(int index, int count, IComparer<ValueTuple<TKey, TValue>> comparer)
         {
             using (LockObject.EnterUpgradeableReadLock())
             {
@@ -3183,7 +3268,7 @@ namespace Chummer
             }
         }
 
-        public async Task SortAsync(Comparison<Tuple<TKey, TValue>> comparison, CancellationToken token = default)
+        public async Task SortAsync(Comparison<ValueTuple<TKey, TValue>> comparison, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3216,8 +3301,8 @@ namespace Chummer
                         try
                         {
                             token.ThrowIfCancellationRequested();
-                            _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                            _lstIndexes.Sort((x, y) => comparison(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                         }
                         finally
                         {
@@ -3240,8 +3325,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _lstIndexes.Sort((x, y) => comparison(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        _lstIndexes.Sort((x, y) => comparison(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                     }
                     finally
                     {
@@ -3392,7 +3477,7 @@ namespace Chummer
             }
         }
 
-        public async Task SortAsync(IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
+        public async Task SortAsync(IComparer<ValueTuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3426,8 +3511,8 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             _lstIndexes.Sort((x, y) => comparer.Compare(
-                                new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                                new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                                new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                                new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                         }
                         finally
                         {
@@ -3450,8 +3535,8 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        _lstIndexes.Sort((x, y) => comparer.Compare(new Tuple<TKey, TValue>(x, _dicUnorderedData[x]),
-                            new Tuple<TKey, TValue>(y, _dicUnorderedData[y])));
+                        _lstIndexes.Sort((x, y) => comparer.Compare(new ValueTuple<TKey, TValue>(x, _dicUnorderedData[x]),
+                            new ValueTuple<TKey, TValue>(y, _dicUnorderedData[y])));
                     }
                     finally
                     {
@@ -3600,7 +3685,7 @@ namespace Chummer
             }
         }
 
-        public async Task SortAsync(int index, int count, IComparer<Tuple<TKey, TValue>> comparer, CancellationToken token = default)
+        public async Task SortAsync(int index, int count, IComparer<ValueTuple<TKey, TValue>> comparer, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
@@ -3687,7 +3772,7 @@ namespace Chummer
         {
             private readonly LockingTypedOrderedDictionary<TKey, TValue> _dicMyDictionary;
             private readonly IComparer<KeyValuePair<TKey, TValue>> _objMyComparer;
-            private readonly IComparer<Tuple<TKey, TValue>> _objMyTupleComparer;
+            private readonly IComparer<ValueTuple<TKey, TValue>> _objMyTupleComparer;
 
             public KeyValueToKeyComparer(LockingTypedOrderedDictionary<TKey, TValue> dictionary, IComparer<KeyValuePair<TKey, TValue>> comparer)
             {
@@ -3696,7 +3781,7 @@ namespace Chummer
                 _objMyTupleComparer = null;
             }
 
-            public KeyValueToKeyComparer(LockingTypedOrderedDictionary<TKey, TValue> dictionary, IComparer<Tuple<TKey, TValue>> comparer)
+            public KeyValueToKeyComparer(LockingTypedOrderedDictionary<TKey, TValue> dictionary, IComparer<ValueTuple<TKey, TValue>> comparer)
             {
                 _dicMyDictionary = dictionary;
                 _objMyComparer = null;
@@ -3717,8 +3802,8 @@ namespace Chummer
 
                 return _objMyComparer?.Compare(new KeyValuePair<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),
                     new KeyValuePair<TKey, TValue>(y, _dicMyDictionary._dicUnorderedData[y]))
-                       ?? _objMyTupleComparer.Compare(new Tuple<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),
-                           new Tuple<TKey, TValue>(y, _dicMyDictionary._dicUnorderedData[y]));
+                       ?? _objMyTupleComparer.Compare(new ValueTuple<TKey, TValue>(x, _dicMyDictionary._dicUnorderedData[x]),
+                           new ValueTuple<TKey, TValue>(y, _dicMyDictionary._dicUnorderedData[y]));
             }
         }
 
@@ -3874,14 +3959,14 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IAsyncDictionary{TKey, TValue}.TryGetValueAsync" />
-        public async Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
+        public async Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicUnorderedData.TryGetValue(key, out TValue value);
-                return new Tuple<bool, TValue>(blnSuccess, value);
+                return new ValueTuple<bool, TValue>(blnSuccess, value);
             }
             finally
             {

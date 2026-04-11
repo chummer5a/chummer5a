@@ -33,7 +33,6 @@ namespace Chummer
             this.cboSpec = new Chummer.ElasticComboBox();
             this.lblAmmoLabel = new System.Windows.Forms.Label();
             this.lblDescription = new System.Windows.Forms.Label();
-            this.chkKarma = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpMain.SuspendLayout();
@@ -82,7 +81,6 @@ namespace Chummer
             this.cboSpec.Name = "cboSpec";
             this.cboSpec.Size = new System.Drawing.Size(236, 21);
             this.cboSpec.TabIndex = 2;
-            this.cboSpec.TooltipText = "";
             this.cboSpec.SelectedIndexChanged += new System.EventHandler(this.cboSpec_SelectedIndexChanged);
             // 
             // lblAmmoLabel
@@ -110,21 +108,6 @@ namespace Chummer
             this.lblDescription.Tag = "Label_SelectSkillSpecialization_Description";
             this.lblDescription.Text = "Select a Skill Specialization to add to your character.";
             // 
-            // chkKarma
-            // 
-            this.chkKarma.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.chkKarma, 2);
-            this.chkKarma.DefaultColorScheme = true;
-            this.chkKarma.Dock = System.Windows.Forms.DockStyle.Right;
-            this.chkKarma.Location = new System.Drawing.Point(3, 77);
-            this.chkKarma.Name = "chkKarma";
-            this.chkKarma.RightToLeft = System.Windows.Forms.RightToLeft.Yes;
-            this.chkKarma.Size = new System.Drawing.Size(99, 17);
-            this.chkKarma.TabIndex = 15;
-            this.chkKarma.Tag = "String_BuyWithKarma";
-            this.chkKarma.Text = "Buy with Karma";
-            this.chkKarma.UseVisualStyleBackColor = true;
-            // 
             // tlpMain
             // 
             this.tlpMain.AutoSize = true;
@@ -136,7 +119,6 @@ namespace Chummer
             this.tlpMain.Controls.Add(this.lblDescription, 0, 0);
             this.tlpMain.Controls.Add(this.cboSpec, 1, 1);
             this.tlpMain.Controls.Add(this.lblAmmoLabel, 0, 1);
-            this.tlpMain.Controls.Add(this.chkKarma, 0, 2);
             this.tlpMain.Controls.Add(this.tlpButtons, 2, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
@@ -204,7 +186,6 @@ namespace Chummer
         private Chummer.ElasticComboBox cboSpec;
         private System.Windows.Forms.Label lblAmmoLabel;
         private System.Windows.Forms.Label lblDescription;
-        private Chummer.ColorableCheckBox chkKarma;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
     }

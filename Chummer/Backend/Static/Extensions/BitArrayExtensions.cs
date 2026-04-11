@@ -27,13 +27,27 @@ namespace Chummer
     public static class BitArrayExtensions
     {
         /// <summary>
-        /// Get the first element in a BitArray that matches <paramref name="blnValue"/>.
+        /// Syntactic sugar for getting a copy of a <see cref="BitArray"/>'s internal integer array (that is normally not accessible due to protection levels).
+        /// </summary>
+        /// <param name="ablnArray">Array from which to copy.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int[] ToIntArray(this BitArray ablnArray)
+        {
+            if (ablnArray == null)
+                throw new ArgumentNullException(nameof(ablnArray));
+            int intReturnLength = ((ablnArray.Count - 1) >> 4) + 1;
+            int[] aintReturn = new int[intReturnLength];
+            ablnArray.CopyTo(aintReturn, 0);
+            return aintReturn;
+        }
+
+        /// <summary>
+        /// Get the first element in a <see cref="BitArray"/> that matches <paramref name="blnValue"/>.
         /// </summary>
         /// <param name="ablnArray">Array to search.</param>
         /// <param name="blnValue">Value for which to look.</param>
         /// <param name="intFrom">Index from which to start search (inclusive).</param>
         /// <param name="intTo">Index at which to end search (exclusive).</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this BitArray ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
@@ -50,12 +64,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Count the number of bits set in a BitArray using special bit twiddling.
+        /// Count the number of bits set in a <see cref="BitArray"/> using special bit twiddling.
         /// Adapted from https://stackoverflow.com/questions/5063178/counting-bits-set-in-a-net-bitarray-class
         /// and http://graphics.stanford.edu/~seander/bithacks.html#CountBitsSetParallel.
         /// </summary>
         /// <param name="ablnToCount">Array to process</param>
-        /// <returns></returns>
         public static int CountTrues(this BitArray ablnToCount)
         {
             if (ablnToCount == null)
@@ -65,9 +78,7 @@ namespace Chummer
                 ++intMaskSize;
             int intReturn = 0;
             // Can't use stackalloc because BitArray doesn't have a CopyTo implementation that works with span
-            int[] aintToCountMask = intMaskSize > GlobalSettings.MaxStackLimit
-                ? ArrayPool<int>.Shared.Rent(intMaskSize)
-                : new int[intMaskSize];
+            int[] aintToCountMask = ArrayPool<int>.Shared.Rent(intMaskSize);
             try
             {
                 ablnToCount.CopyTo(aintToCountMask, 0);
@@ -89,18 +100,16 @@ namespace Chummer
             }
             finally
             {
-                if (intMaskSize > GlobalSettings.MaxStackLimit)
-                    ArrayPool<int>.Shared.Return(aintToCountMask);
+                ArrayPool<int>.Shared.Return(aintToCountMask);
             }
             return intReturn;
         }
 
         /// <summary>
-        /// Check if all bits in a bit array are set or unset.
+        /// Check if all bits in a <see cref="BitArray"/> are set or unset.
         /// </summary>
         /// <param name="ablnArray">Array to process</param>
         /// <param name="blnValue">True if we are checking set bits, false if we are checking unset bits.</param>
-        /// <returns></returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool AllValue(this BitArray ablnArray, bool blnValue)
         {

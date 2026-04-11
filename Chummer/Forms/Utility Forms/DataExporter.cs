@@ -22,7 +22,6 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Linq;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -48,49 +47,10 @@ namespace Chummer
         public DataExporter()
         {
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRepopulateCharacterSettingsCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                dlgSaveFile?.Dispose();
-                _objExportSemaphore?.Dispose();
-            };
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
-        }
-
-        private async void cmdOK_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                await this.DoThreadSafeAsync(x =>
-                {
-                    x.DialogResult = DialogResult.OK;
-                    x.Close();
-                }, _objGenericToken).ConfigureAwait(false);
-            }
-            catch (OperationCanceledException)
-            {
-                //swallow this
-            }
-        }
-
-        private void cmdCancel_Click(object sender, EventArgs e)
-        {
-            DialogResult = DialogResult.Cancel;
-            Close();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void cmdEditCharacterOption_Click(object sender, EventArgs e)
@@ -152,7 +112,7 @@ namespace Chummer
                         await RefreshLanguageDocumentNames(_objGenericToken).ConfigureAwait(false);
                         await PopulateLanguageList(_objGenericToken).ConfigureAwait(false);
                         await RepopulateCharacterSettings(token: _objGenericToken).ConfigureAwait(false);
-                        await pgbExportProgress.DoThreadSafeAsync(x => x.Maximum = Utils.BasicDataFileNames.Count, _objGenericToken).ConfigureAwait(false);
+                        await pgbExportProgress.DoThreadSafeAsync(x => x.Maximum = Utils.BasicDataFileNames.Count + 1, _objGenericToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -424,7 +384,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is CharacterSettings objSettings))
                 return;
-            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Zip", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+            dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Zip", token: token).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
             dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveDataAs", token: token).ConfigureAwait(false);
             DialogResult eResult = await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false);
             if (eResult == DialogResult.Cancel)
@@ -463,16 +423,24 @@ namespace Chummer
                                 using (ZipArchive zipNewArchive = new ZipArchive(objZipFileStream, ZipArchiveMode.Create))
                                 {
                                     token.ThrowIfCancellationRequested();
+                                    ZipArchiveEntry objSettingsEntry = zipNewArchive.CreateEntry("_selectedsetting.xml", CompressionLevel.Optimal);
+                                    token.ThrowIfCancellationRequested();
+                                    using (Stream objStream = objSettingsEntry.Open())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        await objSettings.SaveAsync(objStream, token: token).ConfigureAwait(false);
+                                    }
+                                    await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     foreach (string strFileName in Utils.BasicDataFileNames)
                                     {
                                         token.ThrowIfCancellationRequested();
                                         XmlDocument xmlDocument = await objSettings.LoadDataAsync(strFileName, strLanguage, token: token).ConfigureAwait(false);
-                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName));
+                                        ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFileName), CompressionLevel.Optimal);
                                         token.ThrowIfCancellationRequested();
                                         using (Stream objStream = objEntry.Open())
                                         {
                                             token.ThrowIfCancellationRequested();
-                                            await Task.Run(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
+                                            await TaskExtensions.RunWithoutEC(() => xmlDocument.Save(objStream), token).ConfigureAwait(false);
                                         }
                                         await pgbExportProgress.DoThreadSafeAsync(x => ++x.Value, _objGenericToken).ConfigureAwait(false);
                                     }

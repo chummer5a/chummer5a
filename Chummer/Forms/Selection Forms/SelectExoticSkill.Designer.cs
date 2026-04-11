@@ -113,7 +113,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(320, 21);
             this.cboCategory.TabIndex = 1;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // cboSkillSpecialisations
@@ -125,7 +124,6 @@ namespace Chummer
             this.cboSkillSpecialisations.Name = "cboSkillSpecialisations";
             this.cboSkillSpecialisations.Size = new System.Drawing.Size(320, 21);
             this.cboSkillSpecialisations.TabIndex = 4;
-            this.cboSkillSpecialisations.TooltipText = "";
             // 
             // tlpButtons
             // 

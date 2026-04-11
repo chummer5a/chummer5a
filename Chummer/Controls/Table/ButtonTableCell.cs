@@ -26,22 +26,23 @@ namespace Chummer.UI.Table
 {
     public partial class ButtonTableCell<T> : TableCell where T : class
     {
-        private readonly Control _button;
+        private readonly ButtonBase _button;
         private readonly CancellationToken _objMyToken;
 
-        public ButtonTableCell(Control button, CancellationToken objMyToken = default) : base(button)
+        public ButtonTableCell(ButtonBase button, CancellationToken objMyToken = default) : base(button)
         {
             _objMyToken = objMyToken;
             InitializeComponent();
             _button = button ?? throw new ArgumentNullException(nameof(button));
+            ContentField = _button;
             button.Click += OnButtonClick;
-            Disposed += (sender, args) => _objUpdateSemaphore.Dispose();
             SuspendLayout();
             try
             {
                 Controls.Add(button);
                 this.UpdateLightDarkMode(objMyToken);
                 this.TranslateWinForm(token: objMyToken);
+                this.UpdateParentForToolTipControls();
                 button.PerformLayout();
             }
             finally
@@ -61,7 +62,7 @@ namespace Chummer.UI.Table
                     await _objUpdateSemaphore.WaitAsync(_objMyToken).ConfigureAwait(false);
                     try
                     {
-                        await ClickHandler.Invoke(Value as T).ConfigureAwait(false);
+                        await ClickHandler.Invoke(Value as T, _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -112,7 +113,7 @@ namespace Chummer.UI.Table
             }
         }
 
-        public Func<T, Task> ClickHandler { get; set; }
+        public Func<T, CancellationToken, Task> ClickHandler { get; set; }
 
         public Func<T, CancellationToken, Task<bool>> EnabledExtractor { get; set; }
     }

@@ -20,7 +20,6 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -28,6 +27,7 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Uniques;
 
 namespace Chummer
@@ -50,10 +50,9 @@ namespace Chummer
             _objMyToken = objMyToken;
             InitializeComponent();
 
-            Disposed += (sender, args) => UnbindSpiritControl();
-
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
             foreach (ToolStripItem tssItem in cmsSpirit.Items)
             {
                 tssItem.UpdateLightDarkMode(objMyToken);
@@ -190,12 +189,12 @@ namespace Chummer
 
         public void UnbindSpiritControl()
         {
-            _objSpirit.CharacterObject.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
+            Character objCharacter = _objSpirit.CharacterObject; // for thread safety
+            if (objCharacter?.IsDisposed == false)
+                objCharacter.PropertyChangedAsync -= RebuildSpiritListOnTraditionChange;
 
             foreach (Control objControl in Controls)
-            {
-                objControl.DataBindings.Clear();
-            }
+                objControl.ResetBindings();
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -218,54 +217,19 @@ namespace Chummer
         {
             try
             {
+                string strFileName;
+                Character objOpenCharacter = null;
                 Character objLinkedCharacter = await _objSpirit.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
-                if (objLinkedCharacter != null)
+                if (objLinkedCharacter == null)
                 {
-                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken)
-                        .ConfigureAwait(false)
-                        ? objLinkedCharacter
-                        : null;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                    try
-                    {
-                        if (objOpenCharacter == null)
-                        {
-                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                   = await Program.CreateAndShowProgressBarAsync(
-                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections, _objMyToken)
-                                       .ConfigureAwait(false))
-                                objOpenCharacter = await Program.LoadCharacterAsync(
-                                        await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
-                                    .ConfigureAwait(false);
-                        }
-
-                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
-                            await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    bool blnUseRelative = false;
-
                     // Make sure the file still exists before attempting to load it.
-                    string strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                     if (!File.Exists(strFileName))
                     {
-                        bool blnError = false;
+                        // If the file doesn't exist, use the relative path if one is available.
                         string strRelativeFileName = await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(strRelativeFileName))
-                            blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(strRelativeFileName)))
-                            blnError = true;
-                        else
-                            blnUseRelative = true;
-
-                        if (blnError)
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
@@ -275,12 +239,36 @@ namespace Chummer
                                 MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
+                    }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, _objMyToken)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                .ConfigureAwait(false);
                     }
 
-                    string strFile = blnUseRelative
-                        ? Path.GetFullPath(await _objSpirit.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false))
-                        : strFileName;
-                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -310,11 +298,15 @@ namespace Chummer
                         .ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
 
-                    // Set the relative path.
-                    Uri uriApplication = new Uri(Utils.GetStartupPath);
-                    Uri uriFile = new Uri(await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false));
-                    Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    await _objSpirit.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                    // Set the relative path only if there was a filename to work with
+                    string strFileName = await _objSpirit.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!string.IsNullOrEmpty(strFileName))
+                    {
+                        Uri uriApplication = new Uri(Utils.GetStartupPath);
+                        Uri uriFile = new Uri(strFileName);
+                        Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
+                        await _objSpirit.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
+                    }
                 }
             }
             catch (OperationCanceledException)
@@ -329,12 +321,11 @@ namespace Chummer
             {
                 string strFileName = string.Empty;
                 string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken).ConfigureAwait(false) +
-                                   '|'
-                                   +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 // Prompt the user to select a save file to associate with this Contact.
                 // Prompt the user to select a save file to associate with this Contact.
@@ -461,6 +452,15 @@ namespace Chummer
             }
         }
 
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
+        }
+
         #endregion Control Events
 
         #region Properties
@@ -490,7 +490,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objTradition == null)
                 return;
-            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? _objSpirit.Name;
+            string strCurrentValue = await cboSpiritName.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false) ?? await _objSpirit.GetNameAsync(token).ConfigureAwait(false);
 
             XPathNavigator objXmlDocument = await _objSpirit.CharacterObject.LoadDataXPathAsync(
                 await _objSpirit.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit
@@ -521,7 +521,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + ']');
+                                    "/chummer/spirits/spirit[name = " + strSpiritCombat.CleanXPath() + "]");
                             string strTranslatedName = objXmlCritterNode != null
                                 ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritCombat
@@ -534,7 +534,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + ']');
+                                    "/chummer/spirits/spirit[name = " + strSpiritDetection.CleanXPath() + "]");
                             string strTranslatedName = objXmlCritterNode != null
                                 ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritDetection
@@ -547,7 +547,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + ']');
+                                    "/chummer/spirits/spirit[name = " + strSpiritHealth.CleanXPath() + "]");
                             string strTranslatedName = objXmlCritterNode != null
                                 ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritHealth
@@ -560,7 +560,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + ']');
+                                    "/chummer/spirits/spirit[name = " + strSpiritIllusion.CleanXPath() + "]");
                             string strTranslatedName = objXmlCritterNode != null
                                 ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritIllusion
@@ -573,7 +573,7 @@ namespace Chummer
                         {
                             XPathNavigator objXmlCritterNode
                                 = objXmlDocument.SelectSingleNode(
-                                    "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + ']');
+                                    "/chummer/spirits/spirit[name = " + strSpiritManipulation.CleanXPath() + "]");
                             string strTranslatedName = objXmlCritterNode != null
                                 ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                   ?? strSpiritManipulation
@@ -606,7 +606,7 @@ namespace Chummer
                                 {
                                     XPathNavigator objXmlCritterNode
                                         = objXmlDocument.SelectSingleNode(
-                                            "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + ']');
+                                            "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath() + "]");
                                     string strTranslatedName = objXmlCritterNode != null
                                         ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                           ?? strSpiritName
@@ -629,7 +629,7 @@ namespace Chummer
                                         XPathNavigator objXmlCritterNode
                                             = objXmlDocument.SelectSingleNode(
                                                 "/chummer/spirits/spirit[name = " + strSpiritName.CleanXPath()
-                                                + ']');
+                                                + "]");
                                         string strTranslatedName = objXmlCritterNode != null
                                             ? objXmlCritterNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                               ?? strSpiritName
@@ -745,12 +745,12 @@ namespace Chummer
                             .ConfigureAwait(false);
                         string strFileName = string.Empty;
                         string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: token)
-                                               .ConfigureAwait(false) + '|' +
+                                               .ConfigureAwait(false) + "|" +
                                            await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: token)
-                                               .ConfigureAwait(false) + '|' +
+                                               .ConfigureAwait(false) + "|" +
                                            await LanguageManager.GetStringAsync("DialogFilter_All", token: token)
                                                .ConfigureAwait(false);
-                        string strInputFileName = strCritterName + strSpace + '('
+                        string strInputFileName = strCritterName + strSpace + "("
                                                   + string.Format(
                                                       GlobalSettings.CultureInfo,
                                                       await LanguageManager
@@ -783,10 +783,10 @@ namespace Chummer
                             strFileName += ".chum5";
                         await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
 
-                        await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerText,
-                            objXmlMetatype["id"]?.InnerText,
+                        await objCharacter.CreateAsync(objXmlMetatype["category"]?.InnerTextViaPool(token),
+                            objXmlMetatype["id"]?.InnerTextViaPool(token),
                             string.Empty, objXmlMetatype, intForce, token: token).ConfigureAwait(false);
-                        objCharacter.MetatypeBP = 0;
+                        await objCharacter.SetMetatypeBPAsync(0, token).ConfigureAwait(false);
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar =
                                await Program.CreateAndShowProgressBarAsync(token: token).ConfigureAwait(false))
                         {

@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections;
+using System.Text.RegularExpressions;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.DataContracts;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -88,14 +89,28 @@ namespace Chummer
             switch (item)
             {
                 case TraceTelemetry trace:
-                    trace.Message = trace.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
+                    trace.Message = RedactUserData(trace.Message);
                     return;
 
                 case RequestTelemetry req:
                     {
-                        string newurl = req.Url?.ToString().Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
-                        if (!string.IsNullOrEmpty(newurl))
-                            req.Url = new Uri(newurl);
+                        string originalUrl = req.Url?.ToString();
+                        if (!string.IsNullOrEmpty(originalUrl))
+                        {
+                            string redactedUrl = RedactUserData(originalUrl);
+                            if (redactedUrl != originalUrl)
+                            {
+                                try
+                                {
+                                    req.Url = new Uri(redactedUrl);
+                                }
+                                catch (UriFormatException)
+                                {
+                                    // If the URL is invalid after replacement, keep the original URL
+                                    // This prevents crashes when usernames contain invalid URI characters or can be inserted in a way that breaks the URI format
+                                }
+                            }
+                        }
                         return;
                     }
                 case ExceptionTelemetry exception when exception.Exception != null:
@@ -107,15 +122,30 @@ namespace Chummer
                         }
                         if (exception.Message == null)
                         {
-                            exception.Message = exception.Exception.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
+                            exception.Message = RedactUserData(exception.Exception.Message);
                         }
 
                         break;
                     }
                 case ExceptionTelemetry exception:
-                    exception.Message = exception.Message?.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
+                    exception.Message = RedactUserData(exception.Message);
                     break;
             }
+        }
+
+        /// <summary>
+        /// Redacts username from strings.
+        /// </summary>
+        /// <param name="input">The string to redact</param>
+        /// <returns>The redacted string, or original if no redaction needed</returns>
+        private string RedactUserData(string input)
+        {
+            if (string.IsNullOrEmpty(input) || string.IsNullOrEmpty(_strUserProfilePath))
+                return input;
+
+            // Simple string replacement for file paths - this is the most common case
+            // and avoids the complexity and performance overhead of regex patterns
+            return input.Replace(_strUserProfilePath, "{username}", StringComparison.OrdinalIgnoreCase);
         }
     }
 }

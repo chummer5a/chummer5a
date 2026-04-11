@@ -17,14 +17,16 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-namespace Chummer.Backend.Equipment
+namespace Chummer.Backend.Enums
 {
     /// <summary>
-    /// Capacity Style.
+    /// Type of Lifestyle.
     /// </summary>
-    public enum CapacityStyle
+    public enum LifestyleType
     {
-        Zero = 0,
-        Standard = 1
+        Standard = 0,
+        BoltHole = 1,
+        Safehouse = 2,
+        Advanced = 3
     }
 }

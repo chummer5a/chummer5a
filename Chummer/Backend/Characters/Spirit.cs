@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -35,19 +36,11 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Skills;
 
 namespace Chummer
 {
-    /// <summary>
-    /// Type of Spirit.
-    /// </summary>
-    public enum SpiritType
-    {
-        Spirit = 0,
-        Sprite = 1
-    }
-
     /// <summary>
     /// A Magician's Spirit or Technomancer's Sprite.
     /// </summary>
@@ -80,9 +73,9 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strValue))
                 return default;
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Spirit":
+                case "SPIRIT":
                     return SpiritType.Spirit;
 
                 default:
@@ -295,7 +288,7 @@ namespace Chummer
                 objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
                 objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
                 objNode.TryGetInt32FieldQuickly("force", ref _intForce);
-                Force = _intForce;
+                await SetForceAsync(_intForce, token).ConfigureAwait(false);
                 objNode.TryGetBoolFieldQuickly("bound", ref _blnBound);
                 objNode.TryGetBoolFieldQuickly("fettered", ref _blnFettered);
                 objNode.TryGetStringFieldQuickly("file", ref _strFileName);
@@ -335,12 +328,13 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // Translate the Critter name if applicable.
-                string strName = Name;
+                string strName = await GetNameAsync(token).ConfigureAwait(false);
+                string strDisplayName = strName;
                 XmlNode objXmlCritterNode
                     = await this.GetNodeAsync(strLanguageToPrint, token: token).ConfigureAwait(false);
                 if (!strLanguageToPrint.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    strName = objXmlCritterNode?["translate"]?.InnerText ?? Name;
+                    strDisplayName = objXmlCritterNode?["translate"]?.InnerTextViaPool(token) ?? strName;
                 }
 
                 // <spirit>
@@ -349,8 +343,8 @@ namespace Chummer
                 try
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name", strName, token: token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("name_english", Name, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name", strDisplayName, token: token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("name_english", strName, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("crittername", await GetCritterNameAsync(token).ConfigureAwait(false), token: token)
                         .ConfigureAwait(false);
                     await objWriter
@@ -487,7 +481,7 @@ namespace Chummer
                                             intAttrValue = _intForce;
                                         int intDicepool = intAttrValue + _intForce;
 
-                                        string strEnglishName = xmlSkillNode.InnerText;
+                                        string strEnglishName = xmlSkillNode.InnerTextViaPool(token);
                                         string strTranslatedName
                                             = xmlSkillsDocument
                                                   .SelectSingleNode("/chummer/skills/skill[name = "
@@ -606,7 +600,7 @@ namespace Chummer
                             .ConfigureAwait(false));
                     string strSource = string.Empty;
                     string strPage = string.Empty;
-                    string strPowerName = xmlPowerEntryNode.InnerText;
+                    string strPowerName = xmlPowerEntryNode.InnerTextViaPool(token);
                     string strEnglishName = strPowerName;
                     string strEnglishCategory = string.Empty;
                     string strCategory = string.Empty;
@@ -616,11 +610,11 @@ namespace Chummer
                     string strDisplayDuration = string.Empty;
                     XPathNavigator objXmlPowerNode
                         = xmlSpiritPowersBaseChummerNode.SelectSingleNode(
-                              "powers/power[name = " + strPowerName.CleanXPath() + ']') ??
+                              "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
                           xmlSpiritPowersBaseChummerNode.SelectSingleNode(
                               "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]") ??
                           xmlCritterPowersBaseChummerNode.SelectSingleNode(
-                              "powers/power[name = " + strPowerName.CleanXPath() + ']') ??
+                              "powers/power[name = " + strPowerName.CleanXPath() + "]") ??
                           xmlCritterPowersBaseChummerNode.SelectSingleNode(
                               "powers/power[starts-with(" + strPowerName.CleanXPath() + ", name)]");
                     if (objXmlPowerNode != null)
@@ -643,8 +637,7 @@ namespace Chummer
                             blnExtrasAdded = true;
                             sbdExtra.Append(await CharacterObject
                                     .TranslateExtraAsync(strLoopExtra, strLanguageToPrint, token: token)
-                                    .ConfigureAwait(false)).Append(',')
-                                .Append(strSpace);
+                                    .ConfigureAwait(false), ',', strSpace);
                         }
 
                         if (blnExtrasAdded)
@@ -660,7 +653,7 @@ namespace Chummer
                                               + "]/@translate")?.Value
                                       ?? strEnglishCategory;
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("type", token: token)?.Value.ToUpperInvariant())
                         {
                             case "M":
                                 strDisplayType = await LanguageManager
@@ -675,37 +668,37 @@ namespace Chummer
                                 break;
                         }
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("action", token: token)?.Value.ToUpperInvariant())
                         {
-                            case "Auto":
+                            case "AUTO":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionAutomatic", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Free":
+                            case "FREE":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionFree", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Simple":
+                            case "SIMPLE":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionSimple", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Complex":
+                            case "COMPLEX":
                                 strDisplayAction = await LanguageManager
                                     .GetStringAsync(
                                         "String_ActionComplex", strLanguageToPrint, token: token)
                                     .ConfigureAwait(false);
                                 break;
 
-                            case "Special":
+                            case "SPECIAL":
                                 strDisplayAction
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint,
@@ -713,30 +706,30 @@ namespace Chummer
                                 break;
                         }
 
-                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value)
+                        switch (objXmlPowerNode.SelectSingleNodeAndCacheExpression("duration", token: token)?.Value.ToUpperInvariant())
                         {
-                            case "Instant":
+                            case "INSTANT":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationInstantLong", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Sustained":
+                            case "SUSTAINED":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSustained", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Always":
+                            case "ALWAYS":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationAlways", strLanguageToPrint,
                                             token: token).ConfigureAwait(false);
                                 break;
 
-                            case "Special":
+                            case "SPECIAL":
                                 strDisplayDuration
                                     = await LanguageManager
                                         .GetStringAsync("String_SpellDurationSpecial", strLanguageToPrint,
@@ -752,45 +745,45 @@ namespace Chummer
                                 .CheapReplaceAsync(
                                     "Self",
                                     () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeSelf", strLanguageToPrint, token: token),
+                                        "String_SpellRangeSelf", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "Special",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellDurationSpecial", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOS",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfSight", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOI",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfInfluence", strLanguageToPrint,
-                                        token: token), token: token)
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "Touch",
                                     () => LanguageManager.GetStringAsync(
                                         "String_SpellRangeTouch",
-                                        strLanguageToPrint, token: token),
+                                        strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token) // Short form to remain export-friendly
                                 .CheapReplaceAsync(
                                     "T",
                                     () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeTouch", strLanguageToPrint, token: token),
+                                        "String_SpellRangeTouch", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
-                                    async () => '(' + await LanguageManager.GetStringAsync(
+                                    async () => "(" + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
                                             token: token)
-                                        .ConfigureAwait(false) + ')', token: token)
+                                        .ConfigureAwait(false) + ")", StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
                                     () => LanguageManager.GetStringAsync(
                                         "String_AttributeMAGShort", strLanguageToPrint,
-                                        token: token), token: token).ConfigureAwait(false);
+                                        token: token), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -1183,14 +1176,14 @@ namespace Chummer
                                 && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
                                 ? "Message_UnregisteredSpriteLimit"
                                 : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
                                 ? "MessageTitle_UnregisteredSpriteLimit"
                                 : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
-                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                            MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         return;
                     }
                 }
@@ -1207,14 +1200,14 @@ namespace Chummer
 
                     if (value > intSkillValue)
                     {
-                        Program.ShowScrollableMessageBox(
+                        await Program.ShowScrollableMessageBoxAsync(
                             await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
                                 ? "Message_SpiritServices"
                                 : "Message_SpriteServices", token: token).ConfigureAwait(false),
                             await LanguageManager.GetStringAsync(eType == SpiritType.Spirit
                                 ? "MessageTitle_SpiritServices"
                                 : "MessageTitle_SpriteServices", token: token).ConfigureAwait(false), MessageBoxButtons.OK,
-                            MessageBoxIcon.Information);
+                            MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                         value = intSkillValue;
                     }
                 }
@@ -1410,14 +1403,14 @@ namespace Chummer
                         && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
                             ? "Message_UnregisteredSpriteLimit"
                             : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync(eType == SpiritType.Sprite
                             ? "MessageTitle_UnregisteredSpriteLimit"
                             : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -2060,14 +2053,14 @@ namespace Chummer
                              .ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
                             ? "Message_UnregisteredSpriteLimit"
                             : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
                             ? "MessageTitle_UnregisteredSpriteLimit"
                             : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return;
                 }
             }
@@ -2105,7 +2098,7 @@ namespace Chummer
                             : await GetForceAsync(token).ConfigureAwait(false);
                         if (!await CommonFunctions.ConfirmKarmaExpenseAsync(string.Format(GlobalSettings.CultureInfo,
                                 await LanguageManager.GetStringAsync("Message_ConfirmKarmaExpenseSpend", token: token).ConfigureAwait(false),
-                                Name,
+                                await GetNameAsync(token).ConfigureAwait(false),
                                 intFetteringCost.ToString(GlobalSettings.CultureInfo)), token).ConfigureAwait(false))
                         {
                             return;
@@ -2122,14 +2115,14 @@ namespace Chummer
                                  && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
-                    Program.ShowScrollableMessageBox(
+                    await Program.ShowScrollableMessageBoxAsync(
                         await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
                             ? "Message_UnregisteredSpriteLimit"
                             : "Message_UnboundSpiritLimit", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync(eEntityType == SpiritType.Sprite
                             ? "MessageTitle_UnregisteredSpriteLimit"
                             : "MessageTitle_UnboundSpiritLimit", token: token).ConfigureAwait(false),
-                        MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                     return;
                 }
 
@@ -2166,7 +2159,7 @@ namespace Chummer
                             ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
                             objExpense.Create(intFetteringCost * -1,
                                 await LanguageManager.GetStringAsync("String_ExpenseFetteredSpirit", token: token).ConfigureAwait(false)
-                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + Name,
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + await GetNameAsync(token).ConfigureAwait(false),
                                 ExpenseType.Karma, DateTime.Now);
                             await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
                                 .ConfigureAwait(false);
@@ -2411,19 +2404,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -2448,22 +2429,16 @@ namespace Chummer
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -2557,7 +2532,7 @@ namespace Chummer
                                 ? "traditions.xml"
                                 : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false));
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -2598,7 +2573,7 @@ namespace Chummer
                         : await CharacterObject.LoadDataXPathAsync(
                             await GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit ? "traditions.xml" : "streams.xml", strLanguage,
                             token: token).ConfigureAwait(false))
-                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", Name);
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false));
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
@@ -2795,14 +2770,14 @@ namespace Chummer
 
                         if (blnError && blnShowError)
                         {
-                            Program.ShowScrollableMessageBox(
+                            await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: token)
                                         .ConfigureAwait(false),
                                     strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token)
                                     .ConfigureAwait(false), MessageBoxButtons.OK,
-                                MessageBoxIcon.Error);
+                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -2844,8 +2819,7 @@ namespace Chummer
                                                                                || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
-                                    && Program.MainForm.OpenFormsWithCharacters.All(
-                                        x => !x.CharacterObjects.Contains(objOldLinkedCharacter)))
+                                    && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))
                                     await Program.OpenCharacters.RemoveAsync(objOldLinkedCharacter, token)
                                         .ConfigureAwait(false);
                             }
@@ -2855,7 +2829,7 @@ namespace Chummer
 
                         if (_objLinkedCharacter != null)
                         {
-                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+                            IAsyncDisposable objLocker3 = await _objLinkedCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
@@ -2902,28 +2876,29 @@ namespace Chummer
             }
         }
 
-        private Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task LinkedCharacterOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
-                lstProperties.Add(nameof(CritterName));
-            if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
-                lstProperties.Add(nameof(Mugshots));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
-                lstProperties.Add(nameof(MainMugshot));
-            if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
-                lstProperties.Add(nameof(MainMugshotIndex));
-            if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
             {
-                _intCachedAllowFettering = int.MinValue;
-                lstProperties.Add(nameof(AllowFettering));
-                lstProperties.Add(nameof(Fettered));
-            }
+                if (e.PropertyNames.Contains(nameof(Character.CharacterName)))
+                    setProperties.Add(nameof(CritterName));
+                if (e.PropertyNames.Contains(nameof(Character.Mugshots)))
+                    setProperties.Add(nameof(Mugshots));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshot)))
+                    setProperties.Add(nameof(MainMugshot));
+                if (e.PropertyNames.Contains(nameof(Character.MainMugshotIndex)))
+                    setProperties.Add(nameof(MainMugshotIndex));
+                if (e.PropertyNames.Contains(nameof(Character.AllowSpriteFettering)))
+                {
+                    _intCachedAllowFettering = int.MinValue;
+                    setProperties.Add(nameof(AllowFettering));
+                    setProperties.Add(nameof(Fettered));
+                }
 
-            return lstProperties.Count > 0
-                ? OnMultiplePropertiesChangedAsync(lstProperties, token)
-                : Task.CompletedTask;
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+            }
         }
 
         #endregion Properties
@@ -2939,6 +2914,27 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return LinkedCharacter != null ? LinkedCharacter.Mugshots : _lstMugshots;
+            }
+        }
+
+        /// <summary>
+        /// Character's portraits encoded using Base64.
+        /// </summary>
+        public async Task<ThreadSafeList<Image>> GetMugshotsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
+                if (objLinkedCharacter != null)
+                    return await objLinkedCharacter.GetMugshotsAsync(token).ConfigureAwait(false);
+                return _lstMugshots;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3004,10 +3000,11 @@ namespace Chummer
                 if (objLinkedCharacter != null)
                     return await objLinkedCharacter.GetMainMugshotAsync(token).ConfigureAwait(false);
                 int intIndex = await GetMainMugshotIndexAsync(token).ConfigureAwait(false);
-                if (intIndex >= await Mugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
+                ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                if (intIndex >= await lstMugshots.GetCountAsync(token).ConfigureAwait(false) || intIndex < 0)
                     return null;
 
-                return await Mugshots.GetValueAtAsync(intIndex, token).ConfigureAwait(false);
+                return await lstMugshots.GetValueAtAsync(intIndex, token).ConfigureAwait(false);
             }
             finally
             {
@@ -3037,7 +3034,8 @@ namespace Chummer
                 }
                 else
                 {
-                    int intNewMainMugshotIndex = await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false);
+                    ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                    int intNewMainMugshotIndex = await lstMugshots.IndexOfAsync(value, token).ConfigureAwait(false);
                     if (intNewMainMugshotIndex != -1)
                     {
                         await SetMainMugshotIndexAsync(intNewMainMugshotIndex, token).ConfigureAwait(false);
@@ -3049,12 +3047,12 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             IAsyncDisposable objLocker3 =
-                                await Mugshots.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                                await lstMugshots.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                await Mugshots.AddAsync(value, token).ConfigureAwait(false);
-                                await SetMainMugshotIndexAsync(await Mugshots.IndexOfAsync(value, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                await lstMugshots.AddAsync(value, token).ConfigureAwait(false);
+                                await SetMainMugshotIndexAsync(await lstMugshots.IndexOfAsync(value, token).ConfigureAwait(false), token).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -3142,7 +3140,7 @@ namespace Chummer
                     await objLinkedCharacter.SetMainMugshotIndexAsync(value, token).ConfigureAwait(false);
                 else
                 {
-                    if (value >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                    if (value >= await (await GetMugshotsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false))
                         value = -1;
                     if (Interlocked.Exchange(ref _intMainMugshotIndex, value) != value)
                         await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
@@ -3173,7 +3171,7 @@ namespace Chummer
                 {
                     int intOldValue = _intMainMugshotIndex;
                     int intNewValue = Interlocked.Add(ref _intMainMugshotIndex, value);
-                    if (intNewValue < -1 || intNewValue >= await Mugshots.GetCountAsync(token).ConfigureAwait(false))
+                    if (intNewValue < -1 || intNewValue >= await (await GetMugshotsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false))
                         intNewValue = -1;
                     if (intOldValue != intNewValue)
                         await OnPropertyChangedAsync(nameof(MainMugshotIndex), token).ConfigureAwait(false);
@@ -3213,7 +3211,7 @@ namespace Chummer
                         foreach (Image imgMugshot in Mugshots)
                         {
                             objWriter.WriteElementString(
-                                "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot));
+                                "mugshot", GlobalSettings.ImageToBase64StringForStorage(imgMugshot, token));
                         }
 
                         // </mugshot>
@@ -3237,7 +3235,7 @@ namespace Chummer
                         = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        await Mugshots.ForEachAsync(async imgMugshot =>
+                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async imgMugshot =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
@@ -3264,26 +3262,53 @@ namespace Chummer
             {
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
-                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                if (xmlMugshotsList.Count > 0)
                 {
-                    string strMugshot = objXmlMugshot.Value;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
+                    try
                     {
-                        lstMugshotsBase64.Add(strMugshot);
-                    }
-                }
+                        token.ThrowIfCancellationRequested();
+                        int j = 0;
+                        foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                        {
+                            string strMugshot = objXmlMugshot.Value;
+                            if (!string.IsNullOrWhiteSpace(strMugshot))
+                                astrMugshotsBase64[j++] = strMugshot;
+                            else
+                                astrMugshotsBase64[j++] = string.Empty;
+                        }
 
-                if (lstMugshotsBase64.Count > 1)
-                {
-                    Image[] objMugshotImages = new Image[lstMugshotsBase64.Count];
-                    Parallel.For(0, lstMugshotsBase64.Count,
-                                 i => objMugshotImages[i] = lstMugshotsBase64[i].ToImage(PixelFormat.Format32bppPArgb));
-                    _lstMugshots.AddRange(objMugshotImages);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    _lstMugshots.Add(lstMugshotsBase64[0].ToImage(PixelFormat.Format32bppPArgb));
+                        if (xmlMugshotsList.Count > 1)
+                        {
+                            Bitmap[] objMugshotImages = new Bitmap[xmlMugshotsList.Count];
+                            token.ThrowIfCancellationRequested();
+                            Parallel.For(0, xmlMugshotsList.Count,
+                                            i =>
+                                            {
+                                                string strLoop = astrMugshotsBase64[i];
+                                                if (!string.IsNullOrEmpty(strLoop))
+                                                    objMugshotImages[i] = strLoop.ToImage(PixelFormat.Format32bppPArgb, token);
+                                                else
+                                                    objMugshotImages[i] = null;
+                                            });
+                            for (int i = 0; i < xmlMugshotsList.Count; ++i)
+                            {
+                                Image objLoop = objMugshotImages[i];
+                                if (objLoop != null)
+                                    _lstMugshots.Add(objLoop);
+                            }
+                        }
+                        else
+                        {
+                            string strLoop = astrMugshotsBase64[0];
+                            if (!string.IsNullOrEmpty(strLoop))
+                                _lstMugshots.Add(strLoop.ToImage(PixelFormat.Format32bppPArgb, token));
+                        }
+                    }
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(astrMugshotsBase64);
+                    }
                 }
             }
         }
@@ -3297,30 +3322,48 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 xmlSavedNode.TryGetInt32FieldQuickly("mainmugshotindex", ref _intMainMugshotIndex);
                 XPathNodeIterator xmlMugshotsList = xmlSavedNode.SelectAndCacheExpression("mugshots/mugshot", token);
-                List<string> lstMugshotsBase64 = new List<string>(xmlMugshotsList.Count);
-                foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                if (xmlMugshotsList.Count > 0)
                 {
-                    string strMugshot = objXmlMugshot.Value;
-                    if (!string.IsNullOrWhiteSpace(strMugshot))
+                    string[] astrMugshotsBase64 = ArrayPool<string>.Shared.Rent(xmlMugshotsList.Count);
+                    try
                     {
-                        lstMugshotsBase64.Add(strMugshot);
-                    }
-                }
+                        token.ThrowIfCancellationRequested();
+                        int j = 0;
+                        foreach (XPathNavigator objXmlMugshot in xmlMugshotsList)
+                        {
+                            string strMugshot = objXmlMugshot.Value;
+                            if (!string.IsNullOrWhiteSpace(strMugshot))
+                                astrMugshotsBase64[j++] = strMugshot;
+                            else
+                                astrMugshotsBase64[j++] = string.Empty;
+                        }
 
-                if (lstMugshotsBase64.Count > 1)
-                {
-                    Task<Bitmap>[] atskMugshotImages = new Task<Bitmap>[lstMugshotsBase64.Count];
-                    for (int i = 0; i < lstMugshotsBase64.Count; ++i)
-                    {
-                        int iLocal = i;
-                        atskMugshotImages[i]
-                            = Task.Run(() => lstMugshotsBase64[iLocal].ToImageAsync(PixelFormat.Format32bppPArgb, token), token);
+                        if (xmlMugshotsList.Count > 1)
+                        {
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
+                            {
+                                string strLoop = astrMugshotsBase64[i];
+                                if (!string.IsNullOrEmpty(strLoop))
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                return Task.FromResult<Bitmap>(null);
+                            }, token).ConfigureAwait(false);
+                            foreach (Bitmap objImage in aobjMugshots)
+                            {
+                                if (objImage != null)
+                                    await _lstMugshots.AddAsync(objImage, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            string strLoop = astrMugshotsBase64[0];
+                            if (!string.IsNullOrEmpty(strLoop))
+                                await _lstMugshots.AddAsync(await strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        }
                     }
-                    await _lstMugshots.AddRangeAsync(await Task.WhenAll(atskMugshotImages).ConfigureAwait(false), token).ConfigureAwait(false);
-                }
-                else if (lstMugshotsBase64.Count == 1)
-                {
-                    await _lstMugshots.AddAsync(await lstMugshotsBase64[0].ToImageAsync(PixelFormat.Format32bppPArgb, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    finally
+                    {
+                        ArrayPool<string>.Shared.Return(astrMugshotsBase64);
+                    }
                 }
             }
             finally
@@ -3340,75 +3383,64 @@ namespace Chummer
                 Character objLinkedCharacter = await GetLinkedCharacterAsync(token).ConfigureAwait(false);
                 if (objLinkedCharacter != null)
                     await objLinkedCharacter.PrintMugshots(objWriter, token).ConfigureAwait(false);
-                else if (await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
+                else
                 {
-                    // Since IE is retarded and can't handle base64 images before IE9, we need to dump the image to a temporary directory and re-write the information.
-                    // If you give it an extension of jpg, gif, or png, it expects the file to be in that format and won't render the image unless it was originally that type.
-                    // But if you give it the extension img, it will render whatever you give it (which doesn't make any damn sense, but that's IE for you).
-                    string strMugshotsDirectoryPath = Path.Combine(Utils.GetStartupPath, "mugshots");
-                    if (!Directory.Exists(strMugshotsDirectoryPath))
+                    ThreadSafeList<Image> lstMugshots = await GetMugshotsAsync(token).ConfigureAwait(false);
+                    if (await lstMugshots.GetCountAsync(token).ConfigureAwait(false) > 0)
                     {
+                        // Note: Internet Explorer 8 and earlier are the only browsers that do not support data URIs.
+                        // The workaround for them would require saving each image to a file first and then referencing that file instead of embedding the image's base64 directly.
+                        // However, users who only use IE8 and earlier are so vanishingly small compared to the effort this workaround requires that we are just not going to bother.
+
+                        Image imgMainMugshot = await GetMainMugshotAsync(token).ConfigureAwait(false);
+                        if (imgMainMugshot != null)
+                        {
+                            // <mainmugshotbase64 />
+                            await objWriter
+                                  .WriteElementStringAsync("mainmugshotbase64",
+                                                           await imgMainMugshot.ToBase64StringAsJpegAsync(token: token)
+                                                                               .ConfigureAwait(false), token: token)
+                                  .ConfigureAwait(false);
+                        }
+
+                        // <hasothermugshots>
+                        await objWriter.WriteElementStringAsync("hasothermugshots",
+                                                                (imgMainMugshot == null || await lstMugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(
+                                                                    GlobalSettings.InvariantCultureInfo), token: token)
+                                       .ConfigureAwait(false);
+                        // <othermugshots>
+                        XmlElementWriteHelper objOtherMugshotsElement
+                            = await objWriter.StartElementAsync("othermugshots", token: token).ConfigureAwait(false);
                         try
                         {
-                            Directory.CreateDirectory(strMugshotsDirectoryPath);
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            Program.ShowScrollableMessageBox(await LanguageManager
-                                                                   .GetStringAsync(
-                                                                       "Message_Insufficient_Permissions_Warning", token: token)
-                                                                   .ConfigureAwait(false));
-                        }
-                    }
-
-                    Image imgMainMugshot = await GetMainMugshotAsync(token).ConfigureAwait(false);
-                    if (imgMainMugshot != null)
-                    {
-                        // <mainmugshotbase64 />
-                        await objWriter
-                              .WriteElementStringAsync("mainmugshotbase64",
-                                                       await imgMainMugshot.ToBase64StringAsJpegAsync(token: token)
-                                                                           .ConfigureAwait(false), token: token)
-                              .ConfigureAwait(false);
-                    }
-
-                    // <hasothermugshots>
-                    await objWriter.WriteElementStringAsync("hasothermugshots",
-                                                            (imgMainMugshot == null || await Mugshots.GetCountAsync(token).ConfigureAwait(false) > 1).ToString(
-                                                                GlobalSettings.InvariantCultureInfo), token: token)
-                                   .ConfigureAwait(false);
-                    // <othermugshots>
-                    XmlElementWriteHelper objOtherMugshotsElement
-                        = await objWriter.StartElementAsync("othermugshots", token: token).ConfigureAwait(false);
-                    try
-                    {
-                        for (int i = 0; i < await Mugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
-                        {
-                            if (i == await GetMainMugshotIndexAsync(token).ConfigureAwait(false))
-                                continue;
-                            Image imgMugshot = await Mugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
-                            // <mugshot>
-                            XmlElementWriteHelper objMugshotElement
-                                = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);
-                            try
+                            for (int i = 0; i < await lstMugshots.GetCountAsync(token).ConfigureAwait(false); ++i)
                             {
-                                await objWriter
-                                      .WriteElementStringAsync("stringbase64",
-                                                               await imgMugshot.ToBase64StringAsJpegAsync(token: token)
-                                                                               .ConfigureAwait(false), token: token)
-                                      .ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                // </mugshot>
-                                await objMugshotElement.DisposeAsync().ConfigureAwait(false);
+                                if (i == await GetMainMugshotIndexAsync(token).ConfigureAwait(false))
+                                    continue;
+                                Image imgMugshot = await lstMugshots.GetValueAtAsync(i, token).ConfigureAwait(false);
+                                // <mugshot>
+                                XmlElementWriteHelper objMugshotElement
+                                    = await objWriter.StartElementAsync("mugshot", token: token).ConfigureAwait(false);
+                                try
+                                {
+                                    await objWriter
+                                          .WriteElementStringAsync("stringbase64",
+                                                                   await imgMugshot.ToBase64StringAsJpegAsync(token: token)
+                                                                                   .ConfigureAwait(false), token: token)
+                                          .ConfigureAwait(false);
+                                }
+                                finally
+                                {
+                                    // </mugshot>
+                                    await objMugshotElement.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
-                    }
-                    finally
-                    {
-                        // </othermugshots>
-                        await objOtherMugshotsElement.DisposeAsync().ConfigureAwait(false);
+                        finally
+                        {
+                            // </othermugshots>
+                            await objOtherMugshotsElement.DisposeAsync().ConfigureAwait(false);
+                        }
                     }
                 }
             }
@@ -3433,6 +3465,11 @@ namespace Chummer
                 foreach (Image imgMugshot in _lstMugshots)
                     imgMugshot.Dispose();
                 _lstMugshots.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -3448,8 +3485,7 @@ namespace Chummer
                                                                          || !(await x.GetLinkedCharactersAsync().ConfigureAwait(false)).Contains(
                                                                              _objLinkedCharacter))
                                                                 .ConfigureAwait(false)
-                                                && Program.MainForm.OpenFormsWithCharacters.All(
-                                                    x => !x.CharacterObjects.Contains(_objLinkedCharacter)))
+                                                && !await Program.MainForm.AnyOpenFormContainsCharacter(_objLinkedCharacter).ConfigureAwait(false))
                     await Program.OpenCharacters.RemoveAsync(_objLinkedCharacter).ConfigureAwait(false);
                 await _lstMugshots.ForEachAsync(x => x.Dispose()).ConfigureAwait(false);
                 await _lstMugshots.DisposeAsync().ConfigureAwait(false);

@@ -29,6 +29,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
 
 namespace Chummer.Backend.Attributes
@@ -48,7 +49,9 @@ namespace Chummer.Backend.Attributes
         private int _intKarma;
         private string _strAbbrev;
         private readonly Character _objCharacter;
+        private CharacterSettings _objCharacterSettings;
         private AttributeCategory _eMetatypeCategory;
+        private int _intIsDisposed;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -86,10 +89,11 @@ namespace Chummer.Backend.Attributes
             _strAbbrev = abbrev;
             _eMetatypeCategory = enumCategory;
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterSettings = objCharacter.Settings;
             LockObject = objCharacter.LockObject;
             _objCachedTotalValueLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+            _objCharacterSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
         }
 
         /// <summary>
@@ -120,30 +124,58 @@ namespace Chummer.Backend.Attributes
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Character Attribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Character Attribute from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objNode == null)
+                return;
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 objNode.TryGetStringFieldQuickly("name", ref _strAbbrev);
                 objNode.TryGetInt32FieldQuickly("metatypemin", ref _intMetatypeMin);
                 objNode.TryGetInt32FieldQuickly("metatypemax", ref _intMetatypeMax);
                 objNode.TryGetInt32FieldQuickly("metatypeaugmax", ref _intMetatypeAugMax);
                 objNode.TryGetInt32FieldQuickly("base", ref _intBase);
                 objNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
-                if (!BaseUnlocked && !_objCharacter.Created)
+                if (blnSync)
                 {
-                    _intBase = 0;
+                    if (!BaseUnlocked && !_objCharacter.Created)
+                        _intBase = 0;
                 }
+                else if (!await GetBaseUnlockedAsync(token).ConfigureAwait(false) && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
+                    _intBase = 0;
 
                 //Converts old attributes to split metatype minimum and base. Saves recalculating Base - TotalMinimum all the time.
                 int i = 0;
                 if (objNode.TryGetInt32FieldQuickly("value", ref i))
                 {
                     i -= _intMetatypeMin;
-                    if (BaseUnlocked)
+                    if (blnSync ? BaseUnlocked : await GetBaseUnlockedAsync(token).ConfigureAwait(false))
                     {
                         _intBase = Math.Max(_intBase - _intMetatypeMin, 0);
                         i -= _intBase;
@@ -173,8 +205,15 @@ namespace Chummer.Backend.Attributes
                 else
                 {
                     _eMetatypeCategory =
-                        ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerText ?? "Standard");
+                        ConvertToMetatypeAttributeCategory(objNode["metatypecategory"]?.InnerTextViaPool(token) ?? "Standard");
                 }
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -196,7 +235,7 @@ namespace Chummer.Backend.Attributes
                 switch (Abbrev)
                 {
                     case "MAGAdept":
-                        if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                        if (!await _objCharacterSettings
                                 .GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                             || !await _objCharacter.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                             || !await _objCharacter.GetMAGEnabledAsync(token).ConfigureAwait(false))
@@ -266,16 +305,6 @@ namespace Chummer.Backend.Attributes
         }
 
         #endregion Constructor, Save, Load, and Print Methods
-
-        /// <summary>
-        /// Type of Attribute.
-        /// </summary>
-        public enum AttributeCategory
-        {
-            Standard = 0,
-            Special,
-            Shapeshifter
-        }
 
         #region Properties
 
@@ -927,17 +956,15 @@ namespace Chummer.Backend.Attributes
                 int intReturn = _intCachedValue;
                 if (intReturn != int.MinValue)
                     return intReturn;
-                return _intCachedValue = await Task.Run(async () => Math.Min(
-                                                            Math.Max(
-                                                                await GetBaseAsync(token).ConfigureAwait(false)
-                                                                    + await GetFreeBaseAsync(token).ConfigureAwait(false)
-                                                                    + await GetRawMinimumAsync(token).ConfigureAwait(false)
-                                                                    + await GetAttributeValueModifiersAsync(token)
-                                                                         .ConfigureAwait(false),
-                                                                await GetTotalMinimumAsync(token).ConfigureAwait(false))
-                                                            + await GetKarmaAsync(token).ConfigureAwait(false),
-                                                            await GetTotalMaximumAsync(token).ConfigureAwait(false)), token)
-                                                   .ConfigureAwait(false);
+                return _intCachedValue = Math.Min(Math.Max(
+                                                    await GetBaseAsync(token).ConfigureAwait(false)
+                                                        + await GetFreeBaseAsync(token).ConfigureAwait(false)
+                                                        + await GetRawMinimumAsync(token).ConfigureAwait(false)
+                                                        + await GetAttributeValueModifiersAsync(token)
+                                                                .ConfigureAwait(false),
+                                                    await GetTotalMinimumAsync(token).ConfigureAwait(false))
+                                                + await GetKarmaAsync(token).ConfigureAwait(false),
+                                            await GetTotalMaximumAsync(token).ConfigureAwait(false));
             }
             finally
             {
@@ -948,14 +975,14 @@ namespace Chummer.Backend.Attributes
         /// <summary>
         /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public Tuple<int, int> MinimumMaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
+        public ValueTuple<int, int> MinimumMaximumNoEssenceLoss(bool blnUseEssenceAtSpecialStart = false)
         {
             using (LockObject.EnterReadLock())
             {
                 // If we're looking at MAG and the character is a Cyberzombie, MAG is always 1, regardless of ESS penalties and bonuses.
                 if (_objCharacter.MetatypeCategory == "Cyberzombie" && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return new Tuple<int, int>(1, 1);
+                    return new ValueTuple<int, int>(1, 1);
                 }
 
                 int intRawMinimum = MetatypeMinimum;
@@ -1017,14 +1044,14 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
+                return new ValueTuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
         }
 
         /// <summary>
         /// The CharacterAttribute's combined Minimum and Maximum values (Metatype Min/Max + Modifiers) before essence modifiers are applied.
         /// </summary>
-        public async Task<Tuple<int, int>> MinimumMaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
+        public async Task<ValueTuple<int, int>> MinimumMaximumNoEssenceLossAsync(bool blnUseEssenceAtSpecialStart = false, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
@@ -1034,7 +1061,7 @@ namespace Chummer.Backend.Attributes
                 if (await _objCharacter.GetMetatypeCategoryAsync(token).ConfigureAwait(false) == "Cyberzombie"
                     && (Abbrev == "MAG" || Abbrev == "MAGAdept"))
                 {
-                    return new Tuple<int, int>(1, 1);
+                    return new ValueTuple<int, int>(1, 1);
                 }
 
                 int intRawMaximumBase = await GetMetatypeMaximumAsync(token).ConfigureAwait(false);
@@ -1099,7 +1126,7 @@ namespace Chummer.Backend.Attributes
                 if (intTotalMaximum < intTotalMinimum)
                     intTotalMaximum = intTotalMinimum;
 
-                return new Tuple<int, int>(intTotalMinimum, intTotalMaximum);
+                return new ValueTuple<int, int>(intTotalMinimum, intTotalMaximum);
             }
             finally
             {
@@ -1306,7 +1333,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                if (!_objCharacterSettings.DontUseCyberlimbCalculation &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return _objCharacter.Cyberware.Any(objCyberware => objCyberware.IsLimb && objCyberware.IsModularCurrentlyEquipped, token);
@@ -1358,7 +1385,7 @@ namespace Chummer.Backend.Attributes
                 }
 
                 // If this is AGI or STR, factor in any Cyberlimbs.
-                if (!await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
+                if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                     Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     return await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
@@ -1600,8 +1627,8 @@ namespace Chummer.Backend.Attributes
                 // If this is AGI or STR, factor in any Cyberlimbs.
                 if (blnIncludeCyberlimbs
                     && !(blnSync
-                            ? _objCharacter.Settings.DontUseCyberlimbCalculation
-                            : await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
+                            ? _objCharacterSettings.DontUseCyberlimbCalculation
+                            : await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false))
                     && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
                     int intLimbTotal;
@@ -1612,7 +1639,7 @@ namespace Chummer.Backend.Attributes
                             await ProcessCyberlimbsAsync(await _objCharacter.GetCyberwareAsync(token)
                                 .ConfigureAwait(false)).ConfigureAwait(false);
 
-                    Tuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
+                    ValueTuple<int, int> ProcessCyberlimbs(IEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1622,7 +1649,7 @@ namespace Chummer.Backend.Attributes
                                 continue;
                             if (objCyberware.IsLimb)
                             {
-                                if (_objCharacter.Settings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
+                                if (_objCharacterSettings.ExcludeLimbSlot.Contains(objCyberware.LimbSlot))
                                     continue;
 
                                 int intLoop = objCyberware.LimbSlotCount;
@@ -1638,10 +1665,10 @@ namespace Chummer.Backend.Attributes
                             }
                         }
 
-                        return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
+                        return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<Tuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
+                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
@@ -1651,7 +1678,7 @@ namespace Chummer.Backend.Attributes
                                 return;
                             if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
                             {
-                                if ((await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false))
+                                if ((await _objCharacterSettings
                                         .GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
                                     .Contains(objCyberware.LimbSlot))
                                     return;
@@ -1670,7 +1697,7 @@ namespace Chummer.Backend.Attributes
                             }
                         }, token).ConfigureAwait(false);
 
-                        return new Tuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
+                        return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
                     if (intLimbCount > 0)
@@ -1829,9 +1856,7 @@ namespace Chummer.Backend.Attributes
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    return _intCachedTotalValue = await Task
-                        .Run(() => CalculatedTotalValueAsync(token: token), token)
-                        .ConfigureAwait(false);
+                    return _intCachedTotalValue = await CalculatedTotalValueAsync(token: token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -1852,7 +1877,7 @@ namespace Chummer.Backend.Attributes
             get
             {
                 using (LockObject.EnterReadLock())
-                    return CharacterObject.Settings.UnclampAttributeMinimum
+                    return _objCharacterSettings.UnclampAttributeMinimum
                         ? MetatypeMinimum + MinimumModifiers
                         : Math.Max(MetatypeMinimum + MinimumModifiers, 0);
             }
@@ -1869,7 +1894,7 @@ namespace Chummer.Backend.Attributes
                 token.ThrowIfCancellationRequested();
                 int intReturn = await GetMetatypeMinimumAsync(token).ConfigureAwait(false) +
                                 await GetMinimumModifiersAsync(token).ConfigureAwait(false);
-                if (!CharacterObject.Settings.UnclampAttributeMinimum && intReturn < 0)
+                if (!_objCharacterSettings.UnclampAttributeMinimum && intReturn < 0)
                     intReturn = 0;
                 return intReturn;
             }
@@ -2081,13 +2106,13 @@ namespace Chummer.Backend.Attributes
         {
             using (LockObject.EnterReadLock())
             {
-                string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+                string strSpacePlusParen = LanguageManager.GetString("String_Space", strLanguage) + "(";
                 if (Abbrev == "MAGAdept")
-                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpace + '(' +
-                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ')'
-                           + strSpace + '(' + LanguageManager.GetString("String_DescAdept", strLanguage) + ')';
+                    return LanguageManager.GetString("String_AttributeMAGLong", strLanguage) + strSpacePlusParen +
+                           LanguageManager.GetString("String_AttributeMAGShort", strLanguage) + ")"
+                           + strSpacePlusParen + LanguageManager.GetString("String_DescAdept", strLanguage) + ")";
 
-                return DisplayNameLong(strLanguage) + strSpace + '(' + DisplayNameShort(strLanguage) + ')';
+                return DisplayNameLong(strLanguage) + strSpacePlusParen + DisplayNameShort(strLanguage) + ")";
             }
         }
 
@@ -2097,19 +2122,18 @@ namespace Chummer.Backend.Attributes
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                    .ConfigureAwait(false);
+                string strSpacePlusParen = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                    .ConfigureAwait(false) + "(";
                 if (Abbrev == "MAGAdept")
                     return await LanguageManager.GetStringAsync("String_AttributeMAGLong", strLanguage, token: token)
-                               .ConfigureAwait(false) + strSpace + '(' + await LanguageManager
+                               .ConfigureAwait(false) + strSpacePlusParen + await LanguageManager
                                .GetStringAsync("String_AttributeMAGShort", strLanguage, token: token)
-                               .ConfigureAwait(false) + ')'
-                           + strSpace + '(' + await LanguageManager
-                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) +
-                           ')';
+                               .ConfigureAwait(false) + ")"
+                           + strSpacePlusParen + await LanguageManager
+                               .GetStringAsync("String_DescAdept", strLanguage, token: token).ConfigureAwait(false) + ")";
 
-                return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpace + '(' +
-                       await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ')';
+                return await DisplayNameLongAsync(strLanguage, token).ConfigureAwait(false) + strSpacePlusParen +
+                       await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false) + ")";
             }
             finally
             {
@@ -2413,8 +2437,8 @@ namespace Chummer.Backend.Attributes
                             = ImprovementManager.GetCachedImprovementListForAugmentedValueOf(
                                 _objCharacter, Improvement.ImprovementType.Attribute, Abbrev);
 
-                        List<Tuple<string, decimal, string>> lstUniquePair =
-                            new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+                        List<ValueTuple<string, decimal, string>> lstUniquePair =
+                            new List<ValueTuple<string, decimal, string>>(lstUsedImprovements.Count);
 
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                       out StringBuilder sbdModifier))
@@ -2434,7 +2458,7 @@ namespace Chummer.Backend.Attributes
                                     setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
-                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                    lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                           strUniqueName,
                                                           objImprovement.Augmented * objImprovement.Rating,
                                                           _objCharacter.GetObjectName(
@@ -2443,12 +2467,9 @@ namespace Chummer.Backend.Attributes
                                 else
                                 {
                                     decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                               .Append(
-                                                   _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                               .Append(strSpace).Append('(')
-                                               .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                               .Append(')');
+                                    sbdModifier.Append(strSpace, '+')
+                                        .Append(strSpace, _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language), strSpace)
+                                               .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                     decBaseValue += decValue;
                                 }
                             }
@@ -2469,10 +2490,8 @@ namespace Chummer.Backend.Attributes
                                             continue;
                                         decHighest = decValue;
                                         sbdNewModifier.Clear();
-                                        sbdNewModifier
-                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                            .Append(strSpace).Append('(')
-                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                        sbdNewModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                     }
 
                                     if (setUniqueNames.Contains("precedence-1"))
@@ -2484,9 +2503,8 @@ namespace Chummer.Backend.Attributes
                                                 continue;
                                             decHighest += decValue;
                                             sbdNewModifier
-                                                .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                                .Append(strSpace).Append('(')
-                                                .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                                .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                                .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                         }
                                     }
 
@@ -2529,11 +2547,8 @@ namespace Chummer.Backend.Attributes
                                         if (strGroupName == strName && decValue > decHighest)
                                         {
                                             decHighest = decValue;
-                                            sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                                       .Append(strSourceName)
-                                                       .Append(strSpace).Append('(')
-                                                       .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                                       .Append(')');
+                                            sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                                .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                         }
                                     }
                                 }
@@ -2554,7 +2569,7 @@ namespace Chummer.Backend.Attributes
                                     setUniqueNames.Add(strUniqueName);
 
                                     // Add the values to the UniquePair List so we can check them later.
-                                    lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                    lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                           strUniqueName,
                                                           objImprovement.Augmented * objImprovement.Rating,
                                                           _objCharacter.GetObjectName(
@@ -2562,12 +2577,10 @@ namespace Chummer.Backend.Attributes
                                 }
                                 else
                                 {
-                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                               .Append(
-                                                   _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
-                                               .Append(strSpace).Append('(')
+                                    sbdModifier.Append(strSpace, '+').Append(strSpace, _objCharacter.GetObjectName(objImprovement, GlobalSettings.Language))
+                                               .Append(strSpace, '(')
                                                .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
-                                                           GlobalSettings.CultureInfo)).Append(')');
+                                                           GlobalSettings.CultureInfo), ')');
                                 }
                             }
 
@@ -2581,22 +2594,20 @@ namespace Chummer.Backend.Attributes
                                     if (strGroupName != strName || decValue <= decHighest)
                                         continue;
                                     decHighest = decValue;
-                                    sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                               .Append(strSpace).Append('(')
-                                               .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                 }
                             }
 
                             //// If this is AGI or STR, factor in any Cyberlimbs.
-                            if (!_objCharacter.Settings.DontUseCyberlimbCalculation &&
+                            if (!_objCharacterSettings.DontUseCyberlimbCalculation &&
                                 Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                             {
                                 _objCharacter.Cyberware.ForEach(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace));
                             }
 
-                            return _strCachedToolTip = CurrentDisplayAbbrev + strSpace + '('
-                                                       + Value.ToString(GlobalSettings.CultureInfo) + ')' +
-                                                       sbdModifier;
+                            // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                            return _strCachedToolTip = StringExtensions.ConcatFast(CurrentDisplayAbbrev, strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
                         }
                     }
                 }
@@ -2616,11 +2627,8 @@ namespace Chummer.Backend.Attributes
                     }
 
                     sbdModifier.AppendLine()
-                        .Append(objCyberware.CurrentDisplayName)
-                        .Append(strSpace)
-                        .Append('(')
-                        .Append(objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo))
-                        .Append(')');
+                        .Append(objCyberware.CurrentDisplayName, strSpace)
+                        .Append('(', objCyberware.GetAttributeTotalValue(Abbrev).ToString(GlobalSettings.CultureInfo), ')');
                 }
             }
         }
@@ -2651,8 +2659,8 @@ namespace Chummer.Backend.Attributes
                         = await ImprovementManager.GetCachedImprovementListForAugmentedValueOfAsync(
                             _objCharacter, Improvement.ImprovementType.Attribute, Abbrev, token: token).ConfigureAwait(false);
 
-                    List<Tuple<string, decimal, string>> lstUniquePair =
-                        new List<Tuple<string, decimal, string>>(lstUsedImprovements.Count);
+                    List<ValueTuple<string, decimal, string>> lstUniquePair =
+                        new List<ValueTuple<string, decimal, string>>(lstUsedImprovements.Count);
 
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdModifier))
@@ -2673,7 +2681,7 @@ namespace Chummer.Backend.Attributes
                                 setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
-                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                       strUniqueName,
                                                       objImprovement.Augmented * objImprovement.Rating,
                                                       await _objCharacter.GetObjectNameAsync(
@@ -2682,12 +2690,9 @@ namespace Chummer.Backend.Attributes
                             else
                             {
                                 decimal decValue = objImprovement.Augmented * objImprovement.Rating;
-                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                           .Append(
-                                               await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
-                                           .Append(strSpace).Append('(')
-                                           .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                           .Append(')');
+                                sbdModifier.Append(strSpace, '+').Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
+                                           .Append(strSpace, '(')
+                                           .Append(decValue.ToString(GlobalSettings.CultureInfo), ')');
                                 decBaseValue += decValue;
                             }
                         }
@@ -2710,9 +2715,8 @@ namespace Chummer.Backend.Attributes
                                     decHighest = decValue;
                                     sbdNewModifier.Clear();
                                     sbdNewModifier
-                                        .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                        .Append(strSpace).Append('(')
-                                        .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                        .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                        .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                 }
 
                                 if (setUniqueNames.Contains("precedence-1"))
@@ -2725,9 +2729,8 @@ namespace Chummer.Backend.Attributes
                                             continue;
                                         decHighest += decValue;
                                         sbdNewModifier
-                                            .Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                            .Append(strSpace).Append('(')
-                                            .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                            .Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                     }
                                 }
 
@@ -2772,11 +2775,8 @@ namespace Chummer.Backend.Attributes
                                     if (strGroupName == strName && decValue > decHighest)
                                     {
                                         decHighest = decValue;
-                                        sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                                   .Append(strSourceName)
-                                                   .Append(strSpace).Append('(')
-                                                   .Append(decValue.ToString(GlobalSettings.CultureInfo))
-                                                   .Append(')');
+                                        sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                            .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                                     }
                                 }
                             }
@@ -2798,7 +2798,7 @@ namespace Chummer.Backend.Attributes
                                 setUniqueNames.Add(strUniqueName);
 
                                 // Add the values to the UniquePair List so we can check them later.
-                                lstUniquePair.Add(new Tuple<string, decimal, string>(
+                                lstUniquePair.Add(new ValueTuple<string, decimal, string>(
                                                       strUniqueName,
                                                       objImprovement.Augmented * objImprovement.Rating,
                                                       await _objCharacter.GetObjectNameAsync(
@@ -2806,12 +2806,9 @@ namespace Chummer.Backend.Attributes
                             }
                             else
                             {
-                                sbdModifier.Append(strSpace).Append('+').Append(strSpace)
-                                           .Append(
-                                               await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false))
-                                           .Append(strSpace).Append('(')
-                                           .Append((objImprovement.Augmented * objImprovement.Rating).ToString(
-                                                       GlobalSettings.CultureInfo)).Append(')');
+                                sbdModifier.Append(strSpace, '+')
+                                    .Append(strSpace, await _objCharacter.GetObjectNameAsync(objImprovement, GlobalSettings.Language, token).ConfigureAwait(false), strSpace)
+                                    .Append('(', (objImprovement.Augmented * objImprovement.Rating).ToString(GlobalSettings.CultureInfo), ')');
                             }
                         }
 
@@ -2827,22 +2824,20 @@ namespace Chummer.Backend.Attributes
                                 if (strGroupName != strName || decValue <= decHighest)
                                     continue;
                                 decHighest = decValue;
-                                sbdModifier.Append(strSpace).Append('+').Append(strSpace).Append(strSourceName)
-                                           .Append(strSpace).Append('(')
-                                           .Append(decValue.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                sbdModifier.Append(strSpace, '+').Append(strSpace, strSourceName, strSpace)
+                                    .Append('(', decValue.ToString(GlobalSettings.CultureInfo), ')');
                             }
                         }
 
                         //// If this is AGI or STR, factor in any Cyberlimbs.
-                        if (!await _objCharacter.Settings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
+                        if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
                             await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
                         }
 
-                        return _strCachedToolTip = await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false) + strSpace + '('
-                                                   + (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo) + ')' +
-                                                   sbdModifier;
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        return _strCachedToolTip = StringExtensions.ConcatFast(await GetCurrentDisplayAbbrevAsync(token).ConfigureAwait(false), strSpace, "(", (await GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
                     }
                 }
             }
@@ -2866,11 +2861,8 @@ namespace Chummer.Backend.Attributes
                 }
 
                 sbdModifier.AppendLine()
-                    .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))
-                    .Append(strSpace)
-                    .Append('(')
-                    .Append((await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo))
-                    .Append(')');
+                    .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace)
+                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
             }
         }
 
@@ -2885,32 +2877,22 @@ namespace Chummer.Backend.Attributes
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev
-                             || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == _objCharacter.Created
-                             || (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributePointCost:
-                                    decExtra += objLoopImprovement.Value
-                                                * (Math.Min(
-                                                    intBase,
-                                                    objLoopImprovement.Maximum == 0
-                                                        ? int.MaxValue
-                                                        : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                    break;
-
-                                case Improvement.ImprovementType.AttributePointCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                        if (objImprovement.Minimum <= intBase)
+                            decExtra += objImprovement.Value
+                                                        * (Math.Min(
+                                                               intBase,
+                                                               objImprovement.Maximum == 0
+                                                                   ? int.MaxValue
+                                                                   : objImprovement.Maximum)
+                                                           - objImprovement.Minimum - 1);
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true))
+                    {
+                        if (objImprovement.Minimum <= intBase)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
@@ -2933,34 +2915,23 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true, token).ConfigureAwait(false))
                 {
-                    if ((objLoopImprovement.ImprovedName == Abbrev
-                         || string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                         || (objLoopImprovement.Condition == "career") == blnCreated
-                         || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                        objLoopImprovement.Minimum <= intBase && objLoopImprovement.Enabled)
-                    {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.AttributePointCost:
-                                decExtra += objLoopImprovement.Value
-                                            * (Math.Min(
-                                                intBase,
-                                                objLoopImprovement.Maximum == 0
-                                                    ? int.MaxValue
-                                                    : objLoopImprovement.Maximum) - objLoopImprovement.Minimum);
-                                break;
-
-                            case Improvement.ImprovementType.AttributePointCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-                    }
-                }, token: token).ConfigureAwait(false);
-
+                    if (objImprovement.Minimum <= intBase)
+                        decExtra += objImprovement.Value
+                                                    * (Math.Min(
+                                                           intBase,
+                                                           objImprovement.Maximum == 0
+                                                               ? int.MaxValue
+                                                               : objImprovement.Maximum)
+                                                       - objImprovement.Minimum - 1);
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if (objImprovement.Minimum <= intBase)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+                
                 if (decMultiplier != 1.0m)
                     intReturn = (intReturn * decMultiplier + decExtra).StandardRound();
                 else
@@ -3086,7 +3057,7 @@ namespace Chummer.Backend.Attributes
                     }
 
                     int intUpgradeCost;
-                    int intOptionsCost = _objCharacter.Settings.KarmaAttribute;
+                    int intOptionsCost = _objCharacterSettings.KarmaAttribute;
                     if (intValue == 0)
                     {
                         intUpgradeCost = intOptionsCost;
@@ -3096,34 +3067,24 @@ namespace Chummer.Backend.Attributes
                         intUpgradeCost = (intValue + 1) * intOptionsCost;
                     }
 
-                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma &&
+                    if (_objCharacterSettings.AlternateMetatypeAttributeKarma &&
                         !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                         intUpgradeCost -= (MetatypeMinimum - 1) * intOptionsCost;
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                             (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                             (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum) &&
-                            objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                        if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                            objImprovement.Minimum <= intValue + 1)
+                            decExtra += objImprovement.Value;
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true))
+                    {
+                        if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                            objImprovement.Minimum <= intValue + 1)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
@@ -3156,8 +3117,9 @@ namespace Chummer.Backend.Attributes
                     return -1;
                 }
 
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
                 int intUpgradeCost;
-                int intOptionsCost = await _objCharacter.Settings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
+                int intOptionsCost = await objSettings.GetKarmaAttributeAsync(token).ConfigureAwait(false);
                 if (intValue == 0)
                 {
                     intUpgradeCost = intOptionsCost;
@@ -3167,39 +3129,26 @@ namespace Chummer.Backend.Attributes
                     intUpgradeCost = (intValue + 1) * intOptionsCost;
                 }
 
-                if (await _objCharacter.Settings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
+                if (await objSettings.GetAlternateMetatypeAttributeKarmaAsync(token).ConfigureAwait(false)
                     && !s_SetAlternateMetatypeAttributeKarmaExceptions.Contains(Abbrev))
                     intUpgradeCost -= (await GetMetatypeMinimumAsync(token).ConfigureAwait(false) - 1) *
                                       intOptionsCost;
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    objLoopImprovement =>
-                    {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName))
-                            &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition)
-                             || (objLoopImprovement.Condition == "career") == blnCreated
-                             || (objLoopImprovement.Condition == "create") != blnCreated) &&
-                            (objLoopImprovement.Maximum == 0 || intValue + 1 <= objLoopImprovement.Maximum)
-                            && objLoopImprovement.Minimum <= intValue + 1 && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value;
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    }, token: token).ConfigureAwait(false);
-
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                        objImprovement.Minimum <= intValue + 1)
+                        decExtra += objImprovement.Value;
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if ((objImprovement.Maximum == 0 || intValue + 1 <= objImprovement.Maximum) &&
+                        objImprovement.Minimum <= intValue + 1)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
+                
                 if (decMultiplier != 1.0m)
                     intUpgradeCost = (intUpgradeCost * decMultiplier + decExtra).StandardRound();
                 else
@@ -3223,14 +3172,14 @@ namespace Chummer.Backend.Attributes
                         return 0;
 
                     int intValue = Value;
-                    int intRawTotalBase = _objCharacter.Settings.ReverseAttributePriorityOrder
+                    int intRawTotalBase = _objCharacterSettings.ReverseAttributePriorityOrder
                         ? Math.Max(FreeBase + RawMinimum, TotalMinimum)
                         : TotalBase;
                     int intTotalBase = intRawTotalBase;
-                    if (_objCharacter.Settings.AlternateMetatypeAttributeKarma)
+                    if (_objCharacterSettings.AlternateMetatypeAttributeKarma)
                     {
                         int intHumanMinimum = FreeBase + 1 + MinimumModifiers;
-                        if (!_objCharacter.Settings.ReverseAttributePriorityOrder)
+                        if (!_objCharacterSettings.ReverseAttributePriorityOrder)
                             intHumanMinimum += Base;
                         if (intHumanMinimum < 1)
                         {
@@ -3246,36 +3195,25 @@ namespace Chummer.Backend.Attributes
 
                     // The expression below is a shortened version of n*(n+1)/2 when applied to karma costs. n*(n+1)/2 is the sum of all numbers from 1 to n.
                     // I'm taking n*(n+1)/2 where n = Base + Karma, then subtracting n*(n+1)/2 from it where n = Base. After removing all terms that cancel each other out, the expression below is what remains.
-                    int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacter.Settings.KarmaAttribute;
+                    int intCost = (2 * intTotalBase + Karma + 1) * Karma / 2 * _objCharacterSettings.KarmaAttribute;
 
                     decimal decExtra = 0;
                     decimal decMultiplier = 1.0m;
-                    _objCharacter.Improvements.ForEach(objLoopImprovement =>
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCost, Abbrev, true))
                     {
-                        if ((objLoopImprovement.ImprovedName == Abbrev ||
-                             string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                            (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                             (objLoopImprovement.Condition == "career") == _objCharacter.Created ||
-                             (objLoopImprovement.Condition == "create") != _objCharacter.Created) &&
-                            objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
-                        {
-                            switch (objLoopImprovement.ImproveType)
-                            {
-                                case Improvement.ImprovementType.AttributeKarmaCost:
-                                    decExtra += objLoopImprovement.Value *
+                        if (objImprovement.Minimum <= intValue)
+                            decExtra += objImprovement.Value *
                                                 (Math.Min(intValue,
-                                                          objLoopImprovement.Maximum == 0
+                                                          objImprovement.Maximum == 0
                                                               ? int.MaxValue
-                                                              : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
-                                                    objLoopImprovement.Minimum - 1));
-                                    break;
-
-                                case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                    decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                    break;
-                            }
-                        }
-                    });
+                                                              : objImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                    objImprovement.Minimum - 1));
+                    }
+                    foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(_objCharacter, Improvement.ImprovementType.AttributeKarmaCostMultiplier, Abbrev, true))
+                    {
+                        if (objImprovement.Minimum <= intValue)
+                            decMultiplier *= objImprovement.Value / 100.0m;
+                    }
 
                     if (decMultiplier != 1.0m)
                         intCost = (intCost * decMultiplier + decExtra).StandardRound();
@@ -3329,33 +3267,21 @@ namespace Chummer.Backend.Attributes
 
                 decimal decExtra = 0;
                 decimal decMultiplier = 1.0m;
-                bool blnCreated = await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
-                await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objLoopImprovement =>
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCost, Abbrev, true, token).ConfigureAwait(false))
                 {
-                    if ((objLoopImprovement.ImprovedName == Abbrev ||
-                         string.IsNullOrEmpty(objLoopImprovement.ImprovedName)) &&
-                        (string.IsNullOrEmpty(objLoopImprovement.Condition) ||
-                         (objLoopImprovement.Condition == "career") == blnCreated ||
-                         (objLoopImprovement.Condition == "create") != blnCreated) &&
-                        objLoopImprovement.Minimum <= intValue && objLoopImprovement.Enabled)
-                    {
-                        switch (objLoopImprovement.ImproveType)
-                        {
-                            case Improvement.ImprovementType.AttributeKarmaCost:
-                                decExtra += objLoopImprovement.Value *
+                    if (objImprovement.Minimum <= intValue)
+                        decExtra += objImprovement.Value *
                                             (Math.Min(intValue,
-                                                      objLoopImprovement.Maximum == 0
+                                                      objImprovement.Maximum == 0
                                                           ? int.MaxValue
-                                                          : objLoopImprovement.Maximum) - Math.Max(intRawTotalBase,
-                                                objLoopImprovement.Minimum - 1));
-                                break;
-
-                            case Improvement.ImprovementType.AttributeKarmaCostMultiplier:
-                                decMultiplier *= objLoopImprovement.Value / 100.0m;
-                                break;
-                        }
-                    }
-                }, token).ConfigureAwait(false);
+                                                          : objImprovement.Maximum) - Math.Max(intRawTotalBase,
+                                                objImprovement.Minimum - 1));
+                }
+                foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(_objCharacter, Improvement.ImprovementType.AttributePointCostMultiplier, Abbrev, true, token).ConfigureAwait(false))
+                {
+                    if (objImprovement.Minimum <= intValue)
+                        decMultiplier *= objImprovement.Value / 100.0m;
+                }
 
                 if (decMultiplier != 1.0m)
                     intCost = (intCost * decMultiplier + decExtra).StandardRound();
@@ -3422,17 +3348,78 @@ namespace Chummer.Backend.Attributes
         private async Task OnCharacterChanged(object sender, MultiplePropertiesChangedEventArgs e,
             CancellationToken token = default)
         {
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(Character.Karma)))
-                lstProperties.Add(nameof(CanUpgradeCareer));
-            if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
-                lstProperties.Add(nameof(BaseUnlocked));
-            if (e.PropertyNames.Contains(nameof(Character.LimbCount)))
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
             {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
-                    && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
-                    && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                if (e.PropertyNames.Contains(nameof(Character.Karma)))
+                    setProperties.Add(nameof(CanUpgradeCareer));
+                if (e.PropertyNames.Contains(nameof(Character.EffectiveBuildMethodUsesPriorityTables)))
+                    setProperties.Add(nameof(BaseUnlocked));
+                if (e.PropertyNames.Contains(nameof(Character.LimbCount)))
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
+                        && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
+                        && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                          .ConfigureAwait(false) &&
+                                                      !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                          await objCyberware
+                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                            .ConfigureAwait(false))
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                    }
+                }
+                if (e.PropertyNames.Contains(nameof(Character.Settings)))
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                        CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objNewSettings);
+                        if (!ReferenceEquals(objNewSettings, objOldSettings))
+                        {
+                            if (objOldSettings?.IsDisposed == false)
+                                objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                            if (objNewSettings?.IsDisposed == false)
+                            {
+                                objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                                if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                                {
+                                    MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                    await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                                }
+                            }
+                            else
+                            {
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                                await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+            }
+        }
+
+        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
+            {
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.DontUseCyberlimbCalculation)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
+                {
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
                             async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
                                                   await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
                                                       .ConfigureAwait(false) &&
@@ -3440,68 +3427,48 @@ namespace Chummer.Backend.Attributes
                                                       await objCyberware
                                                           .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
-                {
-                    lstProperties.Add(nameof(TotalValue));
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                        setProperties.Add(nameof(HasModifiers));
+                    }
                 }
-            }
 
-            if (lstProperties.Count > 0)
-                await OnMultiplePropertiesChangedAsync(lstProperties, token).ConfigureAwait(false);
-        }
-
-        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
-        {
-            List<string> lstProperties = new List<string>();
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.DontUseCyberlimbCalculation)) &&
-                Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-            {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                        async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                              await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                  .ConfigureAwait(false) &&
-                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                                  await objCyberware
-                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
-                    .ConfigureAwait(false))
+                if ((e.PropertyNames.Contains(nameof(CharacterSettings.CyberlimbAttributeBonusCap))
+                     || e.PropertyNames.Contains(nameof(CharacterSettings.ExcludeLimbSlot))) &&
+                    !setProperties.Contains(nameof(TotalValue)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                 {
-                    lstProperties.Add(nameof(TotalValue));
-                    lstProperties.Add(nameof(HasModifiers));
+                    CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
+                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                                      .ConfigureAwait(false) &&
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                      await objCyberware
+                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                        .ConfigureAwait(false))
+                    {
+                        setProperties.Add(nameof(TotalValue));
+                    }
                 }
-            }
 
-            if ((e.PropertyNames.Contains(nameof(CharacterSettings.CyberlimbAttributeBonusCap))
-                 || e.PropertyNames.Contains(nameof(CharacterSettings.ExcludeLimbSlot))) &&
-                !lstProperties.Contains(nameof(TotalValue)) && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
-            {
-                CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                        async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                              await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
-                                                  .ConfigureAwait(false) &&
-                                              !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
-                                                  await objCyberware
-                                                      .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
-                    .ConfigureAwait(false))
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.UnclampAttributeMinimum)))
                 {
-                    lstProperties.Add(nameof(TotalValue));
+                    setProperties.Add(nameof(RawMinimum));
                 }
-            }
 
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.UnclampAttributeMinimum)))
-            {
-                lstProperties.Add(nameof(RawMinimum));
-            }
+                if (e.PropertyNames.Contains(nameof(CharacterSettings.KarmaAttribute))
+                    || e.PropertyNames.Contains(nameof(CharacterSettings.AlternateMetatypeAttributeKarma)))
+                {
+                    setProperties.Add(nameof(UpgradeKarmaCost));
+                    setProperties.Add(nameof(TotalKarmaCost));
+                }
+                else if (e.PropertyNames.Contains(nameof(CharacterSettings.ReverseAttributePriorityOrder)))
+                {
+                    setProperties.Add(nameof(TotalKarmaCost));
+                }
 
-            if (e.PropertyNames.Contains(nameof(CharacterSettings.KarmaAttribute))
-                || e.PropertyNames.Contains(nameof(CharacterSettings.AlternateMetatypeAttributeKarma)))
-            {
-                lstProperties.Add(nameof(UpgradeKarmaCost));
-                lstProperties.Add(nameof(TotalKarmaCost));
-            }
-            else if (e.PropertyNames.Contains(nameof(CharacterSettings.ReverseAttributePriorityOrder)))
-            {
-                lstProperties.Add(nameof(TotalKarmaCost));
+                if (setProperties.Count > 0)
+                    await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
             }
         }
 
@@ -3698,19 +3665,7 @@ namespace Chummer.Backend.Attributes
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3735,24 +3690,16 @@ namespace Chummer.Backend.Attributes
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks =
-                            new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count,
-                                Utils.MaxParallelBatchSize));
-                        int i = 0;
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -3804,13 +3751,13 @@ namespace Chummer.Backend.Attributes
         /// <param name="strAbbrev">Linked attribute abbreviation.</param>
         public static AttributeCategory ConvertToAttributeCategory(string strAbbrev)
         {
-            switch (strAbbrev)
+            switch (strAbbrev.ToUpperInvariant())
             {
                 case "DEP":
                 case "EDG":
                 case "ESS":
                 case "MAG":
-                case "MAGAdept":
+                case "MAGADEPT":
                 case "RES":
                     return AttributeCategory.Special;
 
@@ -3826,9 +3773,9 @@ namespace Chummer.Backend.Attributes
         public static AttributeCategory ConvertToMetatypeAttributeCategory(string strValue)
         {
             //If a value does exist, test whether it belongs to a shapeshifter form.
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "Shapeshifter":
+                case "SHAPESHIFTER":
                     return AttributeCategory.Shapeshifter;
 
                 default:
@@ -4115,12 +4062,18 @@ namespace Chummer.Backend.Attributes
 
         #endregion static
 
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
-                if (_objCharacter != null)
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
+                if (_objCharacter?.IsDisposed == false)
                 {
                     try
                     {
@@ -4130,27 +4083,38 @@ namespace Chummer.Backend.Attributes
                     {
                         //swallow this
                     }
-
+                }
+                if (_objCharacterSettings?.IsDisposed == false)
+                {
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        _objCharacterSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
-                        //swallow this
+                        // swallow this
                     }
                 }
                 _objCachedTotalValueLock.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (_objCharacter != null)
+                if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) != 0)
+                    return;
+                if (_objCharacter?.IsDisposed == false)
                 {
                     try
                     {
@@ -4160,18 +4124,25 @@ namespace Chummer.Backend.Attributes
                     {
                         //swallow this
                     }
-
+                }
+                if (_objCharacterSettings?.IsDisposed == false)
+                {
                     try
                     {
-                        _objCharacter.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        _objCharacterSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
                     }
                     catch (ObjectDisposedException)
                     {
-                        //swallow this
+                        // swallow this
                     }
                 }
 
                 await _objCachedTotalValueLock.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

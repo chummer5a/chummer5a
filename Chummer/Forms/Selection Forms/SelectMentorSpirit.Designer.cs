@@ -188,7 +188,6 @@ namespace Chummer
             this.cboChoice1.Name = "cboChoice1";
             this.cboChoice1.Size = new System.Drawing.Size(379, 21);
             this.cboChoice1.TabIndex = 6;
-            this.cboChoice1.TooltipText = "";
             // 
             // cboChoice2
             // 
@@ -199,7 +198,6 @@ namespace Chummer
             this.cboChoice2.Name = "cboChoice2";
             this.cboChoice2.Size = new System.Drawing.Size(379, 21);
             this.cboChoice2.TabIndex = 8;
-            this.cboChoice2.TooltipText = "";
             // 
             // cmdCancel
             // 

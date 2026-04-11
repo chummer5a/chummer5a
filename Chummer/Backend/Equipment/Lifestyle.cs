@@ -32,22 +32,13 @@ using System.Windows.Forms;
 using System.Xml;
 using System.Xml.XPath;
 using Chummer.Annotations;
+using Chummer.Backend.Enums;
 using NLog;
 
 // ReSharper disable ConvertToAutoProperty
 
 namespace Chummer.Backend.Equipment
 {
-    /// <summary>
-    /// Type of Lifestyle.
-    /// </summary>
-    public enum LifestyleIncrement
-    {
-        Month = 0,
-        Week = 1,
-        Day = 2
-    }
-
     /// <summary>
     /// Lifestyle.
     /// </summary>
@@ -109,15 +100,15 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static LifestyleType ConvertToLifestyleType(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "BoltHole":
+                case "BOLTHOLE":
                     return LifestyleType.BoltHole;
 
-                case "Safehouse":
+                case "SAFEHOUSE":
                     return LifestyleType.Safehouse;
 
-                case "Advanced":
+                case "ADVANCED":
                     return LifestyleType.Advanced;
 
                 default:
@@ -131,14 +122,12 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         public static LifestyleIncrement ConvertToLifestyleIncrement(string strValue)
         {
-            switch (strValue)
+            switch (strValue.ToUpperInvariant())
             {
-                case "day":
-                case "Day":
+                case "DAY":
                     return LifestyleIncrement.Day;
 
-                case "week":
-                case "Week":
+                case "WEEK":
                     return LifestyleIncrement.Week;
 
                 default:
@@ -211,21 +200,21 @@ namespace Chummer.Backend.Equipment
                 XPathNavigator xmlLifestyleXPathDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/comforts/comfort[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/neighborhoods/neighborhood[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + ']');
+                        "/chummer/securities/security[name = " + BaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
                 if (_objCharacter.Settings.BookEnabled("HT") || _objCharacter.Settings.AllowFreeGrids)
@@ -245,17 +234,25 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.TryGetNodeByNameOrId(
-                                    "/chummer/qualities/quality", xmlNode.InnerText);
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                    "/chummer/qualities/quality", xmlNode.InnerTextViaPool());
                             string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select")?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
                             {
                                 _objCharacter.PushText.Push(strPush);
                             }
 
-                            objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-                            objQuality.IsFreeGrid = true;
-                            LifestyleQualities.Add(objQuality);
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            try
+                            {
+                                objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+                                objQuality.IsFreeGrid = true;
+                                LifestyleQualities.Add(objQuality);
+                            }
+                            catch
+                            {
+                                objQuality.Remove(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -319,21 +316,21 @@ namespace Chummer.Backend.Equipment
                     await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                 XPathNavigator xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/comforts/comfort[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                        "/chummer/comforts/comfort[name = " + _strBaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseComforts);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intComfortsMaximum);
 
                 // Area.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/neighborhoods/neighborhood[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                        "/chummer/neighborhoods/neighborhood[name = " + _strBaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseArea);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intAreaMaximum);
 
                 // Security.
                 xmlLifestyleNode =
                     xmlLifestyleXPathDocument.SelectSingleNode(
-                        "/chummer/securities/security[name = " + _strBaseLifestyle.CleanXPath() + ']');
+                        "/chummer/securities/security[name = " + _strBaseLifestyle.CleanXPath() + "]");
                 xmlLifestyleNode.TryGetInt32FieldQuickly("minimum", ref _intBaseSecurity);
                 xmlLifestyleNode.TryGetInt32FieldQuickly("limit", ref _intSecurityMaximum);
                 CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
@@ -356,8 +353,7 @@ namespace Chummer.Backend.Equipment
                         {
                             XmlNode xmlQuality
                                 = xmlLifestyleDocument.TryGetNodeByNameOrId(
-                                    "/chummer/qualities/quality", xmlNode.InnerText);
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                    "/chummer/qualities/quality", xmlNode.InnerTextViaPool(token));
                             string strPush = xmlNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)
                                 ?.Value;
                             if (!string.IsNullOrWhiteSpace(strPush))
@@ -365,10 +361,19 @@ namespace Chummer.Backend.Equipment
                                 (await _objCharacter.GetPushTextAsync(token).ConfigureAwait(false)).Push(strPush);
                             }
 
-                            await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
-                                token: token).ConfigureAwait(false);
-                            await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
-                            await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                            try
+                            {
+                                await objQuality.CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn,
+                                    token: token).ConfigureAwait(false);
+                                await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                                await _lstLifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                     }
                 }
@@ -509,14 +514,39 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Load the CharacterAttribute from the XmlNode.
+        /// Load the Lifestyle from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        /// <param name="blnCopy"></param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
         public void Load(XmlNode objNode, bool blnCopy = false)
         {
-            using (LockObject.EnterWriteLock())
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+        }
+
+        /// <summary>
+        /// Load the Lifestyle from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, blnCopy, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (blnCopy || !objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -525,10 +555,15 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetStringFieldQuickly("name", ref _strName);
                 _objCachedMyXmlNode = null;
                 _objCachedMyXPathNode = null;
-                Lazy<XmlNode> objMyNode = new Lazy<XmlNode>(() => this.GetNode());
+                Lazy<XmlNode> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XmlNode>(() => this.GetNode(token));
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XmlNode>(() => this.GetNodeAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
                 {
-                    objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
 
                 if (blnCopy)
@@ -562,7 +597,10 @@ namespace Chummer.Backend.Equipment
                 objNode.TryGetDecFieldQuickly("percentage", ref _decPercentage);
                 objNode.TryGetStringFieldQuickly("baselifestyle", ref _strBaseLifestyle);
                 objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
-                XPathNavigator xmlLifestyles = _objCharacter.LoadDataXPath("lifestyles.xml");
+                XPathNavigator xmlLifestyles = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath("lifestyles.xml", token: token)
+                    : await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
                 if (xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle) == null
                     && xmlLifestyles.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", Name) != null)
                 {
@@ -578,28 +616,41 @@ namespace Chummer.Backend.Equipment
                                                                        out List<ListItem> lstQualities))
                         {
                             foreach (XPathNavigator xmlLifestyle in xmlLifestyles.SelectAndCacheExpression(
-                                         "/chummer/lifestyles/lifestyle"))
+                                         "/chummer/lifestyles/lifestyle", token))
                             {
-                                string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name")?.Value
-                                                 ?? LanguageManager.GetString("String_Error");
+                                string strName = xmlLifestyle.SelectSingleNodeAndCacheExpression("name", token)?.Value
+                                                 ?? (blnSync
+                                                     // ReSharper disable once MethodHasAsyncOverload
+                                                     ? LanguageManager.GetString("String_Error", token: token)
+                                                    : await LanguageManager.GetStringAsync("String_Error", token: token).ConfigureAwait(false));
                                 lstQualities.Add(
                                     new ListItem(
                                         strName,
-                                        xmlLifestyle.SelectSingleNodeAndCacheExpression("translate")?.Value
+                                        xmlLifestyle.SelectSingleNodeAndCacheExpression("translate", token)?.Value
                                         ?? strName));
                             }
 
-                            using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(
+                            string strDescription = string.Format(GlobalSettings.CultureInfo, blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? LanguageManager.GetString("String_CannotFindLifestyle", token: token)
+                                : await LanguageManager.GetStringAsync("String_CannotFindLifestyle", token: token).ConfigureAwait(false), _strName);
+                            using (ThreadSafeForm<SelectItem> frmSelect = blnSync
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                ? ThreadSafeForm<SelectItem>.Get(
                                        () => new SelectItem
                                        {
-                                           Description = string.Format(GlobalSettings.CultureInfo,
-                                                                       LanguageManager.GetString(
-                                                                           "String_CannotFindLifestyle"),
-                                                                       _strName)
-                                       }))
+                                           Description = strDescription
+                                       })
+                                : await ThreadSafeForm<SelectItem>.GetAsync(
+                                       () => new SelectItem
+                                       {
+                                           Description = strDescription
+                                       }, token).ConfigureAwait(false))
                             {
                                 frmSelect.MyForm.SetGeneralItemsMode(lstQualities);
-                                if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
+                                // ReSharper disable once MethodHasAsyncOverload
+                                if ((blnSync ? frmSelect.ShowDialogSafe(_objCharacter, token) : await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false))
+                                    == DialogResult.Cancel)
                                 {
                                     _guiID = Guid.Empty;
                                     return;
@@ -618,7 +669,7 @@ namespace Chummer.Backend.Equipment
                     && _strBaseLifestyle != "Street"
                     && (_decCostForArea != 0 || _decCostForComforts != 0 || _decCostForSecurity != 0))
                 {
-                    XmlNode xmlDataNode = objMyNode.Value;
+                    XmlNode xmlDataNode = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                     if (xmlDataNode != null)
                     {
                         xmlDataNode.TryGetDecFieldQuickly("costforarea", ref _decCostForArea);
@@ -628,9 +679,10 @@ namespace Chummer.Backend.Equipment
                 }
 
                 if (!objNode.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP))
-                    objMyNode.Value?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
+                    (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetBoolFieldQuickly("allowbonuslp", ref _blnAllowBonusLP);
                 if (!objNode.TryGetInt32FieldQuickly("bonuslp", ref _intBonusLP) && _strBaseLifestyle == "Traveler")
-                    _intBonusLP = GlobalSettings.RandomGenerator.NextD6ModuloBiasRemoved();
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    _intBonusLP = blnSync ? Utils.GlobalRandom.NextD6ModuloBiasRemoved() : await Utils.GlobalRandom.NextD6ModuloBiasRemovedAsync(token).ConfigureAwait(false);
 
                 if (!objNode.TryGetInt32FieldQuickly("lp", ref _intLP))
                 {
@@ -682,11 +734,42 @@ namespace Chummer.Backend.Equipment
                 {
                     if (xmlQualityList != null)
                     {
-                        foreach (XmlNode xmlQuality in xmlQualityList)
+                        if (blnSync)
                         {
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            objQuality.Load(xmlQuality, this);
-                            LifestyleQualities.Add(objQuality);
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                try
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                try
+                                {
+                                    await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                    await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+                            }
                         }
                     }
                 }
@@ -697,12 +780,44 @@ namespace Chummer.Backend.Equipment
                 {
                     if (xmlQualityList != null)
                     {
-                        foreach (XmlNode xmlQuality in xmlQualityList)
+                        if (blnSync)
                         {
-                            LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            objQuality.Load(xmlQuality, this);
-                            objQuality.IsFreeGrid = true;
-                            LifestyleQualities.Add(objQuality);
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                try
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objQuality.Load(xmlQuality, this);
+                                    objQuality.IsFreeGrid = true;
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
+                            }
+                        }
+                        else
+                        {
+                            foreach (XmlNode xmlQuality in xmlQualityList)
+                            {
+                                LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
+                                try
+                                {
+                                    await objQuality.LoadAsync(xmlQuality, this, token).ConfigureAwait(false);
+                                    await objQuality.SetIsFreeGridAsync(true, token).ConfigureAwait(false);
+                                    await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+                            }
                         }
                     }
                 }
@@ -725,10 +840,22 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (_eType == LifestyleType.Safehouse)
                     _eIncrement = LifestyleIncrement.Week;
-                else if (objMyNode.Value?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
+                else if ((blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("increment", ref strTemp) == true)
                     _eIncrement = ConvertToLifestyleIncrement(strTemp);
 
-                LegacyShim(objNode);
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                    LegacyShim(objNode);
+                else
+                    await LegacyShimAsync(objNode, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                if (blnSync)
+                    // ReSharper disable once MethodHasAsyncOverload
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -737,12 +864,12 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void LegacyShim(XmlNode xmlLifestyleNode)
         {
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) || xmlLifestyleNode["costforarea"] != null)
+                return;
+            XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
             using (LockObject.EnterWriteLock())
             {
-                //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
-                if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) ||
-                    xmlLifestyleNode["costforarea"] != null) return;
-                XPathNavigator objXmlDocument = _objCharacter.LoadDataXPath("lifestyles.xml");
                 XPathNavigator objLifestyleQualityNode
                     = objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", BaseLifestyle);
                 if (objLifestyleQualityNode != null)
@@ -806,6 +933,88 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Converts old lifestyle structures to new standards.
+        /// </summary>
+        private async Task LegacyShimAsync(XmlNode xmlLifestyleNode, CancellationToken token = default)
+        {
+            //Lifestyles would previously store the entire calculated value of their Cost, Area, Comforts and Security. Better to have it be a volatile Complex Property.
+            if (_objCharacter.LastSavedVersion > new ValueVersion(5, 197, 0) || xmlLifestyleNode["costforarea"] != null)
+                return;
+            XPathNavigator objXmlDocument = await _objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
+                XPathNavigator objLifestyleQualityNode
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/lifestyles/lifestyle", strBaseLifestyle);
+                if (objLifestyleQualityNode != null)
+                {
+                    decimal decTemp = 0.0m;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("cost", ref decTemp))
+                        await SetCostAsync(decTemp, token).ConfigureAwait(false);
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforarea", ref decTemp))
+                        CostForArea = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforcomforts", ref decTemp))
+                        CostForComforts = decTemp;
+                    if (objLifestyleQualityNode.TryGetDecFieldQuickly("costforsecurity", ref decTemp))
+                        CostForSecurity = decTemp;
+                }
+
+                int intMinArea = 0;
+                int intMinComfort = 0;
+                int intMinSec = 0;
+                int intMaxArea = 0;
+                int intMaxComfort = 0;
+                int intMaxSec = 0;
+
+                // Calculate the limits of the 3 aspects.
+                // Area.
+                XPathNavigator objXmlNode
+                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/neighborhoods/neighborhood", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinArea);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxArea);
+                BaseArea = intMinArea;
+                AreaMaximum = Math.Max(intMaxArea, intMinArea);
+                // Comforts.
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/comforts/comfort", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinComfort);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxComfort);
+                BaseComforts = intMinComfort;
+                ComfortsMaximum = Math.Max(intMaxComfort, intMinComfort);
+                // Security.
+                objXmlNode = objXmlDocument.TryGetNodeByNameOrId("/chummer/securities/security", strBaseLifestyle);
+                objXmlNode.TryGetInt32FieldQuickly("minimum", ref intMinSec);
+                objXmlNode.TryGetInt32FieldQuickly("limit", ref intMaxSec);
+                BaseSecurity = intMinSec;
+                SecurityMaximum = Math.Max(intMaxSec, intMinSec);
+
+                xmlLifestyleNode.TryGetInt32FieldQuickly("area", ref intMinArea);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("comforts", ref intMinComfort);
+                xmlLifestyleNode.TryGetInt32FieldQuickly("security", ref intMinSec);
+
+                // Calculate the cost of Positive Qualities.
+                await LifestyleQualities.ForEachAsync(async objQuality =>
+                {
+                    if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    {
+                        intMinArea -= objQuality.Area;
+                        intMinComfort -= objQuality.Comforts;
+                        intMinSec -= objQuality.Security;
+                    }
+                }, token).ConfigureAwait(false);
+
+                await SetAreaAsync(Math.Max(intMinArea - BaseArea, 0), token).ConfigureAwait(false);
+                await SetComfortsAsync(Math.Max(intMinComfort - BaseComforts, 0), token).ConfigureAwait(false);
+                await SetSecurityAsync(Math.Max(intMinSec - BaseSecurity, 0), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
@@ -838,7 +1047,7 @@ namespace Chummer.Backend.Equipment
                             token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("totalmonthlycost",
-                            (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false))
+                            (await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false))
                             .ToString(
                                 strNuyenFormat, objCulture), token)
                         .ConfigureAwait(false);
@@ -864,20 +1073,23 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("bonuslp", (await GetBonusLPAsync(token).ConfigureAwait(false)).ToString(objCulture), token)
                         .ConfigureAwait(false);
                     string strBaseLifestyle = await GetBaseLifestyleAsync(token).ConfigureAwait(false);
-
+                    string strBaseLifestyleLocalized = strBaseLifestyle;
                     // Retrieve the Advanced Lifestyle information if applicable.
                     if (!string.IsNullOrEmpty(strBaseLifestyle))
                     {
                         XPathNavigator objXmlAspect = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (objXmlAspect != null)
                         {
-                            strBaseLifestyle
+                            strBaseLifestyle = objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
+                            strBaseLifestyleLocalized
                                 = objXmlAspect.SelectSingleNodeAndCacheExpression("translate", token)?.Value
-                                  ?? objXmlAspect.SelectSingleNodeAndCacheExpression("name", token)?.Value ?? strBaseLifestyle;
+                                  ?? strBaseLifestyle;
                         }
                     }
 
-                    await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyle, token)
+                    await objWriter.WriteElementStringAsync("baselifestyle", strBaseLifestyleLocalized, token)
+                        .ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("baselifestyle_english", strBaseLifestyle, token)
                         .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("trustfund", TrustFund.ToString(GlobalSettings.InvariantCultureInfo),
@@ -1612,8 +1824,16 @@ namespace Chummer.Backend.Equipment
                                     = xmlLifestyleDocument.SelectSingleNode(
                                         "/chummer/qualities/quality[name = \"Not a Home\"]");
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                                objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
-                                LifestyleQualities.Add(objQuality);
+                                try
+                                {
+                                    objQuality.Create(xmlQuality, this, _objCharacter, QualitySource.BuiltIn);
+                                    LifestyleQualities.Add(objQuality);
+                                }
+                                catch
+                                {
+                                    objQuality.Remove(false);
+                                    throw;
+                                }
                             }
                             else if (objNotAHomeQuality.OriginSource != QualitySource.BuiltIn)
                                 objNotAHomeQuality.OriginSource = QualitySource.BuiltIn;
@@ -1729,10 +1949,18 @@ namespace Chummer.Backend.Equipment
                                 = xmlLifestyleDocument.SelectSingleNode(
                                     "/chummer/qualities/quality[name = \"Not a Home\"]");
                             LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
-                            await objQuality
-                                .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
-                                .ConfigureAwait(false);
-                            await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            try
+                            {
+                                await objQuality
+                                    .CreateAsync(xmlQuality, this, _objCharacter, QualitySource.BuiltIn, token: token)
+                                    .ConfigureAwait(false);
+                                await LifestyleQualities.AddAsync(objQuality, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objQuality.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
                         }
                         else if (await objNotAHomeQuality.GetOriginSourceAsync(token).ConfigureAwait(false) !=
                                  QualitySource.BuiltIn)
@@ -3194,6 +3422,24 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        /// <summary>
+        /// Calculates the Expected Value of an Lifestyle at chargen under the assumption that the average value was rolled
+        /// </summary>
+        public async Task<decimal> GetExpectedValueAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return 3.5m * await GetDiceAsync(token).ConfigureAwait(false) * await GetMultiplierAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         public string City
         {
             get
@@ -3344,7 +3590,7 @@ namespace Chummer.Backend.Equipment
             get
             {
                 using (LockObject.EnterReadLock())
-                    return TotalMonthlyCost * Increments;
+                    return GetTotalMonthlyCost() * Increments;
             }
         }
 
@@ -3357,7 +3603,7 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await GetTotalMonthlyCostAsync(token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
+                return await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false) * await GetIncrementsAsync(token).ConfigureAwait(false);
             }
             finally
             {
@@ -3685,9 +3931,18 @@ namespace Chummer.Backend.Equipment
                     decimal decCost = Cost;
 
                     // Base cost multiplier
-                    decimal decMultiplier = LifestyleQualities.Sum(x => x.OriginSource != QualitySource.BuiltIn, lq => lq.BaseMultiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
+                    decimal decMultiplier = 1.0m;
+                    foreach (LifestyleQuality lq in LifestyleQualities)
+                    {
+                        if (lq.OriginSource != QualitySource.BuiltIn)
+                        {
+                            decimal decInnerMultiplier = lq.BaseMultiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        }
+                    }
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
 
                     // Add in costs from lifestyle categories.
                     decMultiplier = Area + Comforts + Security;
@@ -3696,30 +3951,37 @@ namespace Chummer.Backend.Equipment
                     decCost += Area * CostForArea + Comforts * CostForComforts + Security * CostForSecurity;
 
                     // Add costs from Entertainment Assets.
-                    decMultiplier =
-                        LifestyleQualities.Sum(
-                            x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                                 x.Category.Contains("Asset"),
-                            lq => lq.Multiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
-                    // Flat costs added after multipliers, as per HT 139
-                    decCost += LifestyleQualities.Sum(
+                    decMultiplier = 1.0m;
+                    decimal decFlatCosts = LifestyleQualities.Sum(
                         x => x.OriginSource != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                             x.Category.Contains("Asset"),
-                        lq => lq.Cost);
+                                 x.Category.Contains("Asset"),
+                        lq =>
+                        {
+                            decimal decInnerMultiplier = lq.Multiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                            return lq.Cost;
+                        });
+                    // Flat costs added after multipliers, as per HT 139
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
+                    decCost += decFlatCosts;
 
                     // Add costs from qualities that are not Entertainment Assets (or Contracts)
-                    decMultiplier =
-                        LifestyleQualities.Sum(
-                            x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                            lq => lq.Multiplier);
-                    if (decMultiplier != 0)
-                        decCost *= 1.0m + decMultiplier / 100.0m;
-                    // Flat costs added after multipliers, as per HT 139
-                    decCost += LifestyleQualities.Sum(
+                    decMultiplier = 1.0m;
+                    decFlatCosts = LifestyleQualities.Sum(
                         x => x.OriginSource != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                        lq => lq.Cost);
+                        lq =>
+                        {
+                            decimal decInnerMultiplier = lq.Multiplier;
+                            if (decInnerMultiplier != 0)
+                                decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                            return lq.Cost;
+                        });
+                    // Flat costs added after multipliers, as per HT 139
+                    if (decMultiplier != 1.0m)
+                        decCost *= decMultiplier;
+                    decCost += decFlatCosts;
 
                     // Shared lifestyle adjustment
                     if (Roommates > 0)
@@ -3745,9 +4007,18 @@ namespace Chummer.Backend.Equipment
                 decimal decCost = await GetCostAsync(token).ConfigureAwait(false);
 
                 // Base cost multiplier
-                decimal decMultiplier = await LifestyleQualities.SumAsync(async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, lq => lq.GetBaseMultiplierAsync(token), token).ConfigureAwait(false) / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
+                decimal decMultiplier = 1.0m;
+                await LifestyleQualities.ForEachAsync(async x =>
+                {
+                    if (await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn)
+                    {
+                        decimal decInnerMultiplier = await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                    }
+                }, token).ConfigureAwait(false);
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
 
                 // Add in costs from lifestyle categories.
                 int intArea = await GetAreaAsync(token).ConfigureAwait(false);
@@ -3759,32 +4030,38 @@ namespace Chummer.Backend.Equipment
                 decCost += intArea * CostForArea + intComforts * CostForComforts + intSecurity * CostForSecurity;
 
                 // Add costs from Entertainment Assets.
-                decMultiplier =
-                    await LifestyleQualities.SumAsync(
-                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
-                                   x.Category.Contains("Asset"),
-                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
-                    / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
-                // Flat costs added after multipliers, as per HT 139
-                decCost += await LifestyleQualities.SumAsync(
+                decMultiplier = 1.0m;
+                decimal decFlatCosts = await LifestyleQualities.SumAsync(
                     async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type == QualityType.Entertainment &&
                                x.Category.Contains("Asset"),
-                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+                    async lq =>
+                    {
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
+                decCost += decFlatCosts;
 
                 // Add costs from qualities that are not Entertainment Assets (or Contracts)
-                decMultiplier =
-                    await LifestyleQualities.SumAsync(
-                        async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                        lq => lq.GetMultiplierAsync(token), token).ConfigureAwait(false)
-                    / 100.0m;
-                if (decMultiplier != 0)
-                    decCost *= 1.0m + decMultiplier;
+                decMultiplier = 1.0m;
+                decFlatCosts = await LifestyleQualities.SumAsync(
+                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment &&
+                               x.Type != QualityType.Contracts,
+                    async lq =>
+                    {
+                        decimal decInnerMultiplier = await lq.GetMultiplierAsync(token).ConfigureAwait(false);
+                        if (decInnerMultiplier != 0)
+                            decMultiplier *= 1.0m + decInnerMultiplier / 100.0m;
+                        return await lq.GetCostAsync(token).ConfigureAwait(false);
+                    }, token).ConfigureAwait(false);
                 // Flat costs added after multipliers, as per HT 139
-                decCost += await LifestyleQualities.SumAsync(
-                    async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn && x.Type != QualityType.Entertainment && x.Type != QualityType.Contracts,
-                    lq => lq.GetCostAsync(token), token).ConfigureAwait(false);
+                if (decMultiplier != 1.0m)
+                    decCost *= decMultiplier;
+                decCost += decFlatCosts;
 
                 // Shared lifestyle adjustment
                 int intRoommates = await GetRoommatesAsync(token).ConfigureAwait(false);
@@ -3803,115 +4080,203 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public decimal TotalMonthlyCost
+        public decimal GetTotalMonthlyCost(bool blnIncorporateOnceOffAdjustments = true)
         {
-            get
+            decimal decReturn = 0;
+
+            using (LockObject.EnterReadLock())
             {
-                decimal decReturn = 0;
-
-                using (LockObject.EnterReadLock())
+                if (!TrustFund)
                 {
-                    if (!TrustFund)
+                    decReturn += CostPreSplit;
+
+                    // Follow HT 139 from Split step onwards
+                    if (SplitCostWithRoommates)
                     {
-                        decReturn += CostPreSplit;
-
-                        // Follow HT 139 from Split step onwards
-                        if (SplitCostWithRoommates)
-                        {
-                            decReturn /= Roommates + 1.0m;
-                        }
+                        decReturn /= Roommates + 1.0m;
                     }
-
-                    // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
-                    List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
-                        _objCharacter,
-                        Improvement.ImprovementType.LifestyleCost,
-                        strImprovedName: BaseLifestyle, blnIncludeNonImproved: true);
-                    if (StyleType == LifestyleType.Standard)
-                    {
-                        lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
-                            _objCharacter,
-                            Improvement.ImprovementType.BasicLifestyleCost,
-                            strImprovedName: BaseLifestyle, blnIncludeNonImproved: true));
-                    }
-                    // Dependents and metatype adjustments are handled separately
-                    List<Quality> lstDependentsQualities =
-                        _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
-                    decimal decDependents = 0;
-                    decimal decMetatype = 0;
-                    decimal decOther = 0;
-                    foreach (Improvement objImprovement in lstImprovements)
-                    {
-                        if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
-                            lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
-                            decDependents += objImprovement.Value;
-                        else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
-                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
-                                 || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
-                            decMetatype += objImprovement.Value;
-                        else
-                            decOther += objImprovement.Value;
-                    }
-                    // Dependents first
-                    if (decDependents != 0)
-                        decReturn *= 1.0m + decDependents / 100.0m;
-                    // Metatype next
-                    if (decMetatype != 0)
-                        decReturn *= 1.0m + decMetatype / 100.0m;
-                    // Finally, everything else
-                    if (decOther != 0)
-                        decReturn *= 1.0m + decOther / 100.0m;
-
-                    // Add in Outings and Services costs
-                    decimal decContractCost = 0;
-                    decimal decOutingsAndServicesCost = 0;
-                    decimal decMultiplier = 0;
-                    decimal decBaseMultiplier = 0;
-                    foreach (LifestyleQuality objQuality in LifestyleQualities)
-                    {
-                        if (objQuality.OriginSource == QualitySource.BuiltIn)
-                            continue;
-                        if (objQuality.Type == QualityType.Contracts)
-                            decContractCost += objQuality.Cost;
-                        else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
-                        {
-                            decOutingsAndServicesCost += objQuality.Cost;
-                            decMultiplier += objQuality.Multiplier;
-                            decBaseMultiplier += objQuality.BaseMultiplier;
-                        }
-                    }
-                    if (decMultiplier != 0)
-                        decReturn *= 1.0m + decMultiplier / 100.0m;
-                    decReturn += decOutingsAndServicesCost;
-                    if (decBaseMultiplier != 0)
-                        decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
-
-                    // Apply final percentage modifier
-                    decReturn *= Percentage / 100;
-
-                    // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
-                    switch (IncrementType)
-                    {
-                        case LifestyleIncrement.Day:
-                            decContractCost /= 4.34812m * 7;
-                            break;
-
-                        case LifestyleIncrement.Week:
-                            decContractCost /= 4.34812m;
-                            break;
-                    }
-
-                    decReturn += decContractCost;
                 }
 
-                return decReturn;
+                string strBaseLifestyle = BaseLifestyle;
+                // Factor in character-based lifestyle cost adjustments (metatype, dependents, augmentations, etc.)
+                List<Improvement> lstImprovements = ImprovementManager.GetCachedImprovementListForValueOf(
+                    _objCharacter,
+                    Improvement.ImprovementType.LifestyleCost,
+                    strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true);
+                if (StyleType == LifestyleType.Standard)
+                {
+                    lstImprovements.AddRange(ImprovementManager.GetCachedImprovementListForValueOf(
+                        _objCharacter,
+                        Improvement.ImprovementType.BasicLifestyleCost,
+                        strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true));
+                }
+                if (blnIncorporateOnceOffAdjustments)
+                {
+                    List<Improvement> lstOnceOffImprovements = StyleType == LifestyleType.Standard
+                        ? _objCharacter.Improvements.FindAll(x =>
+                            x.Enabled && (x.ImproveType == Improvement.ImprovementType.LifestyleCost || x.ImproveType == Improvement.ImprovementType.BasicLifestyleCost)
+                            && x.Condition == "once"
+                            && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
+                        : _objCharacter.Improvements.FindAll(x =>
+                            x.Enabled && x.ImproveType == Improvement.ImprovementType.LifestyleCost
+                            && x.Condition == "once"
+                            && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle));
+                    if (lstOnceOffImprovements.Count > 0)
+                    {
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        foreach (Improvement objImprovement in lstOnceOffImprovements)
+                        {
+                            string strUnique = objImprovement.UniqueName;
+                            Dictionary<string, List<Improvement>> dicToUse = string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                ? dicGenericOnceOffImprovementsByUnique
+                                : dicSpecificOnceOffImprovementsByUnique;
+                            if (dicToUse.TryGetValue(strUnique, out List<Improvement> lstLoop))
+                                lstLoop.Add(objImprovement);
+                            else
+                            {
+                                lstLoop = new List<Improvement>(lstOnceOffImprovements.Count)
+                                    {
+                                        objImprovement
+                                    };
+                                dicToUse.Add(strUnique, lstLoop);
+                            }
+                        }
+                        if (dicGenericOnceOffImprovementsByUnique.Count > 0 || dicSpecificOnceOffImprovementsByUnique.Count > 0)
+                        {
+                            // We want to make sure that the largest discounts affect the costliest lifestyle first and the largest markups affect the smallest first
+                            List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
+                                ? _objCharacter.Lifestyles.ToList()
+                                : _objCharacter.Lifestyles.FindAll(x => x.BaseLifestyle == strBaseLifestyle);
+                            Dictionary<Lifestyle, decimal> dicLifestyleCosts = new Dictionary<Lifestyle, decimal>(lstLifestyles.Count);
+                            foreach (Lifestyle objLoop in lstLifestyles)
+                            {
+                                decimal decCost = objLoop.GetTotalMonthlyCost(false);
+                                switch (objLoop.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decCost *= 4.34812m;
+                                        break;
+                                }
+                                dicLifestyleCosts.Add(objLoop, decCost);
+                            }
+                            lstLifestyles.Sort((x, y) =>
+                            {
+                                dicLifestyleCosts.TryGetValue(x, out decimal decLeftCost);
+                                dicLifestyleCosts.TryGetValue(y, out decimal decRightCost);
+                                return decRightCost.CompareTo(decLeftCost);
+                            });
+                            int intMyIndex = lstLifestyles.IndexOf(this);
+                            foreach (List<Improvement> lstLoop in dicGenericOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                            if (dicGenericOnceOffImprovementsByUnique.Count > 0)
+                            {
+                                intMyIndex = 0;
+                                foreach (Lifestyle objLoop in lstLifestyles)
+                                {
+                                    if (ReferenceEquals(objLoop, this))
+                                        break;
+                                    if (objLoop.BaseLifestyle == strBaseLifestyle)
+                                        ++intMyIndex;
+                                }
+                            }
+                            foreach (List<Improvement> lstLoop in dicSpecificOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                        }
+                    }
+                }
+                // Dependents and metatype adjustments are handled separately
+                List<Quality> lstDependentsQualities =
+                    _objCharacter.Qualities.Where(x => x.Name.Contains("Dependent")).ToList();
+                decimal decDependents = 0;
+                decimal decMetatype = 0;
+                decimal decOther = 1.0m;
+                foreach (Improvement objImprovement in lstImprovements)
+                {
+                    if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
+                        lstDependentsQualities.Any(x => x.InternalId == objImprovement.SourceName))
+                        decDependents += objImprovement.Value;
+                    else if (objImprovement.ImproveSource == Improvement.ImprovementSource.Heritage
+                                || objImprovement.ImproveSource == Improvement.ImprovementSource.Metatype
+                                || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
+                        decMetatype += objImprovement.Value;
+                    else
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
+                }
+                // Dependents first
+                if (decDependents != 0)
+                    decReturn *= 1.0m + decDependents / 100.0m;
+                // Metatype next
+                if (decMetatype != 0)
+                    decReturn *= 1.0m + decMetatype / 100.0m;
+                // Finally, everything else
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
+
+                // Add in Outings and Services costs
+                decimal decContractCost = 0;
+                decimal decOutingsAndServicesCost = 0;
+                decimal decMultiplier = 1.0m;
+                decimal decBaseMultiplier = 1.0m;
+                foreach (LifestyleQuality objQuality in LifestyleQualities)
+                {
+                    if (objQuality.OriginSource == QualitySource.BuiltIn)
+                        continue;
+                    if (objQuality.Type == QualityType.Contracts)
+                        decContractCost += objQuality.Cost;
+                    else if (objQuality.Type == QualityType.Entertainment && !objQuality.Category.Contains("Asset"))
+                    {
+                        decOutingsAndServicesCost += objQuality.Cost;
+                        decMultiplier *= 1.0m + objQuality.Multiplier / 100.0m;
+                        decBaseMultiplier *= 1.0m + objQuality.BaseMultiplier / 100.0m;
+                    }
+                }
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
+                decReturn += decOutingsAndServicesCost;
+                if (decBaseMultiplier != 1.0m)
+                    decReturn += Cost * decBaseMultiplier;
+
+                // Apply final percentage modifier
+                decReturn *= Percentage / 100;
+
+                // Add contract costs, which are technically not a part of the lifestyle and are just used as a more automated way to deal with recurring costs
+                switch (IncrementType)
+                {
+                    case LifestyleIncrement.Day:
+                        decContractCost /= 4.34812m * 7;
+                        break;
+
+                    case LifestyleIncrement.Week:
+                        decContractCost /= 4.34812m;
+                        break;
+                }
+
+                decReturn += decContractCost;
             }
+
+            return decReturn;
         }
 
         /// <summary>
         /// Total monthly cost of the Lifestyle.
         /// </summary>
-        public async Task<decimal> GetTotalMonthlyCostAsync(CancellationToken token = default)
+        public async Task<decimal> GetTotalMonthlyCostAsync(bool blnIncorporateOnceOffAdjustments = true, CancellationToken token = default)
         {
             decimal decReturn = 0;
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -3942,13 +4307,114 @@ namespace Chummer.Backend.Equipment
                         Improvement.ImprovementType.BasicLifestyleCost,
                         strImprovedName: strBaseLifestyle, blnIncludeNonImproved: true, token: token).ConfigureAwait(false));
                 }
+                if (blnIncorporateOnceOffAdjustments)
+                {
+                    List<Improvement> lstOnceOffImprovements = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
+                    if (StyleType == LifestyleType.Standard)
+                    {
+                        await _objCharacter.Improvements.ForEachAsync(x =>
+                        {
+                            if (x.Enabled && (x.ImproveType == Improvement.ImprovementType.LifestyleCost || x.ImproveType == Improvement.ImprovementType.BasicLifestyleCost)
+                                && x.Condition == "once"
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
+                                lstOnceOffImprovements.Add(x);
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await _objCharacter.Improvements.ForEachAsync(x =>
+                        {
+                            if (x.Enabled && x.ImproveType == Improvement.ImprovementType.LifestyleCost
+                                && x.Condition == "once"
+                                && (string.IsNullOrEmpty(x.ImprovedName) || x.ImprovedName == strBaseLifestyle))
+                                lstOnceOffImprovements.Add(x);
+                        }, token).ConfigureAwait(false);
+                    }
+                    if (lstOnceOffImprovements.Count > 0)
+                    {
+                        Dictionary<string, List<Improvement>> dicGenericOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        Dictionary<string, List<Improvement>> dicSpecificOnceOffImprovementsByUnique = new Dictionary<string, List<Improvement>>(lstOnceOffImprovements.Count);
+                        foreach (Improvement objImprovement in lstOnceOffImprovements)
+                        {
+                            string strUnique = objImprovement.UniqueName;
+                            Dictionary<string, List<Improvement>> dicToUse = string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                ? dicGenericOnceOffImprovementsByUnique
+                                : dicSpecificOnceOffImprovementsByUnique;
+                            if (dicToUse.TryGetValue(strUnique, out List<Improvement> lstLoop))
+                                lstLoop.Add(objImprovement);
+                            else
+                            {
+                                lstLoop = new List<Improvement>(lstOnceOffImprovements.Count)
+                                    {
+                                        objImprovement
+                                    };
+                                dicToUse.Add(strUnique, lstLoop);
+                            }
+                        }
+                        if (dicGenericOnceOffImprovementsByUnique.Count > 0 || dicSpecificOnceOffImprovementsByUnique.Count > 0)
+                        {
+                            // We want to make sure that the largest discounts affect the costliest lifestyle first and the largest markups affect the smallest first
+                            List<Lifestyle> lstLifestyles = dicGenericOnceOffImprovementsByUnique.Count > 0
+                                ? await _objCharacter.Lifestyles.ToListAsync(token)
+                                : await _objCharacter.Lifestyles.ToListAsync(async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle, token);
+                            Dictionary<Lifestyle, decimal> dicLifestyleCosts = new Dictionary<Lifestyle, decimal>(lstLifestyles.Count);
+                            foreach (Lifestyle objLoop in lstLifestyles)
+                            {
+                                decimal decCost = await objLoop.GetTotalMonthlyCostAsync(false, token).ConfigureAwait(false);
+                                switch (objLoop.IncrementType)
+                                {
+                                    case LifestyleIncrement.Day:
+                                        decCost *= 4.34812m / 7;
+                                        break;
+
+                                    case LifestyleIncrement.Week:
+                                        decCost *= 4.34812m;
+                                        break;
+                                }
+                                dicLifestyleCosts.Add(objLoop, decCost);
+                            }
+                            lstLifestyles.Sort((x, y) =>
+                            {
+                                dicLifestyleCosts.TryGetValue(x, out decimal decLeftCost);
+                                dicLifestyleCosts.TryGetValue(y, out decimal decRightCost);
+                                return decRightCost.CompareTo(decLeftCost);
+                            });
+                            int intMyIndex = lstLifestyles.IndexOf(this);
+                            foreach (List<Improvement> lstLoop in dicGenericOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                            if (dicGenericOnceOffImprovementsByUnique.Count > 0)
+                            {
+                                intMyIndex = 0;
+                                foreach (Lifestyle objLoop in lstLifestyles)
+                                {
+                                    if (ReferenceEquals(objLoop, this))
+                                        break;
+                                    if (await objLoop.GetBaseLifestyleAsync(token).ConfigureAwait(false) == strBaseLifestyle)
+                                        ++intMyIndex;
+                                }
+                            }
+                            foreach (List<Improvement> lstLoop in dicSpecificOnceOffImprovementsByUnique.Values)
+                            {
+                                if (lstLoop.Count <= intMyIndex)
+                                    continue; // We have so few improvements in this unique group that this lifestyle would not be affected, so skip
+                                lstLoop.Sort((x, y) => x.Value.CompareTo(y.Value));
+                                lstImprovements.Add(lstLoop[intMyIndex]);
+                            }
+                        }
+                    }
+                }
                 // Dependents and metatype adjustments are handled separately
                 List<Quality> lstDependentsQualities =
                     await _objCharacter.Qualities.ToListAsync(
                         async x => (await x.GetNameAsync(token).ConfigureAwait(false)).Contains("Dependent"), token).ConfigureAwait(false);
                 decimal decDependents = 0;
                 decimal decMetatype = 0;
-                decimal decOther = 0;
+                decimal decOther = 1.0m;
                 foreach (Improvement objImprovement in lstImprovements)
                 {
                     if (objImprovement.ImproveSource == Improvement.ImprovementSource.Quality &&
@@ -3959,7 +4425,7 @@ namespace Chummer.Backend.Equipment
                              || objImprovement.ImproveSource == Improvement.ImprovementSource.Metavariant)
                         decMetatype += objImprovement.Value;
                     else
-                        decOther += objImprovement.Value;
+                        decOther *= 1.0m + objImprovement.Value / 100.0m;
                 }
                 // Dependents first
                 if (decDependents != 0)
@@ -3968,13 +4434,13 @@ namespace Chummer.Backend.Equipment
                 if (decMetatype != 0)
                     decReturn *= 1.0m + decMetatype / 100.0m;
                 // Finally, everything else
-                if (decOther != 0)
-                    decReturn *= 1.0m + decOther / 100.0m;
+                if (decOther != 1.0m)
+                    decReturn *= decOther;
 
                 // Add in Outings and Services costs
                 decimal decContractCost = 0;
-                decimal decMultiplier = 0;
-                decimal decBaseMultiplier = 0;
+                decimal decMultiplier = 1.0m;
+                decimal decBaseMultiplier = 1.0m;
                 decimal decOutingsAndServicesCost = await LifestyleQualities.SumAsync(
                     async x => await x.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.BuiltIn, async x =>
                     {
@@ -3985,18 +4451,19 @@ namespace Chummer.Backend.Equipment
                                 break;
                             case QualityType.Entertainment when !x.Category.Contains("Asset"):
                             {
-                                decMultiplier += await x.GetMultiplierAsync(token).ConfigureAwait(false);
-                                decBaseMultiplier += await x.GetBaseMultiplierAsync(token).ConfigureAwait(false);
+                                decMultiplier *= 1.0m + (await x.GetMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
+                                decBaseMultiplier *= 1.0m + (await x.GetBaseMultiplierAsync(token).ConfigureAwait(false)) / 100.0m;
                                 return await x.GetCostAsync(token).ConfigureAwait(false);
                             }
                         }
                         return 0;
                     }, token).ConfigureAwait(false);
-                if (decMultiplier != 0)
-                    decReturn *= 1.0m + decMultiplier / 100.0m;
+                // Flat costs added after multipliers, as per HT 139
+                if (decMultiplier != 1.0m)
+                    decReturn *= decMultiplier;
                 decReturn += decOutingsAndServicesCost;
-                if (decBaseMultiplier != 0)
-                    decReturn += Cost * (1.0m + decBaseMultiplier / 100.0m);
+                if (decBaseMultiplier != 1.0m)
+                    decReturn += await GetCostAsync(token).ConfigureAwait(false) * decBaseMultiplier;
 
                 // Apply final percentage modifier
                 decReturn *= await GetPercentageAsync(token).ConfigureAwait(false) / 100;
@@ -4029,7 +4496,7 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterReadLock())
                 {
-                    return TotalMonthlyCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
+                    return GetTotalMonthlyCost().ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo)
                            + LanguageManager.GetString("String_NuyenSymbol");
                 }
             }
@@ -4041,8 +4508,8 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                return (await GetTotalMonthlyCostAsync(token).ConfigureAwait(false)).ToString(
-                           await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
+                return (await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false)).ToString(
+                           await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
                            GlobalSettings.CultureInfo)
                        + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             }
@@ -4058,17 +4525,18 @@ namespace Chummer.Backend.Equipment
                 return string.Empty;
             switch (strLifestyle)
             {
-                case "Bolt Hole":
+                case "BOLTHOLE":
+                case "BOLT HOLE":
                     return "Squatter";
 
-                case "Traveler":
+                case "TRAVELER":
                     return "Low";
 
-                case "Commercial":
+                case "COMMERCIAL":
                     return "Medium";
 
                 default:
-                    return strLifestyle.StartsWith("Hospitalized", StringComparison.Ordinal) ? "High" : strLifestyle;
+                    return strLifestyle.StartsWith("Hospitalized", StringComparison.OrdinalIgnoreCase) ? "High" : strLifestyle;
             }
         }
 
@@ -4100,7 +4568,7 @@ namespace Chummer.Backend.Equipment
             {
                 token.ThrowIfCancellationRequested();
                 // Create the Expense Log Entry.
-                decimal decAmount = await GetTotalMonthlyCostAsync(token).ConfigureAwait(false);
+                decimal decAmount = await GetTotalMonthlyCostAsync(token: token).ConfigureAwait(false);
                 if (decAmount > await _objCharacter.GetNuyenAsync(token).ConfigureAwait(false))
                 {
                     await Program.ShowScrollableMessageBoxAsync(
@@ -4116,10 +4584,11 @@ namespace Chummer.Backend.Equipment
                     token.ThrowIfCancellationRequested();
                     ExpenseLogEntry objExpense = new ExpenseLogEntry(_objCharacter);
                     objExpense.Create(decAmount * -1,
-                        await LanguageManager.GetStringAsync("String_ExpenseLifestyle", token: token).ConfigureAwait(false) + ' ' +
-                        CurrentDisplayNameShort,
+                        await LanguageManager.GetStringAsync("String_ExpenseLifestyle", token: token).ConfigureAwait(false) + " " +
+                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
                         ExpenseType.Nuyen, DateTime.Now);
-                    _objCharacter.ExpenseEntries.AddWithSort(objExpense, token: token);
+                    await (await _objCharacter.GetExpenseEntriesAsync(token).ConfigureAwait(false))
+                        .AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
                     await _objCharacter.ModifyNuyenAsync(-decAmount, token).ConfigureAwait(false);
 
                     ExpenseUndo objUndo = new ExpenseUndo();
@@ -4153,13 +4622,6 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             switch (e.Action)
             {
-                case NotifyCollectionChangedAction.Remove:
-                    foreach (LifestyleQuality objQuality in e.OldItems)
-                    {
-                        await objQuality.DisposeAsync().ConfigureAwait(false);
-                    }
-                    break;
-
                 case NotifyCollectionChangedAction.Replace:
                     HashSet<LifestyleQuality> setNewLifestyleQualities = e.NewItems.OfType<LifestyleQuality>().ToHashSet();
                     foreach (LifestyleQuality objQuality in e.OldItems)
@@ -4276,7 +4738,7 @@ namespace Chummer.Backend.Equipment
                     new DependencyGraphNode<string, Lifestyle>(nameof(TotalAreaMaximum))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(DisplayTotalMonthlyCost),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost),
+                    new DependencyGraphNode<string, Lifestyle>(nameof(GetTotalMonthlyCost),
                         new DependencyGraphNode<string, Lifestyle>(nameof(TrustFund),
                             new DependencyGraphNode<string, Lifestyle>(nameof(IsTrustFundEligible),
                                 new DependencyGraphNode<string, Lifestyle>(nameof(BaseLifestyle))
@@ -4311,7 +4773,7 @@ namespace Chummer.Backend.Equipment
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalCost),
                     new DependencyGraphNode<string, Lifestyle>(nameof(Increments)),
-                    new DependencyGraphNode<string, Lifestyle>(nameof(TotalMonthlyCost))
+                    new DependencyGraphNode<string, Lifestyle>(nameof(GetTotalMonthlyCost))
                 ),
                 new DependencyGraphNode<string, Lifestyle>(nameof(TotalLP),
                     new DependencyGraphNode<string, Lifestyle>(nameof(LP)),
@@ -4535,19 +4997,7 @@ namespace Chummer.Backend.Equipment
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -4572,22 +5022,16 @@ namespace Chummer.Backend.Equipment
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties
                             .Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -4731,6 +5175,11 @@ namespace Chummer.Backend.Equipment
                 _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
                 _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 _lstLifestyleQualities.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
@@ -4744,6 +5193,11 @@ namespace Chummer.Backend.Equipment
                 _lstLifestyleQualities.CollectionChangedAsync -= LifestyleQualitiesCollectionChanged;
                 _lstLifestyleQualities.BeforeClearCollectionChangedAsync -= LifestyleQualitiesOnBeforeClearCollectionChanged;
                 await _lstLifestyleQualities.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

@@ -34,9 +34,10 @@ namespace Chummer
         private List<ListItem> _lstGeneralItems;
         private string _strMode = "General";
         private Character _objCharacter;
+        private string _strSelectedItem = string.Empty;
+        private string _strSelectedName = string.Empty;
         private bool _blnAllowAutoSelect = true;
         private string _strForceItem = string.Empty;
-        private string _strSelectItemOnLoad = string.Empty;
 
         #region Control Events
 
@@ -45,17 +46,17 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstGeneralItems = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstGeneralItems);
         }
 
         private async void SelectItem_Load(object sender, EventArgs e)
         {
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
-                switch (_strMode)
+                switch (_strMode.ToUpperInvariant())
                 {
-                    case "Gear":
+                    case "GEAR":
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space").ConfigureAwait(false);
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
@@ -70,8 +71,8 @@ namespace Chummer
                                 if (await objGear.Children.GetCountAsync().ConfigureAwait(false) > 0)
                                 {
                                     // Append the plugin information to the name.
-                                    (await sbdAmmoName.Append(strSpace).Append('[')
-                                                      .AppendJoinAsync(',' + strSpace,
+                                    (await sbdAmmoName.Append(strSpace, '[')
+                                                      .AppendJoinAsync("," + strSpace,
                                                                        objGear.Children.Select(
                                                                            x => x.GetCurrentDisplayNameShortAsync())).ConfigureAwait(false))
                                         .Append(']');
@@ -80,24 +81,23 @@ namespace Chummer
                                 int intRating = await objGear.GetRatingAsync().ConfigureAwait(false);
                                 if (intRating > 0)
                                 {
-                                    sbdAmmoName.Append(strSpace).Append('(')
+                                    sbdAmmoName.Append(strSpace, '(')
                                                .AppendFormat(GlobalSettings.CultureInfo,
                                                              await LanguageManager.GetStringAsync("Label_RatingFormat")
                                                                  .ConfigureAwait(false),
                                                              await LanguageManager.GetStringAsync(objGear.RatingLabel)
-                                                                 .ConfigureAwait(false)).Append(strSpace)
-                                               .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                                                 .ConfigureAwait(false))
+                                               .Append(strSpace, intRating.ToString(GlobalSettings.CultureInfo), ')');
                                 }
 
-                                sbdAmmoName.Append(strSpace).Append('×')
-                                           .Append(objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
+                                sbdAmmoName.Append(strSpace, '×', objGear.Quantity.ToString(GlobalSettings.InvariantCultureInfo));
                                 lstItems.Add(new ListItem(objGear.InternalId, sbdAmmoName.ToString()));
                             }
                         }
 
                         break;
                     }
-                    case "Vehicles":
+                    case "VEHICLES":
                     {
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         // Add each of the items to a new List.
@@ -108,12 +108,12 @@ namespace Chummer
 
                         break;
                     }
-                    case "General":
+                    case "GENERAL":
                         await cboAmmo.DoThreadSafeAsync(x => x.DropDownStyle = ComboBoxStyle.DropDownList).ConfigureAwait(false);
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Dropdown":
+                    case "DROPDOWN":
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {
                             x.DropDownStyle = ComboBoxStyle.DropDown;
@@ -122,7 +122,7 @@ namespace Chummer
                         lstItems.AddRange(_lstGeneralItems);
                         break;
 
-                    case "Restricted":
+                    case "RESTRICTED":
                     {
                         await cboAmmo.DoThreadSafeAsync(x =>
                         {
@@ -371,19 +371,19 @@ namespace Chummer
                         AcceptForm();
                 }
 
-                if (!string.IsNullOrEmpty(_strSelectItemOnLoad))
+                if (!string.IsNullOrEmpty(_strSelectedItem))
                 {
                     await cboAmmo.DoThreadSafeAsync(x =>
                     {
                         if (x.DropDownStyle == ComboBoxStyle.DropDownList || x.DropDownStyle == ComboBoxStyle.DropDown)
                         {
                             string strOldSelected = x.SelectedValue?.ToString();
-                            x.SelectedValue = _strSelectItemOnLoad;
+                            x.SelectedValue = _strSelectedItem;
                             if (x.SelectedIndex == -1 && !string.IsNullOrEmpty(strOldSelected))
                                 x.SelectedValue = strOldSelected;
                         }
                         else
-                            x.Text = _strSelectItemOnLoad;
+                            x.Text = _strSelectedItem;
                     }).ConfigureAwait(false);
                 }
             }
@@ -412,21 +412,14 @@ namespace Chummer
         /// </summary>
         public string SelectedItem
         {
-            get
-            {
-                if (cboAmmo == null)
-                    return null;
-                if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList && cboAmmo.SelectedValue != null)
-                    return cboAmmo.SelectedValue.ToString();
-                return cboAmmo.Text;
-            }
-            set => _strSelectItemOnLoad = value;
+            get => _strSelectedItem;
+            set => _strSelectedItem = value;
         }
 
         /// <summary>
         /// Name of the item that was selected.
         /// </summary>
-        public string SelectedName => cboAmmo.Text;
+        public string SelectedName => _strSelectedName;
 
         /// <summary>
         /// Whether the Form should be accepted if there is only one item left in the list.
@@ -512,6 +505,13 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            _strSelectedName = cboAmmo.Text;
+            if (cboAmmo == null)
+                _strSelectedItem = string.Empty;
+            else if (cboAmmo.DropDownStyle == ComboBoxStyle.DropDownList)
+                _strSelectedItem = cboAmmo.SelectedValue?.ToString() ?? _strSelectedName;
+            else
+                _strSelectedItem = _strSelectedName;
             DialogResult = DialogResult.OK;
             Close();
         }

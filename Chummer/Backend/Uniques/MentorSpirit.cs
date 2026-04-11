@@ -70,10 +70,10 @@ namespace Chummer
             LockObject = objCharacter.LockObject;
             if (xmlNodeMentor != null)
             {
-                string strName = xmlNodeMentor["name"]?.InnerText;
+                string strName = xmlNodeMentor["name"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strName))
                     Name = strName;
-                string strType = xmlNodeMentor["mentortype"]?.InnerText;
+                string strType = xmlNodeMentor["mentortype"]?.InnerTextViaPool();
                 if (!string.IsNullOrEmpty(strType)
                     && Enum.TryParse(strType, true, out Improvement.ImprovementType outEnum))
                 {
@@ -252,10 +252,10 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                     if (string.IsNullOrEmpty(_strNotes))
                     {
-                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                     }
                 }
                 */
@@ -434,10 +434,10 @@ namespace Chummer
                 /*
                 if (string.IsNullOrEmpty(_strNotes))
                 {
-                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + ' ' + _strPage, _strName);
+                    _strNotes = CommonFunctions.GetTextFromPdf(_strSource + " " + _strPage, _strName);
                     if (string.IsNullOrEmpty(_strNotes))
                     {
-                        _strNotes = CommonFunctions.GetTextFromPdf(Source + ' ' + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
+                        _strNotes = CommonFunctions.GetTextFromPdf(Source + " " + DisplayPage(GlobalSettings.Language), CurrentDisplayName);
                     }
                 }
                 */
@@ -512,16 +512,16 @@ namespace Chummer
                 objWriter.WriteElementString("disadvantage", _strDisadvantage);
                 objWriter.WriteElementString("mentormask",
                                              _blnMentorMask.ToString(GlobalSettings.InvariantCultureInfo));
-                if (_nodBonus != null)
-                    objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXml + "</bonus>");
+                if (!_nodBonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<bonus>" + _nodBonus.InnerXmlViaPool() + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
-                if (_nodChoice1 != null)
-                    objWriter.WriteRaw("<choice1>" + _nodChoice1.InnerXml + "</choice1>");
+                if (!_nodChoice1.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<choice1>" + _nodChoice1.InnerXmlViaPool() + "</choice1>");
                 else
                     objWriter.WriteElementString("choice1", string.Empty);
-                if (_nodChoice2 != null)
-                    objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXml + "</choice2>");
+                if (!_nodChoice2.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<choice2>" + _nodChoice2.InnerXmlViaPool() + "</choice2>");
                 else
                     objWriter.WriteElementString("choice2", string.Empty);
 
@@ -543,10 +543,33 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Mentor Spirit from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        private async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
-            using (LockObject.EnterWriteLock())
+            IDisposable objLocker = null;
+            IAsyncDisposable objLockerAsync = null;
+            if (blnSync)
+                objLocker = LockObject.EnterWriteLock(token);
+            else
+                objLockerAsync = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
             {
+                token.ThrowIfCancellationRequested();
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
@@ -560,16 +583,24 @@ namespace Chummer
 
                 if (objNode["mentortype"] != null)
                 {
-                    _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerText);
+                    _eMentorType = Improvement.ConvertToImprovementType(objNode["mentortype"].InnerTextViaPool(token));
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
                 }
 
-                Lazy<XPathNavigator> objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath());
+                Lazy<XPathNavigator> objMyNode = null;
+                Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator> objMyNodeAsync = null;
+                if (blnSync)
+                    objMyNode = new Lazy<XPathNavigator>(() => this.GetNodeXPath(token));
+                else
+                    objMyNodeAsync = new Microsoft.VisualStudio.Threading.AsyncLazy<XPathNavigator>(() => this.GetNodeXPathAsync(token), Utils.JoinableTaskFactory);
                 if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID)
-                    && objMyNode.Value?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
+                    && (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID) == false)
                 {
-                    _objCharacter.LoadDataXPath("qualities.xml")
+                    (blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? _objCharacter.LoadDataXPath("qualities.xml", token: token)
+                        : await _objCharacter.LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false))
                                  .TryGetNodeByNameOrId("/chummer/mentors/mentor", Name)
                                  ?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
                 }
@@ -582,7 +613,7 @@ namespace Chummer
                 if (_objCharacter.LastSavedVersion <= new ValueVersion(5, 217, 31))
                 {
                     // Cache advantages from data file because localized version used to be cached directly.
-                    XPathNavigator node = objMyNode.Value;
+                    XPathNavigator node = blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
                     if (node != null)
                     {
                         if (!node.TryGetMultiLineStringFieldQuickly("advantage", ref _strAdvantage))
@@ -603,7 +634,8 @@ namespace Chummer
                 }
 
                 objNode.TryGetBoolFieldQuickly("mentormask", ref _blnMentorMask);
-                _nodBonus = objNode["bonus"];
+                XPathNavigator objSourceNavigator = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNavigator);
                 _nodChoice1 = objNode["choice1"];
                 _nodChoice2 = objNode["choice2"];
 
@@ -611,6 +643,13 @@ namespace Chummer
                 string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
                 objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
                 _colNotes = ColorTranslator.FromHtml(sNotesColor);
+            }
+            finally
+            {
+                if (blnSync)
+                    objLocker.Dispose();
+                else
+                    await objLockerAsync.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -635,12 +674,12 @@ namespace Chummer
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
+                    await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
+                        .ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync(
                             "name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false),
                             token).ConfigureAwait(false);
-                    await objWriter.WriteElementStringAsync("mentortype", _eMentorType.ToString(), token)
-                        .ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("name_english", await GetNameAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     await objWriter
                         .WriteElementStringAsync("advantage",

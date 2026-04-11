@@ -15,9 +15,13 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _tmrCityChangeTimer?.Dispose();
+                _tmrDistrictChangeTimer?.Dispose();
+                _tmrBoroughChangeTimer?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -56,7 +60,7 @@ namespace Chummer
             this.cmdDeleteQuality = new System.Windows.Forms.Button();
             this.lblQualityLp = new System.Windows.Forms.Label();
             this.lblQualityLPLabel = new System.Windows.Forms.Label();
-            this.lblQualitySource = new System.Windows.Forms.Label();
+            this.lblQualitySource = new Chummer.LabelWithToolTip();
             this.lblQualitySourceLabel = new System.Windows.Forms.Label();
             this.lblQualityCost = new System.Windows.Forms.Label();
             this.lblQualityCostLabel = new System.Windows.Forms.Label();
@@ -849,7 +853,6 @@ namespace Chummer
             this.cboBaseLifestyle.Name = "cboBaseLifestyle";
             this.cboBaseLifestyle.Size = new System.Drawing.Size(400, 21);
             this.cboBaseLifestyle.TabIndex = 32;
-            this.cboBaseLifestyle.TooltipText = "";
             this.cboBaseLifestyle.SelectedIndexChanged += new System.EventHandler(this.cboBaseLifestyle_SelectedIndexChanged);
             // 
             // tlpRightMiddle
@@ -921,7 +924,6 @@ namespace Chummer
             this.cboCity.Name = "cboCity";
             this.cboCity.Size = new System.Drawing.Size(398, 21);
             this.cboCity.TabIndex = 94;
-            this.cboCity.TooltipText = "";
             this.cboCity.SelectedIndexChanged += new System.EventHandler(this.cboCity_SelectedIndexChanged);
             // 
             // cboDistrict
@@ -932,7 +934,6 @@ namespace Chummer
             this.cboDistrict.Name = "cboDistrict";
             this.cboDistrict.Size = new System.Drawing.Size(398, 21);
             this.cboDistrict.TabIndex = 95;
-            this.cboDistrict.TooltipText = "";
             this.cboDistrict.SelectedIndexChanged += new System.EventHandler(this.cboDistrict_SelectedIndexChanged);
             // 
             // cboBorough
@@ -943,7 +944,6 @@ namespace Chummer
             this.cboBorough.Name = "cboBorough";
             this.cboBorough.Size = new System.Drawing.Size(398, 21);
             this.cboBorough.TabIndex = 96;
-            this.cboBorough.TooltipText = "";
             this.cboBorough.SelectedIndexChanged += new System.EventHandler(this.cboBorough_SelectedIndexChanged);
             // 
             // nudBonusLP
@@ -1123,7 +1123,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkTrustFund;
         private System.Windows.Forms.Label lblQualityLp;
         private System.Windows.Forms.Label lblQualityLPLabel;
-        private System.Windows.Forms.Label lblQualitySource;
+        private LabelWithToolTip lblQualitySource;
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityCost;
         private System.Windows.Forms.Label lblQualityCostLabel;

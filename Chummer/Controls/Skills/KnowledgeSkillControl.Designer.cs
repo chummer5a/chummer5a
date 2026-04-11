@@ -13,9 +13,11 @@ namespace Chummer.UI.Skills
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                UnbindKnowledgeSkillControl();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -84,7 +86,6 @@ namespace Chummer.UI.Skills
             this.cboName.Size = new System.Drawing.Size(196, 21);
             this.cboName.TabIndex = 20;
             this.cboName.TabStop = false;
-            this.cboName.TooltipText = "";
             this.cboName.TextChanged += new System.EventHandler(this.cboName_TextChanged);
             // 
             // cboType
@@ -97,7 +98,6 @@ namespace Chummer.UI.Skills
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(157, 21);
             this.cboType.TabIndex = 21;
-            this.cboType.TooltipText = "";
             // 
             // tlpMain
             // 

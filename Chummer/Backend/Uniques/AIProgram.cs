@@ -238,6 +238,22 @@ namespace Chummer
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Program from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objNode == null)
                 return;
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -250,15 +266,17 @@ namespace Chummer
             _objCachedMyXPathNode = null;
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                this.GetNodeXPath()?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                // ReSharper disable once MethodHasAsyncOverload
+                (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
 
             objNode.TryGetBoolFieldQuickly("candelete", ref _blnCanDelete);
             objNode.TryGetBoolFieldQuickly("isadvancedprogram", ref _blnIsAdvancedProgram);
             objNode.TryGetStringFieldQuickly("requiresprogram", ref _strRequiresProgram);
             // Legacy fix for weird, old way of storing this value
-            if (_strRequiresProgram == LanguageManager.GetString("String_None")
-                || _strRequiresProgram == LanguageManager.GetString("String_None", GlobalSettings.DefaultLanguage))
+            if (_strRequiresProgram == "None"
+                // ReSharper disable once MethodHasAsyncOverload
+                || _strRequiresProgram == (blnSync ? LanguageManager.GetString("String_None", token: token) : await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)))
                 _strRequiresProgram = string.Empty;
             objNode.TryGetStringFieldQuickly("source", ref _strSource);
             objNode.TryGetStringFieldQuickly("page", ref _strPage);
@@ -372,7 +390,7 @@ namespace Chummer
                 string strExtra = Extra;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     strExtra = _objCharacter.TranslateExtra(Extra, strLanguage);
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + '(' + strExtra + ')';
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + strExtra + ")";
             }
             return strReturn;
         }
@@ -395,7 +413,7 @@ namespace Chummer
                 string strExtra = Extra;
                 if (!strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     strExtra = await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false);
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + '(' + strExtra + ')';
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + strExtra + ")";
             }
             return strReturn;
         }
@@ -621,7 +639,7 @@ namespace Chummer
         public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsEnhancement, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!CanDelete && !string.IsNullOrEmpty(Source) && !await _objCharacter.Settings.BookEnabledAsync(Source, token).ConfigureAwait(false))
+            if (!CanDelete && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
                 return null;
 
             TreeNode objNode = new TreeNode
@@ -675,11 +693,9 @@ namespace Chummer
             if (blnConfirmDelete && !CommonFunctions.ConfirmDelete(LanguageManager.GetString("Message_DeleteAIProgram")))
                 return false;
 
-            _objCharacter.AIPrograms.Remove(this);
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.AIProgram,
                 InternalId);
-
-            return true;
+            return _objCharacter.AIPrograms.Remove(this);
         }
 
         public async Task<bool> RemoveAsync(bool blnConfirmDelete = true, CancellationToken token = default)
@@ -693,11 +709,9 @@ namespace Chummer
                             .ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return false;
 
-            await _objCharacter.AIPrograms.RemoveAsync(this, token).ConfigureAwait(false);
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.AIProgram,
                 InternalId, token).ConfigureAwait(false);
-
-            return true;
+            return await (await _objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);
         }
 
         public void SetSourceDetail(Control sourceControl)

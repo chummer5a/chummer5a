@@ -9946,7 +9946,7 @@
           <name>Stoner-Ares M202</name>
         </weapon>
         <weapon>
-          <name>GE Vindicator Minigun</name>
+          <name>GE Vindicator Mini-Gun</name>
         </weapon>
       </weapons>
       <seats>6</seats>
@@ -13124,6 +13124,7 @@
       <slots>1</slots>
       <capacity>15</capacity>
       <conditionmonitor>1</conditionmonitor>
+      <useownattributesforweapon>True</useownattributesforweapon>
       <optionaldrone />
       <required>
         <vehicledetails>
@@ -14713,6 +14714,7 @@
         </weaponmountdetails>
       </required>
       <weaponcategories>Tasers,Holdouts,Light Pistols,Grenades,Blades,Clubs</weaponcategories>
+      <weaponfilter>((type != "Melee") or (type = "Melee" and reach = "0"))</weaponfilter>
     </weaponmount>
     <weaponmount>
       <id>9ee5e112-8ced-4266-9141-02ef18e33f43</id>

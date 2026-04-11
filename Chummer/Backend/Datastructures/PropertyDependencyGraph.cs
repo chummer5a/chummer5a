@@ -26,10 +26,9 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Special version of DependencyGraph that is made explicitly for collecting property dependencies.
+    /// Special version of <see cref="DependencyGraph{string, T}"/> that is made explicitly for collecting property dependencies.
     /// The fact that all dependencies are stored as strings allows for a few extra optimizations to be used.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class PropertyDependencyGraph<T> : DependencyGraph<string, T>
     {
         /// <summary>
@@ -42,8 +41,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
-        /// NOTE: If possible, use the override method that explicitly states whether to use the HashSet{string} pool for creating the return value or not.
+        /// NOTE: If possible, use the override method that explicitly states whether to use <see cref="Utils.StringHashSetPool"/> for creating the return value or not.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -54,8 +52,7 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
-        /// NOTE: If possible, use the override method that explicitly states whether to use the HashSet{string} pool for creating the return value or not.
+        /// NOTE: If possible, use the override method that explicitly states whether to use <see cref="Utils.StringHashSetPool"/> for creating the return value or not.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -67,11 +64,10 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        /// <param name="blnUsePool">Whether to fetch the returned HashSet{string} from a pool or to just create a new one on the stack.</param>
+        /// <param name="blnUsePool">Whether to fetch the returned HashSet from <see cref="Utils.StringHashSetPool"/> or to just create a new one on the stack.</param>
         public HashSet<string> GetWithAllDependents(T objParentInstance, string objKey, bool blnUsePool)
         {
             HashSet<string> setReturn = blnUsePool ? Utils.StringHashSetPool.Get() : new HashSet<string>();
@@ -105,11 +101,10 @@ namespace Chummer
 
         /// <summary>
         /// Returns a collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
-        /// <param name="blnUsePool">Whether to fetch the returned HashSet{string} from a pool or to just create a new one on the stack.</param>
+        /// <param name="blnUsePool">Whether to fetch the returned HashSet from <see cref="Utils.StringHashSetPool"/> or to just create a new one on the stack.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<HashSet<string>> GetWithAllDependentsAsync(T objParentInstance, string objKey, bool blnUsePool, CancellationToken token = default)
         {
@@ -145,9 +140,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a once-enumerable collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
-        /// Automatically makes use of pooling.
+        /// Returns a once-enumerable collection containing the current key's object and all objects that depend on the current key. Automatically makes use of pooling.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>
@@ -166,9 +159,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Returns a once-enumerable collection containing the current key's object and all objects that depend on the current key.
-        /// Slower but idiot-proof compared to GetWithAllDependentsUnsafe().
-        /// Automatically makes use of pooling.
+        /// Returns a once-enumerable collection containing the current key's object and all objects that depend on the current key. Automatically makes use of pooling.
         /// </summary>
         /// <param name="objParentInstance">Instance of the object whose dependencies are being processed, used for conditions.</param>
         /// <param name="objKey">Fetch the node associated with this object.</param>

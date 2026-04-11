@@ -29,7 +29,7 @@ namespace Chummer.Backend.Skills
     /// <summary>
     /// Type of Specialization
     /// </summary>
-    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
+    public sealed class SkillSpecialization : IHasName, IHasXmlDataNode, IHasLockObject, IHasCharacterObject, IHasInternalId
     {
         private Guid _guiID;
         private int _intNameLoaded;
@@ -44,7 +44,7 @@ namespace Chummer.Backend.Skills
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public SkillSpecialization(Character objCharacter, string strName, bool blnFree = false, bool blnExpertise = false)
+        public SkillSpecialization(Character objCharacter, Skill objParent, string strName, bool blnFree = false, bool blnExpertise = false)
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             LockObject = objCharacter.LockObject;
@@ -52,6 +52,7 @@ namespace Chummer.Backend.Skills
             _guiID = Guid.NewGuid();
             _blnFree = blnFree;
             _blnExpertise = blnExpertise;
+            _objParent = objParent;
         }
 
         /// <summary>
@@ -80,7 +81,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="objCharacter">Character to load for.</param>
         /// <param name="xmlNode">XmlNode to load.</param>
-        public static SkillSpecialization Load(Character objCharacter, XmlNode xmlNode)
+        public static SkillSpecialization Load(Character objCharacter, Skill objParent, XmlNode xmlNode)
         {
             string strName = string.Empty;
             if (!xmlNode.TryGetStringFieldQuickly("name", ref strName) || string.IsNullOrEmpty(strName))
@@ -88,7 +89,7 @@ namespace Chummer.Backend.Skills
             if (!xmlNode.TryGetField("guid", Guid.TryParse, out Guid guiTemp))
                 guiTemp = Guid.NewGuid();
 
-            return new SkillSpecialization(objCharacter, strName, xmlNode["free"]?.InnerText == bool.TrueString, xmlNode["expertise"]?.InnerText == bool.TrueString)
+            return new SkillSpecialization(objCharacter, objParent, strName, xmlNode["free"]?.InnerTextIsTrueString() == true, xmlNode["expertise"]?.InnerTextIsTrueString() == true)
             {
                 _guiID = guiTemp
             };
@@ -209,11 +210,6 @@ namespace Chummer.Backend.Skills
                 using (LockObject.EnterReadLock())
                     return _objParent;
             }
-            set
-            {
-                using (LockObject.EnterWriteLock())
-                    _objParent = value;
-            }
         }
 
         /// <summary>
@@ -262,7 +258,7 @@ namespace Chummer.Backend.Skills
                             : await Parent.GetNodeAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " +
                                            (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
-                                           .CleanXPath() + ']');
+                                           .CleanXPath() + "]");
                 _objCachedMyXmlNode = objReturn;
                 _strCachedXmlNodeLanguage = strLanguage;
                 return objReturn;
@@ -277,7 +273,7 @@ namespace Chummer.Backend.Skills
 
         private XPathNavigator _objCachedMyXPathNode;
         private string _strCachedXPathNodeLanguage = string.Empty;
-        private Skill _objParent;
+        private readonly Skill _objParent;
 
         public async Task<XPathNavigator> GetNodeXPathCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
         {
@@ -305,7 +301,7 @@ namespace Chummer.Backend.Skills
                             : await Parent.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false))
                         ?.SelectSingleNode("specs/spec[. = " +
                                            (blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false))
-                                           .CleanXPath() + ']');
+                                           .CleanXPath() + "]");
                 _objCachedMyXPathNode = objReturn;
                 _strCachedXPathNodeLanguage = strLanguage;
                 return objReturn;
@@ -344,9 +340,8 @@ namespace Chummer.Backend.Skills
                                 {
                                     CancellationToken objToken = objNewSource.Token;
                                     Task<string> tskNewTask
-                                        = Task.Run(
-                                            () => _objCharacter.ReverseTranslateExtraAsync(
-                                                _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                        = _objCharacter.ReverseTranslateExtraAsync(
+                                                _strName, GlobalSettings.Language, "skills.xml", objToken);
                                     Task<string> tskOld
                                         = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                     if (tskOld != null)
@@ -399,10 +394,9 @@ namespace Chummer.Backend.Skills
                             objOldSource.Dispose();
                         }
 
-                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
-                                                                       () => _objCharacter.ReverseTranslateExtraAsync(
+                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, _objCharacter.ReverseTranslateExtraAsync(
                                                                            value, GlobalSettings.Language, "skills.xml",
-                                                                           objToken), objToken));
+                                                                           objToken));
                         if (tskOld != null)
                             _strName = Utils.SafelyRunSynchronously(() => tskOld);
                         Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
@@ -440,9 +434,8 @@ namespace Chummer.Backend.Skills
                             {
                                 CancellationToken objToken = objNewSource.Token;
                                 Task<string> tskNewTask
-                                    = Task.Run(
-                                        () => _objCharacter.ReverseTranslateExtraAsync(
-                                            _strName, GlobalSettings.Language, "skills.xml", objToken), objToken);
+                                    = _objCharacter.ReverseTranslateExtraAsync(
+                                            _strName, GlobalSettings.Language, "skills.xml", objToken);
                                 Task<string> tskOld
                                     = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                 if (tskOld != null)
@@ -496,41 +489,33 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 if (await GetNameAsync(token).ConfigureAwait(false) == value)
                     return;
-                CancellationTokenSource objNewSource = new CancellationTokenSource();
-                CancellationToken objToken = objNewSource.Token;
-                using (token.Register(() =>
-                       {
-                           objNewSource.Cancel(false);
-                           objNewSource.Dispose();
-                       }))
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
                 {
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    token.ThrowIfCancellationRequested();
+                    _intNameLoaded = 0;
+                    CancellationTokenSource objNewSource = new CancellationTokenSource();
+                    CancellationToken objToken = objNewSource.Token;
+                    CancellationTokenSource objOldSource
+                        = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
+                    if (objOldSource != null)
                     {
-                        token.ThrowIfCancellationRequested();
-                        _intNameLoaded = 0;
-                        CancellationTokenSource objOldSource
-                            = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, objNewSource);
-                        if (objOldSource != null)
-                        {
-                            objOldSource.Cancel(false);
-                            objOldSource.Dispose();
-                        }
-
-                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, Task.Run(
-                            () => _objCharacter.ReverseTranslateExtraAsync(
-                                value, GlobalSettings.Language, "skills.xml",
-                                objToken), objToken));
-                        if (tskOld != null)
-                            await tskOld.ConfigureAwait(false);
-                        Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
-                        _objCachedMyXmlNode = null;
-                        _objCachedMyXPathNode = null;
+                        objOldSource.Cancel(false);
+                        objOldSource.Dispose();
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
+                    Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader,
+                        _objCharacter.ReverseTranslateExtraAsync(
+                            value, GlobalSettings.Language, "skills.xml",
+                            objToken));
+                    if (tskOld != null)
+                        await tskOld.ConfigureAwait(false);
+                    Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
+                    _objCachedMyXmlNode = null;
+                    _objCachedMyXPathNode = null;
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -698,7 +683,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public void Dispose()
         {
-            using (LockObject.EnterWriteLock())
+            using (LockObject.EnterWriteLock(CancellationToken.None))
             {
                 CancellationTokenSource objSource
                     = Interlocked.Exchange(ref _objNameLoaderCancellationTokenSource, null);
@@ -717,7 +702,7 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false);
             try
             {
                 CancellationTokenSource objSource

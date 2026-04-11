@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Diagnostics;
 using Chummer.Plugins;
 using Microsoft.ApplicationInsights.Channel;
 using Microsoft.ApplicationInsights.Extensibility;
@@ -59,7 +60,7 @@ namespace Chummer
 
             telemetry.Context.Component.Version = Utils.CurrentChummerVersion.ToString();
 
-            if (System.Diagnostics.Debugger.IsAttached)
+            if (Debugger.IsAttached)
             {
                 //don't fill the "productive" log with garbage from debug sessions
                 telemetry.Context.InstrumentationKey = "f4b2ea1b-afe4-4bd6-9175-f5bb167a4d8b";
@@ -72,6 +73,7 @@ namespace Chummer
                 }
                 catch (Exception e)
                 {
+                    e = e.Demystify();
                     Log.Error(e);
 #if DEBUG
                     throw;

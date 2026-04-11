@@ -13,9 +13,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                UnbindContactControl();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -111,7 +113,6 @@ namespace Chummer
             this.cboContactRole.Name = "cboContactRole";
             this.cboContactRole.Size = new System.Drawing.Size(177, 21);
             this.cboContactRole.TabIndex = 2;
-            this.cboContactRole.TooltipText = "";
             this.cboContactRole.TextChanged += new System.EventHandler(this.cboContactRole_TextChanged);
             // 
             // txtContactName

@@ -13,9 +13,12 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                foreach (Character objCharacter in _lstCharacters)
+                    objCharacter.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -385,7 +388,6 @@ namespace Chummer
             this.cboManeuvers.Name = "cboManeuvers";
             this.cboManeuvers.Size = new System.Drawing.Size(214, 21);
             this.cboManeuvers.TabIndex = 15;
-            this.cboManeuvers.TooltipText = "";
             // 
             // btnApplyInterrupt
             // 

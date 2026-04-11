@@ -47,9 +47,8 @@ namespace SevenZip.Compression.RangeCoder
             int m = 1;
             unchecked
             {
-                for (int bitIndex = NumBitLevels; bitIndex > 0;)
+                for (int bitIndex = NumBitLevels - 1; bitIndex >= 0; --bitIndex)
                 {
-                    bitIndex--;
                     int bit = (symbol >> bitIndex) & 1;
                     Models[m].Encode(rangeEncoder, bit);
                     m = (m << 1) | bit;
@@ -63,9 +62,8 @@ namespace SevenZip.Compression.RangeCoder
             int m = 1;
             unchecked
             {
-                for (int bitIndex = NumBitLevels; bitIndex > 0;)
+                for (int bitIndex = NumBitLevels - 1; bitIndex >= 0; bitIndex--)
                 {
-                    bitIndex--;
                     int bit = (symbol >> bitIndex) & 1;
                     await Models[m].EncodeAsync(rangeEncoder, bit, token).ConfigureAwait(false);
                     m = (m << 1) | bit;
@@ -109,9 +107,8 @@ namespace SevenZip.Compression.RangeCoder
             int m = 1;
             unchecked
             {
-                for (int bitIndex = NumBitLevels; bitIndex > 0;)
+                for (int bitIndex = NumBitLevels - 1; bitIndex >= 0; bitIndex--)
                 {
-                    bitIndex--;
                     int bit = (symbol >> bitIndex) & 1;
                     price += Models[m].GetPrice(bit);
                     m = (m << 1) + bit;

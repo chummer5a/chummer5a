@@ -13,9 +13,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                UnbindSpiritControl();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -148,7 +150,6 @@ namespace Chummer
             this.cboSpiritName.Name = "cboSpiritName";
             this.cboSpiritName.Size = new System.Drawing.Size(120, 21);
             this.cboSpiritName.TabIndex = 7;
-            this.cboSpiritName.TooltipText = "";
             // 
             // cmsSpirit
             // 

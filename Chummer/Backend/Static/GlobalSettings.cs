@@ -23,6 +23,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -37,7 +38,6 @@ using iText.Kernel.Pdf;
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.Win32;
 using NLog;
-using Xoshiro.PRNG64;
 
 namespace Chummer
 {
@@ -177,6 +177,7 @@ namespace Chummer
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Warn(e, $"Exception while loading {strPath}: " + e.Message);
                             Interlocked.Exchange(ref _objPdfDocument, null)?.Close();
                             Interlocked.Exchange(ref _objPdfReader, null)?.Close();
@@ -213,7 +214,7 @@ namespace Chummer
     }
 
     /// <summary>
-    /// Global Settings. A single instance class since Settings are common for all characters, reduces execution time and memory usage.
+    /// Global Settings. A static class since these settings are common across all characters, reducing execution time and memory usage.
     /// </summary>
     public static class GlobalSettings
     {
@@ -283,10 +284,7 @@ namespace Chummer
         private static bool _blnPrintSkillsWithZeroRating = true;
         private static bool _blnInsertPdfNotesIfAvailable = true;
 
-        public const int MaxStackLimit = 1024;
         private static bool _blnShowCharacterCustomDataWarning;
-
-        public static ThreadSafeCachedRandom RandomGenerator { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
 
         // Plugins information
         private static readonly ConcurrentDictionary<string, bool> s_dicPluginsEnabled = new ConcurrentDictionary<string, bool>();
@@ -454,7 +452,7 @@ namespace Chummer
             }
             catch (Exception ex)
             {
-                ErrorMessage += ex;
+                ErrorMessage += ex.Demystify().ToString();
             }
             if (s_ObjBaseChummerKey == null)
                 return;
@@ -485,14 +483,14 @@ namespace Chummer
             {
                 string useAI = "NotSet";
                 LoadStringFromRegistry(ref useAI, "useloggingApplicationInsights");
-                switch (useAI)
+                switch (useAI.ToUpperInvariant())
                 {
-                    case "False":
+                    case "FALSE":
                         _eUseLoggingApplicationInsights = UseAILogging.NotSet;
                         break;
 
-                    case "True":
-                    case "Yes":
+                    case "TRUE":
+                    case "YES":
                         _eUseLoggingApplicationInsights = UseAILogging.Info;
                         break;
 
@@ -548,10 +546,9 @@ namespace Chummer
                 _eColorMode = ColorMode.Light;
 
             int intColor = -1;
-            if (LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor"))
-                _objDefaultHasNotesColor = Color.FromArgb(intColor);
-            else
-                _objDefaultHasNotesColor = Color.Chocolate;
+            _objDefaultHasNotesColor = LoadInt32FromRegistry(ref intColor, "defaulthasnotescolor")
+                ? Color.FromArgb(intColor)
+                : Color.Chocolate;
 
             // Whether dates should include the time.
             LoadBoolFromRegistry(ref _blnDatesIncludeTime, "datesincludetime");
@@ -579,7 +576,7 @@ namespace Chummer
 
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
-            Utils.SetupWebBrowserRegistryKeys();
+            Utils.SetupWebBrowserRegistryKeys(_intEmulatedBrowserVersion);
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
@@ -607,25 +604,25 @@ namespace Chummer
             string strLanguage = _strLanguage;
             if (LoadStringFromRegistry(ref strLanguage, "language"))
             {
-                switch (strLanguage)
+                switch (strLanguage.ToUpperInvariant())
                 {
-                    case "en-us2":
+                    case "EN-US2":
                         strLanguage = DefaultLanguage;
                         break;
 
-                    case "de":
+                    case "DE":
                         strLanguage = "de-de";
                         break;
 
-                    case "fr":
+                    case "FR":
                         strLanguage = "fr-fr";
                         break;
 
-                    case "jp":
+                    case "JP":
                         strLanguage = "ja-jp";
                         break;
 
-                    case "zh":
+                    case "ZH":
                         strLanguage = "zh-cn";
                         break;
                 }
@@ -667,7 +664,8 @@ namespace Chummer
             }
             catch (Exception e)
             {
-                System.Diagnostics.Trace.TraceError(e.Message, e);
+                e = e.Demystify();
+                Trace.TraceError(e.Message, e);
 #if DEBUG
                 throw;
                 /*
@@ -748,6 +746,7 @@ namespace Chummer
                                         {
                                             Program.ShowScrollableMessageBox(
                                                 string.Format(
+                                                    GlobalSettings.CultureInfo,
                                                     LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                                     objExistingInfo.Name, objCustomDataDirectory.Name),
                                                 LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -781,7 +780,7 @@ namespace Chummer
             }
 
             // Add in default customdata directory's paths
-            string strCustomDataRootPath = Path.Combine(Utils.GetStartupPath, "customdata");
+            string strCustomDataRootPath = Utils.GetCustomDataFolderPath;
             if (Directory.Exists(strCustomDataRootPath))
             {
                 foreach (string strLoopDirectoryPath in Directory.EnumerateDirectories(strCustomDataRootPath))
@@ -815,6 +814,7 @@ namespace Chummer
                                 {
                                     Program.ShowScrollableMessageBox(
                                         string.Format(
+                                            GlobalSettings.CultureInfo,
                                             LanguageManager.GetString("Message_Duplicate_CustomDataDirectory"),
                                             objExistingInfo.Name, objCustomDataDirectory.Name),
                                         LanguageManager.GetString("MessageTitle_Duplicate_CustomDataDirectory"),
@@ -971,7 +971,7 @@ namespace Chummer
                         {
                             SourcebookInfo objSourcebookInfo = kvpSourcebookInfo.Value; // Set up this way to avoid race condition in underlying SourcebookInfos dictionary
                             objSourceRegistry.SetValue(objSourcebookInfo.Code,
-                                objSourcebookInfo.Path + '|'
+                                objSourcebookInfo.Path + "|"
                                                        + objSourcebookInfo.Offset.ToString(
                                                            InvariantCultureInfo));
                         }
@@ -1352,7 +1352,7 @@ namespace Chummer
             set
             {
                 if (Interlocked.Exchange(ref _intEmulatedBrowserVersion, value) != value)
-                    Utils.SetupWebBrowserRegistryKeys();
+                    Utils.SetupWebBrowserRegistryKeys(value);
             }
         }
 
@@ -1515,7 +1515,7 @@ namespace Chummer
         /// </summary>
         public static CultureInfo SystemCultureInfo => CultureInfo.CurrentCulture;
 
-        private static XmlDocument _xmlClipboard = new XmlDocument { XmlResolver = null };
+        private static readonly XmlDocument s_xmlClipboard = new XmlDocument { XmlResolver = null };
         private static readonly AsyncFriendlyReaderWriterLock _objClipboardLocker = new AsyncFriendlyReaderWriterLock();
 
         private static ClipboardContentType _eClipboardContentType;
@@ -1572,7 +1572,7 @@ namespace Chummer
             get
             {
                 using (_objClipboardLocker.EnterReadLock())
-                    return _xmlClipboard;
+                    return s_xmlClipboard;
             }
         }
 
@@ -1582,23 +1582,30 @@ namespace Chummer
         public static void SetClipboard(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strNewOuterXml = value.OuterXmlViaPool(token);
+            using (_objClipboardLocker.EnterReadLock(token))
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+            }
             using (_objClipboardLocker.EnterUpgradeableReadLock(token))
             {
                 token.ThrowIfCancellationRequested();
-                if (_xmlClipboard == value && eType == _eClipboardContentType)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
 
                 using (_objClipboardLocker.EnterWriteLock(token))
                 {
                     token.ThrowIfCancellationRequested();
-                    if (Interlocked.Exchange(ref _xmlClipboard, value) == value
-                        && InterlockedExtensions.Exchange(ref _eClipboardContentType, eType) == eType)
-                        return;
-                }
+                    _eClipboardContentType = eType;
+                    s_xmlClipboard.RemoveAll();
+                    s_xmlClipboard.ImportNode(value, true);
 
-                if (ClipboardChangedAsync != null)
-                    Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
-                ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                    if (ClipboardChangedAsync != null)
+                        Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
+                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
+                }
             }
         }
 
@@ -1612,7 +1619,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return _xmlClipboard;
+                return s_xmlClipboard;
             }
             finally
             {
@@ -1623,32 +1630,44 @@ namespace Chummer
         /// <summary>
         /// Clipboard.
         /// </summary>
-        public static async Task SetClipboardAsync(XmlDocument value, ClipboardContentType eType, CancellationToken token = default)
+        public static async Task SetClipboardAsync(XmlNode value, ClipboardContentType eType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            string strNewOuterXml = value.OuterXmlViaPool(token);
+            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_xmlClipboard == value && eType == _eClipboardContentType)
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
+                    return;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+            objLocker = await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
 
                 IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (Interlocked.Exchange(ref _xmlClipboard, value) == value
-                        && InterlockedExtensions.Exchange(ref _eClipboardContentType, eType) == eType)
-                        return;
+                    _eClipboardContentType = eType;
+                    s_xmlClipboard.RemoveAll();
+                    s_xmlClipboard.ImportNode(value, true);
+
+                    if (ClipboardChangedAsync != null)
+                        await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
+                    ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                if (ClipboardChangedAsync != null)
-                    await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
-                ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
             }
             finally
             {
@@ -2338,7 +2357,7 @@ namespace Chummer
         public static string PdfArguments { get; internal set; }
 
         /// <summary>
-        /// Compression quality to use when saving images. int.MaxValue is PNG (Lossless), anything else that is positive is JPEG (Lossy),
+        /// Compression quality to use when saving images. <see cref="int.MaxValue"/> is PNG (Lossless), anything else that is positive is JPEG (Lossy),
         /// anything else that is negative is JPEG with quality set automatically based on the size of the image.
         /// </summary>
         public static int SavedImageQuality
@@ -2348,23 +2367,27 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
-        public static string ImageToBase64StringForStorage(Image objImageToSave)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static string ImageToBase64StringForStorage(Image objImageToSave, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return SavedImageQuality == int.MaxValue
-                ? objImageToSave.ToBase64String()
-                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality);
+                ? objImageToSave.ToBase64String(token: token)
+                : objImageToSave.ToBase64StringAsJpeg(SavedImageQuality, token);
         }
 
         /// <summary>
-        /// Converts an image to its Base64 string equivalent with compression settings specified by SavedImageQuality.
+        /// Converts an image to its Base64 string equivalent with compression settings specified by <see cref="SavedImageQuality"/>.
         /// </summary>
         /// <param name="objImageToSave">Image whose Base64 string should be created.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static Task<string> ImageToBase64StringForStorageAsync(Image objImageToSave, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled<string>(token);
             return SavedImageQuality == int.MaxValue
                 ? objImageToSave.ToBase64StringAsync(token: token)
                 : objImageToSave.ToBase64StringAsJpegAsync(SavedImageQuality, token: token);

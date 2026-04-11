@@ -40,8 +40,6 @@ namespace CrashHandler
             this.lblDetails = new System.Windows.Forms.Label();
             this.lblContents = new System.Windows.Forms.LinkLabel();
             this.lblIntroText = new System.Windows.Forms.Label();
-            this.pnlDesc = new System.Windows.Forms.Panel();
-            this.lblDesc = new System.Windows.Forms.Label();
             this.tabUserStory = new System.Windows.Forms.TabPage();
             this.rtbUserStory = new System.Windows.Forms.RichTextBox();
             this.cmdSubmitIssue = new System.Windows.Forms.Button();
@@ -49,11 +47,12 @@ namespace CrashHandler
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.cmdRestart = new System.Windows.Forms.Button();
             this.lblDescriptionWarning = new System.Windows.Forms.Label();
+            this.txtDescription = new System.Windows.Forms.TextBox();
+            this.cmdReportToDiscord = new System.Windows.Forms.Button();
             this.stpMain.SuspendLayout();
             this.tabUserStories.SuspendLayout();
             this.tabGeneral.SuspendLayout();
             this.tlpUserStory.SuspendLayout();
-            this.pnlDesc.SuspendLayout();
             this.tabUserStory.SuspendLayout();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -81,7 +80,7 @@ namespace CrashHandler
             this.cmdClose.AutoSize = true;
             this.cmdClose.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdClose.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdClose.Location = new System.Drawing.Point(231, 3);
+            this.cmdClose.Location = new System.Drawing.Point(345, 3);
             this.cmdClose.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdClose.Name = "cmdClose";
             this.cmdClose.Size = new System.Drawing.Size(108, 36);
@@ -115,24 +114,25 @@ namespace CrashHandler
             // 
             // tlpUserStory
             // 
-            this.tlpUserStory.ColumnCount = 1;
-            this.tlpUserStory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpUserStory.Controls.Add(this.txtIdSelectable2, 0, 4);
+            this.tlpUserStory.ColumnCount = 2;
+            this.tlpUserStory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpUserStory.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpUserStory.Controls.Add(this.txtDescription, 0, 4);
+            this.tlpUserStory.Controls.Add(this.txtIdSelectable2, 1, 3);
             this.tlpUserStory.Controls.Add(this.txtIdSelectable, 0, 3);
             this.tlpUserStory.Controls.Add(this.lblDetails, 0, 2);
             this.tlpUserStory.Controls.Add(this.lblContents, 0, 1);
             this.tlpUserStory.Controls.Add(this.lblIntroText, 0, 0);
-            this.tlpUserStory.Controls.Add(this.pnlDesc, 0, 5);
             this.tlpUserStory.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpUserStory.Location = new System.Drawing.Point(3, 3);
             this.tlpUserStory.Name = "tlpUserStory";
-            this.tlpUserStory.RowCount = 6;
-            this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpUserStory.RowCount = 5;
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpUserStory.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpUserStory.Size = new System.Drawing.Size(764, 456);
             this.tlpUserStory.TabIndex = 21;
             // 
@@ -141,12 +141,12 @@ namespace CrashHandler
             this.txtIdSelectable2.BackColor = System.Drawing.SystemColors.Control;
             this.txtIdSelectable2.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtIdSelectable2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtIdSelectable2.Location = new System.Drawing.Point(6, 238);
+            this.txtIdSelectable2.Location = new System.Drawing.Point(388, 266);
             this.txtIdSelectable2.Margin = new System.Windows.Forms.Padding(6);
             this.txtIdSelectable2.Multiline = true;
             this.txtIdSelectable2.Name = "txtIdSelectable2";
             this.txtIdSelectable2.ReadOnly = true;
-            this.txtIdSelectable2.Size = new System.Drawing.Size(752, 11);
+            this.txtIdSelectable2.Size = new System.Drawing.Size(370, 11);
             this.txtIdSelectable2.TabIndex = 22;
             this.txtIdSelectable2.TabStop = false;
             this.txtIdSelectable2.Text = "[ID]";
@@ -156,12 +156,12 @@ namespace CrashHandler
             this.txtIdSelectable.BackColor = System.Drawing.SystemColors.Control;
             this.txtIdSelectable.BorderStyle = System.Windows.Forms.BorderStyle.None;
             this.txtIdSelectable.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.txtIdSelectable.Location = new System.Drawing.Point(6, 215);
+            this.txtIdSelectable.Location = new System.Drawing.Point(6, 266);
             this.txtIdSelectable.Margin = new System.Windows.Forms.Padding(6);
             this.txtIdSelectable.Multiline = true;
             this.txtIdSelectable.Name = "txtIdSelectable";
             this.txtIdSelectable.ReadOnly = true;
-            this.txtIdSelectable.Size = new System.Drawing.Size(752, 11);
+            this.txtIdSelectable.Size = new System.Drawing.Size(370, 11);
             this.txtIdSelectable.TabIndex = 20;
             this.txtIdSelectable.TabStop = false;
             this.txtIdSelectable.Text = "[ID]";
@@ -170,64 +170,43 @@ namespace CrashHandler
             // 
             this.lblDetails.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblDetails.AutoSize = true;
+            this.tlpUserStory.SetColumnSpan(this.lblDetails, 2);
             this.lblDetails.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDetails.Location = new System.Drawing.Point(3, 186);
+            this.lblDetails.Location = new System.Drawing.Point(3, 237);
             this.lblDetails.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDetails.Name = "lblDetails";
-            this.lblDetails.Size = new System.Drawing.Size(63, 17);
+            this.lblDetails.Size = new System.Drawing.Size(287, 17);
             this.lblDetails.TabIndex = 17;
-            this.lblDetails.Text = "Details:";
+            this.lblDetails.Text = "Details (Can Be Selected and Copied):";
             // 
             // lblContents
             // 
             this.lblContents.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblContents.AutoSize = true;
+            this.tlpUserStory.SetColumnSpan(this.lblContents, 2);
             this.lblContents.Cursor = System.Windows.Forms.Cursors.Hand;
             this.lblContents.Enabled = false;
-            this.lblContents.Location = new System.Drawing.Point(3, 161);
-            this.lblContents.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblContents.Location = new System.Drawing.Point(3, 206);
+            this.lblContents.Margin = new System.Windows.Forms.Padding(3, 12, 3, 12);
             this.lblContents.Name = "lblContents";
-            this.lblContents.Size = new System.Drawing.Size(406, 13);
+            this.lblContents.Size = new System.Drawing.Size(448, 13);
             this.lblContents.TabIndex = 19;
             this.lblContents.TabStop = true;
-            this.lblContents.Text = "Open Explorer to the location of the .zip file containing anonymized crash inform" +
-    "ation.";
+            this.lblContents.Text = "The .zip archive containing all anonymized crash information is being generated, " +
+    "please wait...";
             this.lblContents.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.lblContents_LinkClicked);
             // 
             // lblIntroText
             // 
             this.lblIntroText.AutoSize = true;
+            this.tlpUserStory.SetColumnSpan(this.lblIntroText, 2);
             this.lblIntroText.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lblIntroText.Location = new System.Drawing.Point(3, 6);
             this.lblIntroText.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblIntroText.Name = "lblIntroText";
-            this.lblIntroText.Size = new System.Drawing.Size(758, 143);
+            this.lblIntroText.Size = new System.Drawing.Size(758, 182);
             this.lblIntroText.TabIndex = 18;
             this.lblIntroText.Text = resources.GetString("lblIntroText.Text");
-            // 
-            // pnlDesc
-            // 
-            this.pnlDesc.AutoScroll = true;
-            this.pnlDesc.Controls.Add(this.lblDesc);
-            this.pnlDesc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.pnlDesc.Location = new System.Drawing.Point(0, 255);
-            this.pnlDesc.Margin = new System.Windows.Forms.Padding(0);
-            this.pnlDesc.Name = "pnlDesc";
-            this.pnlDesc.Padding = new System.Windows.Forms.Padding(3, 6, 13, 3);
-            this.pnlDesc.Size = new System.Drawing.Size(764, 201);
-            this.pnlDesc.TabIndex = 21;
-            // 
-            // lblDesc
-            // 
-            this.lblDesc.AutoSize = true;
-            this.lblDesc.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.lblDesc.Font = new System.Drawing.Font("Microsoft Sans Serif", 8.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.lblDesc.Location = new System.Drawing.Point(3, 6);
-            this.lblDesc.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblDesc.Name = "lblDesc";
-            this.lblDesc.Size = new System.Drawing.Size(42, 13);
-            this.lblDesc.TabIndex = 16;
-            this.lblDesc.Text = "[DESC]";
             // 
             // tabUserStory
             // 
@@ -258,7 +237,7 @@ namespace CrashHandler
             this.cmdSubmitIssue.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdSubmitIssue.Dock = System.Windows.Forms.DockStyle.Fill;
             this.cmdSubmitIssue.Enabled = false;
-            this.cmdSubmitIssue.Location = new System.Drawing.Point(3, 3);
+            this.cmdSubmitIssue.Location = new System.Drawing.Point(117, 3);
             this.cmdSubmitIssue.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdSubmitIssue.Name = "cmdSubmitIssue";
             this.cmdSubmitIssue.Size = new System.Drawing.Size(108, 36);
@@ -291,20 +270,22 @@ namespace CrashHandler
             // 
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpButtons.ColumnCount = 3;
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpButtons.Controls.Add(this.cmdRestart, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdSubmitIssue, 0, 0);
-            this.tlpButtons.Controls.Add(this.cmdClose, 2, 0);
+            this.tlpButtons.ColumnCount = 4;
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpButtons.Controls.Add(this.cmdReportToDiscord, 0, 0);
+            this.tlpButtons.Controls.Add(this.cmdRestart, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdSubmitIssue, 1, 0);
+            this.tlpButtons.Controls.Add(this.cmdClose, 3, 0);
             this.tlpButtons.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tlpButtons.Location = new System.Drawing.Point(442, 494);
+            this.tlpButtons.Location = new System.Drawing.Point(328, 494);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
             this.tlpButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpButtons.Size = new System.Drawing.Size(342, 42);
+            this.tlpButtons.Size = new System.Drawing.Size(456, 42);
             this.tlpButtons.TabIndex = 14;
             // 
             // cmdRestart
@@ -312,12 +293,12 @@ namespace CrashHandler
             this.cmdRestart.AutoSize = true;
             this.cmdRestart.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.cmdRestart.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.cmdRestart.Location = new System.Drawing.Point(117, 3);
+            this.cmdRestart.Location = new System.Drawing.Point(231, 3);
             this.cmdRestart.MinimumSize = new System.Drawing.Size(80, 0);
             this.cmdRestart.Name = "cmdRestart";
             this.cmdRestart.Size = new System.Drawing.Size(108, 36);
             this.cmdRestart.TabIndex = 13;
-            this.cmdRestart.Text = "Close Report and\r\nRestart Chummer";
+            this.cmdRestart.Text = "Close Reporter and\r\nRestart Chummer";
             this.cmdRestart.UseVisualStyleBackColor = true;
             this.cmdRestart.Click += new System.EventHandler(this.cmdRestart_Click);
             // 
@@ -328,10 +309,42 @@ namespace CrashHandler
             this.lblDescriptionWarning.Location = new System.Drawing.Point(3, 500);
             this.lblDescriptionWarning.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblDescriptionWarning.Name = "lblDescriptionWarning";
-            this.lblDescriptionWarning.Size = new System.Drawing.Size(436, 30);
+            this.lblDescriptionWarning.Size = new System.Drawing.Size(322, 30);
             this.lblDescriptionWarning.TabIndex = 15;
             this.lblDescriptionWarning.Text = "Please make sure you have written some useful information in the Error Descriptio" +
     "n before creating an issue on GitHub.";
+            // 
+            // txtDescription
+            // 
+            this.txtDescription.BackColor = System.Drawing.SystemColors.Control;
+            this.txtDescription.BorderStyle = System.Windows.Forms.BorderStyle.None;
+            this.tlpUserStory.SetColumnSpan(this.txtDescription, 2);
+            this.txtDescription.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.txtDescription.Location = new System.Drawing.Point(6, 289);
+            this.txtDescription.Margin = new System.Windows.Forms.Padding(6);
+            this.txtDescription.MaxLength = 2147483647;
+            this.txtDescription.Multiline = true;
+            this.txtDescription.Name = "txtDescription";
+            this.txtDescription.ReadOnly = true;
+            this.txtDescription.ScrollBars = System.Windows.Forms.ScrollBars.Vertical;
+            this.txtDescription.Size = new System.Drawing.Size(752, 161);
+            this.txtDescription.TabIndex = 25;
+            this.txtDescription.TabStop = false;
+            this.txtDescription.Text = "[DESC]";
+            // 
+            // cmdReportToDiscord
+            // 
+            this.cmdReportToDiscord.AutoSize = true;
+            this.cmdReportToDiscord.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdReportToDiscord.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdReportToDiscord.Location = new System.Drawing.Point(3, 3);
+            this.cmdReportToDiscord.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdReportToDiscord.Name = "cmdReportToDiscord";
+            this.cmdReportToDiscord.Size = new System.Drawing.Size(108, 36);
+            this.cmdReportToDiscord.TabIndex = 14;
+            this.cmdReportToDiscord.Text = "Report to Chummer\r\nDiscord Server";
+            this.cmdReportToDiscord.UseVisualStyleBackColor = true;
+            this.cmdReportToDiscord.Click += new System.EventHandler(this.cmdReportToDiscord_Click);
             // 
             // CrashReporter
             // 
@@ -354,8 +367,6 @@ namespace CrashHandler
             this.tabGeneral.ResumeLayout(false);
             this.tlpUserStory.ResumeLayout(false);
             this.tlpUserStory.PerformLayout();
-            this.pnlDesc.ResumeLayout(false);
-            this.pnlDesc.PerformLayout();
             this.tabUserStory.ResumeLayout(false);
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -379,15 +390,15 @@ namespace CrashHandler
 		private System.Windows.Forms.LinkLabel lblContents;
 		private System.Windows.Forms.Label lblDetails;
 		private System.Windows.Forms.TextBox txtIdSelectable;
-		private System.Windows.Forms.Label lblDesc;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpUserStory;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
-        private System.Windows.Forms.Panel pnlDesc;
         private System.Windows.Forms.TextBox txtIdSelectable2;
         private System.Windows.Forms.Button cmdRestart;
         private System.Windows.Forms.Label lblDescriptionWarning;
         private System.Windows.Forms.RichTextBox rtbUserStory;
+        private System.Windows.Forms.TextBox txtDescription;
+        private System.Windows.Forms.Button cmdReportToDiscord;
     }
 }
 

@@ -24,14 +24,15 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Chummer.Backend.Enums;
 
 namespace Chummer
 {
     public sealed partial class SelectBuildMethod : Form, IHasCharacterObject
     {
         private readonly Character _objCharacter;
-        private readonly CharacterBuildMethod _eStartingBuildMethod;
         private readonly bool _blnForExistingCharacter;
+        private CharacterBuildMethod _eStartingBuildMethod;
         private int _intLoading = 1;
 
         private CancellationTokenSource _objProcessCharacterSettingIndexChangedCancellationTokenSource;
@@ -47,27 +48,11 @@ namespace Chummer
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessCharacterSettingIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRepopulateCharacterSettingsCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-            };
-            _eStartingBuildMethod = _objCharacter.Settings.BuildMethod;
             _blnForExistingCharacter = blnUseCurrentValues;
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -206,6 +191,7 @@ namespace Chummer
                         CharacterSettings objSelectSettings = null;
                         if (_blnForExistingCharacter)
                         {
+                            _eStartingBuildMethod = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetBuildMethodAsync(_objGenericToken).ConfigureAwait(false);
                             IReadOnlyDictionary<string, CharacterSettings> dicCharacterSettings
                                 = await SettingsManager.GetLoadedCharacterSettingsAsync(_objGenericToken).ConfigureAwait(false);
                             if (dicCharacterSettings.TryGetValue(
@@ -214,7 +200,7 @@ namespace Chummer
                         }
 
                         await RepopulateCharacterSettings(objSelectSettings, _objGenericToken).ConfigureAwait(false);
-                        await chkIgnoreRules.SetToolTipAsync(
+                        await chkIgnoreRules.SetToolTipTextAsync(
                                                 await LanguageManager.GetStringAsync("Tip_SelectKarma_IgnoreRules", token: _objGenericToken)
                                                                      .ConfigureAwait(false), _objGenericToken)
                                             .ConfigureAwait(false);
@@ -429,7 +415,7 @@ namespace Chummer
                     string strQualityKarma = (await objSelectedGameplayOption.GetQualityKarmaLimitAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
                     await lblQualityKarma.DoThreadSafeAsync(x => x.Text = strQualityKarma, token).ConfigureAwait(false);
 
-                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(string.Join(";",
+                    string strBookList = await objSelectedGameplayOption.TranslatedBookListAsync(StringExtensions.JoinFast(";",
                         await objSelectedGameplayOption.GetBooksAsync(token).ConfigureAwait(false)), token: token).ConfigureAwait(false);
                     if (string.IsNullOrEmpty(strBookList))
                         strBookList = strNone;

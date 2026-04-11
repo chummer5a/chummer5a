@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -53,10 +52,9 @@ namespace Chummer
             _tmrMetatypeChangeTimer = new Timer { Interval = 1000 };
             _tmrMetatypeChangeTimer.Tick += UpdateMetatype;
 
-            Disposed += (sender, args) => UnbindPetControl();
-
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
                 tssItem.UpdateLightDarkMode(objMyToken);
@@ -87,9 +85,7 @@ namespace Chummer
         {
             _tmrMetatypeChangeTimer.Dispose();
             foreach (Control objControl in Controls)
-            {
-                objControl.DataBindings.Clear();
-            }
+                objControl.ResetBindings();
         }
 
         private void cboMetatype_TextChanged(object sender, EventArgs e)
@@ -187,67 +183,58 @@ namespace Chummer
         {
             try
             {
+                string strFileName;
+                Character objOpenCharacter = null;
                 Character objLinkedCharacter = await _objContact.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
-                if (objLinkedCharacter != null)
+                if (objLinkedCharacter == null)
                 {
-                    Character objOpenCharacter = await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken)
-                        .ConfigureAwait(false)
-                        ? objLinkedCharacter
-                        : null;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                    try
-                    {
-                        if (objOpenCharacter == null)
-                        {
-                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                   = await Program.CreateAndShowProgressBarAsync(
-                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections, _objMyToken)
-                                       .ConfigureAwait(false))
-                                objOpenCharacter = await Program.LoadCharacterAsync(
-                                        await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
-                                    .ConfigureAwait(false);
-                        }
-
-                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
-                            await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    bool blnUseRelative = false;
-
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                    strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
-                        bool blnError = false;
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(_objContact.RelativeFileName))
-                            blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
-                            blnError = true;
-                        else
-                            blnUseRelative = true;
-
-                        if (blnError)
+                        string strRelativeFileName = await _objContact.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
-                                        .ConfigureAwait(false), await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)),
+                                        .ConfigureAwait(false), strFileName),
                                 await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
                                 MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
+                    }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, _objMyToken)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                .ConfigureAwait(false);
                     }
 
-                    string strFile = blnUseRelative
-                        ? Path.GetFullPath(_objContact.RelativeFileName)
-                        : await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
-                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -263,12 +250,11 @@ namespace Chummer
                 string strOldFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
                 string strFileName = string.Empty;
                 string strFilter = await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken).ConfigureAwait(false) +
-                                   '|'
-                                   +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken).ConfigureAwait(false) +
-                                   '|' +
+                                   "|" +
                                    await LanguageManager.GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 // Prompt the user to select a save file to associate with this Contact.
                 DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
@@ -306,7 +292,7 @@ namespace Chummer
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
-                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -387,6 +373,15 @@ namespace Chummer
             }
         }
 
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
+        }
+
         #endregion Control Events
 
         #region Methods
@@ -402,6 +397,9 @@ namespace Chummer
                                                                      "/chummer/metatypes/metatype", token: token))
                 {
                     string strName = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value;
+                    // Skip metatype entries that don't have a valid name to prevent null Value in ListItem
+                    if (string.IsNullOrEmpty(strName))
+                        continue;
                     string strMetatypeDisplay = xmlMetatypeNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value
                                                 ?? strName;
                     lstMetatypes.Add(new ListItem(strName, strMetatypeDisplay));
@@ -415,9 +413,11 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token: token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.TrueForAll(
-                                    x => strMetavariantName.Equals(x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)))
+                            // Skip metavariant entries that don't have a valid name
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
@@ -435,9 +435,9 @@ namespace Chummer
 
         private async Task DoDataBindings(CancellationToken token = default)
         {
-            string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strMetatype))
-                await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatype, token: token).ConfigureAwait(false);
+            string strMetatypeValue = await _objContact.GetMetatypeValueForComboBoxAsync(token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strMetatypeValue))
+                await cboMetatype.DoThreadSafeAsync(x => x.SelectedValue = strMetatypeValue, token: token).ConfigureAwait(false);
             if (await cboMetatype.DoThreadSafeFuncAsync(x => x.SelectedIndex, token: token).ConfigureAwait(false) < 0)
             {
                 string strText = await _objContact.GetDisplayMetatypeAsync(token).ConfigureAwait(false);

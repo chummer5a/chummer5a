@@ -30,7 +30,7 @@ namespace Chummer
 
         Task<bool> TryAddAsync(T item, CancellationToken token = default);
 
-        Task<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default);
+        Task<ValueTuple<bool, T>> TryTakeAsync(CancellationToken token = default);
 
         Task<T[]> ToArrayAsync(CancellationToken token = default);
     }

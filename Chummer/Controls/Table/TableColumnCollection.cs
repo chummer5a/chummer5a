@@ -26,14 +26,15 @@ using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
 {
-    public sealed class TableColumnCollection<T> : IEnumerable<TableColumn<T>>, IDisposable where T : class, INotifyPropertyChanged
+    public readonly struct TableColumnCollection<T> : IEnumerable<TableColumn<T>>, IDisposable where T : class, INotifyPropertyChanged
     {
-        private readonly List<TableColumn<T>> _lstColumns = new List<TableColumn<T>>();
+        private readonly List<TableColumn<T>> _lstColumns;
         private readonly TableView<T> _table;
 
         internal TableColumnCollection(TableView<T> table)
         {
             _table = table;
+            _lstColumns = new List<TableColumn<T>>();
         }
 
         /// <summary>
@@ -58,7 +59,8 @@ namespace Chummer.UI.Table
             }
 
             _lstColumns.Add(objColumn);
-            Utils.SafelyRunSynchronously(() => _table.ColumnAdded(objColumn, token), token);
+            TableView<T> table = _table;
+            Utils.SafelyRunSynchronously(() => table.ColumnAdded(objColumn, token), token);
         }
 
         public Task AddAsync(TableColumn<T> objColumn, CancellationToken token = default)

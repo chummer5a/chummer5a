@@ -248,6 +248,7 @@
                     <xs:element ref="required" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weaponcategories" type="xs:string" minOccurs="0" maxOccurs="1" />
                     <xs:element name="weaponcapacity" type="xs:string" minOccurs="0" maxOccurs="1" />
+                    <xs:element name="weaponfilter" type="xs:string" minOccurs="0" maxOccurs="1" />
                   </xs:sequence>
                 </xs:complexType>
               </xs:element>
@@ -298,6 +299,7 @@
         <xs:element name="conditionmonitor" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="downgrade" minOccurs="0" maxOccurs="1" />
         <xs:element name="firewall" type="xs:integer" minOccurs="0" maxOccurs="1" />
+        <xs:element name="useownattributesforweapon" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="limit" type="xs:string" minOccurs="0" maxOccurs="1" />

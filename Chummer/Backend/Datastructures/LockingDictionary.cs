@@ -28,10 +28,10 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// A version of Dictionary that is paired with a ReaderWriterLock.
-    /// In theory, this dictionary can be faster in serial contexts than ConcurrentDictionary.
-    /// Because ReadWriterLock allows parallel reads and only locks out writes, it's also faster than using a simple setup with the lock keyword.
-    /// However, for mass parallel writes, use ConcurrentDictionary instead because locking the entire dictionary when accessing keys is not good for performance.
+    /// A version of <see cref="Dictionary{TKey, TValue}"/> that is paired with a <see cref="AsyncFriendlyReaderWriterLock"/>.
+    /// In theory, this dictionary can be faster in serial contexts than <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}"/>.
+    /// Because <see cref="AsyncFriendlyReaderWriterLock"/> allows parallel reads and only locks out writes, it's also faster than using a simple setup with the lock keyword.
+    /// However, for mass parallel writes, use <see cref="System.Collections.Concurrent.ConcurrentDictionary{TKey, TValue}"/> instead because locking the entire dictionary when accessing keys is not good for performance.
     /// </summary>
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
@@ -270,14 +270,14 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async Task<Tuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, KeyValuePair<TKey, TValue>>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicData.Count == 0)
-                    return new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                    return new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
             }
             finally
             {
@@ -315,9 +315,9 @@ namespace Chummer
             }
 
             return blnTakeSuccessful
-                ? new Tuple<bool, KeyValuePair<TKey, TValue>>(
+                ? new ValueTuple<bool, KeyValuePair<TKey, TValue>>(
                     true, new KeyValuePair<TKey, TValue>(objKeyToTake, objValue))
-                : new Tuple<bool, KeyValuePair<TKey, TValue>>(false, default);
+                : new ValueTuple<bool, KeyValuePair<TKey, TValue>>(false, default);
         }
 
         public async Task<KeyValuePair<TKey, TValue>[]> ToArrayAsync(CancellationToken token = default)
@@ -425,14 +425,14 @@ namespace Chummer
                 return _dicData.TryGetValue(key, out value) && _dicData.Remove(key);
         }
 
-        public async Task<Tuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
+        public async Task<ValueTuple<bool, TValue>> TryRemoveAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (!_dicData.TryGetValue(key, out TValue value))
-                    return new Tuple<bool, TValue>(false, value);
+                    return new ValueTuple<bool, TValue>(false, value);
             }
             finally
             {
@@ -443,7 +443,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value) && _dicData.Remove(key);
-                return new Tuple<bool, TValue>(blnSuccess, value);
+                return new ValueTuple<bool, TValue>(blnSuccess, value);
             }
             finally
             {
@@ -1597,14 +1597,14 @@ namespace Chummer
         }
 
         /// <inheritdoc cref="IDictionary{TKey, TValue}.TryGetValue" />
-        public async Task<Tuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
+        public async Task<ValueTuple<bool, TValue>> TryGetValueAsync(TKey key, CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 bool blnSuccess = _dicData.TryGetValue(key, out TValue value);
-                return new Tuple<bool, TValue>(blnSuccess, value);
+                return new ValueTuple<bool, TValue>(blnSuccess, value);
             }
             finally
             {

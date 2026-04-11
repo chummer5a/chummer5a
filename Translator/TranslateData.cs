@@ -37,8 +37,8 @@ namespace Translator
     public partial class TranslateData : Form
     {
         private int _intLoading;
-        private readonly XmlDocument _objDataDoc = new XmlDocument();
-        private readonly XmlDocument _objTranslationDoc = new XmlDocument();
+        private readonly XmlDocument _objDataDoc = new XmlDocument { XmlResolver = null };
+        private readonly XmlDocument _objTranslationDoc = new XmlDocument { XmlResolver = null };
         private readonly BackgroundWorker _workerSectionLoader = new BackgroundWorker();
         private int _intQueueSectionLoaderRun;
         private readonly string[] _strSectionLoaderArgs = new string[2];
@@ -229,8 +229,8 @@ namespace Translator
             string strBaseXPath = "/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]/" + strSection;
             if (cboFile.Text == "tips.xml")
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + ']');
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[text = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal != null)
                 {
                     XmlElement element = xmlNodeLocal["translate"];
@@ -259,11 +259,11 @@ namespace Translator
             }
             else
             {
-                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + ']') ??
-                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + ']');
+                XmlNode xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[id = " + strId.CleanXPath() + "]") ??
+                                       _objDataDoc.SelectSingleNode(strBaseXPath + "/*[name = " + strEnglish.CleanXPath() + "]");
                 if (xmlNodeLocal == null)
                 {
-                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + ']');
+                    xmlNodeLocal = _objDataDoc.SelectSingleNode(strBaseXPath + "/*[. = " + strEnglish.CleanXPath() + "]");
                     XmlAttributeCollection objAttributes = xmlNodeLocal?.Attributes;
                     if (objAttributes != null)
                     {
@@ -369,7 +369,7 @@ namespace Translator
             string strEnglish = item.Cells["English"].Value.ToString();
             bool blnSetTranslatedAttribute = strTranslated != strEnglish && Convert.ToBoolean(item.Cells["Translated?"].Value);
             string strKey = item.Cells["Key"].Value.ToString();
-            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
+            XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
             if (xmlNodeLocal != null)
             {
                 XmlElement xmlElement = xmlNodeLocal["text"];
@@ -491,7 +491,7 @@ namespace Translator
                 return;
             }
 
-            XmlDocument xmlDocument = new XmlDocument();
+            XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
             xmlDocument.Load(Path.Combine(Utils.GetLanguageFolderPath, GlobalSettings.DefaultLanguage + ".xml"));
             if (_workerStringsLoader.CancellationPending)
             {
@@ -509,25 +509,39 @@ namespace Translator
             {
                 int intSegmentsToProcess = xmlNodeList.Count;
                 int intSegmentsProcessed = 0;
-                object[][] arrayRowsToDisplay = new object[xmlNodeList.Count][];
+                ValueTuple<string, string, string, bool>[] arrayRowsToDisplay = new ValueTuple<string, string, string, bool>[intSegmentsToProcess];
                 if (_workerStringsLoader.CancellationPending)
                 {
                     e.Cancel = true;
                     return;
                 }
 
+                bool blnOnlyTranslation = chkOnlyTranslation.Checked;
+
                 try
                 {
-                    Parallel.For(0, xmlNodeList.Count, i =>
+                    Parallel.For(0, xmlNodeList.Count, () => default(ValueTuple<string, string, string, bool>), (i, state, tupValue) =>
                     {
+                        if (_workerStringsLoader.CancellationPending)
+                            state.Stop();
+                        if (state.ShouldExitCurrentIteration)
+                            return default;
                         XmlNode xmlNodeEnglish = xmlNodeList[i];
                         string strKey = xmlNodeEnglish["key"]?.InnerText ?? string.Empty;
                         string strEnglish = xmlNodeEnglish["text"]?.InnerText ?? string.Empty;
                         string strTranslated = strEnglish;
                         bool blnTranslated = false;
-                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + ']');
+                        if (_workerStringsLoader.CancellationPending)
+                            state.Stop();
+                        if (state.ShouldExitCurrentIteration)
+                            return default;
+                        XmlNode xmlNodeLocal = _objTranslationDoc.SelectSingleNode("/chummer/strings/string[key = " + strKey.CleanXPath() + "]");
                         if (xmlNodeLocal != null)
                         {
+                            if (_workerStringsLoader.CancellationPending)
+                                state.Stop();
+                            if (state.ShouldExitCurrentIteration)
+                                return default;
                             strTranslated = xmlNodeLocal["text"]?.InnerText ?? string.Empty;
                             XmlNode xmlNodeAttributesTranslated = xmlNodeLocal.Attributes?["translated"];
                             blnTranslated = xmlNodeAttributesTranslated != null
@@ -535,14 +549,21 @@ namespace Translator
                                 : strEnglish != strTranslated;
                         }
 
-                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                        if (!blnTranslated || !blnOnlyTranslation)
                         {
-                            object[] objArray = { strKey, strEnglish, strTranslated, blnTranslated };
-                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                            return new ValueTuple<string, string, string, bool>(strKey, strEnglish, strTranslated, blnTranslated);
                         }
 
-                        Interlocked.Increment(ref intSegmentsProcessed);
-                        _workerStringsLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
+                        return default;
+                    }, tupValue =>
+                    {
+                        if (_workerStringsLoader.CancellationPending)
+                            throw new OperationCanceledException();
+                        int i = Interlocked.Increment(ref intSegmentsProcessed);
+                        arrayRowsToDisplay[i - 1] = tupValue;
+                        if (_workerStringsLoader.CancellationPending)
+                            throw new OperationCanceledException();
+                        _workerStringsLoader.ReportProgress(i * 100 / intSegmentsToProcess);
                         if (_workerStringsLoader.CancellationPending)
                             throw new OperationCanceledException();
                     });
@@ -560,10 +581,10 @@ namespace Translator
                 }
 
                 DataRowCollection objDataTableRows = dataTable.Rows;
-                foreach (object[] objArray in arrayRowsToDisplay)
+                foreach (ValueTuple<string, string, string, bool> tupArray in arrayRowsToDisplay)
                 {
-                    if (objArray != null)
-                        objDataTableRows.Add(objArray);
+                    if (tupArray != default)
+                        objDataTableRows.Add(tupArray.Item1, tupArray.Item2, tupArray.Item3, tupArray.Item4);
                 }
 
                 DataSet dataSet = new DataSet("strings");
@@ -654,6 +675,7 @@ namespace Translator
                 e.Cancel = true;
                 return;
             }
+            bool blnOnlyTranslation = chkOnlyTranslation.Checked;
 
             using (XmlNodeList xmlBaseList
                    = _objDataDoc.SelectNodes("/chummer/chummer[@file = " + strFileName.CleanXPath() + "]/"
@@ -678,17 +700,25 @@ namespace Translator
                         }
 
                         XmlNodeList xmlChildNodes = xmlNodeToShow.ChildNodes;
-                        XmlDocument xmlDocument = new XmlDocument();
+                        XmlDocument xmlDocument = new XmlDocument { XmlResolver = null };
                         xmlDocument.Load(Path.Combine(Utils.GetDataFolderPath, strFileName));
                         object[][] arrayRowsToDisplay = new object[xmlChildNodes.Count][];
                         try
                         {
-                            Parallel.For(0, xmlChildNodes.Count, i =>
+                            Parallel.For(0, xmlChildNodes.Count, Array.Empty<object>, (i, state, objArray) =>
                             {
+                                if (_workerSectionLoader.CancellationPending)
+                                    state.Stop();
+                                if (state.ShouldExitCurrentIteration)
+                                    return null;
                                 XmlNode xmlChildNode = xmlChildNodes[i];
                                 string strId = xmlChildNode["id"]?.InnerText ?? string.Empty;
                                 string strTranslated;
                                 bool blnTranslated;
+                                if (_workerSectionLoader.CancellationPending)
+                                    state.Stop();
+                                if (state.ShouldExitCurrentIteration)
+                                    return null;
                                 switch (strFileName)
                                 {
                                     case "tips.xml":
@@ -698,11 +728,13 @@ namespace Translator
                                         blnTranslated = strText != strTranslated
                                                         || xmlChildNode.Attributes?["translated"]?.InnerText
                                                         == bool.TrueString;
-
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray = {strId, strText, strTranslated, blnTranslated};
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                            return new object[] {strId, strText, strTranslated, blnTranslated};
                                         }
 
                                         break;
@@ -715,10 +747,13 @@ namespace Translator
                                                         || xmlChildNode.Attributes?["translated"]?.InnerText
                                                         == bool.TrueString;
 
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray = { strId, strText, strTranslated, blnTranslated };
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                            return new object[] { strId, strText, strTranslated, blnTranslated };
                                         }
 
                                         break;
@@ -754,9 +789,9 @@ namespace Translator
                                             // if we have an Id get the Node using it
                                             XmlNode xmlNodeLocal = !string.IsNullOrEmpty(strId)
                                                 ? xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + ']')
+                                                    "/chummer/" + strSection + "/*[id = " + strId.CleanXPath() + "]")
                                                 : xmlDocument.SelectSingleNode(
-                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + ']');
+                                                    "/chummer/" + strSection + "/*[name = " + strName.CleanXPath() + "]");
 #if DEBUG
                                             if (xmlNodeLocal == null)
                                                 MessageBox.Show(strName);
@@ -784,49 +819,58 @@ namespace Translator
                                             }
                                         }
 
-                                        if (!blnTranslated || !chkOnlyTranslation.Checked)
+                                        if (_workerSectionLoader.CancellationPending)
+                                            state.Stop();
+                                        if (state.ShouldExitCurrentIteration)
+                                            return null;
+                                        if (!blnTranslated || !blnOnlyTranslation)
                                         {
-                                            object[] objArray;
                                             if (blnHasNameOnPage)
-                                                objArray = new object[]
+                                            {
+                                                return new object[]
                                                 {
                                                     strId, strName, strTranslated, strSource, strPage, blnTranslated,
                                                     strNameOnPage
                                                 };
-                                            else if (blnAdvantage)
+                                            }
+
+                                            if (blnAdvantage)
                                             {
                                                 if (blnHasNameOnPage)
                                                 {
-                                                    objArray = new object[]
+                                                    return new object[]
                                                     {
                                                         strId, strName, strTranslated, strSource, strPage, strAdvantage,
                                                         strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated,
                                                         strNameOnPage
                                                     };
                                                 }
-                                                else
-                                                {
-                                                    objArray = new object[]
-                                                    {
-                                                        strId, strName, strTranslated, strSource, strPage, strAdvantage,
-                                                        strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
-                                                    };
-                                                }
-                                            }
-                                            else
-                                                objArray = new object[]
-                                                    {strId, strName, strTranslated, strSource, strPage, blnTranslated};
 
-                                            Interlocked.Exchange(ref arrayRowsToDisplay[i], objArray);
+                                                return new object[]
+                                                {
+                                                    strId, strName, strTranslated, strSource, strPage, strAdvantage,
+                                                    strAdvantageAlt, strDisadvantage, strDisadvantageAlt, blnTranslated
+                                                };
+                                            }
+                                            return new object[]
+                                                {strId, strName, strTranslated, strSource, strPage, blnTranslated};
                                         }
 
                                         break;
                                     }
                                 }
 
-                                Interlocked.Increment(ref intSegmentsProcessed);
-                                _workerSectionLoader.ReportProgress(intSegmentsProcessed * 100 / intSegmentsToProcess);
-                                if (_workerStringsLoader.CancellationPending)
+                                return null;
+                            }, objArray =>
+                            {
+                                if (_workerSectionLoader.CancellationPending)
+                                    throw new OperationCanceledException();
+                                int i = Interlocked.Increment(ref intSegmentsProcessed);
+                                arrayRowsToDisplay[i - 1] = objArray;
+                                if (_workerSectionLoader.CancellationPending)
+                                    throw new OperationCanceledException();
+                                _workerSectionLoader.ReportProgress(i * 100 / intSegmentsToProcess);
+                                if (_workerSectionLoader.CancellationPending)
                                     throw new OperationCanceledException();
                             });
                         }
@@ -836,7 +880,7 @@ namespace Translator
                             return;
                         }
 
-                        if (_workerStringsLoader.CancellationPending)
+                        if (_workerSectionLoader.CancellationPending)
                         {
                             e.Cancel = true;
                             return;
@@ -853,7 +897,7 @@ namespace Translator
                     DataSet dataSet = new DataSet("strings");
                     dataSet.Tables.Add(dataTable);
                     e.Result = dataSet;
-                    if (_workerStringsLoader.CancellationPending)
+                    if (_workerSectionLoader.CancellationPending)
                     {
                         e.Cancel = true;
                     }
@@ -938,7 +982,7 @@ namespace Translator
             {
                 List<string> lstSectionStrings = null;
                 XmlNode xmlNode
-                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + ']');
+                    = _objDataDoc.SelectSingleNode("/chummer/chummer[@file = " + cboFile.Text.CleanXPath() + "]");
                 if (xmlNode != null)
                 {
                     lstSectionStrings = new List<string>(xmlNode.ChildNodes.Count);

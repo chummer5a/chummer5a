@@ -19,6 +19,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Linq;
@@ -73,8 +74,9 @@ namespace Chummer
         }
 
         #region Constructor Helper Methods
-        private void LoadConstructorData()
+        private void LoadConstructorData(CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             //Load all the needed data from xml and form the correct strings
             try
             {
@@ -83,22 +85,23 @@ namespace Chummer
                 if (File.Exists(strFullDirectory))
                 {
                     HasManifest = true;
-                    XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFilePatient(strFullDirectory);
+                    XPathDocument xmlObjManifest = XPathDocumentExtensions.LoadStandardFromFilePatient(strFullDirectory, token: token);
                     XPathNavigator xmlNode = xmlObjManifest.CreateNavigator()
-                                                           .SelectSingleNodeAndCacheExpression("manifest");
+                                                           .SelectSingleNodeAndCacheExpression("manifest", token);
 
                     if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
                         _objMyVersion = new ValueVersion(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
 
-                    ConstructorGetManifestDescriptions(xmlNode);
-                    ConstructorGetManifestAuthors(xmlNode);
-                    ConstructorGetDependencies(xmlNode);
-                    ConstructorGetIncompatibilities(xmlNode);
+                    ConstructorGetManifestDescriptions(xmlNode, token);
+                    ConstructorGetManifestAuthors(xmlNode, token);
+                    ConstructorGetDependencies(xmlNode, token);
+                    ConstructorGetIncompatibilities(xmlNode, token);
                 }
             }
             catch (Exception ex)
             {
+                ex = ex.Demystify();
                 // Save the exception to show it later
                 XmlException = ex;
                 HasManifest = false;
@@ -132,6 +135,7 @@ namespace Chummer
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))
             {
+                ex = ex.Demystify();
                 // Save the exception to show it later
                 XmlException = ex;
                 HasManifest = false;
@@ -263,10 +267,12 @@ namespace Chummer
         /// Checks if any custom data is activated, that matches name and version of the dependent upon directory
         /// </summary>
         /// <param name="objCharacterSettings"></param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all missing dependencies as a single string</returns>
-        public string CheckDependency(CharacterSettings objCharacterSettings)
+        public string CheckDependency(CharacterSettings objCharacterSettings, CancellationToken token = default)
         {
-            using (objCharacterSettings.LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            using (objCharacterSettings.LockObject.EnterReadLock(token))
             {
                 IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
                     objCharacterSettings.EnabledCustomDataDirectoryInfos;
@@ -279,8 +285,10 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (DirectoryDependency dependency in DependenciesList)
                     {
+                        token.ThrowIfCancellationRequested();
                         lstEnabledCustomData.Clear();
                         Guid objDependencyGuid = dependency.UniqueIdentifier;
                         if (lstEnabledCustomDataDirectoryInfoGuids.Contains(objDependencyGuid))
@@ -313,7 +321,8 @@ namespace Chummer
                                 if (blnMismatch)
                                 {
                                     sbdReturn.AppendFormat(
-                                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch"),
+                                            GlobalSettings.CultureInfo,
+                                            LanguageManager.GetString("Tooltip_Dependency_VersionMismatch", token: token),
                                             lstEnabledCustomData[0].CurrentDisplayName, dependency.CurrentDisplayName)
                                         .AppendLine();
                                     continue;
@@ -339,7 +348,7 @@ namespace Chummer
                                 < lstEnabledCustomDataDirectoryInfos.FindLastIndex(
                                     x => lstEnabledCustomData.Contains(x)))
                             {
-                                sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder"),
+                                sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Dependency_BadLoadOrder", token: token),
                                     lstEnabledCustomData[0].Name, Name).AppendLine();
                             }
                         }
@@ -413,6 +422,7 @@ namespace Chummer
                                 if (blnMismatch)
                                 {
                                     sbdReturn.AppendFormat(
+                                            GlobalSettings.CultureInfo,
                                             await LanguageManager
                                                 .GetStringAsync("Tooltip_Dependency_VersionMismatch", token: token)
                                                 .ConfigureAwait(false),
@@ -444,6 +454,7 @@ namespace Chummer
                                     x => lstEnabledCustomData.Contains(x)))
                             {
                                 sbdReturn.AppendFormat(
+                                    GlobalSettings.CultureInfo,
                                     await LanguageManager
                                         .GetStringAsync("Tooltip_Dependency_BadLoadOrder", token: token)
                                         .ConfigureAwait(false),
@@ -470,12 +481,14 @@ namespace Chummer
         /// Checks if any custom data is activated, that matches name and version of the prohibited directories
         /// </summary>
         /// <param name="objCharacterSettings"></param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the names of all prohibited custom data directories as a single string</returns>
-        public string CheckIncompatibility(CharacterSettings objCharacterSettings)
+        public string CheckIncompatibility(CharacterSettings objCharacterSettings, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             List<CustomDataDirectoryInfo> lstEnabledCustomData
                 = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
-            using (objCharacterSettings.LockObject.EnterReadLock())
+            using (objCharacterSettings.LockObject.EnterReadLock(token))
             {
                 IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
                     objCharacterSettings.EnabledCustomDataDirectoryInfos;
@@ -484,8 +497,10 @@ namespace Chummer
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
+                    token.ThrowIfCancellationRequested();
                     foreach (DirectoryDependency incompatibility in IncompatibilitiesList)
                     {
+                        token.ThrowIfCancellationRequested();
                         Guid objIncompatibilityGuid = incompatibility.UniqueIdentifier;
                         //Use the fast HasSet.Contains to determine if any dependency is present
                         if (!lstEnabledCustomDataDirectoryInfoGuids.Contains(
@@ -523,7 +538,7 @@ namespace Chummer
                         //if the version is within the version range add it to the list.
                         if (objInfoToDisplay != default)
                         {
-                            sbdReturn.AppendFormat(LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch"),
+                            sbdReturn.AppendFormat(GlobalSettings.CultureInfo, LanguageManager.GetString("Tooltip_Incompatibility_VersionMismatch", token: token),
                                 objInfoToDisplay.CurrentDisplayName, incompatibility.CurrentDisplayName).AppendLine();
                         }
                     }
@@ -596,6 +611,7 @@ namespace Chummer
                         if (objInfoToDisplay != default)
                         {
                             sbdReturn.AppendFormat(
+                                GlobalSettings.CultureInfo,
                                 await LanguageManager
                                     .GetStringAsync("Tooltip_Incompatibility_VersionMismatch", token: token)
                                     .ConfigureAwait(false),
@@ -618,15 +634,16 @@ namespace Chummer
         /// </summary>
         /// <param name="missingDependency">The string of all missing Dependencies</param>
         /// <param name="presentIncompatibilities">The string of all incompatibilities that are active</param>
-        /// <returns></returns>
+        /// <param name="token">Cancellation token to listen to.</param>
         public static string BuildIncompatibilityDependencyString(string missingDependency = "",
-                                                                  string presentIncompatibilities = "")
+                                                                  string presentIncompatibilities = "", CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strReturn = string.Empty;
 
             if (!string.IsNullOrEmpty(missingDependency))
             {
-                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing") + Environment.NewLine
+                strReturn = LanguageManager.GetString("Tooltip_Dependency_Missing", token: token) + Environment.NewLine
                     + missingDependency;
             }
 
@@ -634,7 +651,7 @@ namespace Chummer
             {
                 if (!string.IsNullOrEmpty(strReturn))
                     strReturn += Environment.NewLine;
-                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present") + Environment.NewLine
+                strReturn += LanguageManager.GetString("Tooltip_Incompatibility_Present", token: token) + Environment.NewLine
                     + presentIncompatibilities;
             }
 
@@ -749,24 +766,26 @@ namespace Chummer
             return _strDisplayDescription;
         }
 
-        public string DisplayDescription(string strLanguage)
+        public string DisplayDescription(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
-                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing", strLanguage);
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token);
 
             if (DescriptionDictionary.TryGetValue(strLanguage, out string description))
                 return description.NormalizeLineEndings(true);
 
             if (!DescriptionDictionary.TryGetValue(GlobalSettings.DefaultLanguage, out description))
-                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage);
+                return LanguageManager.GetString("Tooltip_CharacterOptions_ManifestDescriptionMissing", strLanguage, token: token);
 
             return LanguageManager.GetString("Tooltip_CharacterOptions_LanguageSpecificManifestMissing",
-                                             strLanguage) +
+                                             strLanguage, token: token) +
                    Environment.NewLine + Environment.NewLine + description.NormalizeLineEndings(true);
         }
 
         public async Task<string> DisplayDescriptionAsync(string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!File.Exists(Path.Combine(DirectoryPath, "manifest.xml")))
                 return await LanguageManager
                              .GetStringAsync("Tooltip_CharacterOptions_ManifestMissing", strLanguage, token: token)
@@ -806,7 +825,7 @@ namespace Chummer
                 // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
                 // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
                 // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-                if (string.IsNullOrEmpty(_strDisplayAuthors) || _objDisplayAuthorsCulture != GlobalSettings.CultureInfo || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+                if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
                 {
                     _strDisplayAuthors = DisplayAuthors(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language);
                 }
@@ -823,7 +842,7 @@ namespace Chummer
             // and Application.SetUnhandledExceptionMode(UnhandledExceptionMode.ThrowException); to throw an exception if they are called after
             // SetProcessDPI(GlobalSettings.DpiScalingMethodSetting); in program.cs. To prevent any unexpected problems with moving those to methods to the start of
             // the global mutex LazyCreate() handles all the offending methods and should be called, when the CharacterSettings are opened.
-            if (string.IsNullOrEmpty(_strDisplayAuthors) || _objDisplayAuthorsCulture != GlobalSettings.CultureInfo || _strDisplayAuthorsLanguage != GlobalSettings.Language)
+            if (string.IsNullOrEmpty(_strDisplayAuthors) || !ReferenceEquals(_objDisplayAuthorsCulture, GlobalSettings.CultureInfo) || _strDisplayAuthorsLanguage != GlobalSettings.Language)
             {
                 _strDisplayAuthors = await DisplayAuthorsAsync(_objDisplayAuthorsCulture = GlobalSettings.CultureInfo, _strDisplayAuthorsLanguage = GlobalSettings.Language, token).ConfigureAwait(false);
             }
@@ -831,21 +850,24 @@ namespace Chummer
             return _strDisplayAuthors;
         }
 
-        public string DisplayAuthors(CultureInfo objCultureInfo, string strLanguage)
+        public string DisplayAuthors(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdDisplayAuthors))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (KeyValuePair<string, bool> kvp in AuthorDictionary)
                 {
+                    token.ThrowIfCancellationRequested();
                     sbdDisplayAuthors.AppendLine(kvp.Value
                                                      ? string.Format(objCultureInfo, kvp.Key,
                                                                      LanguageManager.GetString(
-                                                                         "String_IsMainAuthor", strLanguage))
+                                                                         "String_IsMainAuthor", strLanguage, token: token))
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 
@@ -865,7 +887,7 @@ namespace Chummer
                                                      : kvp.Key);
                 }
 
-                return sbdDisplayAuthors.ToString().Trim();
+                return sbdDisplayAuthors.ToTrimmedString();
             }
         }
 
@@ -894,12 +916,13 @@ namespace Chummer
         /// <summary>
         /// The name including the Version in this format "NAME (Version)"
         /// </summary>
-        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return MyVersion == new ValueVersion(1)
                 ? Name
                 : string.Format(objCulture, "{0}{1}({2})", Name,
-                                LanguageManager.GetString("String_Space", strLanguage), MyVersion);
+                                LanguageManager.GetString("String_Space", strLanguage, token: token), MyVersion);
         }
 
         public async Task<string> DisplayNameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
@@ -916,7 +939,7 @@ namespace Chummer
         /// <summary>
         /// Key to use in character options files
         /// </summary>
-        public string CharacterSettingsSaveKey => HasManifest ? InternalId + '>' + MyVersion : Name;
+        public string CharacterSettingsSaveKey => HasManifest ? InternalId + ">" + MyVersion.ToString() : Name;
 
         public static string GetIdFromCharacterSettingsSaveKey(string strKey)
         {
@@ -1062,9 +1085,9 @@ namespace Chummer
 
         public Task<string> GetCurrentDisplayNameAsync(CancellationToken token = default) => DisplayNameAsync(GlobalSettings.CultureInfo, GlobalSettings.Language, token);
 
-        public string DisplayName(CultureInfo objCulture, string strLanguage)
+        public string DisplayName(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
 
             if (MinimumVersion != default(ValueVersion))
             {

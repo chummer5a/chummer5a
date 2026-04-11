@@ -10602,9 +10602,17 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
           <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
           <quality>Infected: Gnawer</quality>
+          <quality>Infected: Loup-Garou</quality>
           <quality>Infected: Mutaqua</quality>
         </oneof>
       </required>
@@ -10648,8 +10656,10 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Banshee</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Grendel</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Vampire (Human)</quality>
@@ -10695,6 +10705,7 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Banshee</quality>
           <quality>Infected: Goblin</quality>
           <quality>Infected: Vampire (Human)</quality>
@@ -10787,6 +10798,7 @@
       <required>
         <oneof>
           <quality>Infected: Banshee</quality>
+          <quality>Infected: Harvester</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Wendigo</quality>
@@ -10827,7 +10839,18 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Banshee</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
+          <quality>Infected: Grendel</quality>
+          <quality>Infected: Harvester</quality>
+          <quality>Infected: Loup-Garou</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Vampire (Human)</quality>
           <quality>Infected: Vampire (Non-Human)</quality>
@@ -10852,9 +10875,18 @@
       </bonus>
       <required>
         <oneof>
+          <quality>Infected: Bandersnatch</quality>
           <quality>Infected: Banshee</quality>
           <quality>Infected: Dzoo-Noo-Qua</quality>
+          <quality>Infected: Fomoraig</quality>
+          <quality>Infected: Ghoul (Dwarf)</quality>
+          <quality>Infected: Ghoul (Elf)</quality>
+          <quality>Infected: Ghoul (Human)</quality>
+          <quality>Infected: Ghoul (Ork)</quality>
+          <quality>Infected: Ghoul (Sasquatch)</quality>
+          <quality>Infected: Ghoul (Troll)</quality>
           <quality>Infected: Goblin</quality>
+          <quality>Infected: Harvester</quality>
           <quality>Infected: Mutaqua</quality>
           <quality>Infected: Nosferatu</quality>
           <quality>Infected: Vampire (Human)</quality>
@@ -10983,6 +11015,7 @@
       <required>
         <oneof>
           <quality>Infected: Banshee</quality>
+          <quality>Infected: Loup-Garou</quality>
         </oneof>
       </required>
       <source>RF</source>
@@ -17624,8 +17657,8 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <lifestylecost lifestyle="Low">-50</lifestylecost>
-        <lifestylecost lifestyle="Squatter">-100</lifestylecost>
+        <lifestylecost lifestyle="Low" condition="once">-50</lifestylecost>
+        <lifestylecost lifestyle="Squatter" condition="once">-100</lifestylecost>
       </bonus>
       <required>
         <oneof>
@@ -17663,10 +17696,10 @@
       <karma>5</karma>
       <category>Positive</category>
       <bonus>
-        <!-- TODO: Conditionals for skill bonuses? -->
         <specificskill>
           <name>Intimidation</name>
           <bonus>3</bonus>
+          <condition>Non-orks and -trolls</condition>
         </specificskill>
       </bonus>
       <source>TCT</source>
@@ -17677,6 +17710,13 @@
       <name>Trog Artisan</name>
       <karma>8</karma>
       <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Artisan</name>
+          <bonus>2</bonus>
+          <condition>Items specifically for orks and/or trolls</condition>
+        </specificskill>
+      </bonus>
       <source>TCT</source>
       <page>188</page>
     </quality>
@@ -17685,6 +17725,28 @@
       <name>Trog Historian</name>
       <karma>4</karma>
       <category>Positive</category>
+      <bonus>
+        <skillcategory>
+          <name>Academic</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Interest</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Professional</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+        <skillcategory>
+          <name>Street</name>
+          <bonus>2</bonus>
+          <condition>Involves a significant event in ork or troll history</condition>
+        </skillcategory>
+      </bonus>
       <source>TCT</source>
       <page>188</page>
     </quality>
@@ -17694,10 +17756,10 @@
       <karma>7</karma>
       <category>Positive</category>
       <bonus>
-        <!-- TODO: Conditionals for skill bonuses? -->
         <specificskill>
           <name>Leadership</name>
-          <bonus>3</bonus>
+          <bonus>2</bonus>
+          <condition>Groups of exclusively orks and/or trolls</condition>
         </specificskill>
       </bonus>
       <required>
@@ -17714,6 +17776,18 @@
       <name>Trog Networker</name>
       <karma>12</karma>
       <category>Positive</category>
+      <bonus>
+        <specificskill>
+          <name>Etiquette</name>
+          <bonus>2</bonus>
+          <condition>Communities of majority orks and/or trolls</condition>
+        </specificskill>
+        <specificskill>
+          <name>Navigation</name>
+          <bonus>1</bonus>
+          <condition>Communities of majority orks and/or trolls</condition>
+        </specificskill>
+      </bonus>
       <required>
         <oneof>
           <metatype>Troll</metatype>
@@ -17730,6 +17804,7 @@
       <category>Negative</category>
       <bonus>
         <lifestylecost>10</lifestylecost>
+        <availability condition="career">1</availability>
       </bonus>
       <source>TCT</source>
       <page>189</page>
@@ -19323,4 +19398,43 @@
     </quality>
     <!-- End Region -->
   </qualities>
+  
+  <!-- XPath Query Templates for Advanced Filtering -->
+  <xpathqueries>
+    <query>
+      <id>bc8adb44-f2a6-43c6-b3e8-e0825209f86c</id>
+      <display>String_SelectQuality_XPathQuery_AddQualityBonus</display>
+      <xpath>bonus/addquality</xpath>
+    </query>
+    <query>
+      <id>02d0c37b-c3c4-4892-ad32-c91e4de72742</id>
+      <display>String_SelectQuality_XPathQuery_KarmaRange</display>
+      <xpath>karma &gt;= 5 and karma &lt;= 10</xpath>
+    </query>
+    <query>
+      <id>33868824-d80c-4db5-baee-d993d87fc70a</id>
+      <display>String_SelectQuality_XPathQuery_RunFasterSource</display>
+      <xpath>source = 'RF'</xpath>
+    </query>
+    <query>
+      <id>3b5fca95-9f04-4815-999a-a35fca1f856a</id>
+      <display>String_SelectQuality_XPathQuery_SpellPoints</display>
+      <xpath>canbuywithspellpoints = 'True'</xpath>
+    </query>
+    <query>
+      <id>5760ec8d-f7ca-4290-8f9f-c711da200353</id>
+      <display>String_SelectQuality_XPathQuery_MetagenicOnly</display>
+      <xpath>metagenic = 'True'</xpath>
+    </query>
+    <query>
+      <id>d6a8a731-0225-4123-9388-212024bacd35</id>
+      <display>String_SelectQuality_XPathQuery_PositiveOnly</display>
+      <xpath>category = 'Positive'</xpath>
+    </query>
+    <query>
+      <id>cdd640dc-5b69-45a5-8d5e-5367ed3dddbc</id>
+      <display>String_SelectQuality_XPathQuery_NegativeOnly</display>
+      <xpath>category = 'Negative'</xpath>
+    </query>
+  </xpathqueries>
 </chummer>

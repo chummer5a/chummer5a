@@ -79,11 +79,11 @@ namespace Chummer
                                                                 ? (i + 1).ToString(GlobalSettings
                                                                     .InvariantCultureInfo)
                                                                 .CleanXPath()
-                                                                : "\"5\"") + ']', token: token)?.Value;
+                                                                : "\"5\"") + "]", token: token)?.Value;
                     int j;
                     for (j = i; j < modules.Count; j++)
                     {
-                        if (modules[j]["stage"]?.InnerText == stageName)
+                        if (modules[j]["stage"]?.InnerTextViaPool(token) == stageName)
                             break;
                     }
 
@@ -93,34 +93,28 @@ namespace Chummer
                     }
                 }
 
-                string[] story = new string[modules.Count];
-                Task<string>[] atskStoryTasks = new Task<string>[modules.Count];
-                XPathNavigator xmlBaseMacrosNode = xdoc
-                    .SelectSingleNodeAndCacheExpression(
-                        "/chummer/storybuilder/macros", token: token);
-                //Actually "write" the story
-                for (int i = 0; i < modules.Count; ++i)
+                string[] story = ArrayPool<string>.Shared.Rent(modules.Count);
+                try
                 {
-                    int intLocal = i;
-                    atskStoryTasks[i] = Task.Run(async () =>
+                    XPathNavigator xmlBaseMacrosNode = xdoc
+                            .SelectSingleNodeAndCacheExpression(
+                                "/chummer/storybuilder/macros", token: token);
+                    await ParallelExtensions.ForAsync(0, modules.Count, async i =>
                     {
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdTemp))
+                                           out StringBuilder sbdTemp))
                         {
-                            return (await Write(sbdTemp, modules[intLocal]["story"]?.InnerText ?? string.Empty, 5,
-                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToString();
+                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool(token) ?? string.Empty, 5,
+                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToTrimmedString();
                         }
-                    }, token);
+                    }, token).ConfigureAwait(false);
+
+                    return StringExtensions.JoinFast(Environment.NewLine + Environment.NewLine, story, 0, modules.Count);
                 }
-
-                await Task.WhenAll(atskStoryTasks).ConfigureAwait(false);
-
-                for (int i = 0; i < modules.Count; ++i)
+                finally
                 {
-                    story[i] = await atskStoryTasks[i].ConfigureAwait(false);
+                    ArrayPool<string>.Shared.Return(story);
                 }
-
-                return string.Join(Environment.NewLine + Environment.NewLine, story);
             }
             finally
             {
@@ -143,11 +137,11 @@ namespace Chummer
                 if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
                 {
                     words = (await Macro(innerText, xmlBaseMacrosNode, token).ConfigureAwait(false)).SplitNoAlloc(
-                        ' ', '\n', '\r', '\t');
+                        StringSplitOptions.RemoveEmptyEntries, ' ', '\n', '\r', '\t');
                 }
                 else
                 {
-                    words = innerText.SplitNoAlloc(' ', '\n', '\r', '\t');
+                    words = innerText.SplitNoAlloc(StringSplitOptions.RemoveEmptyEntries, ' ', '\n', '\r', '\t');
                 }
 
                 bool mfix = false;
@@ -224,26 +218,26 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                switch (macroName)
+                switch (macroName.ToUpperInvariant())
                 {
                     //$DOLLAR is defined elsewhere to prevent recursive calling
-                    case "metatype":
+                    case "METATYPE":
                         string strMetatype = await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                         return strMetatype.ToLowerInvariant();
 
-                    case "metavariant":
+                    case "METAVARIANT":
                         string strMetavariant = await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                         return strMetavariant.ToLowerInvariant();
 
-                    case "street":
+                    case "STREET":
                         string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strAlias) ? strAlias : "Alias ";
 
-                    case "real":
+                    case "REAL":
                         string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strName) ? strName : "Unnamed John Doe ";
 
-                    case "year":
+                    case "YEAR":
                         string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
                         if (int.TryParse(strAge, out int year))
                         {
@@ -267,16 +261,16 @@ namespace Chummer
                         //Already defined, no need to do anything fancy
                         if (!_dicPersistence.TryGetValue(macroPool, out string strSelectedNodeName))
                         {
-                            switch (xmlUserMacroFirstChild.Name)
+                            switch (xmlUserMacroFirstChild.Name.ToUpperInvariant())
                             {
-                                case "random":
+                                case "RANDOM":
                                 {
                                     XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild
                                         .SelectAndCacheExpression("./*[not(self::default)]", token: token);
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator
+                                            ? await Utils.GlobalRandom
                                                 .NextModuloBiasRemovedAsync(
                                                     xmlPossibleNodeList.Count, token: token)
                                                 .ConfigureAwait(false)
@@ -297,7 +291,7 @@ namespace Chummer
 
                                     break;
                                 }
-                                case "persistent":
+                                case "PERSISTENT":
                                 {
                                     //Any node not named
                                     XPathNodeIterator xmlPossibleNodeList = xmlUserMacroFirstChild
@@ -305,7 +299,7 @@ namespace Chummer
                                     if (xmlPossibleNodeList.Count > 0)
                                     {
                                         int intUseIndex = xmlPossibleNodeList.Count > 1
-                                            ? await GlobalSettings.RandomGenerator
+                                            ? await Utils.GlobalRandom
                                                 .NextModuloBiasRemovedAsync(
                                                     xmlPossibleNodeList.Count, token: token)
                                                 .ConfigureAwait(false)
@@ -330,7 +324,7 @@ namespace Chummer
                                     break;
                                 }
                                 default:
-                                    return "(Formating error in $DOLLAR" + macroName + ')';
+                                    return "(Formating error in $DOLLAR" + macroName + ")";
                             }
                         }
 
@@ -348,13 +342,13 @@ namespace Chummer
                             return strDefault;
                         }
 
-                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ')';
+                        return "(Unknown key " + macroPool + " in $DOLLAR" + macroName + ")";
                     }
 
                     return xmlUserMacroNode.Value;
                 }
 
-                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ')';
+                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
             }
             finally
             {

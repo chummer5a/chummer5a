@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
@@ -44,10 +45,10 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
         private readonly Character _objCharacter;
-        private readonly ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>> _dicCache = new ConcurrentDictionary<Tuple<string, string>, Tuple<string, string>>();
+        private readonly ConcurrentDictionary<ValueTuple<string, string>, ValueTuple<string, string>> _dicCache = new ConcurrentDictionary<ValueTuple<string, string>, ValueTuple<string, string>>();
         private CancellationTokenSource _objCharacterXmlGeneratorCancellationTokenSource;
         private CancellationTokenSource _objXmlGeneratorCancellationTokenSource;
-        private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+        private CancellationTokenSource _objGenericFormClosingCancellationTokenSource;
         private readonly CancellationToken _objGenericToken;
         private Task _tskCharacterXmlGenerator;
         private Task _tskXmlGenerator;
@@ -66,19 +67,14 @@ namespace Chummer
 
         public ExportCharacter(Character objCharacter)
         {
-            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-                _objXmlGeneratorCancellationTokenSource?.Dispose();
-                _objCharacterXmlGeneratorCancellationTokenSource?.Dispose();
-                dlgSaveFile?.Dispose();
-            };
             _objCharacter = objCharacter;
-            Program.MainForm.OpenCharacterExportForms?.Add(this);
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
+            _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
+            _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
+            Program.MainForm.OpenCharacterExportForms?.Add(this);
         }
 
         private async void ExportCharacter_Load(object sender, EventArgs e)
@@ -116,9 +112,9 @@ namespace Chummer
                 }
 
                 await LanguageManager
-                      .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
-                                                      _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
-                      .ConfigureAwait(false);
+                    .PopulateSheetLanguageListAsync(cboLanguage, GlobalSettings.DefaultCharacterSheet,
+                                                    _objCharacter.Yield(), _objExportCulture, token: _objGenericToken)
+                    .ConfigureAwait(false);
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                            Utils.ListItemListPool, out List<ListItem> lstExportMethods))
                 {
@@ -243,7 +239,7 @@ namespace Chummer
             }
 
             // ReSharper disable once MethodSupportsCancellation
-            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync()
+            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
                                                                  .ConfigureAwait(false);
             try
             {
@@ -420,7 +416,7 @@ namespace Chummer
                             await txtText.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             if (_dicCache.TryGetValue(
-                                    new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText))
+                                    new ValueTuple<string, string>(_strExportLanguage, _strXslt), out ValueTuple<string, string> strBoxText))
                             {
                                 await txtText.DoThreadSafeAsync(x => x.Text = strBoxText.Item2, token).ConfigureAwait(false);
                             }
@@ -466,9 +462,10 @@ namespace Chummer
                                 }
 
                                 Task tskNew = _strXslt == "JSON"
-                                    ? Task.Run(() => GenerateJson(objToken), objToken)
-                                    : Task.Run(() => GenerateXml(objToken), objToken);
-                                if (Interlocked.CompareExchange(ref _tskXmlGenerator, tskNew, null) != null)
+                                    ? GenerateJson(objToken)
+                                    : GenerateXml(objToken);
+                                tskOld = Interlocked.CompareExchange(ref _tskXmlGenerator, tskNew, null);
+                                if (tskOld != null && tskOld != Task.CompletedTask)
                                 {
                                     Interlocked.CompareExchange(ref _objXmlGeneratorCancellationTokenSource, null, objNewSource);
                                     try
@@ -488,6 +485,8 @@ namespace Chummer
                                         //swallow this
                                     }
                                 }
+                                else
+                                    await tskNew.ConfigureAwait(false);
                             }
                         }
                         finally
@@ -538,8 +537,9 @@ namespace Chummer
                         throw;
                     }
 
-                    Task tskNew = Task.Run(() => GenerateCharacterXml(objToken), objToken);
-                    if (Interlocked.CompareExchange(ref _tskCharacterXmlGenerator, tskNew, null) != null)
+                    Task tskNew = GenerateCharacterXml(objToken);
+                    tskOld = Interlocked.CompareExchange(ref _tskCharacterXmlGenerator, tskNew, null);
+                    if (tskOld != null && tskOld != Task.CompletedTask)
                     {
                         Interlocked.CompareExchange(ref _objCharacterXmlGeneratorCancellationTokenSource, null, objNewSource);
                         try
@@ -559,6 +559,8 @@ namespace Chummer
                             //swallow this
                         }
                     }
+                    else
+                        await tskNew.ConfigureAwait(false);
                 }
             }
         }
@@ -593,11 +595,10 @@ namespace Chummer
                 await txtText.DoThreadSafeAsync(x => x.Text = strGeneratingData, token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 XmlDocument objNewDocument;
-                using (token.Register(() => _objCharacterXmlGeneratorCancellationTokenSource.Cancel(false)))
+                using (CancellationTokenSource objJoinedSource = CancellationTokenSource.CreateLinkedTokenSource(_objCharacterXmlGeneratorCancellationTokenSource.Token, token))
                 {
                     objNewDocument = await _objCharacter.GenerateExportXml(_objExportCulture, _strExportLanguage,
-                                                                           _objCharacterXmlGeneratorCancellationTokenSource
-                                                                               .Token).ConfigureAwait(false);
+                                                                           objJoinedSource.Token).ConfigureAwait(false);
                 }
 
                 token.ThrowIfCancellationRequested();
@@ -616,21 +617,21 @@ namespace Chummer
         protected async Task UpdateWindowTitleAsync(CancellationToken token = default)
         {
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token).ConfigureAwait(false) + ':' + strSpace
-                              + CharacterObject.CharacterName + strSpace + '-' + strSpace
+            string strTitle = await LanguageManager.GetStringAsync("Title_ExportCharacter", token: token).ConfigureAwait(false) + ":" + strSpace
+                              + await CharacterObject.GetCharacterNameAsync(token).ConfigureAwait(false) + strSpace + "-" + strSpace
                               + await LanguageManager.GetStringAsync(
-                                  CharacterObject.Created ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token).ConfigureAwait(false) + strSpace
-                              + '(' + CharacterObject.Settings.Name + ')';
+                                  await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) ? "Title_CareerMode" : "Title_CreateNewCharacter", token: token).ConfigureAwait(false) + strSpace
+                              + "(" + await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetNameAsync(token).ConfigureAwait(false) + ")";
             await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
         }
 
         #region XML
 
-        private async Task ExportNormal(string destination = null, CancellationToken token = default)
+        private async Task ExportNormal(string strDestination = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSaveFile = destination;
-            if (string.IsNullOrEmpty(destination))
+            string strSaveFile = strDestination;
+            if (string.IsNullOrEmpty(strDestination))
             {
                 // Look for the file extension information.
                 string strExtension = "xml";
@@ -665,25 +666,28 @@ namespace Chummer
                     dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Html", token: token).ConfigureAwait(false);
                 else
                     dlgSaveFile.Filter = strExtension.ToUpper(GlobalSettings.CultureInfo) + "|*." + strExtensionLower;
+                dlgSaveFile.DefaultExt = strExtensionLower;
                 dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Viewer_SaveAsHtml", token: token).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
                     return;
                 strSaveFile = dlgSaveFile.FileName;
                 if (string.IsNullOrEmpty(strSaveFile))
                     return;
-                if (!strSaveFile.EndsWith('.' + strExtensionLower, StringComparison.OrdinalIgnoreCase)
+                if (!strSaveFile.EndsWith("." + strExtensionLower, StringComparison.OrdinalIgnoreCase)
                     && (!strExtensionLower.TrimEndOnce('l').Equals("htm", StringComparison.OrdinalIgnoreCase)
                         || !strSaveFile.TrimEndOnce('l', 'L').EndsWith(".htm", StringComparison.OrdinalIgnoreCase)))
-                    strSaveFile += '.' + strExtensionLower;
+                    strSaveFile += "." + strExtensionLower;
             }
             if (string.IsNullOrEmpty(strSaveFile))
                 return;
+            if (File.Exists(strSaveFile) && !await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: token).ConfigureAwait(false))
+                return;
 
-            File.WriteAllText(strSaveFile, // Change this to a proper path.
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt), out Tuple<string, string> strBoxText)
+            await FileExtensions.WriteAllTextAsync(strSaveFile, // Change this to a proper path.
+                _dicCache.TryGetValue(new ValueTuple<string, string>(_strExportLanguage, _strXslt), out ValueTuple<string, string> strBoxText)
                                   ? strBoxText.Item1
                                   : await txtText.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false),
-                              Encoding.UTF8);
+                              Encoding.UTF8, token).ConfigureAwait(false);
         }
 
         private async Task GenerateXml(CancellationToken token = default)
@@ -737,6 +741,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         string strReturn = "Error attempting to load " + _strXslt + Environment.NewLine;
+                        ex = ex.Demystify();
                         Log.Debug(ex, strReturn);
                         strReturn += ex.Message;
                         await SetTextToWorkerResult(strReturn, token).ConfigureAwait(false);
@@ -752,42 +757,40 @@ namespace Chummer
                         objSettings.ConformanceLevel = ConformanceLevel.Fragment;
                     }
 
-                    string strText = await Task.Run(async () =>
+                    string strText;
+                    using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {
-                        using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                        using (XmlWriter objWriter = objSettings != null
+                                   ? XmlWriter.Create(objStream, objSettings)
+                                   : Utils.GetXslTransformXmlWriter(objStream))
                         {
-                            using (XmlWriter objWriter = objSettings != null
-                                       ? XmlWriter.Create(objStream, objSettings)
-                                       : Utils.GetXslTransformXmlWriter(objStream))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                objXslTransform.Transform(_objCharacterXml, objWriter);
-                            }
-
                             token.ThrowIfCancellationRequested();
-                            objStream.Position = 0;
+                            objXslTransform.Transform(_objCharacterXml, objWriter);
+                        }
 
-                            // Read in the resulting code and pass it to the browser.
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                        token.ThrowIfCancellationRequested();
+                        objStream.Position = 0;
+
+                        // Read in the resulting code and pass it to the browser.
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                             {
                                 token.ThrowIfCancellationRequested();
-                                using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                     strLine != null;
+                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
-                                         strLine != null;
-                                         strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
-                                    {
-                                        token.ThrowIfCancellationRequested();
-                                        if (!string.IsNullOrEmpty(strLine))
-                                            sbdReturn.AppendLine(strLine);
-                                    }
+                                    if (!string.IsNullOrEmpty(strLine))
+                                        sbdReturn.AppendLine(strLine);
                                 }
-
-                                return sbdReturn.ToString();
                             }
+
+                            strText = sbdReturn.ToString();
                         }
-                    }, token).ConfigureAwait(false);
+                    }
 
                     token.ThrowIfCancellationRequested();
                     await SetTextToWorkerResult(strText, token).ConfigureAwait(false);
@@ -833,63 +836,73 @@ namespace Chummer
 
         private Task SetTextToWorkerResult(string strText, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             string strDisplayText = strText;
-            // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
-            int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
-            while (intSnipStartIndex >= 0)
+            try
             {
-                int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex);
-                if (intSnipEndIndex > intSnipStartIndex)
+                // Displayed text has all mugshots data removed because it's unreadable as Base64 strings, but massive enough to slow down the program
+                int intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>", StringComparison.Ordinal);
+                while (intSnipStartIndex >= 0)
                 {
-                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
-                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
-                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                    intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>");
-                }
-                else
-                    intSnipStartIndex = -1;
-            }
-            intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
-            while (intSnipStartIndex >= 0)
-            {
-                int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex);
-                if (intSnipEndIndex > intSnipStartIndex)
-                {
-                    string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
-                    string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
-                    strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                    intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>");
-                }
-                else
-                    intSnipStartIndex = -1;
-            }
-            intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
-            while (intSnipStartIndex >= 0)
-            {
-                // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
-                int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex, "\",", "\\\"");
-                if (intSnipEndIndex > intSnipStartIndex)
-                {
-                    while (strDisplayText[intSnipEndIndex] != '\"')
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</mainmugshotbase64>", intSnipStartIndex, StringComparison.Ordinal);
+                    if (intSnipEndIndex > intSnipStartIndex)
                     {
-                        intSnipEndIndex = strDisplayText.IndexOfAny(intSnipEndIndex + 2, "\",", "\\\"");
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 19);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("<mainmugshotbase64>", StringComparison.Ordinal);
                     }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>", StringComparison.Ordinal);
+                while (intSnipStartIndex >= 0)
+                {
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    int intSnipEndIndex = strDisplayText.IndexOf("</stringbase64>", intSnipStartIndex, StringComparison.Ordinal);
+                    if (intSnipEndIndex > intSnipStartIndex)
+                    {
+                        string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 14);
+                        string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
+                        strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
+                        intSnipStartIndex = strDisplayText.IndexOf("<stringbase64>", StringComparison.Ordinal);
+                    }
+                    else
+                        intSnipStartIndex = -1;
+                }
+                intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", StringComparison.Ordinal);
+                while (intSnipStartIndex >= 0)
+                {
+                    if (token.IsCancellationRequested)
+                        return Task.FromCanceled(token);
+                    // Special case here, we do not want to get caught up on escaped quotation marks inside of the text
+                    int intSnipEndIndex = strDisplayText.IndexOfAny(intSnipStartIndex + 10, "\\\"", "\"");
+                    if (intSnipEndIndex >= 0 && strDisplayText[intSnipEndIndex] != '\"')
+                        ++intSnipEndIndex;
                     if (intSnipEndIndex > intSnipStartIndex)
                     {
                         string strFirstHalf = strDisplayText.Substring(0, intSnipStartIndex + 10);
                         string strSecondHalf = strDisplayText.Substring(intSnipEndIndex);
                         strDisplayText = strFirstHalf + "[...]" + strSecondHalf;
-                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"");
+                        intSnipStartIndex = strDisplayText.IndexOf("base64\": \"", intSnipStartIndex + 16, StringComparison.Ordinal);
                     }
                     else
                         intSnipStartIndex = -1;
                 }
-                else
-                    intSnipStartIndex = -1;
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled(token);
+                _dicCache.AddOrUpdate(new ValueTuple<string, string>(_strExportLanguage, _strXslt),
+                    new ValueTuple<string, string>(strText, strDisplayText),
+                    (a, b) => new ValueTuple<string, string>(strText, strDisplayText));
             }
-            _dicCache.AddOrUpdate(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                new Tuple<string, string>(strText, strDisplayText),
-                (a, b) => new Tuple<string, string>(strText, strDisplayText));
+            catch (Exception e)
+            {
+                return Task.FromException(e);
+            }
             return txtText.DoThreadSafeAsync(x => x.Text = strDisplayText, token);
         }
 
@@ -897,13 +910,13 @@ namespace Chummer
 
         #region JSON
 
-        private async Task ExportJson(string destination = null, CancellationToken token = default)
+        private async Task ExportJson(string strDestination = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strSaveFile = destination;
+            string strSaveFile = strDestination;
             if (string.IsNullOrEmpty(strSaveFile))
             {
-                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + '|' + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
+                dlgSaveFile.Filter = await LanguageManager.GetStringAsync("DialogFilter_Json", token: token).ConfigureAwait(false) + "|" + await LanguageManager.GetStringAsync("DialogFilter_All", token: token).ConfigureAwait(false);
                 dlgSaveFile.Title = await LanguageManager.GetStringAsync("Button_Export_SaveJsonAs", token: token).ConfigureAwait(false);
                 if (await this.DoThreadSafeFuncAsync(x => dlgSaveFile.ShowDialog(x), token).ConfigureAwait(false) != DialogResult.OK)
                     return;
@@ -915,11 +928,13 @@ namespace Chummer
             }
             if (string.IsNullOrWhiteSpace(strSaveFile))
                 return;
+            if (File.Exists(strSaveFile) && !await FileExtensions.SafeDeleteAsync(strSaveFile, true, token: token).ConfigureAwait(false))
+                return;
 
             // Change this to a proper path.
             await FileExtensions.WriteAllTextAsync(strSaveFile,
-                _dicCache.TryGetValue(new Tuple<string, string>(_strExportLanguage, _strXslt),
-                    out Tuple<string, string> strBoxText)
+                _dicCache.TryGetValue(new ValueTuple<string, string>(_strExportLanguage, _strXslt),
+                    out ValueTuple<string, string> strBoxText)
                     ? strBoxText.Item1
                     : await txtText.DoThreadSafeFuncAsync(x => x.Text, token: token)
                         .ConfigureAwait(false), Encoding.UTF8, token).ConfigureAwait(false);

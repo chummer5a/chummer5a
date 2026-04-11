@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer.UI.Powers
 {
     partial class PowersTabUserControl
@@ -13,9 +15,17 @@ namespace Chummer.UI.Powers
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldSource = Interlocked.Exchange(ref _objFilterCancellationTokenSource, null);
+                if (objOldSource != null)
+                {
+                    objOldSource.Cancel(false);
+                    objOldSource.Dispose();
+                }
+                UnbindPowersTabUserControl();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -63,7 +73,6 @@ namespace Chummer.UI.Powers
             this.cboDisplayFilter.Name = "cboDisplayFilter";
             this.cboDisplayFilter.Size = new System.Drawing.Size(240, 21);
             this.cboDisplayFilter.TabIndex = 5;
-            this.cboDisplayFilter.TooltipText = "";
             this.cboDisplayFilter.SelectedIndexChanged += new System.EventHandler(this.cboDisplayFilter_SelectedIndexChanged);
             this.cboDisplayFilter.TextUpdate += new System.EventHandler(this.cboDisplayFilter_TextUpdate);
             // 

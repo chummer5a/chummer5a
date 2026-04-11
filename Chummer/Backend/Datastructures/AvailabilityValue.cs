@@ -141,7 +141,7 @@ namespace Chummer
             int intValue = Value;
             string strBaseAvail = intValue.ToString(objCulture);
             if (AddToParent && intValue >= 0)
-                strBaseAvail = '+' + strBaseAvail;
+                strBaseAvail = "+" + strBaseAvail;
             switch (Suffix)
             {
                 case 'F':
@@ -164,7 +164,7 @@ namespace Chummer
             int intValue = await GetValueAsync(token).ConfigureAwait(false);
             string strBaseAvail = intValue.ToString(objCulture);
             if (AddToParent && intValue >= 0)
-                strBaseAvail = '+' + strBaseAvail;
+                strBaseAvail = "+" + strBaseAvail;
             switch (Suffix)
             {
                 case 'F':

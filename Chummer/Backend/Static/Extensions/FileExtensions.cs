@@ -23,6 +23,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Threading;
 using System.Windows.Forms;
+using System.Buffers;
 
 namespace Chummer
 {
@@ -115,7 +116,7 @@ namespace Chummer
                     if (blnSync)
                         File.Delete(strPath);
                     else
-                        await Task.Run(() => File.Delete(strPath), token).ConfigureAwait(false);
+                        await TaskExtensions.RunWithoutEC(() => File.Delete(strPath), token).ConfigureAwait(false);
                 }
                 catch (PathTooLongException)
                 {
@@ -173,7 +174,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string)"/> that can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -202,7 +203,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string, Encoding)"/> that can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="eEncoding">Specific encoding to use when reading the file.</param>
@@ -232,7 +233,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that is asynchronous and can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string)"/> that is asynchronous and can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -268,7 +269,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllText() that is asynchronous and can handle interruptions from a cancellation token.
+        /// An extended version of <see cref="File.ReadAllText(string, Encoding)"/> that is asynchronous and can handle interruptions from a cancellation token.
         /// </summary>
         /// <param name="strPath">Path of the file whose contents should be read.</param>
         /// <param name="eEncoding">Specific encoding to use when reading the file.</param>
@@ -305,7 +306,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllText() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllText(string, string)"/> that is asynchronous.
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
@@ -325,7 +326,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllText() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllText(string, string, Encoding)"/> that is asynchronous.
         /// </summary>
         /// <param name="strPath">Path of the file where contents should be written.</param>
         /// <param name="strContents">The contents to write to the file.</param>
@@ -337,7 +338,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strPath))
                 return;
             using (FileStream objFileStream
-                   = new FileStream(strPath, FileMode.Append, FileAccess.Write, FileShare.Write, 4096, true))
+                   = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
             using (StreamWriter objWriter = new StreamWriter(objFileStream, eEncoding))
             {
                 token.ThrowIfCancellationRequested();
@@ -346,7 +347,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.ReadAllBytes() that is asynchronous.
+        /// An extended version of <see cref="File.ReadAllBytes(string)"/> that is asynchronous.
         /// </summary>
         /// <param name="strPath">The file to open for reading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
@@ -376,7 +377,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// An extended version of File.WriteAllBytes() that is asynchronous.
+        /// An extended version of <see cref="File.WriteAllBytes(string, byte[])"/> that is asynchronous.
         /// </summary>
         /// <param name="strPath">The file to write to.</param>
         /// <param name="achrBytes">The bytes to write to the file.</param>
@@ -393,6 +394,79 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 await objFileStream.WriteAsync(achrBytes, 0, achrBytes.Length, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// An extended version of <see cref="File.ReadAllBytes(string)"/> that returns an array taken from <see cref="ArrayPool{byte}.Shared"/>.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        public static byte[] ReadAllBytesToPooledArray(string strPath)
+        {
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intCount);
+                try
+                {
+                    int intLoop;
+                    for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                    {
+                        intLoop = objFileStream.Read(achrReturn, intOffset, intCount);
+                        if (intLoop == 0)
+                            throw new EndOfStreamException();
+                        intOffset += intLoop;
+                    }
+                    return achrReturn;
+                }
+                catch
+                {
+                    ArrayPool<byte>.Shared.Return(achrReturn);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// An extended version of <see cref="File.ReadAllBytes(string)"/> that is asynchronous and returns an array taken from <see cref="ArrayPool{byte}.Shared"/>.
+        /// </summary>
+        /// <param name="strPath">The file to open for reading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task<byte[]> ReadAllBytesToPooledArrayAsync(string strPath, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strPath) || !File.Exists(strPath))
+                return Array.Empty<byte>();
+            using (FileStream objFileStream = new FileStream(strPath, FileMode.Open, FileAccess.Read, FileShare.Read, 4096, true))
+            {
+                long lngLength = objFileStream.Length;
+                if (lngLength == 0)
+                    return Array.Empty<byte>();
+                int intCount = lngLength <= int.MaxValue ? (int)lngLength : throw new IOException("File too large.");
+                byte[] achrReturn = ArrayPool<byte>.Shared.Rent(intCount);
+                try
+                {
+                    int intLoop;
+                    for (int intOffset = 0; intCount > 0; intCount -= intLoop)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                        if (intLoop == 0)
+                            throw new EndOfStreamException();
+                        intOffset += intLoop;
+                    }
+                    return achrReturn;
+                }
+                catch
+                {
+                    ArrayPool<byte>.Shared.Return(achrReturn);
+                    throw;
+                }
             }
         }
     }

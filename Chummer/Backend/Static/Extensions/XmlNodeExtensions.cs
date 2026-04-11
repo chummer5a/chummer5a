@@ -18,20 +18,16 @@
  */
 
 using System;
-
-#if DEBUG
-
 using System.Diagnostics;
-
-#endif
-
 using System.Globalization;
-using System.Xml;
+using System.IO;
 using System.Runtime.CompilerServices;
-using NLog;
-using System.Threading.Tasks;
+using System.Text;
 using System.Threading;
+using System.Threading.Tasks;
+using System.Xml;
 using System.Xml.XPath;
+using NLog;
 
 namespace Chummer
 {
@@ -123,8 +119,9 @@ namespace Chummer
                         mth
                     );
 #else
-                string errorMsg = "Tried to read missing field \"" + field + '\"';
+                string errorMsg = "Tried to read missing field \"" + field + "\"";
 #endif
+                ex = ex.Demystify();
                 Log.Error(ex, errorMsg);
                 //Finally, we have to assign an out parameter something, so default
                 //null or 0 most likely
@@ -138,15 +135,8 @@ namespace Chummer
         /// from an XmlNode. This version sets the output variable to its
         /// default value in case of a failed read and can be used for
         /// initializing variables. It can work on any type, but it requires
-        /// a tryParse style function that is fed the nodes InnerText
+        /// a tryParse style function that is fed the node's <see cref="XmlNode.InnerText"/>
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="node"></param>
-        /// <param name="field"></param>
-        /// <param name="parser"></param>
-        /// <param name="read"></param>
-        /// <param name="onError"></param>
-        /// <returns></returns>
         public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default)
         {
             if (parser != null)
@@ -154,7 +144,7 @@ namespace Chummer
                 XmlElement xmlField = node?[field];
                 if (xmlField != null)
                 {
-                    return parser(xmlField.InnerText, out read);
+                    return parser(xmlField.InnerTextViaPool(), out read);
                 }
             }
 
@@ -194,7 +184,7 @@ namespace Chummer
                 return false;
             }
 
-            fieldValue = node[field].InnerText;
+            fieldValue = node[field].InnerTextViaPool();
             return true;
         }
 
@@ -243,12 +233,14 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
         public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XPathNavigator xmlOperationNode,
-                                                      bool blnIsOrNode)
+                                                      bool blnIsOrNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
-            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode);
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode, blnIsOrNode, token);
         }
 
         /// <summary>
@@ -257,11 +249,13 @@ namespace Chummer
         /// <param name="blnIsOrNode">Whether this is an OR node (true) or an AND node (false). Default is AND (false).</param>
         /// <param name="xmlOperationNode">The node containing the filter operation or a list of filter operations. Every element here is checked against corresponding elements in the parent node, using an operation specified in the element's attributes.</param>
         /// <param name="xmlParentNode">The parent node against which the filter operations are checked.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>True if the parent node passes the conditions set in the operation node/nodelist, false otherwise.</returns>
-        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode)
+        public static bool ProcessFilterOperationNode(this XmlNode xmlParentNode, XmlNode xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XPathNavigator xmlParentNavigator = xmlParentNode?.CreateNavigator();
-            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode?.CreateNavigator(), blnIsOrNode);
+            return xmlParentNavigator.ProcessFilterOperationNode(xmlOperationNode?.CreateNavigator(), blnIsOrNode, token);
         }
 
         /// <summary>
@@ -304,7 +298,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for strings, only with as little overhead as possible.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetStringFieldQuickly(this XmlNode node, string field, ref string read)
@@ -312,18 +306,18 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField != null)
             {
-                read = objField.InnerText;
+                read = objField.InnerTextViaPool();
                 return true;
             }
             XmlAttribute objAttribute = node?.Attributes?[field];
             if (objAttribute == null)
                 return false;
-            read = objAttribute.InnerText;
+            read = objAttribute.InnerTextViaPool();
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for strings, only with as little overhead as possible.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for strings, only with as little overhead as possible.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetMultiLineStringFieldQuickly(this XmlNode node, string field, ref string read)
@@ -338,7 +332,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Like TryGetField for ints, but taking advantage of int.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for ints, but taking advantage of <see cref="int.TryParse(string, out int)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetInt32FieldQuickly(this XmlNode node, string field, ref int read, IFormatProvider objCulture = null)
@@ -348,14 +342,14 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!int.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out int intTmp))
+            if (!int.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out int intTmp))
                 return false;
             read = intTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for bools, but taking advantage of bool.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for bools, but taking advantage of <see cref="bool.TryParse(string, out bool)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetBoolFieldQuickly(this XmlNode node, string field, ref bool read)
@@ -363,14 +357,14 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null)
                 return false;
-            if (!bool.TryParse(objField.InnerText, out bool blnTmp))
+            if (!bool.TryParse(objField.InnerTextViaPool(), out bool blnTmp))
                 return false;
             read = blnTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for decimals, but taking advantage of decimal.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for decimals, but taking advantage of <see cref="decimal.TryParse(string, out decimal)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDecFieldQuickly(this XmlNode node, string field, ref decimal read, IFormatProvider objCulture = null)
@@ -380,14 +374,14 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!decimal.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out decimal decTmp))
+            if (!decimal.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out decimal decTmp))
                 return false;
             read = decTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for doubles, but taking advantage of double.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for doubles, but taking advantage of <see cref="double.TryParse(string, out double)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetDoubleFieldQuickly(this XmlNode node, string field, ref double read, IFormatProvider objCulture = null)
@@ -397,14 +391,14 @@ namespace Chummer
                 return false;
             if (objCulture == null)
                 objCulture = GlobalSettings.InvariantCultureInfo;
-            if (!double.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out double dblTmp))
+            if (!double.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out double dblTmp))
                 return false;
             read = dblTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for float, but taking advantage of float.TryParse... boo, no TryParse interface! :(
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for float, but taking advantage of <see cref="float.TryParse(string, out float)"/>... boo, no TryParse interface! :(
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetFloatFieldQuickly(this XmlNode node, string field, ref float read, IFormatProvider objCulture = null)
@@ -412,15 +406,16 @@ namespace Chummer
             XmlElement objField = node?[field];
             if (objField == null)
                 return false;
-            objCulture ??= GlobalSettings.InvariantCultureInfo;
-            if (!float.TryParse(objField.InnerText, NumberStyles.Any, objCulture, out float fltTmp))
+            if (objCulture == null)
+                objCulture = GlobalSettings.InvariantCultureInfo;
+            if (!float.TryParse(objField.InnerTextViaPool(), NumberStyles.Any, objCulture, out float fltTmp))
                 return false;
             read = fltTmp;
             return true;
         }
 
         /// <summary>
-        /// Like TryGetField for guids, but taking advantage of guid.TryParse. Allows for returning false if the guid is Empty.
+        /// Like <see cref="TryGetField{T}(XmlNode, string, TryParseFunction{T}, out T, T)" /> for guids, but taking advantage of <see cref="Guid.TryParse(string, out Guid)"/>. Allows for returning false if the guid is <see cref="Guid.Empty"/>.
         /// </summary>
         /// <param name="node">XPathNavigator node of the object.</param>
         /// <param name="field">Field name of the InnerXML element we're looking for.</param>
@@ -432,7 +427,7 @@ namespace Chummer
             XmlNode objField = node.SelectSingleNode(field);
             if (objField == null)
                 return false;
-            if (!Guid.TryParse(objField.InnerText, out Guid guidTmp))
+            if (!Guid.TryParse(objField.InnerTextViaPool(), out Guid guidTmp))
                 return false;
             if (guidTmp == Guid.Empty && falseIfEmpty)
                 return false;
@@ -441,28 +436,37 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Query the XmlNode for a given node with an id or name element. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XmlNode for a given node with an id or name element. Includes <see cref="string.ToUpperInvariant"/> processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlNode TryGetNodeByNameOrId(this XmlNode node, string strPath, string strId, string strExtraXPath = "")
         {
             if (node == null || string.IsNullOrEmpty(strPath) || string.IsNullOrEmpty(strId))
                 return null;
+            XmlNode objReturn;
             if (Guid.TryParse(strId, out Guid guidId))
             {
-                XmlNode objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
+                objReturn = node.TryGetNodeById(strPath, guidId, strExtraXPath);
                 if (objReturn != null)
                     return objReturn;
             }
 
-            return node.SelectSingleNode(strPath + "[name = " + strId.CleanXPath()
+            string strIdCleaned = strId.CleanXPath();
+            objReturn = node.SelectSingleNode(strPath + "[name = " + strIdCleaned
+                                         + (string.IsNullOrEmpty(strExtraXPath)
+                                             ? "]"
+                                             : " and (" + strExtraXPath + ")]"));
+            if (objReturn != null)
+                return objReturn;
+            // There are cases where we use ids that are not Guids (e.g., custom improvements), so we need this part as well.
+            return node.SelectSingleNode(strPath + "[id = " + strIdCleaned
                                          + (string.IsNullOrEmpty(strExtraXPath)
                                              ? "]"
                                              : " and (" + strExtraXPath + ")]"));
         }
 
         /// <summary>
-        /// Query the XmlNode for a given node with an id. Includes ToUpperInvariant processing to handle uppercase ids.
+        /// Query the XmlNode for a given node with an id. Includes <see cref="string.ToUpperInvariant"/> processing to handle uppercase ids.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XmlNode TryGetNodeById(this XmlNode node, string strPath, Guid guidId, string strExtraXPath = "")
@@ -491,7 +495,7 @@ namespace Chummer
 
         /// <summary>
         /// Selects a single node using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of SelectSingleNode(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Effectively a version of <see cref="XmlNode.SelectSingleNode(string)"/> that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
         public static XPathNavigator SelectSingleNodeAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
@@ -503,7 +507,7 @@ namespace Chummer
 
         /// <summary>
         /// Selects a node set using the specified XPath expression, but also caches that expression in case the same expression is used over and over.
-        /// Effectively a version of Select(string xpath) that is slower on the first run (and consumes some memory), but faster on subsequent runs.
+        /// Effectively a version of <see cref="XmlNode.SelectNodes(string)"/> that is slower on the first run (and consumes some memory), but faster on subsequent runs.
         /// Only use this if there's a particular XPath expression that keeps being used over and over.
         /// </summary>
         public static XPathNodeIterator SelectAndCacheExpressionAsNavigator(this XmlNode xmlNode, string xpath, CancellationToken token = default)
@@ -511,6 +515,432 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             XPathNavigator xmlNavigator = xmlNode.CreateNavigator();
             return xmlNavigator.SelectAndCacheExpression(xpath, token);
+        }
+
+        /// <summary>
+        /// Attempts to get a node from the saved data, falling back to the source XML node if the saved node is null or empty.
+        /// This is useful for legacy shims when loading saved data that may have empty elements that should be restored from source definitions.
+        /// Like <see cref="TryGetStringFieldQuickly" /> for nodes, with source fallback support.
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read node to. Will be set to the node from saved data if it exists and is not empty, otherwise the node from source data, or null if neither exists.</param>
+        /// <param name="objSourceNode">The XML node from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if a node was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlNode read, XmlNode objSourceNode)
+        {
+            XmlNode objNode = objSavedNode?[strFieldName];
+            if (!objNode.IsNullOrInnerTextIsEmpty())
+            {
+                read = objNode;
+                return true;
+            }
+            read = objSourceNode?[strFieldName];
+            return read != null;
+        }
+
+        /// <summary>
+        /// Attempts to get an element from the saved data, falling back to the source XML node if the saved node is null or empty.
+        /// Overload for <see cref="TryGetNodeWithSourceFallback(XmlNode, string, ref XmlNode, XmlNode)" /> that works with XmlElement fields.
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read element to. Will be set to the element from saved data if it exists and is not empty, otherwise the element from source data, or null if neither exists.</param>
+        /// <param name="objSourceNode">The XML node from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if an element was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XmlNode objSourceNode)
+        {
+            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
+            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            {
+                read = objElement;
+                return true;
+            }
+            read = objSourceNode?[strFieldName] as XmlElement;
+            return read != null;
+        }
+
+        /// <summary>
+        /// Attempts to get a node from the saved data, falling back to the source XPathNavigator if the saved node is null or empty.
+        /// This is useful for legacy shims when loading saved data that may have empty elements that should be restored from source definitions.
+        /// Like <see cref="TryGetStringFieldQuickly" /> for nodes, with source fallback support.
+        /// This overload accepts XPathNavigator for the source to avoid the performance cost of calling GetNode().
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/node to retrieve</param>
+        /// <param name="read">The variable to save the read node to. Will be set to the node from saved data if it exists and is not empty, otherwise converted from the source XPathNavigator, or null if neither exists.</param>
+        /// <param name="objSourceNavigator">The XPathNavigator from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if a node was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlNode read, XPathNavigator objSourceNavigator)
+        {
+            XmlNode objNode = objSavedNode?[strFieldName];
+            if (!objNode.IsNullOrInnerTextIsEmpty())
+            {
+                read = objNode;
+                return true;
+            }
+            if (objSourceNavigator != null)
+            {
+                XPathNavigator objSourceNode = objSourceNavigator.SelectSingleNode(strFieldName);
+                if (objSourceNode != null && !objSourceNode.IsNullOrInnerTextIsEmpty())
+                {
+                    // Convert XPathNavigator to XmlNode using the saved node's document
+                    XmlDocument objDocument = objSavedNode?.OwnerDocument ?? new XmlDocument();
+                    read = objSourceNode.ToXmlNode(objDocument);
+                    return true;
+                }
+            }
+            read = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Attempts to get an element from the saved data, falling back to the source XPathNavigator if the saved element is null or empty.
+        /// Overload for <see cref="TryGetNodeWithSourceFallback(XmlNode, string, ref XmlNode, XPathNavigator)" /> that works with XmlElement fields.
+        /// This overload accepts XPathNavigator for the source to avoid the performance cost of calling GetNode().
+        /// </summary>
+        /// <param name="objSavedNode">The XML node from saved data (e.g., character file)</param>
+        /// <param name="strFieldName">The name of the field/element to retrieve</param>
+        /// <param name="read">The variable to save the read element to. Will be set to the element from saved data if it exists and is not empty, otherwise converted from the source XPathNavigator, or null if neither exists.</param>
+        /// <param name="objSourceNavigator">The XPathNavigator from source data (e.g., gear definition). Can be null.</param>
+        /// <returns>True if an element was found (either from saved or source data), false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XPathNavigator objSourceNavigator)
+        {
+            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
+            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            {
+                read = objElement;
+                return true;
+            }
+            if (objSourceNavigator != null)
+            {
+                XPathNavigator objSourceNode = objSourceNavigator.SelectSingleNode(strFieldName);
+                if (objSourceNode != null && !objSourceNode.IsNullOrInnerTextIsEmpty())
+                {
+                    // Convert XPathNavigator to XmlNode using the saved node's document
+                    XmlDocument objDocument = objSavedNode?.OwnerDocument ?? new XmlDocument();
+                    XmlNode objConvertedNode = objSourceNode.ToXmlNode(objDocument);
+                    read = objConvertedNode as XmlElement;
+                    return read != null;
+                }
+            }
+            read = null;
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for an equivalent of calling <see cref="string.IsNullOrEmpty(string)"/> on <see cref="XmlNode.InnerText"/> with a null check, but without needing any sort of heap allocations.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool IsNullOrInnerTextIsEmpty(this XmlNode xmlNode)
+        {
+            XmlNode firstChild = xmlNode?.FirstChild;
+            if (firstChild == null)
+                return true;
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                    return string.IsNullOrWhiteSpace(firstChild.Value);
+                // For Element nodes or other types, recursively check if they have content
+                return CheckChildren(xmlNode);
+            }
+
+            return CheckChildren(xmlNode);
+
+            bool CheckChildren(XmlNode xmlParentNode)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        XmlNodeType nodeType = xmlNodeInner.NodeType;
+                        if ((nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace) && !string.IsNullOrWhiteSpace(xmlNodeInner.Value))
+                            return false;
+                    }
+                    else if (!CheckChildren(xmlNodeInner))
+                        return false;
+                }
+                return true;
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar to check if <see cref="XmlNode.InnerText"/> of a node would just be <see cref="bool.TrueString"/> without needing to go through rendering the node's entire contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerTextIsTrueString(this XmlNode xmlNode)
+        {
+            bool blnFoundTextElement = false;
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                switch (xmlNodeInner.NodeType)
+                {
+                    case XmlNodeType.Element:
+                    case XmlNodeType.EndElement:
+                        return false;
+                    case XmlNodeType.Text:
+                        if (!string.Equals(xmlNodeInner.Value, bool.TrueString, StringComparison.OrdinalIgnoreCase))
+                            return false;
+                        blnFoundTextElement = true;
+                        break;
+                }
+            }
+            return blnFoundTextElement;
+        }
+
+        /// <summary>
+        /// Syntactic sugar to check if <see cref="XmlNode.InnerText"/> of a node would just be <see cref="bool.FalseString"/> without needing to go through rendering the node's entire contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerTextIsFalseString(this XmlNode xmlNode)
+        {
+            bool blnFoundTextElement = false;
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                switch (xmlNodeInner.NodeType)
+                {
+                    case XmlNodeType.Element:
+                    case XmlNodeType.EndElement:
+                        return false;
+                    case XmlNodeType.Text:
+                        if (!string.Equals(xmlNodeInner.Value, bool.FalseString, StringComparison.OrdinalIgnoreCase))
+                            return false;
+                        blnFoundTextElement = true;
+                        break;
+                }
+            }
+            return blnFoundTextElement;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for checking if a compound node's children have any whose name matches a string without needing to go through rendering the node's contents.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool HasChildWithName(this XmlNode xmlNode, string strName)
+        {
+            if (string.IsNullOrEmpty(strName))
+                return false;
+
+            for (XmlNode xmlNodeInner = xmlNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+            {
+                if (string.Equals(xmlNodeInner.Name, strName, StringComparison.Ordinal))
+                    return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for checking if a node's contents contain a substring without needing to go through rendering the node's entire contents.
+        /// For compound nodes, checks each child of the node individually (and also checks their names), meaning the needle will not fire if it would need to be matched across multiple nodes or across a node's name and contents (use InnerText for that).
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static bool InnerXmlContentContains(this XmlNode xmlNode, string strNeedle, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strNeedle))
+                return false;
+
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return false;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                token.ThrowIfCancellationRequested();
+                if (firstChild.Name.Contains(strNeedle))
+                    return true;
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    token.ThrowIfCancellationRequested();
+                    return firstChild.Value.Contains(strNeedle);
+                }
+            }
+
+            return CheckChildren(xmlNode);
+
+            bool CheckChildren(XmlNode xmlParentNode)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (xmlNodeInner.Name.Contains(strNeedle))
+                        return true;
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (xmlNodeInner.Value.Contains(strNeedle))
+                                return true;
+                        }
+                    }
+                    else if (CheckChildren(xmlNodeInner))
+                    {
+                        return true;
+                    }
+                }
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Copy of <see cref="XmlNode.InnerText" />, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerTextViaPool(this XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return string.Empty;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    return firstChild.Value;
+                }
+            }
+
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                token.ThrowIfCancellationRequested();
+                AppendChildText(xmlNode, sbdReturn);
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToString();
+            }
+
+            void AppendChildText(XmlNode xmlParentNode, StringBuilder builder)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            builder.Append(xmlNodeInner.InnerTextViaPool(token));
+                        }
+                    }
+                    else
+                    {
+                        AppendChildText(xmlNodeInner, builder);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy of <see cref="XmlNode.InnerText" /> followed by <see cref="string.Trim()"/>, but going through <see cref="Utils.StringBuilderPool"/> and <see cref="StringBuilderExtensions.ToTrimmedString(StringBuilder)"/> instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerTextViaPoolTrimmed(this XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode firstChild = xmlNode.FirstChild;
+            if (firstChild == null)
+            {
+                return string.Empty;
+            }
+
+            if (firstChild.NextSibling == null)
+            {
+                XmlNodeType nodeType = firstChild.NodeType;
+                if (nodeType == XmlNodeType.Text || nodeType == XmlNodeType.CDATA || nodeType == XmlNodeType.Whitespace || nodeType == XmlNodeType.SignificantWhitespace)
+                {
+                    return firstChild.Value;
+                }
+            }
+
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                token.ThrowIfCancellationRequested();
+                AppendChildText(xmlNode, sbdReturn);
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToTrimmedString();
+            }
+
+            void AppendChildText(XmlNode xmlParentNode, StringBuilder builder)
+            {
+                for (XmlNode xmlNodeInner = xmlParentNode.FirstChild; xmlNodeInner != null; xmlNodeInner = xmlNodeInner.NextSibling)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (xmlNodeInner.FirstChild == null)
+                    {
+                        if (xmlNodeInner.NodeType == XmlNodeType.Text || xmlNodeInner.NodeType == XmlNodeType.CDATA || xmlNodeInner.NodeType == XmlNodeType.Whitespace || xmlNodeInner.NodeType == XmlNodeType.SignificantWhitespace)
+                        {
+                            builder.Append(xmlNodeInner.InnerTextViaPool(token));
+                        }
+                    }
+                    else
+                    {
+                        AppendChildText(xmlNodeInner, builder);
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Copy of <see cref="XmlNode.InnerXml" />, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string InnerXmlViaPool(this XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        xmlNode.WriteContentTo(objXmlWriter);
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToString();
+            }
+        }
+
+        /// <summary>
+        /// Copy of <see cref="XmlNode.OuterXml" />, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        public static string OuterXmlViaPool(this XmlNode xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlDOMTextWriter objXmlWriter = new XmlDOMTextWriter(objStringWriter))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        xmlNode.WriteTo(objXmlWriter);
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToString();
+            }
         }
     }
 }

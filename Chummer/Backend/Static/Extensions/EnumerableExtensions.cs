@@ -34,11 +34,13 @@ namespace Chummer
         /// </summary>
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
-        public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid) where T : IHasChildren<T>, IHasInternalId
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static T DeepFindById<T>(this IEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasChildren<T>, IHasInternalId
         {
+            token.ThrowIfCancellationRequested();
             if (lstHaystack == null || string.IsNullOrWhiteSpace(strGuid) || strGuid.IsEmptyGuid())
                 return default;
-            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid);
+            return lstHaystack.DeepFirstOrDefault(x => x.Children, x => x.InternalId == strGuid, token);
         }
 
         /// <summary>
@@ -86,7 +88,7 @@ namespace Chummer
         /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
@@ -110,10 +112,39 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
+        /// </summary>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="intCount">Maximum number of items from <paramref name="lstItems"/> to include in the hash code.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the first <paramref name="intCount"/> contents of <paramref name="lstItems"/></returns>
+        public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null || intCount <= 0)
+                return 0;
+            unchecked
+            {
+                // uint to prevent overflows
+                uint result = 19u;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (--intCount < 0)
+                        break;
+                    result = result * 31u + (uint)item.GetHashCode();
+                }
+
+                return (int)result;
+            }
+        }
+
+        /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
         /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
@@ -137,14 +168,44 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// </summary>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="intCount">Maximum number of items from <paramref name="lstItems"/> to include in the hash code.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the first <paramref name="intCount"/> contents of <paramref name="lstItems"/>.</returns>
+        public static int GetOrderInvariantEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null || intCount <= 0)
+                return 0;
+            // uint to prevent overflows
+            unchecked
+            {
+                uint result = 0;
+                foreach (T item in lstItems)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (--intCount < 0)
+                        break;
+                    result += (uint)item.GetHashCode();
+                }
+
+                return (int)(19u + result * 31u);
+            }
+        }
+
+        /// <summary>
         /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
         /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
         /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
         /// </summary>
-        /// <typeparam name="T">The type for which GetHashCode() will be called</typeparam>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/>.</returns>
         public static int GetOrderInvariantEnsembleHashCodeParallel<T>(this IEnumerable<T> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -154,13 +215,13 @@ namespace Chummer
             unchecked
             {
                 uint result = 0;
-                Parallel.ForEach(lstItems, () => 0, (i, state, local) =>
+                Parallel.ForEach(lstItems, () => (uint)0, (i, state, local) =>
                     {
                         if (token.IsCancellationRequested)
                             state.Stop();
-                        return state.IsStopped ? 0 : i.GetHashCode();
+                        return state.IsStopped ? local : local + (uint)i.GetHashCode();
                     },
-                    localResult => result += (uint)localResult);
+                    localResult => InterlockedExtensions.Add(ref result, localResult));
                 token.ThrowIfCancellationRequested();
                 return (int)(19u + result * 31u);
             }
@@ -191,12 +252,31 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ Any() call that will use List::Exists() if possible.
+        /// Syntactic sugar to wraps this object instance into a temporary array consisting of a single item.
+        /// Potentially better than a normal <see cref="Yield{T}(T)"/> because of fewer allocations needed, but more cumbersome because it requires disposal.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
+        /// <typeparam name="T">Type of the object.</typeparam>
+        /// <param name="objItem">The instance that will be wrapped. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TemporaryArray<T> YieldAsPooled<T>(this T objItem) where T : unmanaged
+        {
+            return new TemporaryArray<T>(objItem);
+        }
+
+        /// <summary>
+        /// Syntactic sugar to wraps this object instance into a temporary array consisting of a single item.
+        /// Potentially better than a normal <see cref="Yield{T}(T)"/> because of fewer allocations needed, but more cumbersome because it requires disposal.
+        /// </summary>
+        /// <param name="strItem">The instance that will be wrapped. </param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static TemporaryStringArray YieldAsPooled(this string strItem)
+        {
+            return new TemporaryStringArray(strItem);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="Enumerable.Any{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.Exists(Predicate{T})"/> if possible.
+        /// </summary>
         public static bool Exists<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             if (lstCollection is List<T> lstCastedCollection)
@@ -205,12 +285,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ FirstOrDefault call that will use List::Find() if possible.
+        /// Syntactic sugar for <see cref="Enumerable.FirstOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.Find(Predicate{T})"/> if possible.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
         public static T Find<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             if (lstCollection is List<T> lstCastedCollection)
@@ -219,12 +295,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ LastOrDefault call that will use List::FindLast() if possible.
+        /// Syntactic sugar for <see cref="Enumerable.LastOrDefault{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> that will use <see cref="List{T}.FindLast(Predicate{T})"/> if possible.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
         public static T FindLast<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             if (lstCollection is List<T> lstCastedCollection)
@@ -233,12 +305,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for LINQ Where().ToList() call that will use List::FindAll() if possible.
+        /// Syntactic sugar for <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/> plus <see cref="Enumerable.ToList{TSource}(IEnumerable{TSource})"/> that will use <see cref="List{T}.FindAll(Predicate{T})"/> if possible.
         /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="lstCollection"></param>
-        /// <param name="predicate"></param>
-        /// <returns></returns>
         public static List<T> FindAll<T>(this IEnumerable<T> lstCollection, Predicate<T> predicate)
         {
             if (lstCollection is List<T> lstCastedCollection)
@@ -246,8 +314,12 @@ namespace Chummer
             return lstCollection.Where(x => predicate(x)).ToList();
         }
 
+        /// <summary>
+        /// Syntactic sugar to run some code/action on all items within an enumerable.
+        /// </summary>
         public static void ForEach<T>(this IEnumerable<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             foreach (T objItem in objEnumerable)
             {
                 token.ThrowIfCancellationRequested();

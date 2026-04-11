@@ -18,8 +18,8 @@
  */
 
 using System;
-using System.Buffers;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -33,7 +33,8 @@ namespace Chummer
     {
         private readonly Vehicle _objVehicle;
         private int _intWeaponMountSlots;
-        private int _intMarkup;
+        private decimal _decMarkup;
+        private bool _blnFreeCost;
         private bool _blnLoading = true;
         private bool _blnSkipUpdate;
         private static string _strSelectCategory = string.Empty;
@@ -56,13 +57,14 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
+
+            // Prevent Enter key from closing the form when NumericUpDown controls have focus
+            nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
+            nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
+            nudExactCost.KeyDown += NumericUpDown_KeyDown;
             _lstCategory = Utils.ListItemListPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) =>
-            {
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             if (_xmlBaseVehicleDataNode != null)
@@ -111,13 +113,13 @@ namespace Chummer
 
                 // Populate the Category list.
                 string strFilterPrefix = (VehicleMountMods
-                    ? "weaponmountmods/mod[("
-                    : "mods/mod[(") + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ") and category = ";
+                    ? "weaponmountmods/mod["
+                    : "mods/mod[") + await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false) + " and category = ";
                 foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("modcategories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;
                     if ((string.IsNullOrEmpty(_strLimitToCategories) || setValues.Contains(strInnerText))
-                        && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                        && _xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText, objXmlCategory.SelectSingleNodeAndCacheExpression("@translate")?.Value ?? strInnerText));
                     }
@@ -150,6 +152,23 @@ namespace Chummer
         private async void RefreshCurrentList(object sender, EventArgs e)
         {
             await RefreshList().ConfigureAwait(false);
+        }
+
+        private async void CostFilter(object sender, EventArgs e)
+        {
+            if (_blnLoading)
+                return;
+
+            await RefreshList().ConfigureAwait(false);
+        }
+
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
+            }
         }
 
         private async void nudRating_ValueChanged(object sender, EventArgs e)
@@ -269,12 +288,12 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
         /// </summary>
-        public int Markup => _intMarkup;
+        public decimal Markup => _decMarkup;
 
         /// <summary>
         /// Is the mod being added to a vehicle weapon mount?
@@ -295,38 +314,63 @@ namespace Chummer
         /// </summary>
         private async Task RefreshList(CancellationToken token = default)
         {
-            string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
-            string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
-            if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
-                strFilter += " and category = " + strCategory.CleanXPath();
-            /*
-            else if (!string.IsNullOrEmpty(AllowedCategories))
+            string strFilter = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                          out StringBuilder sbdCategoryFilter))
+                sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
+                string strCategory = await cboCategory.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
+                string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All" && (string.IsNullOrWhiteSpace(strSearch) || GlobalSettings.SearchInCategoryOnly))
+                    sbdFilter.Append(" and category = ", strCategory.CleanXPath());
+                /*
+                else if (!string.IsNullOrEmpty(AllowedCategories))
                 {
-                    foreach (string strItem in _lstCategory.Select(x => x.Value))
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                              out StringBuilder sbdCategoryFilter))
                     {
-                        if (!string.IsNullOrEmpty(strItem))
-                            sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath()).Append(" or ");
-                    }
-                    if (sbdCategoryFilter.Length > 0)
-                    {
-                        sbdCategoryFilter.Length -= 4;
-                        strFilter += " and (" + sbdCategoryFilter.ToString() + ')';
+                        foreach (string strItem in _lstCategory.Select(x => x.Value))
+                        {
+                            if (!string.IsNullOrEmpty(strItem))
+                                sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
+                        }
+                        if (sbdCategoryFilter.Length > 0)
+                        {
+                            sbdCategoryFilter.Length -= 4;
+                            // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                            strFilter = string.Concat(strFilter, " and (", sbdCategoryFilter.Append(')').ToString());
+                        }
                     }
                 }
-            }
-            */
+                */
 
-            if (!string.IsNullOrEmpty(strSearch))
-                strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+                if (!string.IsNullOrEmpty(strSearch))
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
+
+                // Apply cost filtering
+                decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
+                if (decExactCost > 0)
+                {
+                    // Exact cost filtering
+                    sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
+                }
+                else if (decMinimumCost != 0 || decMaximumCost != 0)
+                {
+                    // Range cost filtering
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
+                }
+
+                if (sbdFilter.Length > 0)
+                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                    strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
+            }
 
             // Retrieve the list of Mods for the selected Category.
             XPathNodeIterator objXmlModList = VehicleMountMods
-                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod[" + strFilter + ']')
-                : _xmlBaseVehicleDataNode.Select("mods/mod[" + strFilter + ']');
+                ? _xmlBaseVehicleDataNode.Select("weaponmountmods/mod" + strFilter)
+                : _xmlBaseVehicleDataNode.Select("mods/mod" + strFilter);
             // Update the list of Mods based on the selected Category.
             int intOverLimit = 0;
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMods))
@@ -341,11 +385,11 @@ namespace Chummer
                     if (!await _objVehicle.CheckModRequirementsAsync(objXmlMod, token).ConfigureAwait(false))
                         continue;
 
-                    int intMinRating = int.MaxValue;
+                    int intMinRating = 0;
                     string strMinRating = objXmlMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     string strRating = objXmlMod.SelectSingleNodeAndCacheExpression("rating", token: token)?.Value;
@@ -381,7 +425,7 @@ namespace Chummer
                     decimal decCostMultiplier = decBaseCostMultiplier;
                     if (_setBlackMarketMaps.Contains(objXmlMod.SelectSingleNodeAndCacheExpression("category", token: token)?.Value))
                         decCostMultiplier *= 0.9m;
-                    if ((!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, token: token).ConfigureAwait(false))
+                    if ((!blnHideOverAvailLimit || await objXmlMod.CheckAvailRestrictionAsync(_objCharacter, intMinRating, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                         &&
                         (!blnShowOnlyAffordItems || blnFreeItem
                                                  || await objXmlMod.CheckNuyenRestrictionAsync(
@@ -433,7 +477,8 @@ namespace Chummer
                 {
                     SelectedMod = strSelectedId;
                     SelectedRating = nudRating.ValueAsInt;
-                    _intMarkup = nudMarkup.ValueAsInt;
+                    _decMarkup = nudMarkup.Value;
+                    _blnFreeCost = chkFreeItem.Checked;
                     _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
                     _strSelectCategory = GlobalSettings.SearchInCategoryOnly || txtSearch.TextLength == 0
                         ? cboCategory.SelectedValue?.ToString()
@@ -490,7 +535,7 @@ namespace Chummer
                         = xmlVehicleMod.SelectSingleNodeAndCacheExpression("slots", token)?.Value ?? string.Empty;
                     if (!strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
                     {
-                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                         string strInnerText = intExtraSlots.ToString(GlobalSettings.CultureInfo);
                         await lblSlots.DoThreadSafeAsync(x => x.Text = strInnerText, token: token).ConfigureAwait(false);
                         await lblSlotsLabel
@@ -505,7 +550,7 @@ namespace Chummer
                     string strMinRating = xmlVehicleMod.SelectSingleNodeAndCacheExpression("minrating", token: token)?.Value ?? string.Empty;
                     if (!string.IsNullOrEmpty(strMinRating))
                     {
-                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, int.MaxValue, token: token).ConfigureAwait(false)).Item1.StandardRound();
+                        intMinRating = (await ProcessInvariantXPathExpression(strMinRating, 0, token: token).ConfigureAwait(false)).Item1.StandardRound();
                     }
 
                     await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
@@ -619,21 +664,19 @@ namespace Chummer
 
                     if (await nudRating.DoThreadSafeFuncAsync(x => x.Maximum, token: token).ConfigureAwait(false) != 0)
                     {
+                        int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
+                                                            .ConfigureAwait(false);
+
                         if (await chkHideOverAvailLimit.DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                        .ConfigureAwait(false))
                         {
-                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
-                                                            .ConfigureAwait(false);
                             while (intMaximum > intMinRating && !await xmlVehicleMod
                                                                        .CheckAvailRestrictionAsync(
-                                                                           _objCharacter, intMaximum, token: token)
+                                                                           _objCharacter, intMaximum, (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlVehicleMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token)
                                                                        .ConfigureAwait(false))
                             {
                                 --intMaximum;
                             }
-
-                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token)
-                                           .ConfigureAwait(false);
                         }
 
                         if (await chkShowOnlyAffordItems.DoThreadSafeFuncAsync(x => x.Checked, token: token)
@@ -646,8 +689,6 @@ namespace Chummer
                             if (_setBlackMarketMaps.Contains(
                                     xmlVehicleMod.SelectSingleNodeAndCacheExpression("category", token)?.Value))
                                 decCostMultiplier *= 0.9m;
-                            int intMaximum = await nudRating.DoThreadSafeFuncAsync(x => x.MaximumAsInt, token: token)
-                                                            .ConfigureAwait(false);
                             decimal decNuyen = await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
                             while (intMaximum > 1 && !await xmlVehicleMod
                                                             .CheckNuyenRestrictionAsync(
@@ -656,14 +697,15 @@ namespace Chummer
                             {
                                 --intMaximum;
                             }
-
-                            await nudRating.DoThreadSafeAsync(x => x.Maximum = intMaximum, token: token)
-                                           .ConfigureAwait(false);
                         }
 
+                        int intMinimum = intMinRating;
+                        if (intMinimum <= 0)
+                            intMinimum = Math.Min(1, intMaximum);
                         await nudRating.DoThreadSafeAsync(x =>
                         {
-                            x.Minimum = intMinRating;
+                            x.Minimum = intMinimum;
+                            x.Maximum = Math.Max(intMinimum, intMaximum);
                             x.Enabled = x.Maximum != x.Minimum;
                         }, token: token).ConfigureAwait(false);
                     }
@@ -672,7 +714,7 @@ namespace Chummer
                                                    .ConfigureAwait(false);
 
                     // Slots (part 2, if we do need a rating)
-                    if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal))
+                    if (strSlots.StartsWith("FixedValues(", StringComparison.Ordinal) || strSlots.Contains("Rating", StringComparison.OrdinalIgnoreCase))
                     {
                         intExtraSlots = (await ProcessInvariantXPathExpression(strSlots, intRating, token: token).ConfigureAwait(false)).Item1.StandardRound();
                         string strInnerText = intExtraSlots.ToString(GlobalSettings.CultureInfo);
@@ -686,7 +728,8 @@ namespace Chummer
                     string strAvail
                         = await new AvailabilityValue(
                                 intRating,
-                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty)
+                                xmlVehicleMod.SelectSingleNodeAndCacheExpression("avail", token)?.Value ?? string.Empty,
+                                (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: xmlVehicleMod.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound())
                             .ToStringAsync(token).ConfigureAwait(false);
                     await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblAvailLabel
@@ -698,8 +741,8 @@ namespace Chummer
                     decimal decItemCost = 0;
                     if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
                     {
-                        string strCost = 0.0m.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                            GlobalSettings.CultureInfo) + strNuyen;
+                        string strCost = 0.0m.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                            + strNuyen;
                         await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
                     }
                     else
@@ -709,33 +752,30 @@ namespace Chummer
                         strCost = strCost.ProcessFixedValuesString(intRating);
                         if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                         {
+                            string strFirstHalf = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
+                            string strSecondHalf = string.Empty;
+                            int intHyphenIndex = strFirstHalf.IndexOf('-');
+                            if (intHyphenIndex != -1)
+                            {
+                                if (intHyphenIndex + 1 < strFirstHalf.Length)
+                                    strSecondHalf = strFirstHalf.Substring(intHyphenIndex + 1);
+                                strFirstHalf = strFirstHalf.Substring(0, intHyphenIndex);
+                            }
                             decimal decMin;
                             decimal decMax = decimal.MaxValue;
-                            strCost = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
-                            if (strCost.Contains('-'))
+                            if (intHyphenIndex != -1)
                             {
-                                string[] strValues = strCost.SplitFixedSizePooledArray('-', 2);
-                                try
-                                {
-                                    decMin = Convert.ToDecimal(strValues[0], GlobalSettings.InvariantCultureInfo);
-                                    decMax = Convert.ToDecimal(strValues[1], GlobalSettings.InvariantCultureInfo);
-                                }
-                                finally
-                                {
-                                    ArrayPool<string>.Shared.Return(strValues);
-                                }
+                                decimal.TryParse(strFirstHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
+                                decimal.TryParse(strSecondHalf, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMax);
                             }
                             else
-                            {
-                                decMin = Convert.ToDecimal(strCost.FastEscape('+'),
-                                                           GlobalSettings.InvariantCultureInfo);
-                            }
+                                decimal.TryParse(strFirstHalf.FastEscape('+'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decMin);
 
+                            string strNuyenFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false);
                             if (decMax == decimal.MaxValue)
                             {
                                 string strText =
-                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strNuyen + '+';
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen + "+";
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
                             }
@@ -744,10 +784,8 @@ namespace Chummer
                                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                                     .ConfigureAwait(false);
                                 string strText =
-                                    decMin.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strSpace + '-' + strSpace +
-                                    decMax.ToString(await _objCharacter.Settings.GetNuyenFormatAsync(token).ConfigureAwait(false),
-                                        GlobalSettings.CultureInfo) + strNuyen;
+                                    decMin.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strSpace + "-" + strSpace +
+                                    decMax.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyen;
                                 await lblCost.DoThreadSafeAsync(x => x.Text = strText, token: token)
                                     .ConfigureAwait(false);
                             }
@@ -767,11 +805,12 @@ namespace Chummer
                             decItemCost *= 0.9m;
                         }
 
+                        string strText2 = decItemCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                                                     GlobalSettings.CultureInfo)
+                                                + strNuyen;
                         await lblCost
                               .DoThreadSafeAsync(
-                                  x => x.Text = decItemCost.ToString(_objCharacter.Settings.NuyenFormat,
-                                                                     GlobalSettings.CultureInfo)
-                                                + strNuyen, token: token)
+                                  x => x.Text = strText2, token: token)
                               .ConfigureAwait(false);
                     }
 
@@ -802,7 +841,7 @@ namespace Chummer
                                 x.Text = strCapacity;
                             }, token: token).ConfigureAwait(false);
                             await lblVehicleCapacityLabel
-                                  .SetToolTipAsync(
+                                  .SetToolTipTextAsync(
                                       await LanguageManager
                                             .GetStringAsync("Tip_RemainingVehicleModCapacity", token: token)
                                             .ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -866,13 +905,13 @@ namespace Chummer
                                 = _xmlBaseVehicleDataNode.SelectSingleNode(
                                     "limits/limit[. = " + strLimit.CleanXPath() + "]/@translate");
                             strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + '(' + objXmlLimit?.Value
-                                       ?? strLimit + ')';
+                                                            .ConfigureAwait(false) + "(" + objXmlLimit?.Value
+                                       ?? strLimit + ")";
                         }
                         else
                         {
                             strLimit = await LanguageManager.GetStringAsync("String_Space", token: token)
-                                                            .ConfigureAwait(false) + '(' + strLimit + ')';
+                                                            .ConfigureAwait(false) + "(" + strLimit + ")";
                         }
 
                         await lblLimit.DoThreadSafeAsync(x => x.Text = strLimit, token: token).ConfigureAwait(false);
@@ -911,7 +950,7 @@ namespace Chummer
                                                              strSource, strPage, GlobalSettings.Language,
                                                              GlobalSettings.CultureInfo, _objCharacter, token: token)
                                                          .ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                     await lblSourceLabel
                           .DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSourceString.ToString()),
                                              token: token).ConfigureAwait(false);
@@ -932,24 +971,24 @@ namespace Chummer
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
-            switch (strCategory)
+            switch (strCategory.ToUpperInvariant())
             {
-                case "Powertrain":
+                case "POWERTRAIN":
                     return _objVehicle.PowertrainModSlotsUsedAsync(intModSlots, token);
 
-                case "Protection":
+                case "PROTECTION":
                     return _objVehicle.ProtectionModSlotsUsedAsync(intModSlots, token);
 
-                case "Weapons":
+                case "WEAPONS":
                     return _objVehicle.WeaponModSlotsUsedAsync(intModSlots, token);
 
-                case "Body":
+                case "BODY":
                     return _objVehicle.BodyModSlotsUsedAsync(intModSlots, token);
 
-                case "Electromagnetic":
+                case "ELECTROMAGNETIC":
                     return _objVehicle.ElectromagneticModSlotsUsedAsync(intModSlots, token);
 
-                case "Cosmetic":
+                case "COSMETIC":
                     return _objVehicle.CosmeticModSlotsUsedAsync(intModSlots, token);
 
                 default:
@@ -962,7 +1001,7 @@ namespace Chummer
             await CommonFunctions.OpenPdfFromControl(sender).ConfigureAwait(false);
         }
 
-        private async Task<Tuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
+        private async Task<ValueTuple<decimal, bool>> ProcessInvariantXPathExpression(string strExpression, int intRating, int intExtraSlots = 0, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
@@ -978,10 +1017,10 @@ namespace Chummer
                         await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         string strSlotsString = (_intWeaponMountSlots + intExtraSlots).ToString(GlobalSettings.InvariantCultureInfo);
-                        sbdValue.Replace("{Slots}", strSlotsString);
-                        sbdValue.Replace("Slots", strSlotsString);
                         sbdValue.Replace("{Parent Slots}", strSlotsString);
                         sbdValue.Replace("Parent Slots", strSlotsString);
+                        sbdValue.Replace("{Slots}", strSlotsString);
+                        sbdValue.Replace("Slots", strSlotsString);
                         sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
                         await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
@@ -991,10 +1030,10 @@ namespace Chummer
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                 if (blnIsSuccess)
-                    return new Tuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
+                    return new ValueTuple<decimal, bool>(Convert.ToDecimal((double)objProcess), true);
             }
 
-            return new Tuple<decimal, bool>(decValue, blnSuccess);
+            return new ValueTuple<decimal, bool>(decValue, blnSuccess);
         }
 
         #endregion Methods

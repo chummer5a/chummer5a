@@ -133,7 +133,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(170, 21);
             this.cboCategory.TabIndex = 3;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // lblType
@@ -159,7 +158,6 @@ namespace Chummer
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(170, 21);
             this.cboType.TabIndex = 5;
-            this.cboType.TooltipText = "";
             this.cboType.SelectedIndexChanged += new System.EventHandler(this.cboType_SelectedIndexChanged);
             // 
             // lblRange
@@ -185,7 +183,6 @@ namespace Chummer
             this.cboRange.Name = "cboRange";
             this.cboRange.Size = new System.Drawing.Size(170, 21);
             this.cboRange.TabIndex = 7;
-            this.cboRange.TooltipText = "";
             this.cboRange.SelectedIndexChanged += new System.EventHandler(this.cboRange_SelectedIndexChanged);
             // 
             // chkRestricted
@@ -245,7 +242,6 @@ namespace Chummer
             this.cboDuration.Name = "cboDuration";
             this.cboDuration.Size = new System.Drawing.Size(170, 21);
             this.cboDuration.TabIndex = 12;
-            this.cboDuration.TooltipText = "";
             this.cboDuration.SelectedIndexChanged += new System.EventHandler(this.cboDuration_SelectedIndexChanged);
             // 
             // lblDVLabel

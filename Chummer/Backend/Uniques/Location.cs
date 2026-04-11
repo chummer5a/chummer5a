@@ -57,7 +57,7 @@ namespace Chummer
             _lstChildren = new ThreadSafeObservableCollection<IHasLocation>(LockObject);
             _strName = strName;
             Parent = objParent;
-            Children.CollectionChanged += ChildrenOnCollectionChanged;
+            Children.CollectionChangedAsync += ChildrenOnCollectionChanged;
             Children.BeforeClearCollectionChanged += ChildrenOnBeforeClearCollectionChanged;
         }
 
@@ -82,7 +82,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Load the Metamagic from the XmlNode.
+        /// Load the Location from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
@@ -92,7 +92,7 @@ namespace Chummer
                 if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
                 {
                     _guiID = Guid.NewGuid();
-                    _strName = objNode.InnerText;
+                    _strName = objNode.InnerTextViaPool();
                 }
                 else
                 {
@@ -112,10 +112,56 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Load the Location from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
+                {
+                    _guiID = Guid.NewGuid();
+                    _strName = objNode.InnerTextViaPool(token);
+                }
+                else
+                {
+                    objNode.TryGetStringFieldQuickly("name", ref _strName);
+                    objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
+
+                    string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
+                    objNode.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
+                    _colNotes = ColorTranslator.FromHtml(sNotesColor);
+                }
+
+                objNode.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
+
+                if (Parent != null)
+                {
+                    if (Parent is IAsyncCollection<Location> objParentAsync)
+                    {
+                        if (!await objParentAsync.ContainsAsync(this, token).ConfigureAwait(false))
+                            await objParentAsync.AddAsync(this, token).ConfigureAwait(false);
+                    }
+                    else if (!Parent.Contains(this))
+                        Parent.Add(this);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Print the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
         /// <param name="strLanguageToPrint">Language in which to print</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public async Task Print(XmlWriter objWriter, string strLanguageToPrint, CancellationToken token = default)
         {
             if (objWriter == null)
@@ -127,8 +173,9 @@ namespace Chummer
                 await objWriter.WriteStartElementAsync("location", token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name", await DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
-                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("name_english", Name, token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname", await DisplayNameAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                await objWriter.WriteElementStringAsync("fullname_english", await DisplayNameAsync(GlobalSettings.DefaultLanguage, token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
@@ -482,8 +529,10 @@ namespace Chummer
                 objOldItem.Location = null;
         }
 
-        private void ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e)
+        private Task ChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
             switch (e.Action)
             {
                 case NotifyCollectionChangedAction.Add:
@@ -508,10 +557,9 @@ namespace Chummer
                     break;
 
                 case NotifyCollectionChangedAction.Reset:
-                    foreach (IHasLocation objItem in Children.AsEnumerableWithSideEffects())
-                        objItem.Location = this;
-                    break;
+                    return Children.ForEachWithSideEffectsAsync(x => x.Location = this, token);
             }
+            return Task.CompletedTask;
         }
 
         public bool Remove(bool blnConfirmDelete = true)

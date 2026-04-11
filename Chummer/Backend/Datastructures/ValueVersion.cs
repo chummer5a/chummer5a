@@ -407,11 +407,11 @@ namespace Chummer
 
             void AppendPositiveNumber(int num, StringBuilder sb)
             {
-                int length = sb.Length;
+                int index = sb.Length;
                 do
                 {
-                    num = num.DivRem(10, out int num1);
-                    sb.Insert(length, (char)(48 + num1));
+                    num = num.DivRem(10, out int remainder);
+                    sb.Insert(index, (char)(48 + remainder));
                 }
                 while (num > 0);
             }

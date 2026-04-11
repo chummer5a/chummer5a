@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Threading;
 using System.Threading.Tasks;
 
 namespace Chummer.UI.Table
@@ -31,27 +32,35 @@ namespace Chummer.UI.Table
     /// <typeparam name="T">the table item type</typeparam>
     public class TableColumn<T> : IDisposable where T : INotifyPropertyChanged
     {
-        private readonly Func<TableCell> _cellFactory;
-        private Func<Task<object>, Task<object>, Task<int>> _sorter;
+        private Func<TableCell> _cellFactory;
+        private Func<Task<object>, Task<object>, CancellationToken, Task<int>> _sorter;
         private bool _blnLive;
         private string _strText;
         private string _strTag;
         private int _intMinWidth;
         private int _intPrefWidth;
-        private Func<T, Task<object>> _funcExtractor;
-        private Func<T, T, Task<int>> _itemSorter;
-        private HashSet<string> _setDependencies = Utils.StringHashSetPool.Get();
+        private Func<T, CancellationToken, Task<object>> _funcExtractor;
+        private Func<T, T, CancellationToken, Task<int>> _itemSorter;
+        private HashSet<string> _setDependencies;
 
         public TableColumn(Func<TableCell> cellFactory)
         {
             _cellFactory = cellFactory ?? throw new ArgumentNullException(nameof(cellFactory));
+            _setDependencies = Utils.StringHashSetPool.Get();
         }
 
         protected virtual void Dispose(bool disposing)
         {
-            if (disposing && _setDependencies != null)
+            if (disposing)
             {
-                Utils.StringHashSetPool.Return(ref _setDependencies);
+                // to help the GC
+                _cellFactory = null;
+                _sorter = null;
+                _funcExtractor = null;
+                _itemSorter = null;
+                ToolTipExtractor = null;
+                if (_setDependencies != null)
+                    Utils.StringHashSetPool.Return(ref _setDependencies);
             }
         }
 
@@ -91,17 +100,17 @@ namespace Chummer.UI.Table
         /// <returns>a new instance of the cell</returns>
         internal TableCell CreateCell() => _cellFactory();
 
-        internal Func<T, T, Task<int>> CreateSorter()
+        internal Func<T, T, CancellationToken, Task<int>> CreateSorter()
         {
             if (_itemSorter == null && _sorter != null)
             {
                 if (_funcExtractor == null)
                 {
-                    _itemSorter = (i1, i2) => _sorter(Task.FromResult<object>(i1), Task.FromResult<object>(i2));
+                    _itemSorter = (i1, i2, t) => _sorter(Task.FromResult<object>(i1), Task.FromResult<object>(i2), t);
                 }
                 else
                 {
-                    _itemSorter = (i1, i2) => _sorter(_funcExtractor(i1), _funcExtractor(i2));
+                    _itemSorter = (i1, i2, t) => _sorter(_funcExtractor(i1, t), _funcExtractor(i2, t), t);
                 }
             }
             return _itemSorter;
@@ -118,7 +127,7 @@ namespace Chummer.UI.Table
         /// Method for extracting the value for the cell from
         /// the item
         /// </summary>
-        public Func<T, Task<object>> Extractor
+        public Func<T, CancellationToken, Task<object>> Extractor
         {
             get => _funcExtractor;
             set
@@ -153,7 +162,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// sorter for this column
         /// </summary>
-        public Func<Task<object>, Task<object>, Task<int>> Sorter
+        public Func<Task<object>, Task<object>, CancellationToken, Task<int>> Sorter
         {
             get => _sorter;
             set
@@ -207,7 +216,7 @@ namespace Chummer.UI.Table
         /// <summary>
         /// Extractor for tooltip text on cell
         /// </summary>
-        public Func<T, Task<string>> ToolTipExtractor { get; set; }
+        public Func<T, CancellationToken, Task<string>> ToolTipExtractor { get; set; }
 
         /// <summary>
         /// transfer the column to the live state

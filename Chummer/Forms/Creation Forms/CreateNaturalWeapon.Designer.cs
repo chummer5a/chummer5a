@@ -64,7 +64,6 @@ namespace Chummer
             this.cboSkill.Name = "cboSkill";
             this.cboSkill.Size = new System.Drawing.Size(372, 21);
             this.cboSkill.TabIndex = 3;
-            this.cboSkill.TooltipText = "";
             // 
             // lblName
             // 
@@ -119,7 +118,6 @@ namespace Chummer
             this.cboDVBase.Name = "cboDVBase";
             this.cboDVBase.Size = new System.Drawing.Size(93, 21);
             this.cboDVBase.TabIndex = 5;
-            this.cboDVBase.TooltipText = "";
             // 
             // nudDVMod
             // 
@@ -254,7 +252,6 @@ namespace Chummer
             this.cboDVType.Name = "cboDVType";
             this.cboDVType.Size = new System.Drawing.Size(61, 21);
             this.cboDVType.TabIndex = 14;
-            this.cboDVType.TooltipText = "";
             // 
             // tlpMain
             // 

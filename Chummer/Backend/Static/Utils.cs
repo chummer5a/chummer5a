@@ -45,6 +45,7 @@ using Microsoft.Win32;
 using NLog;
 using Microsoft.IO;
 using System.Xml.XPath;
+using Xoshiro.PRNG64;
 using System.Runtime.Versioning;
 
 namespace Chummer
@@ -211,7 +212,7 @@ namespace Chummer
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => Task.Run(x.ToBitmap, token), token);
+            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => TaskExtensions.RunWithoutEC(x.ToBitmap, token), token);
         }
 
         [SupportedOSPlatform("windows")]
@@ -273,7 +274,7 @@ namespace Chummer
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, x => Task.Run(() =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, x => TaskExtensions.RunWithoutEC(() =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -315,6 +316,27 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Maximum size of a stackalloc'ed array for an 8-bit type (byte, sbyte, bool)
+        /// </summary>
+        public const int MaxStackLimit8BitTypes = 4096;
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 16-bit type (short, ushort, char)
+        /// </summary>
+        public const int MaxStackLimit16BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(short);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 32-bit type (int, uint, float)
+        /// </summary>
+        public const int MaxStackLimit32BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(int);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 64-bit type (long, ulong, double)
+        /// </summary>
+        public const int MaxStackLimit64BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(long);
+        /// <summary>
+        /// Maximum size of a stackalloc'ed array for a 128-bit type (decimal)
+        /// </summary>
+        public const int MaxStackLimit128BitTypes = MaxStackLimit8BitTypes * sizeof(byte) / sizeof(decimal);
+
+        /// <summary>
         /// Maximum amount of tasks to run in parallel, useful to use with batching to avoid overloading the task scheduler.
         /// </summary>
         public static int MaxParallelBatchSize { get; } = Environment.ProcessorCount * 2;
@@ -330,8 +352,14 @@ namespace Chummer
         private static readonly Lazy<string> s_strGetAutosavesFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "autosave"));
 
+        private static readonly Lazy<string> s_strGetBackupSavesFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "saves", "backup"));
+
         private static readonly Lazy<string> s_strGetDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "data"));
+
+        private static readonly Lazy<string> s_strGetCustomDataFolderPath
+            = new Lazy<string>(() => Path.Combine(GetStartupPath, "customdata"));
 
         private static readonly Lazy<string> s_strGetLiveCustomDataFolderPath
             = new Lazy<string>(() => Path.Combine(GetStartupPath, "livecustomdata"));
@@ -352,7 +380,11 @@ namespace Chummer
 
         public static string GetEscapedStartupPath => s_strGetEscapedStartupPath.Value;
 
+        public static string GetBackupSavesFolderPath => s_strGetBackupSavesFolderPath.Value;
+
         public static string GetAutosavesFolderPath => s_strGetAutosavesFolderPath.Value;
+
+        public static string GetCustomDataFolderPath => s_strGetCustomDataFolderPath.Value;
 
         public static string GetLiveCustomDataFolderPath => s_strGetLiveCustomDataFolderPath.Value;
 
@@ -397,6 +429,7 @@ namespace Chummer
                     continue;
                 lstFiles.Add(strFile);
             }
+            lstFiles.Sort();
             return lstFiles.ToArray();
         });
 
@@ -673,7 +706,7 @@ namespace Chummer
                     if (blnSync)
                         Directory.Delete(strPath, true);
                     else
-                        await Task.Run(() => Directory.Delete(strPath, true), token).ConfigureAwait(false);
+                        await TaskExtensions.RunWithoutEC(() => Directory.Delete(strPath, true), token).ConfigureAwait(false);
                 }
                 catch (PathTooLongException)
                 {
@@ -828,47 +861,54 @@ namespace Chummer
                                                                 ? SearchOption.AllDirectories
                                                                 : SearchOption.TopDirectoryOnly);
             token.ThrowIfCancellationRequested();
+            int intReturn = 1;
             if (blnSync)
             {
-                int intReturn = 1;
                 RunWithoutThreadLock(() =>
                 {
                     Parallel.ForEach(astrFilesToDelete, () => true,
-                                     (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token),
+                                     (strToDelete, x, y) => FileExtensions.SafeDelete(strToDelete, false, intTimeout, token) && y,
                                      blnLoop =>
                                      {
                                          if (!blnLoop)
                                              Interlocked.Exchange(ref intReturn, 0);
                                      });
                 }, token);
-                return intReturn > 0;
             }
-
-            Task<bool>[] atskSuccesses = new Task<bool>[astrFilesToDelete.Length];
-            for (int i = 0; i < astrFilesToDelete.Length; i++)
+            else
             {
-                string strToDelete = astrFilesToDelete[i];
-                atskSuccesses[i] = FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token);
+                await ParallelExtensions.ForEachAsync(astrFilesToDelete, async (strToDelete, t) =>
+                {
+                    if (t.IsCancellationRequested)
+                        return;
+                    if (!await FileExtensions.SafeDeleteAsync(strToDelete, false, intTimeout, token))
+                    {
+                        t.Cancel(false);
+                        Interlocked.Exchange(ref intReturn, 0);
+                    }
+                }, token).ConfigureAwait(false);
             }
-            foreach (Task<bool> x in atskSuccesses)
-            {
-                if (!await x.ConfigureAwait(false))
-                    return false;
-            }
-            return true;
+            return intReturn > 0;
         }
 
         /// <summary>
         /// Restarts Chummer5a.
         /// </summary>
-        /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use Chummer's current language.</param>
+        /// <param name="objCulture">Culture info to use when displaying any prompts or warnings. If empty, use the culture info of Chummer's current language.</param>
+        /// <param name="strLanguage">Language in which to display any prompts or warnings. If empty, use the language of <paramref name="objCulture"/> (Chummer's current language if that is null).</param>
         /// <param name="strText">Text to display in the prompt to restart. If empty, no prompt is displayed.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async ValueTask RestartApplication(string strLanguage = "", string strText = "", CancellationToken token = default)
+        public static async ValueTask RestartApplication(CultureInfo objCulture = null, string strLanguage = "", string strText = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strLanguage))
-                strLanguage = GlobalSettings.Language;
+            if (objCulture == null)
+            {
+                objCulture = GlobalSettings.CultureInfo;
+                if (string.IsNullOrEmpty(strLanguage))
+                    strLanguage = GlobalSettings.Language;
+            }
+            else if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = objCulture.ToString();
             if (!string.IsNullOrEmpty(strText))
             {
                 string text = await LanguageManager.GetStringAsync(strText, strLanguage, token: token).ConfigureAwait(false);
@@ -910,7 +950,7 @@ namespace Chummer
                                                                             .GetCharacterNameAsync(token)
                                                                             .ConfigureAwait(false);
                         if (await Program.ShowScrollableMessageBoxAsync(
-                                string.Format(GlobalSettings.CultureInfo,
+                                string.Format(objCulture,
                                     await LanguageManager.GetStringAsync(
                                             "Message_UnsavedChanges", strLanguage,
                                             token: token)
@@ -954,7 +994,7 @@ namespace Chummer
                         {
                             string strLoopFileName = objOpenCharacterForm.CharacterObject?.FileName ?? string.Empty;
                             if (!string.IsNullOrEmpty(strLoopFileName))
-                                sbdArguments.Append('\"').Append(strLoopFileName).Append("\" ");
+                                sbdArguments.Append('\"', strLoopFileName, "\" ");
                         }
 
                         if (sbdArguments.Length > 0)
@@ -980,7 +1020,7 @@ namespace Chummer
 #pragma warning disable VSTHRD001
             MySynchronizationContext.Post(x =>
             {
-                (string strMyFileName, string strMyArguments) = (Tuple<string, string>) x ?? new Tuple<string, string>(string.Empty, string.Empty);
+                (string strMyFileName, string strMyArguments) = (ValueTuple<string, string>) x;
                 ProcessStartInfo objStartInfo = new ProcessStartInfo
                 {
                     FileName = strMyFileName,
@@ -994,7 +1034,7 @@ namespace Chummer
                 {
                     objStartInfo.Start();
                 }
-            }, new Tuple<string, string>(strFileName, strArguments));
+            }, new ValueTuple<string, string>(strFileName, strArguments));
 #pragma warning restore VSTHRD001
         }
 
@@ -1108,27 +1148,35 @@ namespace Chummer
         public static Task StartStaTask(Action func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
-            Thread thread = new Thread(() =>
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            try
             {
-                try
+                Thread thread = new Thread(() =>
                 {
-                    func.Invoke();
-                    // This is needed because SetResult always needs a return type
-                    tcs.TrySetResult(true);
-                }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+                    try
+                    {
+                        func.Invoke();
+                        // This is needed because SetResult always needs a return type
+                        tcs.TrySetResult(true);
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
+                });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
+            }
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1139,25 +1187,33 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Func<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
-            Thread thread = new Thread(() =>
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            try
             {
-                try
+                Thread thread = new Thread(() =>
                 {
-                    tcs.TrySetResult(func());
-                }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    objRegistration.Dispose();
-                }
-            });
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+                    try
+                    {
+                        tcs.TrySetResult(func());
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
+                });
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
+            }
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1168,28 +1224,36 @@ namespace Chummer
         public static Task StartStaTask(Task func, CancellationToken token)
         {
             TaskCompletionSource<bool> tcs = new TaskCompletionSource<bool>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
-            Thread thread = new Thread(RunFunction);
-            async void RunFunction()
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            try
             {
-                try
+                Thread thread = new Thread(RunFunction);
+                async void RunFunction()
                 {
-                    await func.ConfigureAwait(true);
-                    // This is needed because SetResult always needs a return type
-                    tcs.TrySetResult(true);
+                    try
+                    {
+                        await func.ConfigureAwait(true);
+                        // This is needed because SetResult always needs a return type
+                        tcs.TrySetResult(true);
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
                 }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    await objRegistration.DisposeAsync().ConfigureAwait(false);
-                }
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
             }
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1200,26 +1264,34 @@ namespace Chummer
         public static Task<T> StartStaTask<T>(Task<T> func, CancellationToken token)
         {
             TaskCompletionSource<T> tcs = new TaskCompletionSource<T>();
-            CancellationTokenRegistration objRegistration = token.Register(x => ((TaskCompletionSource<bool>)x)?.TrySetCanceled(token), tcs);
-            Thread thread = new Thread(RunFunction);
-            async void RunFunction()
+            CancellationTokenRegistration objRegistration = token.RegisterWithoutEC(x => ((TaskCompletionSource<bool>)x).TrySetCanceled(token), tcs);
+            try
             {
-                try
+                Thread thread = new Thread(RunFunction);
+                async void RunFunction()
                 {
-                    tcs.TrySetResult(await func.ConfigureAwait(true));
+                    try
+                    {
+                        tcs.TrySetResult(await func.ConfigureAwait(true));
+                    }
+                    catch (Exception e)
+                    {
+                        tcs.TrySetException(e);
+                    }
+                    finally
+                    {
+                        objRegistration.Dispose();
+                    }
                 }
-                catch (Exception e)
-                {
-                    tcs.TrySetException(e);
-                }
-                finally
-                {
-                    await objRegistration.DisposeAsync().ConfigureAwait(false);
-                }
+                thread.SetApartmentState(ApartmentState.STA);
+                thread.Start();
+                return tcs.Task;
             }
-            thread.SetApartmentState(ApartmentState.STA);
-            thread.Start();
-            return tcs.Task;
+            catch
+            {
+                objRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
@@ -1607,7 +1679,7 @@ namespace Chummer
         private static bool DefaultIsOkToRunDoEvents => (!IsUnitTest || IsUnitTestForUI) && EverDoEvents;
 
         /// <summary>
-        /// This member makes sure we aren't swamping the program with massive amounts of Application.DoEvents() calls
+        /// This member makes sure we aren't swamping the program with massive amounts of <see cref="Application.DoEvents"/> calls
         /// </summary>
         private static int _intIsOkToRunDoEvents = DefaultIsOkToRunDoEvents.ToInt32();
 
@@ -1922,23 +1994,34 @@ namespace Chummer
         /// <param name="afuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        [SupportedOSPlatform("windows")]
-        public static void RunWithoutThreadLock(Action[] afuncToRun, CancellationToken token)
+        public static void RunWithoutThreadLock(CancellationToken token, params Action[] afuncToRun)
+        {
+            RunWithoutThreadLock(afuncToRun, token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Action> afuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-            switch (afuncToRun.Length)
+            switch (afuncToRun.Count)
             {
                 case 0:
                     return;
                 case 1:
-                    RunWithoutThreadLock(afuncToRun[0], token);
+                    RunWithoutThreadLock(afuncToRun.ElementAtBetter(0), token);
                     return;
             }
 
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 if (token == CancellationToken.None)
-                    Parallel.Invoke(afuncToRun);
+                    Parallel.ForEach(afuncToRun, x => x.Invoke());
                 else
                 {
                     token.ThrowIfCancellationRequested();
@@ -1953,7 +2036,7 @@ namespace Chummer
             }
 
             Task objTask = token == CancellationToken.None
-                ? Task.Run(() => Parallel.Invoke(afuncToRun), token)
+                ? Task.Run(() => Parallel.ForEach(afuncToRun, x => x.Invoke()), token)
                 : Task.Run(() =>
                 {
                     ParallelOptions objOptions = new ParallelOptions
@@ -2038,7 +2121,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SupportedOSPlatform("windows")]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<T>> lstFuncToRun, CancellationToken token = default)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyCollection<Func<T>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intLength = lstFuncToRun.Count;
@@ -2047,28 +2130,36 @@ namespace Chummer
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                 return aobjReturn;
             }
             if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0),
-                    (i, x, y) => new Tuple<T, int>(lstFuncToRun[i].Invoke(), i), x => aobjReturn[x.Item2] = x.Item1);
-                token.ThrowIfCancellationRequested();
+                    Parallel.For(0, intLength, i => aobjReturn[i] = lstFuncToRun.ElementAtBetter(i).Invoke());
+                }
+                else
+                {
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.For(0, intLength, objOptions, i => aobjReturn[i] = lstFuncToRun.ElementAtBetter(i).Invoke());
+                    token.ThrowIfCancellationRequested();
+                }
                 return aobjReturn;
             }
-            List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
+            List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
             int intOffset = 0;
+            int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
             {
-                if (i != 0 && i % MaxParallelBatchSize == 0)
+                if (++intCycleTracker > MaxParallelBatchSize)
                 {
-                    Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    intCycleTracker = 1;
+                    Task<T[]> tskLoop = Task.WhenAll(lstTasks);
                     while (!tskLoop.IsCompleted)
                         SafeSleep(token);
                     if (tskLoop.Exception != null)
@@ -2078,12 +2169,12 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
+                lstTasks.Add(Task.Run(lstFuncToRun.ElementAtBetter(i), token));
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
             {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
+                Task<T[]> objTask = Task.WhenAll(lstTasks);
                 while (!objTask.IsCompleted)
                     SafeSleep(token);
                 if (objTask.Exception != null)
@@ -2114,7 +2205,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke().GetAwaiter().GetResult();
             }
-            Task<T> objTask = Task.Run(funcToRun, token);
+            Task<T> objTask = funcToRun();
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -2142,7 +2233,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke(token).GetAwaiter().GetResult();
             }
-            Task<T> objTask = Task.Run(() => funcToRun(token), token);
+            Task<T> objTask = funcToRun(token);
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -2170,7 +2261,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         [SupportedOSPlatform("windows")]
-        public static T[] RunWithoutThreadLock<T>(IReadOnlyList<Func<Task<T>>> lstFuncToRun, CancellationToken token)
+        public static T[] RunWithoutThreadLock<T>(IReadOnlyCollection<Func<Task<T>>> lstFuncToRun, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
             int intLength = lstFuncToRun.Count;
@@ -2179,7 +2270,7 @@ namespace Chummer
             T[] aobjReturn = new T[intLength];
             if (intLength == 1)
             {
-                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun[0], token);
+                aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                 return aobjReturn;
             }
 
@@ -2189,13 +2280,15 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task<T>> lstMainThreadTasks = new List<Task<T>>(MaxParallelBatchSize);
+                    List<Task<T>> lstMainThreadTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
                     int intMainThreadOffset = 0;
+                    int intMainThreadCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
                     for (int i = 0; i < intLength; ++i)
                     {
                         await Task.Yield().ConfigureAwait(true);
-                        if (i != 0 && i % MaxParallelBatchSize == 0)
+                        if (++intMainThreadCycleTracker > MaxParallelBatchSize)
                         {
+                            intMainThreadCycleTracker = 1;
                             await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
                             for (int j = 0; j < MaxParallelBatchSize; ++j)
                                 aobjReturn[intMainThreadOffset + j] = await lstMainThreadTasks[j].ConfigureAwait(true);
@@ -2203,7 +2296,7 @@ namespace Chummer
                             lstMainThreadTasks.Clear();
                         }
 
-                        lstMainThreadTasks.Add(Task.Run(lstFuncToRun[i], token));
+                        lstMainThreadTasks.Add(lstFuncToRun.ElementAtBetter(i).Invoke());
                     }
                     await Task.Yield().ConfigureAwait(true);
                     int intMainThreadFinalBatchSize = lstMainThreadTasks.Count;
@@ -2219,31 +2312,49 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.For(0, intLength, objOptions, () => new Tuple<T, int>(default, 0), (i, x, y) =>
+                    Parallel.For(0, intLength, i =>
+                    {
+                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                        aobjReturn[i] = objInnerReturn;
+                    });
+                }
+                else
                 {
-                    Task<T> objSyncTask = lstFuncToRun[i].Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                    return new Tuple<T, int>(objInnerReturn, i);
-                }, x => aobjReturn[x.Item2] = x.Item1);
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.For(0, intLength, objOptions, i =>
+                    {
+                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                        aobjReturn[i] = objInnerReturn;
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return aobjReturn;
             }
-            List<Task<T>> lstTasks = new List<Task<T>>(MaxParallelBatchSize);
+            List<Task<T>> lstTasks = new List<Task<T>>(Math.Min(intLength, MaxParallelBatchSize));
             int intOffset = 0;
+            int intCycleTracker = 0; // Tracking this way is faster than modulo'ing the iterating index
             for (int i = 0; i < intLength; ++i)
             {
-                if (i != 0 && i % MaxParallelBatchSize == 0)
+                if (++intCycleTracker > MaxParallelBatchSize)
                 {
-                    Task<T[]> tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
+                    intCycleTracker = 1;
+                    Task<T[]> tskLoop = Task.WhenAll(lstTasks);
                     while (!tskLoop.IsCompleted)
                         SafeSleep(token);
                     if (tskLoop.Exception != null)
@@ -2253,12 +2364,12 @@ namespace Chummer
                     intOffset += MaxParallelBatchSize;
                     lstTasks.Clear();
                 }
-                lstTasks.Add(Task.Run(lstFuncToRun[i], token));
+                lstTasks.Add(lstFuncToRun.ElementAtBetter(i).Invoke());
             }
             int intFinalBatchSize = lstTasks.Count;
             if (intFinalBatchSize != 0)
             {
-                Task<T[]> objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
+                Task<T[]> objTask = Task.WhenAll(lstTasks);
                 while (!objTask.IsCompleted)
                     SafeSleep(token);
                 if (objTask.Exception != null)
@@ -2297,7 +2408,7 @@ namespace Chummer
                     throw objSyncTask.Exception;
                 return;
             }
-            Task objTask = Task.Run(funcToRun, token);
+            Task objTask = funcToRun();
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -2324,7 +2435,7 @@ namespace Chummer
             if (!EverDoEvents)
             {
                 token.ThrowIfCancellationRequested();
-                Task objSyncTask = funcToRun.Invoke(token);
+                Task objSyncTask = funcToRun(token);
                 if (objSyncTask.Status == TaskStatus.Created)
                     objSyncTask.RunSynchronously();
                 objSyncTask.GetAwaiter().GetResult();
@@ -2332,7 +2443,7 @@ namespace Chummer
                     throw objSyncTask.Exception;
                 return;
             }
-            Task objTask = Task.Run(() => funcToRun.Invoke(token), token);
+            Task objTask = funcToRun(token);
             while (!objTask.IsCompleted)
                 SafeSleep(token);
             if (objTask.Exception != null)
@@ -2355,6 +2466,18 @@ namespace Chummer
         /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
         /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
         /// </summary>
+        /// <param name="afuncToRun">Codes to wait for.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void RunWithoutThreadLock(CancellationToken token, params Func<Task>[] afuncToRun)
+        {
+            RunWithoutThreadLock(Array.AsReadOnly(afuncToRun), token);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for synchronously waiting for codes to complete in parallel while still allowing queued invocations to go through.
+        /// Warning: much clumsier and slower than just using awaits inside of an async method. Use those instead if possible.
+        /// </summary>
         /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -2368,64 +2491,83 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
-                    int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstFuncToRun)
+                    using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstMainThreadTasks))
                     {
-                        await Task.Yield().ConfigureAwait(true);
-                        lstMainThreadTasks.Add(Task.Run(funcToRun, token));
-                        if (++intMainThreadCounter != MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                        lstMainThreadTasks.Clear();
-                        intMainThreadCounter = 0;
-                    }
+                        int intMainThreadCounter = 0;
+                        foreach (Func<Task> funcToRun in lstFuncToRun)
+                        {
+                            await Task.Yield().ConfigureAwait(true);
+                            lstMainThreadTasks.Add(funcToRun());
+                            if (++intMainThreadCounter != MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                            lstMainThreadTasks.Clear();
+                            intMainThreadCounter = 0;
+                        }
 
-                    await Task.Yield().ConfigureAwait(true);
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                        await Task.Yield().ConfigureAwait(true);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                    }
                 });
                 token.ThrowIfCancellationRequested();
                 return;
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    Parallel.ForEach(lstFuncToRun, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                }
+                else
                 {
-                    Task objSyncTask = funcToRun.Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return;
             }
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
-            int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstFuncToRun)
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
             {
-                lstTasks.Add(Task.Run(funcToRun, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
+                int intCounter = 0;
+                foreach (Func<Task> funcToRun in lstFuncToRun)
+                {
+                    lstTasks.Add(funcToRun());
+                    if (++intCounter != MaxParallelBatchSize)
+                        continue;
+                    Task tskLoop = Task.WhenAll(lstTasks);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    lstTasks.Clear();
+                    intCounter = 0;
+                }
+                Task objTask = Task.WhenAll(lstTasks);
+                while (!objTask.IsCompleted)
                     SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!objTask.IsCompleted)
-                SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
         }
 
         /// <summary>
@@ -2435,7 +2577,7 @@ namespace Chummer
         /// <param name="lstFuncToRun">Codes to wait for.</param>
         /// <param name="token">Cancellation token to use.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static void RunWithoutThreadLock(IReadOnlyList<Func<Task>> lstFuncToRun, CancellationToken token = default)
+        public static void RunWithoutThreadLock(IReadOnlyCollection<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             switch (lstFuncToRun.Count)
@@ -2443,7 +2585,7 @@ namespace Chummer
                 case 0:
                     return;
                 case 1:
-                    RunWithoutThreadLock(lstFuncToRun[0], token);
+                    RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                     return;
             }
 
@@ -2453,64 +2595,83 @@ namespace Chummer
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    List<Task> lstMainThreadTasks = new List<Task>(MaxParallelBatchSize);
-                    int intMainThreadCounter = 0;
-                    foreach (Func<Task> funcToRun in lstFuncToRun)
+                    using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstMainThreadTasks))
                     {
-                        await Task.Yield().ConfigureAwait(true);
-                        lstMainThreadTasks.Add(Task.Run(funcToRun, token));
-                        if (++intMainThreadCounter != MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
-                        lstMainThreadTasks.Clear();
-                        intMainThreadCounter = 0;
-                    }
+                        int intMainThreadCounter = 0;
+                        foreach (Func<Task> funcToRun in lstFuncToRun)
+                        {
+                            await Task.Yield().ConfigureAwait(true);
+                            lstMainThreadTasks.Add(funcToRun());
+                            if (++intMainThreadCounter != MaxParallelBatchSize)
+                                continue;
+                            await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                            lstMainThreadTasks.Clear();
+                            intMainThreadCounter = 0;
+                        }
 
-                    await Task.Yield().ConfigureAwait(true);
-                    await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                        await Task.Yield().ConfigureAwait(true);
+                        await Task.WhenAll(lstMainThreadTasks).ConfigureAwait(true);
+                    }
                 });
                 token.ThrowIfCancellationRequested();
                 return;
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                ParallelOptions objOptions = new ParallelOptions
+                if (token == CancellationToken.None)
                 {
-                    CancellationToken = token
-                };
-                Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    Parallel.ForEach(lstFuncToRun, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                }
+                else
                 {
-                    Task objSyncTask = funcToRun.Invoke();
-                    if (objSyncTask.Status == TaskStatus.Created)
-                        objSyncTask.RunSynchronously();
-                    objSyncTask.GetAwaiter().GetResult();
-                    if (objSyncTask.Exception != null)
-                        throw objSyncTask.Exception;
-                });
-                token.ThrowIfCancellationRequested();
+                    token.ThrowIfCancellationRequested();
+                    ParallelOptions objOptions = new ParallelOptions
+                    {
+                        CancellationToken = token
+                    };
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
+                    {
+                        Task objSyncTask = funcToRun.Invoke();
+                        if (objSyncTask.Status == TaskStatus.Created)
+                            objSyncTask.RunSynchronously();
+                        objSyncTask.GetAwaiter().GetResult();
+                        if (objSyncTask.Exception != null)
+                            throw objSyncTask.Exception;
+                    });
+                    token.ThrowIfCancellationRequested();
+                }
                 return;
             }
-            List<Task> lstTasks = new List<Task>(MaxParallelBatchSize);
-            int intCounter = 0;
-            foreach (Func<Task> funcToRun in lstFuncToRun)
+            using (new FetchSafelyFromSafeObjectPool<List<Task>>(TaskListPool, out List<Task> lstTasks))
             {
-                lstTasks.Add(Task.Run(funcToRun, token));
-                if (++intCounter != MaxParallelBatchSize)
-                    continue;
-                Task tskLoop = Task.Run(() => Task.WhenAll(lstTasks), token);
-                while (!tskLoop.IsCompleted)
+                int intCounter = 0;
+                foreach (Func<Task> funcToRun in lstFuncToRun)
+                {
+                    lstTasks.Add(funcToRun());
+                    if (++intCounter != MaxParallelBatchSize)
+                        continue;
+                    Task tskLoop = Task.WhenAll(lstTasks);
+                    while (!tskLoop.IsCompleted)
+                        SafeSleep(token);
+                    if (tskLoop.Exception != null)
+                        throw tskLoop.Exception;
+                    lstTasks.Clear();
+                    intCounter = 0;
+                }
+                Task objTask = Task.WhenAll(lstTasks);
+                while (!objTask.IsCompleted)
                     SafeSleep(token);
-                if (tskLoop.Exception != null)
-                    throw tskLoop.Exception;
-                lstTasks.Clear();
-                intCounter = 0;
+                if (objTask.Exception != null)
+                    throw objTask.Exception;
             }
-            Task objTask = Task.Run(() => Task.WhenAll(lstTasks), token);
-            while (!objTask.IsCompleted)
-                SafeSleep(token);
-            if (objTask.Exception != null)
-                throw objTask.Exception;
         }
 #pragma warning restore VSTHRD104, VSTHRD002 // Offer async methods
 
@@ -2606,11 +2767,11 @@ namespace Chummer
                         break;
 
                     case PlatformID.WinCE:
-                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major + ".0";
+                        strReturn = "Windows Embedded Compact " + objOSInfoVersion.Major.ToString(CultureInfo.InvariantCulture) + ".0";
                         break;
 
                     case PlatformID.Unix:
-                        strReturn = "Unix Kernel " + objOSInfoVersion;
+                        strReturn = "Unix Kernel " + objOSInfoVersion.ToString();
                         break;
 
                     case PlatformID.Xbox:
@@ -2618,7 +2779,7 @@ namespace Chummer
                         break;
 
                     case PlatformID.MacOSX:
-                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion;
+                        strReturn = "macOS with Darwin Kernel " + objOSInfoVersion.ToString();
                         break;
 
                     default:
@@ -2632,7 +2793,7 @@ namespace Chummer
                 if (strReturn.StartsWith("Windows", StringComparison.OrdinalIgnoreCase) && !string.IsNullOrEmpty(objOSInfo.ServicePack))
                 {
                     //Append service pack to the OS name.  i.e. "Windows XP Service Pack 3"
-                    strReturn += ' ' + objOSInfo.ServicePack;
+                    strReturn += " " + objOSInfo.ServicePack;
                 }
             }
             catch (Exception e)
@@ -2644,9 +2805,9 @@ namespace Chummer
         }
 
         [SupportedOSPlatform("windows")]
-        public static void SetupWebBrowserRegistryKeys()
+        public static void SetupWebBrowserRegistryKeys(int intEmulatedBrowserVersion)
         {
-            int intInternetExplorerVersionKey = GlobalSettings.EmulatedBrowserVersion * 1000;
+            int intInternetExplorerVersionKey = intEmulatedBrowserVersion * 1000;
             string strChummerExeName = AppDomain.CurrentDomain.FriendlyName;
             try
             {
@@ -2701,7 +2862,7 @@ namespace Chummer
 
         /// <summary>
         /// Gets a temporary file folder that is exclusive to Chummer and therefore can be manipulated at will without worrying about interfering with anything else.
-        /// Basically, like Path.GetTempPath(), but safer.
+        /// Basically, like <see cref="Path.GetTempPath()"/>, but safer.
         /// </summary>
         public static string GetTempPath()
         {
@@ -2734,11 +2895,25 @@ namespace Chummer
             = new SafeObjectPool<List<ListItem>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new List<ListItem>(), x => x.Clear());
 
         /// <summary>
+        /// Memory Pool for empty lists of Tasks. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static SafeObjectPool<List<Task>> TaskListPool { get; }
+            = new SafeObjectPool<List<Task>>(() => new List<Task>(MaxParallelBatchSize), x => x.Clear());
+
+        /// <summary>
+        /// Memory Pool for empty lists of Tasks. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
+        /// </summary>
+        [CLSCompliant(false)]
+        public static SafeObjectPool<XmlDocument> XmlDocumentPool { get; }
+            = new SafeObjectPool<XmlDocument>(() => new XmlDocument { XmlResolver = null }, x => x.RemoveAll());
+
+        /// <summary>
         /// Memory Pool for empty hash sets of strings. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
         /// </summary>
         [CLSCompliant(false)]
         public static SafeObjectPool<HashSet<string>> StringHashSetPool { get; }
-            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new HashSet<string>(), x => x.Clear());
+            = new SafeObjectPool<HashSet<string>>(Math.Max(MaxParallelBatchSize, 4 * (byte.MaxValue + 1)), () => new HashSet<string>(), x => x.Clear());
 
         /// <summary>
         /// Memory Pool for stopwatches. A bit slower up-front than a simple allocation, but reduces memory allocations when used a lot, which saves on CPU used for Garbage Collection.
@@ -2762,11 +2937,16 @@ namespace Chummer
         /// </summary>
         [CLSCompliant(false)]
         public static SafeDisposableObjectPool<DebuggableSemaphoreSlim> SemaphorePool { get; }
-            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, ushort.MaxValue + 1), () => new DebuggableSemaphoreSlim());
+            = new SafeDisposableObjectPool<DebuggableSemaphoreSlim>(Math.Max(MaxParallelBatchSize, 4 * (byte.MaxValue + 1)), () => new DebuggableSemaphoreSlim());
 
         /// <summary>
         /// RecyclableMemoryStreamManager to be used for all RecyclableMemoryStream constructors.
         /// </summary>
         public static RecyclableMemoryStreamManager MemoryStreamManager { get; } = new RecyclableMemoryStreamManager();
+
+        /// <summary>
+        /// Global random number generator.
+        /// </summary>
+        public static ThreadSafeCachedRandom GlobalRandom { get; } = new ThreadSafeCachedRandom(new XoRoShiRo128starstar(), true);
     }
 }

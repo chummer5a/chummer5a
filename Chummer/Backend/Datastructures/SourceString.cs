@@ -29,21 +29,21 @@ namespace Chummer
 {
     public readonly struct SourceString : IComparable, IEquatable<SourceString>, IComparable<SourceString>
     {
-        private static readonly ConcurrentDictionary<string, Tuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, Tuple<string, string>>();
+        private static readonly ConcurrentDictionary<string, ValueTuple<string, string>> s_DicCachedStrings = new ConcurrentDictionary<string, ValueTuple<string, string>>();
 
-        private static Tuple<string, string> GetSpaceAndPageStrings(string strLanguage)
+        private static ValueTuple<string, string> GetSpaceAndPageStrings(string strLanguage)
         {
             return s_DicCachedStrings.GetOrAdd(
                 strLanguage,
-                x => new Tuple<string, string>(LanguageManager.GetString("String_Space", x),
+                x => new ValueTuple<string, string>(LanguageManager.GetString("String_Space", x),
                                                LanguageManager.GetString("String_Page", x)));
         }
 
-        private static Task<Tuple<string, string>> GetSpaceAndPageStringsAsync(string strLanguage, CancellationToken token = default)
+        private static Task<ValueTuple<string, string>> GetSpaceAndPageStringsAsync(string strLanguage, CancellationToken token = default)
         {
             return s_DicCachedStrings.GetOrAddAsync(
                 strLanguage,
-                async x => new Tuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
+                async x => new ValueTuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
                     await LanguageManager.GetStringAsync("String_Page", x, token: token).ConfigureAwait(false)), token);
         }
 
@@ -252,7 +252,6 @@ namespace Chummer
         /// <summary>
         /// Set the Text and ToolTips for the selected control.
         /// </summary>
-        /// <param name="source"></param>
         public void SetControl(Control source)
         {
             if (source == null)
@@ -265,8 +264,22 @@ namespace Chummer
         /// <summary>
         /// Set the Text and ToolTips for the selected control.
         /// </summary>
-        /// <param name="source"></param>
-        /// <param name="token"></param>
+        public void SetControl(Control source, Form frmParent)
+        {
+            if (source == null)
+                return;
+            string strText = ToString();
+            source.DoThreadSafe(x => x.Text = strText);
+            string strToolTip = LanguageBookTooltip;
+            if (source is IControlWithToolTip objSourceWithToolTip)
+                objSourceWithToolTip.ToolTipText = strToolTip;
+            else
+                source.SetToolTip(frmParent, strToolTip);
+        }
+
+        /// <summary>
+        /// Set the Text and ToolTips for the selected control.
+        /// </summary>
         public async Task SetControlAsync(Control source, CancellationToken token = default)
         {
             if (source == null)
@@ -276,11 +289,27 @@ namespace Chummer
             await source.SetToolTipAsync(await GetLanguageBookTooltipAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Set the Text and ToolTips for the selected control.
+        /// </summary>
+        public async Task SetControlAsync(Control source, Form frmParent, CancellationToken token = default)
+        {
+            if (source == null)
+                return;
+            string strText = await ToStringAsync(token).ConfigureAwait(false);
+            await source.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
+            string strToolTip = await GetLanguageBookTooltipAsync(token).ConfigureAwait(false);
+            if (source is IControlWithToolTip objSourceWithToolTip)
+                await objSourceWithToolTip.SetToolTipTextAsync(strToolTip, token).ConfigureAwait(false);
+            else
+                await source.SetToolTipAsync(frmParent, strToolTip, token).ConfigureAwait(false);
+        }
+
         public bool Equals(SourceString other)
         {
             if (GetHashCode() != other.GetHashCode())
                 return false;
-            return Language == other.Language && Code == other.Code && Page == other.Page;
+            return string.Equals(Language, other.Language, StringComparison.OrdinalIgnoreCase) && string.Equals(Code, other.Code, StringComparison.Ordinal) && Page == other.Page;
         }
 
         public override bool Equals(object obj)

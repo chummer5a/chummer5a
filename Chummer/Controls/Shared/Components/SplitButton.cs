@@ -29,7 +29,7 @@ using Button = System.Windows.Forms.Button;
 
 namespace Chummer
 {
-    public class SplitButton : Button
+    public class SplitButton : ButtonWithToolTip
     {
         private PushButtonState _state;
 
@@ -734,6 +734,7 @@ namespace Chummer
         {
             switch (align)
             {
+                default:
                 case System.Drawing.ContentAlignment.BottomLeft:
                 case System.Drawing.ContentAlignment.MiddleLeft:
                 case System.Drawing.ContentAlignment.TopLeft:
@@ -749,14 +750,13 @@ namespace Chummer
                 case System.Drawing.ContentAlignment.TopRight:
                     return HorizontalAlignment.Right;
             }
-
-            return HorizontalAlignment.Left;
         }
 
         private static VerticalAlignment GetVerticalAlignment(System.Drawing.ContentAlignment align)
         {
             switch (align)
             {
+                default:
                 case System.Drawing.ContentAlignment.TopLeft:
                 case System.Drawing.ContentAlignment.TopCenter:
                 case System.Drawing.ContentAlignment.TopRight:
@@ -772,8 +772,6 @@ namespace Chummer
                 case System.Drawing.ContentAlignment.BottomRight:
                     return VerticalAlignment.Bottom;
             }
-
-            return VerticalAlignment.Top;
         }
 
         internal static Rectangle AlignInRectangle(Rectangle outer, Size inner, System.Drawing.ContentAlignment align)

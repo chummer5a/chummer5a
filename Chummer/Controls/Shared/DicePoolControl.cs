@@ -24,7 +24,7 @@ using System.Windows.Forms;
 
 namespace Chummer.UI.Shared.Components
 {
-    public partial class DicePoolControl : UserControl
+    public partial class DicePoolControl : UserControl, IControlWithToolTip
     {
         private readonly AsyncFriendlyReaderWriterLock _objDicePoolLockObject = new AsyncFriendlyReaderWriterLock();
         private decimal _decDicePool;
@@ -34,9 +34,9 @@ namespace Chummer.UI.Shared.Components
         public DicePoolControl()
         {
             InitializeComponent();
-            Disposed += (sender, args) => _objDicePoolLockObject.Dispose();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             CanEverBeRolled = CanEverBeRolled || GlobalSettings.AllowSkillDiceRolling;
             cmdRoll.Visible = CanBeRolled && CanEverBeRolled;
         }
@@ -58,12 +58,12 @@ namespace Chummer.UI.Shared.Components
 
         public void SetLabelToolTip(string caption)
         {
-            lblDicePool.SetToolTip(caption);
+            lblDicePool.ToolTipText = caption;
         }
 
         public Task SetLabelToolTipAsync(string caption, CancellationToken token = default)
         {
-            return lblDicePool.SetToolTipAsync(caption, token);
+            return lblDicePool.SetToolTipTextAsync(caption, token);
         }
 
         public bool CanBeRolled
@@ -184,6 +184,21 @@ namespace Chummer.UI.Shared.Components
         public Task SetToolTipTextAsync(string value, CancellationToken token = default) =>
             lblDicePool.SetToolTipTextAsync(value, token);
 
+        public void UpdateToolTipParent()
+        {
+            lblDicePool.UpdateToolTipParent();
+            cmdRoll.UpdateToolTipParent();
+        }
+
         public ToolTip ToolTipObject => lblDicePool.ToolTipObject;
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            UpdateToolTipParent();
+        }
     }
 }

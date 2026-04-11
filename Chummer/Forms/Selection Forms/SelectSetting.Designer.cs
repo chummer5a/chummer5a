@@ -75,7 +75,6 @@ namespace Chummer
             this.cboSetting.Name = "cboSetting";
             this.cboSetting.Size = new System.Drawing.Size(247, 21);
             this.cboSetting.TabIndex = 2;
-            this.cboSetting.TooltipText = "";
             // 
             // cmdCancel
             // 

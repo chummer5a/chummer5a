@@ -24,7 +24,7 @@
 -->
 <chummer>
 	<mentors>
-    <!---banned -->
+    <!-- banned -->
         <mentor>
             <name>Doom</name>
             <hide />
@@ -49,7 +49,7 @@
             <name>Tohu Wa-Bohu</name>
             <hide />
         </mentor>
-    <!--- adjusted -->
+    <!-- adjusted -->
 		<mentor>
             <name>Fox</name>
             <choices amendoperation="replace">

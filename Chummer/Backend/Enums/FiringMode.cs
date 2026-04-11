@@ -17,16 +17,18 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
-namespace Chummer.Backend.Equipment
+namespace Chummer.Backend.Enums
 {
     /// <summary>
-    /// Type of Lifestyle.
+    /// Firing mode for weapons
     /// </summary>
-    public enum LifestyleType
+    public enum FiringMode
     {
-        Standard = 0,
-        BoltHole = 1,
-        Safehouse = 2,
-        Advanced = 3
+        Skill,
+        GunneryCommandDevice,
+        RemoteOperated,
+        DogBrain,
+        ManualOperation,
+        NumFiringModes // 🡐 This one should always be the last defined enum
     }
 }

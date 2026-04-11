@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class MasterIndex
@@ -13,9 +15,44 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadContentCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshListCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objItemsSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objCharacterSettingSelectedIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericFormClosingCancellationTokenSource?.Dispose();
+                _objLoadContentLocker?.Dispose();
+                Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
+                Utils.ListItemListPool.Return(ref _lstItems);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -215,7 +252,6 @@ namespace Chummer
             this.cboFile.Name = "cboFile";
             this.cboFile.Size = new System.Drawing.Size(319, 21);
             this.cboFile.TabIndex = 0;
-            this.cboFile.TooltipText = "";
             this.cboFile.SelectedIndexChanged += new System.EventHandler(this.RefreshList);
             // 
             // lstItems
@@ -285,7 +321,6 @@ namespace Chummer
             this.cboCharacterSetting.Name = "cboCharacterSetting";
             this.cboCharacterSetting.Size = new System.Drawing.Size(603, 21);
             this.cboCharacterSetting.TabIndex = 21;
-            this.cboCharacterSetting.TooltipText = "";
             this.cboCharacterSetting.SelectedIndexChanged += new System.EventHandler(this.cboCharacterSetting_SelectedIndexChanged);
             // 
             // MasterIndex

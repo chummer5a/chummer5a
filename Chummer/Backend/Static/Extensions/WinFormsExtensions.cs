@@ -22,6 +22,7 @@ using System.Collections;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.Linq;
 using System.Runtime.CompilerServices;
@@ -42,12 +43,8 @@ namespace Chummer
         #region Forms Extensions
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -81,12 +78,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static DialogResult ShowDialogSafe(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -94,12 +87,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
@@ -113,7 +102,7 @@ namespace Chummer
                 return Utils.RunOnMainThreadAsync(() => frmForm.ShowDialog(owner), token);
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
-            using (token.Register(() => objCompletionSource.TrySetCanceled(token)))
+            using (token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource))
             {
                 void BeginShow(Form frmInner)
                 {
@@ -134,12 +123,8 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static async Task<DialogResult> ShowDialogSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -148,13 +133,9 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Non-blocking version of ShowDialog() based on the following blog post:
+        /// Async, non-blocking version of <see cref="Form.ShowDialog"/> based on the following blog post:
         /// https://sriramsakthivel.wordpress.com/2015/04/19/asynchronous-showdialog/
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -175,22 +156,32 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(() => objCompletionSource.TrySetCanceled(token));
-            frmForm.BeginInvoke(new Action(() =>
+                = token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource);
+            try
             {
-                objCompletionSource.SetResult(frmForm.ShowDialog(owner));
+                frmForm.BeginInvoke(new Action(() =>
+                {
+                    try
+                    {
+                        objCompletionSource.SetResult(frmForm.ShowDialog(owner));
+                    }
+                    finally
+                    {
+                        objCancelRegistration.Dispose();
+                    }
+                }));
+                return objCompletionSource.Task;
+            }
+            catch
+            {
                 objCancelRegistration.Dispose();
-            }));
-            return objCompletionSource.Task;
+                throw;
+            }
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Async alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="owner"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, IWin32Window owner = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -214,11 +205,19 @@ namespace Chummer
 
             TaskCompletionSource<DialogResult> objCompletionSource = new TaskCompletionSource<DialogResult>();
             CancellationTokenRegistration objCancelRegistration
-                = token.Register(() => objCompletionSource.TrySetCanceled(token));
+                = token.RegisterWithoutEC(x => ((TaskCompletionSource<DialogResult>)x).TrySetCanceled(token), objCompletionSource);
             void BeginShow(Form frmInner)
             {
-                frmInner.Shown += FormOnShown;
-                frmInner.Show(owner);
+                try
+                {
+                    frmInner.Shown += FormOnShown;
+                    frmInner.Show(owner);
+                }
+                catch
+                {
+                    objCancelRegistration.Dispose();
+                    throw;
+                }
                 void FormOnShown(object sender, EventArgs args)
                 {
                     frmForm.DoThreadSafe(x => x.Close(), token);
@@ -227,18 +226,22 @@ namespace Chummer
                 }
             }
 
-            Action<Form> funcBegin = BeginShow;
-            frmForm.BeginInvoke(funcBegin, frmForm);
-            return objCompletionSource.Task;
+            try
+            {
+                Action<Form> funcBegin = BeginShow;
+                frmForm.BeginInvoke(funcBegin, frmForm);
+                return objCompletionSource.Task;
+            }
+            catch
+            {
+                objCancelRegistration.Dispose();
+                throw;
+            }
         }
 
         /// <summary>
-        /// Alternative to Form.ShowDialog() that will not stall out unit tests.
+        /// Alternative to <see cref="Form.ShowDialog"/> that will not stall out unit tests.
         /// </summary>
-        /// <param name="frmForm"></param>
-        /// <param name="objCharacter"></param>
-        /// <param name="token"></param>
-        /// <returns></returns>
         public static Task<DialogResult> ShowDialogNonBlockingSafeAsync(this Form frmForm, Character objCharacter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -285,6 +288,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -329,6 +333,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -373,6 +378,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -417,6 +423,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -441,7 +448,9 @@ namespace Chummer
                 return Task.CompletedTask;
             try
             {
-                return objControl == null ? Task.Run(funcToRun, token) : Utils.RunOnMainThreadAsync(funcToRun, token);
+                return objControl == null
+                    ? Task.Run(funcToRun, token)
+                    : Utils.RunOnMainThreadAsync(funcToRun, token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -652,6 +661,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -695,6 +705,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -740,6 +751,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -785,6 +797,7 @@ namespace Chummer
             }
             catch (Exception e) when (!(e is OperationCanceledException))
             {
+                e = e.Demystify();
                 Log.Error(e);
 #if DEBUG
                 Program.ShowScrollableMessageBox(objControl, e.ToString());
@@ -1080,7 +1093,16 @@ namespace Chummer
             T3 objData = Utils.SafelyRunSynchronously(() => funcAsyncDataGetter.Invoke(objDataSource), token);
             objControl.DoThreadSafe((x, y) => funcControlSetter.Invoke(x, objData), token);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1090,7 +1112,7 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
             return;
 
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
@@ -1139,19 +1161,26 @@ namespace Chummer
             await objControl.DoThreadSafeAsync(x => funcControlSetter.Invoke(x, objData), token)
                 .ConfigureAwait(false);
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(
-                () => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
+            {
+                try
                 {
-                    try
-                    {
-                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                },
-                token).ConfigureAwait(false);
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
             return;
 
             async Task OnPropertyChangedAsync(object sender, PropertyChangedEventArgs e, CancellationToken innerToken = default)
@@ -1210,7 +1239,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1220,7 +1258,7 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
 
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
@@ -1317,19 +1355,26 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(
-                () => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
+            {
+                try
                 {
-                    try
-                    {
-                        objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        //swallow this
-                    }
-                },
-                token).ConfigureAwait(false);
+                    objDataSource.PropertyChangedAsync -= OnPropertyChangedAsync;
+                }
+                catch (ObjectDisposedException)
+                {
+                    //swallow this
+                }
+            }
 
             await objControl
                 .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
@@ -1428,7 +1473,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                Utils.RunOnMainThread(() => objControl.Disposed += RemoveEvent, token: token);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1438,11 +1492,15 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token);
+            }
 
-            Timer tmrDelay = new Timer { Interval = intDelay };
-            tmrDelay.Tick += TmrDelayOnTick;
-            Utils.RunOnMainThread(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token);
+            Timer tmrDelay = objControl.DoThreadSafeFunc(x =>
+            {
+                tmrDelay = new Timer { Interval = intDelay };
+                tmrDelay.Tick += TmrDelayOnTick;
+                x.Disposed += (o, args) => tmrDelay.Dispose();
+                return tmrDelay;
+            }, token: token);
             funcControlEventHandlerAdder.Invoke(objControl, FuncControlEventHandler);
             return;
 
@@ -1557,7 +1615,16 @@ namespace Chummer
             int intSkipControlSetter = 0;
             int intSkipDataSetter = 0;
             objDataSource.PropertyChangedAsync += OnPropertyChangedAsync;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) =>
+            try
+            {
+                await Utils.RunOnMainThreadAsync(() => objControl.Disposed += RemoveEvent, token: token).ConfigureAwait(false);
+            }
+            catch
+            {
+                RemoveEvent(null, default);
+                throw;
+            }
+            void RemoveEvent(object sender, EventArgs e)
             {
                 try
                 {
@@ -1567,12 +1634,15 @@ namespace Chummer
                 {
                     //swallow this
                 }
-            }, token: token).ConfigureAwait(false);
+            }
 
-            Timer tmrDelay = new Timer { Interval = intDelay };
-            tmrDelay.Tick += TmrDelayOnTick;
-            await Utils.RunOnMainThreadAsync(() => objControl.Disposed += (o, args) => tmrDelay.Dispose(), token: token)
-                .ConfigureAwait(false);
+            Timer tmrDelay = await objControl.DoThreadSafeFuncAsync(x =>
+            {
+                tmrDelay = new Timer { Interval = intDelay };
+                tmrDelay.Tick += TmrDelayOnTick;
+                x.Disposed += (o, args) => tmrDelay.Dispose();
+                return tmrDelay;
+            }, token: token).ConfigureAwait(false);
             await objControl
                 .DoThreadSafeAsync(x => funcControlEventHandlerAdder.Invoke(x, FuncControlEventHandler), token)
                 .ConfigureAwait(false);
@@ -1824,6 +1894,219 @@ namespace Chummer
         /// </summary>
         private static readonly ConcurrentDictionary<Control, List<ListItem>> s_dicListItemListAssignments
             = new ConcurrentDictionary<Control, List<ListItem>>();
+
+        public static void PopulateWithListItem(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            lsbThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static void PopulateWithListItem(this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static void PopulateWithListItem(this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        public static Task PopulateWithListItemAsync([NotNull] this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+        }
+
+        private static void PopulateWithListItemCore(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                lsbThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(lsbThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        lsbThis.ValueMember = nameof(ListItem.Value);
+                        lsbThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (lsbThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        lsbThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        lsbThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(lsbThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    lsbThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(lsbThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    lsbThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
+
+        private static void PopulateWithListItemCore(this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                cboThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (cboThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
+
+        private static void PopulateWithListItemCore(this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Binding multiple ComboBoxes to the same DataSource will also cause selected values to sync up between them.
+            // Resetting bindings to prevent this though will also reset bindings to other properties, so that's not really an option
+            // This means the code we use has to set the DataSources to new lists instead of the same one.
+            List<ListItem> lstItemsToSet = Utils.ListItemListPool.Get();
+            bool blnDoReturnList = true;
+            try
+            {
+                lstItemsToSet.Add(objItem);
+                token.ThrowIfCancellationRequested();
+                cboThis.BeginUpdate();
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!(cboThis.DataSource is IEnumerable<ListItem> lstCurrentList))
+                    {
+                        cboThis.ValueMember = nameof(ListItem.Value);
+                        cboThis.DisplayMember = nameof(ListItem.Name);
+                    }
+                    // Setting DataSource is slow because WinForms is old, so let's make sure we definitely need to do it
+                    else if (lstCurrentList.SequenceEqual(lstItemsToSet))
+                        return;
+
+                    token.ThrowIfCancellationRequested();
+                    if (cboThis.DataSource != null)
+                    {
+                        // Assign new binding context to avoid weirdness when switching DataSource
+                        cboThis.BindingContext = new BindingContext();
+                    }
+                    else
+                    {
+                        cboThis.Disposed += (sender, args) =>
+                        {
+                            if (s_dicListItemListAssignments.TryRemove(cboThis, out List<ListItem> lstInnerToReturn))
+                            {
+                                Utils.ListItemListPool.Return(ref lstInnerToReturn);
+                            }
+                        };
+                    }
+
+                    blnDoReturnList = false;
+                    cboThis.DataSource = s_dicListItemListAssignments.AddOrUpdate(cboThis, lstItemsToSet, (x, y) =>
+                    {
+                        Utils.ListItemListPool.Return(ref y);
+                        return lstItemsToSet;
+                    });
+                }
+                finally
+                {
+                    cboThis.EndUpdate();
+                }
+            }
+            finally
+            {
+                if (blnDoReturnList)
+                    Utils.ListItemListPool.Return(ref lstItemsToSet);
+            }
+        }
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
@@ -2435,7 +2718,7 @@ namespace Chummer
         /// Get the number of preferred shown lines for a TextBox control and the maximum height of these lines. Multiply the two to get the preferred height of the control.
         /// </summary>
         /// <param name="txtTextBox">Control to analyze</param>
-        public static Tuple<int, int> MeasureLineHeights(this TextBox txtTextBox)
+        public static ValueTuple<int, int> MeasureLineHeights(this TextBox txtTextBox)
         {
             string[] astrLines = txtTextBox.Lines;
             int intNumDisplayedLines = 0;
@@ -2450,7 +2733,7 @@ namespace Chummer
                     intMaxLineHeight = Math.Max(intMaxLineHeight, objTextSize.Height);
                 }
             }
-            return new Tuple<int, int>(intNumDisplayedLines, intMaxLineHeight);
+            return new ValueTuple<int, int>(intNumDisplayedLines, intMaxLineHeight);
         }
 
         /// <summary>

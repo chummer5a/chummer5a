@@ -38,6 +38,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = XmlManager.LoadXPath("skills.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
         }
 
@@ -48,7 +49,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
+                                                      + _strForceCategory.CleanXPath() + "]")
                              : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;

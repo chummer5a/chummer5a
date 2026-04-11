@@ -1,3 +1,5 @@
+using System.Threading;
+
 namespace Chummer
 {
     partial class SelectMetatypePriority
@@ -13,9 +15,59 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadMetatypesCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetatypesCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateMetavariantsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateTalentsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshSelectedMetatypeCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objProcessTalentsIndexChangedCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objManagePriorityItemsCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                objOldCancellationTokenSource = Interlocked.Exchange(ref _objSumToTenCancellationTokenSource, null);
+                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+                {
+                    objOldCancellationTokenSource.Cancel(false);
+                    objOldCancellationTokenSource.Dispose();
+                }
+                _objGenericCancellationTokenSource?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -84,7 +136,7 @@ namespace Chummer
             this.tlpMetavariant = new System.Windows.Forms.TableLayoutPanel();
             this.lblMetavariantLabel = new System.Windows.Forms.Label();
             this.lblSourceLabel = new System.Windows.Forms.Label();
-            this.lblSource = new System.Windows.Forms.Label();
+            this.lblSource = new Chummer.LabelWithToolTip();
             this.tlpButtons.SuspendLayout();
             this.tlpTopHalf.SuspendLayout();
             this.tlpMain.SuspendLayout();
@@ -104,7 +156,6 @@ namespace Chummer
             this.cboCategory.Name = "cboCategory";
             this.cboCategory.Size = new System.Drawing.Size(303, 21);
             this.cboCategory.TabIndex = 6;
-            this.cboCategory.TooltipText = "";
             this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.cboCategory_SelectedIndexChanged);
             // 
             // cmdCancel
@@ -145,7 +196,6 @@ namespace Chummer
             this.cboMetavariant.Name = "cboMetavariant";
             this.cboMetavariant.Size = new System.Drawing.Size(347, 21);
             this.cboMetavariant.TabIndex = 59;
-            this.cboMetavariant.TooltipText = "";
             this.cboMetavariant.SelectedIndexChanged += new System.EventHandler(this.cboMetavariant_SelectedIndexChanged);
             // 
             // cmdOK
@@ -438,7 +488,6 @@ namespace Chummer
             this.cboSkill1.Name = "cboSkill1";
             this.cboSkill1.Size = new System.Drawing.Size(431, 21);
             this.cboSkill1.TabIndex = 9;
-            this.cboSkill1.TooltipText = "";
             this.cboSkill1.Visible = false;
             // 
             // cboSkill2
@@ -451,7 +500,6 @@ namespace Chummer
             this.cboSkill2.Name = "cboSkill2";
             this.cboSkill2.Size = new System.Drawing.Size(431, 21);
             this.cboSkill2.TabIndex = 10;
-            this.cboSkill2.TooltipText = "";
             this.cboSkill2.Visible = false;
             // 
             // cboSkill3
@@ -464,7 +512,6 @@ namespace Chummer
             this.cboSkill3.Name = "cboSkill3";
             this.cboSkill3.Size = new System.Drawing.Size(431, 21);
             this.cboSkill3.TabIndex = 78;
-            this.cboSkill3.TooltipText = "";
             this.cboSkill3.Visible = false;
             // 
             // lblSpecialAttributesLabel
@@ -491,7 +538,6 @@ namespace Chummer
             this.cboTalents.Name = "cboTalents";
             this.cboTalents.Size = new System.Drawing.Size(320, 21);
             this.cboTalents.TabIndex = 8;
-            this.cboTalents.TooltipText = "";
             this.cboTalents.SelectedIndexChanged += new System.EventHandler(this.cboTalents_SelectedIndexChanged);
             // 
             // tlpTopHalf
@@ -561,7 +607,6 @@ namespace Chummer
             this.cboResources.Name = "cboResources";
             this.cboResources.Size = new System.Drawing.Size(319, 21);
             this.cboResources.TabIndex = 5;
-            this.cboResources.TooltipText = "";
             this.cboResources.SelectedIndexChanged += new System.EventHandler(this.cboResources_SelectedIndexChanged);
             // 
             // lblTalentLabel
@@ -585,7 +630,6 @@ namespace Chummer
             this.cboSkills.Name = "cboSkills";
             this.cboSkills.Size = new System.Drawing.Size(319, 21);
             this.cboSkills.TabIndex = 4;
-            this.cboSkills.TooltipText = "";
             this.cboSkills.SelectedIndexChanged += new System.EventHandler(this.cboSkills_SelectedIndexChanged);
             // 
             // lblResourcesLabel
@@ -609,7 +653,6 @@ namespace Chummer
             this.cboTalent.Name = "cboTalent";
             this.cboTalent.Size = new System.Drawing.Size(319, 21);
             this.cboTalent.TabIndex = 3;
-            this.cboTalent.TooltipText = "";
             this.cboTalent.SelectedIndexChanged += new System.EventHandler(this.cboTalent_SelectedIndexChanged);
             // 
             // cboAttributes
@@ -621,7 +664,6 @@ namespace Chummer
             this.cboAttributes.Name = "cboAttributes";
             this.cboAttributes.Size = new System.Drawing.Size(319, 21);
             this.cboAttributes.TabIndex = 2;
-            this.cboAttributes.TooltipText = "";
             this.cboAttributes.SelectedIndexChanged += new System.EventHandler(this.cboAttributes_SelectedIndexChanged);
             // 
             // lblSkillsLabel
@@ -645,7 +687,6 @@ namespace Chummer
             this.cboHeritage.Name = "cboHeritage";
             this.cboHeritage.Size = new System.Drawing.Size(319, 21);
             this.cboHeritage.TabIndex = 1;
-            this.cboHeritage.TooltipText = "";
             this.cboHeritage.SelectedIndexChanged += new System.EventHandler(this.cboHeritage_SelectedIndexChanged);
             // 
             // lblSumtoTen
@@ -818,7 +859,6 @@ namespace Chummer
             this.cboPossessionMethod.Name = "cboPossessionMethod";
             this.cboPossessionMethod.Size = new System.Drawing.Size(119, 21);
             this.cboPossessionMethod.TabIndex = 65;
-            this.cboPossessionMethod.TooltipText = "";
             this.cboPossessionMethod.Visible = false;
             // 
             // lblForceLabel
@@ -1013,6 +1053,6 @@ namespace Chummer
         private NumericUpDownEx nudForce;
         private System.Windows.Forms.TableLayoutPanel tlpMetavariant;
         internal System.Windows.Forms.Label lblSourceLabel;
-        internal System.Windows.Forms.Label lblSource;
+        internal Chummer.LabelWithToolTip lblSource;
     }
 }

@@ -13,9 +13,12 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
+                Utils.StringHashSetPool.Return(ref _setDisallowedGrades);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -213,7 +216,6 @@ namespace Chummer
             this.cboGrade.Name = "cboGrade";
             this.cboGrade.Size = new System.Drawing.Size(252, 21);
             this.cboGrade.TabIndex = 25;
-            this.cboGrade.TooltipText = "";
             this.cboGrade.SelectedIndexChanged += new System.EventHandler(this.cboGrade_SelectedIndexChanged);
             this.cboGrade.EnabledChanged += new System.EventHandler(this.cboGrade_EnabledChanged);
             // 

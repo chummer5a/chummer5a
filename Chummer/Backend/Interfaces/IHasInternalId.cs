@@ -810,6 +810,11 @@ namespace Chummer
                 {
                     await treVehicles.DoThreadSafeAsync(x =>
                     {
+                        // Check if node already exists to prevent duplicates
+                        TreeNode objExistingNode = nodParent.FindNodeByTag(objVehicleMod);
+                        if (objExistingNode != null)
+                            return;
+                        
                         if (intIndex >= 0)
                             nodParent.Nodes.Insert(intIndex, objNode);
                         else

@@ -119,7 +119,7 @@ namespace Chummer
                                 throw;
                             }
 
-                            ImprovementManager.Commit(_objCharacter);
+                            ImprovementManager.Commit(_objCharacter, token);
                         }
                     }
                 }
@@ -153,7 +153,8 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && !_objCharacter.Settings
+                    CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
+                    if (await _objCharacter.GetRESEnabledAsync(token).ConfigureAwait(false) && !objSettings
                                                                           .SpecialKarmaCostBasedOnShownValue
                                                                       && (await ImprovementManager
                                                                           .GetCachedImprovementListForValueOfAsync(
@@ -170,7 +171,7 @@ namespace Chummer
                                 : Math.Floor(await _objCharacter.GetCyberwareEssenceAsync(token).ConfigureAwait(false))));
                         // Cannot increase RES to be more than what it would be without any Essence loss.
                         CharacterAttrib objRes = await _objCharacter.GetAttributeAsync("RES", token: token).ConfigureAwait(false);
-                        intResonanceRecovered = await _objCharacter.Settings.GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false)
+                        intResonanceRecovered = await objSettings.GetESSLossReducesMaximumOnlyAsync(token).ConfigureAwait(false)
                             ? Math.Min(intResonanceRecovered,
                                 await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade -
                                 await objRes.GetTotalMaximumAsync(token).ConfigureAwait(false))
@@ -416,17 +417,16 @@ namespace Chummer
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage)).Append(strSpace)
-                         .Append(Grade.ToString(GlobalSettings.CultureInfo));
+                sbdReturn.Append(LanguageManager.GetString("String_Grade", strLanguage), strSpace, Grade.ToString(GlobalSettings.CultureInfo));
                 if (Group || Ordeal)
                 {
-                    sbdReturn.Append(strSpace).Append('(');
+                    sbdReturn.Append(strSpace, '(');
                     if (Group)
                     {
                         sbdReturn.Append(
                             LanguageManager.GetString(Technomancer ? "String_Network" : "String_Group", strLanguage));
                         if (Ordeal || Schooling)
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                     }
 
                     if (Ordeal)
@@ -434,7 +434,7 @@ namespace Chummer
                         sbdReturn.Append(
                             LanguageManager.GetString(Technomancer ? "String_Task" : "String_Ordeal", strLanguage));
                         if (Schooling)
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                     }
 
                     if (Schooling)
@@ -459,17 +459,16 @@ namespace Chummer
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                sbdReturn.Append(await LanguageManager.GetStringAsync("String_Grade", strLanguage, token: token)).Append(strSpace)
-                         .Append(Grade.ToString(GlobalSettings.CultureInfo));
+                sbdReturn.Append(await LanguageManager.GetStringAsync("String_Grade", strLanguage, token: token), strSpace, Grade.ToString(GlobalSettings.CultureInfo));
                 if (Group || Ordeal)
                 {
-                    sbdReturn.Append(strSpace).Append('(');
+                    sbdReturn.Append(strSpace, '(');
                     if (Group)
                     {
                         sbdReturn.Append(
                             await LanguageManager.GetStringAsync(Technomancer ? "String_Network" : "String_Group", strLanguage, token: token));
                         if (Ordeal || Schooling)
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                     }
 
                     if (Ordeal)
@@ -477,7 +476,7 @@ namespace Chummer
                         sbdReturn.Append(
                             await LanguageManager.GetStringAsync(Technomancer ? "String_Task" : "String_Ordeal", strLanguage, token: token));
                         if (Schooling)
-                            sbdReturn.Append(',').Append(strSpace);
+                            sbdReturn.Append(',', strSpace);
                     }
 
                     if (Schooling)

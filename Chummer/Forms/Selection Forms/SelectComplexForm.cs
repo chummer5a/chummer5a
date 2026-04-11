@@ -48,19 +48,21 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Complex Form information.
             _xmlBaseComplexFormsNode = _objCharacter.LoadDataXPath("complexforms.xml").SelectSingleNodeAndCacheExpression("/chummer/complexforms");
-
             _xmlOptionalComplexFormNode = _objCharacter.GetNodeXPath();
-            if (_xmlOptionalComplexFormNode == null) return;
-            if (_objCharacter.MetavariantGuid != Guid.Empty)
+            if (_xmlOptionalComplexFormNode != null)
             {
-                XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
-                if (xmlMetavariantNode != null)
-                    _xmlOptionalComplexFormNode = xmlMetavariantNode;
-            }
+                if (_objCharacter.MetavariantGuid != Guid.Empty)
+                {
+                    XPathNavigator xmlMetavariantNode = _xmlOptionalComplexFormNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                    if (xmlMetavariantNode != null)
+                        _xmlOptionalComplexFormNode = xmlMetavariantNode;
+                }
 
-            _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+                _xmlOptionalComplexFormNode = _xmlOptionalComplexFormNode.SelectSingleNodeAndCacheExpression("optionalcomplexforms");
+            }
         }
 
         private async void SelectComplexForm_Load(object sender, EventArgs e)
@@ -90,7 +92,7 @@ namespace Chummer
             try
             {
                 string strDuration;
-                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("duration")?.Value.ToUpperInvariant())
                 {
                     case "P":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationPermanent").ConfigureAwait(false);
@@ -100,7 +102,7 @@ namespace Chummer
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained").ConfigureAwait(false);
                         break;
 
-                    case "Special":
+                    case "SPECIAL":
                         strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                         break;
 
@@ -112,29 +114,29 @@ namespace Chummer
                 await lblDuration.DoThreadSafeAsync(x => x.Text = strDuration).ConfigureAwait(false);
 
                 string strTarget;
-                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value)
+                switch (xmlComplexForm.SelectSingleNodeAndCacheExpression("target")?.Value.ToUpperInvariant())
                 {
-                    case "Persona":
+                    case "PERSONA":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetPersona").ConfigureAwait(false);
                         break;
 
-                    case "Device":
+                    case "DEVICE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetDevice").ConfigureAwait(false);
                         break;
 
-                    case "File":
+                    case "FILE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetFile").ConfigureAwait(false);
                         break;
 
-                    case "Self":
+                    case "SELF":
                         strTarget = await LanguageManager.GetStringAsync("String_SpellRangeSelf").ConfigureAwait(false);
                         break;
 
-                    case "Sprite":
+                    case "SPRITE":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetSprite").ConfigureAwait(false);
                         break;
 
-                    case "Host":
+                    case "HOST":
                         strTarget = await LanguageManager.GetStringAsync("String_ComplexFormTargetHost").ConfigureAwait(false);
                         break;
 
@@ -172,26 +174,7 @@ namespace Chummer
                 bool blnForce = strFv.StartsWith('L');
                 strFv = blnForce ? strFv.TrimStartOnce("L", true) : strFv;
                 //Navigator can't do math on a single value, so inject a mathable value.
-                if (string.IsNullOrEmpty(strFv))
-                {
-                    strFv = "0";
-                }
-                else
-                {
-                    int intPos = strFv.IndexOf('-');
-                    if (intPos != -1)
-                    {
-                        strFv = strFv.Substring(intPos);
-                    }
-                    else
-                    {
-                        intPos = strFv.IndexOf('+');
-                        if (intPos != -1)
-                        {
-                            strFv = strFv.Substring(intPos);
-                        }
-                    }
-                }
+                strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
 
                 string strToAppend = string.Empty;
                 int intFadingDv = 0;
@@ -203,11 +186,11 @@ namespace Chummer
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                           out StringBuilder sbdFv))
                         {
-                            sbdFv.Append('(').Append(strFv).Append(')');
+                            sbdFv.Append('(', strFv, ')');
                             foreach (Improvement objImprovement in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                 _objCharacter, Improvement.ImprovementType.FadingValue, strSelectedComplexFormName, true).ConfigureAwait(false))
                             {
-                                sbdFv.Append(" + (").Append(objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo)).Append(')');
+                                sbdFv.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                             }
 
                             await _objCharacter.ProcessAttributesInXPathAsync(sbdFv).ConfigureAwait(false);
@@ -255,7 +238,7 @@ namespace Chummer
                 SourceString objSource = await SourceString.GetSourceStringAsync(
                     strSource, strPage, GlobalSettings.Language,
                     GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                await objSource.SetControlAsync(lblSource).ConfigureAwait(false);
+                await objSource.SetControlAsync(lblSource, this).ConfigureAwait(false);
                 await lblTargetLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTarget)).ConfigureAwait(false);
                 await lblDurationLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strDuration)).ConfigureAwait(false);
                 await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(lblSource.Text)).ConfigureAwait(false);
@@ -348,7 +331,7 @@ namespace Chummer
             if (_blnLoading)
                 return;
 
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false) + ')';
+            string strFilter = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false);
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
@@ -357,7 +340,7 @@ namespace Chummer
                                                            out List<ListItem> lstComplexFormItems))
             {
                 foreach (XPathNavigator xmlComplexForm in _xmlBaseComplexFormsNode.Select(
-                             "complexform[" + strFilter + ']'))
+                             "complexform[" + strFilter + "]"))
                 {
                     string strId = xmlComplexForm.SelectSingleNodeAndCacheExpression("id", token: token)?.Value;
                     if (string.IsNullOrEmpty(strId))
@@ -370,7 +353,7 @@ namespace Chummer
                                      ?? await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
                     // If this is a Sprite with Optional Complex Forms, see if this Complex Form is allowed.
                     if (_xmlOptionalComplexFormNode?.SelectSingleNodeAndCacheExpression("complexform", token: token) != null
-                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + ']') == null)
+                        && _xmlOptionalComplexFormNode.SelectSingleNode("complexform[. = " + strName.CleanXPath() + "]") == null)
                         continue;
 
                     lstComplexFormItems.Add(

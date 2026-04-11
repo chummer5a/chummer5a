@@ -33,16 +33,11 @@ namespace Chummer.UI.Table
         public TableRow()
         {
             InitializeComponent();
-            Layout += (sender, evt) => DoLayout();
         }
 
         private async void OnLoad(object sender, EventArgs eventArgs)
         {
             await UpdateAsync(Index, Selected).ConfigureAwait(false);
-        }
-
-        protected virtual void DoLayout()
-        {
         }
 
         protected virtual void Update(int intIndex, bool blnSelected)
@@ -94,6 +89,15 @@ namespace Chummer.UI.Table
                     return;
                 Update(Index, Selected);
             }
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
         }
     }
 }

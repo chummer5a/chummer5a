@@ -50,16 +50,17 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _xmlBaseCritterPowerDataNode = _objCharacter.LoadDataXPath("critterpowers.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _xmlMetatypeDataNode = _objCharacter.GetNodeXPath();
-
-            if (_xmlMetatypeDataNode == null || _objCharacter.MetavariantGuid == Guid.Empty) return;
-            XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
-            if (xmlMetavariantNode != null)
-                _xmlMetatypeDataNode = xmlMetavariantNode;
+            if (_xmlMetatypeDataNode != null && _objCharacter.MetavariantGuid != Guid.Empty)
+            {
+                XPathNavigator xmlMetavariantNode = _xmlMetatypeDataNode.TryGetNodeById("metavariants/metavariant", _objCharacter.MetavariantGuid);
+                if (xmlMetavariantNode != null)
+                    _xmlMetatypeDataNode = xmlMetavariantNode;
+            }
 
             _lstCategory = Utils.ListItemListPool.Get();
-            Disposed += (sender, args) => Utils.ListItemListPool.Return(ref _lstCategory);
         }
 
         private async void SelectCritterPower_Load(object sender, EventArgs e)
@@ -149,7 +150,7 @@ namespace Chummer
 
                     string strType = objXmlPower.SelectSingleNodeAndCacheExpression("type")?.Value
                                      ?? string.Empty;
-                    switch (strType)
+                    switch (strType.ToUpperInvariant())
                     {
                         case "M":
                             strType = await LanguageManager.GetStringAsync("String_SpellTypeMana").ConfigureAwait(false);
@@ -162,25 +163,25 @@ namespace Chummer
                     await lblCritterPowerType.DoThreadSafeAsync(x => x.Text = strType).ConfigureAwait(false);
 
                     string strAction = objXmlPower.SelectSingleNodeAndCacheExpression("action")?.Value ?? string.Empty;
-                    switch (strAction)
+                    switch (strAction.ToUpperInvariant())
                     {
-                        case "Auto":
+                        case "AUTO":
                             strAction = await LanguageManager.GetStringAsync("String_ActionAutomatic").ConfigureAwait(false);
                             break;
 
-                        case "Free":
+                        case "FREE":
                             strAction = await LanguageManager.GetStringAsync("String_ActionFree").ConfigureAwait(false);
                             break;
 
-                        case "Simple":
+                        case "SIMPLE":
                             strAction = await LanguageManager.GetStringAsync("String_ActionSimple").ConfigureAwait(false);
                             break;
 
-                        case "Complex":
+                        case "COMPLEX":
                             strAction = await LanguageManager.GetStringAsync("String_ActionComplex").ConfigureAwait(false);
                             break;
 
-                        case "Special":
+                        case "SPECIAL":
                             strAction = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                             break;
                     }
@@ -198,27 +199,27 @@ namespace Chummer
                                                                     () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence"))
                                                  .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong"))
                                                  .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch"))
-                                                 .CheapReplaceAsync("(A)", async () => '(' + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false) + ')')
+                                                 .CheapReplaceAsync("(A)", async () => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea").ConfigureAwait(false) + ")")
                                                  .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort")).ConfigureAwait(false);
                     }
                     await lblCritterPowerRange.DoThreadSafeAsync(x => x.Text = strRange).ConfigureAwait(false);
 
                     string strDuration = objXmlPower.SelectSingleNodeAndCacheExpression("duration")?.Value ?? string.Empty;
-                    switch (strDuration)
+                    switch (strDuration.ToUpperInvariant())
                     {
-                        case "Instant":
+                        case "INSTANT":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationInstantLong").ConfigureAwait(false);
                             break;
 
-                        case "Sustained":
+                        case "SUSTAINED":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSustained").ConfigureAwait(false);
                             break;
 
-                        case "Always":
+                        case "ALWAYS":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationAlways").ConfigureAwait(false);
                             break;
 
-                        case "Special":
+                        case "SPECIAL":
                             strDuration = await LanguageManager.GetStringAsync("String_SpellDurationSpecial").ConfigureAwait(false);
                             break;
                     }
@@ -228,7 +229,7 @@ namespace Chummer
                     string strPage = objXmlPower.SelectSingleNodeAndCacheExpression("altpage")?.Value ?? objXmlPower.SelectSingleNodeAndCacheExpression("page")?.Value ?? await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSource = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblCritterPowerSource).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblCritterPowerSource, this).ConfigureAwait(false);
 
                     bool blnVisible = objXmlPower.SelectSingleNodeAndCacheExpression("rating") != null;
                     await nudCritterPowerRating.DoThreadSafeAsync(x => { x.Visible = blnVisible; x.Enabled = blnVisible; }).ConfigureAwait(false);
@@ -364,10 +365,10 @@ namespace Chummer
             string strFilter = string.Empty;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
             {
-                sbdFilter.Append('(').Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false)).Append(')');
+                sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                 if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All")
                 {
-                    sbdFilter.Append(" and (contains(category,").Append(strCategory.CleanXPath()).Append("))");
+                    sbdFilter.Append(" and (contains(category,", strCategory.CleanXPath(), "))");
                 }
                 else
                 {
@@ -379,11 +380,10 @@ namespace Chummer
                         {
                             if (!string.IsNullOrEmpty(strItem))
                             {
-                                sbdCategoryFilter.Append("(contains(category,").Append(strItem.CleanXPath())
-                                                 .Append(")) or ");
+                                sbdCategoryFilter.Append("(contains(category,", strItem.CleanXPath(), ")) or ");
                                 if (strItem == "Toxic Critter Powers")
                                 {
-                                    sbdCategoryFilter.Append("toxic = ").Append(bool.TrueString.CleanXPath()).Append(" or ");
+                                    sbdCategoryFilter.Append("toxic = ", bool.TrueString.CleanXPath(), " or ");
                                     blnHasToxic = true;
                                 }
                             }
@@ -392,20 +392,21 @@ namespace Chummer
                         if (sbdCategoryFilter.Length > 0)
                         {
                             sbdCategoryFilter.Length -= 4;
-                            sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                            sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                         }
                     }
 
                     if (!blnHasToxic)
-                        sbdFilter.Append(" and (not(toxic) or toxic != ").Append(bool.TrueString.CleanXPath()).Append(')');
+                        sbdFilter.Append(" and (not(toxic) or toxic != ", bool.TrueString.CleanXPath(), ')');
                 }
 
                 string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strSearch))
-                    sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(strSearch));
+                    sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(strSearch));
 
                 if (sbdFilter.Length > 0)
-                    strFilter = '[' + sbdFilter.ToString() + ']';
+                    // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                    strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
             }
 
             foreach (XPathNavigator objXmlPower in _xmlBaseCritterPowerDataNode.Select("powers/power" + strFilter))

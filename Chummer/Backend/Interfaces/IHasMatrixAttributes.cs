@@ -889,7 +889,7 @@ namespace Chummer
                                 {
                                     for (int i = 0; i < 4; ++i)
                                     {
-                                        asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                        asbdCyberdeckArray[i].Append("+(", strLoopArray[i], ')');
                                     }
                                 }
                                 finally
@@ -1040,7 +1040,7 @@ namespace Chummer
                                 {
                                     for (int i = 0; i < 4; ++i)
                                     {
-                                        asbdCyberdeckArray[i].Append("+(").Append(strLoopArray[i]).Append(')');
+                                        asbdCyberdeckArray[i].Append("+(", strLoopArray[i], ')');
                                     }
                                 }
                                 finally

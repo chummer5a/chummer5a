@@ -19,7 +19,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Threading;
@@ -87,10 +86,9 @@ namespace Chummer
             _tmrHobbiesViceChangeTimer = new Timer { Interval = 1000 };
             _tmrHobbiesViceChangeTimer.Tick += UpdateHobbiesVice;
 
-            Disposed += (sender, args) => UnbindContactControl();
-
             this.UpdateLightDarkMode(objMyToken);
             this.TranslateWinForm(token: objMyToken);
+            this.UpdateParentForToolTipControls();
 
             foreach (ToolStripItem tssItem in cmsContact.Items)
             {
@@ -170,9 +168,7 @@ namespace Chummer
             _tmrPreferredPaymentChangeTimer.Dispose();
             _tmrHobbiesViceChangeTimer.Dispose();
             foreach (Control objControl in Controls)
-            {
-                objControl.DataBindings.Clear();
-            }
+                objControl.ResetBindings();
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -538,71 +534,58 @@ namespace Chummer
         {
             try
             {
+                string strFileName;
+                Character objOpenCharacter = null;
                 Character objLinkedCharacter = await _objContact.GetLinkedCharacterAsync(_objMyToken).ConfigureAwait(false);
-                if (objLinkedCharacter != null)
+                if (objLinkedCharacter == null)
                 {
-                    Character objOpenCharacter = await Program.OpenCharacters
-                        .ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false)
-                        ? objLinkedCharacter
-                        : null;
-                    CursorWait objCursorWait =
-                        await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                    try
-                    {
-                        if (objOpenCharacter == null)
-                        {
-                            using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                   = await Program.CreateAndShowProgressBarAsync(
-                                           await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), Character.NumLoadingSections,
-                                           _objMyToken)
-                                       .ConfigureAwait(false))
-                                objOpenCharacter = await Program.LoadCharacterAsync(
-                                    await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false), frmLoadingBar: frmLoadingBar.MyForm,
-                                    token: _objMyToken).ConfigureAwait(false);
-                        }
-
-                        if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
-                            await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    bool blnUseRelative = false;
-
                     // Make sure the file still exists before attempting to load it.
-                    if (!File.Exists(await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)))
+                    strFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (!File.Exists(strFileName))
                     {
-                        bool blnError = false;
                         // If the file doesn't exist, use the relative path if one is available.
-                        if (string.IsNullOrEmpty(_objContact.RelativeFileName))
-                            blnError = true;
-                        else if (!File.Exists(Path.GetFullPath(_objContact.RelativeFileName)))
-                            blnError = true;
-                        else
-                            blnUseRelative = true;
-
-                        if (blnError)
+                        string strRelativeFileName = await _objContact.GetRelativeFileNameAsync(_objMyToken).ConfigureAwait(false);
+                        // If the file doesn't exist, use the relative path if one is available.
+                        if (string.IsNullOrEmpty(strRelativeFileName) || !File.Exists(Path.GetFullPath(strRelativeFileName)))
                         {
                             await Program.ShowScrollableMessageBoxAsync(
                                 string.Format(GlobalSettings.CultureInfo,
                                     await LanguageManager.GetStringAsync("Message_FileNotFound", token: _objMyToken)
-                                        .ConfigureAwait(false),
-                                    await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false)),
-                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken)
-                                    .ConfigureAwait(false), MessageBoxButtons.OK,
-                                MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
+                                        .ConfigureAwait(false), strFileName),
+                                await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: _objMyToken).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Error, token: _objMyToken).ConfigureAwait(false);
                             return;
                         }
+                        else
+                            strFileName = Path.GetFullPath(strRelativeFileName);
+                    }
+                }
+                else
+                {
+                    strFileName = await objLinkedCharacter.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
+                    if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
+                        objOpenCharacter = objLinkedCharacter;
+                }
+                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
+                try
+                {
+                    if (objOpenCharacter == null)
+                    {
+                        using (ThreadSafeForm<LoadingBar> frmLoadingBar
+                               = await Program.CreateAndShowProgressBarAsync(
+                                       strFileName, Character.NumLoadingSections, _objMyToken)
+                                   .ConfigureAwait(false))
+                            objOpenCharacter = await Program.LoadCharacterAsync(
+                                    strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objMyToken)
+                                .ConfigureAwait(false);
                     }
 
-                    string strFile = blnUseRelative
-                        ? Path.GetFullPath(_objContact.RelativeFileName)
-                        : await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
-                    Process.Start(new ProcessStartInfo(strFile) { UseShellExecute = true });
+                    if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
+                        await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -618,11 +601,11 @@ namespace Chummer
                 string strFilter =
                     await LanguageManager.GetStringAsync("DialogFilter_Chummer", token: _objMyToken)
                         .ConfigureAwait(false) +
-                    '|' +
+                    "|" +
                     await LanguageManager.GetStringAsync("DialogFilter_Chum5", token: _objMyToken)
                         .ConfigureAwait(false) +
-                    '|' + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
-                        .ConfigureAwait(false) + '|' + await LanguageManager
+                    "|" + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
+                        .ConfigureAwait(false) + "|" + await LanguageManager
                         .GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
                 IAsyncDisposable objLocker = await _objContact.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
                 try
@@ -669,7 +652,7 @@ namespace Chummer
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
-                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative, _objMyToken).ConfigureAwait(false);
+                        await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -759,6 +742,15 @@ namespace Chummer
             {
                 // swallow this
             }
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
         }
 
         #endregion Control Events
@@ -862,9 +854,10 @@ namespace Chummer
 
         private async Task LoadContactList(CancellationToken token = default)
         {
-            if (_objContact.IsEnemy)
+            token.ThrowIfCancellationRequested();
+            if (await _objContact.GetIsEnemyAsync(token).ConfigureAwait(false))
             {
-                string strContactRole = _objContact.DisplayRole;
+                string strContactRole = await _objContact.GetDisplayRoleAsync(token).ConfigureAwait(false);
                 if (!string.IsNullOrEmpty(strContactRole))
                     await cboContactRole.DoThreadSafeAsync(x => x.Text = strContactRole, token: token)
                                         .ConfigureAwait(false);
@@ -885,12 +878,19 @@ namespace Chummer
                   .PopulateWithListItemsAsync(
                       await _objContact.CharacterObject.ContactArchetypesAsync(token: token).ConfigureAwait(false),
                       token: token).ConfigureAwait(false);
-            await cboContactRole.DoThreadSafeAsync(x =>
+            if (await cboContactRole.DoThreadSafeFuncAsync(x =>
+                {
+                    x.SelectedValue = _objContact.Role;
+                    return x.SelectedIndex;
+                }, token: token).ConfigureAwait(false) < 0)
             {
-                x.SelectedValue = _objContact.Role;
-                if (x.SelectedIndex < 0)
-                    x.Text = _objContact.DisplayRole;
-            }, token: token).ConfigureAwait(false);
+                string strDisplayRole = await _objContact.GetDisplayRoleAsync(token: token).ConfigureAwait(false);
+                await cboContactRole.DoThreadSafeAsync(x =>
+                {
+                    if (x.SelectedIndex < 0)
+                        x.Text = strDisplayRole;
+                }, token).ConfigureAwait(false);
+            }
         }
 
         private async Task DoDataBindings(CancellationToken token = default)
@@ -1039,8 +1039,10 @@ namespace Chummer
                     //We don't actually pay for contacts in play so everyone is free
                     //Don't present a useless field
                     if (_objContact.CharacterObject != null)
-                        await chkFree.DoThreadSafeAsync(x => x.Visible = !_objContact.CharacterObject.Created, token)
-                                     .ConfigureAwait(false);
+                    {
+                        await chkFree.RegisterOneWayAsyncDataBindingAsync((x, y) => x.Visible = !y, _objContact.CharacterObject,
+                            nameof(Character.Created), x => x.GetCreatedAsync(_objMyToken), token).ConfigureAwait(false);
+                    }
                     else
                         await chkFree.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                     await chkGroup.RegisterAsyncDataBindingAsync(x => x.Checked, (x, y) => x.Checked = y, _objContact,
@@ -1362,6 +1364,7 @@ namespace Chummer
                         {
                             x.tlpMain.SetColumnSpan(x.tlpStatBlock, 13);
                             x.tlpMain.Controls.Add(x.tlpStatBlock, 0, 3);
+                            x.tlpStatBlock.UpdateParentForToolTipControls();
                         }
                         finally
                         {
@@ -1590,6 +1593,7 @@ namespace Chummer
                         {
                             x.tlpMain.SetColumnSpan(x.tlpStatBlock, 13);
                             x.tlpMain.Controls.Add(x.tlpStatBlock, 0, 3);
+                            x.tlpStatBlock.UpdateParentForToolTipControls();
                         }
                         finally
                         {
@@ -1608,10 +1612,10 @@ namespace Chummer
                     string strMetatype = await _objContact.GetMetatypeAsync(token).ConfigureAwait(false);
                     string strGender = await _objContact.GetGenderAsync(token).ConfigureAwait(false);
                     string strAge = await _objContact.GetAgeAsync(token).ConfigureAwait(false);
-                    string strPersonalLife = _objContact.PersonalLife;
-                    string strType = _objContact.Type;
-                    string strPreferredPayment = _objContact.PreferredPayment;
-                    string strHobbiesVice = _objContact.HobbiesVice;
+                    string strPersonalLife = await _objContact.GetPersonalLifeAsync(token).ConfigureAwait(false);
+                    string strType = await _objContact.GetTypeAsync(token).ConfigureAwait(false);
+                    string strPreferredPayment = await _objContact.GetPreferredPaymentAsync(token).ConfigureAwait(false);
+                    string strHobbiesVice = await _objContact.GetHobbiesViceAsync(token).ConfigureAwait(false);
                     await this.DoThreadSafeAsync(x =>
                     {
                         if (!string.IsNullOrEmpty(strMetatype))
@@ -1928,9 +1932,10 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.TrueForAll(
-                                    x => strMetavariantName.Equals(x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)))
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,
@@ -2073,9 +2078,10 @@ namespace Chummer
                             string strMetavariantName
                                 = objXmlMetavariantNode.SelectSingleNodeAndCacheExpression("name", token)?.Value
                                   ?? string.Empty;
-                            if (lstMetatypes.TrueForAll(
-                                    x => strMetavariantName.Equals(x.Value.ToString(),
-                                                                   StringComparison.OrdinalIgnoreCase)))
+                            if (!string.IsNullOrEmpty(strMetavariantName) &&
+                                (lstMetatypes.Count == 0 || lstMetatypes.TrueForAll(
+                                    x => !strMetavariantName.Equals(x.Value?.ToString(),
+                                                                   StringComparison.OrdinalIgnoreCase))))
                                 lstMetatypes.Add(new ListItem(strMetavariantName,
                                                               string.Format(
                                                                   GlobalSettings.CultureInfo, strMetavariantFormat,

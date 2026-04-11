@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -28,10 +29,9 @@ using System.Threading.Tasks;
 namespace Chummer
 {
     /// <summary>
-    /// Thread-safe-wrapped version of CachedBindingList, but also with constraints on the generic type so that it can only be used on a class with INotifyPropertyChanged.
-    /// Use ThreadSafeObservableCollection instead for classes without INotifyPropertyChanged.
+    /// Thread-safe-wrapped version of <see cref="CachedBindingList{T}"/>, but also with constraints on the generic type so that it can only be used on a class with <see cref="INotifyPropertyChanged"/>.
+    /// Use <see cref="ThreadSafeObservableCollection{T}"/> instead for classes without <see cref="INotifyPropertyChanged"/>.
     /// </summary>
-    /// <typeparam name="T"></typeparam>
     public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
@@ -42,19 +42,13 @@ namespace Chummer
         public ThreadSafeBindingList(AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
             LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
-            _lstData = new CachedBindingList<T>
-            {
-                BindingListLock = LockObject
-            };
+            _lstData = new CachedBindingList<T>(LockObject);
         }
 
         public ThreadSafeBindingList(IList<T> list, AsyncFriendlyReaderWriterLock objParentLock = null, bool blnLockReadOnlyForParent = false)
         {
             LockObject = new AsyncFriendlyReaderWriterLock(objParentLock, blnLockReadOnlyForParent);
-            _lstData = new CachedBindingList<T>(list)
-            {
-                BindingListLock = LockObject
-            };
+            _lstData = new CachedBindingList<T>(LockObject, list);
         }
 
         /// <inheritdoc cref="List{T}.Count" />
@@ -448,14 +442,14 @@ namespace Chummer
         }
 
         /// <inheritdoc />
-        public async Task<Tuple<bool, T>> TryTakeAsync(CancellationToken token = default)
+        public async Task<ValueTuple<bool, T>> TryTakeAsync(CancellationToken token = default)
         {
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstData.Count == 0)
-                    return new Tuple<bool, T>(false, default);
+                    return new ValueTuple<bool, T>(false, default);
             }
             finally
             {
@@ -480,7 +474,7 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
 
-                    return new Tuple<bool, T>(true, objReturn);
+                    return new ValueTuple<bool, T>(true, objReturn);
                 }
             }
             finally
@@ -488,7 +482,7 @@ namespace Chummer
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            return new Tuple<bool, T>(false, default);
+            return new ValueTuple<bool, T>(false, default);
         }
 
         /// <inheritdoc />
@@ -1317,7 +1311,7 @@ namespace Chummer
                         aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
                 }
 
-                Array.Sort(aobjSorted, objComparer);
+                Array.Sort(aobjSorted, 0, length, objComparer);
 
                 if (aobjLockers != null)
                 {
@@ -1331,7 +1325,7 @@ namespace Chummer
                 {
                     using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < length; ++i)
                         {
                             _lstData[index + i] = aobjSorted[i];
                         }
@@ -1339,43 +1333,58 @@ namespace Chummer
                     return;
                 }
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = length / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                using (LockObject.EnterWriteLock())
+                bool[] ablnItemChanged = length > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(length)
+                    : null;
+                try
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
+                    using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[length];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[index + i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[index + i] = objLoop;
+                            for (int i = 0; i < length; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[index + i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[index + i] = objLoop;
+                            }
                         }
-                    }
-                    finally
-                    {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
 
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        _lstData.ResetBindings();
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
+                        if (intCountChanges >= intResetThreshold)
                         {
-                            if (ablnItemChanged[i])
-                                _lstData.ResetItem(index + i);
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < length; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(index + i);
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1392,11 +1401,12 @@ namespace Chummer
                 return;
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (_lstData.Count == 0)
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
                     return;
-                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[_lstData.Count] : null;
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
+                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[intCollectionSize] : null;
+                T[] aobjSorted = new T[intCollectionSize];
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
                     T objLoop = _lstData[i];
                     aobjSorted[i] = objLoop;
@@ -1418,7 +1428,7 @@ namespace Chummer
                 {
                     using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
                             _lstData[i] = aobjSorted[i];
                         }
@@ -1426,43 +1436,58 @@ namespace Chummer
                     return;
                 }
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = intCollectionSize / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                using (LockObject.EnterWriteLock())
+                bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                    : null;
+                try
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
+                    using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[i] = objLoop;
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
                         }
-                    }
-                    finally
-                    {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
 
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        _lstData.ResetBindings();
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
+                        if (intCountChanges >= intResetThreshold)
                         {
-                            if (ablnItemChanged[i])
-                                _lstData.ResetItem(i);
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(i);
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1480,11 +1505,12 @@ namespace Chummer
                 return;
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (_lstData.Count == 0)
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
                     return;
-                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[_lstData.Count] : null;
-                T[] aobjSorted = new T[_lstData.Count];
-                for (int i = 0; i < _lstData.Count; ++i)
+                IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[intCollectionSize] : null;
+                T[] aobjSorted = new T[intCollectionSize];
+                for (int i = 0; i < intCollectionSize; ++i)
                 {
                     T objLoop = _lstData[i];
                     aobjSorted[i] = objLoop;
@@ -1492,7 +1518,7 @@ namespace Chummer
                         aobjLockers[i] = (objLoop as IHasLockObject)?.LockObject.EnterReadLock();
                 }
 
-                Array.Sort(aobjSorted, objComparer);
+                Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
 
                 if (aobjLockers != null)
                 {
@@ -1506,7 +1532,7 @@ namespace Chummer
                 {
                     using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
                             _lstData[i] = aobjSorted[i];
                         }
@@ -1514,43 +1540,58 @@ namespace Chummer
                     return;
                 }
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = intCollectionSize / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                using (LockObject.EnterWriteLock())
+                bool[] ablnItemChanged = intCollectionSize > Utils.MaxStackLimit8BitTypes
+                    ? ArrayPool<bool>.Shared.Rent(intCollectionSize)
+                    : null;
+                try
                 {
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
-                    try
+                    using (LockObject.EnterWriteLock())
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+#pragma warning disable IDE0029 // Use coalesce expression
+                        Span<bool> pblnItemChanged = ablnItemChanged != null
+                            ? ablnItemChanged
+                            : stackalloc bool[intCollectionSize];
+#pragma warning restore IDE0029 // Use coalesce expression
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[i] = objLoop;
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                pblnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
                         }
-                    }
-                    finally
-                    {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
 
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        _lstData.ResetBindings();
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
+                        if (intCountChanges >= intResetThreshold)
                         {
-                            if (ablnItemChanged[i])
-                                _lstData.ResetItem(i);
+                            _lstData.ResetBindings();
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (pblnItemChanged[i])
+                                    _lstData.ResetItem(i);
+                            }
                         }
                     }
+                }
+                finally
+                {
+                    if (ablnItemChanged != null)
+                        ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
         }
@@ -1594,7 +1635,7 @@ namespace Chummer
                     }
 
                     token.ThrowIfCancellationRequested();
-                    Array.Sort(aobjSorted, objComparer);
+                    Array.Sort(aobjSorted, 0, length, objComparer);
                 }
                 finally
                 {
@@ -1616,7 +1657,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < length; ++i)
                         {
                             _lstData[index + i] = aobjSorted[i];
                         }
@@ -1630,49 +1671,56 @@ namespace Chummer
                 }
 
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = length / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(length);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[index + i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[index + i] = objLoop;
+                            for (int i = 0; i < length; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[index + i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[index + i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < length; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(index + i, token).ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
-
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
-                        {
-                            if (ablnItemChanged[i])
-                                await _lstData.ResetItemAsync(index + i, token).ConfigureAwait(false);
-                        }
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
             finally
@@ -1694,14 +1742,15 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstData.Count == 0)
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
                     return;
                 Stack<IAsyncDisposable> stkLockers =
-                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(_lstData.Count) : null;
-                T[] aobjSorted = new T[_lstData.Count];
+                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(intCollectionSize) : null;
+                T[] aobjSorted = new T[intCollectionSize];
                 try
                 {
-                    for (int i = 0; i < _lstData.Count; ++i)
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objLoop = _lstData[i];
@@ -1734,7 +1783,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
                             _lstData[i] = aobjSorted[i];
                         }
@@ -1748,49 +1797,56 @@ namespace Chummer
                 }
 
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = intCollectionSize / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(intCollectionSize);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[i] = objLoop;
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
-
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
-                        {
-                            if (ablnItemChanged[i])
-                                await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
-                        }
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
             finally
@@ -1816,14 +1872,15 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (_lstData.Count == 0)
+                int intCollectionSize = _lstData.Count;
+                if (intCollectionSize == 0)
                     return;
                 Stack<IAsyncDisposable> stkLockers =
-                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(_lstData.Count) : null;
-                T[] aobjSorted = new T[_lstData.Count];
+                    _lstData[0] is IHasLockObject ? new Stack<IAsyncDisposable>(intCollectionSize) : null;
+                T[] aobjSorted = new T[intCollectionSize];
                 try
                 {
-                    for (int i = 0; i < _lstData.Count; ++i)
+                    for (int i = 0; i < intCollectionSize; ++i)
                     {
                         token.ThrowIfCancellationRequested();
                         T objLoop = _lstData[i];
@@ -1834,7 +1891,7 @@ namespace Chummer
                     }
 
                     token.ThrowIfCancellationRequested();
-                    Array.Sort(aobjSorted, objComparer);
+                    Array.Sort(aobjSorted, 0, intCollectionSize, objComparer);
                 }
                 finally
                 {
@@ -1856,7 +1913,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        for (int i = 0; i < intCollectionSize; ++i)
                         {
                             _lstData[i] = aobjSorted[i];
                         }
@@ -1870,49 +1927,56 @@ namespace Chummer
                 }
 
                 // If at least half of the list was changed, call a reset event instead of a large amount of ItemChanged events
-                int intResetThreshold = aobjSorted.Length / 2;
+                int intResetThreshold = intCollectionSize / 2;
                 int intCountChanges = 0;
                 // Not BitArray because read/write performance is much more important here than memory footprint
-                bool[] ablnItemChanged = new bool[aobjSorted.Length];
-                IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                bool[] ablnItemChanged = ArrayPool<bool>.Shared.Rent(intCollectionSize);
                 try
                 {
-                    token.ThrowIfCancellationRequested();
-                    // We're going to disable events while we work with the list, then call them all at once at the end
-                    _lstData.RaiseListChangedEvents = false;
+                    IAsyncDisposable objLocker3 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
-                        for (int i = 0; i < aobjSorted.Length; ++i)
+                        token.ThrowIfCancellationRequested();
+                        // We're going to disable events while we work with the list, then call them all at once at the end
+                        _lstData.RaiseListChangedEvents = false;
+                        try
                         {
-                            T objLoop = aobjSorted[i];
-                            if (ReferenceEquals(objLoop, _lstData[i]))
-                                continue;
-                            ablnItemChanged[i] = true;
-                            ++intCountChanges;
-                            _lstData[i] = objLoop;
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                T objLoop = aobjSorted[i];
+                                if (ReferenceEquals(objLoop, _lstData[i]))
+                                    continue;
+                                ablnItemChanged[i] = true;
+                                ++intCountChanges;
+                                _lstData[i] = objLoop;
+                            }
+                        }
+                        finally
+                        {
+                            _lstData.RaiseListChangedEvents = true;
+                        }
+
+                        if (intCountChanges >= intResetThreshold)
+                        {
+                            await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            for (int i = 0; i < intCollectionSize; ++i)
+                            {
+                                if (ablnItemChanged[i])
+                                    await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
+                            }
                         }
                     }
                     finally
                     {
-                        _lstData.RaiseListChangedEvents = true;
-                    }
-
-                    if (intCountChanges >= intResetThreshold)
-                    {
-                        await _lstData.ResetBindingsAsync(token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        for (int i = 0; i < ablnItemChanged.Length; ++i)
-                        {
-                            if (ablnItemChanged[i])
-                                await _lstData.ResetItemAsync(i, token).ConfigureAwait(false);
-                        }
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    await objLocker3.DisposeAsync().ConfigureAwait(false);
+                    ArrayPool<bool>.Shared.Return(ablnItemChanged);
                 }
             }
             finally

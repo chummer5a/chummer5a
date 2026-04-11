@@ -64,18 +64,12 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             CurrentVersion = Utils.CurrentChummerVersion.ToString(3);
             _blnPreferNightly = GlobalSettings.PreferNightlyBuilds;
             _strTempLatestVersionChangelogPath = Path.Combine(Utils.GetTempPath(), "changelog.txt");
             _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
-            Disposed += (sender, args) =>
-            {
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-                _clientChangelogDownloader.Dispose();
-                _clientDownloader.Dispose();
-                _objConnectionLoaderCancellationTokenSource?.Dispose();
-            };
             _clientDownloader.DownloadFileCompleted += wc_DownloadCompleted;
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
         }
@@ -146,7 +140,7 @@ namespace Chummer
                 tskConnectionLoader.IsFaulted)))
             {
                 CancellationToken objToken = objNewChangelogSource.Token;
-                Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                Task tskNew = DownloadChangelog(objToken);
                 if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                 {
                     Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -306,11 +300,12 @@ namespace Chummer
                 objNewSource.Dispose();
                 throw;
             }
-            Task tskNew = Task.Run(async () =>
+            Task tskNew = DownloadAndPopulationChangelog(objToken);
+            async Task DownloadAndPopulationChangelog(CancellationToken innerToken)
             {
-                await LoadConnection(objToken).ConfigureAwait(false);
-                await PopulateChangelog(objToken).ConfigureAwait(false);
-            }, objToken);
+                await LoadConnection(innerToken).ConfigureAwait(false);
+                await PopulateChangelog(innerToken).ConfigureAwait(false);
+            }
             if (Interlocked.CompareExchange(ref _tskConnectionLoader, tskNew, null) != null)
             {
                 Interlocked.CompareExchange(ref _objConnectionLoaderCancellationTokenSource, null, objNewSource);
@@ -441,7 +436,7 @@ namespace Chummer
 
                                 if (!blnFoundTag && strLine.Contains("tag_name"))
                                 {
-                                    LatestVersion = (_strLatestVersion = strLine.SplitNoAlloc(':').ElementAtOrDefault(1))
+                                    LatestVersion = (_strLatestVersion = strLine.SplitNoAlloc(':').ElementAtOrDefaultBetter(1))
                                         .SplitNoAlloc('}').FirstOrDefault().FastEscape('\"').Trim();
                                     blnFoundTag = true;
                                     if (blnFoundArchive)
@@ -451,7 +446,7 @@ namespace Chummer
                                 if (!blnFoundArchive && strLine.Contains("browser_download_url"))
                                 {
                                     _strDownloadFile = "https://" +
-                                                       (strLine.SplitNoAlloc(':').ElementAtOrDefault(2) ?? string.Empty)
+                                                       (strLine.SplitNoAlloc(':').ElementAtOrDefaultBetter(2) ?? string.Empty)
                                                        .Substring(2).SplitNoAlloc('}').FirstOrDefault()
                                                        .FastEscape('\"');
                                     blnFoundArchive = true;
@@ -620,7 +615,7 @@ namespace Chummer
                             objNewSource.Dispose();
                             return;
                         }
-                        Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                        Task tskNew = DownloadChangelog(objToken);
                         if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                         {
                             Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -791,7 +786,7 @@ namespace Chummer
                 {
                     CancellationToken objToken = objNewChangelogSource.Token;
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, objToken).ConfigureAwait(false);
-                    Task tskNew = Task.Run(() => DownloadChangelog(objToken), objToken);
+                    Task tskNew = DownloadChangelog(objToken);
                     if (Interlocked.CompareExchange(ref _tskChangelogDownloader, tskNew, null) != null)
                     {
                         Interlocked.CompareExchange(ref _objChangelogDownloaderCancellationTokenSource, null,
@@ -870,7 +865,7 @@ namespace Chummer
                                 foreach (string strFile in Directory.EnumerateFiles(_strAppPath))
                                 {
                                     token.ThrowIfCancellationRequested();
-                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile));
+                                    ZipArchiveEntry objEntry = zipNewArchive.CreateEntry(Path.GetFileName(strFile), CompressionLevel.Fastest);
                                     objEntry.LastWriteTime = File.GetLastWriteTime(strFile);
                                     await using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                     {
@@ -1197,81 +1192,80 @@ namespace Chummer
 
                 if (blnDoRestart)
                 {
-                    List<string> lstBlocked = new List<string>(lstFilesToDelete.Count);
-                    Dictionary<string, Task<bool>> dicTasks
-                        = new Dictionary<string, Task<bool>>(Utils.MaxParallelBatchSize);
-                    int intCounter = 0;
-                    foreach (string strFileToDelete in lstFilesToDelete)
+                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setBlocked))
                     {
-                        dicTasks.Add(strFileToDelete, FileExtensions.SafeDeleteAsync(strFileToDelete, token: token));
-                        if (++intCounter != Utils.MaxParallelBatchSize)
-                            continue;
-                        await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                        foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                        {
-                            if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                                lstBlocked.Add(kvpTaskPair.Key);
-                        }
-
-                        dicTasks.Clear();
-                        intCounter = 0;
-                    }
-
-                    await Task.WhenAll(dicTasks.Values).ConfigureAwait(false);
-                    foreach (KeyValuePair<string, Task<bool>> kvpTaskPair in dicTasks)
-                    {
-                        if (!await kvpTaskPair.Value.ConfigureAwait(false))
-                            lstBlocked.Add(kvpTaskPair.Key);
-                    }
-
-                    foreach (string strBlockedFile in lstBlocked.ToList())
-                    {
+                        DebuggableSemaphoreSlim objBlockedFilesPopulateSemaphore = Utils.SemaphorePool.Get();
                         try
                         {
-                            if (File.Exists(strBlockedFile + ".old")
-                                && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
-                                               .ConfigureAwait(false))
+                            await ParallelExtensions.ForEachAsync(lstFilesToDelete, async strFileToDelete =>
+                            {
+                                if (!await FileExtensions.SafeDeleteAsync(strFileToDelete, token: token).ConfigureAwait(false))
+                                {
+                                    await objBlockedFilesPopulateSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    try
+                                    {
+                                        setBlocked.Add(strFileToDelete);
+                                    }
+                                    finally
+                                    {
+                                        objBlockedFilesPopulateSemaphore.Release();
+                                    }
+                                }
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            Utils.SemaphorePool.Return(ref objBlockedFilesPopulateSemaphore);
+                        }
+                        foreach (string strBlockedFile in setBlocked)
+                        {
+                            try
+                            {
+                                if (File.Exists(strBlockedFile + ".old")
+                                    && !await FileExtensions.SafeDeleteAsync(strBlockedFile + ".old", !SilentMode, token: token)
+                                                   .ConfigureAwait(false))
+                                {
+                                    continue;
+                                }
+
+                                File.Move(strBlockedFile, strBlockedFile + ".old");
+                            }
+                            catch (IOException)
+                            {
+                                continue;
+                            }
+                            catch (NotSupportedException)
+                            {
+                                continue;
+                            }
+                            catch (UnauthorizedAccessException)
                             {
                                 continue;
                             }
 
-                            File.Move(strBlockedFile, strBlockedFile + ".old");
-                        }
-                        catch (IOException)
-                        {
-                            continue;
-                        }
-                        catch (NotSupportedException)
-                        {
-                            continue;
-                        }
-                        catch (UnauthorizedAccessException)
-                        {
-                            continue;
+                            setBlocked.Remove(strBlockedFile);
                         }
 
-                        lstBlocked.Remove(strBlockedFile);
-                    }
-
-                    if (lstBlocked.Count > 0)
-                    {
-                        Utils.BreakIfDebug();
-                        if (!SilentMode)
+                        if (setBlocked.Count > 0)
                         {
-                            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                                          out StringBuilder sbdOutput))
+                            Utils.BreakIfDebug();
+                            if (!SilentMode)
                             {
-                                sbdOutput.Append(
-                                    await LanguageManager
-                                          .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
-                                          .ConfigureAwait(false));
-                                foreach (string strFile in lstBlocked)
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                              out StringBuilder sbdOutput))
                                 {
-                                    sbdOutput.AppendLine().Append(strFile);
-                                }
+                                    sbdOutput.Append(
+                                        await LanguageManager
+                                              .GetStringAsync("Message_Files_Cannot_Be_Removed", token: token)
+                                              .ConfigureAwait(false));
+                                    foreach (string strFile in setBlocked)
+                                    {
+                                        sbdOutput.AppendLine().Append(strFile);
+                                    }
 
-                                await Program.ShowScrollableMessageBoxAsync(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
-                                    MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                    await Program.ShowScrollableMessageBoxAsync(this, sbdOutput.ToString(), null, MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                }
                             }
                         }
                     }
@@ -1349,7 +1343,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    using (token.Register(() => _clientDownloader.CancelAsync()))
+                    using (token.RegisterWithoutEC(x => ((WebClient)x).CancelAsync(), _clientDownloader))
                         await _clientDownloader.DownloadFileTaskAsync(uriDownloadFileAddress, _strTempLatestVersionZipPath).ConfigureAwait(false);
                 }
                 catch (WebException ex)

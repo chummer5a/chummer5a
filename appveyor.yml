@@ -1,4 +1,4 @@
-version: 5.225.{build}
+version: 5.226.{build}
 branches:
   only:
   - master
@@ -79,14 +79,10 @@ before_build:
         if ($Minor -ne $($env:OldMinorVersion))
         {
           Write-Host "Current Minor: $Minor"
-          Write-Host "Old Minor: $($env:OldMinorVersion))"
+          Write-Host "Old Minor: $($env:OldMinorVersion)"
           Write-Host "Resetting build version to 1, assuming that a new .0 release has been issued already."
-          $apiUrl = 'https://ci.appveyor.com/api/projects/$accountName/$projectSlug'
-          $BuildNumber = '{ nextBuildNumber: 1; }'
-          $Format = '{ versionFormat: $Major.$Minor.1; }'
-          # get project with last build details
-          Invoke-RestMethod -Method Put -Uri "$apiUrlsettings/build-number" -Headers $headers -Body $BuildNumber
-          Invoke-RestMethod -Method Put -Uri "$apiUrl/settings" -Headers $headers -Body $BuildNumber
+          $buildNumberBody = '{"nextBuildNumber": 1}'
+          Invoke-RestMethod -Method Put -Uri "$apiURL/settings/build-number" -Headers $headers -Body $buildNumberBody -ContentType "application/json"
           Update-AppveyorBuild -Version "$Major.$Minor.1"
         }
         else
@@ -116,7 +112,8 @@ deploy:
   prerelease: true
 on_failure:
 - ps: |
-    Update-AppveyorBuild -Version "$Major.$Minor.$env:appveyor_build_number-$(Get-Date -format HHmmss)-failed"
+    $version = if ($env:APPVEYOR_BUILD_VERSION) { $env:APPVEYOR_BUILD_VERSION } else { "0.0.$env:appveyor_build_number" }
+    Update-AppveyorBuild -Version "$version-$(Get-Date -format HHmmss)-failed"
     if ($env:APPVEYOR_SCHEDULED_BUILD -eq $true)
     {
       # Webhook throws errors during build.

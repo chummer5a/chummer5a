@@ -76,20 +76,30 @@ namespace Chummer
             // Create the GUID for the new Power.
             _guiID = Guid.NewGuid();
             CharacterObject = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
+            _objCharacterSettings = objCharacter.Settings;
             LockObject = objCharacter.LockObject;
             Enhancements = new TaggedObservableCollection<Enhancement>(LockObject);
             _objCachedFreeLevelsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedPowerPointsLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
             _objCachedTotalRatingLock = new AsyncFriendlyReaderWriterLock(LockObject, true);
-            objCharacter.PropertyChangedAsync += OnCharacterChanged;
-            objCharacter.Settings.MultiplePropertiesChangedAsync += OnCharacterSettingsChanged;
-            MAGAttributeObject = objCharacter.Settings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept
-                ? objCharacter.MAGAdept
-                : objCharacter.MAG;
+            objCharacter.MultiplePropertiesChangedAsync += OnCharacterChanged;
+            if (_objCharacterSettings?.IsDisposed == false)
+            {
+                _objCharacterSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                MAGAttributeObject = _objCharacterSettings.MysAdeptSecondMAGAttribute && objCharacter.IsMysticAdept
+                    ? objCharacter.MAGAdept
+                    : objCharacter.MAG;
+            }
+            else
+            {
+                MAGAttributeObject = objCharacter.MAG;
+            }
         }
 
         public void DeletePower()
         {
+            if (IsDisposed)
+                return;
             using (LockObject.EnterWriteLock())
             {
                 ImprovementManager.RemoveImprovements(CharacterObject, Improvement.ImprovementSource.Power, InternalId);
@@ -100,6 +110,8 @@ namespace Chummer
 
         public async Task DeletePowerAsync(CancellationToken token = default)
         {
+            if (IsDisposed)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -149,12 +161,12 @@ namespace Chummer
                                              _decFreePoints.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("source", _strSource);
                 objWriter.WriteElementString("page", _strPage);
-                if (Bonus != null)
-                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXml + "</bonus>");
+                if (!Bonus.IsNullOrInnerTextIsEmpty())
+                    objWriter.WriteRaw("<bonus>" + Bonus.InnerXmlViaPool() + "</bonus>");
                 else
                     objWriter.WriteElementString("bonus", string.Empty);
                 if (_nodAdeptWayRequirements != null)
-                    objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXml
+                    objWriter.WriteRaw("<adeptwayrequires>" + _nodAdeptWayRequirements.InnerXmlViaPool()
                                                             + "</adeptwayrequires>");
                 else
                     objWriter.WriteElementString("adeptwayrequires", string.Empty);
@@ -222,9 +234,11 @@ namespace Chummer
                         {
                             foreach (XmlNode nodEnhancement in xmlEnhancementList)
                             {
-                                Enhancement objEnhancement = new Enhancement(CharacterObject);
+                                Enhancement objEnhancement = new Enhancement(CharacterObject)
+                                {
+                                    Parent = this
+                                };
                                 objEnhancement.Load(nodEnhancement);
-                                objEnhancement.Parent = this;
                                 Enhancements.Add(objEnhancement);
                             }
                         }
@@ -320,9 +334,11 @@ namespace Chummer
                         {
                             foreach (XmlNode nodEnhancement in xmlEnhancementList)
                             {
-                                Enhancement objEnhancement = new Enhancement(CharacterObject);
-                                objEnhancement.Load(nodEnhancement);
-                                objEnhancement.Parent = this;
+                                Enhancement objEnhancement = new Enhancement(CharacterObject)
+                                {
+                                    Parent = this
+                                };
+                                await objEnhancement.LoadAsync(nodEnhancement, token).ConfigureAwait(false);
                                 await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
                             }
                         }
@@ -490,12 +506,15 @@ namespace Chummer
                 }
 
                 if (blnSync)
-                    Extra = objNode["extra"]?.InnerText ?? string.Empty;
+                    Extra = objNode["extra"]?.InnerTextViaPool(token) ?? string.Empty;
                 else
-                    await SetExtraAsync(objNode["extra"]?.InnerText ?? string.Empty, token).ConfigureAwait(false);
-                _strPointsPerLevel = objNode["pointsperlevel"]?.InnerText;
-                objNode.TryGetStringFieldQuickly("action", ref _strAction);
-                _strAdeptWayDiscount = objNode["adeptway"]?.InnerText;
+                    await SetExtraAsync(objNode["extra"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
+                if (!objNode.TryGetStringFieldQuickly("pointsperlevel", ref _strPointsPerLevel))
+                    _strPointsPerLevel = "0";
+                if (!objNode.TryGetStringFieldQuickly("action", ref _strAction))
+                    _strAction = string.Empty;
+                if (!objNode.TryGetStringFieldQuickly("adeptway", ref _strAdeptWayDiscount))
+                    _strAdeptWayDiscount = string.Empty;
                 if (string.IsNullOrEmpty(_strAdeptWayDiscount))
                 {
                     string strPowerName = Name;
@@ -513,18 +532,23 @@ namespace Chummer
                                            ?? string.Empty;
                 }
 
-                objNode.TryGetInt32FieldQuickly("rating", ref _intRating);
-                objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled);
-                if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels))
-                {
-                    objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels);
-                }
+                if (!objNode.TryGetInt32FieldQuickly("rating", ref _intRating))
+                    _intRating = 1;
+                if (!objNode.TryGetBoolFieldQuickly("levels", ref _blnLevelsEnabled))
+                    _blnLevelsEnabled = false;
+                if (!objNode.TryGetInt32FieldQuickly("maxlevel", ref _intMaxLevels) && !objNode.TryGetInt32FieldQuickly("maxlevels", ref _intMaxLevels))
+                    _intMaxLevels = 0;
 
-                objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay);
-                objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas);
-                objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource);
-                objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints);
-                objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost);
+                if (!objNode.TryGetBoolFieldQuickly("discounted", ref _blnDiscountedAdeptWay))
+                    _blnDiscountedAdeptWay = false;
+                if (!objNode.TryGetBoolFieldQuickly("discountedgeas", ref _blnDiscountedGeas))
+                    _blnDiscountedGeas = false;
+                if (!objNode.TryGetStringFieldQuickly("bonussource", ref _strBonusSource))
+                    _strBonusSource = string.Empty;
+                if (!objNode.TryGetDecFieldQuickly("freepoints", ref _decFreePoints))
+                    _decFreePoints = 0;
+                if (!objNode.TryGetDecFieldQuickly("extrapointcost", ref _decExtraPointCost))
+                    _decExtraPointCost = 0;
                 objNode.TryGetStringFieldQuickly("source", ref _strSource);
                 objNode.TryGetStringFieldQuickly("page", ref _strPage);
                 objNode.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -546,6 +570,8 @@ namespace Chummer
                             objWayRequirements?.SelectSingleNodeAndCacheExpression("adeptwayrequires", token);
                     }
                 }
+                else
+                    _nodAdeptWayRequirements = null;
 
                 string strName = blnSync ? Name : await GetNameAsync(token).ConfigureAwait(false);
                 if (strName != "Improved Reflexes" && strName.StartsWith("Improved Reflexes", StringComparison.Ordinal))
@@ -579,14 +605,22 @@ namespace Chummer
                     {
                         foreach (XmlNode nodEnhancement in nodEnhancements)
                         {
-                            Enhancement objEnhancement = new Enhancement(CharacterObject);
-                            objEnhancement.Load(nodEnhancement);
-                            objEnhancement.Parent = this;
+                            Enhancement objEnhancement = new Enhancement(CharacterObject)
+                            {
+                                Parent = this
+                            };
                             if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                objEnhancement.Load(nodEnhancement);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Enhancements.Add(objEnhancement);
+                            }
                             else
+                            {
+                                await objEnhancement.LoadAsync(nodEnhancement, token).ConfigureAwait(false);
                                 await Enhancements.AddAsync(objEnhancement, token).ConfigureAwait(false);
+                            }
                         }
                     }
                 }
@@ -748,6 +782,8 @@ namespace Chummer
         /// The Character object being used by the Power.
         /// </summary>
         public Character CharacterObject { get; }
+
+        private CharacterSettings _objCharacterSettings;
 
         private CharacterAttrib _objMAGAttribute;
 
@@ -1200,8 +1236,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(Extra))
                 {
                     // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + '('
-                        + CharacterObject.TranslateExtra(Extra, strLanguage) + ')';
+                    strReturn += LanguageManager.GetString("String_Space", strLanguage) + "("
+                        + CharacterObject.TranslateExtra(Extra, strLanguage) + ")";
                 }
 
                 return strReturn;
@@ -1224,8 +1260,8 @@ namespace Chummer
                     // Attempt to retrieve the CharacterAttribute name.
                     strReturn
                         += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
-                                                .ConfigureAwait(false) + '(' + await CharacterObject
-                            .TranslateExtraAsync(strExtra, strLanguage, token: token).ConfigureAwait(false) + ')';
+                                                .ConfigureAwait(false) + "(" + await CharacterObject
+                            .TranslateExtraAsync(strExtra, strLanguage, token: token).ConfigureAwait(false) + ")";
                 }
 
                 return strReturn;
@@ -1612,8 +1648,8 @@ namespace Chummer
                         {
                             if (intRating != 0)
                             {
-                                sbdModifier.Append(LanguageManager.GetString("String_Rating")).Append(strSpace).Append('(')
-                                    .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                sbdModifier.Append(LanguageManager.GetString("String_Rating"), strSpace, '(')
+                                    .Append(intRating.ToString(GlobalSettings.CultureInfo), ')');
                                 blnFirstItem = false;
                             }
                         }
@@ -1633,25 +1669,21 @@ namespace Chummer
                                 blnFirstItem = false;
                             else
                             {
-                                sbdModifier.Append(strSpace)
-                                    .Append('+')
-                                    .Append(strSpace);
+                                sbdModifier.Append(strSpace, '+', strSpace);
                             }
 
                             sbdModifier.Append(CharacterObject.GetObjectName(objImprovement));
                             if (blnLevelsEnabled)
                             {
-                                sbdModifier.Append(strSpace)
-                                    .Append('(')
-                                    .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo))
-                                    .Append(')');
+                                sbdModifier.Append(strSpace, '(')
+                                    .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), ')');
                             }
                         }
 
                         int intTotalMaximum = TotalMaximumLevels;
                         if (intRating + FreeLevels > intTotalMaximum)
                         {
-                            sbdModifier.Append(']').Append(strSpace);
+                            sbdModifier.Append(']', strSpace);
                             return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
                                 LanguageManager.GetString("Tip_Power_Capped"), sbdModifier.ToString(), intTotalMaximum);
                         }
@@ -1683,8 +1715,8 @@ namespace Chummer
                         if (intRating != 0)
                         {
                             sbdModifier.Append(await LanguageManager.GetStringAsync("String_Rating", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
-                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                    .ConfigureAwait(false), strSpace, '(')
+                                .Append(intRating.ToString(GlobalSettings.CultureInfo), ')');
                             blnFirstItem = false;
                         }
                     }
@@ -1708,26 +1740,22 @@ namespace Chummer
                             blnFirstItem = false;
                         else
                         {
-                            sbdModifier.Append(strSpace)
-                                .Append('+')
-                                .Append(strSpace);
+                            sbdModifier.Append(strSpace, '+', strSpace);
                         }
 
                         sbdModifier.Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token)
                             .ConfigureAwait(false));
                         if (blnLevelsEnabled)
                         {
-                            sbdModifier.Append(strSpace)
-                                .Append('(')
-                                .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo))
-                                .Append(')');
+                            sbdModifier.Append(strSpace, '(')
+                                .Append(objImprovement.Rating.ToString(GlobalSettings.CultureInfo), ')');
                         }
                     }
 
                     int intTotalMaximum = await GetTotalMaximumLevelsAsync(token).ConfigureAwait(false);
                     if (intRating + await GetFreeLevelsAsync(token).ConfigureAwait(false) > intTotalMaximum)
                     {
-                        sbdModifier.Append(']').Append(strSpace);
+                        sbdModifier.Append(']', strSpace);
                         return _strCachedTotalRatingToolTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
                                 .ConfigureAwait(false), sbdModifier.ToString(), intTotalMaximum);
@@ -1790,18 +1818,18 @@ namespace Chummer
                                 ++intReturn;
                             }
                         }
-                        else if (decPointsPerLevel == 0)
-                        {
-                            Utils.BreakIfDebug();
-                            // power costs no PP, just return free levels
-                        }
                         //Either the first level of the power has been paid for with PP, or the power doesn't have an extra cost.
-                        else
+                        else if (decPointsPerLevel != 0)
                         {
                             for (decimal i = decExtraCost; i >= decPointsPerLevel; i -= decPointsPerLevel)
                             {
                                 ++intReturn;
                             }
+                        }
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                            // power costs no PP, just return free levels
                         }
 
                         return _intCachedFreeLevels = Math.Min(intReturn, MAGAttributeObject?.TotalValue ?? 0);
@@ -2072,10 +2100,9 @@ namespace Chummer
                         decimal decExtraPointCost = ExtraPointCost;
                         if (decExtraPointCost != 0)
                         {
-                            sbdModifier.Append(LanguageManager.GetString("Label_Base")).Append(strSpace)
-                                .Append('(')
-                                .Append(decExtraPointCost.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                .Append(strSpace).Append('+').Append(strSpace);
+                            sbdModifier.Append(LanguageManager.GetString("Label_Base"), strSpace)
+                                .Append('(', decExtraPointCost.ToString(GlobalSettings.CultureInfo), ')')
+                                .Append(strSpace, '+', strSpace);
                         }
 
                         decimal decPointsPerLevel = PointsPerLevel;
@@ -2088,45 +2115,44 @@ namespace Chummer
                                 sbdModifier.Append('(').AppendFormat(
                                     GlobalSettings.CultureInfo,
                                     LanguageManager.GetString("Tip_Power_Capped"),
-                                    LanguageManager.GetString("String_Level") + strSpace + '(' +
-                                    intRating.ToString(GlobalSettings.CultureInfo) + ')' +
-                                    strSpace + (intFreeLevels > 0 ? '-' : '+') + strSpace +
+                                    LanguageManager.GetString("String_Level") + strSpace + "(" +
+                                    intRating.ToString(GlobalSettings.CultureInfo) + ")" +
+                                    strSpace + (intFreeLevels > 0 ? "-" : "+") + strSpace +
                                     LanguageManager.GetString("Checkbox_Contact_Free") + strSpace +
-                                    '(' + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ')',
-                                    intMaximumLevels).Append(')');
+                                    "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
+                                    intMaximumLevels, ')');
                             }
                             else
                             {
-                                sbdModifier.Append('[').Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append('(')
-                                    .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                    .Append(strSpace).Append(intFreeLevels > 0 ? '-' : '+').Append(strSpace)
-                                    .Append(LanguageManager.GetString("Checkbox_Contact_Free")).Append(strSpace).Append('(')
-                                    .Append(intFreeLevels.ToString(GlobalSettings.CultureInfo)).Append(")]");
+                                sbdModifier.Append('[', LanguageManager.GetString("String_Level"), strSpace)
+                                    .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')')
+                                    .Append(strSpace, intFreeLevels > 0 ? '-' : '+')
+                                    .Append(strSpace, LanguageManager.GetString("Checkbox_Contact_Free"), strSpace)
+                                    .Append('(', intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
                             }
                         }
                         else
                         {
-                            sbdModifier.Append(LanguageManager.GetString("String_Level")).Append(strSpace).Append('(')
-                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdModifier.Append(LanguageManager.GetString("String_Level"), strSpace)
+                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
-                        sbdModifier.Append(strSpace).Append('×').Append(strSpace)
-                            .Append(LanguageManager.GetString("Tip_Power_PPperLevel")).Append(strSpace).Append('(')
-                            .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo)).Append(')');
+                        sbdModifier.Append(strSpace, '×', strSpace)
+                            .Append(LanguageManager.GetString("Tip_Power_PPperLevel"), strSpace)
+                            .Append('(', decPointsPerLevel.ToString(GlobalSettings.CultureInfo), ')');
                         if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
                         {
-                            sbdModifier.Append(strSpace).Append(decFreePoints > 0 ? '-' : '+').Append(strSpace)
-                                .Append(LanguageManager.GetString("Tab_Improvements")).Append(strSpace).Append('(')
-                                .Append(Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdModifier.Append(strSpace, decFreePoints > 0 ? '-' : '+')
+                                .Append(strSpace, LanguageManager.GetString("Tab_Improvements"), strSpace)
+                                .Append('(', Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         decimal decDiscount = Discount;
                         if (decDiscount != 0)
                         {
-                            sbdModifier.Append(strSpace).Append(decDiscount > 0 ? '-' : '+').Append(strSpace)
-                                .Append(LanguageManager.GetString("Checkbox_Power_AdeptWay")).Append(strSpace)
-                                .Append('(')
-                                .Append(Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo)).Append(')');
+                            sbdModifier.Append(strSpace, decDiscount > 0 ? '-' : '+')
+                                .Append(strSpace, LanguageManager.GetString("Checkbox_Power_AdeptWay"), strSpace)
+                                .Append('(', Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), ')');
                         }
 
                         return _strCachedDisplayPointsToolTip = sbdModifier.ToString();
@@ -2178,10 +2204,9 @@ namespace Chummer
                     if (decExtraPointCost != 0)
                     {
                         sbdModifier.Append(await LanguageManager.GetStringAsync("Label_Base", token: token)
-                                .ConfigureAwait(false)).Append(strSpace)
-                            .Append('(')
-                            .Append(decExtraPointCost.ToString(GlobalSettings.CultureInfo)).Append(')')
-                            .Append(strSpace).Append('+').Append(strSpace);
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', decExtraPointCost.ToString(GlobalSettings.CultureInfo), ')')
+                            .Append(strSpace, '+', strSpace);
                     }
 
                     decimal decPointsPerLevel = await GetPointsPerLevelAsync(token).ConfigureAwait(false);
@@ -2196,53 +2221,51 @@ namespace Chummer
                                 await LanguageManager.GetStringAsync("Tip_Power_Capped", token: token)
                                     .ConfigureAwait(false),
                                 await LanguageManager.GetStringAsync("String_Level", token: token)
-                                    .ConfigureAwait(false) + strSpace + '(' +
-                                intRating.ToString(GlobalSettings.CultureInfo) + ')' +
-                                strSpace + (intFreeLevels > 0 ? '-' : '+') + strSpace +
+                                    .ConfigureAwait(false) + strSpace + "(" +
+                                intRating.ToString(GlobalSettings.CultureInfo) + ")" +
+                                strSpace + (intFreeLevels > 0 ? "-" : "+") + strSpace +
                                 await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
                                     .ConfigureAwait(false) + strSpace +
-                                '(' + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ')',
-                                intMaximumLevels).Append(')');
+                                "(" + intFreeLevels.ToString(GlobalSettings.CultureInfo) + ")",
+                                intMaximumLevels, ')');
                         }
                         else
                         {
-                            sbdModifier.Append('[')
-                                .Append(await LanguageManager.GetStringAsync("String_Level", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
-                                .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')')
-                                .Append(strSpace).Append(intFreeLevels > 0 ? '-' : '+').Append(strSpace)
-                                .Append(await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
-                                    .ConfigureAwait(false)).Append(strSpace).Append('(')
-                                .Append(intFreeLevels.ToString(GlobalSettings.CultureInfo)).Append(")]");
+                            sbdModifier.Append('[', await LanguageManager.GetStringAsync("String_Level", token: token)
+                                    .ConfigureAwait(false), strSpace)
+                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')')
+                                .Append(strSpace, intFreeLevels > 0 ? '-' : '+')
+                                .Append(strSpace, await LanguageManager.GetStringAsync("Checkbox_Contact_Free", token: token)
+                                    .ConfigureAwait(false), strSpace)
+                                .Append('(', intFreeLevels.ToString(GlobalSettings.CultureInfo), ")]");
                         }
                     }
                     else
                     {
                         sbdModifier.Append(await LanguageManager.GetStringAsync("String_Level", token: token)
-                                .ConfigureAwait(false)).Append(strSpace).Append('(')
-                            .Append(intRating.ToString(GlobalSettings.CultureInfo)).Append(')');
+                                .ConfigureAwait(false), strSpace)
+                                .Append('(', intRating.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
-                    sbdModifier.Append(strSpace).Append('×').Append(strSpace)
+                    sbdModifier.Append(strSpace, '×', strSpace)
                         .Append(await LanguageManager.GetStringAsync("Tip_Power_PPperLevel", token: token)
-                            .ConfigureAwait(false)).Append(strSpace).Append('(')
-                        .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo)).Append(')');
+                            .ConfigureAwait(false), strSpace, '(')
+                        .Append(decPointsPerLevel.ToString(GlobalSettings.CultureInfo), ')');
                     if (decFreePoints != 0 && intFreeLevels * decPointsPerLevel < decFreePoints)
                     {
-                        sbdModifier.Append(strSpace).Append(decFreePoints > 0 ? '-' : '+').Append(strSpace)
-                            .Append(await LanguageManager.GetStringAsync("Tab_Improvements", token: token)
-                                .ConfigureAwait(false)).Append(strSpace).Append('(')
-                            .Append(Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        sbdModifier.Append(strSpace, decFreePoints > 0 ? '-' : '+')
+                            .Append(strSpace, await LanguageManager.GetStringAsync("Tab_Improvements", token: token)
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', Math.Abs(decFreePoints).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     decimal decDiscount = await GetDiscountAsync(token).ConfigureAwait(false);
                     if (decDiscount != 0)
                     {
-                        sbdModifier.Append(strSpace).Append(decDiscount > 0 ? '-' : '+').Append(strSpace)
-                            .Append(await LanguageManager.GetStringAsync("Checkbox_Power_AdeptWay", token: token)
-                                .ConfigureAwait(false)).Append(strSpace)
-                            .Append('(')
-                            .Append(Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo)).Append(')');
+                        sbdModifier.Append(strSpace, decDiscount > 0 ? '-' : '+')
+                            .Append(strSpace, await LanguageManager.GetStringAsync("Checkbox_Power_AdeptWay", token: token)
+                                .ConfigureAwait(false), strSpace)
+                            .Append('(', Math.Abs(decDiscount).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     return _strCachedDisplayPointsToolTip = sbdModifier.ToString();
@@ -2812,24 +2835,24 @@ namespace Chummer
         /// </summary>
         public string DisplayActionMethod(string strLanguage)
         {
-            switch (Action)
+            switch (Action.ToUpperInvariant())
             {
-                case "Auto":
+                case "AUTO":
                     return LanguageManager.GetString("String_ActionAutomatic", strLanguage);
 
-                case "Free":
+                case "FREE":
                     return LanguageManager.GetString("String_ActionFree", strLanguage);
 
-                case "Simple":
+                case "SIMPLE":
                     return LanguageManager.GetString("String_ActionSimple", strLanguage);
 
-                case "Complex":
+                case "COMPLEX":
                     return LanguageManager.GetString("String_ActionComplex", strLanguage);
 
-                case "Interrupt":
+                case "INTERRUPT":
                     return LanguageManager.GetString("String_ActionInterrupt", strLanguage);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetString("String_SpellDurationSpecial", strLanguage);
             }
 
@@ -2841,24 +2864,24 @@ namespace Chummer
         /// </summary>
         public Task<string> DisplayActionMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            switch (Action)
+            switch (Action.ToUpperInvariant())
             {
-                case "Auto":
+                case "AUTO":
                     return LanguageManager.GetStringAsync("String_ActionAutomatic", strLanguage, token: token);
 
-                case "Free":
+                case "FREE":
                     return LanguageManager.GetStringAsync("String_ActionFree", strLanguage, token: token);
 
-                case "Simple":
+                case "SIMPLE":
                     return LanguageManager.GetStringAsync("String_ActionSimple", strLanguage, token: token);
 
-                case "Complex":
+                case "COMPLEX":
                     return LanguageManager.GetStringAsync("String_ActionComplex", strLanguage, token: token);
 
-                case "Interrupt":
+                case "INTERRUPT":
                     return LanguageManager.GetStringAsync("String_ActionInterrupt", strLanguage, token: token);
 
-                case "Special":
+                case "SPECIAL":
                     return LanguageManager.GetStringAsync("String_SpellDurationSpecial", strLanguage, token: token);
             }
 
@@ -2912,7 +2935,7 @@ namespace Chummer
 
                     if (BoostedSkill != null)
                     {
-                        intReturn = CharacterObject.Settings.IncreasedImprovedAbilityMultiplier
+                        intReturn = _objCharacterSettings.IncreasedImprovedAbilityMultiplier
                             // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
                             ? Math.Min(intReturn, _intCachedLearnedRating + _intCachedLearnedRating.DivAwayFromZero(2))
                             : Math.Min(intReturn, _intCachedLearnedRating.DivAwayFromZero(2));
@@ -2942,7 +2965,7 @@ namespace Chummer
 
                 if (await GetBoostedSkillAsync(token).ConfigureAwait(false) != null)
                 {
-                    intReturn = await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false))
+                    intReturn = await _objCharacterSettings
                         .GetIncreasedImprovedAbilityMultiplierAsync(token).ConfigureAwait(false)
                         // +1 at the end so that division of 2 always rounds up, and integer division by 2 is significantly less expensive than decimal/double division
                         ? Math.Min(intReturn, _intCachedLearnedRating + _intCachedLearnedRating.DivAwayFromZero(2))
@@ -3200,7 +3223,7 @@ namespace Chummer
                         // If the Bonus contains "Rating", remove the existing Improvements and create new ones.
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
-                            if (Bonus?.InnerXml.Contains("Rating") == true)
+                            if (Bonus?.InnerXmlContentContains("Rating") == true)
                             {
                                 bool blnRefreshImprovements = true;
                                 int intTotalRating;
@@ -3371,7 +3394,7 @@ namespace Chummer
                         if (setNamesOfChangedProperties.Contains(nameof(TotalRating)))
                         {
                             XmlNode xmlBonus = await GetBonusAsync(token).ConfigureAwait(false);
-                            if (xmlBonus?.InnerXml.Contains("Rating") == true)
+                            if (xmlBonus?.InnerXmlContentContains("Rating", token) == true)
                             {
                                 bool blnRefreshImprovements = true;
                                 int intTotalRating;
@@ -3437,19 +3460,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        List<Task> lstTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                        int i = 0;
-                        foreach (MultiplePropertiesChangedAsyncEventHandler objEvent in _setMultiplePropertiesChangedAsync)
-                        {
-                            lstTasks.Add(objEvent.Invoke(this, objArgs, token));
-                            if (++i < Utils.MaxParallelBatchSize)
-                                continue;
-                            await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                            lstTasks.Clear();
-                            i = 0;
-                        }
-
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3473,21 +3484,17 @@ namespace Chummer
                     if (_setPropertyChangedAsync.Count > 0)
                     {
                         List<PropertyChangedEventArgs> lstArgsList = setNamesOfChangedProperties.Select(x => new PropertyChangedEventArgs(x)).ToList();
-                        List<Task> lstTasks = new List<Task>(Math.Min(lstArgsList.Count * _setPropertyChangedAsync.Count, Utils.MaxParallelBatchSize));
-                        int i = 0;
+                        List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>> lstAsyncEventsList
+                            = new List<ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>>(lstArgsList.Count * _setPropertyChangedAsync.Count);
                         foreach (PropertyChangedAsyncEventHandler objEvent in _setPropertyChangedAsync)
                         {
                             foreach (PropertyChangedEventArgs objArg in lstArgsList)
                             {
-                                lstTasks.Add(objEvent.Invoke(this, objArg, token));
-                                if (++i < Utils.MaxParallelBatchSize)
-                                    continue;
-                                await Task.WhenAll(lstTasks).ConfigureAwait(false);
-                                lstTasks.Clear();
-                                i = 0;
+                                lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+
                         if (PropertyChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3577,27 +3584,60 @@ namespace Chummer
             }
         }
 
-        private async Task OnCharacterChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e.PropertyName == nameof(Character.IsMysticAdept))
+            if (e.PropertyNames.Contains(nameof(Character.Settings)))
+            {
+                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
+                    CharacterSettings objOldSettings = Interlocked.Exchange(ref _objCharacterSettings, objNewSettings);
+                    if (!ReferenceEquals(objNewSettings, objOldSettings))
+                    {
+                        if (objOldSettings?.IsDisposed == false)
+                            objOldSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                        if (objNewSettings?.IsDisposed == false)
+                        {
+                            objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
+                            if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
+                            {
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                            await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            if (e.PropertyNames.Contains(nameof(Character.IsMysticAdept)))
             {
                 await SetMAGAttributeObjectAsync(
-                    await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                    await _objCharacterSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                     && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                         ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
                         : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
         }
 
-        private async Task OnCharacterSettingsChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task OnCharacterSettingsPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (e.PropertyNames.Contains(nameof(CharacterSettings.MysAdeptSecondMAGAttribute))
                 || e.PropertyNames.Contains(nameof(CharacterSettings.IncreasedImprovedAbilityMultiplier)))
             {
                 await SetMAGAttributeObjectAsync(
-                        await CharacterObject.Settings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
+                        await _objCharacterSettings.GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false)
                         && await CharacterObject.GetIsMysticAdeptAsync(token).ConfigureAwait(false)
                             ? await CharacterObject.GetAttributeAsync("MAGAdept", token: token).ConfigureAwait(false)
                             : await CharacterObject.GetAttributeAsync("MAG", token: token).ConfigureAwait(false), token)
@@ -3720,15 +3760,41 @@ namespace Chummer
             }
         }
 
+        private int _intIsDisposed;
+
+        public bool IsDisposed => _intIsDisposed > 0;
+
         /// <inheritdoc />
         public void Dispose()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             using (LockObject.EnterWriteLock())
             {
-                if (CharacterObject != null)
+                Character objCharacter = CharacterObject;
+                if (objCharacter?.IsDisposed == false)
                 {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                    try
+                    {
+                        objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
                 }
 
                 MAGAttributeObject = null;
@@ -3737,19 +3803,46 @@ namespace Chummer
                 _objCachedFreeLevelsLock.Dispose();
                 _objCachedPowerPointsLock.Dispose();
                 Enhancements.Dispose();
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
         }
 
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
+            if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
+                return;
             IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
             try
             {
-                if (CharacterObject != null)
+                Character objCharacter = CharacterObject;
+                if (objCharacter?.IsDisposed == false)
                 {
-                    CharacterObject.PropertyChangedAsync -= OnCharacterChanged;
-                    CharacterObject.Settings.MultiplePropertiesChangedAsync -= OnCharacterSettingsChanged;
+                    try
+                    {
+                        objCharacter.MultiplePropertiesChangedAsync -= OnCharacterChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
+                }
+
+                CharacterSettings objSettings = Interlocked.Exchange(ref _objCharacterSettings, null);
+                if (objSettings?.IsDisposed == false)
+                {
+                    try
+                    {
+                        objSettings.MultiplePropertiesChangedAsync -= OnCharacterSettingsPropertyChanged;
+                    }
+                    catch (ObjectDisposedException)
+                    {
+                        // swallow this
+                    }
                 }
 
                 await SetMAGAttributeObjectAsync(null).ConfigureAwait(false);
@@ -3758,6 +3851,11 @@ namespace Chummer
                 await _objCachedFreeLevelsLock.DisposeAsync().ConfigureAwait(false);
                 await _objCachedPowerPointsLock.DisposeAsync().ConfigureAwait(false);
                 await Enhancements.DisposeAsync().ConfigureAwait(false);
+                // to help the GC
+                PropertyChanged = null;
+                MultiplePropertiesChanged = null;
+                _setPropertyChangedAsync.Clear();
+                _setMultiplePropertiesChangedAsync.Clear();
             }
             finally
             {

@@ -32,6 +32,9 @@ namespace Chummer
         private readonly XPathNavigator _xmlBaseMentorSpiritDataNode;
         private readonly Character _objCharacter;
 
+        private string _strChoice1 = string.Empty;
+        private string _strChoice2 = string.Empty;
+
         #region Control Events
 
         public SelectMentorSpirit(Character objCharacter, string strXmlFile = "mentors.xml")
@@ -42,6 +45,7 @@ namespace Chummer
                 Tag = "Title_SelectMentorSpirit_Paragon";
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             // Load the Mentor information.
             _xmlBaseMentorSpiritDataNode = objCharacter.LoadDataXPath(strXmlFile).SelectSingleNodeAndCacheExpression("/chummer");
         }
@@ -161,7 +165,7 @@ namespace Chummer
                                      await LanguageManager.GetStringAsync("String_Unknown").ConfigureAwait(false);
                     SourceString objSourceString = await SourceString.GetSourceStringAsync(strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter).ConfigureAwait(false);
-                    await objSourceString.SetControlAsync(lblSource).ConfigureAwait(false);
+                    await objSourceString.SetControlAsync(lblSource, this).ConfigureAwait(false);
                     bool blnSourceEmpty = string.IsNullOrEmpty(await lblSource.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false));
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !blnSourceEmpty).ConfigureAwait(false);
                     await cmdOK.DoThreadSafeAsync(x => x.Enabled = true).ConfigureAwait(false);
@@ -194,7 +198,8 @@ namespace Chummer
                     return;
 
                 SelectedMentor = strSelectedId;
-
+                _strChoice1 = cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+                _strChoice2 = cboChoice2.SelectedValue?.ToString() ?? string.Empty;
                 DialogResult = DialogResult.OK;
                 Close();
             }
@@ -207,14 +212,16 @@ namespace Chummer
         {
             string strForceId = string.Empty;
 
-            string strFilter = '(' + await _objCharacter.Settings.BookXPathAsync().ConfigureAwait(false) + ')';
+            string strFilter = await (await _objCharacter.GetSettingsAsync().ConfigureAwait(false)).BookXPathAsync().ConfigureAwait(false);
             string strSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false);
             if (!string.IsNullOrEmpty(strSearch))
                 strFilter += " and " + CommonFunctions.GenerateSearchXPath(strSearch);
+            if (!string.IsNullOrEmpty(strFilter))
+                strFilter = "[" + strFilter + "]";
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstMentors))
             {
                 foreach (XPathNavigator objXmlMentor in _xmlBaseMentorSpiritDataNode.Select(
-                             "mentors/mentor[" + strFilter + ']'))
+                             "mentors/mentor" + strFilter))
                 {
                     if (!await objXmlMentor.RequirementsMetAsync(_objCharacter).ConfigureAwait(false))
                         continue;
@@ -286,12 +293,12 @@ namespace Chummer
         /// <summary>
         /// First choice that was selected in the dialogue.
         /// </summary>
-        public string Choice1 => cboChoice1.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice1 => _strChoice1;
 
         /// <summary>
         /// Second choice that was selected in the dialogue.
         /// </summary>
-        public string Choice2 => cboChoice2.SelectedValue?.ToString() ?? string.Empty;
+        public string Choice2 => _strChoice2;
 
         #endregion Properties
     }

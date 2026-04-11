@@ -92,6 +92,8 @@ namespace Chummer
                     return objImprovementAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAdder.cyberseeker;
+                case "CYBERLIMBATTRIBUTEBONUS":
+                    return objImprovementAdder.cyberlimbattributebonus;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
@@ -236,6 +238,8 @@ namespace Chummer
                     return objImprovementAdder.matrixinitiativepassadd;
                 case "MATRIXINITIATIVEDICEADD":
                     return objImprovementAdder.matrixinitiativediceadd;
+                case "AVAILABILITY":
+                    return objImprovementAdder.availability;
                 case "LIFESTYLECOST":
                     return objImprovementAdder.lifestylecost;
                 case "BASICLIFESTYLECOST":
@@ -290,6 +294,20 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydice;
                 case "WEAPONSPECIFICDICE":
                     return objImprovementAdder.weaponspecificdice;
+                case "WEAPONCATEGORYAP":
+                    return objImprovementAdder.weaponcategoryap;
+                case "WEAPONCATEGORYACCURACY":
+                    return objImprovementAdder.weaponcategoryaccuracy;
+                case "WEAPONCATEGORYREACH":
+                    return objImprovementAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDV":
+                    return objImprovementAdder.weaponspecificdv;
+                case "WEAPONSPECIFICAP":
+                    return objImprovementAdder.weaponspecificap;
+                case "WEAPONSPECIFICACCURACY":
+                    return objImprovementAdder.weaponspecificaccuracy;
+                case "WEAPONSPECIFICRANGE":
+                    return objImprovementAdder.weaponspecificrange;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAdder.selectmentorspirit;
                 case "SELECTPARAGON":
@@ -544,6 +562,8 @@ namespace Chummer
                     return objImprovementAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAdder.knowledgeskillkarmacostmin;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
@@ -667,7 +687,7 @@ namespace Chummer
                 case "REPLACESKILLSPELL":
                     return objImprovementAdder.replaceskillspell;
                 case "QUALITYLEVEL":
-                    return AddImprovementCollection.qualitylevel;
+                    return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementCollection.selecttext;
                 // No method matches, return a null pointer
@@ -737,6 +757,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.selecttradition;
                 case "CYBERSEEKER":
                     return objImprovementAsyncAdder.cyberseeker;
+                case "CYBERLIMBATTRIBUTEBONUS":
+                    return objImprovementAsyncAdder.cyberlimbattributebonus;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAsyncAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
@@ -881,6 +903,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.matrixinitiativepassadd;
                 case "MATRIXINITIATIVEDICEADD":
                     return objImprovementAsyncAdder.matrixinitiativediceadd;
+                case "AVAILABILITY":
+                    return objImprovementAsyncAdder.availability;
                 case "LIFESTYLECOST":
                     return objImprovementAsyncAdder.lifestylecost;
                 case "BASICLIFESTYLECOST":
@@ -935,6 +959,20 @@ namespace Chummer
                     return objImprovementAsyncAdder.weaponcategorydice;
                 case "WEAPONSPECIFICDICE":
                     return objImprovementAsyncAdder.weaponspecificdice;
+                case "WEAPONCATEGORYAP":
+                    return objImprovementAsyncAdder.weaponcategoryap;
+                case "WEAPONCATEGORYACCURACY":
+                    return objImprovementAsyncAdder.weaponcategoryaccuracy;
+                case "WEAPONCATEGORYREACH":
+                    return objImprovementAsyncAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDV":
+                    return objImprovementAsyncAdder.weaponspecificdv;
+                case "WEAPONSPECIFICAP":
+                    return objImprovementAsyncAdder.weaponspecificap;
+                case "WEAPONSPECIFICACCURACY":
+                    return objImprovementAsyncAdder.weaponspecificaccuracy;
+                case "WEAPONSPECIFICRANGE":
+                    return objImprovementAsyncAdder.weaponspecificrange;
                 case "SELECTMENTORSPIRIT":
                     return objImprovementAsyncAdder.selectmentorspirit;
                 case "SELECTPARAGON":
@@ -1189,6 +1227,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAsyncAdder.knowledgeskillkarmacostmin;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAsyncAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAsyncAdder.skilldisable;
                 case "SKILLGROUPDISABLE":
@@ -1312,7 +1352,7 @@ namespace Chummer
                 case "REPLACESKILLSPELL":
                     return objImprovementAsyncAdder.replaceskillspell;
                 case "QUALITYLEVEL":
-                    return AddImprovementAsyncCollection.qualitylevel;
+                    return objImprovementAsyncAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementAsyncCollection.selecttext;
                 // No method matches, return a null pointer

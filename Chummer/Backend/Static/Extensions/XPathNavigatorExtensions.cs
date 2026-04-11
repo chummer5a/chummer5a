@@ -19,7 +19,9 @@
 
 using System;
 using System.Globalization;
+using System.IO;
 using System.Runtime.CompilerServices;
+using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -29,6 +31,43 @@ namespace Chummer
 {
     public static class XPathNavigatorExtensions
     {
+        private static readonly XmlDocument s_objEmptyDocument = new XmlDocument { XmlResolver = null };
+        private static readonly DebuggableSemaphoreSlim s_ObjXPathNavigatorDocumentLock = new DebuggableSemaphoreSlim();
+
+        /// <summary>
+        /// Get an XPathNavigator linked to an empty XmlDocument.
+        /// </summary>
+        public static XPathNavigator GetEmptyDocumentNavigator(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            s_ObjXPathNavigatorDocumentLock.SafeWait(token);
+            try
+            {
+                return s_objEmptyDocument.CreateNavigator();
+            }
+            finally
+            {
+                s_ObjXPathNavigatorDocumentLock.Release();
+            }
+        }
+
+        /// <summary>
+        /// Get an XPathNavigator linked to an empty XmlDocument.
+        /// </summary>
+        public static async Task<XPathNavigator> GetEmptyDocumentNavigatorAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await s_ObjXPathNavigatorDocumentLock.WaitAsync(token).ConfigureAwait(false);
+            try
+            {
+                return s_objEmptyDocument.CreateNavigator();
+            }
+            finally
+            {
+                s_ObjXPathNavigatorDocumentLock.Release();
+            }
+        }
+
         public delegate bool TryParseFunction<T>(string input, out T result);
 
         /// <summary>
@@ -111,7 +150,7 @@ namespace Chummer
 
                 bool blnOperationChildNodeResult = blnInvert;
                 string strNodeName = xmlOperationChildNode.Name;
-                switch (strNodeName)
+                switch (strNodeName.ToUpperInvariant())
                 {
                     case "OR":
                         blnOperationChildNodeResult =
@@ -172,7 +211,7 @@ namespace Chummer
                                     XPathNavigator objCheckTypeAttribute = xmlOperationChildNode.SelectSingleNodeAndCacheExpression("@checktype", token);
                                     bool blnCheckAll = objCheckTypeAttribute?.Value == "all";
                                     blnOperationChildNodeResult = blnCheckAll;
-                                    string strOperationChildNodeText = xmlOperationChildNode.Value;
+                                    string strOperationChildNodeText = xmlOperationChildNode.Value.Trim();
                                     bool blnOperationChildNodeEmpty = string.IsNullOrWhiteSpace(strOperationChildNodeText);
 
                                     foreach (XPathNavigator xmlTargetNode in objXmlTargetNodeList)
@@ -194,7 +233,7 @@ namespace Chummer
                                         }
                                         else
                                         {
-                                            string strTargetNodeText = xmlTargetNode.Value;
+                                            string strTargetNodeText = xmlTargetNode.Value.Trim();
                                             bool blnTargetNodeEmpty = string.IsNullOrWhiteSpace(strTargetNodeText);
                                             if (blnTargetNodeEmpty || blnOperationChildNodeEmpty)
                                             {
@@ -211,29 +250,33 @@ namespace Chummer
                                             }
                                             // Note when adding more operation cases: XML does not like the "<" symbol as part of an attribute value
                                             else
-                                                switch (strOperationType)
+                                                switch (strOperationType.ToUpperInvariant())
                                                 {
-                                                    case "doesnotequal":
-                                                    case "notequals":
+                                                    case "DOESNOTEQUAL":
+                                                    case "NOTEQUALS":
                                                     case "!=":
+                                                    case "<>":
                                                         blnInvert = !blnInvert;
                                                         goto default;
-                                                    case "lessthan":
+                                                    case "LESSTHAN":
                                                         blnInvert = !blnInvert;
                                                         goto case ">=";
-                                                    case "lessthanequals":
+                                                    case "LESSTHANEQUALS":
+                                                    case "LESSTHANEQUALTO":
+                                                    case "LESSTHANOREQUALS":
+                                                    case "LESSTHANOREQUALTO":
                                                         blnInvert = !blnInvert;
                                                         goto case ">";
 
-                                                    case "like":
-                                                    case "contains":
+                                                    case "LIKE":
+                                                    case "CONTAINS":
                                                         {
                                                             boolSubNodeResult =
                                                                 strTargetNodeText.Contains(strOperationChildNodeText, StringComparison.OrdinalIgnoreCase)
                                                                 != blnInvert;
                                                             break;
                                                         }
-                                                    case "greaterthan":
+                                                    case "GREATERTHAN":
                                                     case ">":
                                                         {
                                                             boolSubNodeResult =
@@ -243,7 +286,10 @@ namespace Chummer
                                                                 != blnInvert;
                                                             break;
                                                         }
-                                                    case "greaterthanequals":
+                                                    case "GREATERTHANEQUALS":
+                                                    case "GREATERTHANOREQUALS":
+                                                    case "GREATERTHANEQUALTO":
+                                                    case "GREATERTHANOREQUALTO":
                                                     case ">=":
                                                         {
                                                             boolSubNodeResult =
@@ -255,7 +301,7 @@ namespace Chummer
                                                         }
                                                     default:
                                                         boolSubNodeResult =
-                                                            (strTargetNodeText.Trim() == strOperationChildNodeText.Trim())
+                                                            (strTargetNodeText == strOperationChildNodeText)
                                                             != blnInvert;
                                                         break;
                                                 }
@@ -309,7 +355,7 @@ namespace Chummer
                 : node.SelectSingleNode(field);
             if (objField == null && !field.StartsWith('@'))
             {
-                field = '@' + field;
+                field = "@" + field;
                 objField = Utils.CachedXPathExpressions.TryGetValue(field, out objCachedExpression)
                     ? node.SelectSingleNode(objCachedExpression)
                     : node.SelectSingleNode(field);
@@ -605,7 +651,7 @@ namespace Chummer
                     throw new InvalidOperationException(nameof(xmlNode.NodeType));
             }
             XmlNode xmlReturn = xmlParentDocument.CreateNode(eNodeType, xmlNode.Prefix, xmlNode.Name, xmlNode.NamespaceURI);
-            xmlReturn.InnerXml = xmlNode.InnerXml;
+            xmlReturn.InnerXml = xmlNode.InnerXmlViaPool();
             return xmlReturn;
         }
 
@@ -633,6 +679,144 @@ namespace Chummer
             XPathExpression objExpression = Utils.CachedXPathExpressions.GetOrAdd(xpath, XPathExpression.Compile);
             token.ThrowIfCancellationRequested();
             return xmlNode.Select(objExpression);
+        }
+
+        // XmlWriterSettings used for InnerXml and OuterXml extension methods
+        private static readonly Lazy<XmlWriterSettings> s_xmlWriterSettings = new Lazy<XmlWriterSettings>(() => new XmlWriterSettings
+        {
+            Indent = true,
+            OmitXmlDeclaration = true,
+            ConformanceLevel = ConformanceLevel.Auto
+        });
+
+        /// <summary>
+        /// Copy of <see cref="XPathNavigator.InnerXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
+        /// </summary>
+        public static string InnerXmlViaPool(this XPathNavigator xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            switch (xmlNode.NodeType)
+            {
+                case XPathNodeType.Root:
+                case XPathNodeType.Element:
+                    {
+                        token.ThrowIfCancellationRequested();
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                            {
+                                token.ThrowIfCancellationRequested();
+                                using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (xmlNode.MoveToFirstChild())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        do
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            objXmlWriter.WriteNode(xmlNode, defattr: true);
+                                        }
+                                        while (xmlNode.MoveToNext());
+                                        token.ThrowIfCancellationRequested();
+                                        xmlNode.MoveToParent();
+                                    }
+                                }
+                            }
+                            token.ThrowIfCancellationRequested();
+                            return sbdReturn.ToString();
+                        }
+                    }
+                case XPathNodeType.Attribute:
+                case XPathNodeType.Namespace:
+                    return xmlNode.Value;
+                default:
+                    return string.Empty;
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for an equivalent of calling <see cref="string.IsNullOrWhiteSpace(string)"/> on <see cref="XPathNavigator.InnerXml"/> with a null check.
+        /// This helps reduce GC pressure and makes the program feel more responsive, especially when saving or loading things.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool IsNullOrInnerTextIsEmpty(this XPathNavigator xmlNode)
+        {
+            if (xmlNode == null)
+                return true;
+            
+            // For element nodes, check if they have any meaningful content
+            if (xmlNode.NodeType == XPathNodeType.Element)
+            {
+                if (!xmlNode.MoveToFirstChild())
+                    return true;
+                
+                do
+                {
+                    XPathNodeType nodeType = xmlNode.NodeType;
+                    if (nodeType == XPathNodeType.Text || nodeType == XPathNodeType.SignificantWhitespace || nodeType == XPathNodeType.Whitespace)
+                    {
+                        if (!string.IsNullOrWhiteSpace(xmlNode.Value))
+                        {
+                            xmlNode.MoveToParent();
+                            return false;
+                        }
+                    }
+                    else if (nodeType == XPathNodeType.Element)
+                    {
+                        // If there's a child element, the node is not empty
+                        xmlNode.MoveToParent();
+                        return false;
+                    }
+                }
+                while (xmlNode.MoveToNext());
+                
+                xmlNode.MoveToParent();
+                return true;
+            }
+            
+            // For other node types, check if value is empty
+            return string.IsNullOrWhiteSpace(xmlNode.Value);
+        }
+
+        /// <summary>
+        /// Copy of <see cref="XPathNavigator.OuterXml"/>, but going through <see cref="Utils.StringBuilderPool"/> instead creating a new one via heap allocation
+        /// </summary>
+        public static string OuterXmlViaPool(this XPathNavigator xmlNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (xmlNode.NodeType == XPathNodeType.Attribute)
+            {
+                return xmlNode.Name + "=\"" + xmlNode.Value + "\"";
+            }
+
+            if (xmlNode.NodeType == XPathNodeType.Namespace)
+            {
+                if (xmlNode.LocalName.Length == 0)
+                {
+                    return "xmlns=\"" + xmlNode.Value + "\"";
+                }
+
+                return "xmlns:" + xmlNode.LocalName + "=\"" + xmlNode.Value + "\"";
+            }
+
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
+            {
+                token.ThrowIfCancellationRequested();
+                using (StringWriter objStringWriter = new StringWriter(sbdReturn, GlobalSettings.InvariantCultureInfo))
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (XmlWriter objXmlWriter = XmlWriter.Create(objStringWriter, s_xmlWriterSettings.Value))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        objXmlWriter.WriteNode(xmlNode, defattr: true);
+                    }
+                }
+                token.ThrowIfCancellationRequested();
+                return sbdReturn.ToString();
+            }
         }
     }
 }

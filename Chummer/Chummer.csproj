@@ -35,6 +35,9 @@
     <AssemblyAttribute Include="System.Runtime.InteropServices.Guid">
       <_Parameter1>28a46ea3-4e45-4842-b8ae-313afde61173</_Parameter1>
     </AssemblyAttribute>
+    <AssemblyAttribute Include="System.Runtime.CompilerServices.InternalsVisibleTo">
+      <_Parameter1>Chummer.Tests</_Parameter1>
+    </AssemblyAttribute>
   </ItemGroup>
   <PropertyGroup>
     <StartupObject>Chummer.Program</StartupObject>
@@ -726,6 +729,12 @@
       <AutoGen>True</AutoGen>
       <DependentUpon>Resources.resx</DependentUpon>
     </Compile>
+    <None Update="customdata\Krime Stopper Shotgun Weapon Category\amend_weapons.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+    <None Update="customdata\Krime Stopper Shotgun Weapon Category\manifest.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
     <None Update="NLog.xsd">
       <SubType>Designer</SubType>
     </None>
@@ -25585,6 +25594,14 @@
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
     </Content>
+    <Content Include="data\qualitylevels.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
+    <Content Include="data\qualitylevels.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+      <SubType>Designer</SubType>
+    </Content>
     <Content Include="data\ranges.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
@@ -25658,6 +25675,7 @@
     </Content>
   </ItemGroup>
   <ItemGroup>
+    <Folder Include="docs\wiki\" />
     <Folder Include="livecustomdata\" />
     <Folder Include="packs\" />
     <Folder Include="settings\" />
@@ -25678,28 +25696,29 @@
   <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
-    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.0.6" />
-    <PackageReference Include="itext" Version="9.2.0" />
+    <PackageReference Include="HtmlRenderer.Core" Version="1.5.2" />
+    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.2" />
+    <PackageReference Include="itext" Version="9.6.0" />
     <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.23.0" />
     <PackageReference Include="Microsoft.ApplicationInsights.PerfCounterCollector" Version="2.23.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="4.14.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.Analyzers" Version="5.3.0">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="4.14.0" />
-    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="9.0.0">
+    <PackageReference Include="Microsoft.CodeAnalysis.CSharp" Version="5.3.0" />
+    <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.201">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="9.0.8" />
+    <PackageReference Include="Microsoft.Extensions.ObjectPool" Version="10.0.5" />
     <PackageReference Include="Microsoft.IO.RecyclableMemoryStream" Version="3.0.1" />
     <PackageReference Include="Microsoft.VisualStudio.Threading" Version="17.14.15" />
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
-    <PackageReference Include="NLog" Version="6.0.2" />
-    <PackageReference Include="NLog.Schema" Version="6.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+    <PackageReference Include="NLog" Version="6.1.2" />
+    <PackageReference Include="NLog.Schema" Version="6.1.2" />
     <PackageReference Include="RtfPipe" Version="2.0.7677.4303" />
-    <PackageReference Include="System.ComponentModel.Composition" Version="9.0.8" />
+    <PackageReference Include="System.ComponentModel.Composition" Version="10.0.5" />
     <PackageReference Include="System.Data.DataSetExtensions" Version="4.5.0" />
     <PackageReference Include="XoshiroPRNG.Net" Version="1.6.0" />
   </ItemGroup>
@@ -25738,11 +25757,11 @@
     <AnalysisLevel>latest-minimum</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NeutralLanguage>en-US</NeutralLanguage>
-    <AssemblyVersion>5.225.0.0</AssemblyVersion>
-    <FileVersion>5.225.0.0</FileVersion>
-    <InformationalVersion>5.225.0.0</InformationalVersion>
-    <ApplicationVersion>5.225.0.0</ApplicationVersion>
-    <VersionPrefix>5.225.0.0</VersionPrefix>
+    <AssemblyVersion>5.226.0.0</AssemblyVersion>
+    <FileVersion>5.226.0.0</FileVersion>
+    <InformationalVersion>5.226.0.0</InformationalVersion>
+    <ApplicationVersion>5.226.0.0</ApplicationVersion>
+    <VersionPrefix>5.226.0.0</VersionPrefix>
     <Description>Character generator for Shadowrun 5th Edition</Description>
     <Copyright>Licensed GNU GPLv3</Copyright>
     <RepositoryUrl>https://github.com/chummer5a/chummer5a/</RepositoryUrl>

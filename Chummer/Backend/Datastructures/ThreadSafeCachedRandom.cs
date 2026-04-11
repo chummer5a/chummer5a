@@ -181,22 +181,21 @@ namespace Chummer
         /// <inheritdoc />
         public override void NextBytes(byte[] buffer)
         {
-            int intIterationsNeeded = buffer.Length.DivAwayFromZero(sizeof(int));
-            for (int i = 0; i < intIterationsNeeded - 1; ++i)
+            int intIterationsNeeded = buffer.Length.DivRem(sizeof(int), out int intModulo);
+            for (int i = 0; i < intIterationsNeeded; ++i)
             {
-                BitConverter.GetBytes(Next()).CopyTo(buffer, i);
+                BitConverter.GetBytes(Next()).CopyTo(buffer, i * sizeof(int));
             }
 
-            if (intIterationsNeeded * sizeof(int) == buffer.Length)
+            if (intModulo == 0)
                 return;
 
             unsafe
             {
                 fixed (byte* pchrLastBytes = BitConverter.GetBytes(Next()))
                 {
-                    int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
-                    int intFinalI = buffer.Length - intLeadingI;
-                    for (int i = 0; i < intFinalI; ++i)
+                    int intLeadingI = intIterationsNeeded * sizeof(int);
+                    for (int i = 0; i < intModulo; ++i)
                     {
                         buffer[intLeadingI + i] = *(pchrLastBytes + i);
                     }
@@ -207,13 +206,13 @@ namespace Chummer
         public override async Task NextBytesAsync(byte[] buffer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            int intIterationsNeeded = buffer.Length.DivAwayFromZero(sizeof(int));
-            for (int i = 0; i < intIterationsNeeded - 1; ++i)
+            int intIterationsNeeded = buffer.Length.DivRem(sizeof(int), out int intModulo);
+            for (int i = 0; i < intIterationsNeeded; ++i)
             {
-                BitConverter.GetBytes(await NextAsync(token).ConfigureAwait(false)).CopyTo(buffer, i);
+                BitConverter.GetBytes(await NextAsync(token).ConfigureAwait(false)).CopyTo(buffer, i * sizeof(int));
             }
 
-            if (intIterationsNeeded * sizeof(int) == buffer.Length)
+            if (intModulo == 0)
                 return;
 
             int intNext = await NextAsync(token).ConfigureAwait(false);
@@ -221,8 +220,8 @@ namespace Chummer
             {
                 fixed (byte* pchrLastBytes = BitConverter.GetBytes(intNext))
                 {
-                    int intLeadingI = (intIterationsNeeded - 1) * sizeof(int);
-                    int intFinalI = buffer.Length - intLeadingI;
+                    int intLeadingI = intIterationsNeeded * sizeof(int);
+                    int intFinalI = intModulo;
                     for (int i = 0; i < intFinalI; ++i)
                     {
                         buffer[intLeadingI + i] = *(pchrLastBytes + i);

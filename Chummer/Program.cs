@@ -150,7 +150,7 @@ namespace Chummer
                                                           NativeMethods.WM_SHOWME, 0, IntPtr.Zero);
 
                                 string strCommandLineArgumentsJoined =
-                                    string.Join("<|>", Environment.GetCommandLineArgs());
+                                    StringExtensions.JoinFast("<|>", Environment.GetCommandLineArgs());
                                 NativeMethods.CopyDataStruct objData = default;
                                 IntPtr ptrCommandLineArguments = IntPtr.Zero;
                                 try
@@ -319,8 +319,8 @@ namespace Chummer
                         // We avoid weird issues with ProfileOptimization pointing JIT to the wrong place by checking for and removing all profile optimization files that
                         // were made in an older version (i.e. an older assembly)
                         string strProfileOptimizationName
-                            = "chummerprofile_" + Utils.CurrentChummerVersion + ".profile";
-                        List<string> lstToDelete = new List<string>();
+                            = "chummerprofile_" + Utils.CurrentChummerVersion.ToString() + ".profile";
+                        List<string> lstToDelete = new List<string>(1);
                         foreach (string strProfileFile in Directory.EnumerateFiles(Utils.GetStartupPath, "*.profile"))
                         {
                             if (!string.Equals(strProfileFile, strProfileOptimizationName,
@@ -381,7 +381,7 @@ namespace Chummer
 
                             LogManager.ThrowExceptions = false;
                             Log = LogManager.GetCurrentClassLogger();
-                            if (GlobalSettings.UseLogging)
+                            if (GlobalSettings.UseLogging && LogManager.Configuration != null)
                             {
                                 foreach (LoggingRule objRule in LogManager.Configuration.LoggingRules)
                                 {
@@ -428,7 +428,7 @@ namespace Chummer
                                     pvt = new PageViewTelemetry("frmChummerMain()")
                                     {
                                         Name = "Chummer Startup: " +
-                                               Utils.CurrentChummerVersion,
+                                               Utils.CurrentChummerVersion.ToString(),
                                         Id = Settings.Default.UploadClientId.ToString(),
                                         Timestamp = startTime
                                     };
@@ -465,6 +465,7 @@ namespace Chummer
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Console.WriteLine(e);
                             Log.Error(e);
 #if DEBUG
@@ -483,7 +484,7 @@ namespace Chummer
                             // Make sure the default language has been loaded before attempting to open the Main Form.
                             blnRestoreDefaultLanguage = !LanguageManager.LoadLanguage(GlobalSettings.Language);
                         }
-                        // This to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
+                        // This is to catch and handle an extremely strange issue where Chummer tries to load a language it shouldn't and ends up
                         // dereferencing a null value that should be impossible by static code analysis. This code here is a failsafe so that
                         // it at least keeps working in English instead of crashing.
                         catch (NullReferenceException)
@@ -585,22 +586,7 @@ namespace Chummer
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar
                                    = CreateAndShowProgressBar(Application.ProductName, Utils.BasicDataFileNames.Count))
                             {
-                                List<Task> lstCachingTasks = new List<Task>(Utils.MaxParallelBatchSize);
-                                int intCounter = 0;
-                                foreach (string strLoopFile in Utils.BasicDataFileNames)
-                                {
-                                    // ReSharper disable once AccessToDisposedClosure
-                                    lstCachingTasks.Add(
-                                        Task.Run(() => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
-                                    if (++intCounter != Utils.MaxParallelBatchSize)
-                                        continue;
-                                    Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-                                    lstCachingTasks.Clear();
-                                    intCounter = 0;
-                                }
-
-                                Utils.RunWithoutThreadLock(() => Task.WhenAll(lstCachingTasks));
-
+                                Utils.RunWithoutThreadLock(() => ParallelExtensions.ForEachAsync(Utils.BasicDataFileNames, strLoopFile => CacheCommonFile(strLoopFile, frmLoadingBar.MyForm)));
                                 async Task CacheCommonFile(string strFile, LoadingBar frmLoadingBarInner)
                                 {
                                     // Load default language data first for performance reasons
@@ -680,7 +666,7 @@ namespace Chummer
                 {
                     // Get the last error and display it.
                     int intError = Marshal.GetLastWin32Error();
-                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + '.');
+                    Win32Exception exception = new Win32Exception(intError, "Error while unblocking " + strFile + ".");
                     switch (exception.NativeErrorCode)
                     {
                         //file not found - that means the alternate data-stream is not present.
@@ -1334,48 +1320,21 @@ namespace Chummer
                         return objCharacter;
                 }
 
-                objCharacter = new Character
+                bool blnLoaded = false;
+                objCharacter = new Character();
+                try
                 {
-                    FileName = strFileName
-                };
-                string strAutosavesPath = Utils.GetAutosavesFolderPath;
-                string strAutosaveName = string.Empty;
-                if (blnShowErrors) // Only do the autosave prompt if we will show prompts
-                {
-                    if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                    if (blnSync)
+                        objCharacter.FileName = strFileName;
+                    else
+                        await objCharacter.SetFileNameAsync(strFileName, token).ConfigureAwait(false);
+                    string strAutosavesPath = Utils.GetAutosavesFolderPath;
+                    string strAutosaveName = string.Empty;
+                    if (blnShowErrors) // Only do the autosave prompt if we will show prompts
                     {
-                        string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
-                        if (!string.IsNullOrEmpty(strBaseFileName))
+                        if (!strFileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
                         {
-                            strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
-                            if (File.Exists(strAutosaveName))
-                            {
-                                if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
-                                {
-                                    strAutosaveName = string.Empty;
-                                }
-                            }
-                            else
-                                strAutosaveName = string.Empty;
-                            if (string.IsNullOrEmpty(strAutosaveName))
-                            {
-                                strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
-                                if (File.Exists(strAutosaveName))
-                                {
-                                    if (File.GetLastWriteTimeUtc(strAutosaveName)
-                                        <= File.GetLastWriteTimeUtc(strFileName))
-                                    {
-                                        strAutosaveName = string.Empty;
-                                    }
-                                }
-                                else
-                                    strAutosaveName = string.Empty;
-                            }
-                        }
-
-                        if (string.IsNullOrEmpty(strAutosaveName) && !string.IsNullOrEmpty(strNewName))
-                        {
-                            strBaseFileName = Path.GetFileNameWithoutExtension(strNewName);
+                            string strBaseFileName = Path.GetFileNameWithoutExtension(strFileName);
                             if (!string.IsNullOrEmpty(strBaseFileName))
                             {
                                 strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
@@ -1403,78 +1362,129 @@ namespace Chummer
                                         strAutosaveName = string.Empty;
                                 }
                             }
-                        }
-                    }
 
-                    if (!string.IsNullOrEmpty(strAutosaveName))
-                    {
-                        if (blnSync)
+                            if (string.IsNullOrEmpty(strAutosaveName) && !string.IsNullOrEmpty(strNewName))
+                            {
+                                strBaseFileName = Path.GetFileNameWithoutExtension(strNewName);
+                                if (!string.IsNullOrEmpty(strBaseFileName))
+                                {
+                                    strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5";
+                                    if (File.Exists(strAutosaveName))
+                                    {
+                                        if (File.GetLastWriteTimeUtc(strAutosaveName) <= File.GetLastWriteTimeUtc(strFileName))
+                                        {
+                                            strAutosaveName = string.Empty;
+                                        }
+                                    }
+                                    else
+                                        strAutosaveName = string.Empty;
+                                    if (string.IsNullOrEmpty(strAutosaveName))
+                                    {
+                                        strAutosaveName = Path.Combine(strAutosavesPath, strBaseFileName) + ".chum5lz";
+                                        if (File.Exists(strAutosaveName))
+                                        {
+                                            if (File.GetLastWriteTimeUtc(strAutosaveName)
+                                                <= File.GetLastWriteTimeUtc(strFileName))
+                                            {
+                                                strAutosaveName = string.Empty;
+                                            }
+                                        }
+                                        else
+                                            strAutosaveName = string.Empty;
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!string.IsNullOrEmpty(strAutosaveName))
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (ShowScrollableMessageBox(
-                                    string.Format(GlobalSettings.CultureInfo,
+                            if (blnSync)
+                            {
+                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                if (ShowScrollableMessageBox(
+                                        string.Format(GlobalSettings.CultureInfo,
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            LanguageManager.GetString("Message_AutosaveFound", token: token),
+                                            Path.GetFileName(strFileName),
+                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
                                         // ReSharper disable once MethodHasAsyncOverload
-                                        LanguageManager.GetString("Message_AutosaveFound", token: token),
-                                        Path.GetFileName(strFileName),
-                                        File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                        File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
-                                    MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                        LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
+                                        MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
+                                {
+                                    strAutosaveName = string.Empty;
+                                }
+                            }
+                            else if (await ShowScrollableMessageBoxAsync(
+                                         string.Format(GlobalSettings.CultureInfo,
+                                             await LanguageManager
+                                                 .GetStringAsync("Message_AutosaveFound", token: token)
+                                                 .ConfigureAwait(false),
+                                             Path.GetFileName(strFileName),
+                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
+                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                         await LanguageManager
+                                             .GetStringAsync("MessageTitle_AutosaveFound", token: token)
+                                             .ConfigureAwait(false),
+                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                             {
                                 strAutosaveName = string.Empty;
                             }
                         }
-                        else if (await ShowScrollableMessageBoxAsync(
-                                     string.Format(GlobalSettings.CultureInfo,
-                                         await LanguageManager
-                                             .GetStringAsync("Message_AutosaveFound", token: token)
-                                             .ConfigureAwait(false),
-                                         Path.GetFileName(strFileName),
-                                         File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                         File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
-                                     await LanguageManager
-                                         .GetStringAsync("MessageTitle_AutosaveFound", token: token)
-                                         .ConfigureAwait(false),
-                                     MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
-                        {
-                            strAutosaveName = string.Empty;
-                        }
                     }
-                }
 
-                if (blnSync)
-                    // ReSharper disable once MethodHasAsyncOverload
-                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    OpenCharacters.Add(objCharacter);
-                else
-                    await OpenCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
-                string strFileToLoad = string.IsNullOrEmpty(strAutosaveName) ? strFileName : strAutosaveName;
-                //Timekeeper.Start("load_file");
-                bool blnLoaded = blnSync
-                    // ReSharper disable once MethodHasAsyncOverload
-                    ? objCharacter.Load(strFileToLoad, frmLoadingBar, blnShowErrors, token)
-                    : await objCharacter.LoadAsync(strFileToLoad, frmLoadingBar, blnShowErrors, token).ConfigureAwait(false);
-                //Timekeeper.Finish("load_file");
-                if (!blnLoaded)
-                {
                     if (blnSync)
                         // ReSharper disable once MethodHasAsyncOverload
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        OpenCharacters.Remove(objCharacter);
+                        OpenCharacters.Add(objCharacter);
                     else
-                        await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
-                    return null;
-                }
+                        await OpenCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
+                    string strFileToLoad = string.IsNullOrEmpty(strAutosaveName) ? strFileName : strAutosaveName;
+                    //Timekeeper.Start("load_file");
+                    blnLoaded = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Load(strFileToLoad, frmLoadingBar, blnShowErrors, token)
+                        : await objCharacter.LoadAsync(strFileToLoad, frmLoadingBar, blnShowErrors, token).ConfigureAwait(false);
+                    //Timekeeper.Finish("load_file");
+                    if (!blnLoaded)
+                        return null;
 
-                // If a new name is given, set the character's name to match (used in cloning).
-                if (!string.IsNullOrEmpty(strNewName))
-                    objCharacter.Name = strNewName;
-                // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
-                if (blnClearFileName
-                    // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
-                    || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
-                    objCharacter.FileName = string.Empty;
+                    // If a new name is given, set the character's name to match (used in cloning).
+                    if (!string.IsNullOrEmpty(strNewName))
+                        objCharacter.Name = strNewName;
+                    // Clear the File Name field so that this does not accidentally overwrite the original save file (used in cloning).
+                    if (blnClearFileName
+                        // Clear out file name if the character's file is in the autosaves folder because we do not want them to be manually saving there.
+                        || objCharacter.FileName.StartsWith(strAutosavesPath, StringComparison.OrdinalIgnoreCase))
+                        objCharacter.FileName = string.Empty;
+                }
+                catch
+                {
+                    if (!blnLoaded)
+                    {
+                        blnLoaded = blnSync
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            ? OpenCharacters.Remove(objCharacter)
+                            : await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
+                    }
+                    throw;
+                }
+                finally
+                {
+                    if (!blnLoaded)
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                            OpenCharacters.Remove(objCharacter);
+                        else
+                            await OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
+                    }
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objCharacter.Dispose();
+                    else
+                        await objCharacter.DisposeAsync().ConfigureAwait(false);
+                }
             }
             else if (blnShowErrors)
             {
@@ -1518,8 +1528,11 @@ namespace Chummer
         /// </summary>
         public static Task OpenCharacter(Character objCharacter, bool blnIncludeInMru = true, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return objCharacter == null ? Task.CompletedTask : OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objCharacter == null)
+                return Task.CompletedTask;
+            return OpenCharacterList(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1534,7 +1547,7 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterList(lstCharacters, blnIncludeInMru, token);
-            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.OpenCharacterList(lstCharacters, blnIncludeInMru, token)), token);
         }
 
@@ -1551,8 +1564,11 @@ namespace Chummer
         /// </summary>
         public static Task OpenCharacterForPrinting(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return objCharacter == null ? Task.CompletedTask : OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objCharacter == null)
+                return Task.CompletedTask;
+            return OpenCharacterListForPrinting(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1567,7 +1583,7 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token);
-            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.OpenCharacterListForPrinting(lstCharacters, blnIncludeInMru, token)), token);
         }
 
@@ -1584,8 +1600,11 @@ namespace Chummer
         /// </summary>
         public static Task OpenCharacterForExport(Character objCharacter, bool blnIncludeInMru = false, CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return objCharacter == null ? Task.CompletedTask : OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objCharacter == null)
+                return Task.CompletedTask;
+            return OpenCharacterListForExport(objCharacter.Yield(), blnIncludeInMru, token);
         }
 
         /// <summary>
@@ -1600,7 +1619,7 @@ namespace Chummer
                 return Task.CompletedTask;
             if (MainForm != null)
                 return MainForm.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token);
-            return Task.Run(() => MainFormOnAssignAsyncActions.Add(
+            return TaskExtensions.RunWithoutEC(() => MainFormOnAssignAsyncActions.Add(
                                 x => x.OpenCharacterListForExport(lstCharacters, blnIncludeInMru, token)), token);
         }
 
@@ -1683,7 +1702,7 @@ namespace Chummer
             //Chummer looks for data in cwd, to be able to move exe (legacy+bootstrapper uses this)
 
             if (Directory.Exists(Utils.GetDataFolderPath)
-                && Directory.Exists(Path.Combine(Utils.GetStartupPath, "lang")))
+                && Directory.Exists(Utils.GetLanguageFolderPath))
             {
                 //both normally used data dirs present (add file loading abstraction to the list)
                 //so do nothing

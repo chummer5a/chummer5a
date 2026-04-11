@@ -812,6 +812,7 @@
       <xs:element name="ignoreCase" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
       <xs:element name="text" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="wholeWords" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+      <xs:element name="words" type="xs:string" minOccurs="0" maxOccurs="1" />
     </xs:choice>
     <xs:attribute name="backgroundColor" type="NLog.Targets.ConsoleOutputColor">
       <xs:annotation>
@@ -835,12 +836,17 @@
     </xs:attribute>
     <xs:attribute name="text" type="xs:string">
       <xs:annotation>
-        <xs:documentation>Text to be matched. You must specify either text or regex.</xs:documentation>
+        <xs:documentation>Text to be matched for Highlighting.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="wholeWords" type="xs:boolean">
       <xs:annotation>
         <xs:documentation>Indicates whether to match whole words only.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="words" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>List of words to be matched for Highlighting.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>
@@ -1188,7 +1194,10 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="category" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
+          <xs:element name="onOverflow" type="NLog.Targets.DebuggerTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
@@ -1205,10 +1214,33 @@
             <xs:documentation>Footer.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="category" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>The category of the message.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute" />
+        <xs:attribute name="maxMessageSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum message size in number of characters. On limit breach then P:NLog.Targets.DebuggerTarget.OnOverflow action is activated.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onOverflow" type="NLog.Targets.DebuggerTargetOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.DebuggerTarget.MaxMessageSize</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:simpleType name="NLog.Targets.DebuggerTargetOverflowAction">
+    <xs:restriction base="xs:string">
+      <xs:enumeration value="None" />
+      <xs:enumeration value="Truncate" />
+      <xs:enumeration value="Split" />
+      <xs:enumeration value="Discard" />
+    </xs:restriction>
+  </xs:simpleType>
   <xs:complexType name="DebugSystem">
     <xs:complexContent>
       <xs:extension base="Target">
@@ -1293,7 +1325,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -1829,7 +1861,7 @@
         <xs:attribute name="gelfShortMessage" type="SimpleLayoutAttribute" />
         <xs:attribute name="noDelay" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms. Default = true.</xs:documentation>
+            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute" />
@@ -2411,7 +2443,7 @@
         </xs:attribute>
         <xs:attribute name="noDelay" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms. Default = true.</xs:documentation>
+            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxMessageSize" type="xs:integer">
@@ -2545,12 +2577,12 @@
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="header" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="footer" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="replaceNewlineWithBrTagInHtml" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="priority" type="System.Net.Mail.MailPriority" minOccurs="0" maxOccurs="1" default="Normal" />
           <xs:element name="mailheader" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="addNewLines" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="bcc" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="replaceNewlineWithBrTagInHtml" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="to" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="html" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="from" type="Layout" minOccurs="0" maxOccurs="1" />
@@ -2558,18 +2590,18 @@
           <xs:element name="subject" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="cc" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="secureSocketOption" type="MailKit.Security.SecureSocketOptions" minOccurs="0" maxOccurs="1" default="StartTlsWhenAvailable" />
-          <xs:element name="requireTLS" type="xs:boolean" minOccurs="0" maxOccurs="1" />
-          <xs:element name="timeout" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
           <xs:element name="pickupDirectoryLocation" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="smtpServer" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="timeout" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
+          <xs:element name="skipCertificateValidation" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="smtpPort" type="xs:integer" minOccurs="0" maxOccurs="1" default="25" />
-          <xs:element name="enableSsl" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="secureSocketOption" type="MailKit.Security.SecureSocketOptions" minOccurs="0" maxOccurs="1" default="StartTlsWhenAvailable" />
           <xs:element name="smtpPassword" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="enableSsl" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="smtpUserName" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="smtpAuthentication" type="NLog.Targets.SmtpAuthenticationMode" minOccurs="0" maxOccurs="1" default="None" />
+          <xs:element name="smtpServer" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="useSystemNetMailSettings" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-          <xs:element name="skipCertificateValidation" type="xs:boolean" minOccurs="0" maxOccurs="1" />
+          <xs:element name="requireTLS" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod" minOccurs="0" maxOccurs="1" default="Network" />
         </xs:choice>
         <xs:attribute name="name" type="xs:string">
@@ -2585,11 +2617,6 @@
         <xs:attribute name="footer" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Footer.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="replaceNewlineWithBrTagInHtml" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Indicates whether NewLine characters in the body should be replaced with  tags.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="priority" type="System.Net.Mail.MailPriority">
@@ -2610,6 +2637,11 @@
         <xs:attribute name="bcc" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>BCC email addresses separated by semicolons (e.g. john@domain.com;jane@domain.com).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="replaceNewlineWithBrTagInHtml" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether NewLine characters in the body should be replaced with  tags.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="to" type="SimpleLayoutAttribute">
@@ -2643,14 +2675,9 @@
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="layout" type="SimpleLayoutAttribute" />
-        <xs:attribute name="secureSocketOption" type="MailKit.Security.SecureSocketOptions">
+        <xs:attribute name="pickupDirectoryLocation" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Provides a way of specifying the SSL and/or TLS encryption If P:NLog.MailKit.MailTarget.EnableSsl is true, then F:MailKit.Security.SecureSocketOptions.SslOnConnect will be used.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="requireTLS" type="xs:boolean">
-          <xs:annotation>
-            <xs:documentation>Get or set whether the client should use the REQUIRETLS extension if it is available.</xs:documentation>
+            <xs:documentation>Folder where applications save mail messages to be processed by the local SMTP server.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="timeout" type="xs:integer">
@@ -2658,14 +2685,9 @@
             <xs:documentation>Indicates the SMTP client timeout.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="pickupDirectoryLocation" type="SimpleLayoutAttribute">
+        <xs:attribute name="skipCertificateValidation" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Folder where applications save mail messages to be processed by the local SMTP server.</xs:documentation>
-          </xs:annotation>
-        </xs:attribute>
-        <xs:attribute name="smtpServer" type="SimpleLayoutAttribute">
-          <xs:annotation>
-            <xs:documentation>SMTP Server to be used for sending.</xs:documentation>
+            <xs:documentation>Indicates whether SmtpClient should ignore invalid certificate.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="smtpPort" type="xs:integer">
@@ -2673,14 +2695,19 @@
             <xs:documentation>Port number that SMTP Server is listening on.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="enableSsl" type="xs:boolean">
+        <xs:attribute name="secureSocketOption" type="MailKit.Security.SecureSocketOptions">
           <xs:annotation>
-            <xs:documentation>Indicates whether SSL (secure sockets layer) should be used when communicating with SMTP server.</xs:documentation>
+            <xs:documentation>Provides a way of specifying the SSL and/or TLS encryption If P:NLog.MailKit.MailTarget.EnableSsl is true, then F:MailKit.Security.SecureSocketOptions.SslOnConnect will be used.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="smtpPassword" type="SimpleLayoutAttribute">
           <xs:annotation>
             <xs:documentation>Password used to authenticate against SMTP server (used when SmtpAuthentication is set to "basic").</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="enableSsl" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether SSL (secure sockets layer) should be used when communicating with SMTP server.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="smtpUserName" type="SimpleLayoutAttribute">
@@ -2693,14 +2720,19 @@
             <xs:documentation>SMTP Authentication mode.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
+        <xs:attribute name="smtpServer" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>SMTP Server to be used for sending.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="useSystemNetMailSettings" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Indicates whether the default Settings from System.Net.MailSettings should be used.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
-        <xs:attribute name="skipCertificateValidation" type="xs:boolean">
+        <xs:attribute name="requireTLS" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether SmtpClient should ignore invalid certificate.</xs:documentation>
+            <xs:documentation>Get or set whether the client should use the REQUIRETLS extension if it is available.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="deliveryMethod" type="System.Net.Mail.SmtpDeliveryMethod">
@@ -2732,6 +2764,7 @@
       <xs:enumeration value="None" />
       <xs:enumeration value="Basic" />
       <xs:enumeration value="Ntlm" />
+      <xs:enumeration value="OAuth2" />
     </xs:restriction>
   </xs:simpleType>
   <xs:simpleType name="System.Net.Mail.SmtpDeliveryMethod">
@@ -2932,7 +2965,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
@@ -3087,7 +3120,7 @@
         </xs:attribute>
         <xs:attribute name="noDelay" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms. Default = true.</xs:documentation>
+            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="maxMessageSize" type="xs:integer">
@@ -3133,7 +3166,7 @@
         </xs:attribute>
         <xs:attribute name="formatMessage" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to perform layout calculation.</xs:documentation>
+            <xs:documentation>Indicates whether to render P:NLog.Targets.TargetWithLayout.Layout for LogEvent</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -3576,6 +3609,205 @@
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
+  <xs:complexType name="Splunk">
+    <xs:complexContent>
+      <xs:extension base="Target">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="sslCertificatePassword" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="sslCertificateFile" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="sslProtocols" type="System.Security.Authentication.SslProtocols" minOccurs="0" maxOccurs="1" default="None" />
+          <xs:element name="sendTimeoutSeconds" type="xs:integer" minOccurs="0" maxOccurs="1" default="100" />
+          <xs:element name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction" minOccurs="0" maxOccurs="1" default="Split" />
+          <xs:element name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
+          <xs:element name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction" minOccurs="0" maxOccurs="1" default="Discard" />
+          <xs:element name="maxConnections" type="xs:integer" minOccurs="0" maxOccurs="1" default="100" />
+          <xs:element name="keepConnection" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="keepAliveTimeSeconds" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
+          <xs:element name="connectionCacheSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="5" />
+          <xs:element name="address" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="maxQueueSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="10000" />
+          <xs:element name="SplunkField" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="splunkSourceType" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkSourceName" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkIndex" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkHostName" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="noDelay" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="compressMinBytes" type="xs:integer" minOccurs="0" maxOccurs="1" default="0" />
+          <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="excludeProperties" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="excludeEmptyProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="compress" type="NLog.Targets.NetworkTargetCompressionType" minOccurs="0" maxOccurs="1" default="None" />
+          <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="maxMessageSize" type="xs:integer" minOccurs="0" maxOccurs="1" default="65000" />
+          <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
+          <xs:element name="lineEnding" type="LineEndingMode" minOccurs="0" maxOccurs="1" />
+          <xs:element name="newLine" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+        </xs:choice>
+        <xs:attribute name="name" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Name of the target.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="sslCertificatePassword" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Password for the custom SSL certificate specified by P:NLog.Targets.NetworkTarget.SslCertificateFile</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="sslCertificateFile" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>File path to custom SSL certificate for TCP Socket SSL connections</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="sslProtocols" type="System.Security.Authentication.SslProtocols">
+          <xs:annotation>
+            <xs:documentation>SSL/TLS protocols. Default no SSL/TLS is used. Currently only implemented for TCP.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="sendTimeoutSeconds" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>The number of seconds a TCP socket send-operation will block before timeout error. Default = 100 secs (0 = wait forever when network cable unplugged and tcp-buffer becomes full).</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onOverflow" type="NLog.Targets.NetworkTargetOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken if the message is larger than P:NLog.Targets.NetworkTarget.MaxMessageSize</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onConnectionOverflow" type="NLog.Targets.NetworkTargetConnectionsOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken, when more connections than P:NLog.Targets.NetworkTarget.MaxConnections.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="onQueueOverflow" type="NLog.Targets.NetworkTargetQueueOverflowAction">
+          <xs:annotation>
+            <xs:documentation>Action that should be taken, when more pending messages than P:NLog.Targets.NetworkTarget.MaxQueueSize.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxConnections" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum simultaneous connections. Requires P:NLog.Targets.NetworkTarget.KeepConnection = false</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="keepConnection" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to keep connection open whenever possible.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="keepAliveTimeSeconds" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>The number of seconds a connection will remain idle before the first keep-alive probe is sent</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="connectionCacheSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Size of the connection cache (number of connections which are kept alive). Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="address" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Network destination address.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxQueueSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum queue size for a single connection. Requires P:NLog.Targets.NetworkTarget.KeepConnection = true</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="splunkSourceType" type="SimpleLayoutAttribute" />
+        <xs:attribute name="splunkSourceName" type="SimpleLayoutAttribute" />
+        <xs:attribute name="splunkIndex" type="SimpleLayoutAttribute" />
+        <xs:attribute name="splunkHostName" type="SimpleLayoutAttribute" />
+        <xs:attribute name="noDelay" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="compressMinBytes" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Skip compression when protocol payload is below limit to reduce overhead in cpu-usage and additional headers</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean" />
+        <xs:attribute name="includeEventProperties" type="xs:boolean" />
+        <xs:attribute name="excludeProperties" type="xs:string" />
+        <xs:attribute name="excludeEmptyProperties" type="xs:boolean" />
+        <xs:attribute name="compress" type="NLog.Targets.NetworkTargetCompressionType">
+          <xs:annotation>
+            <xs:documentation>Type of compression for protocol payload. Useful for UDP where datagram max-size is 8192 bytes.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="layout" type="SimpleLayoutAttribute" />
+        <xs:attribute name="maxMessageSize" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>Maximum message size in bytes. On limit breach then P:NLog.Targets.NetworkTarget.OnOverflow action is activated.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="encoding" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>Encoding to be used.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="lineEnding" type="LineEndingMode">
+          <xs:annotation>
+            <xs:documentation>End of line value if a newline is appended at the end of log message P:NLog.Targets.NetworkTarget.NewLine.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="newLine" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to append newline at the end of log message.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="NLog.Layouts.JsonAttribute">
+    <xs:choice minOccurs="0" maxOccurs="unbounded">
+      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
+      <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
+      <xs:element name="encode" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+      <xs:element name="escapeUnicode" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+      <xs:element name="includeEmptyValue" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+      <xs:element name="valueType" type="xs:string" minOccurs="0" maxOccurs="1" />
+    </xs:choice>
+    <xs:attribute name="name" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Name of the attribute.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="layout" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Layout used for rendering the attribute value.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="defaultValue" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Fallback value when result value is not available</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="encode" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether output should be encoded as Json-String-Property, or be treated as valid json.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="escapeUnicode" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Indicates whether to escape non-ascii characters</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="includeEmptyValue" type="xs:boolean">
+      <xs:annotation>
+        <xs:documentation>Whether empty attribute value should be included in the output.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="valueType" type="xs:string">
+      <xs:annotation>
+        <xs:documentation>Result value type, for conversion of layout rendering output</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+  </xs:complexType>
   <xs:complexType name="Syslog">
     <xs:complexContent>
       <xs:extension base="Target">
@@ -3700,7 +3932,7 @@
         <xs:attribute name="rfc3164" type="xs:boolean" />
         <xs:attribute name="noDelay" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms. Default = true.</xs:documentation>
+            <xs:documentation>Whether to disable the delayed ACK timer, and avoid delay of 200 ms.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean" />
@@ -3861,6 +4093,7 @@
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="parameter" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
+          <xs:element name="expect100Continue" type="xs:boolean" minOccurs="0" maxOccurs="1" />
           <xs:element name="encoding" type="xs:string" minOccurs="0" maxOccurs="1" default="utf-8" />
           <xs:element name="header" minOccurs="0" maxOccurs="unbounded" type="NLog.Targets.MethodCallParameter" />
           <xs:element name="includeBOM" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -3878,6 +4111,11 @@
         <xs:attribute name="name" type="xs:string">
           <xs:annotation>
             <xs:documentation>Name of the target.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="expect100Continue" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Indicates whether to expect http 100-Continue behavior, where the client sends headers and expects a 100-Continue response from the server before sending the request body.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="encoding" type="xs:string">
@@ -4160,6 +4398,7 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4170,19 +4409,24 @@
           <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
         </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4217,52 +4461,6 @@
         </xs:attribute>
       </xs:extension>
     </xs:complexContent>
-  </xs:complexType>
-  <xs:complexType name="NLog.Layouts.JsonAttribute">
-    <xs:choice minOccurs="0" maxOccurs="unbounded">
-      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
-      <xs:element name="layout" type="Layout" minOccurs="0" maxOccurs="1" />
-      <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
-      <xs:element name="encode" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
-      <xs:element name="escapeUnicode" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-      <xs:element name="includeEmptyValue" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
-      <xs:element name="valueType" type="xs:string" minOccurs="0" maxOccurs="1" />
-    </xs:choice>
-    <xs:attribute name="name" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>Name of the attribute.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="layout" type="SimpleLayoutAttribute">
-      <xs:annotation>
-        <xs:documentation>Layout used for rendering the attribute value.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="defaultValue" type="SimpleLayoutAttribute">
-      <xs:annotation>
-        <xs:documentation>Fallback value when result value is not available</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="encode" type="xs:boolean">
-      <xs:annotation>
-        <xs:documentation>Whether output should be encoded as Json-String-Property, or be treated as valid json.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="escapeUnicode" type="xs:boolean">
-      <xs:annotation>
-        <xs:documentation>Indicates whether to escape non-ascii characters</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="includeEmptyValue" type="xs:boolean">
-      <xs:annotation>
-        <xs:documentation>Whether empty attribute value should be included in the output.</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
-    <xs:attribute name="valueType" type="xs:string">
-      <xs:annotation>
-        <xs:documentation>Result value type, for conversion of layout rendering output</xs:documentation>
-      </xs:annotation>
-    </xs:attribute>
   </xs:complexType>
   <xs:complexType name="LayoutWithHeaderAndFooter">
     <xs:complexContent>
@@ -4377,6 +4575,7 @@
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded">
           <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4390,19 +4589,24 @@
           <xs:element name="state" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
           <xs:element name="timestampFormat" type="xs:string" minOccurs="0" maxOccurs="1" default="o" />
         </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as JSON)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeGdc" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Indicates whether to include contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
@@ -4452,6 +4656,100 @@
     <xs:complexContent>
       <xs:extension base="Layout">
         <xs:choice minOccurs="0" maxOccurs="unbounded" />
+      </xs:extension>
+    </xs:complexContent>
+  </xs:complexType>
+  <xs:complexType name="SplunkLayout">
+    <xs:complexContent>
+      <xs:extension base="Layout">
+        <xs:choice minOccurs="0" maxOccurs="unbounded">
+          <xs:element name="attribute" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="dottedRecursion" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="includeGdc" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="indentJson" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="maxRecursionLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
+          <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="excludeEmptyProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="excludeProperties" type="xs:string" minOccurs="0" maxOccurs="1" />
+          <xs:element name="includeEventProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
+          <xs:element name="includeScopeProperties" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="SplunkField" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
+          <xs:element name="splunkHostName" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkIndex" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkSourceName" type="Layout" minOccurs="0" maxOccurs="1" />
+          <xs:element name="splunkSourceType" type="Layout" minOccurs="0" maxOccurs="1" />
+        </xs:choice>
+        <xs:attribute name="dottedRecursion" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to flatten nested object properties using dotted notation (avoid nested JSON output)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeGdc" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to include the contents of the T:NLog.GlobalDiagnosticsContext dictionary.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="indentJson" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Auto indent and create new lines</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="maxRecursionLimit" type="xs:integer">
+          <xs:annotation>
+            <xs:documentation>How far should the JSON serializer follow object references before backing off</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="renderEmptyObject" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to render the empty object value {}</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="suppressSpaces" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to suppress the extra spaces in the output json.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="excludeEmptyProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to exclude null/empty properties from the log event (as JSON)</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="excludeProperties" type="xs:string">
+          <xs:annotation>
+            <xs:documentation>List of property names to exclude when P:NLog.Layouts.SplunkLayout.IncludeEventProperties is true</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeEventProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Option to include all properties from the log events</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeScopeProperties" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="splunkHostName" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Splunk Message Host-attribute</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="splunkIndex" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Splunk Message Index-attribute, that controls which event data is to be indexed.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="splunkSourceName" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Splunk Message Source-attribute. Example the name of the application.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="splunkSourceType" type="SimpleLayoutAttribute">
+          <xs:annotation>
+            <xs:documentation>Splunk Message SourceType-attribute. SourceType can be used hint for choosing Splunk Indexer</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
       </xs:extension>
     </xs:complexContent>
   </xs:complexType>
@@ -4620,7 +4918,7 @@
         </xs:attribute>
         <xs:attribute name="includeScopeProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+            <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="excludeProperties" type="xs:string">
@@ -4670,7 +4968,7 @@
         </xs:attribute>
         <xs:attribute name="includeEventProperties" type="xs:boolean">
           <xs:annotation>
-            <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+            <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>
@@ -4744,7 +5042,7 @@
     </xs:attribute>
     <xs:attribute name="includeScopeProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext dictionary.</xs:documentation>
+        <xs:documentation>Whether to include the contents of the T:NLog.ScopeContext properties-dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
     <xs:attribute name="layout" type="SimpleLayoutAttribute">
@@ -4809,7 +5107,7 @@
     </xs:attribute>
     <xs:attribute name="includeEventProperties" type="xs:boolean">
       <xs:annotation>
-        <xs:documentation>Option to include all properties from the log event (as XML)</xs:documentation>
+        <xs:documentation>Whether to include the contents of the P:NLog.LogEventInfo.Properties dictionary.</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>

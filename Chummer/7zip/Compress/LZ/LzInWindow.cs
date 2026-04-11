@@ -181,8 +181,7 @@ namespace SevenZip.Compression.LZ
         {
             unchecked
             {
-                _pos++;
-                if (_pos > _posLimit)
+                if (++_pos > _posLimit)
                 {
                     int pointerToPosition = _bufferOffset + _pos;
                     if (pointerToPosition > _pointerToLastSafePosition)
@@ -199,8 +198,7 @@ namespace SevenZip.Compression.LZ
 
             unchecked
             {
-                _pos++;
-                if (_pos > _posLimit)
+                if (++_pos > _posLimit)
                 {
                     int pointerToPosition = _bufferOffset + _pos;
                     if (pointerToPosition > _pointerToLastSafePosition)
@@ -240,7 +238,7 @@ namespace SevenZip.Compression.LZ
                     const int size = sizeof(ulong);
                     if (limit >= size)
                     {
-                        int longLimit = limit - size + 1;
+                        int longLimit = limit - (size - 1);
                         while (i < longLimit && *(ulong*)(p1 + i) == *(ulong*)(p2 + i))
                         {
                             i += size;

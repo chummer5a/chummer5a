@@ -498,14 +498,14 @@ namespace SevenZip.Compression.LZMA
         {
             if (_matchFinder == null)
             {
-                BinTree bt = new BinTree();
+                BinTree bt;
                 switch (_matchFinderType)
                 {
                     case EMatchFinderType.BT2:
-                        bt.SetType(2);
+                        bt = new BinTree(2);
                         break;
                     case EMatchFinderType.BT4:
-                        bt.SetType(4);
+                        bt = new BinTree(4);
                         break;
                     default:
                         throw new ArgumentException("No appropriate matchfinder type found.");
@@ -599,7 +599,7 @@ namespace SevenZip.Compression.LZMA
             _additionalOffset++;
         }
 
-        private async Task<Tuple<int, int>> ReadMatchDistancesAsync(CancellationToken token = default)
+        private async Task<ValueTuple<int, int>> ReadMatchDistancesAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int lenRes = 0;
@@ -612,7 +612,7 @@ namespace SevenZip.Compression.LZMA
                                                        Base.kMatchMaxLen - lenRes);
             }
             _additionalOffset++;
-            return new Tuple<int, int>(lenRes, numDistancePairs);
+            return new ValueTuple<int, int>(lenRes, numDistancePairs);
         }
 
         private void MovePos(int num)
@@ -785,7 +785,7 @@ namespace SevenZip.Compression.LZMA
             int index;
             unchecked
             {
-                index = 0 - _repDistances[0] - 1 - 1;
+                index = -2 - _repDistances[0];
             }
             byte matchByte = _matchFinder.GetIndexByte(index);
 
@@ -1000,7 +1000,7 @@ namespace SevenZip.Compression.LZMA
                     uint curPrice = _optimum[cur].Price;
 
                     currentByte = _matchFinder.GetIndexByte(0 - 1);
-                    matchByte = _matchFinder.GetIndexByte(0 - reps[0] - 1 - 1);
+                    matchByte = _matchFinder.GetIndexByte(-2 - reps[0]);
 
                     posState = position & _posStateMask;
 
@@ -1245,7 +1245,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        private async Task<Tuple<int, int>> GetOptimumAsync(int position, CancellationToken token = default)
+        private async Task<ValueTuple<int, int>> GetOptimumAsync(int position, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (_optimumEndIndex != _optimumCurrentIndex)
@@ -1253,7 +1253,7 @@ namespace SevenZip.Compression.LZMA
                 int lenRes = _optimum[_optimumCurrentIndex].PosPrev - _optimumCurrentIndex;
                 int backRes = _optimum[_optimumCurrentIndex].BackPrev;
                 _optimumCurrentIndex = _optimum[_optimumCurrentIndex].PosPrev;
-                return new Tuple<int, int>(lenRes, backRes);
+                return new ValueTuple<int, int>(lenRes, backRes);
             }
             _optimumCurrentIndex = _optimumEndIndex = 0;
 
@@ -1271,7 +1271,7 @@ namespace SevenZip.Compression.LZMA
 
             if (_matchFinder.GetNumAvailableBytes() + 1 < 2)
             {
-                return new Tuple<int, int>(1, 0x7FFFFFFF);
+                return new ValueTuple<int, int>(1, 0x7FFFFFFF);
             }
 
             int repMaxIndex = 0;
@@ -1287,23 +1287,23 @@ namespace SevenZip.Compression.LZMA
             {
                 int lenRes = repLens[repMaxIndex];
                 await MovePosAsync(lenRes - 1, token).ConfigureAwait(false);
-                return new Tuple<int, int>(lenRes, repMaxIndex);
+                return new ValueTuple<int, int>(lenRes, repMaxIndex);
             }
 
             if (lenMain >= _numFastBytes)
             {
                 int backRes = _matchDistances[numDistancePairs - 1] + Base.kNumRepDistances;
                 await MovePosAsync(lenMain - 1, token).ConfigureAwait(false);
-                return new Tuple<int, int>(lenMain, backRes);
+                return new ValueTuple<int, int>(lenMain, backRes);
             }
 
             byte currentByte = _matchFinder.GetIndexByte(0 - 1);
-            int index = 0 - _repDistances[0] - 1 - 1;
+            int index = -2 - _repDistances[0];
             byte matchByte = _matchFinder.GetIndexByte(index);
 
             if (lenMain < 2 && currentByte != matchByte && repLens[repMaxIndex] < 2)
             {
-                return new Tuple<int, int>(1, 0x7FFFFFFF);
+                return new ValueTuple<int, int>(1, 0x7FFFFFFF);
             }
 
             _optimum[0].State = _state;
@@ -1334,7 +1334,7 @@ namespace SevenZip.Compression.LZMA
 
                 if (lenEnd < 2)
                 {
-                    return new Tuple<int, int>(1, _optimum[1].BackPrev);
+                    return new ValueTuple<int, int>(1, _optimum[1].BackPrev);
                 }
 
                 _optimum[1].PosPrev = 0;
@@ -1405,7 +1405,7 @@ namespace SevenZip.Compression.LZMA
                 {
                     cur++;
                     if (cur == lenEnd)
-                        return new Tuple<int, int>(Backward(out int backRes, cur), backRes);
+                        return new ValueTuple<int, int>(Backward(out int backRes, cur), backRes);
                     int newLen;
                     (newLen, numDistancePairs) = await ReadMatchDistancesAsync(token).ConfigureAwait(false);
                     if (newLen >= _numFastBytes)
@@ -1413,7 +1413,7 @@ namespace SevenZip.Compression.LZMA
                         _numDistancePairs = numDistancePairs;
                         _longestMatchLength = newLen;
                         _longestMatchWasFound = true;
-                        return new Tuple<int, int>(Backward(out int backRes, cur), backRes);
+                        return new ValueTuple<int, int>(Backward(out int backRes, cur), backRes);
                     }
 
                     position++;
@@ -1511,7 +1511,7 @@ namespace SevenZip.Compression.LZMA
                     uint curPrice = _optimum[cur].Price;
 
                     currentByte = _matchFinder.GetIndexByte(0 - 1);
-                    matchByte = _matchFinder.GetIndexByte(0 - reps[0] - 1 - 1);
+                    matchByte = _matchFinder.GetIndexByte(-2 - reps[0]);
 
                     posState = position & _posStateMask;
 
@@ -2052,7 +2052,7 @@ namespace SevenZip.Compression.LZMA
             }
         }
 
-        public async Task<Tuple<long, long, bool>> CodeOneBlockAsync(CancellationToken token = default)
+        public async Task<ValueTuple<long, long, bool>> CodeOneBlockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long inSize = 0;
@@ -2070,7 +2070,7 @@ namespace SevenZip.Compression.LZMA
             }
 
             if (_finished)
-                return new Tuple<long, long, bool>(inSize, outSize, true);
+                return new ValueTuple<long, long, bool>(inSize, outSize, true);
             _finished = true;
 
             unchecked
@@ -2082,7 +2082,7 @@ namespace SevenZip.Compression.LZMA
                     if (_matchFinder.GetNumAvailableBytes() == 0)
                     {
                         await FlushAsync((int)_nowPos64, token).ConfigureAwait(false);
-                        return new Tuple<long, long, bool> (inSize, outSize, true);
+                        return new ValueTuple<long, long, bool> (inSize, outSize, true);
                     }
 
                     await ReadMatchDistancesAsync(token).ConfigureAwait(false);
@@ -2103,7 +2103,7 @@ namespace SevenZip.Compression.LZMA
                 if (_matchFinder.GetNumAvailableBytes() == 0)
                 {
                     await FlushAsync((int)_nowPos64, token).ConfigureAwait(false);
-                    return new Tuple<long, long, bool>(inSize, outSize, true);
+                    return new ValueTuple<long, long, bool>(inSize, outSize, true);
                 }
 
                 while (true)
@@ -2245,13 +2245,13 @@ namespace SevenZip.Compression.LZMA
                         if (_matchFinder.GetNumAvailableBytes() == 0)
                         {
                             await FlushAsync((int)_nowPos64, token).ConfigureAwait(false);
-                            return new Tuple<long, long, bool>(inSize, outSize, true);
+                            return new ValueTuple<long, long, bool>(inSize, outSize, true);
                         }
 
                         if (_nowPos64 - progressPosValuePrev >= 1 << 12)
                         {
                             _finished = false;
-                            return new Tuple<long, long, bool>(inSize, outSize, false);
+                            return new ValueTuple<long, long, bool>(inSize, outSize, false);
                         }
                     }
                 }

@@ -184,7 +184,7 @@
       <text>Ouvrir</text>
     </string>
     <string>
-      <key>Label_InitiativeDice</key>
+      <key>String_InitiativeDice</key>
       <text>Dés d'initiative</text>
     </string>
     <string>
@@ -4101,7 +4101,7 @@ Un saul attribut peut atteindre sa valeur maximum durant la création de personn
     </string>
     <string>
       <key>String_WeekDisplay</key>
-      <text>{0}: Mois {1}, Semaine {2}</text>
+      <text>{0}-W{1}</text>
     </string>
     <!-- Improvements Tab -->
     <string>

@@ -20,18 +20,17 @@
 using System;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Windows.Forms;
 
 namespace Chummer.UI.Table
 {
     public partial class TextTableCell : TableCell
     {
-        private readonly Label _lblText;
+        private readonly LabelWithToolTip _lblText;
 
         public TextTableCell()
         {
             InitializeComponent();
-            _lblText = new Label();
+            _lblText = new LabelWithToolTip();
             ContentField = _lblText;
             Controls.Add(_lblText);
             _lblText.AutoSize = true;

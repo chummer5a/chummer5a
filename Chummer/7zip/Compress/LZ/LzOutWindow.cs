@@ -87,12 +87,20 @@ namespace SevenZip.Compression.LZ
                     uint curSize = _windowSize - _pos;
                     if (size < curSize)
                         curSize = size;
-                    int numReadBytes = stream.Read(_buffer, (int) _pos, (int) curSize);
+                    uint numReadBytes;
+                    if (curSize > int.MaxValue)
+                    {
+                        int intToRead1 = (int)(curSize / 2);
+                        int intToRead2 = intToRead1 + (int)(curSize & 1);
+                        numReadBytes = (uint)stream.Read(_buffer, (int)_pos, intToRead1) + (uint)stream.Read(_buffer, (int)(_pos - intToRead1), intToRead2);
+                    }
+                    else
+                        numReadBytes = (uint)stream.Read(_buffer, (int)_pos, (int)curSize);
                     if (numReadBytes == 0)
                         return false;
-                    size -= (uint) numReadBytes;
-                    _pos += (uint) numReadBytes;
-                    _streamPos += (uint) numReadBytes;
+                    size -= numReadBytes;
+                    _pos +=  numReadBytes;
+                    _streamPos += numReadBytes;
                     if (_pos == _windowSize)
                         _streamPos = _pos = 0;
                 }
@@ -116,12 +124,23 @@ namespace SevenZip.Compression.LZ
                     uint curSize = _windowSize - _pos;
                     if (size < curSize)
                         curSize = size;
-                    int numReadBytes = await stream.ReadAsync(_buffer, (int)_pos, (int)curSize, token).ConfigureAwait(false);
+                    uint numReadBytes;
+                    if (curSize > int.MaxValue)
+                    {
+                        int intToRead1 = (int)(curSize / 2);
+                        int intToRead2 = intToRead1 + (int)(curSize & 1);
+                        Task<int> tskRead1 = stream.ReadAsync(_buffer, (int)_pos, intToRead1, token);
+                        Task<int> tskRead2 = stream.ReadAsync(_buffer, (int)(_pos - intToRead1), intToRead2, token);
+                        await Task.WhenAll(tskRead1, tskRead2).ConfigureAwait(false);
+                        numReadBytes = (uint)await tskRead1.ConfigureAwait(false) + (uint)await tskRead2.ConfigureAwait(false);
+                    }
+                    else
+                        numReadBytes = (uint)await stream.ReadAsync(_buffer, (int)_pos, (int)curSize, token).ConfigureAwait(false);
                     if (numReadBytes == 0)
                         return false;
-                    size -= (uint)numReadBytes;
-                    _pos += (uint)numReadBytes;
-                    _streamPos += (uint)numReadBytes;
+                    size -= numReadBytes;
+                    _pos += numReadBytes;
+                    _streamPos += numReadBytes;
                     if (_pos == _windowSize)
                         _streamPos = _pos = 0;
                 }
@@ -146,7 +165,15 @@ namespace SevenZip.Compression.LZ
             uint size = _pos - _streamPos;
             if (size == 0)
                 return;
-            _stream.Write(_buffer, (int)_streamPos, (int)size);
+            if (size > int.MaxValue)
+            {
+                int intToWrite1 = (int)(size / 2);
+                int intToWrite2 = intToWrite1 + (int)(size & 1);
+                _stream.Write(_buffer, (int)_streamPos, intToWrite1);
+                _stream.Write(_buffer, (int)(_streamPos - intToWrite1), intToWrite2);
+            }
+            else
+                _stream.Write(_buffer, (int)_streamPos, (int)size);
             if (_pos >= _windowSize)
                 _pos = 0;
             _streamPos = _pos;
@@ -158,7 +185,15 @@ namespace SevenZip.Compression.LZ
             uint size = _pos - _streamPos;
             if (size == 0)
                 return;
-            await _stream.WriteAsync(_buffer, (int)_streamPos, (int)size, token).ConfigureAwait(false);
+            if (size > int.MaxValue)
+            {
+                int intToWrite1 = (int)(size / 2);
+                int intToWrite2 = intToWrite1 + (int)(size & 1);
+                await _stream.WriteAsync(_buffer, (int)_streamPos, intToWrite1, token).ConfigureAwait(false);
+                await _stream.WriteAsync(_buffer, (int)(_streamPos - intToWrite1), intToWrite2, token).ConfigureAwait(false);
+            }
+            else
+                await _stream.WriteAsync(_buffer, (int)_streamPos, (int)size, token).ConfigureAwait(false);
             if (_pos >= _windowSize)
                 _pos = 0;
             _streamPos = _pos;

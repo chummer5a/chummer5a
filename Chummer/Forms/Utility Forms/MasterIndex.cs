@@ -92,48 +92,11 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _lstFileNamesWithItems = Utils.ListItemListPool.Get();
             _lstItems = Utils.ListItemListPool.Get();
             _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericFormClosingCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objLoadContentCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objItemsSelectedIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objCharacterSettingSelectedIndexChangedCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericFormClosingCancellationTokenSource.Dispose();
-
-                _objLoadContentLocker.Dispose();
-                Utils.ListItemListPool.Return(ref _lstFileNamesWithItems);
-                Utils.ListItemListPool.Return(ref _lstItems);
-            };
         }
 
         private async Task PopulateCharacterSettings(CancellationToken token = default)
@@ -228,7 +191,7 @@ namespace Chummer
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
-                    await SourceString.Blank.SetControlAsync(lblSource, _objGenericToken).ConfigureAwait(false);
+                    await SourceString.Blank.SetControlAsync(lblSource, this, _objGenericToken).ConfigureAwait(false);
 
                     // Pre-load some very common expressions to speed up content load
                     Utils.TryCacheExpression("/chummer", _objGenericToken);
@@ -238,7 +201,7 @@ namespace Chummer
                                  .SelectAndCacheExpression("/chummer/books/book/code", _objGenericToken))
                     {
                         Utils.TryCacheExpression(
-                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + ']', _objGenericToken);
+                                "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]", _objGenericToken);
                         Utils.TryCacheExpression(
                                 "/chummer/books/book[code = " + objCode.Value.CleanXPath() + "]/altcode", _objGenericToken);
                     }
@@ -265,10 +228,8 @@ namespace Chummer
                                       ?? objNewSettings;
                     }
 
-                    if (objSettings != null)
-                    {
+                    if (objSettings?.IsDisposed == false)
                         objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
-                    }
                 }
                 finally
                 {
@@ -290,7 +251,7 @@ namespace Chummer
             if (_objGenericToken.IsCancellationRequested)
                 return;
             CharacterSettings objSettings = Interlocked.Exchange(ref _objSelectedSetting, null);
-            if (objSettings != null)
+            if (objSettings?.IsDisposed == false)
                 objSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objPopulateCharacterSettingsCancellationTokenSource, null);
             if (objOldCancellationTokenSource?.IsCancellationRequested == false)
@@ -324,7 +285,7 @@ namespace Chummer
             }
             try
             {
-                await _dicCachedNotes.ForEachParallelAsync(async x =>
+                await ParallelExtensions.ForEachAsync(_dicCachedNotes, async x =>
                 {
                     try
                     {
@@ -412,17 +373,13 @@ namespace Chummer
                         }
 
                         CharacterSettings objPreviousSettings = Interlocked.Exchange(ref _objSelectedSetting, objSettings);
-                        if (objPreviousSettings != objSettings)
+                        if (!ReferenceEquals(objPreviousSettings, objSettings))
                         {
-                            if (objPreviousSettings != null)
-                            {
+                            if (objPreviousSettings?.IsDisposed == false)
                                 objPreviousSettings.MultiplePropertiesChangedAsync -= OnSelectedSettingChanged;
-                            }
 
-                            if (objSettings != null)
-                            {
+                            if (objSettings?.IsDisposed == false)
                                 objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
-                            }
 
                             await LoadContent(token).ConfigureAwait(false);
                         }
@@ -487,8 +444,8 @@ namespace Chummer
                                 }
 
                                 strSourceFilter = setValidCodes.Count > 0
-                                    ? '(' + string.Join(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
-                                          + ')'
+                                    ? "(" + StringExtensions.JoinFast(" or ", setValidCodes.Select(x => "source = " + x.CleanXPath()))
+                                          + ")"
                                     : "source";
                             }
 
@@ -503,21 +460,14 @@ namespace Chummer
                                     {
                                         ConcurrentBag<ListItem> lstFileNamesWithItemsForLoading
                                             = new ConcurrentBag<ListItem>();
-                                        // Prevents locking the UI thread while still benefiting from static scheduling of Parallel.ForEach
+                                        IReadOnlyList<string> lstCustomDataPaths = await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
                                         // Preload all data first to prevent weird locking issues with the rest of the program
-                                        await Task.WhenAll(_astrFileNames.Select(
-                                                               x => Task.Run(
-                                                                   async () => await XmlManager.LoadXPathAsync(
-                                                                       x,
-                                                                       await _objSelectedSetting
-                                                                           .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
-                                                                       token: token).ConfigureAwait(false), token))).ConfigureAwait(false);
-                                        await Task.WhenAll(_astrFileNames.Select(strFileName => Task.Run(async () =>
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths, token: token), token).ConfigureAwait(false);
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, async strFileName =>
                                         {
                                             XPathNavigator xmlBaseNode
                                                 = await XmlManager.LoadXPathAsync(strFileName,
-                                                    await _objSelectedSetting
-                                                        .GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false),
+                                                    lstCustomDataPaths,
                                                     token: token).ConfigureAwait(false);
                                             xmlBaseNode
                                                 = xmlBaseNode.SelectSingleNodeAndCacheExpression(
@@ -526,7 +476,7 @@ namespace Chummer
                                                 return;
                                             bool blnLoopFileNameHasItems = false;
                                             foreach (XPathNavigator xmlItemNode in xmlBaseNode.Select(
-                                                         ".//*[page and " + strSourceFilter + ']'))
+                                                         ".//*[page and " + strSourceFilter + "]"))
                                             {
                                                 blnLoopFileNameHasItems = true;
                                                 string strName
@@ -593,7 +543,7 @@ namespace Chummer
                                             if (blnLoopFileNameHasItems)
                                                 lstFileNamesWithItemsForLoading.Add(
                                                     new ListItem(strFileName, strFileName));
-                                        }, token))).ConfigureAwait(false);
+                                        }, token).ConfigureAwait(false);
                                         _lstFileNamesWithItems.AddRange(lstFileNamesWithItemsForLoading);
                                     }
 
@@ -645,8 +595,8 @@ namespace Chummer
                                                                     objItem.Value, string.Format(
                                                                         GlobalSettings.CultureInfo,
                                                                         strFormat, objItem.Name,
-                                                                        string.Join(
-                                                                            ',' + strSpace, objEntry.FileNames)));
+                                                                        StringExtensions.JoinFast(
+                                                                            "," + strSpace, objEntry.FileNames)));
                                                                 _lstItems.Add(
                                                                     objItemToAdd); // Not using AddRange because of potential memory issues
                                                                 lstExistingItems.Add(objItemToAdd);
@@ -665,8 +615,8 @@ namespace Chummer
                                                                         objToRename.Value, string.Format(
                                                                             GlobalSettings.CultureInfo,
                                                                             strFormat, objExistingEntry.DisplayName,
-                                                                            string.Join(
-                                                                                ',' + strSpace,
+                                                                            StringExtensions.JoinFast(
+                                                                                "," + strSpace,
                                                                                 objExistingEntry.FileNames)));
                                                                     _lstItems.Add(
                                                                         objItemToAdd); // Not using AddRange because of potential memory issues
@@ -781,31 +731,56 @@ namespace Chummer
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                     try
                     {
-                        bool blnCustomList
-                            = !(await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength, token).ConfigureAwait(false) == 0
-                                && string.IsNullOrEmpty(
-                                    await cboFile.DoThreadSafeFuncAsync(
-                                        x => x.SelectedValue?.ToString(), token).ConfigureAwait(false)));
+                        string strFileFilter
+                                    = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                          token).ConfigureAwait(false) ?? string.Empty;
+                        string strSearchFilter
+                                = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                        bool blnCustomList = !string.IsNullOrEmpty(strFileFilter) || !string.IsNullOrEmpty(strSearchFilter);
                         List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
                         try
                         {
                             if (blnCustomList)
                             {
-                                string strFileFilter
-                                    = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
-                                                                          token).ConfigureAwait(false) ?? string.Empty;
-                                string strSearchFilter
-                                    = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
-                                foreach (ListItem objItem in _lstItems)
+                                if (!string.IsNullOrEmpty(strFileFilter))
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    if (!(objItem.Value is MasterIndexEntry objItemEntry))
-                                        continue;
-                                    if (!string.IsNullOrEmpty(strFileFilter)
-                                        && !objItemEntry.FileNames.Contains(strFileFilter))
-                                        continue;
                                     if (!string.IsNullOrEmpty(strSearchFilter))
                                     {
+                                        foreach (ListItem objItem in _lstItems)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (!(objItem.Value is MasterIndexEntry objItemEntry) || !objItemEntry.FileNames.Contains(strFileFilter))
+                                                continue;
+                                            string strDisplayNameNoFile = objItemEntry.DisplayName;
+                                            if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                                strDisplayNameNoFile = strDisplayNameNoFile
+                                                                       .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
+                                                                       .Trim();
+                                            if (strDisplayNameNoFile.IndexOf(strSearchFilter,
+                                                                             StringComparison.OrdinalIgnoreCase)
+                                                == -1)
+                                                continue;
+
+                                            lstFilteredItems.Add(objItem);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        foreach (ListItem objItem in _lstItems)
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            if (objItem.Value is MasterIndexEntry objItemEntry && objItemEntry.FileNames.Contains(strFileFilter))
+                                                lstFilteredItems.Add(objItem);
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    foreach (ListItem objItem in _lstItems)
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        if (!(objItem.Value is MasterIndexEntry objItemEntry))
+                                            continue;
                                         string strDisplayNameNoFile = objItemEntry.DisplayName;
                                         if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
                                             strDisplayNameNoFile = strDisplayNameNoFile
@@ -815,9 +790,9 @@ namespace Chummer
                                                                          StringComparison.OrdinalIgnoreCase)
                                             == -1)
                                             continue;
-                                    }
 
-                                    lstFilteredItems.Add(objItem);
+                                        lstFilteredItems.Add(objItem);
+                                    }
                                 }
                             }
 
@@ -887,7 +862,7 @@ namespace Chummer
                         {
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                            await objEntry.DisplaySource.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await objEntry.DisplaySource.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                             string strNotes = await _dicCachedNotes.GetOrAdd(objEntry, x =>
                             {
                                 if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage,
@@ -896,23 +871,24 @@ namespace Chummer
                                         || x.Source.Page != x.DisplaySource.Page))
                                 {
                                     // don't check again it is not translated
-                                    return Task.Run(async () =>
+                                    return InnerReturn(token);
+                                    async Task<string> InnerReturn(CancellationToken innerToken)
                                     {
+                                        innerToken.ThrowIfCancellationRequested();
                                         string strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                            x.Source.ToString(),
-                                            x.EnglishNameOnPage, _objSelectedSetting, token).ConfigureAwait(false);
+                                            await x.Source.ToStringAsync(innerToken).ConfigureAwait(false),
+                                            x.EnglishNameOnPage, _objSelectedSetting, innerToken).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strReturn))
                                             strReturn = await CommonFunctions.GetTextFromPdfAsync(
-                                                                                 x.DisplaySource.ToString(),
-                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, token)
+                                                                                 await x.DisplaySource.ToStringAsync(innerToken).ConfigureAwait(false),
+                                                                                 x.TranslatedNameOnPage, _objSelectedSetting, innerToken)
                                                                              .ConfigureAwait(false);
                                         return strReturn;
-                                    }, token);
+                                    }
                                 }
-                                return Task.Run(() =>
-                                                    CommonFunctions.GetTextFromPdfAsync(
+                                return CommonFunctions.GetTextFromPdfAsync(
                                                         x.Source.ToString(),
-                                                        x.EnglishNameOnPage, _objSelectedSetting, token), token);
+                                                        x.EnglishNameOnPage, _objSelectedSetting, token);
                             }).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x =>
                             {
@@ -924,7 +900,7 @@ namespace Chummer
                         {
                             await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                             await lblSourceClickReminder.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
-                            await SourceString.Blank.SetControlAsync(lblSource, token).ConfigureAwait(false);
+                            await SourceString.Blank.SetControlAsync(lblSource, this, token).ConfigureAwait(false);
                             await txtNotes.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
                     }
@@ -969,12 +945,13 @@ namespace Chummer
         {
             try
             {
+                CharacterSettings objSettings = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) as CharacterSettings;
                 CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
                 try
                 {
                     using (ThreadSafeForm<EditCharacterSettings> frmOptions
                            = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
-                               () => new EditCharacterSettings(cboCharacterSetting.SelectedValue as CharacterSettings),
+                               () => new EditCharacterSettings(objSettings),
                                _objGenericToken).ConfigureAwait(false))
                         await frmOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
                     // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate

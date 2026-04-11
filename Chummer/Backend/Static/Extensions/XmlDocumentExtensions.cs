@@ -32,7 +32,7 @@ namespace Chummer
     public static class XmlDocumentExtensions
     {
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -59,7 +59,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -83,14 +83,14 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         // ReSharper disable once AccessToDisposedClosure
-                        await Task.Run(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
+                        await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
                     }
                 }
             }
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -128,7 +128,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -158,7 +158,7 @@ namespace Chummer
                         {
                             token.ThrowIfCancellationRequested();
                             // ReSharper disable once AccessToDisposedClosure
-                            await Task.Run(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
+                            await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
                         }
                     }
                 }
@@ -166,7 +166,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -186,11 +186,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -201,7 +199,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from a file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -221,11 +219,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -236,7 +232,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for synchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -256,11 +252,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -271,7 +265,7 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for asynchronously loading an XmlDocument from an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> on an LZMA-compressed file with standard encoding and XmlReader settings in a way that does not immediately except out if the file is temporarily unavailable
         /// </summary>
         /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
         /// <param name="strFileName">The file to use.</param>
@@ -291,11 +285,9 @@ namespace Chummer
                     blnSuccess = true;
                     break;
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -306,11 +298,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
-        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
+        /// Get an <see cref="XPathNavigator"/> for an <see cref="XPathDocument"/> copy of an <see cref="XmlDocument"/>.
+        /// Method is slow, but the nagivator it creates is faster than that of an <see cref="XmlDocument"/>. Use accordingly.
         /// </summary>
         /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
-        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        /// <returns>An <see cref="XPathNavigator"/> of an <see cref="XPathDocument"/> copy of <paramref name="xmlDocument"/>.</returns>
         public static XPathNavigator GetFastNavigator(this XmlDocument xmlDocument)
         {
             if (xmlDocument == null)
@@ -326,17 +318,17 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Get an XPathNavigator for an XPathDocument copy of an XmlDocument.
-        /// Method is slow, but the nagivator it creates is faster than that of an XmlDocument. Use accordingly.
+        /// Get an <see cref="XPathNavigator"/> for an <see cref="XPathDocument"/> copy of an <see cref="XmlDocument"/>.
+        /// Method is slow, but the nagivator it creates is faster than that of an <see cref="XmlDocument"/>. Use accordingly.
         /// </summary>
         /// <param name="xmlDocument">The document from which a navigator should be spawned.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        /// <returns>An XPathNavigator of an XPathDocument copy of <paramref name="xmlDocument"/>.</returns>
+        /// <returns>An <see cref="XPathNavigator"/> of an <see cref="XPathDocument"/> copy of <paramref name="xmlDocument"/>.</returns>
         public static Task<XPathNavigator> GetFastNavigatorAsync(this XmlDocument xmlDocument, CancellationToken token = default)
         {
             return xmlDocument == null
                 ? Task.FromResult<XPathNavigator>(null)
-                : Task.Run(() =>
+                : TaskExtensions.RunWithoutEC(() =>
                 {
                     using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
                     {

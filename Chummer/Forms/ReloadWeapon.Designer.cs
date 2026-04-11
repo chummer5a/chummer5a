@@ -64,7 +64,6 @@ namespace Chummer
             this.cboAmmo.Name = "cboAmmo";
             this.cboAmmo.Size = new System.Drawing.Size(235, 21);
             this.cboAmmo.TabIndex = 1;
-            this.cboAmmo.TooltipText = "";
             // 
             // lblTypeLabel
             // 
@@ -88,7 +87,6 @@ namespace Chummer
             this.cboType.Name = "cboType";
             this.cboType.Size = new System.Drawing.Size(235, 21);
             this.cboType.TabIndex = 3;
-            this.cboType.TooltipText = "";
             // 
             // cmdCancel
             // 

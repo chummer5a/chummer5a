@@ -22,6 +22,7 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -43,8 +44,7 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
 
-        private readonly FileSystemWatcher _watcherCharacterRosterFolderRawSaves;
-        private readonly FileSystemWatcher _watcherCharacterRosterFolderCompressedSaves;
+        private readonly FileSystemWatcher _watcherCharacterRosterFolderSaves;
         private readonly DebuggableSemaphoreSlim _objCharacterRosterFolderWatcherSemaphore;
         private readonly AsyncFriendlyReaderWriterLock _objCachePurgeReaderWriterLock = new AsyncFriendlyReaderWriterLock();
         private Task _tskMostRecentlyUsedsRefresh;
@@ -62,71 +62,15 @@ namespace Chummer
             tabCharacterText.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
 
             if (!string.IsNullOrEmpty(GlobalSettings.CharacterRosterPath) && Directory.Exists(GlobalSettings.CharacterRosterPath))
             {
                 _objCharacterRosterFolderWatcherSemaphore = new DebuggableSemaphoreSlim();
-                _watcherCharacterRosterFolderRawSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5")
+                _watcherCharacterRosterFolderSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5*")
                     {
                         IncludeSubdirectories = true
                     };
-                _watcherCharacterRosterFolderCompressedSaves = new FileSystemWatcher(GlobalSettings.CharacterRosterPath, "*.chum5lz")
-                    {
-                        IncludeSubdirectories = true
-                    };
-
-                Disposed += (sender, args) =>
-                {
-                    CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    _objGenericFormClosingCancellationTokenSource.Dispose();
-                    _watcherCharacterRosterFolderRawSaves.Dispose();
-                    _watcherCharacterRosterFolderCompressedSaves.Dispose();
-                    _objCharacterRosterFolderWatcherSemaphore.Dispose();
-                    _objCachePurgeReaderWriterLock.Dispose();
-                };
-            }
-            else
-            {
-                Disposed += (sender, args) =>
-                {
-                    CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objMostRecentlyUsedsRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objWatchFolderRefreshCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateCharacterCancellationTokenSource, null);
-                    if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                    {
-                        objOldCancellationTokenSource.Cancel(false);
-                        objOldCancellationTokenSource.Dispose();
-                    }
-                    _objGenericFormClosingCancellationTokenSource.Dispose();
-                    _objCachePurgeReaderWriterLock.Dispose();
-                };
             }
         }
 
@@ -168,22 +112,15 @@ namespace Chummer
                     x.NodeMouseDoubleClick += treCharacterList_OnDefaultDoubleClick;
                 }, token).ConfigureAwait(false);
                 OnMyMouseDown += OnDefaultMouseDown;
-                if (_watcherCharacterRosterFolderRawSaves != null)
+                if (_watcherCharacterRosterFolderSaves != null)
                 {
-                    _watcherCharacterRosterFolderRawSaves.BeginInit();
-                    _watcherCharacterRosterFolderRawSaves.Changed += RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.Deleted += DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Renamed += RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = true;
-                    _watcherCharacterRosterFolderRawSaves.EndInit();
-                    _watcherCharacterRosterFolderCompressedSaves.BeginInit();
-                    _watcherCharacterRosterFolderCompressedSaves.Changed += RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Created += RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.Deleted += DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Renamed += RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = true;
-                    _watcherCharacterRosterFolderCompressedSaves.EndInit();
+                    _watcherCharacterRosterFolderSaves.BeginInit();
+                    _watcherCharacterRosterFolderSaves.Changed += RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Created += RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.Deleted += DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Renamed += RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.EnableRaisingEvents = true;
+                    _watcherCharacterRosterFolderSaves.EndInit();
                 }
             }
             else
@@ -217,18 +154,13 @@ namespace Chummer
                 }, token).ConfigureAwait(false);
                 OnMyMouseDown = null;
 
-                if (_watcherCharacterRosterFolderRawSaves != null)
+                if (_watcherCharacterRosterFolderSaves != null)
                 {
-                    _watcherCharacterRosterFolderRawSaves.EnableRaisingEvents = false;
-                    _watcherCharacterRosterFolderRawSaves.Changed -= RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolderRawSaves.Deleted -= DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderRawSaves.Renamed -= RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.EnableRaisingEvents = false;
-                    _watcherCharacterRosterFolderCompressedSaves.Changed -= RefreshSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Created -= RefreshWatchList;
-                    _watcherCharacterRosterFolderCompressedSaves.Deleted -= DeleteSingleWatchNode;
-                    _watcherCharacterRosterFolderCompressedSaves.Renamed -= RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.EnableRaisingEvents = false;
+                    _watcherCharacterRosterFolderSaves.Changed -= RefreshSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Created -= RefreshWatchList;
+                    _watcherCharacterRosterFolderSaves.Deleted -= DeleteSingleWatchNode;
+                    _watcherCharacterRosterFolderSaves.Renamed -= RefreshWatchList;
                 }
             }
 
@@ -252,6 +184,8 @@ namespace Chummer
 
         private async void DeleteSingleWatchNode(object sender, FileSystemEventArgs e)
         {
+            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+                return;
             try
             {
                 if (e.ChangeType == WatcherChangeTypes.Deleted)
@@ -301,6 +235,8 @@ namespace Chummer
 
         private async void RefreshSingleWatchNode(object sender, FileSystemEventArgs e)
         {
+            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+                return;
             try
             {
                 if (e.ChangeType == WatcherChangeTypes.Changed)
@@ -343,7 +279,7 @@ namespace Chummer
                                         objNode.Tag = objNewCache;
                                     }
                                 }, objTokenToUse).ConfigureAwait(false);
-                                List<CharacterCache> lstToKeep = new List<CharacterCache>();
+                                List<CharacterCache> lstToKeep = new List<CharacterCache>(setCachesToDispose.Count);
                                 foreach (CharacterCache objCache in setCachesToDispose)
                                 {
                                     objTokenToUse.ThrowIfCancellationRequested();
@@ -428,6 +364,7 @@ namespace Chummer
                     }
 
                     objTemp = new CancellationTokenSource();
+                    CancellationToken objTempToken = objTemp.Token;
                     objCurrent = Interlocked.CompareExchange(
                         ref _objWatchFolderRefreshCancellationTokenSource,
                         objTemp, null);
@@ -435,9 +372,10 @@ namespace Chummer
                     {
                         objTemp.Dispose();
                         objTemp = objCurrent;
+                        objTempToken = objTemp.Token;
                     }
 
-                    Task tskNewWatchFolderRefresh = LoadWatchFolderCharacters(objTemp.Token);
+                    Task tskNewWatchFolderRefresh = LoadWatchFolderCharacters(objTempToken);
                     Task tskOldWatchFolderRefresh = Interlocked.Exchange(ref _tskWatchFolderRefresh, tskNewRecentlyUsedsRefresh);
                     if (tskOldWatchFolderRefresh != null)
                     {
@@ -453,20 +391,14 @@ namespace Chummer
 
                     try
                     {
-                        List<Task> lstTasks =
-                                new List<Task>(2 + await Program.PluginLoader.MyPlugins.GetCountAsync(objTemp.Token)
-                                    .ConfigureAwait(false))
-                                {
-                                    tskNewRecentlyUsedsRefresh,
-                                    tskNewWatchFolderRefresh
-                                };
-                        foreach (IPlugin objPlugin in await Program.PluginLoader
-                                     .GetMyActivePluginsAsync(objTemp.Token)
-                                     .ConfigureAwait(false))
+                        await Task.WhenAll(tskNewRecentlyUsedsRefresh, tskNewWatchFolderRefresh).ConfigureAwait(false);
+                        IReadOnlyList<IPlugin> lstPlugins = await Program.PluginLoader
+                                     .GetMyActivePluginsAsync(objTempToken)
+                                     .ConfigureAwait(false);
+                        if (lstPlugins.Count > 0)
                         {
-                            lstTasks.Add(RefreshPluginNodesAsync(objPlugin, objTemp.Token));
+                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTempToken), objTempToken).ConfigureAwait(false);
                         }
-                        await Task.WhenAll(lstTasks).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1140,7 +1072,7 @@ namespace Chummer
                   + await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false)
                   + Environment.NewLine;
 
-            Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>();
+            Dictionary<TreeNode, string> dicNodeNames = new Dictionary<TreeNode, string>(3 + _dicSavedCharacterCaches.Count);
             foreach (TreeNode objCharacterNode in await treCharacterList
                                                         .DoThreadSafeFuncAsync(
                                                             x => x.Nodes.Cast<TreeNode>()
@@ -1169,7 +1101,7 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strFilePath))
                     {
                         strTooltip = strFilePath.Replace(Utils.GetStartupPath,
-                                                               '<' + Application.ProductName + '>');
+                                                               "<" + Application.ProductName + ">");
                     }
 
                     string strErrorText = objCache.ErrorText;
@@ -1214,6 +1146,7 @@ namespace Chummer
                          x => x.CharacterObjects))
             {
                 string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
                 // Make sure we're not loading a character that was already loaded by the MRU list.
                 if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
                     lstRecents.Add(strFile);
@@ -1235,8 +1168,8 @@ namespace Chummer
             int intFavoritesCount = lstFavorites.Count;
             int intRecentsCount = lstRecents.Count;
 
-            TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : null;
-            TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : null;
+            TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : Array.Empty<TreeNode>();
+            TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : Array.Empty<TreeNode>();
             System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -1244,84 +1177,56 @@ namespace Chummer
                 if (intFavoritesCount > 0 || intRecentsCount > 0)
                 {
                     token.ThrowIfCancellationRequested();
-                    Task<TreeNode>[] atskCachingTasks = new Task<TreeNode>[intFavoritesCount + intRecentsCount];
-
-                    for (int i = 0; i < intFavoritesCount; ++i)
-                    {
-                        int iLocal = i;
-                        atskCachingTasks[i]
-                            = Task.Run(() => CacheCharacter(lstFavorites[iLocal], token: token), token);
-                    }
-
-                    for (int i = 0; i < intRecentsCount; ++i)
-                    {
-                        int iLocal = i;
-                        atskCachingTasks[intFavoritesCount + i]
-                            = Task.Run(() => CacheCharacter(lstRecents[iLocal], token: token), token);
-                    }
 
                     try
                     {
-                        await Task.WhenAll(atskCachingTasks).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
                         //swallow this
                     }
 
-                    if (lstFavoritesNodes != null)
-                    {
-                        for (int i = 0; i < intFavoritesCount; ++i)
-                        {
-                            lstFavoritesNodes[i] = await atskCachingTasks[i].ConfigureAwait(false);
-                        }
+                    token.ThrowIfCancellationRequested();
 
-                        if (objFavoriteNode != null)
+                    if (lstFavoritesNodes.Length > 0 && objFavoriteNode != null)
+                    {
+                        foreach (TreeNode objNode in lstFavoritesNodes)
                         {
-                            foreach (TreeNode objNode in lstFavoritesNodes)
+                            token.ThrowIfCancellationRequested();
+                            if (objNode == null)
+                                continue;
+                            TreeView treFavoriteNode = objFavoriteNode.TreeView;
+                            if (treFavoriteNode != null)
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (objNode == null)
+                                if (treFavoriteNode.IsNullOrDisposed())
                                     continue;
-                                TreeView treFavoriteNode = objFavoriteNode.TreeView;
-                                if (treFavoriteNode != null)
-                                {
-                                    if (treFavoriteNode.IsNullOrDisposed())
-                                        continue;
-                                    await treFavoriteNode.DoThreadSafeAsync(
-                                        () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
-                                }
-                                else
-                                    objFavoriteNode.Nodes.Add(objNode);
+                                await treFavoriteNode.DoThreadSafeAsync(
+                                    () => objFavoriteNode.Nodes.Add(objNode), token).ConfigureAwait(false);
                             }
+                            else
+                                objFavoriteNode.Nodes.Add(objNode);
                         }
                     }
 
-                    if (lstRecentsNodes != null)
+                    if (lstRecentsNodes.Length > 0 && objRecentNode != null)
                     {
-                        for (int i = 0; i < intRecentsCount; ++i)
+                        foreach (TreeNode objNode in lstRecentsNodes)
                         {
-                            lstRecentsNodes[i] = await atskCachingTasks[intFavoritesCount + i].ConfigureAwait(false);
-                        }
-
-                        if (objRecentNode != null)
-                        {
-                            foreach (TreeNode objNode in lstRecentsNodes)
+                            token.ThrowIfCancellationRequested();
+                            if (objNode == null)
+                                continue;
+                            TreeView treRecentNode = objRecentNode.TreeView;
+                            if (treRecentNode != null)
                             {
-                                token.ThrowIfCancellationRequested();
-                                if (objNode == null)
+                                if (treRecentNode.IsNullOrDisposed())
                                     continue;
-                                TreeView treRecentNode = objRecentNode.TreeView;
-                                if (treRecentNode != null)
-                                {
-                                    if (treRecentNode.IsNullOrDisposed())
-                                        continue;
-                                    await treRecentNode.DoThreadSafeAsync(
-                                        () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
-                                }
-                                else
-                                    objRecentNode.Nodes.Add(objNode);
+                                await treRecentNode.DoThreadSafeAsync(
+                                    () => objRecentNode.Nodes.Add(objNode), token).ConfigureAwait(false);
                             }
+                            else
+                                objRecentNode.Nodes.Add(objNode);
                         }
                     }
                 }
@@ -1343,7 +1248,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert(0, objFavoriteNode);
                             }
-                            else if (lstFavoritesNodes != null)
+                            else if (lstFavoritesNodes.Length > 0)
                             {
                                 try
                                 {
@@ -1369,7 +1274,7 @@ namespace Chummer
                             {
                                 treList.Nodes.Insert((objFavoriteNode != null).ToInt32(), objRecentNode);
                             }
-                            else if (lstRecentsNodes != null)
+                            else if (lstRecentsNodes.Length > 0)
                             {
                                 try
                                 {
@@ -1416,14 +1321,12 @@ namespace Chummer
                 try
                 {
                     foreach (string strFile in Directory
-                                               .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5",
-                                                               SearchOption.AllDirectories)
-                                               .Concat(Directory.EnumerateFiles(
-                                                           GlobalSettings.CharacterRosterPath, "*.chum5lz",
-                                                           SearchOption.AllDirectories)))
+                                               .EnumerateFiles(GlobalSettings.CharacterRosterPath, "*.chum5*",
+                                                               SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
-
+                        if (!strFile.EndsWith(".chum5") && !strFile.EndsWith(".chum5lz"))
+                            continue;
                         FileInfo objInfo = new FileInfo(strFile);
                         string strDirectoryFullName = objInfo.Directory?.FullName ?? string.Empty;
                         if (string.IsNullOrEmpty(strDirectoryFullName)
@@ -1439,19 +1342,16 @@ namespace Chummer
                         dicWatch.Add(strFile, strNewParent);
                     }
                 }
-                catch (OperationCanceledException)
-                {
-                    // Throw cancellations because we expect to handle them in whatever awaits this task
-                    throw;
-                }
                 catch (UnauthorizedAccessException e)
                 {
+                    e = e.Demystify();
                     // We do not have sufficient privileges for this directory
                     strErrorText = e.Message;
                     dicWatch.Clear();
                 }
-                catch (Exception e)
+                catch (Exception e) when (!(e is OperationCanceledException)) // Throw cancellations because we expect to handle them in whatever awaits this task
                 {
+                    e = e.Demystify();
                     // We had some other issue while trying to load the character roster, so log it
                     Log.Warn(e);
                     strErrorText = e.Message;
@@ -1467,8 +1367,8 @@ namespace Chummer
                 if (!string.IsNullOrEmpty(strErrorText))
                     strWatchText
                         += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
-                           + '(' + await LanguageManager.GetStringAsync("String_Error", token: token)
-                                                        .ConfigureAwait(false) + ')';
+                           + "(" + await LanguageManager.GetStringAsync("String_Error", token: token)
+                                                        .ConfigureAwait(false) + ")";
                 if (objWatchNode != null)
                 {
                     await treCharacterList.DoThreadSafeAsync(() =>
@@ -1510,37 +1410,13 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                List<Task<TreeNode>> lstCachingTasks = new List<Task<TreeNode>>(Utils.MaxParallelBatchSize);
-                int intCounter = 0;
-                foreach (string strKey in dicWatch.Keys)
+                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async strKey =>
                 {
-                    lstCachingTasks.Add(Task.Run(() => CacheCharacter(strKey, token: token), token));
-                    if (++intCounter != Utils.MaxParallelBatchSize)
-                        continue;
-                    token.ThrowIfCancellationRequested();
-                    await Task.WhenAll(lstCachingTasks).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
-                    {
-                        TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
-                        if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
-                            dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
-                        token.ThrowIfCancellationRequested();
-                    }
-                    lstCachingTasks.Clear();
-                    intCounter = 0;
-                }
-                token.ThrowIfCancellationRequested();
-                await Task.WhenAll(lstCachingTasks).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                foreach (Task<TreeNode> tskCachingTask in lstCachingTasks)
-                {
-                    TreeNode objNode = await tskCachingTask.ConfigureAwait(false);
+                    TreeNode objNode = await CacheCharacter(strKey, token: token).ConfigureAwait(false);
                     if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
                         dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
-                    token.ThrowIfCancellationRequested();
-                }
-
+                }, token).ConfigureAwait(false);
+                
                 foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
                 {
                     token.ThrowIfCancellationRequested();
@@ -1749,14 +1625,13 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     // Done in two steps because we want the entire ConcurrentDictionary read-locked via the enumerator while we collect the caches we want to purge
-                    List<string> lstToPurge = new List<string>();
+                    List<string> lstToPurge = new List<string>(_dicSavedCharacterCaches.Count);
                     foreach (KeyValuePair<string, CharacterCache> kvpCache in _dicSavedCharacterCaches)
                     {
                         token.ThrowIfCancellationRequested();
-                        string strKey = kvpCache.Key;
                         CharacterCache objCache = kvpCache.Value;
                         if (await treCharacterList.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objCache), token).ConfigureAwait(false) == null)
-                            lstToPurge.Add(strKey);
+                            lstToPurge.Add(kvpCache.Key);
                     }
                     foreach (string strKey in lstToPurge)
                     {
@@ -1804,7 +1679,7 @@ namespace Chummer
                                                      .ConfigureAwait(false),
                                                  async (x, y) =>
                                                  {
-                                                     if (!await y.LoadFromFileAsync(strFile).ConfigureAwait(false))
+                                                     if (!await y.LoadFromFileAsync(strFile, token).ConfigureAwait(false))
                                                      {
                                                          objToDispose = y;
                                                          return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
@@ -1858,7 +1733,7 @@ namespace Chummer
             {
                 Text = await objCache.CalculatedNameAsync(token: token).ConfigureAwait(false),
                 ToolTipText = await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
-                    .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                    .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),
                 Tag = objCache
             };
             string strErrorText = await objCache.GetErrorTextAsync(token).ConfigureAwait(false);
@@ -1924,51 +1799,26 @@ namespace Chummer
                                 await lblCareerKarma.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
                                 string strPlayerName = await objCache.GetPlayerNameAsync(token).ConfigureAwait(false);
                                 await lblPlayerName.DoThreadSafeAsync(x =>
-                                {
-                                    if (string.IsNullOrEmpty(strPlayerName))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strPlayerName;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strPlayerName) ? strUnknown : strPlayerName, token).ConfigureAwait(false);
                                 string strCharacterName = await objCache.GetCharacterNameAsync(token).ConfigureAwait(false);
                                 await lblCharacterName.DoThreadSafeAsync(x =>
-                                {
-                                    if (string.IsNullOrEmpty(strCharacterName))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strCharacterName;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strCharacterName) ? strUnknown : strCharacterName, token).ConfigureAwait(false);
                                 string strCharacterAlias = await objCache.GetCharacterAliasAsync(token).ConfigureAwait(false);
                                 await lblCharacterAlias.DoThreadSafeAsync(x =>
-                                {
-                                    if (string.IsNullOrEmpty(strCharacterAlias))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strCharacterAlias;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strCharacterAlias) ? strUnknown : strCharacterAlias, token).ConfigureAwait(false);
                                 string strEssence = await objCache.GetEssenceAsync(token).ConfigureAwait(false);
                                 await lblEssence.DoThreadSafeAsync(x =>
-                                {
-                                    if (string.IsNullOrEmpty(strEssence))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strEssence;
-                                }, token).ConfigureAwait(false);
+                                x.Text = string.IsNullOrEmpty(strEssence) ? strUnknown : strEssence, token).ConfigureAwait(false);
                                 string strText2 = await objCache.GetFileNameAsync(token).ConfigureAwait(false);
                                 if (string.IsNullOrEmpty(strText2))
                                     strText2 = await LanguageManager.GetStringAsync("MessageTitle_FileNotFound", token: token).ConfigureAwait(false);
                                 await lblFilePath.DoThreadSafeAsync(x => x.Text = strText2, token).ConfigureAwait(false);
                                 string strSettingsFile = await objCache.GetSettingsFileAsync(token).ConfigureAwait(false);
                                 await lblSettings.DoThreadSafeAsync(x =>
-                                {
-                                    if (string.IsNullOrEmpty(strSettingsFile))
-                                        x.Text = strUnknown;
-                                    else
-                                        x.Text = strSettingsFile;
-                                }, token).ConfigureAwait(false);
-                                await lblFilePath.SetToolTipAsync(
+                                x.Text = string.IsNullOrEmpty(strSettingsFile) ? strUnknown : strSettingsFile, token).ConfigureAwait(false);
+                                await lblFilePath.SetToolTipTextAsync(
                                     await (await objCache.GetFilePathAsync(token).ConfigureAwait(false))
-                                        .CheapReplaceAsync(Utils.GetStartupPath, () => '<' + Application.ProductName + '>', token: token).ConfigureAwait(false),
+                                        .CheapReplaceAsync(Utils.GetStartupPath, () => "<" + Application.ProductName + ">", token: token).ConfigureAwait(false),
                                     token).ConfigureAwait(false);
                                 Image objMugshot = await objCache.GetMugshotAsync(token).ConfigureAwait(false);
                                 await picMugshot.DoThreadSafeAsync(x => x.Image = objMugshot, token).ConfigureAwait(false);
@@ -1980,12 +1830,12 @@ namespace Chummer
                                         = await XmlManager.LoadXPathAsync("metatypes.xml", token: token).ConfigureAwait(false);
                                     XPathNavigator objMetatypeNode
                                         = objMetatypeDoc.SelectSingleNode(
-                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + "]");
                                     if (objMetatypeNode == null)
                                     {
                                         objMetatypeDoc = await XmlManager.LoadXPathAsync("critters.xml", token: token).ConfigureAwait(false);
                                         objMetatypeNode = objMetatypeDoc.SelectSingleNode(
-                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + ']');
+                                            "/chummer/metatypes/metatype[name = " + strMetatype.CleanXPath() + "]");
                                     }
 
                                     token.ThrowIfCancellationRequested();
@@ -1995,10 +1845,10 @@ namespace Chummer
                                     if (!string.IsNullOrEmpty(strMetavariant) && strMetavariant != "None")
                                     {
                                         objMetatypeNode = objMetatypeNode?.SelectSingleNode(
-                                            "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + ']');
+                                            "metavariants/metavariant[name = " + strMetavariant.CleanXPath() + "]");
 
-                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + '('
-                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ')';
+                                        strMetatypeText += await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false) + "("
+                                            + (objMetatypeNode?.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? strMetavariant) + ")";
                                     }
 
                                     await lblMetatype.DoThreadSafeAsync(x => x.Text = strMetatypeText, token).ConfigureAwait(false);
@@ -2045,7 +1895,7 @@ namespace Chummer
                             await lblCharacterAlias.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await lblEssence.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await lblFilePath.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
-                            await lblFilePath.SetToolTipAsync(string.Empty, token).ConfigureAwait(false);
+                            await lblFilePath.SetToolTipTextAsync(string.Empty, token).ConfigureAwait(false);
                             await lblSettings.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                             await picMugshot.DoThreadSafeAsync(x => x.Image = null, token).ConfigureAwait(false);
                         }
@@ -2162,7 +2012,7 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache && objCache.OnMyKeyDown != null)
                 {
-                    await objCache.OnMyKeyDown(sender, new Tuple<KeyEventArgs, TreeNode>(e, t), _objGenericToken).ConfigureAwait(false);
+                    await objCache.OnMyKeyDown(sender, new ValueTuple<KeyEventArgs, TreeNode>(e, t), _objGenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2795,16 +2645,12 @@ namespace Chummer
                 Name = "cmsRoster",
                 Size = new Size(intToolStripWidth, intToolStripHeight * 5)
             };
-            cmsRoster.Items.AddRange(new ToolStripItem[]
-            {
-                    tsToggleFav,
-                    tsSort,
-                    tsOpen,
-                    tsOpenForPrinting,
-                    tsOpenForExport,
-                    tsDelete
-            });
-
+            cmsRoster.Items.Add(tsToggleFav);
+            cmsRoster.Items.Add(tsSort);
+            cmsRoster.Items.Add(tsOpen);
+            cmsRoster.Items.Add(tsOpenForPrinting);
+            cmsRoster.Items.Add(tsOpenForExport);
+            cmsRoster.Items.Add(tsDelete);
             tsToggleFav.TranslateToolStripItemsRecursively(token: token);
             tsSort.TranslateToolStripItemsRecursively(token: token);
             tsOpen.TranslateToolStripItemsRecursively(token: token);

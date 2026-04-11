@@ -1,3 +1,6 @@
+using System.Collections.Generic;
+using System.Drawing;
+
 namespace Chummer
 {
     partial class HeroLabImporter
@@ -13,9 +16,16 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _lstCharacterCache?.Dispose();
+                List<Bitmap> lstImages = _dicImages.GetValuesToListSafe();
+                _dicImages.Clear();
+                foreach (Bitmap objImage in lstImages)
+                    objImage.Dispose();
+                dlgOpenFile?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }

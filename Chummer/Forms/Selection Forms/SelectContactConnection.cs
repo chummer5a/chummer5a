@@ -41,6 +41,7 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
         }
 
         private void cboMembership_SelectedIndexChanged(object sender, EventArgs e)
@@ -145,22 +146,22 @@ namespace Chummer
                 await cboMembership
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
+                                                 "+" + _intMembership.ToString(GlobalSettings.InvariantCultureInfo)))
                       .ConfigureAwait(false);
                 await cboAreaOfInfluence
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intAreaOfInfluence.ToString(
+                                                 "+" + _intAreaOfInfluence.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMagicalResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMagicalResources.ToString(
+                                                 "+" + _intMagicalResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await cboMatrixResources
                       .DoThreadSafeAsync(x => x.SelectedIndex
                                              = x.FindString(
-                                                 '+' + _intMatrixResources.ToString(
+                                                 "+" + _intMatrixResources.ToString(
                                                      GlobalSettings.InvariantCultureInfo))).ConfigureAwait(false);
                 await txtGroupName.DoThreadSafeAsync(x => x.Text = _strGroupName).ConfigureAwait(false);
                 await cmdChangeColor.DoThreadSafeAsync(x => x.BackColor = _objColor).ConfigureAwait(false);
@@ -177,15 +178,14 @@ namespace Chummer
         private async void cmdChangeColor_Click(object sender, EventArgs e)
         {
             Color objPreviewColor = ColorManager.GenerateCurrentModeColor(_objColor);
-            Color objSelectedColor = _objColor;
-            DialogResult eResult = await this.DoThreadSafeFuncAsync(x =>
+            (DialogResult eResult, Color objSelectedColor) = await this.DoThreadSafeFuncAsync(x =>
             {
                 using (ColorDialog dlgColor = new ColorDialog())
                 {
                     dlgColor.Color = objPreviewColor;
                     DialogResult eReturn = dlgColor.ShowDialog(x);
                     objSelectedColor = ColorManager.GenerateModeIndependentColor(dlgColor.Color);
-                    return eReturn;
+                    return new ValueTuple<DialogResult, Color>(eReturn, objSelectedColor);
                 }
             }).ConfigureAwait(false);
             if (eResult != DialogResult.OK)
@@ -283,10 +283,10 @@ namespace Chummer
             if (_blnSkipUpdate)
                 return;
 
-            _intMembership = Convert.ToInt32(cboMembership.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intAreaOfInfluence = Convert.ToInt32(cboAreaOfInfluence.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intMagicalResources = Convert.ToInt32(cboMagicalResources.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
-            _intMatrixResources = Convert.ToInt32(cboMatrixResources.Text.Substring(0, 2), GlobalSettings.InvariantCultureInfo);
+            int.TryParse(cboMembership.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMembership);
+            int.TryParse(cboAreaOfInfluence.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intAreaOfInfluence);
+            int.TryParse(cboMagicalResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMagicalResources);
+            int.TryParse(cboMatrixResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMatrixResources);
             _strGroupName = txtGroupName.Text;
             _blnFree = chkFreeContact.Checked;
 

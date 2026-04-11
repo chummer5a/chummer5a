@@ -30,17 +30,16 @@ namespace Chummer
         {
             this.lblYear = new System.Windows.Forms.Label();
             this.nudYear = new Chummer.NumericUpDownEx();
-            this.lblMonth = new System.Windows.Forms.Label();
-            this.nudMonth = new Chummer.NumericUpDownEx();
             this.lblWeek = new System.Windows.Forms.Label();
             this.nudWeek = new Chummer.NumericUpDownEx();
             this.lblCalendarStart = new System.Windows.Forms.Label();
             this.cmdCancel = new System.Windows.Forms.Button();
             this.cmdOK = new System.Windows.Forms.Button();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
+            this.lblDateSpan = new System.Windows.Forms.Label();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.lblWeekSpansFollowingDates = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.nudYear)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMonth)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWeek)).BeginInit();
             this.tlpMain.SuspendLayout();
             this.tlpButtons.SuspendLayout();
@@ -50,7 +49,7 @@ namespace Chummer
             // 
             this.lblYear.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblYear.AutoSize = true;
-            this.lblYear.Location = new System.Drawing.Point(3, 54);
+            this.lblYear.Location = new System.Drawing.Point(3, 44);
             this.lblYear.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblYear.Name = "lblYear";
             this.lblYear.Size = new System.Drawing.Size(32, 13);
@@ -62,7 +61,7 @@ namespace Chummer
             // 
             this.nudYear.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudYear.AutoSize = true;
-            this.nudYear.Location = new System.Drawing.Point(41, 51);
+            this.nudYear.Location = new System.Drawing.Point(41, 41);
             this.nudYear.Maximum = new decimal(new int[] {
             9000,
             0,
@@ -74,7 +73,7 @@ namespace Chummer
             0,
             0});
             this.nudYear.Name = "nudYear";
-            this.nudYear.Size = new System.Drawing.Size(46, 20);
+            this.nudYear.Size = new System.Drawing.Size(95, 20);
             this.nudYear.TabIndex = 2;
             this.nudYear.Value = new decimal(new int[] {
             2072,
@@ -82,48 +81,11 @@ namespace Chummer
             0,
             0});
             // 
-            // lblMonth
-            // 
-            this.lblMonth.Anchor = System.Windows.Forms.AnchorStyles.Right;
-            this.lblMonth.AutoSize = true;
-            this.lblMonth.Location = new System.Drawing.Point(93, 54);
-            this.lblMonth.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
-            this.lblMonth.Name = "lblMonth";
-            this.lblMonth.Size = new System.Drawing.Size(40, 13);
-            this.lblMonth.TabIndex = 3;
-            this.lblMonth.Tag = "Label_Month";
-            this.lblMonth.Text = "Month:";
-            // 
-            // nudMonth
-            // 
-            this.nudMonth.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.nudMonth.AutoSize = true;
-            this.nudMonth.Location = new System.Drawing.Point(139, 51);
-            this.nudMonth.Maximum = new decimal(new int[] {
-            12,
-            0,
-            0,
-            0});
-            this.nudMonth.Minimum = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMonth.Name = "nudMonth";
-            this.nudMonth.Size = new System.Drawing.Size(46, 20);
-            this.nudMonth.TabIndex = 4;
-            this.nudMonth.Value = new decimal(new int[] {
-            1,
-            0,
-            0,
-            0});
-            this.nudMonth.ValueChanged += new System.EventHandler(this.nudMonth_ValueChanged);
-            // 
             // lblWeek
             // 
             this.lblWeek.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblWeek.AutoSize = true;
-            this.lblWeek.Location = new System.Drawing.Point(191, 54);
+            this.lblWeek.Location = new System.Drawing.Point(142, 44);
             this.lblWeek.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblWeek.Name = "lblWeek";
             this.lblWeek.Size = new System.Drawing.Size(39, 13);
@@ -135,9 +97,9 @@ namespace Chummer
             // 
             this.nudWeek.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
             this.nudWeek.AutoSize = true;
-            this.nudWeek.Location = new System.Drawing.Point(236, 51);
+            this.nudWeek.Location = new System.Drawing.Point(187, 41);
             this.nudWeek.Maximum = new decimal(new int[] {
-            5,
+            52,
             0,
             0,
             0});
@@ -147,7 +109,7 @@ namespace Chummer
             0,
             0});
             this.nudWeek.Name = "nudWeek";
-            this.nudWeek.Size = new System.Drawing.Size(47, 20);
+            this.nudWeek.Size = new System.Drawing.Size(96, 20);
             this.nudWeek.TabIndex = 6;
             this.nudWeek.Value = new decimal(new int[] {
             1,
@@ -158,15 +120,14 @@ namespace Chummer
             // lblCalendarStart
             // 
             this.lblCalendarStart.AutoSize = true;
-            this.tlpMain.SetColumnSpan(this.lblCalendarStart, 6);
-            this.lblCalendarStart.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpMain.SetColumnSpan(this.lblCalendarStart, 4);
             this.lblCalendarStart.Location = new System.Drawing.Point(3, 6);
             this.lblCalendarStart.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCalendarStart.Name = "lblCalendarStart";
-            this.lblCalendarStart.Size = new System.Drawing.Size(280, 36);
+            this.lblCalendarStart.Size = new System.Drawing.Size(260, 26);
             this.lblCalendarStart.TabIndex = 0;
             this.lblCalendarStart.Tag = "Label_CalendarStart";
-            this.lblCalendarStart.Text = "Enter the year, month, and week number to start the calendar at.";
+            this.lblCalendarStart.Text = "Enter the year and week number at which to start the calendar.";
             // 
             // cmdCancel
             // 
@@ -203,30 +164,44 @@ namespace Chummer
             // 
             this.tlpMain.AutoSize = true;
             this.tlpMain.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpMain.ColumnCount = 6;
+            this.tlpMain.ColumnCount = 4;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33334F));
+            this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
+            this.tlpMain.Controls.Add(this.lblDateSpan, 0, 3);
             this.tlpMain.Controls.Add(this.lblCalendarStart, 0, 0);
             this.tlpMain.Controls.Add(this.lblYear, 0, 1);
-            this.tlpMain.Controls.Add(this.lblMonth, 2, 1);
-            this.tlpMain.Controls.Add(this.nudWeek, 5, 1);
+            this.tlpMain.Controls.Add(this.nudWeek, 3, 1);
             this.tlpMain.Controls.Add(this.nudYear, 1, 1);
-            this.tlpMain.Controls.Add(this.lblWeek, 4, 1);
-            this.tlpMain.Controls.Add(this.nudMonth, 3, 1);
-            this.tlpMain.Controls.Add(this.tlpButtons, 0, 2);
+            this.tlpMain.Controls.Add(this.lblWeek, 2, 1);
+            this.tlpMain.Controls.Add(this.tlpButtons, 0, 4);
+            this.tlpMain.Controls.Add(this.lblWeekSpansFollowingDates, 0, 2);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 5;
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.Size = new System.Drawing.Size(286, 103);
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpMain.Size = new System.Drawing.Size(286, 163);
             this.tlpMain.TabIndex = 9;
+            // 
+            // lblDateSpan
+            // 
+            this.lblDateSpan.Anchor = System.Windows.Forms.AnchorStyles.Top;
+            this.lblDateSpan.AutoSize = true;
+            this.tlpMain.SetColumnSpan(this.lblDateSpan, 4);
+            this.lblDateSpan.Location = new System.Drawing.Point(56, 95);
+            this.lblDateSpan.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblDateSpan.Name = "lblDateSpan";
+            this.lblDateSpan.Size = new System.Drawing.Size(174, 13);
+            this.lblDateSpan.TabIndex = 10;
+            this.lblDateSpan.Tag = "String_DateSpan";
+            this.lblDateSpan.Text = "January 4, 2072 - January 10, 2072";
             // 
             // tlpButtons
             // 
@@ -234,12 +209,12 @@ namespace Chummer
             this.tlpButtons.AutoSize = true;
             this.tlpButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.tlpButtons.ColumnCount = 2;
-            this.tlpMain.SetColumnSpan(this.tlpButtons, 6);
+            this.tlpMain.SetColumnSpan(this.tlpButtons, 4);
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpButtons.Controls.Add(this.cmdCancel, 0, 0);
             this.tlpButtons.Controls.Add(this.cmdOK, 1, 0);
-            this.tlpButtons.Location = new System.Drawing.Point(114, 74);
+            this.tlpButtons.Location = new System.Drawing.Point(114, 134);
             this.tlpButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpButtons.Name = "tlpButtons";
             this.tlpButtons.RowCount = 1;
@@ -247,12 +222,24 @@ namespace Chummer
             this.tlpButtons.Size = new System.Drawing.Size(172, 29);
             this.tlpButtons.TabIndex = 8;
             // 
+            // lblWeekSpansFollowingDates
+            // 
+            this.lblWeekSpansFollowingDates.AutoSize = true;
+            this.tlpMain.SetColumnSpan(this.lblWeekSpansFollowingDates, 4);
+            this.lblWeekSpansFollowingDates.Location = new System.Drawing.Point(3, 70);
+            this.lblWeekSpansFollowingDates.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
+            this.lblWeekSpansFollowingDates.Name = "lblWeekSpansFollowingDates";
+            this.lblWeekSpansFollowingDates.Size = new System.Drawing.Size(181, 13);
+            this.lblWeekSpansFollowingDates.TabIndex = 9;
+            this.lblWeekSpansFollowingDates.Tag = "Label_WeekSpansFollowingDates";
+            this.lblWeekSpansFollowingDates.Text = "This week spans the following dates:";
+            // 
             // SelectCalendarStart
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.AutoSize = true;
-            this.ClientSize = new System.Drawing.Size(304, 121);
+            this.ClientSize = new System.Drawing.Size(304, 181);
             this.Controls.Add(this.tlpMain);
             this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedDialog;
             this.MaximizeBox = false;
@@ -263,8 +250,8 @@ namespace Chummer
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
             this.Tag = "Title_CalendarStart";
             this.Text = "Calendar";
+            this.Load += new System.EventHandler(this.UpdateDateSpan);
             ((System.ComponentModel.ISupportInitialize)(this.nudYear)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.nudMonth)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudWeek)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
@@ -279,8 +266,6 @@ namespace Chummer
 
         private System.Windows.Forms.Label lblYear;
         private Chummer.NumericUpDownEx nudYear;
-        private System.Windows.Forms.Label lblMonth;
-        private Chummer.NumericUpDownEx nudMonth;
         private System.Windows.Forms.Label lblWeek;
         private Chummer.NumericUpDownEx nudWeek;
         private System.Windows.Forms.Label lblCalendarStart;
@@ -288,5 +273,7 @@ namespace Chummer
         private System.Windows.Forms.Button cmdOK;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpButtons;
+        private System.Windows.Forms.Label lblWeekSpansFollowingDates;
+        private System.Windows.Forms.Label lblDateSpan;
     }
 }

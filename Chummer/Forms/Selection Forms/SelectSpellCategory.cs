@@ -39,9 +39,9 @@ namespace Chummer
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
             _objXmlDocument = XmlManager.LoadXPath("spells.xml", objCharacter?.Settings.EnabledCustomDataDirectoryPaths);
             _setExcludeCategories = Utils.StringHashSetPool.Get();
-            Disposed += (sender, args) => Utils.StringHashSetPool.Return(ref _setExcludeCategories);
         }
 
         private async void SelectSpellCategory_Load(object sender, EventArgs e)
@@ -51,7 +51,7 @@ namespace Chummer
             {
                 foreach (XPathNavigator objXmlCategory in !string.IsNullOrEmpty(_strForceCategory)
                              ? _objXmlDocument.Select("/chummer/categories/category[. = "
-                                                      + _strForceCategory.CleanXPath() + ']')
+                                                      + _strForceCategory.CleanXPath() + "]")
                              : _objXmlDocument.SelectAndCacheExpression("/chummer/categories/category"))
                 {
                     string strInnerText = objXmlCategory.Value;

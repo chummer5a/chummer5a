@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Collections.Specialized;
@@ -180,7 +181,7 @@ namespace Chummer
                     }
                 }
 
-                int intRandomResult = await GlobalSettings.RandomGenerator.NextModuloBiasRemovedAsync(intTotalWeight, token: token).ConfigureAwait(false);
+                int intRandomResult = await Utils.GlobalRandom.NextModuloBiasRemovedAsync(intTotalWeight, token: token).ConfigureAwait(false);
                 string strSelectedId = string.Empty;
                 foreach (KeyValuePair<string, int> objStoryId in dicStoriesListWithWeights)
                 {
@@ -197,13 +198,11 @@ namespace Chummer
                     XPathNavigator xmlNewPersistentNode = _xmlStoryDocumentBaseNode.TryGetNodeByNameOrId("stories/story", strSelectedId);
                     if (xmlNewPersistentNode != null)
                     {
-                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter)
-                        {
-                            ParentStory = this,
-                            IsRandomlyGenerated = true
-                        };
+                        StoryModule objPersistentStoryModule = new StoryModule(_objCharacter);
                         try
                         {
+                            objPersistentStoryModule.ParentStory = this;
+                            objPersistentStoryModule.IsRandomlyGenerated = true;
                             await objPersistentStoryModule.CreateAsync(xmlNewPersistentNode, token).ConfigureAwait(false);
                             token.ThrowIfCancellationRequested();
                             _dicPersistentModules.TryAdd(strFunction, objPersistentStoryModule);
@@ -260,27 +259,34 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
-                string[] strModuleOutputStrings;
                 IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
                     int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
-                    strModuleOutputStrings = new string[intCount];
-                    for (int i = 0; i < intCount; ++i)
+                    string[] astrModuleOutputStrings = ArrayPool<string>.Shared.Rent(intCount);
+                    try
                     {
-                        strModuleOutputStrings[i]
-                            = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
-                                .PrintModule(objCulture, strLanguage, token)
-                                .ConfigureAwait(false);
+                        for (int i = 0; i < intCount; ++i)
+                        {
+                            astrModuleOutputStrings[i]
+                                = await (await Modules.GetValueAtAsync(i, token).ConfigureAwait(false))
+                                    .PrintModule(objCulture, strLanguage, token)
+                                    .ConfigureAwait(false);
+                        }
+
+                        return StringExtensions.ConcatFast(astrModuleOutputStrings, 0, intCount);
+                    }
+                    finally
+                    {
+                        if (astrModuleOutputStrings != null)
+                            ArrayPool<string>.Shared.Return(astrModuleOutputStrings);
                     }
                 }
                 finally
                 {
                     await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
-
-                return string.Concat(strModuleOutputStrings);
             }
             finally
             {

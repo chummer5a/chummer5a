@@ -89,6 +89,7 @@ namespace Chummer
         /// Add a new control to the list of controls
         /// </summary>
         /// <param name="control">The control to add</param>
+        /// <param name="token">Cancellation token to listen to.</param>
         public Task AddControlAsync(Control control, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)

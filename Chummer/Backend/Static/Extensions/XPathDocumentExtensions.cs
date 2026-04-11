@@ -69,7 +69,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task<XPathDocument> LoadStandardFromFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
-            return Task.Run(() =>
+            return TaskExtensions.RunWithoutEC(() =>
             {
                 using (FileStream objFileStream
                        = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
@@ -138,35 +138,33 @@ namespace Chummer
         /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Task<XPathDocument> LoadStandardFromLzmaCompressedFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)
+        public static async Task<XPathDocument> LoadStandardFromLzmaCompressedFileAsync(string strFileName, bool blnSafe = true, CancellationToken token = default)
         {
-            return Task.Run(async () =>
+            token.ThrowIfCancellationRequested();
+            using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
-                using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
+                token.ThrowIfCancellationRequested();
+                using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
                 {
+                    await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token: token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
-                    using (RecyclableMemoryStream objMemoryStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, "LzmaMemoryStream", (int)objFileStream.Length))
+                    objMemoryStream.Seek(0, SeekOrigin.Begin);
+                    token.ThrowIfCancellationRequested();
+                    using (StreamReader objStreamReader
+                           = new StreamReader(objMemoryStream, Encoding.UTF8, true))
                     {
-                        await objFileStream.DecompressLzmaFileAsync(objMemoryStream, token: token).ConfigureAwait(false);
                         token.ThrowIfCancellationRequested();
-                        objMemoryStream.Seek(0, SeekOrigin.Begin);
-                        token.ThrowIfCancellationRequested();
-                        using (StreamReader objStreamReader
-                               = new StreamReader(objMemoryStream, Encoding.UTF8, true))
+                        using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                                                                      blnSafe
+                                                                          ? GlobalSettings.SafeXmlReaderSettings
+                                                                          : GlobalSettings.UnSafeXmlReaderSettings))
                         {
                             token.ThrowIfCancellationRequested();
-                            using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                                                                          blnSafe
-                                                                              ? GlobalSettings.SafeXmlReaderSettings
-                                                                              : GlobalSettings.UnSafeXmlReaderSettings))
-                            {
-                                token.ThrowIfCancellationRequested();
-                                return new XPathDocument(objReader);
-                            }
+                            return new XPathDocument(objReader);
                         }
                     }
                 }
-            }, token);
+            }
         }
 
         /// <summary>
@@ -185,11 +183,9 @@ namespace Chummer
                 {
                     return LoadStandardFromFile(strFileName, blnSafe, token);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -215,11 +211,9 @@ namespace Chummer
                 {
                     return await LoadStandardFromFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -244,11 +238,9 @@ namespace Chummer
                 {
                     return LoadStandardFromLzmaCompressedFile(strFileName, blnSafe, token);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 Utils.SafeSleep(token);
@@ -274,11 +266,9 @@ namespace Chummer
                 {
                     return await LoadStandardFromLzmaCompressedFileAsync(strFileName, blnSafe, token).ConfigureAwait(false);
                 }
-                catch (IOException)
+                catch (IOException) when (i < intTimeout - Utils.DefaultSleepDuration)
                 {
                     // swallow this unless we are at the emergency release stage
-                    if (i >= intTimeout - Utils.DefaultSleepDuration)
-                        throw;
                 }
 
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);

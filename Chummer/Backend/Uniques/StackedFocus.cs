@@ -87,7 +87,7 @@ namespace Chummer
             {
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
                 objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
-                _blnBonded = objNode["bonded"]?.InnerText == bool.TrueString;
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
                 using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
                 {
                     if (nodGearList == null)
@@ -95,10 +95,59 @@ namespace Chummer
                     foreach (XmlNode nodGear in nodGearList)
                     {
                         Gear objGear = new Gear(_objCharacter);
-                        objGear.Load(nodGear);
-                        _lstGear.Add(objGear);
+                        try
+                        {
+                            objGear.Load(nodGear);
+                            _lstGear.Add(objGear);
+                        }
+                        catch
+                        {
+                            objGear.DeleteGear();
+                            throw;
+                        }
                     }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Load the Stacked Focus from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                objNode.TryGetField("guid", Guid.TryParse, out _guiID);
+                objNode.TryGetField("gearid", Guid.TryParse, out _guiGearId);
+                _blnBonded = objNode["bonded"]?.InnerTextIsTrueString() == true;
+                using (XmlNodeList nodGearList = objNode.SelectNodes("gears/gear"))
+                {
+                    if (nodGearList != null)
+                    {
+                        foreach (XmlNode nodGear in nodGearList)
+                        {
+                            Gear objGear = new Gear(_objCharacter);
+                            try
+                            {
+                                await objGear.LoadAsync(nodGear, token: token).ConfigureAwait(false);
+                                await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                throw;
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -497,6 +546,7 @@ namespace Chummer
         /// </summary>
         public string Name(CultureInfo objCulture, string strLanguage)
         {
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
@@ -504,7 +554,7 @@ namespace Chummer
                 {
                     foreach (Gear objGear in Gear)
                     {
-                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage)).Append(", ");
+                        sbdReturn.Append(objGear.DisplayName(objCulture, strLanguage), ',', strSpace);
                     }
                 }
 
@@ -521,6 +571,7 @@ namespace Chummer
         /// </summary>
         public async Task<string> NameAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false);
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
@@ -531,7 +582,7 @@ namespace Chummer
                     await Gear.ForEachAsync(async objGear =>
                     {
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
-                                                      .ConfigureAwait(false)).Append(", ");
+                                                      .ConfigureAwait(false), ',', strSpace);
                     }, token).ConfigureAwait(false);
                 }
                 finally

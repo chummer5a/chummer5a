@@ -30,7 +30,47 @@ namespace Chummer
     public static class StreamExtensions
     {
         /// <summary>
-        /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// Dumps the contents of a stream into a byte array.
+        /// </summary>
+        /// <param name="objStream">Stream to convert to a byte array.</param>
+        public static byte[] ToArray(this Stream objStream)
+        {
+            if (objStream == null)
+            {
+                throw new ArgumentNullException(nameof(objStream));
+            }
+            objStream.Position = 0;
+            int arrayLength = Convert.ToInt32(objStream.Length);
+            byte[] achrReturn = new byte[arrayLength];
+            _ = objStream.Read(achrReturn, 0, arrayLength);
+            return achrReturn;
+        }
+
+        /// <summary>
+        /// Dumps the contents of a stream into a byte array.
+        /// </summary>
+        /// <param name="objStream">Stream to convert to a byte array.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task<byte[]> ToArrayAsync(this Stream objStream, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objStream == null)
+            {
+                throw new ArgumentNullException(nameof(objStream));
+            }
+            return ToArrayAsyncInner();
+            async Task<byte[]> ToArrayAsyncInner()
+            {
+                objStream.Position = 0;
+                int arrayLength = Convert.ToInt32(objStream.Length);
+                byte[] achrReturn = new byte[arrayLength];
+                _ = await objStream.ReadAsync(achrReturn, 0, arrayLength, token).ConfigureAwait(false);
+                return achrReturn;
+            }
+        }
+
+        /// <summary>
+        /// Similar to <see cref="ToArray(Stream)"/>, but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary.</param>
@@ -57,11 +97,11 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Similar to Stream.ToArray(), but allocates to a rented array from ArrayPool instead of to a newly allocated array.
+        /// Similar to <see cref="ToArrayAsync(Stream, CancellationToken)"/>, but allocates to a rented array from ArrayPool instead of to a newly allocated array.
         /// </summary>
         /// <param name="objStream">Stream to convert to a byte array.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<Tuple<byte[], int>> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
+        public static Task<ValueTuple<byte[], int>> ToPooledArrayAsync(this Stream objStream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (objStream == null)
@@ -69,7 +109,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objStream));
             }
             return ToPooledArrayAsyncInner();
-            async Task<Tuple<byte[], int>> ToPooledArrayAsyncInner()
+            async Task<ValueTuple<byte[], int>> ToPooledArrayAsyncInner()
             {
                 objStream.Position = 0;
                 int arrayLength = Convert.ToInt32(objStream.Length);
@@ -84,10 +124,11 @@ namespace Chummer
                     ArrayPool<byte>.Shared.Return(achrReturn);
                     throw;
                 }
-                return new Tuple<byte[], int>(achrReturn, arrayLength);
+                return new ValueTuple<byte[], int>(achrReturn, arrayLength);
             }
         }
 
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
         private static readonly char[] s_Base64Table = {
             'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J',
             'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T',
@@ -100,7 +141,7 @@ namespace Chummer
 
         /// <summary>
         /// Converts a stream directly to a Base64-encoded string without needing to allocate a byte array as an intermediate.
-        /// More memory efficient than using some byte array converter on the stream followed by Convert.ToBase64String().
+        /// More memory efficient than using some byte array converter on the stream followed by <see cref="Convert.ToBase64String(byte[])"/>.
         /// </summary>
         /// <param name="objStream">Some stream to convert.</param>
         /// <param name="eFormattingOptions">Base64 formatting options to use in the output string.</param>
@@ -192,10 +233,10 @@ namespace Chummer
                                 num4 += 4;
                             }
 
-                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                .Append(ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
-                                .Append(ptr[achrBuffer[2] & 0x3F]);
+                            sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                ptr[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)],
+                                ptr[achrBuffer[2] & 0x3F]);
                             num3 += 4;
                         }
 
@@ -212,20 +253,20 @@ namespace Chummer
                             case 2:
                             {
                                 _ = inData.Read(achrBuffer, 0, 2);
-                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                    .Append(ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                    .Append(ptr[(achrBuffer[1] & 0xF) << 2])
-                                    .Append(ptr[64]);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                    ptr[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                    ptr[(achrBuffer[1] & 0xF) << 2],
+                                    ptr[64]);
                                 num3 += 4;
                                 break;
                             }
                             case 1:
                             {
                                 _ = inData.Read(achrBuffer, 0, 1);
-                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2])
-                                    .Append(ptr[(achrBuffer[0] & 3) << 4])
-                                    .Append(ptr[64])
-                                    .Append(ptr[64]);
+                                sbdChars.Append(ptr[(achrBuffer[0] & 0xFC) >> 2],
+                                    ptr[(achrBuffer[0] & 3) << 4],
+                                    ptr[64],
+                                    ptr[64]);
                                 num3 += 4;
                                 break;
                             }
@@ -239,7 +280,7 @@ namespace Chummer
 
         /// <summary>
         /// Converts a stream directly to a Base64-encoded string without needing to allocate a byte array as an intermediate.
-        /// More memory efficient than using some byte array converter on the stream followed by Convert.ToBase64String().
+        /// More memory efficient than using some byte array converter on the stream followed by <see cref="Convert.ToBase64String(byte[])"/>.
         /// </summary>
         /// <param name="objStream">Some stream to convert.</param>
         /// <param name="eFormattingOptions">Base64 formatting options to use in the output string.</param>
@@ -330,10 +371,10 @@ namespace Chummer
                             num4 += 4;
                         }
 
-                        sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                            .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                            .Append(s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)])
-                            .Append(s_Base64Table[achrBuffer[2] & 0x3F]);
+                        sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                            s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                            s_Base64Table[((achrBuffer[1] & 0xF) << 2) | ((achrBuffer[2] & 0xC0) >> 6)],
+                            s_Base64Table[achrBuffer[2] & 0x3F]);
                         num3 += 4;
                     }
 
@@ -350,20 +391,20 @@ namespace Chummer
                         case 2:
                         {
                             _ = await inData.ReadAsync(achrBuffer, 0, 2, token).ConfigureAwait(false);
-                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)])
-                                .Append(s_Base64Table[(achrBuffer[1] & 0xF) << 2])
-                                .Append(s_Base64Table[64]);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                                s_Base64Table[((achrBuffer[0] & 3) << 4) | ((achrBuffer[1] & 0xF0) >> 4)],
+                                s_Base64Table[(achrBuffer[1] & 0xF) << 2],
+                                s_Base64Table[64]);
                             num3 += 4;
                             break;
                         }
                         case 1:
                         {
                             _ = await inData.ReadAsync(achrBuffer, 0, 1, token).ConfigureAwait(false);
-                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2])
-                                .Append(s_Base64Table[(achrBuffer[0] & 3) << 4])
-                                .Append(s_Base64Table[64])
-                                .Append(s_Base64Table[64]);
+                            sbdChars.Append(s_Base64Table[(achrBuffer[0] & 0xFC) >> 2],
+                                s_Base64Table[(achrBuffer[0] & 3) << 4],
+                                s_Base64Table[64],
+                                s_Base64Table[64]);
                             num3 += 4;
                             break;
                         }

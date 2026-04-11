@@ -13,9 +13,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                UnbindPetControl();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -143,7 +145,6 @@ namespace Chummer
             this.cboMetatype.Name = "cboMetatype";
             this.cboMetatype.Size = new System.Drawing.Size(271, 21);
             this.cboMetatype.TabIndex = 24;
-            this.cboMetatype.TooltipText = "";
             this.cboMetatype.TextChanged += new System.EventHandler(this.cboMetatype_TextChanged);
             // 
             // tlpMain

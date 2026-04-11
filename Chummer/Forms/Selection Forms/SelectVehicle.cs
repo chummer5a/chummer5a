@@ -39,6 +39,7 @@ namespace Chummer
         private string _strUsedAvail = string.Empty;
         private decimal _decUsedCost;
         private decimal _decMarkup;
+        private bool _blnFreeCost;
 
         private int _intLoading = 1;
         private bool _blnAddAgain;
@@ -66,36 +67,17 @@ namespace Chummer
             tabViews.MouseWheel += CommonFunctions.ShiftTabsOnMouseScroll;
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
+            this.UpdateParentForToolTipControls();
+
+            // Prevent Enter key from closing the form when NumericUpDown controls have focus
+            nudMinimumCost.KeyDown += NumericUpDown_KeyDown;
+            nudMaximumCost.KeyDown += NumericUpDown_KeyDown;
+            nudExactCost.KeyDown += NumericUpDown_KeyDown;
             _lstCategory = Utils.ListItemListPool.Get();
             _setDealerConnectionMaps = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _objGenericCancellationTokenSource = new CancellationTokenSource();
             _objGenericToken = _objGenericCancellationTokenSource.Token;
-            Disposed += (sender, args) =>
-            {
-                CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateSelectedVehicleCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateSelectedVehicleCostCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                objOldCancellationTokenSource = Interlocked.Exchange(ref _objDoRefreshListCancellationTokenSource, null);
-                if (objOldCancellationTokenSource?.IsCancellationRequested == false)
-                {
-                    objOldCancellationTokenSource.Cancel(false);
-                    objOldCancellationTokenSource.Dispose();
-                }
-                _objGenericCancellationTokenSource.Dispose();
-                Utils.ListItemListPool.Return(ref _lstCategory);
-                Utils.StringHashSetPool.Return(ref _setDealerConnectionMaps);
-                Utils.StringHashSetPool.Return(ref _setBlackMarketMaps);
-            };
             // Load the Vehicle information.
             _xmlBaseVehicleDataNode = _objCharacter.LoadDataXPath("vehicles.xml").SelectSingleNodeAndCacheExpression("/chummer");
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseVehicleDataNode));
@@ -116,10 +98,11 @@ namespace Chummer
                     }
                 }
 
+                CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
                 DataGridViewCellStyle dataGridViewNuyenCellStyle = new DataGridViewCellStyle
                 {
                     Alignment = DataGridViewContentAlignment.TopRight,
-                    Format = await _objCharacter.Settings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false) +
+                    Format = await objSettings.GetNuyenFormatAsync(_objGenericToken).ConfigureAwait(false) +
                              await LanguageManager.GetStringAsync("String_NuyenSymbol", token: _objGenericToken)
                                  .ConfigureAwait(false),
                     NullValue = null
@@ -145,7 +128,7 @@ namespace Chummer
                     await lblMarkupLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
                     await nudMarkup.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
                     await lblMarkupPercentLabel.DoThreadSafeAsync(x => x.Visible = false, _objGenericToken).ConfigureAwait(false);
-                    int intMaxAvail = await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
+                    int intMaxAvail = await objSettings.GetMaximumAvailabilityAsync(_objGenericToken).ConfigureAwait(false);
                     await chkHideOverAvailLimit.DoThreadSafeAsync(x =>
                     {
                         x.Text = string.Format(GlobalSettings.CultureInfo, x.Text, intMaxAvail);
@@ -155,11 +138,11 @@ namespace Chummer
                 }
 
                 // Populate the Vehicle Category list.
-                string strFilterPrefix = "vehicles/vehicle[(" + await _objCharacter.Settings.BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + ") and category = ";
+                string strFilterPrefix = "vehicles/vehicle[" + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false) + " and category = ";
                 foreach (XPathNavigator objXmlCategory in _xmlBaseVehicleDataNode.SelectAndCacheExpression("categories/category", _objGenericToken))
                 {
                     string strInnerText = objXmlCategory.Value;
-                    if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + ']') != null)
+                    if (_xmlBaseVehicleDataNode.SelectSingleNode(strFilterPrefix + strInnerText.CleanXPath() + "]") != null)
                     {
                         _lstCategory.Add(new ListItem(strInnerText,
                             objXmlCategory.SelectSingleNodeAndCacheExpression("@translate", _objGenericToken)?.Value ?? strInnerText));
@@ -223,6 +206,30 @@ namespace Chummer
             catch (OperationCanceledException)
             {
                 //swallow this
+            }
+        }
+
+        private async void CostFilter(object sender, EventArgs e)
+        {
+            if (_intLoading > 0)
+                return;
+
+            try
+            {
+                await RefreshList(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void NumericUpDown_KeyDown(object sender, KeyEventArgs e)
+        {
+            if (e.KeyCode == Keys.Enter)
+            {
+                e.Handled = true;
+                e.SuppressKeyPress = true;
             }
         }
 
@@ -387,7 +394,7 @@ namespace Chummer
         /// <summary>
         /// Whether the item should be added for free.
         /// </summary>
-        public bool FreeCost => chkFreeItem.Checked;
+        public bool FreeCost => _blnFreeCost;
 
         /// <summary>
         /// Markup percentage.
@@ -458,9 +465,12 @@ namespace Chummer
                     await lblVehicleArmorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strArmor), token: token).ConfigureAwait(false);
                     await lblVehicleSeatsLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSeats), token: token).ConfigureAwait(false);
                     await lblVehicleSensorLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strSensor), token: token).ConfigureAwait(false);
+                    int intAvailModifier = (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound();
+                    if (await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        intAvailModifier -= 4;
                     AvailabilityValue objTotalAvail
                         = new AvailabilityValue(0, objXmlVehicle.SelectSingleNodeAndCacheExpression("avail", token)?.Value,
-                                                await chkUsedVehicle.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false) ? -4 : 0);
+                                                intAvailModifier);
                     string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);
                     await lblVehicleAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
                     await lblVehicleAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
@@ -491,7 +501,7 @@ namespace Chummer
                     SourceString objSource = await SourceString.GetSourceStringAsync(
                         strSource, strPage, GlobalSettings.Language,
                         GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
-                    await objSource.SetControlAsync(lblSource, token: token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
                     await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
                     await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
                 }
@@ -560,7 +570,7 @@ namespace Chummer
                             decCost *= 0.9m;
                     }
 
-                    strCost = decCost.ToString(_objCharacter.Settings.NuyenFormat, GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                    strCost = decCost.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo) + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
                     await lblVehicleCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
                     await lblVehicleCostLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strCost), token: token).ConfigureAwait(false);
                     string strTest = await _objCharacter.AvailTestAsync(decCost, await lblVehicleAvail.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -594,13 +604,11 @@ namespace Chummer
                     string strFilter = string.Empty;
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
                     {
-                        sbdFilter.Append('(')
-                            .Append(await _objCharacter.Settings.BookXPathAsync(token: token).ConfigureAwait(false))
-                            .Append(')');
+                        sbdFilter.Append(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(strCategory) && strCategory != "Show All"
                                                                && (GlobalSettings.SearchInCategoryOnly
                                                                    || txtSearch.TextLength == 0))
-                            sbdFilter.Append(" and category = ").Append(strCategory.CleanXPath());
+                            sbdFilter.Append(" and category = ", strCategory.CleanXPath());
                         else
                         {
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -609,23 +617,39 @@ namespace Chummer
                                 foreach (string strItem in _lstCategory.Select(x => x.Value.ToString()))
                                 {
                                     if (!string.IsNullOrEmpty(strItem))
-                                        sbdCategoryFilter.Append("category = ").Append(strItem.CleanXPath())
-                                            .Append(" or ");
+                                        sbdCategoryFilter.Append("category = ", strItem.CleanXPath(), " or ");
                                 }
 
                                 if (sbdCategoryFilter.Length > 0)
                                 {
                                     sbdCategoryFilter.Length -= 4;
-                                    sbdFilter.Append(" and (").Append(sbdCategoryFilter).Append(')');
+                                    sbdFilter.Append(" and (", sbdCategoryFilter.ToString(), ')');
                                 }
                             }
                         }
 
                         if (!string.IsNullOrEmpty(txtSearch.Text))
-                            sbdFilter.Append(" and ").Append(CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateSearchXPath(txtSearch.Text));
+
+                        // Apply cost filtering
+                        decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+                        decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
+
+                        if (decExactCost > 0)
+                        {
+                            // Exact cost filtering
+                            sbdFilter.Append(" and (cost = ", decExactCost.ToString(GlobalSettings.InvariantCultureInfo), ')');
+                        }
+                        else if (decMinimumCost != 0 || decMaximumCost != 0)
+                        {
+                            // Range cost filtering
+                            sbdFilter.Append(" and ", CommonFunctions.GenerateNumericRangeXPath(decMaximumCost, decMinimumCost, "cost"));
+                        }
 
                         if (sbdFilter.Length > 0)
-                            strFilter = '[' + sbdFilter.ToString() + ']';
+                            // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                            strFilter = string.Concat("[", sbdFilter.Append(']').ToString());
                     }
 
                     await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token)
@@ -659,7 +683,6 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        XmlDocument dummy = new XmlDocument { XmlResolver = null };
                         DataTable tabVehicles = new DataTable("vehicles");
                         tabVehicles.Columns.Add("VehicleGuid");
                         tabVehicles.Columns.Add("VehicleName");
@@ -682,154 +705,159 @@ namespace Chummer
                         decimal decNuyen = blnFreeItem || !blnShowOnlyAffordItems
                             ? decimal.MaxValue
                             : await _objCharacter.GetAvailableNuyenAsync(token: token).ConfigureAwait(false);
-                        foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
+                        using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument dummy))
                         {
-                            if (blnHideOverAvailLimit && !await objXmlVehicle
-                                    .CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false))
+                            foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                             {
-                                ++intOverLimit;
-                                continue;
-                            }
-
-                            if (!blnFreeItem && blnShowOnlyAffordItems)
-                            {
-                                decimal decCostMultiplier = decBaseCostMultiplier;
-                                if (blnBlackMarketDiscount
-                                    && _setBlackMarketMaps.Contains(objXmlVehicle
-                                        .SelectSingleNodeAndCacheExpression(
-                                            "category", token)
-                                        ?.Value))
-                                    decCostMultiplier *= 0.9m;
-                                if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
-                                        objXmlVehicle
-                                            .SelectSingleNodeAndCacheExpression(
-                                                "category", token)
-                                            ?.Value))
-                                    decCostMultiplier *= 0.9m;
-                                if (!await objXmlVehicle
-                                        .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
-                                        .ConfigureAwait(false))
+                                if (blnHideOverAvailLimit && !await objXmlVehicle
+                                        .CheckAvailRestrictionAsync(_objCharacter, intAvailModifier: (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                                 {
                                     ++intOverLimit;
                                     continue;
                                 }
-                            }
 
-                            Vehicle objVehicle = new Vehicle(_objCharacter);
-                            try
-                            {
-                                await objVehicle
-                                    .CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, true, token)
-                                    .ConfigureAwait(false);
-                                string strID = objVehicle.SourceIDString;
-                                string strVehicleName =
-                                    await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
-                                string strArmor =
-                                    (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-                                string strBody =
-                                    (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-                                string strHandling =
-                                    await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
-                                string strPilot =
-                                    (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings
-                                            .CultureInfo);
-                                string strSensor =
-                                    (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-                                string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
-                                string strSeats =
-                                    (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(
-                                        GlobalSettings.CultureInfo);
-
-                                string strGear;
-                                string strMods;
-                                string strWeapons;
-                                string strMounts;
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdGear))
+                                if (!blnFreeItem && blnShowOnlyAffordItems)
                                 {
-                                    foreach (Gear objGear in objVehicle.GearChildren)
+                                    decimal decCostMultiplier = decBaseCostMultiplier;
+                                    if (blnBlackMarketDiscount
+                                        && _setBlackMarketMaps.Contains(objXmlVehicle
+                                            .SelectSingleNodeAndCacheExpression(
+                                                "category", token)
+                                            ?.Value))
+                                        decCostMultiplier *= 0.9m;
+                                    if (Vehicle.DoesDealerConnectionApply(_setDealerConnectionMaps,
+                                            objXmlVehicle
+                                                .SelectSingleNodeAndCacheExpression(
+                                                    "category", token)
+                                                ?.Value))
+                                        decCostMultiplier *= 0.9m;
+                                    if (!await objXmlVehicle
+                                            .CheckNuyenRestrictionAsync(_objCharacter, decNuyen, decCostMultiplier, token: token)
+                                            .ConfigureAwait(false))
                                     {
-                                        sbdGear.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
-                                            .ConfigureAwait(false));
+                                        ++intOverLimit;
+                                        continue;
+                                    }
+                                }
+
+                                Vehicle objVehicle = new Vehicle(_objCharacter);
+                                try
+                                {
+                                    dummy.RemoveAll();
+                                    await objVehicle
+                                        .CreateAsync(objXmlVehicle.ToXmlNode(dummy), true, true, false, true, true, token)
+                                        .ConfigureAwait(false);
+                                    string strID = objVehicle.SourceIDString;
+                                    string strVehicleName =
+                                        await objVehicle.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    string strAccel = await objVehicle.GetTotalAccelAsync(token).ConfigureAwait(false);
+                                    string strArmor =
+                                        (await objVehicle.GetTotalArmorAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+                                    string strBody =
+                                        (await objVehicle.GetTotalBodyAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+                                    string strHandling =
+                                        await objVehicle.GetTotalHandlingAsync(token).ConfigureAwait(false);
+                                    string strPilot =
+                                        (await objVehicle.GetPilotAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings
+                                                .CultureInfo);
+                                    string strSensor =
+                                        (await objVehicle.GetCalculatedSensorAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+                                    string strSpeed = await objVehicle.GetTotalSpeedAsync(token).ConfigureAwait(false);
+                                    string strSeats =
+                                        (await objVehicle.GetTotalSeatsAsync(token).ConfigureAwait(false)).ToString(
+                                            GlobalSettings.CultureInfo);
+
+                                    string strGear;
+                                    string strMods;
+                                    string strWeapons;
+                                    string strMounts;
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdGear))
+                                    {
+                                        foreach (Gear objGear in objVehicle.GearChildren)
+                                        {
+                                            sbdGear.AppendLine(await objGear.GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }
+
+                                        if (sbdGear.Length > 0)
+                                            sbdGear.Length -= Environment.NewLine.Length;
+
+                                        strGear = sbdGear.ToString();
                                     }
 
-                                    if (sbdGear.Length > 0)
-                                        sbdGear.Length -= Environment.NewLine.Length;
-
-                                    strGear = sbdGear.ToString();
-                                }
-
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdMods))
-                                {
-                                    await objVehicle.Mods.ForEachAsync(async objMod =>
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdMods))
                                     {
-                                        sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
-                                            .ConfigureAwait(false));
-                                    }, token).ConfigureAwait(false);
+                                        await objVehicle.Mods.ForEachAsync(async objMod =>
+                                        {
+                                            sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }, token).ConfigureAwait(false);
 
-                                    if (sbdMods.Length > 0)
-                                        sbdMods.Length -= Environment.NewLine.Length;
+                                        if (sbdMods.Length > 0)
+                                            sbdMods.Length -= Environment.NewLine.Length;
 
-                                    strMods = sbdMods.ToString();
-                                }
+                                        strMods = sbdMods.ToString();
+                                    }
 
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdWeapons))
-                                {
-                                    if (sbdWeapons.Length > 0)
-                                        sbdWeapons.Length -= Environment.NewLine.Length;
-                                    await objVehicle.Weapons.ForEachAsync(async objWeapon =>
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdWeapons))
                                     {
-                                        sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token)
-                                            .ConfigureAwait(false));
-                                    }, token).ConfigureAwait(false);
+                                        await objVehicle.Weapons.ForEachAsync(async objWeapon =>
+                                        {
+                                            sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }, token).ConfigureAwait(false);
 
-                                    strWeapons = sbdWeapons.ToString();
-                                }
+                                        if (sbdWeapons.Length > 0)
+                                            sbdWeapons.Length -= Environment.NewLine.Length;
 
-                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                           out StringBuilder sbdWeaponMounts))
-                                {
-                                    await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
+                                        strWeapons = sbdWeapons.ToString();
+                                    }
+
+                                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                               out StringBuilder sbdWeaponMounts))
                                     {
-                                        sbdWeaponMounts.AppendLine(await objWeaponMount
-                                            .GetCurrentDisplayNameAsync(token)
-                                            .ConfigureAwait(false));
-                                    }, token).ConfigureAwait(false);
+                                        await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
+                                        {
+                                            sbdWeaponMounts.AppendLine(await objWeaponMount
+                                                .GetCurrentDisplayNameAsync(token)
+                                                .ConfigureAwait(false));
+                                        }, token).ConfigureAwait(false);
 
-                                    if (sbdWeaponMounts.Length > 0)
-                                        sbdWeaponMounts.Length -= Environment.NewLine.Length;
+                                        if (sbdWeaponMounts.Length > 0)
+                                            sbdWeaponMounts.Length -= Environment.NewLine.Length;
 
-                                    strMounts = sbdWeaponMounts.ToString();
+                                        strMounts = sbdWeaponMounts.ToString();
+                                    }
+
+                                    AvailabilityValue objAvail =
+                                        await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                                    SourceString strSource = await SourceString.GetSourceStringAsync(
+                                        objVehicle.Source,
+                                        await objVehicle.DisplayPageAsync(GlobalSettings.Language, token)
+                                            .ConfigureAwait(false),
+                                        GlobalSettings.Language, GlobalSettings.CultureInfo,
+                                        _objCharacter, token).ConfigureAwait(false);
+                                    NuyenString strCost =
+                                        await NuyenString.GetNuyenStringAsync(
+                                            (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
+                                                GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+                                    tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
+                                        strHandling, strPilot, strSensor, strSpeed, strSeats,
+                                        strGear, strMods,
+                                        strWeapons, strMounts,
+                                        objAvail, strSource, strCost);
                                 }
-
-                                AvailabilityValue objAvail =
-                                    await objVehicle.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
-                                SourceString strSource = await SourceString.GetSourceStringAsync(
-                                    objVehicle.Source,
-                                    await objVehicle.DisplayPageAsync(GlobalSettings.Language, token)
-                                        .ConfigureAwait(false),
-                                    GlobalSettings.Language, GlobalSettings.CultureInfo,
-                                    _objCharacter, token).ConfigureAwait(false);
-                                NuyenString strCost =
-                                    await NuyenString.GetNuyenStringAsync(
-                                        (await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false)).ToString(
-                                            GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
-                                tabVehicles.Rows.Add(strID, strVehicleName, strAccel, strArmor, strBody,
-                                    strHandling, strPilot, strSensor, strSpeed, strSeats,
-                                    strGear, strMods,
-                                    strWeapons, strMounts,
-                                    objAvail, strSource, strCost);
-                            }
-                            finally
-                            {
-                                await objVehicle.DisposeAsync().ConfigureAwait(false);
+                                finally
+                                {
+                                    await objVehicle.DisposeAsync().ConfigureAwait(false);
+                                }
                             }
                         }
 
@@ -859,7 +887,7 @@ namespace Chummer
                     {
                         foreach (XPathNavigator objXmlVehicle in objXmlVehicleList)
                         {
-                            if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter, token: token).ConfigureAwait(false))
+                            if (blnHideOverAvailLimit && !await objXmlVehicle.CheckAvailRestrictionAsync(_objCharacter, intAvailModifier: (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound(), token: token).ConfigureAwait(false))
                             {
                                 ++intOverLimit;
                                 continue;
@@ -901,7 +929,7 @@ namespace Chummer
                                         = _lstCategory.Find(objFind => objFind.Value.ToString() == strCategory);
                                     if (!string.IsNullOrEmpty(objFoundItem.Name))
                                     {
-                                        strDisplayname += strSpace + '[' + objFoundItem.Name + ']';
+                                        strDisplayname += strSpace + "[" + objFoundItem.Name + "]";
                                     }
                                 }
                             }
@@ -976,6 +1004,7 @@ namespace Chummer
                             _strSelectedVehicle = xmlVehicle.SelectSingleNodeAndCacheExpression("id", token)?.Value;
                             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                         .ConfigureAwait(false);
+                            _blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                             _blnBlackMarketDiscount = await chkBlackMarketDiscount
                                                             .DoThreadSafeFuncAsync(x => x.Checked, token: token)
                                                             .ConfigureAwait(false);
@@ -1014,6 +1043,7 @@ namespace Chummer
 
                         _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token)
                                                     .ConfigureAwait(false);
+                        _blnFreeCost = await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
 
                         await this.DoThreadSafeAsync(x =>
                         {

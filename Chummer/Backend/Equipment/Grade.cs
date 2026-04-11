@@ -59,6 +59,22 @@ namespace Chummer.Backend.Equipment
         /// <param name="objNode">XmlNode to load.</param>
         public void Load(XmlNode objNode)
         {
+            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+        }
+
+        /// <summary>
+        /// Load the Grade from the XmlNode.
+        /// </summary>
+        /// <param name="objNode">XmlNode to load.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public Task LoadAsync(XmlNode objNode, CancellationToken token = default)
+        {
+            return LoadCoreAsync(false, objNode, token);
+        }
+
+        public async Task LoadCoreAsync(bool blnSync, XmlNode objNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             objNode.TryGetStringFieldQuickly("name", ref _strName);
 
             if (!objNode.TryGetField("guid", Guid.TryParse, out _guiID))
@@ -67,7 +83,10 @@ namespace Chummer.Backend.Equipment
             }
             if (!objNode.TryGetGuidFieldQuickly("sourceid", ref _guiSourceID))
             {
-                XPathNavigator xmlDataNode = _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource))
+                XPathNavigator xmlDataNode = (blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? _objCharacter.LoadDataXPath(GetDataFileNameFromImprovementSource(_eSource), token: token)
+                        : await _objCharacter.LoadDataXPathAsync(GetDataFileNameFromImprovementSource(_eSource), token: token).ConfigureAwait(false))
                     .TryGetNodeByNameOrId("/chummer/grades/grade", Name);
                 if (xmlDataNode?.TryGetField("id", Guid.TryParse, out _guiSourceID) != true)
                     _guiSourceID = Guid.NewGuid();
@@ -146,20 +165,10 @@ namespace Chummer.Backend.Equipment
         /// <param name="strValue">String value to convert.</param>
         /// <param name="objSource">Source representing whether this is a cyberware, drug or bioware grade.</param>
         /// <param name="objCharacter">Character from which to fetch a grade list</param>
-        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter)
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Grade ConvertToCyberwareGrade(string strValue, Improvement.ImprovementSource objSource, Character objCharacter, CancellationToken token = default)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            Grade objStandardGrade = null;
-            foreach (Grade objGrade in objCharacter.GetGrades(objSource, true))
-            {
-                if (objGrade.Name == strValue)
-                    return objGrade;
-                if (objGrade.Name == "Standard")
-                    objStandardGrade = objGrade;
-            }
-
-            return objStandardGrade;
+            return objCharacter.GetGradeByName(objSource, strValue, true, token);
         }
 
         /// <summary>
@@ -178,7 +187,7 @@ namespace Chummer.Backend.Equipment
         /// Gets the name of the data file to use that corresponds to a particular Improvement Source denoting the type of object being used.
         /// </summary>
         /// <param name="eSource">Type of object being looked at that has grades. Should be either drug, bioware, or cyberware.</param>
-        /// <returns>A full file name that can be used with LoadData() or LoadXData() methods.</returns>
+        /// <returns>A full file name that can be used with methods for loading data.</returns>
         public static string GetDataFileNameFromImprovementSource(Improvement.ImprovementSource eSource)
         {
             switch (eSource)

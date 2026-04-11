@@ -1,4 +1,5 @@
 using System;
+using System.Threading;
 
 namespace Chummer
 {
@@ -15,9 +16,30 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                _lstCharacters.Dispose();
+                CancellationTokenSource objTempTokenSource = Interlocked.Exchange(ref _objRefresherCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objOutputGeneratorCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                objTempTokenSource = Interlocked.Exchange(ref _objGenericFormClosingCancellationTokenSource, null);
+                if (objTempTokenSource?.IsCancellationRequested == false)
+                {
+                    objTempTokenSource.Cancel(false);
+                    objTempTokenSource.Dispose();
+                }
+                dlgSaveFile?.Dispose();
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -168,7 +190,6 @@ namespace Chummer
             this.cboXSLT.Name = "cboXSLT";
             this.cboXSLT.Size = new System.Drawing.Size(254, 21);
             this.cboXSLT.TabIndex = 4;
-            this.cboXSLT.TooltipText = "";
             this.cboXSLT.SelectedIndexChanged += new System.EventHandler(this.cboXSLT_SelectedIndexChanged);
             // 
             // cboLanguage
@@ -180,7 +201,6 @@ namespace Chummer
             this.cboLanguage.Name = "cboLanguage";
             this.cboLanguage.Size = new System.Drawing.Size(162, 21);
             this.cboLanguage.TabIndex = 104;
-            this.cboLanguage.TooltipText = "";
             this.cboLanguage.SelectedIndexChanged += new System.EventHandler(this.cboLanguage_SelectedIndexChanged);
             // 
             // lblCharacterSheet

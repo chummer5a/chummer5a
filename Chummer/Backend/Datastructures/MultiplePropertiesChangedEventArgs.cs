@@ -24,7 +24,7 @@ using System.Linq;
 
 namespace Chummer
 {
-    public readonly struct MultiplePropertiesChangedEventArgs
+    public readonly struct MultiplePropertiesChangedEventArgs : IEquatable<MultiplePropertiesChangedEventArgs>
     {
         private readonly string[] _astrPropertyNames;
 
@@ -34,5 +34,29 @@ namespace Chummer
             _astrPropertyNames = astrPropertyNames.ToArray();
 
         public ReadOnlyCollection<string> PropertyNames => Array.AsReadOnly(_astrPropertyNames);
+
+        public bool Equals(MultiplePropertiesChangedEventArgs other)
+        {
+            return _astrPropertyNames.CollectionEqual(other._astrPropertyNames);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return obj is MultiplePropertiesChangedEventArgs objCasted && Equals(objCasted);
+        }
+        public static bool operator ==(MultiplePropertiesChangedEventArgs left, MultiplePropertiesChangedEventArgs right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(MultiplePropertiesChangedEventArgs left, MultiplePropertiesChangedEventArgs right)
+        {
+            return !(left == right);
+        }
+
+        public override int GetHashCode()
+        {
+            return _astrPropertyNames.GetEnsembleHashCode();
+        }
     }
 }

@@ -13,9 +13,11 @@ namespace Chummer
         /// <param name="disposing">true if managed resources should be disposed; otherwise, false.</param>
         protected override void Dispose(bool disposing)
         {
-            if (disposing && (components != null))
+            if (disposing)
             {
-                components.Dispose();
+                Utils.ListItemListPool.Return(ref _lstGeneralItems);
+                if (components != null)
+                    components.Dispose();
             }
             base.Dispose(disposing);
         }
@@ -80,7 +82,6 @@ namespace Chummer
             this.cboAmmo.Name = "cboAmmo";
             this.cboAmmo.Size = new System.Drawing.Size(236, 21);
             this.cboAmmo.TabIndex = 2;
-            this.cboAmmo.TooltipText = "";
             // 
             // lblAmmoLabel
             // 

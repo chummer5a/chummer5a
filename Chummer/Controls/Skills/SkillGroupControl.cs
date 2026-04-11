@@ -31,7 +31,7 @@ namespace Chummer.UI.Skills
 {
     public partial class SkillGroupControl : UserControl
     {
-        private readonly SkillGroup _skillGroup;
+        private SkillGroup _skillGroup;
 
         // ReSharper disable PrivateFieldCanBeConvertedToLocalVariable
         private readonly NumericUpDownEx nudSkill;
@@ -50,7 +50,6 @@ namespace Chummer.UI.Skills
             _objMyToken = objMyToken;
             _skillGroup = skillGroup;
             InitializeComponent();
-            Disposed += (sender, args) => UnbindSkillGroupControl();
             //This is apparently a factor 30 faster than placed in load. NFI why
             using (new FetchSafelyFromSafeObjectPool<Stopwatch>(Utils.StopwatchPool, out Stopwatch sw))
             {
@@ -114,6 +113,7 @@ namespace Chummer.UI.Skills
 
                     this.UpdateLightDarkMode(token: objMyToken);
                     this.TranslateWinForm(blnDoResumeLayout: false, token: objMyToken);
+                    this.UpdateParentForToolTipControls();
                 }
                 finally
                 {
@@ -319,9 +319,13 @@ namespace Chummer.UI.Skills
         public void UnbindSkillGroupControl()
         {
             foreach (Control objControl in Controls)
-            {
-                objControl.DataBindings.Clear();
-            }
+                objControl.ResetBindings();
+
+            ButtonWithToolTip objOld = Interlocked.Exchange(ref _activeButton, null);
+            if (!objOld.IsNullOrDisposed())
+                objOld.Dispose();
+
+            _skillGroup = null;
         }
 
         #region Control Events
@@ -444,6 +448,15 @@ namespace Chummer.UI.Skills
                 return;
             using (Graphics g = CreateGraphics())
                 lblGroupRating.MinimumSize = new Size((int)(25 * g.DpiX / 96.0f), 0);
+        }
+
+        protected override void OnParentChanged(EventArgs e)
+        {
+            base.OnParentChanged(e);
+            // Note: because we cannot unsubscribe old parents from events if/when we change parents, we do not want to have this automatically update
+            // based on a subscription to our parent's ParentChanged (which we would need to be able to automatically update our parent form for nested controls)
+            // We therefore need to use the hacky workaround of calling UpdateParentForToolTipControls() for parent forms/controls as appropriate
+            this.UpdateParentForToolTipControls();
         }
     }
 }

@@ -209,3 +209,6 @@ FakesAssemblies/
 .idea
 /Winforms-Calendar
 /ChummerHub/Properties/launchSettings.json
+
+# Mac Specific Generated Files
+.DS_Store

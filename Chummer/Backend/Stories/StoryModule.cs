@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -259,11 +260,11 @@ namespace Chummer
                 string strReturn;
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 {
-                    return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
+                    return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">";
                 }
 
                 return this.GetNodeXPath(strLanguage)?.SelectSingleNode("alttexts/" + strKey)?.Value ??
-                       (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>');
+                       (_dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">");
             }
         }
 
@@ -282,7 +283,7 @@ namespace Chummer
                         return strReturn;
                 }
 
-                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : '<' + strKey + '>';
+                return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">";
             }
             finally
             {
@@ -325,7 +326,7 @@ namespace Chummer
         {
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
-            List<Tuple<string, bool>> lstSubstrings = new List<Tuple<string, bool>>(1);
+            List<ValueTuple<string, bool>> lstSubstrings = new List<ValueTuple<string, bool>>(1);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -335,7 +336,7 @@ namespace Chummer
                     int intOpeningBracketIndex = strReturn.IndexOf('{');
                     if (intOpeningBracketIndex == -1)
                     {
-                        lstSubstrings.Add(new Tuple<string, bool>(strReturn, false));
+                        lstSubstrings.Add(new ValueTuple<string, bool>(strReturn, false));
                         strReturn = string.Empty;
                     }
                     else
@@ -364,8 +365,8 @@ namespace Chummer
                             if (intClosingBracketIndex != -1)
                             {
                                 lstSubstrings.Add(
-                                    new Tuple<string, bool>(strReturn.Substring(0, intOpeningBracketIndex), false));
-                                lstSubstrings.Add(new Tuple<string, bool>(
+                                    new ValueTuple<string, bool>(strReturn.Substring(0, intOpeningBracketIndex), false));
+                                lstSubstrings.Add(new ValueTuple<string, bool>(
                                                       strReturn.Substring(
                                                           intOpeningBracketIndex + 1,
                                                           intClosingBracketIndex - intOpeningBracketIndex - 1), true));
@@ -382,7 +383,7 @@ namespace Chummer
                         else
                         {
                             lstSubstrings.Add(
-                                new Tuple<string, bool>(strReturn.Substring(0, strReturn.Length - 1), false));
+                                new ValueTuple<string, bool>(strReturn.Substring(0, strReturn.Length - 1), false));
                             strReturn = string.Empty;
                         }
                     }
@@ -403,29 +404,40 @@ namespace Chummer
                     }
                 }
 
-                string[] lstOutputStrings = new string[lstSubstrings.Count];
-                for (int i = 0; i < lstSubstrings.Count; ++i)
+                string[] astrOutputStrings = ArrayPool<string>.Shared.Rent(lstSubstrings.Count);
+                try
                 {
-                    (string strContent, bool blnContainsMacros) = lstSubstrings[i];
-                    if (blnContainsMacros)
+                    for (int i = 0; i < lstSubstrings.Count; ++i)
                     {
-                        lstOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
-                                                                       blnGeneratePersistents, token)
-                            .ConfigureAwait(false);
+                        (string strContent, bool blnContainsMacros) = lstSubstrings[i];
+                        if (blnContainsMacros)
+                        {
+                            astrOutputStrings[i] = await ProcessSingleMacro(strContent, objCulture, strLanguage,
+                                                                           blnGeneratePersistents, token)
+                                .ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            astrOutputStrings[i] = strContent;
+                        }
                     }
-                    else
-                    {
-                        lstOutputStrings[i] = strContent;
-                    }
-                }
 
-                return string.Concat(lstOutputStrings);
+                    return StringExtensions.ConcatFast(astrOutputStrings, 0, lstSubstrings.Count);
+                }
+                finally
+                {
+                    ArrayPool<string>.Shared.Return(astrOutputStrings);
+                }
             }
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
+
+        // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
+        private static readonly char[] s_achrAlwaysTrimForXmlNameFriendly = new[]
+            {' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\', '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*', '¥'};
 
         public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
@@ -443,64 +455,65 @@ namespace Chummer
                     ? string.Empty
                     : strInput.Substring(intPipeIndex + 1);
 
-                switch (strFunction)
+                switch (strFunction.ToUpperInvariant())
                 {
-                    case "$ReverseTranslateExtra":
+                    case "$REVERSETRANSLATEEXTRA":
                     {
                         return await _objCharacter.ReverseTranslateExtraAsync(strArguments, token: token)
                                                   .ConfigureAwait(false);
                     }
-                    case "$XmlNameFriendly":
+                    case "$XMLNAMEFRIENDLY":
                     {
-                        return strArguments
-                               .FastEscape(' ', '$', '/', '?', ',', '\'', '\"', ';', ':', '(', ')', '[', ']', '|', '\\',
-                                           '+', '=', '`', '~', '!', '@', '#', '%', '^', '&', '*')
-                               .FastEscape((await LanguageManager
-                                                  .GetStringAsync("String_NuyenSymbol", strLanguage, token: token)
-                                                  .ConfigureAwait(false))
-                                           .ToCharArray()).ToLower(objCulture);
+                        string strReturn = strArguments
+                               .FastEscape(s_achrAlwaysTrimForXmlNameFriendly);
+                        string strNuyenSymbol = await LanguageManager
+                                            .GetStringAsync("String_NuyenSymbol", strLanguage, token: token)
+                                            .ConfigureAwait(false);
+                        if (strNuyenSymbol.Any(x => !s_achrAlwaysTrimForXmlNameFriendly.Contains(x)))
+                            strReturn = strReturn.FastEscape(strNuyenSymbol.ToCharArray()); // Cannot use Pooled version because the padded values can have characters we don't want escaped
+                        return strReturn.ToLower(objCulture);
                     }
-                    case "$CharacterName":
+                    case "$CHARACTERNAME":
                     {
                         return await _objCharacter.GetCharacterNameAsync(token).ConfigureAwait(false);
                     }
-                    case "$CharacterGrammaticalGender":
+                    case "$CHARACTERGRAMMATICALGENDER":
                     {
                         return await _objCharacter.GetCharacterGrammaticGenderAsync(token).ConfigureAwait(false);
                     }
-                    case "$Metatype":
+                    case "$METATYPE":
                     {
                         return await _objCharacter.GetMetatypeAsync(token).ConfigureAwait(false);
                     }
-                    case "$Metavariant":
+                    case "$METAVARIANT":
                     {
                         return await _objCharacter.GetMetavariantAsync(token).ConfigureAwait(false);
                     }
-                    case "$Eyes":
+                    case "$EYES":
                     {
                         return await _objCharacter.GetEyesAsync(token).ConfigureAwait(false);
                     }
-                    case "$Hair":
+                    case "$HAIR":
                     {
                         return await _objCharacter.GetHairAsync(token).ConfigureAwait(false);
                     }
-                    case "$Skin":
+                    case "$SKIN":
                     {
                         return await _objCharacter.GetSkinAsync(token).ConfigureAwait(false);
                     }
-                    case "$Height":
+                    case "$HEIGHT":
                     {
                         return await _objCharacter.GetHeightAsync(token).ConfigureAwait(false);
                     }
-                    case "$Weight":
+                    case "$WEIGHT":
                     {
                         return await _objCharacter.GetWeightAsync(token).ConfigureAwait(false);
                     }
-                    case "$Gender":
+                    case "$GENDER":
                     {
                         return await _objCharacter.GetGenderAsync(token).ConfigureAwait(false);
                     }
-                    case "$Alias":
+                    case "$ALIAS":
                     {
                         string strAlias = await _objCharacter.GetAliasAsync(token).ConfigureAwait(false);
                         return !string.IsNullOrEmpty(strAlias)
@@ -508,7 +521,7 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
-                    case "$Name":
+                    case "$NAME":
                     {
                         string strName = await _objCharacter.GetNameAsync(token).ConfigureAwait(false);
                         if (!string.IsNullOrWhiteSpace(strName))
@@ -542,7 +555,7 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$Year":
+                    case "$YEAR":
                     {
                         string strAge = await _objCharacter.GetAgeAsync(token).ConfigureAwait(false);
                         if (int.TryParse(strAge, out int intCurrentAge))
@@ -560,12 +573,12 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$GetString":
+                    case "$GETSTRING":
                     {
                         return await LanguageManager.GetStringAsync(strArguments, strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$XPath":
+                    case "$XPATH":
                     {
                         (bool blnSuccess, object objProcess) = await CommonFunctions
                                                                      .EvaluateInvariantXPathAsync(strArguments, token)
@@ -575,7 +588,7 @@ namespace Chummer
                             : await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                    .ConfigureAwait(false);
                     }
-                    case "$Index":
+                    case "$INDEX":
                     {
                         string strReturn = string.Empty;
                         int intIndex = 0;
@@ -600,7 +613,7 @@ namespace Chummer
                         return await LanguageManager.GetStringAsync("String_Unknown", strLanguage, token: token)
                                                     .ConfigureAwait(false);
                     }
-                    case "$LookupExtra":
+                    case "$LOOKUPEXTRA":
                     {
                         string strExtra = string.Empty;
                         AIProgram objProgram = await _objCharacter.AIPrograms
@@ -714,7 +727,7 @@ namespace Chummer
 
                         return string.Empty;
                     }
-                    case "$Fallback":
+                    case "$FALLBACK":
                     {
                         int intArgumentPipeIndex = strArguments.IndexOf('|');
                         if (intArgumentPipeIndex != -1)

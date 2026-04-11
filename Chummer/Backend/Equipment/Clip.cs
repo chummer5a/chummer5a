@@ -173,13 +173,69 @@ namespace Chummer.Backend.Equipment
                 if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
                 {
                     Gear objNewGear = new Gear(objCharacter);
-                    objNewGear.Copy(objGear);
-                    objNewGear.Quantity = intCount;
-                    if (objWeapon.ParentVehicle != null)
-                        objWeapon.ParentVehicle.GearChildren.Add(objNewGear);
-                    else
-                        objCharacter.Gear.Add(objNewGear);
-                    objGear = objNewGear;
+                    try
+                    {
+                        objNewGear.Copy(objGear);
+                        objNewGear.Quantity = intCount;
+                        if (objWeapon.ParentVehicle != null)
+                            objWeapon.ParentVehicle.GearChildren.Add(objNewGear);
+                        else
+                            objCharacter.Gear.Add(objNewGear);
+                        objGear = objNewGear;
+                    }
+                    catch
+                    {
+                        objNewGear.DeleteGear();
+                        throw;
+                    }
+                }
+                Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
+                string strTemp = string.Empty;
+                if (node.TryGetStringFieldQuickly("location", ref strTemp))
+                    objReturn.AmmoLocation = strTemp;
+                return objReturn;
+            }
+            return null;
+        }
+
+        internal static async Task<Clip> LoadAsync(XmlNode node, Character objCharacter, Weapon objWeapon, WeaponAccessory objOwnerAccessory, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (node == null)
+                return null;
+            string strAmmoGuid = string.Empty;
+            int intCount = 0;
+            if (node.TryGetStringFieldQuickly("id", ref strAmmoGuid)
+                && !string.IsNullOrEmpty(strAmmoGuid)
+                && node.TryGetInt32FieldQuickly("count", ref intCount)
+                && Guid.TryParse(strAmmoGuid, out Guid guiClipId))
+            {
+                Gear objGear = null;
+                if (guiClipId != Guid.Empty)
+                {
+                    objGear = objWeapon.ParentVehicle != null
+                        ? (await objWeapon.ParentVehicle.FindVehicleGearAsync(strAmmoGuid, token).ConfigureAwait(false)).Item1
+                        : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).DeepFindByIdAsync(strAmmoGuid, token).ConfigureAwait(false);
+                }
+                //Fix for older versions where ammo loaded into clips was separate from ammo lying around in the inventory
+                if (objCharacter.LastSavedVersion <= new ValueVersion(5, 222, 61) && objGear != null)
+                {
+                    Gear objNewGear = new Gear(objCharacter);
+                    try
+                    {
+                        await objNewGear.CopyAsync(objGear, token).ConfigureAwait(false);
+                        await objNewGear.SetQuantityAsync(intCount, token).ConfigureAwait(false);
+                        if (objWeapon.ParentVehicle != null)
+                            await objWeapon.ParentVehicle.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                        else
+                            await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).AddAsync(objNewGear, token).ConfigureAwait(false);
+                        objGear = objNewGear;
+                    }
+                    catch
+                    {
+                        await objNewGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
                 }
                 Clip objReturn = new Clip(objCharacter, objOwnerAccessory, objWeapon, objGear, intCount);
                 string strTemp = string.Empty;
@@ -251,7 +307,7 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync(
                     "DV", await objAmmoGear.WeaponBonusDamageAsync(strLanguageToPrint, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("BonusRange",
-                    objAmmoGear.WeaponBonusRange.ToString(objCulture), token: token).ConfigureAwait(false);
+                    objAmmoGear.WeaponBonusRange, token: token).ConfigureAwait(false);
 
                 await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             }

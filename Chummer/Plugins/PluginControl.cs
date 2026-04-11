@@ -21,6 +21,7 @@ using System;
 using System.Collections.Generic;
 using System.ComponentModel.Composition;
 using System.ComponentModel.Composition.Hosting;
+using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -312,6 +313,7 @@ namespace Chummer.Plugins
                     }
                     catch (ReflectionTypeLoadException e)
                     {
+                        e = e.Demystify();
                         TelemetryClient objTelemetry = Program.ChummerTelemetryClient.Value;
                         if (objTelemetry != null)
                         {
@@ -321,11 +323,11 @@ namespace Chummer.Plugins
                                 int counter = 0;
                                 foreach (Exception except in e.LoaderExceptions)
                                 {
+                                    Exception innerExcept = except.Demystify();
                                     counter++;
                                     sbdLoaderExceptions
-                                        .AppendLine().Append("LoaderException ").Append(counter).Append(": ")
-                                        .Append(except.Message);
-                                    objTelemetry.TrackException(except);
+                                        .AppendLine().Append("LoaderException ", counter.ToString(GlobalSettings.InvariantCultureInfo), ": ", innerExcept.Message);
+                                    objTelemetry.TrackException(innerExcept);
                                 }
 
                                 try
@@ -346,10 +348,10 @@ namespace Chummer.Plugins
 
                                 string msg
                                     = "Plugins (at least not all of them) could not be loaded. Logs are uploaded to the ChummerDevs. Maybe ping one of the Devs on Discord and provide your Installation-id: "
-                                      + Properties.Settings.Default.UploadClientId + Environment.NewLine + "Exception: "
-                                      + Environment.NewLine + Environment.NewLine + e + Environment.NewLine
+                                      + Properties.Settings.Default.UploadClientId.ToString("D", GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Exception: "
+                                      + Environment.NewLine + Environment.NewLine + e.ToString() + Environment.NewLine
                                       + Environment.NewLine + "The LoaderExceptions are: " + Environment.NewLine
-                                      + sbdLoaderExceptions + Environment.NewLine + Environment.NewLine;
+                                      + sbdLoaderExceptions.ToString() + Environment.NewLine + Environment.NewLine;
 
                                 Log.Info(e, msg);
                             }
@@ -364,12 +366,12 @@ namespace Chummer.Plugins
 
                     if (MyPlugins.Count == 0)
                     {
-                        throw new ArgumentException("No plugins found in " + path + '.');
+                        throw new ArgumentException("No plugins found in " + path + ".");
                     }
 
                     IReadOnlyList<IPlugin> lstActivePlugins = MyActivePlugins;
-                    Log.Info("Plugins found: " + MyPlugins.Count + Environment.NewLine + "Plugins active: "
-                             + lstActivePlugins.Count);
+                    Log.Info("Plugins found: " + MyPlugins.Count.ToString(GlobalSettings.InvariantCultureInfo) + Environment.NewLine + "Plugins active: "
+                             + lstActivePlugins.Count.ToString(GlobalSettings.InvariantCultureInfo));
                     foreach (IPlugin plugin in lstActivePlugins)
                     {
                         try
@@ -384,6 +386,7 @@ namespace Chummer.Plugins
                         }
                         catch (Exception e)
                         {
+                            e = e.Demystify();
                             Log.Error(e);
 #if DEBUG
                             throw;
@@ -395,13 +398,15 @@ namespace Chummer.Plugins
                 }
                 catch (System.Security.SecurityException e)
                 {
+                    e = e.Demystify();
                     string msg
                         = "Well, the Plugin wanted to do something that requires Admin rights. Let's just ignore this: "
-                          + Environment.NewLine + Environment.NewLine + e;
+                          + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Warn(e, msg);
                 }
                 catch (Exception e) when (e is not ApplicationException)
                 {
+                    e = e.Demystify();
                     Log.Fatal(e);
                     throw;
                 }
@@ -510,13 +515,14 @@ namespace Chummer.Plugins
                 }
                 catch (ReflectionTypeLoadException e)
                 {
+                    e = e.Demystify();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                                   out StringBuilder sbdMessage))
                     {
                         sbdMessage.AppendLine("Exception loading plugins: ");
                         foreach (Exception exp in e.LoaderExceptions)
                         {
-                            sbdMessage.AppendLine(exp.Message);
+                            sbdMessage.AppendLine(exp.Demystify().Message);
                         }
 
                         sbdMessage.AppendLine().Append(e);
@@ -544,7 +550,8 @@ namespace Chummer.Plugins
                 }
                 catch (Exception e)
                 {
-                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e;
+                    e = e.Demystify();
+                    string msg = "Exception loading plugins: " + Environment.NewLine + Environment.NewLine + e.ToString();
                     Log.Error(e, msg);
                 }
             }
