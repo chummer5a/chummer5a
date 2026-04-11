@@ -28003,10 +28003,27 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock(token))
             {
-                decimal decExtraEss = 0.0m;
-                IDisposable objLocker = null;
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence,
+                                                        token: token).Count
+                    > 0)
+                {
+                    if (!blnAttributeSpecific)
+                    {
+                        using (_objCachedEssenceLock.EnterWriteLock(token))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _decCachedEssence = 0.1m;
+                        }
+                    }
+                    return 0.1m;
+                }
+                
                 if (blnAttributeSpecific)
                 {
+                    // Since Essence is tracked with decimal precision and only rounded later, we can safely use our generic Essence value that will be cached and directly add our attribute-specific modifiers to it.
+                    decimal decExtraEss = 0.0m;
                     switch (strAttribute.ToUpperInvariant())
                     {
                         case "MAG":
@@ -28029,48 +28046,25 @@ namespace Chummer
                                           / 100.0m;
                             break;
                     }
-                    if (decExtraEss == 0)
-                        return Essence(token: token);
-                }
-                else
-                    objLocker = _objCachedEssenceLock.EnterReadLock(token);
-
-                try
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
-                        return _decCachedEssence;
-                }
-                finally
-                {
-                    objLocker?.Dispose();
+                    return Essence(token: token) + decExtraEss;
                 }
 
-                if (!blnAttributeSpecific)
-                    objLocker = _objCachedEssenceLock.EnterUpgradeableReadLock(token);
-                try
+                using (_objCachedEssenceLock.EnterReadLock(token))
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
+                    if (_decCachedEssence != decimal.MinValue)
                         return _decCachedEssence;
-                    IDisposable objWriteLocker = null;
-                    if (!blnAttributeSpecific)
-                        objWriteLocker = _objCachedEssenceLock.EnterWriteLock(token);
-                    try
+                }
+
+                using (_objCachedEssenceLock.EnterUpgradeableReadLock(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (_decCachedEssence != decimal.MinValue)
+                        return _decCachedEssence;
+                    using (_objCachedEssenceLock.EnterWriteLock(token))
                     {
                         token.ThrowIfCancellationRequested();
-                        // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                        if (ImprovementManager
-                            .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence,
-                                                                token: token).Count
-                            > 0)
-                        {
-                            if (!blnAttributeSpecific)
-                                _decCachedEssence = 0.1m;
-                            return 0.1m;
-                        }
-
-                        decimal decESS = ESS.MetatypeMaximum + decExtraEss;
+                        decimal decESS = ESS.MetatypeMaximum;
                         decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenalty,
                                                              token: token);
                         decESS += ImprovementManager.ValueOf(this, Improvement.ImprovementType.EssencePenaltyT100,
@@ -28080,21 +28074,8 @@ namespace Chummer
                         // Run through all of the pieces of Cyberware and include their Essence cost.
                         decESS -= Cyberware.Sum(objCyberware => objCyberware.CalculatedESS);
 
-                        //1781 Essence is not printing
-                        //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                        if (!blnAttributeSpecific)
-                            _decCachedEssence = decESS;
-                        return decESS;
+                        return _decCachedEssence = decESS;
                     }
-                    finally
-                    {
-                        objWriteLocker?.Dispose();
-                    }
-                }
-                finally
-                {
-                    objLocker?.Dispose();
                 }
             }
         }
@@ -28111,11 +28092,33 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                decimal decExtraEss = 0.0m;
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if ((await ImprovementManager
+                           .GetCachedImprovementListForValueOfAsync(
+                               this, Improvement.ImprovementType.CyborgEssence, token: token)
+                           .ConfigureAwait(false)).Count
+                    > 0)
+                {
+                    if (!blnAttributeSpecific)
+                    {
+                        IAsyncDisposable objLocker3 = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
+                        try
+                        {
+                            token.ThrowIfCancellationRequested();
+                            _decCachedEssence = 0.1m;
+                        }
+                        finally
+                        {
+                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+                    return 0.1m;
+                }
 
-                IAsyncDisposable objLocker2 = null;
                 if (blnAttributeSpecific)
                 {
+                    // Since Essence is tracked with decimal precision and only rounded later, we can safely use our generic Essence value that will be cached and directly add our attribute-specific modifiers to it.
+                    decimal decExtraEss = 0;
                     switch (strAttribute.ToUpperInvariant())
                     {
                         case "MAG":
@@ -28138,16 +28141,15 @@ namespace Chummer
                                           / 100.0m;
                             break;
                     }
-                    if (decExtraEss == 0)
-                        return await EssenceAsync(token: token).ConfigureAwait(false);
-                }
-                else
-                    objLocker2 = await _objCachedEssenceLock.EnterReadLockAsync(token).ConfigureAwait(false);
 
+                    return await EssenceAsync(token: token).ConfigureAwait(false) + decExtraEss;
+                }
+
+                IAsyncDisposable objLocker2 = await _objCachedEssenceLock.EnterReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (_decCachedEssence != decimal.MinValue && !blnAttributeSpecific)
+                    if (_decCachedEssence != decimal.MinValue)
                         return _decCachedEssence;
                 }
                 finally
@@ -28156,36 +28158,17 @@ namespace Chummer
                         await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
 
-                objLocker2 = !blnAttributeSpecific
-                    ? await _objCachedEssenceLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false)
-                    : null;
+                objLocker2 = await _objCachedEssenceLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    IAsyncDisposable objLocker3 = null;
-                    if (!blnAttributeSpecific)
-                    {
-                        if (_decCachedEssence != decimal.MinValue)
-                            return _decCachedEssence;
-                        objLocker3 = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    }
-
+                    if (_decCachedEssence != decimal.MinValue)
+                        return _decCachedEssence;
+                    IAsyncDisposable objLocker3 = await _objCachedEssenceLock.EnterWriteLockAsync(token).ConfigureAwait(false);
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
-                        if ((await ImprovementManager
-                                   .GetCachedImprovementListForValueOfAsync(
-                                       this, Improvement.ImprovementType.CyborgEssence, token: token)
-                                   .ConfigureAwait(false)).Count
-                            > 0)
-                        {
-                            if (!blnAttributeSpecific)
-                                _decCachedEssence = 0.1m;
-                            return 0.1m;
-                        }
-
-                        decimal decESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false) + decExtraEss;
+                        decimal decESS = await ESS.GetMetatypeMaximumAsync(token).ConfigureAwait(false);
                         decESS += await ImprovementManager
                                         .ValueOfAsync(this, Improvement.ImprovementType.EssencePenalty, token: token)
                                         .ConfigureAwait(false);
@@ -28195,28 +28178,96 @@ namespace Chummer
                                   / 100.0m;
 
                         // Run through all of the pieces of Cyberware and include their Essence cost.
-                        decESS -= await Cyberware
+                        decESS -= await (await GetCyberwareAsync(token).ConfigureAwait(false))
                                         .SumAsync(objCyberware => objCyberware.GetCalculatedESSAsync(token),
                                                   token: token).ConfigureAwait(false);
-
-                        //1781 Essence is not printing
-                        //ESS.Base = Convert.ToInt32(decESS); -- Disabled because this messes up Character Validity, and it really shouldn't be what "Base" of an attribute is supposed to be (it's supposed to be extra levels gained)
-
-                        if (!blnAttributeSpecific)
-                            _decCachedEssence = decESS;
-                        return decESS;
+                        return _decCachedEssence = decESS;
                     }
                     finally
                     {
-                        if (objLocker3 != null)
-                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                        await objLocker3.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
                 {
-                    if (objLocker2 != null)
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Character's attribute-specific Essence values for MAG, RES, and DEP, used for processing essence loss-related improvements.
+        /// </summary>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public ValueTuple<decimal, decimal, decimal> GetAllAttributeSpecificEssence(CancellationToken token = default)
+        {
+            using (LockObject.EnterReadLock(token))
+            {
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if (ImprovementManager
+                    .GetCachedImprovementListForValueOf(this, Improvement.ImprovementType.CyborgEssence,
+                                                        token: token).Count
+                    > 0)
+                {
+                    return new ValueTuple<decimal, decimal, decimal>(0.1m, 0.1m, 0.1m);
+                }
+
+                // Since Essence is tracked with decimal precision and only rounded later, we can safely use our generic Essence value that will be cached and directly add our attribute-specific modifiers to it.
+                decimal decESS = Essence(token: token);
+                decimal decExtraEssMag = ImprovementManager.ValueOf(
+                                          this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+                                          token: token)
+                                      / 100.0m;
+                decimal decExtraEssRes = ImprovementManager.ValueOf(
+                                              this, Improvement.ImprovementType.EssencePenaltyRESOnlyT100,
+                                              token: token)
+                                          / 100.0m;
+                decimal decExtraEssDep = ImprovementManager.ValueOf(
+                                              this, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100,
+                                              token: token)
+                                          / 100.0m;
+                return new ValueTuple<decimal, decimal, decimal>(decESS + decExtraEssMag, decESS + decExtraEssRes, decESS + decExtraEssDep);
+            }
+        }
+
+        /// <summary>
+        /// Character's attribute-specific Essence values for MAG, RES, and DEP, used for processing essence loss-related improvements.
+        /// </summary>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async Task<ValueTuple<decimal, decimal, decimal>> GetAllAttributeSpecificEssenceAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                // If the character has a fixed Essence Improvement, permanently fix their Essence at its value.
+                if ((await ImprovementManager
+                    .GetCachedImprovementListForValueOfAsync(this, Improvement.ImprovementType.CyborgEssence,
+                                                        token: token).ConfigureAwait(false)).Count
+                    > 0)
+                {
+                    return new ValueTuple<decimal, decimal, decimal>(0.1m, 0.1m, 0.1m);
+                }
+
+                // Since Essence is tracked with decimal precision and only rounded later, we can safely use our generic Essence value that will be cached and directly add our attribute-specific modifiers to it.
+                decimal decESS = await EssenceAsync(token: token).ConfigureAwait(false);
+                decimal decExtraEssMag = await ImprovementManager.ValueOfAsync(
+                                          this, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100,
+                                          token: token).ConfigureAwait(false)
+                                      / 100.0m;
+                decimal decExtraEssRes = await ImprovementManager.ValueOfAsync(
+                                              this, Improvement.ImprovementType.EssencePenaltyRESOnlyT100,
+                                              token: token).ConfigureAwait(false)
+                                          / 100.0m;
+                decimal decExtraEssDep = await ImprovementManager.ValueOfAsync(
+                                              this, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100,
+                                              token: token).ConfigureAwait(false)
+                                          / 100.0m;
+                return new ValueTuple<decimal, decimal, decimal>(decESS + decExtraEssMag, decESS + decExtraEssRes, decESS + decExtraEssDep);
             }
             finally
             {
@@ -46106,9 +46157,7 @@ namespace Chummer
                             decTotalSpecialAttBurnMultiplier *= objImprovement.Value / 100m;
                     }
 
-                    decimal decESSMag = Essence(true, "MAG", token);
-                    decimal decESSRes = Essence(true, "RES", token);
-                    decimal decESSDep = Essence(true, "DEP", token);
+                    (decimal decESSMag, decimal decESSRes, decimal decESSDep) = GetAllAttributeSpecificEssence(token);
                     if (!Settings.DontRoundEssenceInternally)
                     {
                         int intESSDecimals = Settings.EssenceDecimals;
@@ -46897,9 +46946,7 @@ namespace Chummer
                             decTotalSpecialAttBurnMultiplier *= objImprovement.Value / 100m;
                     }
 
-                    decimal decESSMag = await EssenceAsync(true, "MAG", token).ConfigureAwait(false);
-                    decimal decESSRes = await EssenceAsync(true, "RES", token).ConfigureAwait(false);
-                    decimal decESSDep = await EssenceAsync(true, "DEP", token).ConfigureAwait(false);
+                    (decimal decESSMag, decimal decESSRes, decimal decESSDep) = await GetAllAttributeSpecificEssenceAsync(token).ConfigureAwait(false);
                     if (!await (await GetSettingsAsync(token).ConfigureAwait(false)).GetDontRoundEssenceInternallyAsync(token).ConfigureAwait(false))
                     {
                         int intESSDecimals = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetEssenceDecimalsAsync(token).ConfigureAwait(false);
@@ -50080,6 +50127,9 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(PrototypeTranshumanEssenceUsed)),
                             new DependencyGraphNode<string, Character>(nameof(EssenceHole))
                         )
+                    ),
+                    new DependencyGraphNode<string, Character>(nameof(GetAllAttributeSpecificEssence),
+                        new DependencyGraphNode<string, Character>(nameof(Essence))
                     ),
                     new DependencyGraphNode<string, Character>(nameof(ComposureToolTip),
                         new DependencyGraphNode<string, Character>(nameof(Composure),
