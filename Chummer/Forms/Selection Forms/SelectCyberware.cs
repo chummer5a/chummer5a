@@ -77,6 +77,8 @@ namespace Chummer
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentCost;
         private readonly Microsoft.VisualStudio.Threading.AsyncLazy<string> _strCachedParentGearCost;
 
+        private const string NoGradeSelected = "__NO_GRADES_AVAILABLE__";
+
         private enum Mode
         {
             Cyberware = 0,
@@ -355,10 +357,11 @@ namespace Chummer
             }
         }
 
-        private async Task<bool> UpdateGradeMultipliersAsync(string strSelectedGrade, CancellationToken token = default)
+        private bool UpdateGradeMultipliers(string strSelectedGrade, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             XPathNavigator xmlGrade = null;
-            if (!string.IsNullOrEmpty(strSelectedGrade) && strSelectedGrade != "__NO_GRADES_AVAILABLE__")
+            if (!string.IsNullOrEmpty(strSelectedGrade) && !string.Equals(strSelectedGrade, NoGradeSelected, StringComparison.OrdinalIgnoreCase))
             {
                 xmlGrade = _xmlBaseCyberwareDataNode.TryGetNodeByNameOrId("grades/grade", strSelectedGrade);
             }
@@ -366,9 +369,9 @@ namespace Chummer
             // Update the Essence and Cost multipliers based on the Grade that has been selected.
             if (xmlGrade != null)
             {
-                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token: _objGenericToken)?.Value,
+                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("cost", token)?.Value,
                     NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decCostMultiplier);
-                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token: _objGenericToken)?.Value,
+                decimal.TryParse(xmlGrade.SelectSingleNodeAndCacheExpression("ess", token)?.Value,
                     NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out _decESSMultiplier);
                 _intAvailModifier
                     = xmlGrade.SelectSingleNodeAndCacheExpression("avail", token)
@@ -407,7 +410,7 @@ namespace Chummer
                     if (await cboGrade.DoThreadSafeFuncAsync(x => x.Enabled, token: token).ConfigureAwait(false)
                         && strSelectedGrade != null)
                         _strOldSelectedGrade = strSelectedGrade;
-                    blnUpdated = await UpdateGradeMultipliersAsync(strSelectedGrade, token).ConfigureAwait(false);
+                    blnUpdated = UpdateGradeMultipliers(strSelectedGrade, token);
                     if (blnUpdated)
                         await PopulateCategories(token).ConfigureAwait(false);
                 }
@@ -586,7 +589,7 @@ namespace Chummer
                             ? strForceGrade
                             : await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token)
                                 .ConfigureAwait(false);
-                        await UpdateGradeMultipliersAsync(strSelectedGrade, token).ConfigureAwait(false);
+                        UpdateGradeMultipliers(strSelectedGrade, token);
 
                         // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
                         XPathNavigator xmlRatingNode = xmlCyberware.SelectSingleNodeAndCacheExpression("rating", token);
@@ -2233,7 +2236,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
             string strSelectedGradeId = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
-            if (string.Equals(strSelectedGradeId, "__NO_GRADES_AVAILABLE__", StringComparison.OrdinalIgnoreCase))
+            if (string.Equals(strSelectedGradeId, NoGradeSelected, StringComparison.OrdinalIgnoreCase))
             {
                 await Program.ShowScrollableMessageBoxAsync(this,
                     await LanguageManager.GetStringAsync("Message_NoGradesAvailable", token: token).ConfigureAwait(false),
@@ -2431,7 +2434,7 @@ namespace Chummer
                     if (lstGrade.Count == 0)
                     {
                         string strNoGradesAvailable = await LanguageManager.GetStringAsync("String_NoGradesAvailable", token: token).ConfigureAwait(false);
-                        lstGrade.Add(new ListItem("__NO_GRADES_AVAILABLE__", strNoGradesAvailable));
+                        lstGrade.Add(new ListItem(NoGradeSelected, strNoGradesAvailable));
                     }
 
                     string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
@@ -2454,7 +2457,7 @@ namespace Chummer
                         }
 
                         bool blnNoGradesAvailable = lstGrade.Count == 1
-                                                    && string.Equals(lstGrade[0].Value.ToString(), "__NO_GRADES_AVAILABLE__",
+                                                    && string.Equals(lstGrade[0].Value.ToString(), NoGradeSelected,
                                                         StringComparison.OrdinalIgnoreCase);
                         await cboGrade.DoThreadSafeAsync(x =>
                         {

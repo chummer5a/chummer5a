@@ -2654,18 +2654,6 @@ namespace Chummer
                     break;
                 }
                 case ImprovementType.SkillDisable:
-                    {
-                        foreach (var result in ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled)))
-                        {
-                            yield return result;
-                        }
-                        foreach (var result in ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.KnowledgeSkills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled)))
-                        {
-                            yield return result;
-                        }
-                    }
-                    break;
-
                 case ImprovementType.SkillEnableMovement:
                 {
                     foreach (var result in ProcessSkillsWithPropertyComprehensive(_objCharacter.SkillsSection.Skills, ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled)))
@@ -4688,13 +4676,6 @@ namespace Chummer
                         break;
                     }
                 case ImprovementType.SkillDisable:
-                    {
-                        SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
-                        await ProcessSkillsWithPropertyComprehensiveAsync(await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false), ImprovedName, Target, lstExtraImprovedName, lstExtraTarget, nameof(Skill.Enabled), lstReturn, token).ConfigureAwait(false);
-                    }
-                    break;
-
                 case ImprovementType.SkillEnableMovement:
                     {
                         SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);

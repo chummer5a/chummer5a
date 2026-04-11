@@ -286,9 +286,9 @@ namespace Chummer
                             }
                         }
 
-                        async Task SetPrioritySelectionAsync(ComboBox comboBox, string priority, CancellationToken token)
+                        Task SetPrioritySelectionAsync(ComboBox comboBox, string priority, CancellationToken token)
                         {
-                            await comboBox.DoThreadSafeAsync(x =>
+                            return comboBox.DoThreadSafeAsync(x =>
                             {
                                 int intIndex = -1;
                                 if (!string.IsNullOrEmpty(priority))
@@ -297,7 +297,7 @@ namespace Chummer
                                     intIndex = 0;
                                 if (intIndex >= 0)
                                     x.SelectedIndex = intIndex;
-                            }, token).ConfigureAwait(false);
+                            }, token);
                         }
 
                         // Set Priority defaults.
@@ -2500,14 +2500,13 @@ namespace Chummer
                     || string.IsNullOrEmpty(prioritySelections.Resources))
                     return;
 
-                List<string> lstMissingPriorities = GetMissingPriorities(new[]
-                {
-                    prioritySelections.Heritage,
-                    prioritySelections.Attributes,
-                    prioritySelections.Talent,
-                    prioritySelections.Skills,
-                    prioritySelections.Resources
-                });
+                List<string> lstMissingPriorities;
+                using (TemporaryStringArray aPriorities = new TemporaryStringArray(prioritySelections.Heritage,
+                        prioritySelections.Attributes,
+                        prioritySelections.Talent,
+                        prioritySelections.Skills,
+                        prioritySelections.Resources))
+                    lstMissingPriorities = GetMissingPriorities(aPriorities);
                 if (lstMissingPriorities.Count == 0)
                     return;
                 string strComboBoxSelected = await GetSelectedPriorityAsync(comboBox, token).ConfigureAwait(false);
@@ -2542,14 +2541,12 @@ namespace Chummer
                         || string.IsNullOrEmpty(prioritySelections.Resources))
                         return;
 
-                    lstMissingPriorities = GetMissingPriorities(new[]
-                    {
-                        prioritySelections.Heritage,
+                    using (TemporaryStringArray aPriorities = new TemporaryStringArray(prioritySelections.Heritage,
                         prioritySelections.Attributes,
                         prioritySelections.Talent,
                         prioritySelections.Skills,
-                        prioritySelections.Resources
-                    });
+                        prioritySelections.Resources))
+                        lstMissingPriorities = GetMissingPriorities(aPriorities);
                     if (lstMissingPriorities.Count <= 1)
                         return;
 
@@ -3533,20 +3530,21 @@ namespace Chummer
                                     if (intPos > 0)
                                     {
                                         --intPos;
-                                        await lblForceLabel.DoThreadSafeAsync(x => x.Text = strEssMax.Substring(intPos, 3)
-                                                                                  .Replace("D6", strD6), token)
+                                        string strForceLabel = strEssMax.Substring(intPos, 3)
+                                                                                  .Replace("D6", strD6);
+                                        await lblForceLabel.DoThreadSafeAsync(x => x.Text = strForceLabel, token)
                                                            .ConfigureAwait(false);
+                                        int intMaximum = char.GetNumericValue(strEssMax, intPos).StandardRound() * 6;
                                         await nudForce.DoThreadSafeAsync(x => x.Maximum
-                                                                             = Convert.ToInt32(
-                                                                                 strEssMax[intPos],
-                                                                                 GlobalSettings.InvariantCultureInfo) * 6,
+                                                                             = intMaximum,
                                                                          token).ConfigureAwait(false);
                                     }
                                     else
                                     {
+                                        string strForceLabel = 1.ToString(GlobalSettings.CultureInfo) + strD6;
                                         await lblForceLabel
                                               .DoThreadSafeAsync(
-                                                  x => x.Text = 1.ToString(GlobalSettings.CultureInfo) + strD6, token)
+                                                  x => x.Text = strForceLabel, token)
                                               .ConfigureAwait(false);
                                         await nudForce.DoThreadSafeAsync(x => x.Maximum = 6, token).ConfigureAwait(false);
                                     }
