@@ -8689,6 +8689,9 @@ namespace Chummer.Backend.Equipment
                     decModifier += objImprovement.Value;
             }
 
+            // Range dice modifiers from data are never positive; bonuses only reduce penalties.
+            decModifier = Math.Min(decModifier, 0m);
+
             return string.Format(GlobalSettings.InvariantCultureInfo,
                 LanguageManager.GetString("Label_Range" + strRange), decModifier.StandardRound());
         }
@@ -8738,6 +8741,9 @@ namespace Chummer.Backend.Equipment
                                                               StringComparison.OrdinalIgnoreCase))
                     decModifier += objImprovement.Value;
             }
+
+            // Range dice modifiers from data are never positive; bonuses only reduce penalties.
+            decModifier = Math.Min(decModifier, 0m);
 
             return string.Format(GlobalSettings.InvariantCultureInfo,
                 await LanguageManager.GetStringAsync("Label_Range" + strRange, token: token).ConfigureAwait(false), decModifier.StandardRound());
