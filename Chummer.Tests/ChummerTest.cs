@@ -61,10 +61,10 @@ namespace Chummer.Tests
         public static Character[] Characters { get; }
     }
 
-    [TestClass]
+    [STATestClass]
     public class ChummerTest
     {
-        [AssemblyInitialize]
+        [ClassInitialize]
         public static void Initialize(TestContext context)
         {
             Utils.IsUnitTest = true;
