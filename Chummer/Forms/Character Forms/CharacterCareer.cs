@@ -12146,6 +12146,7 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
+                                objGear.Parent = objSensor;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     false, token: GenericToken).ConfigureAwait(false);
