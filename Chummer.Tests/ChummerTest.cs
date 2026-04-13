@@ -438,7 +438,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod(UseSTASynchronizationContext = true)]
         public void Test06_BasicStartup()
         {
             try
@@ -501,7 +501,7 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod(UseSTASynchronizationContext = true)]
         public void Test07_LoadCharacterForms()
         {
             try

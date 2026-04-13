@@ -2202,8 +2202,7 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                return funcToRun.Invoke().GetAwaiter().GetResult();
+                return SafelyRunSynchronously(funcToRun, token);
             }
             Task<T> objTask = funcToRun();
             while (!objTask.IsCompleted)
@@ -2230,8 +2229,7 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                return funcToRun.Invoke(token).GetAwaiter().GetResult();
+                return SafelyRunSynchronously(() => funcToRun(token), token);
             }
             Task<T> objTask = funcToRun(token);
             while (!objTask.IsCompleted)
@@ -2316,13 +2314,7 @@ namespace Chummer
                 {
                     Parallel.For(0, intLength, i =>
                     {
-                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                        aobjReturn[i] = objInnerReturn;
+                        aobjReturn[i] = SafelyRunSynchronously(lstFuncToRun.ElementAtBetter(i), token);
                     });
                 }
                 else
@@ -2334,13 +2326,7 @@ namespace Chummer
                     };
                     Parallel.For(0, intLength, objOptions, i =>
                     {
-                        Task<T> objSyncTask = lstFuncToRun.ElementAtBetter(i).Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        T objInnerReturn = objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                        aobjReturn[i] = objInnerReturn;
+                        aobjReturn[i] = SafelyRunSynchronously(lstFuncToRun.ElementAtBetter(i), token);
                     });
                     token.ThrowIfCancellationRequested();
                 }
@@ -2399,13 +2385,7 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                Task objSyncTask = funcToRun.Invoke();
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                objSyncTask.GetAwaiter().GetResult();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
+                SafelyRunSynchronously(funcToRun, token);
                 return;
             }
             Task objTask = funcToRun();
@@ -2434,13 +2414,7 @@ namespace Chummer
             }
             if (!EverDoEvents)
             {
-                token.ThrowIfCancellationRequested();
-                Task objSyncTask = funcToRun(token);
-                if (objSyncTask.Status == TaskStatus.Created)
-                    objSyncTask.RunSynchronously();
-                objSyncTask.GetAwaiter().GetResult();
-                if (objSyncTask.Exception != null)
-                    throw objSyncTask.Exception;
+                SafelyRunSynchronously(() => funcToRun(token), token);
                 return;
             }
             Task objTask = funcToRun(token);
@@ -2516,15 +2490,7 @@ namespace Chummer
             {
                 if (token == CancellationToken.None)
                 {
-                    Parallel.ForEach(lstFuncToRun, funcToRun =>
-                    {
-                        Task objSyncTask = funcToRun.Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                    });
+                    Parallel.ForEach(lstFuncToRun, funcToRun => SafelyRunSynchronously(funcToRun, token));
                 }
                 else
                 {
@@ -2533,15 +2499,7 @@ namespace Chummer
                     {
                         CancellationToken = token
                     };
-                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
-                    {
-                        Task objSyncTask = funcToRun.Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                    });
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun => SafelyRunSynchronously(funcToRun, token));
                     token.ThrowIfCancellationRequested();
                 }
                 return;
@@ -2620,15 +2578,7 @@ namespace Chummer
             {
                 if (token == CancellationToken.None)
                 {
-                    Parallel.ForEach(lstFuncToRun, funcToRun =>
-                    {
-                        Task objSyncTask = funcToRun.Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                    });
+                    Parallel.ForEach(lstFuncToRun, funcToRun => SafelyRunSynchronously(funcToRun, token));
                 }
                 else
                 {
@@ -2637,15 +2587,7 @@ namespace Chummer
                     {
                         CancellationToken = token
                     };
-                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun =>
-                    {
-                        Task objSyncTask = funcToRun.Invoke();
-                        if (objSyncTask.Status == TaskStatus.Created)
-                            objSyncTask.RunSynchronously();
-                        objSyncTask.GetAwaiter().GetResult();
-                        if (objSyncTask.Exception != null)
-                            throw objSyncTask.Exception;
-                    });
+                    Parallel.ForEach(lstFuncToRun, objOptions, funcToRun => SafelyRunSynchronously(funcToRun, token));
                     token.ThrowIfCancellationRequested();
                 }
                 return;
