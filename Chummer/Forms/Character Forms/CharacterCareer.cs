@@ -15068,6 +15068,7 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
+                                objGear.Parent = objCyberware;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     await objCyberware.GetIsModularCurrentlyEquippedAsync(GenericToken)
@@ -15248,6 +15249,7 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
+                                objGear.Parent = objCyberware;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     false, token: GenericToken).ConfigureAwait(false);
@@ -15773,6 +15775,7 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
+                                objGear.Parent = objAccessory;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     objAccessory.Equipped, token: GenericToken).ConfigureAwait(false);
@@ -15947,6 +15950,7 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
+                                objGear.Parent = objSensor;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true,
@@ -24205,6 +24209,7 @@ namespace Chummer
                         }
 
                         Gear objGear = new Gear(CharacterObject);
+                        objGear.Parent = blnNullParent ? null : objSelectedGear;
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             strForceValue,
                             objSelectedGear?.Equipped != false, token: token).ConfigureAwait(false);
@@ -24513,6 +24518,7 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
+                        objGear.Parent = objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor;
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             string.Empty,
                             objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped,
