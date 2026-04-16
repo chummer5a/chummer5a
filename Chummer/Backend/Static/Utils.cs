@@ -85,36 +85,39 @@ namespace Chummer
 
         private static JoinableTaskContext MyJoinableTaskContext => s_objJoinableTaskContext;
 
+        // Need to track our "main thread" ID separately for unit tests because our STA thread for running UI methods is not going to be our main thread (which administers the unit tests)
+        private static int s_intUnitTestMainThreadId = -1;
+
+        public static bool IsMainThread => IsUnitTest ? s_intUnitTestMainThreadId == Environment.CurrentManagedThreadId : Program.IsMainThread;
+
         [SupportedOSPlatform("windows")]
         public static JoinableTaskContext CreateSynchronizationContext()
         {
-            if (!Program.IsMainThread)
-                throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
             if (Thread.CurrentThread.GetApartmentState() != ApartmentState.STA)
                 throw new InvalidOperationException("Should not call CreateSynchronizationContext on a non-STA thread.");
-
-            if (s_objJoinableTaskFactory.IsValueCreated)
+            if (Utils.IsUnitTest)
             {
-                JoinableTaskContext objNewContext = new JoinableTaskContext();
-                JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
-                if (objReturn != default)
-                {
-                    objNewContext.Dispose();
-                    return objReturn;
-                }
+                // We already created a context, but it would still be valid for us because we're still on the same thread, so we can skip the re-creation.
+                if (s_objJoinableTaskContext != null && s_intUnitTestMainThreadId == Environment.CurrentManagedThreadId)
+                    return s_objJoinableTaskContext;
+                s_intUnitTestMainThreadId = Environment.CurrentManagedThreadId;
             }
+            else if (!Program.IsMainThread)
+                throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
 
             using (new Forms.DummyForm()) // New Form needs to be created (or Application.Run() called) before Synchronization.Current is set
             {
                 JoinableTaskContext objNewContext = new JoinableTaskContext();
-                JoinableTaskContext objReturn = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
-                if (objReturn != default)
+                JoinableTaskContext objOldContext = Interlocked.CompareExchange(ref s_objJoinableTaskContext, objNewContext, default);
+                if (objOldContext != default)
                 {
                     objNewContext.Dispose();
-                    return objReturn;
+                    return objOldContext;
                 }
 
                 MySynchronizationContext = SynchronizationContext.Current;
+                if (!IsRunningInVisualStudio && s_objJoinableTaskFactory != null)
+                    s_objJoinableTaskFactory = new JoinableTaskFactory(objNewContext);
                 return objNewContext;
             }
         }
@@ -409,13 +412,22 @@ namespace Chummer
         }
 
         [SupportedOSPlatform("windows")]
-        private static readonly Lazy<JoinableTaskFactory> s_objJoinableTaskFactory
-            = new Lazy<JoinableTaskFactory>(() => IsRunningInVisualStudio
-                ? new JoinableTaskFactory(new JoinableTaskContext())
-                : new JoinableTaskFactory(MyJoinableTaskContext ?? CreateSynchronizationContext()));
+        private static JoinableTaskFactory s_objJoinableTaskFactory;
 
         [SupportedOSPlatform("windows")]
-        public static JoinableTaskFactory JoinableTaskFactory => s_objJoinableTaskFactory.Value;
+        public static JoinableTaskFactory JoinableTaskFactory
+        {
+            get
+            {
+                JoinableTaskFactory objReturn = s_objJoinableTaskFactory;
+                if (objReturn != null)
+                    return objReturn;
+
+                return s_objJoinableTaskFactory = IsRunningInVisualStudio
+                    ? new JoinableTaskFactory(new JoinableTaskContext())
+                    : new JoinableTaskFactory(MyJoinableTaskContext ?? CreateSynchronizationContext());
+            }
+        }
 
         private static readonly Lazy<string[]> s_astrBasicDataFileNames = new Lazy<string[]>(() =>
         {
@@ -1301,15 +1313,18 @@ namespace Chummer
         public static void RunOnMainThread(Action func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
+            if (IsMainThread)
                 func.Invoke();
             else
             {
                 JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    token.ThrowIfCancellationRequested();
+                    if (!IsMainThread)
+                    {
+                        await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                        token.ThrowIfCancellationRequested();
+                    }
                     func.Invoke();
                 }, eOptions);
             }
@@ -1322,13 +1337,16 @@ namespace Chummer
         public static T RunOnMainThread<T>(Func<T> func, JoinableTaskCreationOptions eOptions = JoinableTaskCreationOptions.None, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
+            return IsMainThread
                 ? func.Invoke()
                 : JoinableTaskFactory.Run(async () =>
                 {
                     token.ThrowIfCancellationRequested();
-                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                    token.ThrowIfCancellationRequested();
+                    if (!IsMainThread)
+                    {
+                        await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                        token.ThrowIfCancellationRequested();
+                    }
                     return func.Invoke();
                 }, eOptions);
         }
@@ -1343,8 +1361,11 @@ namespace Chummer
             JoinableTaskFactory.Run(async () =>
             {
                 token.ThrowIfCancellationRequested();
-                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                token.ThrowIfCancellationRequested();
+                if (!IsMainThread)
+                {
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                    token.ThrowIfCancellationRequested();
+                }
                 await func.Invoke().ConfigureAwait(true);
             }, eOptions);
         }
@@ -1359,8 +1380,11 @@ namespace Chummer
             return JoinableTaskFactory.Run(async () =>
             {
                 token.ThrowIfCancellationRequested();
-                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-                token.ThrowIfCancellationRequested();
+                if (!IsMainThread)
+                {
+                    await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                    token.ThrowIfCancellationRequested();
+                }
                 return await func.Invoke().ConfigureAwait(true);
             }, eOptions);
         }
@@ -1372,8 +1396,11 @@ namespace Chummer
         public static async Task RunOnMainThreadAsync(Action func, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-            token.ThrowIfCancellationRequested();
+            if (!IsMainThread)
+            {
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+            }
             func.Invoke();
         }
 
@@ -1384,8 +1411,11 @@ namespace Chummer
         public static async Task<T> RunOnMainThreadAsync<T>(Func<T> func, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-            token.ThrowIfCancellationRequested();
+            if (!IsMainThread)
+            {
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+            }
             return func.Invoke();
         }
 
@@ -1396,8 +1426,11 @@ namespace Chummer
         public static async Task RunOnMainThreadAsync(Func<Task> func, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-            token.ThrowIfCancellationRequested();
+            if (!IsMainThread)
+            {
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+            }
             await func.Invoke().ConfigureAwait(true);
         }
 
@@ -1408,8 +1441,11 @@ namespace Chummer
         public static async Task<T> RunOnMainThreadAsync<T>(Func<Task<T>> func, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await JoinableTaskFactory.SwitchToMainThreadAsync(token);
-            token.ThrowIfCancellationRequested();
+            if (!IsMainThread)
+            {
+                await JoinableTaskFactory.SwitchToMainThreadAsync(token);
+                token.ThrowIfCancellationRequested();
+            }
             return await func.Invoke().ConfigureAwait(true);
         }
 
@@ -1522,7 +1558,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static void SafeSleep(int intDurationMilliseconds, bool blnForceDoEvents = false)
         {
-            if (Program.IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
+            if (IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
             {
                 s_objThreadStopwatch.Value.Restart();
                 try
@@ -1569,7 +1605,7 @@ namespace Chummer
         public static void SafeSleep(int intDurationMilliseconds, CancellationToken token, bool blnForceDoEvents = false)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
+            if (IsMainThread && EverDoEvents && s_objThreadStopwatch.Value != null)
             {
                 s_objThreadStopwatch.Value.Restart();
                 try
@@ -1671,7 +1707,7 @@ namespace Chummer
         /// <summary>
         /// Never wait around in designer mode, we should not care about thread locking, and running in a background thread can mess up IsDesignerMode checks inside that thread
         /// </summary>
-        public static bool EverDoEvents => Program.IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
+        public static bool EverDoEvents => IsMainThread && !IsDesignerMode && !IsRunningInVisualStudio;
 
         /// <summary>
         /// Don't run events during unit tests, but still run in the background so that we can catch any issues caused by our setup.
@@ -1695,7 +1731,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
+            if (IsMainThread)
                 JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun());
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
@@ -1712,7 +1748,7 @@ namespace Chummer
         public static T SafelyRunSynchronously<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
+            return IsMainThread
                 ? JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun())
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1728,7 +1764,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(IEnumerable<Func<Task>> afuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
+            if (IsMainThread)
             {
                 JoinableTaskFactory.Run(async () =>
                 {
@@ -1766,7 +1802,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
-            if (Program.IsMainThread)
+            if (IsMainThread)
             {
                 JoinableTaskFactory.Run(async () =>
                 {
@@ -1805,7 +1841,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(Func<Task> funcToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
+            if (IsMainThread)
                 JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun(), eOptions);
             else
                 funcToRun.Invoke().GetAwaiter().GetResult();
@@ -1822,7 +1858,7 @@ namespace Chummer
         public static T SafelyRunSynchronously<T>(Func<Task<T>> funcToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return Program.IsMainThread
+            return IsMainThread
                 ? JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun(), eOptions)
                 : funcToRun.Invoke().GetAwaiter().GetResult();
         }
@@ -1838,7 +1874,7 @@ namespace Chummer
         public static void SafelyRunSynchronously(IEnumerable<Func<Task>> afuncToRun, JoinableTaskCreationOptions eOptions, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread)
+            if (IsMainThread)
             {
                 JoinableTaskFactory.Run(async () =>
                 {
@@ -1875,7 +1911,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             int intCount = afuncToRun.Count;
             T[] aobjReturn = new T[intCount];
-            if (Program.IsMainThread)
+            if (IsMainThread)
             {
                 JoinableTaskFactory.Run(async () =>
                 {
@@ -1938,7 +1974,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Action funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 token.ThrowIfCancellationRequested();
                 funcToRun.Invoke();
@@ -1962,7 +1998,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Action<CancellationToken> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 token.ThrowIfCancellationRequested();
                 funcToRun.Invoke(token);
@@ -2018,7 +2054,7 @@ namespace Chummer
                     return;
             }
 
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 if (token == CancellationToken.None)
                     Parallel.ForEach(afuncToRun, x => x.Invoke());
@@ -2064,7 +2100,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke();
@@ -2088,7 +2124,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, T> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 token.ThrowIfCancellationRequested();
                 return funcToRun.Invoke(token);
@@ -2133,7 +2169,7 @@ namespace Chummer
                 aobjReturn[0] = RunWithoutThreadLock(lstFuncToRun.ElementAtBetter(0), token);
                 return aobjReturn;
             }
-            if (!EverDoEvents || (Program.IsMainThread && _intIsOkToRunDoEvents < 1))
+            if (!EverDoEvents || (IsMainThread && _intIsOkToRunDoEvents < 1))
             {
                 if (token == CancellationToken.None)
                 {
@@ -2196,7 +2232,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 return JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun());
             }
@@ -2223,7 +2259,7 @@ namespace Chummer
         public static T RunWithoutThreadLock<T>(Func<CancellationToken, Task<T>> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 return JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled<T>(token) : funcToRun(token));
             }
@@ -2272,7 +2308,7 @@ namespace Chummer
                 return aobjReturn;
             }
 
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>
@@ -2377,7 +2413,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Func<Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun());
@@ -2406,7 +2442,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(Func<CancellationToken, Task> funcToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(() => token.IsCancellationRequested ? Task.FromCanceled(token) : funcToRun(token));
@@ -2459,7 +2495,7 @@ namespace Chummer
         public static void RunWithoutThreadLock(IEnumerable<Func<Task>> lstFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>
@@ -2547,7 +2583,7 @@ namespace Chummer
                     return;
             }
 
-            if (Program.IsMainThread && _intIsOkToRunDoEvents < 1)
+            if (IsMainThread && _intIsOkToRunDoEvents < 1)
             {
                 token.ThrowIfCancellationRequested();
                 JoinableTaskFactory.Run(async () =>

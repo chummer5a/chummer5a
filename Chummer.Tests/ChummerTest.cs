@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.IO;
+using System.Runtime.Versioning;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -69,7 +70,13 @@ namespace Chummer.Tests
         {
             Utils.IsUnitTest = true;
             Utils.IsUnitTestForUI = false;
-            Utils.CreateSynchronizationContext();
+        }
+
+        [GlobalTestInitialize]
+        [SupportedOSPlatform("windows")]
+        public static void GlobalTestInit(TestContext context)
+        {
+            Utils.CreateSynchronizationContext(); // We need to re-create the synchronization context for each test because the STA thread might be different each time.
         }
 
         private static IEnumerable<Character> GetTestCharacters(CancellationToken token = default)
@@ -98,7 +105,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(15000, CooperativeCancellation = true)] // 15 seconds
         public void Test00_ColorTest()
         {
             try
@@ -159,7 +167,9 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(15000, CooperativeCancellation = true)] // 15 seconds
+        [SupportedOSPlatform("windows")]
         public void Test01_LoadContent()
         {
             try
@@ -193,9 +203,11 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(600000, CooperativeCancellation = true)] // 10 minutes
         public void Test02_LoadCharacters()
         {
+            int i = Environment.CurrentManagedThreadId;
             try
             {
                 Debug.WriteLine("Unit test initialized for: Test02_LoadCharacters()");
@@ -216,7 +228,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(900000, CooperativeCancellation = true)] // 15 minutes
         public void Test03_SaveAsChum5lz()
         {
             try
@@ -258,7 +271,8 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(900000, CooperativeCancellation = true)] // 15 minutes
         public void Test04_LoadThenSaveIsDeterministic()
         {
             try
@@ -389,7 +403,9 @@ namespace Chummer.Tests
 #endif
         }
 
-        [TestMethod]
+        [STATestMethod]
+        [Timeout(900000, CooperativeCancellation = true)] // 15 minutes
+        [SupportedOSPlatform("windows")]
         public void Test05_LoadThenPrint()
         {
             try
@@ -438,7 +454,9 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [STATestMethod(UseSTASynchronizationContext = true)]
+        [STATestMethod]
+        [Timeout(60000, CooperativeCancellation = true)] // 1 minute
+        [SupportedOSPlatform("windows")]
         public void Test06_BasicStartup()
         {
             try
@@ -501,7 +519,9 @@ namespace Chummer.Tests
         }
 
         // Test methods have a number in their name so that by default they execute in the order of fastest to slowest
-        [STATestMethod(UseSTASynchronizationContext = true)]
+        [STATestMethod]
+        [Timeout(3600000, CooperativeCancellation = true)] // 1 hour
+        [SupportedOSPlatform("windows")]
         public void Test07_LoadCharacterForms()
         {
             try
@@ -755,6 +775,7 @@ namespace Chummer.Tests
         /// <summary>
         /// Tests exporting a given character.
         /// </summary>
+        [SupportedOSPlatform("windows")]
         private static void DoAndSaveExport(Character objCharacter, string strExportLanguage, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
