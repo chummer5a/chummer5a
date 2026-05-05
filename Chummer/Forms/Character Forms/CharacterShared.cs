@@ -132,6 +132,881 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Gets the currently selected <see cref="Weapon"/> from the specified tree, or shows a localized
+        /// selection prompt when the current node is not a weapon.
+        /// </summary>
+        /// <param name="objTree">Tree to read the current selection from.</param>
+        /// <param name="strSelectMessageKey">Localization key for the selection-required message body.</param>
+        /// <param name="strSelectTitleKey">Localization key for the selection-required message title.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<Weapon> TryGetSelectedWeaponFromTreeAsync(TreeView objTree,
+                                                                        string strSelectMessageKey,
+                                                                        string strSelectTitleKey,
+                                                                        CancellationToken token = default)
+        {
+            if (await objTree.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is Weapon objWeapon)
+                return objWeapon;
+
+            await Program.ShowScrollableMessageBoxAsync(
+                this,
+                await LanguageManager.GetStringAsync(strSelectMessageKey, token: token).ConfigureAwait(false),
+                await LanguageManager.GetStringAsync(strSelectTitleKey, token: token).ConfigureAwait(false),
+                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the currently selected <see cref="Cyberware"/> from the specified tree only when it supports
+        /// subsystem plugins, otherwise shows the supplied localized selection prompt.
+        /// </summary>
+        /// <param name="objTree">Tree to read the current selection from.</param>
+        /// <param name="strSelectMessageKey">Localization key for the selection-required message body.</param>
+        /// <param name="strSelectTitleKey">Localization key for the selection-required message title.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<Cyberware> TryGetSelectedCyberwareWithSubsystemFromTreeAsync(TreeView objTree,
+                                                                                            string strSelectMessageKey,
+                                                                                            string strSelectTitleKey,
+                                                                                            CancellationToken token = default)
+        {
+            if (await objTree.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is Cyberware objCyberware
+                && !string.IsNullOrWhiteSpace(objCyberware.AllowedSubsystems))
+            {
+                return objCyberware;
+            }
+
+            await Program.ShowScrollableMessageBoxAsync(
+                this,
+                await LanguageManager.GetStringAsync(strSelectMessageKey, token: token).ConfigureAwait(false),
+                await LanguageManager.GetStringAsync(strSelectTitleKey, token: token).ConfigureAwait(false),
+                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the currently selected <see cref="Cyberware"/> from the specified tree only when it can accept
+        /// gear children, otherwise shows the appropriate localized message.
+        /// </summary>
+        /// <param name="objTree">Tree to read the current selection from.</param>
+        /// <param name="strSelectMessageKey">Localization key for the selection-required message body.</param>
+        /// <param name="strSelectTitleKey">Localization key for the selection-required message title.</param>
+        /// <param name="strAllowGearMessageKey">Localization key when selected cyberware cannot host gear.</param>
+        /// <param name="strAllowGearTitleKey">Localization key for the cannot-host-gear title.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<Cyberware> TryGetSelectedCyberwareAllowingGearFromTreeAsync(TreeView objTree,
+                                                                                           string strSelectMessageKey,
+                                                                                           string strSelectTitleKey,
+                                                                                           string strAllowGearMessageKey,
+                                                                                           string strAllowGearTitleKey,
+                                                                                           CancellationToken token = default)
+        {
+            if (!(await objTree.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is Cyberware objCyberware))
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync(strSelectMessageKey, token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync(strSelectTitleKey, token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return null;
+            }
+
+            if (objCyberware.AllowGear == null)
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync(strAllowGearMessageKey, token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync(strAllowGearTitleKey, token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return null;
+            }
+
+            return objCyberware;
+        }
+
+        /// <summary>
+        /// Resolves the vehicle root node associated with the current vehicle-tree selection and returns its
+        /// <see cref="Vehicle"/> object, or shows a localized selection prompt if none is available.
+        /// </summary>
+        /// <param name="treVehicles">Vehicle tree to inspect.</param>
+        /// <param name="strSelectMessageKey">Localization key for the selection-required message body.</param>
+        /// <param name="strSelectTitleKey">Localization key for the selection-required message title.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<Vehicle> TryGetSelectedVehicleFromVehicleTreeAsync(TreeView treVehicles,
+                                                                                 string strSelectMessageKey,
+                                                                                 string strSelectTitleKey,
+                                                                                 CancellationToken token = default)
+        {
+            TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x =>
+            {
+                TreeNode objVehicleNode = x.SelectedNode;
+                while (objVehicleNode?.Level > 1)
+                    objVehicleNode = objVehicleNode.Parent;
+                return objVehicleNode;
+            }, token).ConfigureAwait(false);
+
+            if (objSelectedNode?.Tag is Vehicle objVehicle)
+                return objVehicle;
+
+            await Program.ShowScrollableMessageBoxAsync(
+                this,
+                await LanguageManager.GetStringAsync(strSelectMessageKey, token: token).ConfigureAwait(false),
+                await LanguageManager.GetStringAsync(strSelectTitleKey, token: token).ConfigureAwait(false),
+                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+            return null;
+        }
+
+        /// <summary>
+        /// Runs the underbarrel-weapon selection and attachment flow for a parent weapon with configurable
+        /// purchase behavior (charging/logging vs free-cost editing semantics).
+        /// </summary>
+        /// <param name="objSelectedWeapon">Parent weapon that will receive the underbarrel child weapon.</param>
+        /// <param name="blnChargeCost">Whether to apply cost checks and deduct/log nuyen.</param>
+        /// <param name="strExpenseString">Localized expense prefix used when charging cost.</param>
+        /// <param name="eUndoType">Undo entry type to create for charged purchases.</param>
+        /// <param name="blnSetCostToZeroWhenFree">Whether free selections should force item cost to zero.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AddUnderbarrelWeaponAsync(Weapon objSelectedWeapon,
+                                                              bool blnChargeCost,
+                                                              string strExpenseString,
+                                                              NuyenExpenseType eUndoType,
+                                                              bool blnSetCostToZeroWhenFree,
+                                                              CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                           () => new SelectWeapon(CharacterObject)
+                           {
+                               LimitToCategories = "Underbarrel Weapons",
+                               ParentWeapon = objSelectedWeapon
+                           }, token).ConfigureAwait(false))
+                {
+                    frmPickWeapon.MyForm.Mounts.UnionWith(
+                        await objSelectedWeapon.GetAccessoryMountsAsync(token: token).ConfigureAwait(false));
+
+                    if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return false;
+
+                    XmlDocument objXmlDocument
+                        = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
+                    XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId(
+                        "/chummer/weapons/weapon", frmPickWeapon.MyForm.SelectedWeapon);
+
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Weapon objWeapon = new Weapon(CharacterObject);
+                    try
+                    {
+                        await objWeapon.SetParentAsync(objSelectedWeapon, token).ConfigureAwait(false);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
+                        objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
+
+                        if (!objSelectedWeapon.AllowAccessory)
+                            objWeapon.AllowAccessory = false;
+
+                        if (frmPickWeapon.MyForm.FreeCost && blnSetCostToZeroWhenFree)
+                            objWeapon.Cost = "0";
+
+                        if (blnChargeCost && !frmPickWeapon.MyForm.FreeCost)
+                        {
+                            decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
+                            if (frmPickWeapon.MyForm.Markup != 0)
+                                decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
+
+                            char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                return frmPickWeapon.MyForm.AddAgain;
+                            }
+
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(eUndoType, objWeapon.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                        {
+                            if (!objSelectedWeapon.AllowAccessory)
+                                objLoopWeapon.AllowAccessory = false;
+                            await objSelectedWeapon.UnderbarrelWeapons.AddAsync(objLoopWeapon, token).ConfigureAwait(false);
+                        }
+
+                        return frmPickWeapon.MyForm.AddAgain;
+                    }
+                    catch
+                    {
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Runs the vehicle-mod selection and attachment flow for a vehicle with configurable purchase and
+        /// capacity-enforcement behavior.
+        /// </summary>
+        /// <param name="objVehicle">Vehicle that will receive the selected mod.</param>
+        /// <param name="blnChargeCost">Whether to apply cost checks and deduct/log nuyen.</param>
+        /// <param name="strExpenseString">Localized expense prefix used when charging cost.</param>
+        /// <param name="eUndoType">Undo entry type to create for charged purchases.</param>
+        /// <param name="blnSetCostToZeroWhenFree">Whether free selections should force mod cost to zero.</param>
+        /// <param name="blnEnforceCapacity">Whether capacity rules should be validated immediately.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AddVehicleModAsync(Vehicle objVehicle,
+                                                       bool blnChargeCost,
+                                                       string strExpenseString,
+                                                       NuyenExpenseType eUndoType,
+                                                       bool blnSetCostToZeroWhenFree,
+                                                       bool blnEnforceCapacity,
+                                                       CancellationToken token = default)
+        {
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("vehicles.xml", token: token).ConfigureAwait(false);
+            using (ThreadSafeForm<SelectVehicleMod> frmPickVehicleMod
+                   = await ThreadSafeForm<SelectVehicleMod>.GetAsync(
+                       () => new SelectVehicleMod(CharacterObject, objVehicle), token).ConfigureAwait(false))
+            {
+                if (await frmPickVehicleMod.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                    return false;
+
+                XmlNode objXmlMod = objXmlDocument.TryGetNodeByNameOrId("/chummer/mods/mod", frmPickVehicleMod.MyForm.SelectedMod);
+                VehicleMod objMod = new VehicleMod(CharacterObject);
+                try
+                {
+                    objMod.DiscountCost = frmPickVehicleMod.MyForm.BlackMarketDiscount;
+                    await objMod.CreateAsync(objXmlMod, frmPickVehicleMod.MyForm.SelectedRating, objVehicle, token: token).ConfigureAwait(false);
+
+                    decimal decOriginalCost = 0;
+                    if (blnChargeCost)
+                        decOriginalCost = await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false);
+
+                    if (frmPickVehicleMod.MyForm.FreeCost && blnSetCostToZeroWhenFree)
+                        objMod.Cost = "0";
+
+                    await objVehicle.Mods.AddAsync(objMod, token).ConfigureAwait(false);
+
+                    if (blnEnforceCapacity && await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false))
+                    {
+                        bool blnOverCapacity;
+                        if (await CharacterObjectSettings.BookEnabledAsync("R5", token).ConfigureAwait(false))
+                        {
+                            if (objVehicle.IsDrone && await CharacterObjectSettings.GetDroneModsAsync(token).ConfigureAwait(false))
+                            {
+                                blnOverCapacity = await objVehicle.GetDroneModSlotsUsedAsync(token).ConfigureAwait(false)
+                                                  > await objVehicle.GetDroneModSlotsAsync(token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                blnOverCapacity = await objVehicle.OverR5CapacityAsync(objMod.Category, token).ConfigureAwait(false);
+                            }
+                        }
+                        else
+                        {
+                            blnOverCapacity = await objVehicle.GetSlotsAsync(token).ConfigureAwait(false)
+                                              < await objVehicle.GetSlotsUsedAsync(token).ConfigureAwait(false);
+                        }
+
+                        if (blnOverCapacity)
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_CapacityReached", token: token).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            await objVehicle.Mods.RemoveAsync(objMod, token).ConfigureAwait(false);
+                            return frmPickVehicleMod.MyForm.AddAgain;
+                        }
+                    }
+
+                    if (blnChargeCost && !frmPickVehicleMod.MyForm.FreeCost)
+                    {
+                        decimal decCost = await objVehicle.GetTotalCostAsync(token).ConfigureAwait(false) - decOriginalCost;
+                        if (frmPickVehicleMod.MyForm.Markup != 0)
+                            decCost *= 1 + frmPickVehicleMod.MyForm.Markup / 100.0m;
+
+                        char chrAvail = (await objMod.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
+                        if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                        {
+                            await objVehicle.Mods.RemoveAsync(objMod, token).ConfigureAwait(false);
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            return frmPickVehicleMod.MyForm.AddAgain;
+                        }
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                            strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                            + await objMod.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            ExpenseType.Nuyen, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(eUndoType, objMod.InternalId);
+                        objExpense.Undo = objUndo;
+                    }
+                }
+                catch
+                {
+                    await objMod.DeleteVehicleModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+
+                return frmPickVehicleMod.MyForm.AddAgain;
+            }
+        }
+
+        /// <summary>
+        /// Runs the weapon-accessory selection and attachment flow for a weapon with configurable purchase
+        /// behavior.
+        /// </summary>
+        /// <param name="objWeapon">Weapon that will receive the selected accessory.</param>
+        /// <param name="blnChargeCost">Whether to apply cost checks and deduct/log nuyen.</param>
+        /// <param name="strExpenseString">Localized expense prefix used when charging cost.</param>
+        /// <param name="eUndoType">Undo entry type to create for charged purchases.</param>
+        /// <param name="blnSetCostToZeroWhenFree">Whether free selections should force accessory cost to zero.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AddWeaponAccessoryAsync(Weapon objWeapon,
+                                                            bool blnChargeCost,
+                                                            string strExpenseString,
+                                                            NuyenExpenseType eUndoType,
+                                                            bool blnSetCostToZeroWhenFree,
+                                                            CancellationToken token = default)
+        {
+            if (!objWeapon.AllowAccessory)
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync("Message_CannotModifyWeapon", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_CannotModifyWeapon", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return false;
+            }
+
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
+            using (ThreadSafeForm<SelectWeaponAccessory> frmPickWeaponAccessory
+                   = await ThreadSafeForm<SelectWeaponAccessory>.GetAsync(
+                       () => new SelectWeaponAccessory(CharacterObject), token).ConfigureAwait(false))
+            {
+                await frmPickWeaponAccessory.MyForm.SetWeapon(objWeapon, token).ConfigureAwait(false);
+                if (await frmPickWeaponAccessory.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                    return false;
+
+                XmlNode objXmlAccessory = objXmlDocument.TryGetNodeByNameOrId(
+                    "/chummer/accessories/accessory", frmPickWeaponAccessory.MyForm.SelectedAccessory);
+                WeaponAccessory objAccessory = new WeaponAccessory(CharacterObject);
+                try
+                {
+                    await objAccessory.CreateAsync(
+                        objXmlAccessory,
+                        frmPickWeaponAccessory.MyForm.SelectedMount,
+                        frmPickWeaponAccessory.MyForm.SelectedRating,
+                        token: token).ConfigureAwait(false);
+                    await objAccessory.SetParentAsync(objWeapon, token).ConfigureAwait(false);
+                    objAccessory.DiscountCost = frmPickWeaponAccessory.MyForm.BlackMarketDiscount;
+
+                    decimal decOriginalCost = 0;
+                    if (blnChargeCost)
+                        decOriginalCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
+
+                    if (frmPickWeaponAccessory.MyForm.FreeCost && blnSetCostToZeroWhenFree)
+                        objAccessory.Cost = "0";
+
+                    await objWeapon.WeaponAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
+
+                    if (blnChargeCost && !frmPickWeaponAccessory.MyForm.FreeCost)
+                    {
+                        decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false) - decOriginalCost;
+                        if (frmPickWeaponAccessory.MyForm.Markup != 0)
+                            decCost *= 1 + frmPickWeaponAccessory.MyForm.Markup / 100.0m;
+
+                        char chrAvail = (await objAccessory.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
+                        if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                        {
+                            await objWeapon.WeaponAccessories.RemoveAsync(objAccessory, token).ConfigureAwait(false);
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            return frmPickWeaponAccessory.MyForm.AddAgain;
+                        }
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                            strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                            + await objAccessory.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            ExpenseType.Nuyen, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(eUndoType, objAccessory.InternalId);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    return frmPickWeaponAccessory.MyForm.AddAgain;
+                }
+                catch
+                {
+                    await objAccessory.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+            }
+        }
+        /// <summary>
+        /// Handles adding cyberware to a vehicle mod/cyberware node selected in the vehicle tree, including
+        /// modular-mount filtering and purchase execution.
+        /// </summary>
+        /// <param name="treVehicles">Vehicle tree whose selected node drives the add target.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task AddVehicleCyberwareFromTreeSelectionAsync(TreeView treVehicles,
+                                                                        CancellationToken token = default)
+        {
+            object objSelectedTag = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false);
+            if (!(objSelectedTag is IHasInternalId objSelectedId) || objSelectedTag is string)
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoCyberware", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return;
+            }
+
+            Cyberware objCyberwareParent = null;
+            (VehicleMod objMod, Vehicle objVehicle, _)
+                = await CharacterObject.Vehicles.FindVehicleModAsync(x => x.InternalId == objSelectedId.InternalId, token).ConfigureAwait(false);
+            if (objMod == null)
+            {
+                (objCyberwareParent, objMod)
+                    = await CharacterObject.Vehicles.FindVehicleCyberwareAsync(x => x.InternalId == objSelectedId.InternalId, token).ConfigureAwait(false);
+            }
+
+            if (objCyberwareParent == null && objMod?.AllowCyberware != true)
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync("Message_VehicleCyberwarePlugin", token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("MessageTitle_NoCyberware", token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return;
+            }
+
+            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                bool blnAddAgain;
+                do
+                {
+                    using (ThreadSafeForm<SelectCyberware> frmPickCyberware
+                           = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                               () => new SelectCyberware(
+                                   CharacterObject,
+                                   Improvement.ImprovementSource.Cyberware,
+                                   objCyberwareParent ?? (object)objMod),
+                               token).ConfigureAwait(false))
+                    {
+                        if (objCyberwareParent == null)
+                        {
+                            await frmPickCyberware.MyForm.SetMaximumCapacityAsync(
+                                await objMod.GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            frmPickCyberware.MyForm.Subsystems = objMod.Subsystems;
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setHasMounts))
+                            {
+                                foreach (Cyberware objLoopCyberware in await objMod.Cyberware.DeepWhereAsync(
+                                             x => x.GetChildrenAsync(token),
+                                             async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                             token).ConfigureAwait(false))
+                                {
+                                    foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false))
+                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false));
+                                    }
+
+                                    string strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
+                                }
+
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                        {
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
+                                        }
+                                    }
+
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop, ',');
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                                }
+                            }
+                        }
+                        else
+                        {
+                            frmPickCyberware.MyForm.ForcedGrade = await objCyberwareParent.GetGradeAsync(token).ConfigureAwait(false);
+                            if (!objCyberwareParent.Capacity.Contains('[') || objCyberwareParent.Capacity.Contains("/["))
+                            {
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(
+                                    await objCyberwareParent.GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(token).ConfigureAwait(false)
+                                    && frmPickCyberware.MyForm.MaximumCapacity < 0)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_CapacityReached", token: token).ConfigureAwait(false),
+                                        await LanguageManager.GetStringAsync("MessageTitle_CapacityReached", token: token).ConfigureAwait(false),
+                                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                    break;
+                                }
+                            }
+
+                            frmPickCyberware.MyForm.Subsystems = objCyberwareParent.AllowedSubsystems;
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setDisallowedMounts))
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setHasMounts))
+                            {
+                                string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    setHasMounts.Add(strLoopHasModularMount);
+                                foreach (Cyberware objLoopCyberware in await (await objCyberwareParent.GetChildrenAsync(token).ConfigureAwait(false))
+                                             .DeepWhereAsync(
+                                                 x => x.GetChildrenAsync(token),
+                                                 async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
+                                                 token).ConfigureAwait(false))
+                                {
+                                    foreach (string strLoop in (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false))
+                                                 .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+                                    {
+                                        setDisallowedMounts.Add(strLoop + await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false));
+                                    }
+
+                                    strLoopHasModularMount = await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                        setHasMounts.Add(strLoopHasModularMount);
+                                }
+
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdDisallowedMounts))
+                                {
+                                    foreach (string strLoop in setDisallowedMounts)
+                                    {
+                                        if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
+                                            && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
+                                                || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                        {
+                                            sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
+                                        }
+                                    }
+
+                                    if (sbdDisallowedMounts.Length > 0)
+                                        --sbdDisallowedMounts.Length;
+                                    frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
+                                }
+
+                                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdHasMounts))
+                                {
+                                    foreach (string strLoop in setHasMounts)
+                                        sbdHasMounts.Append(strLoop, ',');
+                                    if (sbdHasMounts.Length > 0)
+                                        --sbdHasMounts.Length;
+                                    frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                                }
+                            }
+                        }
+
+                        frmPickCyberware.MyForm.LockGrade();
+                        frmPickCyberware.MyForm.ParentVehicle = objVehicle ?? objMod.Parent;
+                        frmPickCyberware.MyForm.ParentVehicleMod = objMod;
+
+                        if (await frmPickCyberware.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            break;
+                        blnAddAgain = frmPickCyberware.MyForm.AddAgain;
+
+                        XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId(
+                            "/chummer/cyberwares/cyberware", frmPickCyberware.MyForm.SelectedCyberware);
+                        Cyberware objCyberware = new Cyberware(CharacterObject);
+                        try
+                        {
+                            Vehicle objPurchaseVehicle = objVehicle ?? objMod.Parent;
+                            if (!await objCyberware.Purchase(
+                                    objXmlCyberware,
+                                    Improvement.ImprovementSource.Cyberware,
+                                    frmPickCyberware.MyForm.SelectedGrade,
+                                    frmPickCyberware.MyForm.SelectedRating,
+                                    objPurchaseVehicle,
+                                    objMod.Cyberware,
+                                    await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
+                                    objPurchaseVehicle.Weapons,
+                                    frmPickCyberware.MyForm.Markup,
+                                    frmPickCyberware.MyForm.FreeCost,
+                                    frmPickCyberware.MyForm.BlackMarketDiscount,
+                                    true,
+                                    "String_ExpensePurchaseVehicleCyberware",
+                                    objCyberwareParent,
+                                    token).ConfigureAwait(false))
+                            {
+                                await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                            }
+                        }
+                        catch
+                        {
+                            await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+                    }
+                } while (blnAddAgain);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Runs the gear-selection flow for a cyberware parent with configurable filtering, modular-state
+        /// propagation, and purchase behavior.
+        /// </summary>
+        /// <param name="objCyberware">Cyberware that will receive the selected gear child.</param>
+        /// <param name="blnChargeCost">Whether to apply cost checks and deduct/log nuyen.</param>
+        /// <param name="blnSetCostToZeroWhenFree">Whether free selections should force gear cost to zero.</param>
+        /// <param name="blnSetDiscountCostFromDialog">Whether to persist the dialog's black-market discount.</param>
+        /// <param name="blnUseAllowedNamesFilter">Whether to filter selectable gear by explicit allowed names.</param>
+        /// <param name="blnUseModularEquippedState">Whether to pass through modular equipped-state on create.</param>
+        /// <param name="strExpenseString">Localized expense prefix used when charging cost.</param>
+        /// <param name="eUndoType">Undo entry type to create for charged purchases.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AddGearToCyberwareAsync(Cyberware objCyberware,
+                                                            bool blnChargeCost,
+                                                            bool blnSetCostToZeroWhenFree,
+                                                            bool blnSetDiscountCostFromDialog,
+                                                            bool blnUseAllowedNamesFilter,
+                                                            bool blnUseModularEquippedState,
+                                                            string strExpenseString,
+                                                            NuyenExpenseType eUndoType,
+                                                            CancellationToken token = default)
+        {
+            string strCategories = string.Empty;
+            string strGearNames = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
+            {
+                if (blnUseAllowedNamesFilter)
+                {
+                    using (XmlNodeList xmlGearCategoryList = objCyberware.AllowGear?.SelectNodes("gearcategory"))
+                    {
+                        if (xmlGearCategoryList != null)
+                        {
+                            foreach (XmlNode objXmlCategory in xmlGearCategoryList)
+                                sbdCategories.Append(objXmlCategory.InnerTextViaPool(token), ',');
+                        }
+                    }
+                }
+                else
+                {
+                    foreach (XmlNode objXmlCategory in objCyberware.AllowGear)
+                        sbdCategories.Append(objXmlCategory.InnerTextViaPool(token), ',');
+                }
+
+                if (sbdCategories.Length > 0)
+                {
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
+                }
+            }
+
+            if (blnUseAllowedNamesFilter)
+            {
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdGearNames))
+                using (XmlNodeList xmlGearNameList = objCyberware.AllowGear?.SelectNodes("gearname"))
+                {
+                    if (xmlGearNameList?.Count > 0)
+                    {
+                        foreach (XmlNode objXmlName in xmlGearNameList)
+                            sbdGearNames.Append(objXmlName.InnerTextViaPool(token), ',');
+                        --sbdGearNames.Length;
+                        strGearNames = sbdGearNames.ToString();
+                    }
+                }
+            }
+
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectGear> frmPickGear
+                       = await ThreadSafeForm<SelectGear>.GetAsync(
+                           () => new SelectGear(
+                               CharacterObject,
+                               objGearParent: objCyberware,
+                               strAllowedCategories: strCategories,
+                               strAllowedNames: strGearNames), token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrEmpty(strCategories)
+                        && !string.IsNullOrEmpty(objCyberware.Capacity)
+                        && objCyberware.Capacity != "0"
+                        && (!objCyberware.Capacity.Contains('[') || objCyberware.Capacity.Contains("/[")))
+                    {
+                        frmPickGear.MyForm.ShowNegativeCapacityOnly = true;
+                    }
+
+                    if (await frmPickGear.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return false;
+
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
+                    XmlNode objXmlGear = objXmlDocument.TryGetNodeByNameOrId("/chummer/gears/gear", frmPickGear.MyForm.SelectedGear);
+
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Gear objNewGear = new Gear(CharacterObject);
+                    objNewGear.Parent = objCyberware;
+                    await objNewGear.CreateAsync(
+                        objXmlGear,
+                        frmPickGear.MyForm.SelectedRating,
+                        lstWeapons,
+                        string.Empty,
+                        blnUseModularEquippedState
+                            && await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false),
+                        token: token).ConfigureAwait(false);
+
+                    if (objNewGear.InternalId.IsEmptyGuid())
+                        return frmPickGear.MyForm.AddAgain;
+
+                    await objNewGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
+                    if (blnSetDiscountCostFromDialog)
+                        objNewGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
+
+                    if (frmPickGear.MyForm.DoItYourself)
+                        objNewGear.Cost = "(" + objNewGear.Cost + ") * 0.5";
+                    if (frmPickGear.MyForm.FreeCost && blnSetCostToZeroWhenFree)
+                        objNewGear.Cost = "0";
+
+                    if (blnChargeCost && !frmPickGear.MyForm.FreeCost)
+                    {
+                        decimal decCost = await objNewGear.GetTotalCostAsync(token).ConfigureAwait(false);
+                        if (frmPickGear.MyForm.Markup != 0)
+                            decCost *= 1 + frmPickGear.MyForm.Markup / 100.0m;
+
+                        char chrAvail = (await objNewGear.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                        switch (chrAvail)
+                        {
+                            case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                break;
+                            case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                break;
+                        }
+
+                        if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                        {
+                            await objNewGear.DeleteGearAsync(token: token).ConfigureAwait(false);
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                            return frmPickGear.MyForm.AddAgain;
+                        }
+
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                            strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                            + await objNewGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            ExpenseType.Nuyen, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                        ExpenseUndo objUndo = new ExpenseUndo();
+                        objUndo.CreateNuyen(eUndoType, objNewGear.InternalId, 1);
+                        objExpense.Undo = objUndo;
+                    }
+
+                    foreach (Weapon objWeapon in lstWeapons)
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                    await objCyberware.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
+                    return frmPickGear.MyForm.AddAgain;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private async void AutosaveRequestTimerOnElapsed(object sender, ElapsedEventArgs e)
         {
             try
