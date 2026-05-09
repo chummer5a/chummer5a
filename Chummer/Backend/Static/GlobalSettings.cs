@@ -49,6 +49,7 @@ namespace Chummer
         Gear,
         Lifestyle,
         Vehicle,
+        VehicleMod,
         Weapon,
         WeaponAccessory
     }
@@ -1595,7 +1596,8 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    XmlNode xmlImportedNode = s_xmlClipboard.ImportNode(value, true);
+                    s_xmlClipboard.AppendChild(xmlImportedNode);
 
                     if (ClipboardChangedAsync != null)
                         Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
@@ -1653,7 +1655,8 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
                     s_xmlClipboard.RemoveAll();
-                    s_xmlClipboard.ImportNode(value, true);
+                    XmlNode xmlImportedNode = s_xmlClipboard.ImportNode(value, true);
+                    s_xmlClipboard.AppendChild(xmlImportedNode);
 
                     if (ClipboardChangedAsync != null)
                         await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);

@@ -2164,19 +2164,21 @@ namespace Chummer.Backend.Equipment
                     {
                         if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name", token)?.Value ?? string.Empty;
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.WeaponName, token)?.Value ?? string.Empty;
                             if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
                                 return false;
                         }
 
                         if (!string.IsNullOrEmpty(AllowedWeaponCategories))
                         {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.WeaponCategory, token)?.Value ?? string.Empty;
                             if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
                                 return false;
                         }
 
-                        return await GetIsWeaponsFullAsync(token).ConfigureAwait(false);
+                        return !await GetIsWeaponsFullAsync(token).ConfigureAwait(false);
                     }
                     default:
                         return false;

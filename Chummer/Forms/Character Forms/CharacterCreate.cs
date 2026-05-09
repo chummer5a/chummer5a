@@ -4634,17 +4634,21 @@ namespace Chummer
                         case ClipboardContentType.Armor:
                         {
                             // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armor");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Armor);
                             if (objXmlNode != null)
                             {
                                 Armor objArmor = new Armor(CharacterObject);
                                 try
                                 {
                                     await objArmor.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                    if (objSelectedObject is Location objArmorPasteLocation &&
+                                        IsCharacterArmorLocation(CharacterObject, objArmorPasteLocation))
+                                        await objArmorPasteLocation.Children.AddAsync(objArmor, GenericToken)
+                                            .ConfigureAwait(false);
                                     await CharacterObject.Armor.AddAsync(objArmor, GenericToken).ConfigureAwait(false);
 
-                                    await AddChildVehicles(objArmor.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objArmor.InternalId).ConfigureAwait(false);
+                                    await AttachClipboardWeaponsAndVehiclesAsync(objArmor.InternalId, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch
                                 {
@@ -4657,11 +4661,13 @@ namespace Chummer
                         }
                         case ClipboardContentType.ArmorMod:
                         {
-                            if (!(objSelectedObject is Armor selectedArmor &&
-                                  await selectedArmor.AllowPasteXml(GenericToken).ConfigureAwait(false)))
+                            Armor selectedArmor = await ResolveSelectedArmorForPasteAsync(objSelectedObject, GenericToken)
+                                .ConfigureAwait(false);
+                            if (selectedArmor == null ||
+                                !await selectedArmor.AllowPasteXml(GenericToken).ConfigureAwait(false))
                                 break;
                             // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armormod");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.ArmorMod);
                             if (objXmlNode != null)
                             {
                                 ArmorMod objArmorMod = new ArmorMod(CharacterObject, selectedArmor);
@@ -4670,8 +4676,8 @@ namespace Chummer
                                     await objArmorMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
                                     await selectedArmor.ArmorMods.AddAsync(objArmorMod, GenericToken).ConfigureAwait(false);
 
-                                    await AddChildVehicles(objArmorMod.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objArmorMod.InternalId).ConfigureAwait(false);
+                                    await AttachClipboardWeaponsAndVehiclesAsync(objArmorMod.InternalId, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch
                                 {
@@ -4685,47 +4691,46 @@ namespace Chummer
                         case ClipboardContentType.Cyberware:
                         {
                             // Paste Cyberware.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/cyberware");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Cyberware);
                             if (objXmlNode != null)
                             {
                                 Cyberware objCyberware = new Cyberware(CharacterObject);
                                 try
                                 {
                                     await objCyberware.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                    if (objSelectedObject is Cyberware objCyberwareParent)
-                                    {
-                                        if (!await objCyberwareParent.AllowPasteObject(objCyberware, GenericToken)
-                                                .ConfigureAwait(false))
+                                    await TryPasteWithFallbackAsync(
+                                        async ct =>
                                         {
-                                            await objCyberware.DeleteCyberwareAsync(token: GenericToken)
-                                                .ConfigureAwait(false);
-                                            return;
-                                        }
-
-                                        await objCyberware.SetGradeAsync(await objCyberwareParent.GetGradeAsync(GenericToken).ConfigureAwait(false),
-                                            token: GenericToken).ConfigureAwait(false);
-                                        await (await objCyberwareParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objCyberware, GenericToken)
-                                            .ConfigureAwait(false);
-                                    }
-                                    else
-                                    {
-                                        if (!string.IsNullOrEmpty(await objCyberware.GetLimbSlotAsync(GenericToken)
-                                                .ConfigureAwait(false)) &&
-                                            !await objCyberware.GetValidLimbSlotAsync(
-                                                await objCyberware.GetNodeXPathAsync(GlobalSettings.Language, GenericToken)
-                                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                                            if (!(objSelectedObject is Cyberware objCyberwareParent) ||
+                                                !await objCyberwareParent.AllowPasteObject(objCyberware, ct)
+                                                    .ConfigureAwait(false))
+                                                return false;
+                                            await objCyberware.SetGradeAsync(
+                                                await objCyberwareParent.GetGradeAsync(ct).ConfigureAwait(false),
+                                                token: ct).ConfigureAwait(false);
+                                            await (await objCyberwareParent.GetChildrenAsync(ct).ConfigureAwait(false))
+                                                .AddAsync(objCyberware, ct).ConfigureAwait(false);
+                                            return true;
+                                        },
+                                        async ct =>
                                         {
-                                            await objCyberware.DeleteCyberwareAsync(token: GenericToken)
+                                            if (!string.IsNullOrEmpty(await objCyberware.GetLimbSlotAsync(ct)
+                                                    .ConfigureAwait(false)) &&
+                                                !await objCyberware.GetValidLimbSlotAsync(
+                                                    await objCyberware.GetNodeXPathAsync(GlobalSettings.Language, ct)
+                                                        .ConfigureAwait(false), ct).ConfigureAwait(false))
+                                            {
+                                                await objCyberware.DeleteCyberwareAsync(token: ct).ConfigureAwait(false);
+                                                return;
+                                            }
+
+                                            await CharacterObject.Cyberware.AddAsync(objCyberware, ct)
                                                 .ConfigureAwait(false);
-                                            return;
-                                        }
+                                        },
+                                        GenericToken).ConfigureAwait(false);
 
-                                        await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
-                                            .ConfigureAwait(false);
-                                    }
-
-                                    await AddChildVehicles(objCyberware.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objCyberware.InternalId).ConfigureAwait(false);
+                                    await AttachClipboardWeaponsAndVehiclesAsync(objCyberware.InternalId, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch
                                 {
@@ -4739,27 +4744,39 @@ namespace Chummer
                         case ClipboardContentType.Gear:
                         {
                             // Paste Gear.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/gear");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Gear);
                             if (objXmlNode == null)
                                 break;
                             Gear objGear = new Gear(CharacterObject);
                             await objGear.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                            if (objSelectedObject is ICanPaste selected &&
-                                await selected.AllowPasteXml(GenericToken).ConfigureAwait(false) &&
-                                objSelectedObject is IHasGear gear)
-                            {
-                                await gear.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                                if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
-                                    await objGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                        .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                            }
+                            await TryPasteWithFallbackAsync(
+                                async ct =>
+                                {
+                                    switch (objSelectedObject)
+                                    {
+                                        case Location objGearLocation when IsCharacterGearLocation(CharacterObject, objGearLocation):
+                                            await CharacterObject.Gear.AddAsync(objGear, ct).ConfigureAwait(false);
+                                            await objGearLocation.Children.AddAsync(objGear, ct).ConfigureAwait(false);
+                                            return true;
+                                        default:
+                                        {
+                                            if (!(objSelectedObject is ICanPaste selected)
+                                                || !(objSelectedObject is IHasGear gear)
+                                                || !await selected.AllowPasteXml(ct).ConfigureAwait(false))
+                                                return false;
+                                            await gear.GearChildren.AddAsync(objGear, ct).ConfigureAwait(false);
+                                            if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
+                                                await objGear.ChangeEquippedStatusAsync(false, token: ct)
+                                                    .ConfigureAwait(false);
+                                            return true;
+                                        }
+                                    }
+                                },
+                                async ct => await CharacterObject.Gear.AddAsync(objGear, ct).ConfigureAwait(false),
+                                GenericToken).ConfigureAwait(false);
 
-                            await AddChildVehicles(objGear.InternalId).ConfigureAwait(false);
-                            await AddChildWeapons(objGear.InternalId).ConfigureAwait(false);
+                            await AttachClipboardWeaponsAndVehiclesAsync(objGear.InternalId, GenericToken)
+                                .ConfigureAwait(false);
                             break;
                         }
                         case ClipboardContentType.Lifestyle:
@@ -4771,7 +4788,7 @@ namespace Chummer
                                 break;
 
                             // Paste Lifestyle.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/lifestyle");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Lifestyle);
                             if (objXmlNode == null)
                                 break;
 
@@ -4793,11 +4810,15 @@ namespace Chummer
                         case ClipboardContentType.Vehicle:
                         {
                             // Paste Vehicle.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/vehicle");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Vehicle);
                             Vehicle objVehicle = new Vehicle(CharacterObject);
                             try
                             {
                                 await objVehicle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                if (objSelectedObject is Location objVehiclePasteLocation &&
+                                    IsCharacterVehicleRootLocation(CharacterObject, objVehiclePasteLocation))
+                                    await objVehiclePasteLocation.Children.AddAsync(objVehicle, GenericToken)
+                                        .ConfigureAwait(false);
                                 await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
                             }
                             catch
@@ -4807,59 +4828,95 @@ namespace Chummer
                             }
                             break;
                         }
+                        case ClipboardContentType.VehicleMod:
+                        {
+                            Vehicle selectedVehicle = await ResolveSelectedVehicleForVehicleModPasteAsync(
+                                objSelectedObject, GenericToken).ConfigureAwait(false);
+                            if (selectedVehicle == null)
+                                break;
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false))
+                                .SelectSingleNode(ClipboardXmlPaths.VehicleMod);
+                            if (objXmlNode == null)
+                                break;
+                            VehicleMod objVehicleMod = new VehicleMod(CharacterObject);
+                            try
+                            {
+                                await objVehicleMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                await objVehicleMod.SetParentAsync(selectedVehicle, GenericToken).ConfigureAwait(false);
+                                await selectedVehicle.Mods.AddAsync(objVehicleMod, GenericToken).ConfigureAwait(false);
+                            }
+                            catch
+                            {
+                                await objVehicleMod.DeleteVehicleModAsync(token: CancellationToken.None)
+                                    .ConfigureAwait(false);
+                                throw;
+                            }
+                            break;
+                        }
                         case ClipboardContentType.Weapon:
                         {
                             // Paste Weapon.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/weapon");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.Weapon);
                             if (objXmlNode != null)
                             {
                                 Weapon objWeapon = null;
                                 try
                                 {
-                                    switch (objSelectedObject)
-                                    {
-                                        case Weapon objWeaponParent when !await objWeaponParent.AllowPasteXml(GenericToken)
-                                            .ConfigureAwait(false):
-                                            return;
-
-                                        case Weapon objWeaponParent:
+                                    await TryPasteWithFallbackAsync(
+                                        async ct =>
+                                        {
+                                            switch (objSelectedObject)
+                                            {
+                                                case Weapon objWeaponParent
+                                                    when !await objWeaponParent.AllowPasteXml(ct).ConfigureAwait(false):
+                                                    return false;
+                                                case Weapon objWeaponParent:
+                                                    objWeapon = new Weapon(CharacterObject);
+                                                    await objWeapon.LoadAsync(objXmlNode, true, ct).ConfigureAwait(false);
+                                                    await objWeapon.SetParentAsync(objWeaponParent, ct).ConfigureAwait(false);
+                                                    await objWeaponParent.Children.AddAsync(objWeapon, ct).ConfigureAwait(false);
+                                                    return true;
+                                                case WeaponMount objWeaponMount
+                                                    when !await objWeaponMount.AllowPasteXml(ct).ConfigureAwait(false):
+                                                    return false;
+                                                case WeaponMount objWeaponMount:
+                                                    objWeapon = new Weapon(CharacterObject);
+                                                    await objWeapon.LoadAsync(objXmlNode, true, ct).ConfigureAwait(false);
+                                                    await objWeapon.SetParentMountAsync(objWeaponMount, ct).ConfigureAwait(false);
+                                                    await objWeaponMount.Weapons.AddAsync(objWeapon, ct).ConfigureAwait(false);
+                                                    return true;
+                                                case VehicleMod objMod
+                                                    when !await objMod.AllowPasteXml(ct).ConfigureAwait(false):
+                                                    return false;
+                                                case VehicleMod objMod:
+                                                    objWeapon = new Weapon(CharacterObject);
+                                                    await objWeapon.LoadAsync(objXmlNode, true, ct).ConfigureAwait(false);
+                                                    await objWeapon.SetParentVehicleModAsync(objMod, ct).ConfigureAwait(false);
+                                                    await objMod.Weapons.AddAsync(objWeapon, ct).ConfigureAwait(false);
+                                                    return true;
+                                                case Location objWeaponPasteLocation when IsCharacterWeaponLocation(
+                                                    CharacterObject, objWeaponPasteLocation):
+                                                    objWeapon = new Weapon(CharacterObject);
+                                                    await objWeapon.LoadAsync(objXmlNode, true, ct).ConfigureAwait(false);
+                                                    await objWeaponPasteLocation.Children.AddAsync(objWeapon, ct)
+                                                        .ConfigureAwait(false);
+                                                    await CharacterObject.Weapons.AddAsync(objWeapon, ct)
+                                                        .ConfigureAwait(false);
+                                                    return true;
+                                                default:
+                                                    return false;
+                                            }
+                                        },
+                                        async ct =>
+                                        {
                                             objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objWeaponParent.Children.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
+                                            await objWeapon.LoadAsync(objXmlNode, true, ct).ConfigureAwait(false);
+                                            await CharacterObject.Weapons.AddAsync(objWeapon, ct).ConfigureAwait(false);
+                                        },
+                                        GenericToken).ConfigureAwait(false);
 
-                                        case WeaponMount objWeaponMount
-                                            when !await objWeaponMount.AllowPasteXml(GenericToken).ConfigureAwait(false):
-                                            return;
-
-                                        case WeaponMount objWeaponMount:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
-
-                                        case VehicleMod objMod
-                                            when !await objMod.AllowPasteXml(GenericToken).ConfigureAwait(false):
-                                            return;
-
-                                        case VehicleMod objMod:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                                            break;
-
-                                        default:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
-                                    }
-
-                                    await AddChildVehicles(objWeapon.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objWeapon.InternalId).ConfigureAwait(false);
+                                    await AttachClipboardWeaponsAndVehiclesAsync(objWeapon.InternalId, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch
                                 {
@@ -4877,7 +4934,7 @@ namespace Chummer
                                   await selectedWeapon.AllowPasteXml(GenericToken).ConfigureAwait(false)))
                                 break;
                             // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/accessory");
+                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode(ClipboardXmlPaths.WeaponAccessory);
                             if (objXmlNode != null)
                             {
                                 WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
@@ -4887,8 +4944,8 @@ namespace Chummer
                                     await selectedWeapon.WeaponAccessories.AddAsync(objMod, GenericToken)
                                         .ConfigureAwait(false);
 
-                                    await AddChildVehicles(objMod.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objMod.InternalId).ConfigureAwait(false);
+                                    await AttachClipboardWeaponsAndVehiclesAsync(objMod.InternalId, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
                                 catch
                                 {
@@ -4904,53 +4961,6 @@ namespace Chummer
                             break;
                     }
 
-                    async Task AddChildWeapons(string parentId)
-                    {
-                        GenericToken.ThrowIfCancellationRequested();
-                        XmlNodeList objXmlNodeList = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectNodes("/character/weapons/weapon");
-                        if (!(objXmlNodeList?.Count > 0))
-                            return;
-                        foreach (XmlNode objLoopNode in objXmlNodeList)
-                        {
-                            Weapon objWeapon = new Weapon(CharacterObject);
-                            try
-                            {
-                                await objWeapon.LoadAsync(objLoopNode, true, GenericToken).ConfigureAwait(false);
-                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                                objWeapon.ParentID = parentId;
-                            }
-                            catch
-                            {
-                                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                        }
-                    }
-
-                    async Task AddChildVehicles(string parentId)
-                    {
-                        GenericToken.ThrowIfCancellationRequested();
-                        // Add any Vehicles that come with the Cyberware.
-                        XmlNodeList objXmlNodeList =
-                            (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectNodes("/character/vehicles/vehicle");
-                        if (!(objXmlNodeList?.Count > 0))
-                            return;
-                        foreach (XmlNode objLoopNode in objXmlNodeList)
-                        {
-                            Vehicle objVehicle = new Vehicle(CharacterObject);
-                            try
-                            {
-                                await objVehicle.LoadAsync(objLoopNode, true, GenericToken).ConfigureAwait(false);
-                                await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
-                                objVehicle.ParentID = parentId;
-                            }
-                            catch
-                            {
-                                await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                        }
-                    }
                 }
                 finally
                 {
@@ -18704,9 +18714,10 @@ namespace Chummer
                             {
                                 x.Visible = true;
                                 x.Checked = objWeapon.Equipped;
-                                x.Enabled = objWeapon.ParentID != objWeapon.Parent?.InternalId
-                                            && objWeapon.ParentID
-                                            != objWeapon.ParentVehicle.InternalId;
+                                string strParentWeaponId = objWeapon.Parent?.InternalId;
+                                string strParentVehicleId = objWeapon.ParentVehicle?.InternalId;
+                                x.Enabled = objWeapon.ParentID != strParentWeaponId
+                                            && objWeapon.ParentID != strParentVehicleId;
                             }, token).ConfigureAwait(false);
                             await chkVehicleIncludedInWeapon.DoThreadSafeAsync(x =>
                             {
@@ -23035,6 +23046,30 @@ namespace Chummer
 
             bool blnPasteEnabled = false;
             bool blnCopyEnabled = false;
+            bool CanCopySelectedObject(object selectedObject)
+            {
+                switch (selectedObject)
+                {
+                    case Armor _:
+                    case Lifestyle _:
+                    case Cyberware _:
+                        return true;
+                    case ArmorMod armorMod:
+                        return !armorMod.IncludedInArmor;
+                    case Gear gear:
+                        return !gear.IncludedInParent;
+                    case Vehicle vehicle:
+                        return string.IsNullOrEmpty(vehicle.ParentID);
+                    case VehicleMod vehicleMod:
+                        return !vehicleMod.IncludedInVehicle;
+                    case Weapon weapon:
+                        return !weapon.IncludedInWeapon && weapon.Category != "Gear" && !weapon.Cyberware;
+                    case WeaponAccessory accessory:
+                        return !accessory.IncludedInWeapon;
+                    default:
+                        return false;
+                }
+            }
 
             TabPage objSelectedCharacterTab = await tabCharacterTabs.DoThreadSafeFuncAsync(x => x.SelectedTab, token)
                                                                     .ConfigureAwait(false);
@@ -23065,17 +23100,17 @@ namespace Chummer
                                               ||
                                               await CharacterObject.Armor.FindArmorModAsync(strSelectedId.InternalId, token).ConfigureAwait(false) != null ||
                                               (await CharacterObject.Armor.FindArmorGearAsync(strSelectedId.InternalId, token).ConfigureAwait(false)).Item1 != null);
-                        blnCopyEnabled = await CharacterObject.Armor
-                                                              .AnyAsync(x => x.InternalId == strSelectedId.InternalId,
-                                                                        token).ConfigureAwait(false)
-                                         || (await CharacterObject.Armor.FindArmorGearAsync(strSelectedId.InternalId, token).ConfigureAwait(false)).Item1 != null;
+                        object objSelectedTag = await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token)
+                                                             .ConfigureAwait(false);
+                        blnCopyEnabled = CanCopySelectedObject(objSelectedTag);
                     }
                 }
                 // Weapons Tab.
                 else if (objSelectedGearTabPage == tabWeapons)
                 {
-                    if (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is
-                        IHasInternalId objSelected)
+                    object objSelectedTag = await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token)
+                                                             .ConfigureAwait(false);
+                    if (objSelectedTag is IHasInternalId objSelected)
                     {
                         switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                         {
@@ -23090,7 +23125,13 @@ namespace Chummer
                         }
 
                         //TODO: ICanCopy interface? If weapon comes from something else == false, etc.
-                        blnCopyEnabled = objSelected is Weapon || objSelected is Gear;
+                        blnCopyEnabled = CanCopySelectedObject(objSelectedTag);
+                    }
+                    else if (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false)
+                             == ClipboardContentType.Weapon)
+                    {
+                        // Allow top-level weapon paste when the root node is selected.
+                        blnPasteEnabled = true;
                     }
                 }
                 // Gear Tab.
@@ -23100,7 +23141,7 @@ namespace Chummer
                              objSelected)
                 {
                     blnPasteEnabled = await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false) == ClipboardContentType.Gear;
-                    blnCopyEnabled = objSelected is Gear;
+                    blnCopyEnabled = CanCopySelectedObject(objSelected);
                 }
             }
             // Cyberware Tab.
@@ -23112,7 +23153,7 @@ namespace Chummer
                 {
                     blnPasteEnabled = objSelected is ICanPaste selected && await selected.AllowPasteXml(GenericToken).ConfigureAwait(false)
                                       || await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false) == ClipboardContentType.Cyberware;
-                    blnCopyEnabled = objSelected is Gear || objSelected is Cyberware;
+                    blnCopyEnabled = CanCopySelectedObject(objSelected);
                 }
             }
             // Vehicles Tab.
@@ -23127,6 +23168,10 @@ namespace Chummer
                         blnPasteEnabled = true;
                         break;
 
+                    case ClipboardContentType.VehicleMod:
+                        blnPasteEnabled = objSelected is Vehicle || objSelected is VehicleMod;
+                        break;
+
                     case ClipboardContentType.Gear:
                     case ClipboardContentType.Weapon:
                     case ClipboardContentType.WeaponAccessory:
@@ -23136,8 +23181,7 @@ namespace Chummer
                         break;
                 }
 
-                // In theory any object that's not a generic string node is valid to copy here. Locations might go screwy?
-                blnCopyEnabled = true;
+                blnCopyEnabled = CanCopySelectedObject(objSelected);
             }
 
             await mnuCreateMenu.DoThreadSafeAsync(() =>

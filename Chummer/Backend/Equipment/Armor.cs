@@ -3822,11 +3822,12 @@ namespace Chummer.Backend.Equipment
             try
             {
                 token.ThrowIfCancellationRequested();
-                string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.ArmorMod:
                     {
+                        string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.ArmorModCategory, token)?.Value ?? string.Empty;
                         XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (xmlNode == null)
                             return strPasteCategory == "General";
@@ -3842,6 +3843,8 @@ namespace Chummer.Backend.Equipment
                     }
                     case ClipboardContentType.Gear:
                     {
+                        string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.GearCategory, token)?.Value ?? string.Empty;
                         XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
                         if (xmlNode == null)
                             return false;

@@ -256,6 +256,131 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resolves the armor object that should receive pasted armor mods based on the selected object.
+        /// Supports directly selected <see cref="Armor"/> as well as selected <see cref="ArmorMod"/> children.
+        /// </summary>
+        protected async Task<Armor> ResolveSelectedArmorForPasteAsync(object selectedObject, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Armor selectedArmor = selectedObject as Armor;
+            if (selectedArmor == null && selectedObject is ArmorMod objSelectedArmorMod)
+            {
+                selectedArmor = objSelectedArmorMod.Parent;
+            }
+
+            return selectedArmor;
+        }
+
+        /// <summary>
+        /// Resolves the vehicle object that should receive pasted vehicle mods based on the selected object.
+        /// Supports directly selected <see cref="Vehicle"/> as well as selected <see cref="VehicleMod"/> children.
+        /// </summary>
+        protected async Task<Vehicle> ResolveSelectedVehicleForVehicleModPasteAsync(object selectedObject, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (selectedObject is Vehicle selectedVehicle)
+                return selectedVehicle;
+            if (!(selectedObject is VehicleMod selectedVehicleMod))
+                return null;
+            (_, Vehicle vehicleParent, _) = await CharacterObject.Vehicles
+                .FindVehicleModAsync(x => x.InternalId == selectedVehicleMod.InternalId, token).ConfigureAwait(false);
+            return vehicleParent;
+        }
+
+        /// <summary>
+        /// True when <paramref name="location"/> belongs to this character&apos;s gear-tab location folders (not vehicle-internal folders).
+        /// </summary>
+        protected static bool IsCharacterGearLocation(Character objCharacter, Location location) =>
+            objCharacter != null && location != null
+            && ReferenceEquals(location.Parent, objCharacter.GearLocations);
+
+        /// <summary>
+        /// True when <paramref name="location"/> belongs to this character&apos;s armor-tab location folders.
+        /// </summary>
+        protected static bool IsCharacterArmorLocation(Character objCharacter, Location location) =>
+            objCharacter != null && location != null
+            && ReferenceEquals(location.Parent, objCharacter.ArmorLocations);
+
+        /// <summary>
+        /// True when <paramref name="location"/> belongs to this character&apos;s weapons-tab location folders.
+        /// </summary>
+        protected static bool IsCharacterWeaponLocation(Character objCharacter, Location location) =>
+            objCharacter != null && location != null
+            && ReferenceEquals(location.Parent, objCharacter.WeaponLocations);
+
+        /// <summary>
+        /// True when <paramref name="location"/> belongs to this character&apos;s vehicles-tab root location list (not a folder on a vehicle).
+        /// </summary>
+        protected static bool IsCharacterVehicleRootLocation(Character objCharacter, Location location) =>
+            objCharacter != null && location != null
+            && ReferenceEquals(location.Parent, objCharacter.VehicleLocations);
+
+        /// <summary>
+        /// Attaches any child weapons and vehicles currently present in clipboard XML to the supplied parent id.
+        /// </summary>
+        protected async Task AttachClipboardWeaponsAndVehiclesAsync(string parentId, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNodeList weaponNodes = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                .SelectNodes(ClipboardXmlPaths.ChildWeapons);
+            if (weaponNodes?.Count > 0)
+            {
+                foreach (XmlNode objLoopNode in weaponNodes)
+                {
+                    Weapon objWeapon = new Weapon(CharacterObject);
+                    try
+                    {
+                        await objWeapon.LoadAsync(objLoopNode, true, token).ConfigureAwait(false);
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        objWeapon.ParentID = parentId;
+                    }
+                    catch
+                    {
+                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+                }
+            }
+
+            XmlNodeList vehicleNodes = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                .SelectNodes(ClipboardXmlPaths.ChildVehicles);
+            if (!(vehicleNodes?.Count > 0))
+                return;
+            foreach (XmlNode objLoopNode in vehicleNodes)
+            {
+                Vehicle objVehicle = new Vehicle(CharacterObject);
+                try
+                {
+                    await objVehicle.LoadAsync(objLoopNode, true, token).ConfigureAwait(false);
+                    await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                    objVehicle.ParentID = parentId;
+                }
+                catch
+                {
+                    await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Attempts to paste into the currently selected target first, and falls back to root paste when that fails.
+        /// </summary>
+        /// <param name="tryPasteIntoSelectedAsync">Returns true when paste into selection succeeded.</param>
+        /// <param name="pasteToRootAsync">Executes root-level paste fallback.</param>
+        /// <param name="token">Cancellation token for async operations.</param>
+        protected async Task TryPasteWithFallbackAsync(
+            Func<CancellationToken, Task<bool>> tryPasteIntoSelectedAsync,
+            Func<CancellationToken, Task> pasteToRootAsync,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (await tryPasteIntoSelectedAsync(token).ConfigureAwait(false))
+                return;
+            await pasteToRootAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Runs the underbarrel-weapon selection and attachment flow for a parent weapon with configurable
         /// purchase behavior (charging/logging vs free-cost editing semantics).
         /// </summary>
@@ -9849,7 +9974,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Armor, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Armor, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -9857,6 +9982,8 @@ namespace Chummer
                         }
                         case ArmorMod objCopyArmorMod:
                         {
+                            if (objCopyArmorMod.IncludedInArmor)
+                                return;
                             using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
                                        out XmlDocument objCharacterXml))
                             {
@@ -9912,7 +10039,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.ArmorMod, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.ArmorMod, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -9991,7 +10118,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Cyberware, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Cyberware, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -10053,7 +10180,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Gear, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Gear, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -10099,7 +10226,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Lifestyle, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Lifestyle, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -10107,6 +10234,8 @@ namespace Chummer
                         }
                         case Vehicle objCopyVehicle:
                         {
+                            if (!string.IsNullOrEmpty(objCopyVehicle.ParentID))
+                                return;
                             using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
                                        out XmlDocument objCharacterXml))
                             {
@@ -10144,7 +10273,49 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Vehicle, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Vehicle, GenericToken)
+                                    .ConfigureAwait(false);
+                            }
+
+                            break;
+                        }
+                        case VehicleMod objCopyVehicleMod:
+                        {
+                            if (objCopyVehicleMod.IncludedInVehicle)
+                                return;
+                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                       out XmlDocument objCharacterXml))
+                            {
+                                using (RecyclableMemoryStream objStream =
+                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                {
+                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                    {
+                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                        await objWriter.WriteStartElementAsync("character", token)
+                                            .ConfigureAwait(false);
+
+                                        objCopyVehicleMod.Save(objWriter);
+
+                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                        await objWriter.FlushAsync().ConfigureAwait(false);
+                                    }
+
+                                    objStream.Position = 0;
+
+                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                    using (XmlReader objXmlReader =
+                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                        await TaskExtensions
+                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                            .ConfigureAwait(false);
+                                }
+
+                                await GlobalSettings
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.VehicleMod, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -10153,7 +10324,7 @@ namespace Chummer
                         case Weapon objCopyWeapon:
                         {
                             // Do not let the user copy Gear or Cyberware Weapons.
-                            if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                            if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware || objCopyWeapon.IncludedInWeapon)
                                 return;
 
                             using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
@@ -10193,7 +10364,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Weapon, GenericToken)
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.Weapon, GenericToken)
                                     .ConfigureAwait(false);
                             }
 
@@ -10241,7 +10412,7 @@ namespace Chummer
                                 }
 
                                 await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.WeaponAccessory,
+                                    .SetClipboardAsync(objCharacterXml.DocumentElement, ClipboardContentType.WeaponAccessory,
                                         GenericToken)
                                     .ConfigureAwait(false);
                             }

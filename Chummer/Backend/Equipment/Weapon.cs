@@ -14229,8 +14229,8 @@ namespace Chummer.Backend.Equipment
                 {
                     case ClipboardContentType.WeaponAccessory:
                         XPathNavigator checkNode =
-                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator(
-                                "/character/weaponaccessories/accessory", token);
+                            (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.WeaponAccessory, token);
                         if (await CheckAccessoryRequirementsAsync(checkNode, token).ConfigureAwait(false))
                             return true;
                         break;

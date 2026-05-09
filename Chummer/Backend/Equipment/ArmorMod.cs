@@ -2577,7 +2577,8 @@ namespace Chummer.Backend.Equipment
                             ?.SelectAndCacheExpression("addoncategory", token);
                         if (!(xmlAddonCategoryList?.Count > 0))
                             return true;
-                        string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                        string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                            .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.GearCategory, token)?.Value ?? string.Empty;
                         return xmlAddonCategoryList.Cast<XPathNavigator>()
                             .Any(xmlCategory => xmlCategory.Value == strGearCategory);
                     }

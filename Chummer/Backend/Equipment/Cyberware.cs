@@ -13159,10 +13159,10 @@ namespace Chummer.Backend.Equipment
                     case ClipboardContentType.Gear:
                         string strCategory =
                             (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/category", token)?.Value;
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.GearCategory, token)?.Value;
                         string strName =
                             (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpressionAsNavigator("/character/gear/name", token)
+                                .SelectSingleNodeAndCacheExpressionAsNavigator(ClipboardXmlPaths.GearName, token)
                                 ?.Value;
                         IAsyncDisposable objLocker2 = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
                         try
