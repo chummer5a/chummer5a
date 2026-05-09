@@ -319,7 +319,7 @@ namespace Chummer
                             XPathNavigator objNode
                                 = _xmlSkillsBaseChummerNode.SelectSingleNode(
                                     "knowledgeskills/skill[name = " + strName.CleanXPath() + "]");
-                            if (objNode.SelectSingleNodeAndCacheExpression("hide") != null)
+                            if (objNode?.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strText = (objNode != null
                                 ? objNode.SelectSingleNodeAndCacheExpression("translate")
@@ -379,7 +379,7 @@ namespace Chummer
                                     continue;
                                 string strTechniqueName = xmlTechnique.SelectSingleNodeAndCacheExpression("name").Value;
                                 XPathNavigator objChildNode = _xmlMartialArtsBaseChummerNode.SelectSingleNode("techniques/technique[" + strBookXPath + " and name = " + strTechniqueName.CleanXPath() + "]");
-                                if (objNode == null)
+                                if (objChildNode == null)
                                     continue;
                                 TreeNode objChildChild = new TreeNode
                                 {
@@ -442,7 +442,7 @@ namespace Chummer
                                     continue;
                                 string strOptionName = objXmlOption.SelectSingleNodeAndCacheExpression("name").Value;
                                 XPathNavigator objChildNode = _xmlComplexFormsBaseChummerNode.SelectSingleNode("options/option[" + strBookXPath + " and name = " + strOptionName.CleanXPath() + "]");
-                                if (objNode == null)
+                                if (objChildNode == null)
                                     continue;
                                 string strInnerText = objChildNode.SelectSingleNodeAndCacheExpression("translate")?.Value
                                           ?? strOptionName;
@@ -467,7 +467,7 @@ namespace Chummer
                                 continue;
                             string strName = objXmlSpell.Value;
                             XPathNavigator objNode = _xmlSpellsBaseSpellsNode.SelectSingleNode("spell[" + strBookXPath + " and name = " + strName.CleanXPath() + "]");
-                            if (objNode.SelectSingleNodeAndCacheExpression("hide") == null)
+                            if (objNode == null || objNode.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
                             string strText = (objNode != null
                                 ? objNode.SelectSingleNodeAndCacheExpression("translate")
@@ -508,7 +508,7 @@ namespace Chummer
                         {
                             if (objXmlLifestyle.SelectSingleNodeAndCacheExpression("hide") != null)
                                 continue;
-                            string strIncrement = objXmlLifestyle.SelectSingleNodeAndCacheExpression("increment")?.Value;
+                            string strIncrement = objXmlLifestyle.SelectSingleNodeAndCacheExpression("increment")?.Value ?? string.Empty;
                             if (objXmlLifestyle.SelectSingleNodeAndCacheExpression("type")?.Value.Equals("SAFEHOUSE", StringComparison.OrdinalIgnoreCase) == true)
                                 strIncrement = "week";
                             string strIncrementString;

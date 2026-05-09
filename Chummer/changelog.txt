@@ -1,11 +1,18 @@
 Future Build 227
+Application:
+- Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
+
 Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
 - Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
 
+PACKs:
+- Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
+
 Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
 - Implemented a cap on the range modifier for weapons to prevent modifiers from reducing the range modifier above +0.
+- Fixed underbarrel weapons being blocked from being added to weapons.
 
 Changed/New Strings:
 - String_GroupContactAbbrev
