@@ -3419,6 +3419,122 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Recreates improvements from cached bonus XML (same sequence as <see cref="Create"/>). Used when XPath numeric
+        /// scalars change and stored improvement values are stale.
+        /// </summary>
+        internal void RegenerateBonusImprovementsForStaleXPathScalars(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                using (_objCharacter.LockObject.EnterWriteLock())
+                {
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                        InternalId, token);
+
+                    string strForceValue = Extra;
+                    if (_nodBonus?.ChildNodes.Count > 0)
+                    {
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                            InternalId, _nodBonus, 1, CurrentDisplayNameShort, token: token);
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                            _strExtra = strSelectedValue;
+                    }
+                    else if (!string.IsNullOrEmpty(strForceValue))
+                    {
+                        _strExtra = strForceValue;
+                    }
+
+                    if (_nodFirstLevelBonus?.ChildNodes.Count > 0 && Levels == 0)
+                    {
+                        ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue,
+                            _objCharacter);
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                            InternalId, _nodFirstLevelBonus, 1, CurrentDisplayNameShort, token: token);
+                    }
+
+                    if (_nodNaturalWeaponsNode?.ChildNodes.Count > 0)
+                    {
+                        ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue,
+                            _objCharacter);
+                        ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Quality,
+                            InternalId, _nodNaturalWeaponsNode, 1, CurrentDisplayNameShort, token: token);
+                    }
+                }
+            }
+        }
+
+        /// <inheritdoc cref="RegenerateBonusImprovementsForStaleXPathScalars"/>
+        internal async Task RegenerateBonusImprovementsForStaleXPathScalarsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objWriteLocker =
+                    await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.Quality, InternalId, token)
+                        .ConfigureAwait(false);
+
+                    string strForceValue = await GetExtraAsync(token).ConfigureAwait(false);
+                    if (_nodBonus?.ChildNodes.Count > 0)
+                    {
+                        ImprovementManager.SetForcedValue(strForceValue, _objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Quality,
+                                InternalId, _nodBonus, 1,
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                            _strExtra = strSelectedValue;
+                    }
+                    else if (!string.IsNullOrEmpty(strForceValue))
+                    {
+                        _strExtra = strForceValue;
+                    }
+
+                    if (_nodFirstLevelBonus?.ChildNodes.Count > 0
+                        && await GetLevelsAsync(token).ConfigureAwait(false) == 0)
+                    {
+                        ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue,
+                            _objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Quality,
+                                InternalId, _nodFirstLevelBonus, 1,
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
+                    }
+
+                    if (_nodNaturalWeaponsNode?.ChildNodes.Count > 0)
+                    {
+                        ImprovementManager.SetForcedValue(string.IsNullOrEmpty(strForceValue) ? Extra : strForceValue,
+                            _objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                                Improvement.ImprovementSource.Quality,
+                                InternalId, _nodNaturalWeaponsNode, 1,
+                                await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                            .ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objWriteLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private int _intIsDisposed;
 
         public bool IsDisposed => _intIsDisposed > 0;

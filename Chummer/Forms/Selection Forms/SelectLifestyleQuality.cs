@@ -214,7 +214,7 @@ namespace Chummer
                     {
                         if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decCost))
                         {
-                            strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost).ConfigureAwait(false);
+                            strCost = await _objCharacter.ExpandXPathPlaceholdersAsync(strCost).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost).ConfigureAwait(false);
                             if (blnIsSuccess)
                                 decCost = Convert.ToDecimal((double)objProcess);

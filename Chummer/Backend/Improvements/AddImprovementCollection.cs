@@ -5453,7 +5453,7 @@ namespace Chummer
                 string strCount = bonusNode.Attributes?["count"]?.InnerTextViaPool();
                 if (strCount.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strCount = _objCharacter.ProcessAttributesInXPath(strCount);
+                    strCount = _objCharacter.ExpandXPathPlaceholders(strCount);
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strCount);
                     powerCount = blnIsSuccess ? ((double)objProcess).StandardRound() : 1;
                 }

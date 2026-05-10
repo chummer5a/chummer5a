@@ -775,7 +775,7 @@ namespace Chummer
                                     {
                                         sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                                     }
-                                    _objCharacter.ProcessAttributesInXPath(sbdReturn);
+                                    _objCharacter.ExpandXPathPlaceholders(sbdReturn);
                                     strFv = sbdReturn.ToString();
                                 }
                             }
@@ -845,7 +845,7 @@ namespace Chummer
                                 {
                                     sbdReturn.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                                 }
-                                await _objCharacter.ProcessAttributesInXPathAsync(sbdReturn, token: token).ConfigureAwait(false);
+                                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdReturn, token: token).ConfigureAwait(false);
                                 strFv = sbdReturn.ToString();
                             }
                         }
@@ -1687,6 +1687,66 @@ namespace Chummer
                 if (_objCachedSourceDetail.Language != GlobalSettings.Language)
                     _objCachedSourceDetail = default;
                 await (await GetSourceDetailAsync(token).ConfigureAwait(false)).SetControlAsync(sourceControl, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        internal void RegenerateBonusImprovementsForStaleXPathScalars(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode xmlFormNode = this.GetNode(GlobalSettings.Language, token);
+            XmlNode xmlBonus = xmlFormNode?["bonus"];
+            if (xmlBonus == null || xmlBonus.ChildNodes.Count == 0)
+                return;
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                using (_objCharacter.LockObject.EnterWriteLock())
+                {
+                    ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm,
+                        InternalId, token);
+                    ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.ComplexForm,
+                        InternalId, xmlBonus, 1, CurrentDisplayNameShort, token: token);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                        _strExtra = strSelectedValue;
+                }
+            }
+        }
+
+        internal async Task RegenerateBonusImprovementsForStaleXPathScalarsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            XmlNode xmlFormNode = await this.GetNodeAsync(GlobalSettings.Language, token).ConfigureAwait(false);
+            XmlNode xmlBonus = xmlFormNode?["bonus"];
+            if (xmlBonus == null || xmlBonus.ChildNodes.Count == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                IAsyncDisposable objWriteLocker =
+                    await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.ComplexForm, InternalId, token)
+                        .ConfigureAwait(false);
+                    ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.ComplexForm, InternalId, xmlBonus, 1,
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                        _strExtra = strSelectedValue;
+                }
+                finally
+                {
+                    await objWriteLocker.DisposeAsync().ConfigureAwait(false);
+                }
             }
             finally
             {

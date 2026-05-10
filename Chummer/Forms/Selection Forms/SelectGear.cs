@@ -1526,7 +1526,7 @@ namespace Chummer
                         while (objLoopParent is Gear objLoopParentGear)
                             objLoopParent = objLoopParentGear.Parent;
                         if (objLoopParent is Cyberware objCyberwareParent)
-                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await objCyberwareParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         else if (objLoopParent is WeaponAccessory objAccessoryParent)
                         {
                             Weapon objWeaponParent = objAccessoryParent.Parent;
@@ -1537,28 +1537,28 @@ namespace Chummer
                                     string strCyberwareId = objAccessoryParent.Parent.ParentID;
                                     objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
                                         ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
-                                    await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await objCyberwareParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 }
                                 else if (objWeaponParent.ParentVehicle != null)
-                                    await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await objWeaponParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 else
                                 {
                                     Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                    await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             }
                         }
                         else if (objLoopParent is Vehicle objVehicleParent)
-                            await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await objVehicleParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
                         strExpression = sbdValue.ToString();
                     }

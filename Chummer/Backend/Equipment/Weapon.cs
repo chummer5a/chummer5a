@@ -3152,7 +3152,7 @@ namespace Chummer.Backend.Equipment
                         sbdValue.CheapReplace("Weapon Rating", () => strRating.Value);
                         sbdValue.CheapReplace("{Rating}", () => strRating.Value);
                         sbdValue.CheapReplace("Rating", () => strRating.Value);
-                        ProcessAttributesInXPath(sbdValue, strExpression, blnForRange);
+                        ExpandXPathPlaceholders(sbdValue, strExpression, blnForRange);
                         strExpression = sbdValue.ToString();
                     }
                 }
@@ -3255,7 +3255,7 @@ namespace Chummer.Backend.Equipment
                         await sbdValue.CheapReplaceAsync("Weapon Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync("{Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync("Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
-                        await ProcessAttributesInXPathAsync(sbdValue, strExpression, blnForRange, token).ConfigureAwait(false);
+                        await ExpandXPathPlaceholdersAsync(sbdValue, strExpression, blnForRange, token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
                     }
                 }
@@ -4472,14 +4472,14 @@ namespace Chummer.Backend.Equipment
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    ProcessAttributesInXPath(sbdDamage, Damage);
+                    ExpandXPathPlaceholders(sbdDamage, Damage);
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     sbdDamage.CheapReplace(Damage, "{Rating}",
                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                 }
                 else
                 {
-                    await ProcessAttributesInXPathAsync(sbdDamage, Damage, token: token).ConfigureAwait(false);
+                    await ExpandXPathPlaceholdersAsync(sbdDamage, Damage, token: token).ConfigureAwait(false);
                     await sbdDamage.CheapReplaceAsync(Damage,
                             "{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                         .ConfigureAwait(false);
@@ -6481,6 +6481,19 @@ namespace Chummer.Backend.Equipment
             bool blnIncludeAmmo = true, CancellationToken token = default)
         {
             string strAP = AP;
+            if (_objCharacter != null && !string.IsNullOrEmpty(strAP) &&
+                strAP.HasValuesNeedingReplacementForXPathProcessing())
+            {
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdAp))
+                {
+                    sbdAp.Append(strAP);
+                    if (blnSync)
+                        ExpandXPathPlaceholders(sbdAp, strAP);
+                    else
+                        await ExpandXPathPlaceholdersAsync(sbdAp, strAP, token: token).ConfigureAwait(false);
+                    strAP = sbdAp.ToString();
+                }
+            }
 
             int intImprove = 0;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdBonusAP))
@@ -14514,7 +14527,7 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false);
         }
 
-        public string ProcessAttributesInXPath(string strInput, bool blnForRange = false)
+        public string ExpandXPathPlaceholders(string strInput, bool blnForRange = false)
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
@@ -14523,12 +14536,12 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
-                ProcessAttributesInXPath(sbdInput, strInput, blnForRange);
+                ExpandXPathPlaceholders(sbdInput, strInput, blnForRange);
                 return sbdInput.ToString();
             }
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
+        public void ExpandXPathPlaceholders(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -14677,15 +14690,15 @@ namespace Chummer.Backend.Equipment
                 };
             }
             if (ParentVehicle != null)
-                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides);
+                ParentVehicle.ExpandXPathPlaceholders(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+                _objCharacter.ExpandXPathPlaceholders(sbdInput, strOriginal, dicAttributeOverrides);
             }
         }
 
-        public async Task<string> ProcessAttributesInXPathAsync(string strInput, bool blnForRange = false, CancellationToken token = default)
+        public async Task<string> ExpandXPathPlaceholdersAsync(string strInput, bool blnForRange = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -14695,12 +14708,12 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
-                await ProcessAttributesInXPathAsync(sbdInput, strInput, blnForRange, token).ConfigureAwait(false);
+                await ExpandXPathPlaceholdersAsync(sbdInput, strInput, blnForRange, token).ConfigureAwait(false);
                 return sbdInput.ToString();
             }
         }
 
-        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
+        public async Task ExpandXPathPlaceholdersAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
         {
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
@@ -14872,11 +14885,11 @@ namespace Chummer.Backend.Equipment
                 };
             }
             if (ParentVehicle != null)
-                await ParentVehicle.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides, token: token).ConfigureAwait(false);
+                await ParentVehicle.ExpandXPathPlaceholdersAsync(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides, token: token).ConfigureAwait(false);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                await _objCharacter.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
+                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdInput, strOriginal, dicAttributeOverrides, token).ConfigureAwait(false);
             }
         }
 

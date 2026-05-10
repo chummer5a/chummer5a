@@ -1415,7 +1415,7 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
+                string strReturn = objCharacter.ExpandXPathPlaceholders(strValue, token: token);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1450,7 +1450,7 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
+                string strReturn = await objCharacter.ExpandXPathPlaceholdersAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1486,7 +1486,7 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
+                string strReturn = objCharacter.ExpandXPathPlaceholders(strValue, token: token);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);
@@ -1521,7 +1521,7 @@ namespace Chummer
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
-                string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
+                string strReturn = await objCharacter.ExpandXPathPlaceholdersAsync(strValue, token: token).ConfigureAwait(false);
 
                 //Log.Info("strValue = " + strValue);
                 //Log.Info("strReturn = " + strReturn);

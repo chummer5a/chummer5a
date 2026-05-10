@@ -2746,7 +2746,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public string ApplyAttributeXPathReplacements(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -2795,7 +2795,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public void ApplyAttributeXPathReplacements(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
@@ -2839,10 +2839,11 @@ namespace Chummer.Backend.Attributes
                             : objAttribute.Value.TotalMaximum)
                         .ToString(GlobalSettings.InvariantCultureInfo));
                 }
+
             }
         }
 
-        public async Task<string> ProcessAttributesInXPathAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task<string> ApplyAttributeXPathReplacementsAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -2900,7 +2901,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public async Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task ApplyAttributeXPathReplacementsAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
@@ -2947,6 +2948,7 @@ namespace Chummer.Backend.Attributes
                             : await (await objAttribute.GetValueAsync(token).ConfigureAwait(false)).GetTotalMaximumAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
+
             }
             finally
             {
@@ -2954,7 +2956,7 @@ namespace Chummer.Backend.Attributes
             }
         }
 
-        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public string ApplyAttributeXPathReplacementsForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -3060,12 +3062,13 @@ namespace Chummer.Backend.Attributes
                                         strInnerReturn);
                                 });
                 }
+
             }
 
             return strReturn;
         }
 
-        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public void ApplyAttributeXPathReplacementsForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
@@ -3165,10 +3168,11 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn);
                     });
                 }
+
             }
         }
 
-        public async Task<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public async Task<string> ApplyAttributeXPathReplacementsForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -3295,6 +3299,7 @@ namespace Chummer.Backend.Attributes
                                 strInnerReturn);
                         }, token: token).ConfigureAwait(false);
                 }
+
             }
             finally
             {
@@ -3304,7 +3309,7 @@ namespace Chummer.Backend.Attributes
             return strReturn;
         }
 
-        public async Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
+        public async Task ApplyAttributeXPathReplacementsForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
             CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true,
             IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
@@ -3423,6 +3428,7 @@ namespace Chummer.Backend.Attributes
                             strInnerReturn);
                     }, token: token).ConfigureAwait(false);
                 }
+
             }
             finally
             {

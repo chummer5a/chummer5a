@@ -1500,7 +1500,7 @@ namespace Chummer.Backend.Uniques
         /// </summary>
         public string DisplayDrainExpressionMethod(CultureInfo objCultureInfo, string strLanguage)
         {
-            return _objCharacter.ProcessAttributesInXPathForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
+            return _objCharacter.ExpandXPathPlaceholdersForTooltip(DrainExpression, objCultureInfo, strLanguage, false);
         }
 
         /// <summary>
@@ -1509,7 +1509,7 @@ namespace Chummer.Backend.Uniques
         public async Task<string> DisplayDrainExpressionMethodAsync(CultureInfo objCultureInfo, string strLanguage, CancellationToken token = default)
         {
             return await _objCharacter
-                .ProcessAttributesInXPathForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
+                .ExpandXPathPlaceholdersForTooltipAsync(await GetDrainExpressionAsync(token).ConfigureAwait(false),
                     objCultureInfo, strLanguage, false, token: token).ConfigureAwait(false);
         }
 
@@ -1527,7 +1527,7 @@ namespace Chummer.Backend.Uniques
                     string strDrainAttributes = DrainExpression;
                     if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                     {
-                        string strDrain = _objCharacter.ProcessAttributesInXPath(strDrainAttributes);
+                        string strDrain = _objCharacter.ExpandXPathPlaceholders(strDrainAttributes);
                         if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
                         {
                             (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strDrain);
@@ -1563,7 +1563,7 @@ namespace Chummer.Backend.Uniques
                 string strDrainAttributes = await GetDrainExpressionAsync(token).ConfigureAwait(false);
                 if (strDrainAttributes.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decDrain))
                 {
-                    string strDrain = await _objCharacter.ProcessAttributesInXPathAsync(strDrainAttributes, token: token).ConfigureAwait(false);
+                    string strDrain = await _objCharacter.ExpandXPathPlaceholdersAsync(strDrainAttributes, token: token).ConfigureAwait(false);
                     if (strDrain.DoesNeedXPathProcessingToBeConvertedToNumber(out decDrain))
                     {
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions
@@ -1602,7 +1602,7 @@ namespace Chummer.Backend.Uniques
                     {
                         sbdToolTip.Append(strDrainExpression);
                         // Update the Fading CharacterAttribute Value.
-                        _objCharacter.ProcessAttributesInXPathForTooltip(sbdToolTip, strDrainExpression);
+                        _objCharacter.ExpandXPathPlaceholdersForTooltip(sbdToolTip, strDrainExpression);
 
                         List<Improvement> lstUsedImprovements
                             = ImprovementManager.GetCachedImprovementListForValueOf(
@@ -1642,7 +1642,7 @@ namespace Chummer.Backend.Uniques
                     sbdToolTip.Append(strDrainExpression);
                     // Update the Fading CharacterAttribute Value.
                     await _objCharacter
-                        .ProcessAttributesInXPathForTooltipAsync(sbdToolTip, strDrainExpression, token: token)
+                        .ExpandXPathPlaceholdersForTooltipAsync(sbdToolTip, strDrainExpression, token: token)
                         .ConfigureAwait(false);
 
                     List<Improvement> lstUsedImprovements

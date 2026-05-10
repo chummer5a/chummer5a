@@ -5994,7 +5994,88 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string ProcessAttributesInXPath(string strInput, bool blnForAttributeEvaluation = false)
+        internal void RefreshBonusImprovementsForStaleXPathScalars(HashSet<string> changedCharacterProperties,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                if (_intProcessPropertyChanges == 0
+                    || (ParentVehicle != null && string.IsNullOrEmpty(PlugsIntoModularMount)))
+                    return;
+
+                bool blnWirelessOn = WirelessOn;
+                if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                        Bonus, PairBonus,
+                        blnWirelessOn ? WirelessBonus : null,
+                        blnWirelessOn ? WirelessPairBonus : null))
+                    return;
+
+                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+
+                if (Bonus != null)
+                {
+                    if (PairBonus != null)
+                    {
+                        using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair"))
+                            ImprovementManager.RemoveImprovements(_objCharacter, SourceType, aParams);
+                    }
+                    else
+                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId);
+                    ImprovementManager.CreateImprovements(_objCharacter, SourceType,
+                        InternalId, Bonus, Rating,
+                        CurrentDisplayNameShort);
+                }
+
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = strSelectedValue;
+
+                if (PairBonus != null)
+                {
+                    if (Bonus == null)
+                        ImprovementManager.RemoveImprovements(_objCharacter, SourceType, InternalId + "Pair");
+                    List<Cyberware> lstPairableCyberwares = _objCharacter.Cyberware.DeepWhere(
+                        x => x.Children,
+                        x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                             x.IsModularCurrentlyEquipped).ToList();
+                    int intCount = lstPairableCyberwares.Count;
+                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                    {
+                        intCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != Location)
+                                ++intCount;
+                            else
+                                --intCount;
+                        }
+
+                        intCount = (intCount > 0).ToInt32();
+                    }
+
+                    if ((intCount & 1) == 1)
+                    {
+                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
+                                                              && _strForced != "Right")
+                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
+                        ImprovementManager.CreateImprovements(
+                            _objCharacter, SourceType, InternalId + "Pair",
+                            PairBonus, Rating, CurrentDisplayNameShort);
+                    }
+                }
+
+                if (!IsModularCurrentlyEquipped || ParentVehicle != null)
+                    ChangeModularEquip(false);
+                else
+                    RefreshWirelessBonuses();
+            }
+        }
+
+        public string ExpandXPathPlaceholders(string strInput, bool blnForAttributeEvaluation = false)
         {
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
@@ -6003,12 +6084,12 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
-                ProcessAttributesInXPath(sbdInput, strInput, blnForAttributeEvaluation);
+                ExpandXPathPlaceholders(sbdInput, strInput, blnForAttributeEvaluation);
                 return sbdInput.ToString();
             }
         }
 
-        public StringBuilder ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false)
+        public StringBuilder ExpandXPathPlaceholders(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false)
         {
             if (sbdInput.Length == 0)
                 return sbdInput;
@@ -6150,16 +6231,111 @@ namespace Chummer.Backend.Equipment
             }
 
             if (ParentVehicle != null)
-                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues);
+                ParentVehicle.ExpandXPathPlaceholders(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicVehicleValues);
+                _objCharacter.ExpandXPathPlaceholders(sbdInput, strOriginal, dicVehicleValues);
             }
             return sbdInput;
         }
 
-        public async Task<string> ProcessAttributesInXPathAsync(string strInput, bool blnForAttributeEvaluation = false, CancellationToken token = default)
+        internal async Task RefreshBonusImprovementsForStaleXPathScalarsAsync(
+            HashSet<string> changedCharacterProperties, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                if (_intProcessPropertyChanges == 0
+                    || (await GetParentVehicleAsync(token).ConfigureAwait(false) != null && string.IsNullOrEmpty(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))))
+                    return;
+
+                bool blnWirelessOn = WirelessOn;
+                if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                        Bonus, PairBonus,
+                        blnWirelessOn ? WirelessBonus : null,
+                        blnWirelessOn ? WirelessPairBonus : null))
+                    return;
+
+                if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
+                    ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+
+                if (Bonus != null)
+                {
+                    if (PairBonus != null)
+                    {
+                        using (TemporaryStringArray aParams = new TemporaryStringArray(InternalId, InternalId + "Pair"))
+                            await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                                await GetSourceTypeAsync(token).ConfigureAwait(false), aParams, token).ConfigureAwait(false);
+                    }
+                    else
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            await GetSourceTypeAsync(token).ConfigureAwait(false), InternalId, token).ConfigureAwait(false);
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                        await GetSourceTypeAsync(token).ConfigureAwait(false),
+                        InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                        await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                }
+
+                string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                    _strExtra = strSelectedValue;
+
+                if (PairBonus != null)
+                {
+                    if (Bonus == null)
+                        await ImprovementManager.RemoveImprovementsAsync(_objCharacter,
+                            await GetSourceTypeAsync(token).ConfigureAwait(false), InternalId + "Pair", token).ConfigureAwait(false);
+                    List<Cyberware> lstPairableCyberwares = await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                        .DeepWhereAsync(
+                            x => x.Children,
+                            async x => x != this && IncludePair.Contains(x.Name) && x.Extra == Extra &&
+                                       await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    int intCount = lstPairableCyberwares.Count;
+                    if (!string.IsNullOrEmpty(Location) && IncludePair.All(x => x == Name))
+                    {
+                        intCount = 0;
+                        foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                        {
+                            if (objPairableCyberware.Location != Location)
+                                ++intCount;
+                            else
+                                --intCount;
+                        }
+
+                        intCount = (intCount > 0).ToInt32();
+                    }
+
+                    if ((intCount & 1) == 1)
+                    {
+                        if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left"
+                                                              && _strForced != "Right")
+                            ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+                        else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                            ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(
+                            _objCharacter, await GetSourceTypeAsync(token).ConfigureAwait(false),
+                            InternalId + "Pair",
+                            PairBonus, await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                    }
+                }
+
+                if (!await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false) ||
+                    await GetParentVehicleAsync(token).ConfigureAwait(false) != null)
+                    await ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
+                else
+                    await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        public async Task<string> ExpandXPathPlaceholdersAsync(string strInput, bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
@@ -6169,12 +6345,12 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
                 sbdInput.Append(strInput);
-                await ProcessAttributesInXPathAsync(sbdInput, strInput, blnForAttributeEvaluation, token).ConfigureAwait(false);
+                await ExpandXPathPlaceholdersAsync(sbdInput, strInput, blnForAttributeEvaluation, token).ConfigureAwait(false);
                 return sbdInput.ToString();
             }
         }
 
-        public async Task<StringBuilder> ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false, CancellationToken token = default)
+        public async Task<StringBuilder> ExpandXPathPlaceholdersAsync(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput.Length == 0)
@@ -6326,11 +6502,11 @@ namespace Chummer.Backend.Equipment
             }
 
             if (ParentVehicle != null)
-                await ParentVehicle.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
+                await ParentVehicle.ExpandXPathPlaceholdersAsync(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                await _objCharacter.ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicVehicleValues, token).ConfigureAwait(false);
+                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdInput, strOriginal, dicVehicleValues, token).ConfigureAwait(false);
             }
             return sbdInput;
         }
@@ -6353,7 +6529,7 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation);
+                    strRating = ExpandXPathPlaceholders(strRating, blnForAttributeEvaluation);
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                     if (blnIsSuccess)
                         intReturn = ((double)objProcess).StandardRound();
@@ -6385,7 +6561,7 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
+                    strRating = await ExpandXPathPlaceholdersAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                    .EvaluateInvariantXPathAsync(strRating, token)
@@ -6439,7 +6615,7 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation);
+                    strRating = ExpandXPathPlaceholders(strRating, blnForAttributeEvaluation);
 
                     (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
                     if (blnIsSuccess)
@@ -6472,7 +6648,7 @@ namespace Chummer.Backend.Equipment
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = await ProcessAttributesInXPathAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
+                    strRating = await ExpandXPathPlaceholdersAsync(strRating, blnForAttributeEvaluation, token).ConfigureAwait(false);
 
                     (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                    .EvaluateInvariantXPathAsync(strRating, token)
@@ -8350,7 +8526,7 @@ namespace Chummer.Backend.Equipment
                                                       () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                 sbdAvail.CheapReplace(strAvail, "Rating",
                                                       () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                                ProcessAttributesInXPath(sbdAvail, strAvail);
+                                ExpandXPathPlaceholders(sbdAvail, strAvail);
                                 strAvail = sbdAvail.ToString();
                             }
                         }
@@ -8470,7 +8646,7 @@ namespace Chummer.Backend.Equipment
                                                                  async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 await sbdAvail.CheapReplaceAsync(strAvail, "Rating",
                                                                  async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                await ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                                await ExpandXPathPlaceholdersAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                                 strAvail = sbdAvail.ToString();
                             }
                         }
@@ -8581,7 +8757,7 @@ namespace Chummer.Backend.Equipment
                                                 () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         strFirstHalf = strFirstHalf.CheapReplace("Rating",
                                                 () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strFirstHalf = ProcessAttributesInXPath(strFirstHalf);
+                        strFirstHalf = ExpandXPathPlaceholders(strFirstHalf);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
@@ -8648,7 +8824,7 @@ namespace Chummer.Backend.Equipment
                                                 () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                         strSecondHalf = strSecondHalf.CheapReplace("Rating",
                                                 () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                        strSecondHalf = ProcessAttributesInXPath(strSecondHalf);
+                        strSecondHalf = ExpandXPathPlaceholders(strSecondHalf);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
@@ -8720,7 +8896,7 @@ namespace Chummer.Backend.Equipment
                                             () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                     strCapacity = strCapacity.CheapReplace("Rating",
                                             () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
-                    strCapacity = ProcessAttributesInXPath(strCapacity);
+                    strCapacity = ExpandXPathPlaceholders(strCapacity);
 
                     (bool blnIsSuccess, object objProcess) =
                         CommonFunctions.EvaluateInvariantXPath(strCapacity);
@@ -8781,7 +8957,7 @@ namespace Chummer.Backend.Equipment
                                                          async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strFirstHalf = await strFirstHalf.CheapReplaceAsync("Rating",
                                                          async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        strFirstHalf = await ProcessAttributesInXPathAsync(strFirstHalf, token: token).ConfigureAwait(false);
+                        strFirstHalf = await ExpandXPathPlaceholdersAsync(strFirstHalf, token: token).ConfigureAwait(false);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
@@ -8844,7 +9020,7 @@ namespace Chummer.Backend.Equipment
                                                          async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strSecondHalf = await strSecondHalf.CheapReplaceAsync("Rating",
                                                          async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                        strSecondHalf = await ProcessAttributesInXPathAsync(strSecondHalf, token: token).ConfigureAwait(false);
+                        strSecondHalf = await ExpandXPathPlaceholdersAsync(strSecondHalf, token: token).ConfigureAwait(false);
                         try
                         {
                             (bool blnIsSuccess, object objProcess) =
@@ -8915,7 +9091,7 @@ namespace Chummer.Backend.Equipment
                                                      async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     strCapacity = await strCapacity.CheapReplaceAsync("Rating",
                                                      async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                    strCapacity = await ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
+                    strCapacity = await ExpandXPathPlaceholdersAsync(strCapacity, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) =
                         await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
                     strReturn = blnIsSuccess
@@ -9060,7 +9236,7 @@ namespace Chummer.Backend.Equipment
                             strESS = strESS.CheapReplace("Rating",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            strESS = ProcessAttributesInXPath(strESS);
+                            strESS = ExpandXPathPlaceholders(strESS);
                         }
                         else
                         {
@@ -9072,7 +9248,7 @@ namespace Chummer.Backend.Equipment
                                                              async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             strESS = await strESS.CheapReplaceAsync("Rating",
                                                              async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                            strESS = await ProcessAttributesInXPathAsync(strESS, token: token).ConfigureAwait(false);
+                            strESS = await ExpandXPathPlaceholdersAsync(strESS, token: token).ConfigureAwait(false);
                         }
                     }
                     // If the cost is determined by the Rating or there's a math operation in play, evaluate the expression.
@@ -9281,7 +9457,7 @@ namespace Chummer.Backend.Equipment
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("Rating",
                                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    strPostModifierExpression = ProcessAttributesInXPath(strPostModifierExpression);
+                                    strPostModifierExpression = ExpandXPathPlaceholders(strPostModifierExpression);
                                 }
                                 else
                                 {
@@ -9293,7 +9469,7 @@ namespace Chummer.Backend.Equipment
                                                                      async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("Rating",
                                                                      async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    strPostModifierExpression = await ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
+                                    strPostModifierExpression = await ExpandXPathPlaceholdersAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
                                 }
                             }
                             (bool blnIsSuccess, object objProcess) = blnSync
@@ -9426,7 +9602,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            ProcessAttributesInXPath(sbdValue, strExpression);
+                            ExpandXPathPlaceholders(sbdValue, strExpression);
 
                             strExpression = sbdValue.ToString();
                         }
@@ -9519,7 +9695,7 @@ namespace Chummer.Backend.Equipment
                                 }
                             }
 
-                            await ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             strExpression = sbdValue.ToString();
                         }
                     }
@@ -9651,7 +9827,7 @@ namespace Chummer.Backend.Equipment
                                              () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdCost.CheapReplace(strCostExpression, "MinRating",
                                              () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
-                        ProcessAttributesInXPath(sbdCost, strCostExpression);
+                        ExpandXPathPlaceholders(sbdCost, strCostExpression);
                         if (strCostExpression.Contains("Rating"))
                         {
                             string strRating = funcRating().ToString(GlobalSettings.InvariantCultureInfo);
@@ -9748,7 +9924,7 @@ namespace Chummer.Backend.Equipment
                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(
                                                             GlobalSettings.InvariantCultureInfo),
                                                         token: token).ConfigureAwait(false);
-                        await ProcessAttributesInXPathAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
+                        await ExpandXPathPlaceholdersAsync(sbdCost, strCostExpression, token: token).ConfigureAwait(false);
                         if (strCostExpression.Contains("Rating"))
                         {
                             string strRating = (await funcRating().ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo);
@@ -10269,7 +10445,7 @@ namespace Chummer.Backend.Equipment
                     sbdWeight.CheapReplace(strWeightExpression, "MinRating",
                                            () => MinRating.ToString(GlobalSettings.InvariantCultureInfo));
                     sbdWeight.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
-                    ProcessAttributesInXPath(sbdWeight, strWeightExpression);
+                    ExpandXPathPlaceholders(sbdWeight, strWeightExpression);
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdWeight.ToString());
                     if (blnIsSuccess)

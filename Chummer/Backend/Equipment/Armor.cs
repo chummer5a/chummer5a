@@ -1722,7 +1722,7 @@ namespace Chummer.Backend.Equipment
                     Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
                     sbdValue.CheapReplace("{Rating}", () => strRating.Value);
                     sbdValue.CheapReplace("Rating", () => strRating.Value);
-                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                    _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                     object objProcess;
                     (blnIsSuccess, objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
@@ -1779,7 +1779,7 @@ namespace Chummer.Backend.Equipment
                         await sbdValue.CheapReplaceAsync("{Rating}", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync("Rating", () => strRating.GetValueAsync(token), token: token).ConfigureAwait(false);
                         await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            .ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
                     }
                 }
@@ -3293,7 +3293,7 @@ namespace Chummer.Backend.Equipment
                             }
                         }
 
-                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                        _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                         strExpression = sbdValue.ToString();
                     }
                 }
@@ -3368,7 +3368,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            .ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
                     }
                 }
@@ -3515,6 +3515,76 @@ namespace Chummer.Backend.Equipment
             await DisposeSelfAsync().ConfigureAwait(false);
 
             return decReturn;
+        }
+
+        internal void RefreshBonusImprovementsForStaleXPathScalars(HashSet<string> changedCharacterProperties,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnWirelessOn = WirelessOn;
+            if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                    Bonus, blnWirelessOn ? WirelessBonus : null))
+                return;
+
+            using (_objCharacter.LockObject.EnterWriteLock())
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
+                    InternalId, token);
+                if (!string.IsNullOrEmpty(Extra))
+                    ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                if (Bonus != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Armor,
+                        InternalId, Bonus, Rating, CurrentDisplayNameShort, token: token);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                        _strExtra = strSelectedValue;
+                }
+            }
+
+            RefreshWirelessBonuses();
+            foreach (ArmorMod objArmorMod in ArmorMods.AsEnumerableWithSideEffects())
+                objArmorMod.RefreshBonusImprovementsForStaleXPathScalars(changedCharacterProperties, token);
+        }
+
+        internal async Task RefreshBonusImprovementsForStaleXPathScalarsAsync(HashSet<string> changedCharacterProperties,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            bool blnWirelessOn = WirelessOn;
+            if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                    Bonus, blnWirelessOn ? WirelessBonus : null))
+                return;
+
+            IAsyncDisposable objLocker =
+                await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor,
+                    InternalId, token).ConfigureAwait(false);
+                string strExtra = Extra;
+                if (!string.IsNullOrEmpty(strExtra))
+                    ImprovementManager.SetForcedValue(strExtra, _objCharacter);
+                if (Bonus != null)
+                {
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.Armor,
+                            InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue))
+                        _strExtra = strSelectedValue;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+            await ArmorMods.ForEachWithSideEffectsAsync(
+                x => x.RefreshBonusImprovementsForStaleXPathScalarsAsync(changedCharacterProperties, token), token: token).ConfigureAwait(false);
         }
 
         /// <summary>

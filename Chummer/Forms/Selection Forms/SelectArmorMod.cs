@@ -696,7 +696,7 @@ namespace Chummer
                         await sbdValue.CheapReplaceAsync(strExpression, "{Rating}", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         await sbdValue.CheapReplaceAsync(strExpression, "Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         await _objCharacter
-                            .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            .ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
                     }
                 }

@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Test adept power: DV and AP on Blades scale with power Rating and initiate grade.
+  weaponcategorydv bonus = Rating * InitiateGrade (same scaling as a dedicated weaponspecificdv test).
+  weaponcategoryap bonus = -(Rating * InitiateGrade).
+  Pair with weapon "Initiation Test Blade" from this dataset (category Blades).
+-->
+<chummer>
+  <powers>
+    <power>
+      <id>b7e2d904-8c41-4a6e-a3f0-91dd8e4c2b15</id>
+      <name>Test: Grade-Scaled Blade Strike</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>6</limit>
+      <source>SR5</source>
+      <page>0</page>
+      <action>Passive</action>
+      <bonus>
+        <weaponcategorydv>
+          <name>Blades</name>
+          <bonus>Rating*{InitiateGrade}</bonus>
+        </weaponcategorydv>
+        <weaponcategoryap>
+          <name>Blades</name>
+          <bonus>-Rating*{InitiateGrade}</bonus>
+        </weaponcategoryap>
+      </bonus>
+    </power>
+  </powers>
+</chummer>

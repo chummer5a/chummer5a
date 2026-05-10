@@ -58,7 +58,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
+    public sealed partial class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -22832,7 +22832,7 @@ namespace Chummer
                         string strExpression = Settings.ContactPointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            strExpression = ProcessAttributesInXPath(strExpression);
+                            strExpression = ExpandXPathPlaceholders(strExpression);
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(strExpression);
@@ -22858,7 +22858,7 @@ namespace Chummer
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetContactPointsExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                         (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
@@ -23002,7 +23002,7 @@ namespace Chummer
                     string strExpression = Settings.CarryLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        strExpression = ProcessAttributesInXPath(strExpression);
+                        strExpression = ExpandXPathPlaceholders(strExpression);
                         (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         strExpression);
@@ -23030,7 +23030,7 @@ namespace Chummer
                     .GetCarryLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                     // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                     (bool blnIsSuccess, object objProcess)
                         = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token)
@@ -23090,7 +23090,7 @@ namespace Chummer
                     string strExpression = Settings.LiftLimitExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        strExpression = ProcessAttributesInXPath(strExpression);
+                        strExpression = ExpandXPathPlaceholders(strExpression);
                         (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(
                                     strExpression);
@@ -23118,7 +23118,7 @@ namespace Chummer
                     .GetLiftLimitExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token)
                                 .ConfigureAwait(false);
@@ -23147,7 +23147,7 @@ namespace Chummer
                     string strExpression = Settings.EncumbranceIntervalExpression;
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                     {
-                        strExpression = ProcessAttributesInXPath(strExpression);
+                        strExpression = ExpandXPathPlaceholders(strExpression);
                         (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(
                                     strExpression);
@@ -23180,7 +23180,7 @@ namespace Chummer
                     .GetEncumbranceIntervalExpressionAsync(token).ConfigureAwait(false);
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decReturn))
                 {
-                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(
                                 strExpression, token).ConfigureAwait(false);
@@ -25485,7 +25485,7 @@ namespace Chummer
                         string strExpression = Settings.BoundSpiritExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            strExpression = ProcessAttributesInXPath(strExpression);
+                            strExpression = ExpandXPathPlaceholders(strExpression);
                             (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(
                                         strExpression);
@@ -25512,7 +25512,7 @@ namespace Chummer
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetBoundSpiritExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(
                                     strExpression, token).ConfigureAwait(false);
@@ -25588,7 +25588,7 @@ namespace Chummer
                         string strExpression = Settings.RegisteredSpriteExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            strExpression = ProcessAttributesInXPath(strExpression);
+                            strExpression = ExpandXPathPlaceholders(strExpression);
                             (bool blnIsSuccess, object objProcess)
                                     = CommonFunctions.EvaluateInvariantXPath(strExpression);
                             _intRegisteredSpriteLimit = blnIsSuccess ? ((double)objProcess).StandardRound() : 0;
@@ -25614,7 +25614,7 @@ namespace Chummer
                     string strExpression = await (await GetSettingsAsync(token).ConfigureAwait(false)).GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false);
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
-                        strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                        strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                         (bool blnIsSuccess, object objProcess)
                                 = await CommonFunctions.EvaluateInvariantXPathAsync(
                                     strExpression, token).ConfigureAwait(false);
@@ -26068,8 +26068,8 @@ namespace Chummer
                                 }
                             }
                         }
-                        OnPropertyChanged();
                     }
+                    this.OnMultiplePropertyChanged(nameof(InitiateGrade));
                 }
             }
         }
@@ -27519,7 +27519,7 @@ namespace Chummer
                             }
                         }
                     }
-                    OnPropertyChanged();
+                    this.OnMultiplePropertyChanged(nameof(SubmersionGrade));
                 }
             }
         }
@@ -39069,7 +39069,7 @@ namespace Chummer
                                                         decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    strExpression = ProcessAttributesInXPath(strExpression);
+                    strExpression = ExpandXPathPlaceholders(strExpression);
                     (bool blnIsSuccess, object objProcess) =
                             CommonFunctions.EvaluateInvariantXPath(strExpression);
                     if (blnIsSuccess)
@@ -39093,7 +39093,7 @@ namespace Chummer
                                                 decStartingNuyen.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decFromKarma))
                 {
-                    strExpression = await ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                    strExpression = await ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(strExpression, token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -49664,6 +49664,17 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Raised on the UI thread after <see cref="InitiateGrade"/> changes (after improvement caches are cleared).
+        /// Prefer subscribing here over filtering <see cref="MultiplePropertiesChanged"/> when only initiate grade matters.
+        /// </summary>
+        public event EventHandler InitiateGradeChanged;
+
+        /// <summary>
+        /// Raised on the UI thread after <see cref="SubmersionGrade"/> changes (after improvement caches are cleared).
+        /// </summary>
+        public event EventHandler SubmersionGradeChanged;
+
         #region Static
 
         //A tree of dependencies. Once some of the properties are changed,
@@ -50593,6 +50604,34 @@ namespace Chummer
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         RefreshAstralReputationImprovements();
 
+                    if (setNamesOfChangedProperties.Contains(nameof(InitiateGrade)) ||
+                        setNamesOfChangedProperties.Contains(nameof(SubmersionGrade)))
+                    {
+                        ImprovementManager.ClearCachedValues(this);
+                    }
+
+                    if (CharacterXPathSubstitution.ChangedPropertiesOverlapNumericScalarDependencies(
+                            setNamesOfChangedProperties))
+                        RefreshImprovementsForNumericScalarDependencies(setNamesOfChangedProperties);
+
+                    if (setNamesOfChangedProperties.Contains(nameof(InitiateGrade)))
+                    {
+                        EventHandler evtInitiateGrade = InitiateGradeChanged;
+                        if (evtInitiateGrade != null)
+                        {
+                            Utils.RunOnMainThread(() => evtInitiateGrade.Invoke(this, EventArgs.Empty));
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties.Contains(nameof(SubmersionGrade)))
+                    {
+                        EventHandler evtSubmersionGrade = SubmersionGradeChanged;
+                        if (evtSubmersionGrade != null)
+                        {
+                            Utils.RunOnMainThread(() => evtSubmersionGrade.Invoke(this, EventArgs.Empty));
+                        }
+                    }
+
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
@@ -50866,6 +50905,37 @@ namespace Chummer
                         await RefreshSustainingPenaltiesAsync(token).ConfigureAwait(false);
                     if (setNamesOfChangedProperties.Contains(nameof(TotalAstralReputation)))
                         await RefreshAstralReputationImprovementsAsync(token).ConfigureAwait(false);
+
+                    if (setNamesOfChangedProperties.Contains(nameof(InitiateGrade)) ||
+                        setNamesOfChangedProperties.Contains(nameof(SubmersionGrade)))
+                    {
+                        ImprovementManager.ClearCachedValues(this, token);
+                    }
+
+                    if (CharacterXPathSubstitution.ChangedPropertiesOverlapNumericScalarDependencies(
+                            setNamesOfChangedProperties))
+                        await RefreshImprovementsForNumericScalarDependenciesAsync(setNamesOfChangedProperties,
+                            token).ConfigureAwait(false);
+
+                    if (setNamesOfChangedProperties.Contains(nameof(InitiateGrade)))
+                    {
+                        EventHandler evtInitiateGrade = InitiateGradeChanged;
+                        if (evtInitiateGrade != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() => evtInitiateGrade.Invoke(this, EventArgs.Empty),
+                                token: token).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (setNamesOfChangedProperties.Contains(nameof(SubmersionGrade)))
+                    {
+                        EventHandler evtSubmersionGrade = SubmersionGradeChanged;
+                        if (evtSubmersionGrade != null)
+                        {
+                            await Utils.RunOnMainThreadAsync(() => evtSubmersionGrade.Invoke(this, EventArgs.Empty),
+                                token: token).ConfigureAwait(false);
+                        }
+                    }
 
                     if (_setMultiplePropertiesChangedAsync.Count > 0)
                     {
@@ -55639,17 +55709,22 @@ namespace Chummer
             }
         }
 
-        public string ProcessAttributesInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        /// <summary>
+        /// Expands XPath-style placeholders in bonus strings: attribute tokens via <see cref="Backend.Attributes.AttributeSection"/>,
+        /// then additional character scalars (e.g. <c>{InitiateGrade}</c>) via <see cref="CharacterXPathSubstitution"/>.
+        /// </summary>
+        public string ExpandXPathPlaceholders(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (!strInput.Contains('{'))
                 return strInput;
-            return AttributeSection.ProcessAttributesInXPath(strInput, dicValueOverrides, token);
+            string strReturn = AttributeSection.ApplyAttributeXPathReplacements(strInput, dicValueOverrides, token);
+            return CharacterXPathSubstitution.ApplyScalarXPathReplacements(strReturn, this, dicValueOverrides, token);
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public void ExpandXPathPlaceholders(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
@@ -55658,10 +55733,11 @@ namespace Chummer
                 return;
             if (string.IsNullOrEmpty(strOriginal))
                 strOriginal = sbdInput.ToString();
-            AttributeSection.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides, token);
+            AttributeSection.ApplyAttributeXPathReplacements(sbdInput, strOriginal, dicValueOverrides, token);
+            CharacterXPathSubstitution.ApplyScalarXPathReplacements(sbdInput, strOriginal, this, dicValueOverrides, token);
         }
 
-        public Task<string> ProcessAttributesInXPathAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public Task<string> ExpandXPathPlaceholdersAsync(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
@@ -55672,11 +55748,12 @@ namespace Chummer
             return Inner();
             async Task<string> Inner()
             {
-                return await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(strInput, dicValueOverrides, token).ConfigureAwait(false);
+                string strReturn = await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ApplyAttributeXPathReplacementsAsync(strInput, dicValueOverrides, token).ConfigureAwait(false);
+                return CharacterXPathSubstitution.ApplyScalarXPathReplacements(strReturn, this, dicValueOverrides, token);
             }
         }
 
-        public Task ProcessAttributesInXPathAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public Task ExpandXPathPlaceholdersAsync(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
@@ -55687,31 +55764,48 @@ namespace Chummer
             return Inner();
             async Task Inner()
             {
-                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strOriginal))
+                    strOriginal = sbdInput.ToString();
+                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ApplyAttributeXPathReplacementsAsync(sbdInput, strOriginal, dicValueOverrides, token).ConfigureAwait(false);
+                CharacterXPathSubstitution.ApplyScalarXPathReplacements(sbdInput, strOriginal, this, dicValueOverrides, token);
             }
         }
 
-        public string ProcessAttributesInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public string ExpandXPathPlaceholdersForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (!strInput.Contains('{'))
                 return strInput;
-            return AttributeSection.ProcessAttributesInXPathForTooltip(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+            string strReturn = AttributeSection.ApplyAttributeXPathReplacementsForTooltip(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
+            return CharacterXPathSubstitution.ApplyScalarXPathReplacementsForTooltip(strReturn, this, objCultureInfo, strLanguage, blnShowValues, strSpace, dicValueOverrides, token);
         }
 
-        public void ProcessAttributesInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public void ExpandXPathPlaceholdersForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
             if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing(false))
                 return;
-            AttributeSection.ProcessAttributesInXPathForTooltip(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+            if (string.IsNullOrEmpty(strOriginal))
+                strOriginal = sbdInput.ToString();
+            AttributeSection.ApplyAttributeXPathReplacementsForTooltip(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token);
+            if (objCultureInfo == null)
+                objCultureInfo = GlobalSettings.CultureInfo;
+            if (string.IsNullOrEmpty(strLanguage))
+                strLanguage = GlobalSettings.Language;
+            string strSpace = LanguageManager.GetString("String_Space", strLanguage, token: token);
+            CharacterXPathSubstitution.ApplyScalarXPathReplacementsForTooltip(sbdInput, strOriginal, this, objCultureInfo, strLanguage, blnShowValues, strSpace, dicValueOverrides, token);
         }
 
-        public Task<string> ProcessAttributesInXPathForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
+        public Task<string> ExpandXPathPlaceholdersForTooltipAsync(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<string>(token);
@@ -55722,11 +55816,15 @@ namespace Chummer
             return Inner();
             async Task<string> Inner()
             {
-                return await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathForTooltipAsync(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
+                string strReturn = await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ApplyAttributeXPathReplacementsForTooltipAsync(strInput, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
+                CultureInfo objCi = objCultureInfo ?? GlobalSettings.CultureInfo;
+                string strLang = string.IsNullOrEmpty(strLanguage) ? GlobalSettings.Language : strLanguage;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLang, token: token).ConfigureAwait(false);
+                return await CharacterXPathSubstitution.ApplyScalarXPathReplacementsForTooltipAsync(strReturn, this, objCi, strLang, blnShowValues, strSpace, dicValueOverrides, token).ConfigureAwait(false);
             }
         }
 
-        public Task ProcessAttributesInXPathForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
+        public Task ExpandXPathPlaceholdersForTooltipAsync(StringBuilder sbdInput, string strOriginal = "",
             CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true,
             IAsyncReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
@@ -55739,7 +55837,13 @@ namespace Chummer
             return Inner();
             async Task Inner()
             {
-                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ProcessAttributesInXPathForTooltipAsync(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
+                if (string.IsNullOrEmpty(strOriginal))
+                    strOriginal = sbdInput.ToString();
+                await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).ApplyAttributeXPathReplacementsForTooltipAsync(sbdInput, strOriginal, objCultureInfo, strLanguage, blnShowValues, dicValueOverrides, token).ConfigureAwait(false);
+                CultureInfo objCi = objCultureInfo ?? GlobalSettings.CultureInfo;
+                string strLang = string.IsNullOrEmpty(strLanguage) ? GlobalSettings.Language : strLanguage;
+                string strSpace = await LanguageManager.GetStringAsync("String_Space", strLang, token: token).ConfigureAwait(false);
+                await CharacterXPathSubstitution.ApplyScalarXPathReplacementsForTooltipAsync(sbdInput, strOriginal, this, objCi, strLang, blnShowValues, strSpace, dicValueOverrides, token).ConfigureAwait(false);
             }
         }
 

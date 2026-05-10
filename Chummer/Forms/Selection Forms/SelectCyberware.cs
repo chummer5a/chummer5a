@@ -2771,11 +2771,11 @@ namespace Chummer
                         }
 
                         if (ParentVehicle != null)
-                            await ParentVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
+                            await ParentVehicle.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, dicValueOverrides: dicVehicleValues, token: token).ConfigureAwait(false);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, dicVehicleValues, token: token).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, dicVehicleValues, token: token).ConfigureAwait(false);
                         }
                         strExpression = sbdValue.ToString();
                     }

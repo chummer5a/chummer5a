@@ -193,7 +193,7 @@ namespace Chummer
                                 sbdFv.Append("+(", objImprovement.Value.ToString(GlobalSettings.InvariantCultureInfo), ')');
                             }
 
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdFv).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdFv).ConfigureAwait(false);
                             strFv = sbdFv.ToString();
                         }
                     }

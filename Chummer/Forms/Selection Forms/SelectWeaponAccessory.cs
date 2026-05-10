@@ -799,7 +799,7 @@ namespace Chummer
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Cost",
                                 async () => (await decParentTotalCost.GetValueAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
-                            await _objParentWeapon.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await _objParentWeapon.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
                         else
                         {
@@ -812,7 +812,7 @@ namespace Chummer
                                 .Replace("{Weapon Total Cost}", "0")
                                 .Replace("Weapon Total Cost", "0");
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
                         sbdValue.Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                             .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));

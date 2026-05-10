@@ -3607,7 +3607,7 @@ namespace Chummer.Backend.Skills
                         string strExpression = _objCharacterSettings.KnowledgePointsExpression;
                         if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            strExpression = _objCharacter.ProcessAttributesInXPath(strExpression);
+                            strExpression = _objCharacter.ExpandXPathPlaceholders(strExpression);
                             // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                             (bool blnIsSuccess, object objProcess)
                                 = CommonFunctions.EvaluateInvariantXPath(
@@ -3664,7 +3664,7 @@ namespace Chummer.Backend.Skills
                     if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strExpression = await _objCharacter
-                                .ProcessAttributesInXPathAsync(strExpression, token: token).ConfigureAwait(false);
+                                .ExpandXPathPlaceholdersAsync(strExpression, token: token).ConfigureAwait(false);
                         // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                         (bool blnIsSuccess, object objProcess)
                             = await CommonFunctions.EvaluateInvariantXPathAsync(

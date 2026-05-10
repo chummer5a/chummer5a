@@ -3590,6 +3590,8 @@ namespace Chummer
                     || e.PropertyNames.Contains(nameof(Character.MAGEnabled))
                     || e.PropertyNames.Contains(nameof(Character.RESEnabled))
                     || e.PropertyNames.Contains(nameof(Character.DEPEnabled))
+                    || e.PropertyNames.Contains(nameof(Character.InitiateGrade))
+                    || e.PropertyNames.Contains(nameof(Character.SubmersionGrade))
                     || e.PropertyNames.Contains(nameof(Character.MetatypeCategory))
                     || e.PropertyNames.Contains(nameof(Character.IsSprite)))
                 {

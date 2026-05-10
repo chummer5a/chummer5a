@@ -33,6 +33,26 @@
       <action>Free</action>
     </power>
     <power>
+      <id>b7e2d904-8c41-4a6e-a3f0-91dd8e4c2b15</id>
+      <name>Test: Grade-Scaled Blade Strike</name>
+      <points>0.25</points>
+      <levels>True</levels>
+      <limit>6</limit>
+      <source>SR5</source>
+      <page>0</page>
+      <action>Passive</action>
+      <bonus>
+        <weaponcategorydv>
+          <name>Blades</name>
+          <bonus>Rating*{InitiateGrade}</bonus>
+        </weaponcategorydv>
+        <weaponcategoryap>
+          <name>Blades</name>
+          <bonus>-Rating*{InitiateGrade}</bonus>
+        </weaponcategoryap>
+      </bonus>
+    </power>
+    <power>
       <id>39224ecf-f3d0-40b6-95a6-2f047f95d736</id>
       <name>Astral Perception</name>
       <points>1</points>

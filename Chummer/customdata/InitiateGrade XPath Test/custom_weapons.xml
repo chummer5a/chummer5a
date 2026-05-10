@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Test content for {InitiateGrade} on weapon AP (enable custom dataset "InitiateGrade XPath Test" in character settings). -->
+<chummer>
+  <weapons>
+    <weapon>
+      <id>a8f3c21e-4b90-4d7f-9e12-06fbc29d01a4</id>
+      <name>Initiation Test Blade</name>
+      <category>Blades</category>
+      <type>Melee</type>
+      <conceal>-2</conceal>
+      <accuracy>6</accuracy>
+      <reach>0</reach>
+      <damage>({STR}+2)P</damage>
+      <ap>-{InitiateGrade}</ap>
+      <mode>0</mode>
+      <rc>0</rc>
+      <ammo>0</ammo>
+      <avail>12</avail>
+      <cost>500</cost>
+      <source>SR5</source>
+      <page>0</page>
+    </weapon>
+  </weapons>
+</chummer>

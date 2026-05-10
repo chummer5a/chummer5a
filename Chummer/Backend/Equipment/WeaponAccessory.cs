@@ -1419,7 +1419,7 @@ namespace Chummer.Backend.Equipment
                             Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this));
                             sbdValue.CheapReplace(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
                             sbdValue.CheapReplace(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo));
-                            objParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            objParent.ExpandXPathPlaceholders(sbdValue, strExpression);
                             if (blnGetPhysicalLimitString)
                             {
                                 if (objParent.ParentVehicle != null)
@@ -1452,7 +1452,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("{Weapon Total Weight}", "0")
                                 .Replace("Weapon Total Weight", "0");
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                            _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                             if (blnGetPhysicalLimitString)
                                 funcPhysicalLimitString = () => _objCharacter.LimitPhysical.ToString(GlobalSettings.InvariantCultureInfo);
                         }
@@ -1556,7 +1556,7 @@ namespace Chummer.Backend.Equipment
                             Lazy<decimal> decParentTotalWeight = new Lazy<decimal>(() => objParent.MultipliableWeight(this, token));
                             await sbdValue.CheapReplaceAsync(strExpression, "{Weapon Total Weight}", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Weapon Total Weight", () => decParentTotalWeight.Value.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                            await objParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await objParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             if (blnGetPhysicalLimitString)
                             {
                                 if (objParent.ParentVehicle != null)
@@ -1592,7 +1592,7 @@ namespace Chummer.Backend.Equipment
                                 .Replace("Weapon Total Weight", "0");
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
                             await _objCharacter
-                                .ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                .ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             if (blnGetPhysicalLimitString)
                                 funcPhysicalLimitString = async () =>
                                     (await _objCharacter.GetLimitPhysicalAsync(token).ConfigureAwait(false)).ToString(GlobalSettings

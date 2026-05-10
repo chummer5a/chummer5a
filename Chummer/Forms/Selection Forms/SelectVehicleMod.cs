@@ -1023,7 +1023,7 @@ namespace Chummer
                         sbdValue.Replace("Slots", strSlotsString);
                         sbdValue.Replace("{Parent Cost}", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.Replace("Parent Cost", ParentWeaponMountOwnCost.ToString(GlobalSettings.InvariantCultureInfo));
-                        await _objVehicle.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                        await _objVehicle.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         strExpression = sbdValue.ToString();
                     }
                 }

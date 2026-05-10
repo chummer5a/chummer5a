@@ -2912,7 +2912,7 @@ namespace Chummer.Backend.Equipment
                         while (objLoopParent is Gear objLoopParentGear)
                             objLoopParent = objLoopParentGear.Parent;
                         if (objLoopParent is Cyberware objCyberwareParent)
-                            objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            objCyberwareParent.ExpandXPathPlaceholders(sbdValue, strExpression);
                         else if (objLoopParent is WeaponAccessory objAccessoryParent)
                         {
                             Weapon objWeaponParent = objAccessoryParent.Parent;
@@ -2923,30 +2923,30 @@ namespace Chummer.Backend.Equipment
                                     string strCyberwareId = objAccessoryParent.Parent.ParentID;
                                     objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
                                         ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
-                                    objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    objCyberwareParent.ExpandXPathPlaceholders(sbdValue, strExpression);
                                 }
                                 else if (objWeaponParent.ParentVehicle != null)
                                 {
-                                    objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    objWeaponParent.ParentVehicle.ExpandXPathPlaceholders(sbdValue, strExpression);
                                 }
                                 else
                                 {
                                     Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                                 }
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                                _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                             }
                         }
                         else if (objLoopParent is Vehicle objVehicleParent)
-                            objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            objVehicleParent.ExpandXPathPlaceholders(sbdValue, strExpression);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                            _objCharacter.ExpandXPathPlaceholders(sbdValue, strExpression);
                         }
                         strExpression = sbdValue.ToString();
                     }
@@ -3076,7 +3076,7 @@ namespace Chummer.Backend.Equipment
                         while (objLoopParent is Gear objLoopParentGear)
                             objLoopParent = objLoopParentGear.Parent;
                         if (objLoopParent is Cyberware objCyberwareParent)
-                            await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await objCyberwareParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         else if (objLoopParent is WeaponAccessory objAccessoryParent)
                         {
                             Weapon objWeaponParent = objAccessoryParent.Parent;
@@ -3087,28 +3087,28 @@ namespace Chummer.Backend.Equipment
                                     string strCyberwareId = objAccessoryParent.Parent.ParentID;
                                     objCyberwareParent = await _objCharacter.Cyberware.FindByIdAsync(strCyberwareId, token).ConfigureAwait(false)
                                         ?? (await _objCharacter.Vehicles.FindVehicleCyberwareAsync(x => strCyberwareId == x.InternalId, token).ConfigureAwait(false)).Item1;
-                                    await objCyberwareParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await objCyberwareParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 }
                                 else if (objWeaponParent.ParentVehicle != null)
-                                    await objWeaponParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await objWeaponParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 else
                                 {
                                     Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                    await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                    await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                                 }
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                             }
                         }
                         else if (objLoopParent is Vehicle objVehicleParent)
-                            await objVehicleParent.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await objVehicleParent.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdValue, strExpression, token: token).ConfigureAwait(false);
                         }
                         strExpression = sbdValue.ToString();
                     }
@@ -5755,6 +5755,88 @@ namespace Chummer.Backend.Equipment
             }
 
             await Children.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token).ConfigureAwait(false);
+        }
+
+        internal void RefreshBonusImprovementsForStaleXPathScalars(HashSet<string> changedCharacterProperties,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_objCharacter?.IsLoading != false)
+                return;
+            if (Category == "Stacked Focus")
+                return;
+
+            bool blnWirelessOn = WirelessOn;
+            if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                    Bonus, blnWirelessOn ? WirelessBonus : null))
+                return;
+
+            if (Category.EndsWith("Foci", StringComparison.Ordinal) && !Bonded)
+                return;
+
+            using (_objCharacter.LockObject.EnterWriteLock())
+            {
+                ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Gear, InternalId,
+                    token);
+                if (!string.IsNullOrEmpty(Extra))
+                    ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                if (Bonus != null)
+                {
+                    ImprovementManager.CreateImprovements(_objCharacter, Improvement.ImprovementSource.Gear,
+                        InternalId, Bonus, Rating, CurrentDisplayNameShort, token: token);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = strSelectedValue;
+                }
+            }
+
+            RefreshWirelessBonuses();
+        }
+
+        internal async Task RefreshBonusImprovementsForStaleXPathScalarsAsync(HashSet<string> changedCharacterProperties,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_objCharacter?.IsLoading != false)
+                return;
+            if (Category == "Stacked Focus")
+                return;
+
+            bool blnWirelessOn = WirelessOn;
+            if (!CharacterXPathSubstitution.AnyBonusXmlNeedsNumericScalarRefresh(changedCharacterProperties, token,
+                    Bonus, blnWirelessOn ? WirelessBonus : null))
+                return;
+
+            if (Category.EndsWith("Foci", StringComparison.Ordinal) && !Bonded)
+                return;
+
+            IAsyncDisposable objLocker =
+                await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Gear,
+                    InternalId, token).ConfigureAwait(false);
+                string strExtra = Extra;
+                if (!string.IsNullOrEmpty(strExtra))
+                    ImprovementManager.SetForcedValue(strExtra, _objCharacter);
+                if (Bonus != null)
+                {
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter,
+                            Improvement.ImprovementSource.Gear,
+                            InternalId, Bonus, await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token)
+                        .ConfigureAwait(false);
+                    string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                    if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(_strExtra))
+                        _strExtra = strSelectedValue;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>

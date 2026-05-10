@@ -1376,12 +1376,12 @@ namespace Chummer.Backend.Equipment
                         Vehicle objVehicle = Parent;
                         if (objVehicle != null)
                         {
-                            strAvail = objVehicle.ProcessAttributesInXPath(strAvail, objExcludeMount: this);
+                            strAvail = objVehicle.ExpandXPathPlaceholders(strAvail, objExcludeMount: this);
                         }
                         else
                         {
                             strAvail = Vehicle.FillAttributesInXPathWithDummies(strAvail);
-                            strAvail = _objCharacter.ProcessAttributesInXPath(strAvail);
+                            strAvail = _objCharacter.ExpandXPathPlaceholders(strAvail);
                         }
                     }
                     (bool blnIsSuccess, object objProcess)
@@ -1457,12 +1457,12 @@ namespace Chummer.Backend.Equipment
                         Vehicle objVehicle = Parent;
                         if (objVehicle != null)
                         {
-                            strAvail = await objVehicle.ProcessAttributesInXPathAsync(strAvail, objExcludeMount: this, token: token).ConfigureAwait(false);
+                            strAvail = await objVehicle.ExpandXPathPlaceholdersAsync(strAvail, objExcludeMount: this, token: token).ConfigureAwait(false);
                         }
                         else
                         {
                             strAvail = Vehicle.FillAttributesInXPathWithDummies(strAvail);
-                            strAvail = await _objCharacter.ProcessAttributesInXPathAsync(strAvail, token: token).ConfigureAwait(false);
+                            strAvail = await _objCharacter.ExpandXPathPlaceholdersAsync(strAvail, token: token).ConfigureAwait(false);
                         }
                     }
                     (bool blnIsSuccess, object objProcess)
@@ -1612,12 +1612,12 @@ namespace Chummer.Backend.Equipment
                     Vehicle objVehicle = Parent;
                     if (objVehicle != null)
                     {
-                        strCost = objVehicle.ProcessAttributesInXPath(strCost, objExcludeMount: this);
+                        strCost = objVehicle.ExpandXPathPlaceholders(strCost, objExcludeMount: this);
                     }
                     else
                     {
                         strCost = Vehicle.FillAttributesInXPathWithDummies(strCost);
-                        strCost = _objCharacter.ProcessAttributesInXPath(strCost);
+                        strCost = _objCharacter.ExpandXPathPlaceholders(strCost);
                     }
                     (bool blnIsSuccess, object objProcess)
                         = CommonFunctions.EvaluateInvariantXPath(strCost);
@@ -1647,12 +1647,12 @@ namespace Chummer.Backend.Equipment
                 Vehicle objVehicle = Parent;
                 if (objVehicle != null)
                 {
-                    strCost = await objVehicle.ProcessAttributesInXPathAsync(strCost, objExcludeMount: this, token: token).ConfigureAwait(false);
+                    strCost = await objVehicle.ExpandXPathPlaceholdersAsync(strCost, objExcludeMount: this, token: token).ConfigureAwait(false);
                 }
                 else
                 {
                     strCost = Vehicle.FillAttributesInXPathWithDummies(strCost);
-                    strCost = await _objCharacter.ProcessAttributesInXPathAsync(strCost, token: token).ConfigureAwait(false);
+                    strCost = await _objCharacter.ExpandXPathPlaceholdersAsync(strCost, token: token).ConfigureAwait(false);
                 }
                 (bool blnIsSuccess, object objProcess)
                     = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);
@@ -2540,12 +2540,12 @@ namespace Chummer.Backend.Equipment
                             Vehicle objVehicle = MyMount?.Parent;
                             if (objVehicle != null)
                             {
-                                objVehicle.ProcessAttributesInXPath(sbdCost, strCost, objExcludeMount: MyMount);
+                                objVehicle.ExpandXPathPlaceholders(sbdCost, strCost, objExcludeMount: MyMount);
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                                _objCharacter.ProcessAttributesInXPath(sbdCost, strCost);
+                                _objCharacter.ExpandXPathPlaceholders(sbdCost, strCost);
                             }
 
                             strCost = sbdCost.ToString();
@@ -2593,12 +2593,12 @@ namespace Chummer.Backend.Equipment
                         Vehicle objVehicle = _objMyMount?.Parent;
                         if (objVehicle != null)
                         {
-                            await objVehicle.ProcessAttributesInXPathAsync(sbdCost, strCost, objExcludeMount: MyMount, token: token).ConfigureAwait(false);
+                            await objVehicle.ExpandXPathPlaceholdersAsync(sbdCost, strCost, objExcludeMount: MyMount, token: token).ConfigureAwait(false);
                         }
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdCost);
-                            await _objCharacter.ProcessAttributesInXPathAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
+                            await _objCharacter.ExpandXPathPlaceholdersAsync(sbdCost, strCost, token: token).ConfigureAwait(false);
                         }
 
                         strCost = sbdCost.ToString();
@@ -2766,12 +2766,12 @@ namespace Chummer.Backend.Equipment
                                 Vehicle objVehicle = MyMount?.Parent;
                                 if (objVehicle != null)
                                 {
-                                    objVehicle.ProcessAttributesInXPath(sbdAvail, strAvail, objExcludeMount: MyMount);
+                                    objVehicle.ExpandXPathPlaceholders(sbdAvail, strAvail, objExcludeMount: MyMount);
                                 }
                                 else
                                 {
                                     Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                                    _objCharacter.ProcessAttributesInXPath(sbdAvail, strAvail);
+                                    _objCharacter.ExpandXPathPlaceholders(sbdAvail, strAvail);
                                 }
                                 strAvail = sbdAvail.ToString();
                             }
@@ -2841,12 +2841,12 @@ namespace Chummer.Backend.Equipment
                             Vehicle objVehicle = MyMount?.Parent;
                             if (objVehicle != null)
                             {
-                                await objVehicle.ProcessAttributesInXPathAsync(sbdAvail, strAvail, objExcludeMount: MyMount, token: token).ConfigureAwait(false);
+                                await objVehicle.ExpandXPathPlaceholdersAsync(sbdAvail, strAvail, objExcludeMount: MyMount, token: token).ConfigureAwait(false);
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdAvail);
-                                await _objCharacter.ProcessAttributesInXPathAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
+                                await _objCharacter.ExpandXPathPlaceholdersAsync(sbdAvail, strAvail, token: token).ConfigureAwait(false);
                             }
                             strAvail = sbdAvail.ToString();
                         }

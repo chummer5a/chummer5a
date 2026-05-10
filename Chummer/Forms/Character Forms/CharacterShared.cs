@@ -10989,7 +10989,7 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
             {
-                string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
+                string strExpression = await CharacterObject.ExpandXPathPlaceholdersForTooltipAsync(
                     await CharacterObjectSettings.GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(
                     this,
@@ -11038,7 +11038,7 @@ namespace Chummer
                                    await x.GetBoundAsync(token).ConfigureAwait(false) && !await x.GetFetteredAsync(token).ConfigureAwait(false), token).ConfigureAwait(false) >=
                 await CharacterObject.GetRegisteredSpriteLimitAsync(token).ConfigureAwait(false))
             {
-                string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
+                string strExpression = await CharacterObject.ExpandXPathPlaceholdersForTooltipAsync(
                     await CharacterObjectSettings.GetRegisteredSpriteExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 await Program.ShowScrollableMessageBoxAsync(
                     this,

@@ -2792,6 +2792,8 @@ namespace Chummer
                     || e.PropertyNames.Contains(nameof(Character.MAGEnabled))
                     || e.PropertyNames.Contains(nameof(Character.RESEnabled))
                     || e.PropertyNames.Contains(nameof(Character.DEPEnabled))
+                    || e.PropertyNames.Contains(nameof(Character.InitiateGrade))
+                    || e.PropertyNames.Contains(nameof(Character.SubmersionGrade))
                     || e.PropertyNames.Contains(nameof(Character.MetatypeCategory))
                     || e.PropertyNames.Contains(nameof(Character.IsSprite))
                     || e.PropertyNames.Contains(nameof(Character.IsPrototypeTranshuman)))
@@ -22779,7 +22781,7 @@ namespace Chummer
                                         .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
                                         .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
                                         .ConfigureAwait(false);
-            strNuyenTooltip = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
+            strNuyenTooltip = await CharacterObject.ExpandXPathPlaceholdersForTooltipAsync(
                                                                   strNuyenTooltip, token: token).ConfigureAwait(false);
             strNuyenTooltip = string.Format(GlobalSettings.CultureInfo,
                                                          await LanguageManager
