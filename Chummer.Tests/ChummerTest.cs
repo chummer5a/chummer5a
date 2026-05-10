@@ -32,7 +32,6 @@ using System.Threading.Tasks;
 using System.Xml;
 using System.Xml.Schema;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
-using Microsoft.VisualStudio.Threading;
 using Org.XmlUnit.Builder;
 using Org.XmlUnit.Diff;
 
@@ -458,7 +457,7 @@ namespace Chummer.Tests
         [STATestMethod]
         [Timeout(60000, CooperativeCancellation = true)] // 1 minute
         [SupportedOSPlatform("windows")]
-        public async Task Test06_BasicStartup()
+        public void Test06_BasicStartup()
         {
             try
             {
@@ -469,13 +468,13 @@ namespace Chummer.Tests
                 try
                 {
                     Utils.IsUnitTestForUI = true;
-                    frmTestForm = await Utils.RunOnMainThreadAsync(() => new ChummerMainForm(true, true)
+                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                     {
                         ShowInTaskbar =
                             false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                     }, token: TestContext.CancellationToken);
                     Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                    await frmTestForm.DoThreadSafeAsync(x =>
+                    frmTestForm.DoThreadSafe(x =>
                     {
                         x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
@@ -484,15 +483,14 @@ namespace Chummer.Tests
                     }, TestContext.CancellationToken);
                     while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                     {
-                        await Utils.SafeSleepAsync(TestContext.CancellationToken).ConfigureAwait(false);
+                        Utils.SafeSleep(TestContext.CancellationToken);
                     }
                 }
                 finally
                 {
                     try
                     {
-                        if (frmTestForm != null)
-                            await frmTestForm.DoThreadSafeAsync(x => x.Close(), TestContext.CancellationToken);
+                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
                     }
                     catch (Exception e)
                     {
@@ -524,7 +522,7 @@ namespace Chummer.Tests
         [STATestMethod]
         [Timeout(3600000, CooperativeCancellation = true)] // 1 hour
         [SupportedOSPlatform("windows")]
-        public async Task Test07_LoadCharacterForms()
+        public void Test07_LoadCharacterForms()
         {
             try
             {
@@ -535,13 +533,13 @@ namespace Chummer.Tests
                 try
                 {
                     Utils.IsUnitTestForUI = true;
-                    frmTestForm = await Utils.RunOnMainThreadAsync(() => new ChummerMainForm(true, true)
+                    frmTestForm = Utils.RunOnMainThread(() => new ChummerMainForm(true, true)
                     {
                         ShowInTaskbar =
                             false // This lets the form be "shown" in unit tests (to actually have it show, ShowDialog() needs to be used, but that forces the test to be interactive)
                     }, token: TestContext.CancellationToken);
                     Program.MainForm = frmTestForm; // Set program Main form to Unit test version
-                    await frmTestForm.DoThreadSafeAsync(x =>
+                    frmTestForm.DoThreadSafe(x =>
                     {
                         x.Show(); // We don't actually want to display the main form, so Show() is used (ShowDialog() would actually display it).
 #if DEBUG
@@ -550,7 +548,7 @@ namespace Chummer.Tests
                     }, TestContext.CancellationToken);
                     while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                     {
-                        await Utils.SafeSleepAsync(TestContext.CancellationToken).ConfigureAwait(false);
+                        Utils.SafeSleep(TestContext.CancellationToken);
                     }
 
                     Debug.WriteLine("Main form loaded");
@@ -571,7 +569,7 @@ namespace Chummer.Tests
                                 bool blnFormClosed = false;
                                 bool blnCreated = objCharacter.Created;
                                 // ReSharper disable once AccessToDisposedClosure
-                                CharacterShared frmCharacterForm = await Program.MainForm.DoThreadSafeFuncAsync(
+                                CharacterShared frmCharacterForm = Program.MainForm.DoThreadSafeFunc(
                                     () => blnCreated
                                         // ReSharper disable once AccessToDisposedClosure
                                         ? (CharacterShared)new CharacterCareer(objCharacter)
@@ -579,7 +577,7 @@ namespace Chummer.Tests
                                         : new CharacterCreate(objCharacter), TestContext.CancellationToken);
                                 try
                                 {
-                                    await frmCharacterForm.DoThreadSafeAsync(x =>
+                                    frmCharacterForm.DoThreadSafe(x =>
                                     {
                                         x.FormClosed += (sender, args) => blnFormClosed = true;
                                         x.MdiParent = frmTestForm;
@@ -593,20 +591,20 @@ namespace Chummer.Tests
                                         (!frmCharacterForm
                                             .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
-                                        await Utils.SafeSleepAsync(TestContext.CancellationToken).ConfigureAwait(false);
+                                        Utils.SafeSleep(TestContext.CancellationToken);
                                     }
                                 }
                                 finally
                                 {
                                     try
                                     {
-                                        await frmCharacterForm.DoThreadSafeAsync(x => x.Close(), TestContext.CancellationToken);
+                                        frmCharacterForm.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
                                         while
                                             (!blnFormClosed &&
                                              !frmCharacterForm
                                                  .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
                                         {
-                                            await Utils.SafeSleepAsync(TestContext.CancellationToken).ConfigureAwait(false);
+                                            Utils.SafeSleep(TestContext.CancellationToken);
                                         }
                                     }
                                     catch (ApplicationException e)
@@ -650,8 +648,7 @@ namespace Chummer.Tests
                 {
                     try
                     {
-                        if (frmTestForm != null)
-                            await frmTestForm.DoThreadSafeAsync(x => x.Close(), TestContext.CancellationToken);
+                        frmTestForm?.DoThreadSafe(x => x.Close(), TestContext.CancellationToken);
                     }
                     catch (Exception e)
                     {
