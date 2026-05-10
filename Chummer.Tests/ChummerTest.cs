@@ -481,7 +481,7 @@ namespace Chummer.Tests
                         x.SendToBack();
 #endif
                     }, TestContext.CancellationToken);
-                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get MSTest to play nice because it can't deal well with the dreaded WinForms + async combo
                     {
                         Utils.SafeSleep(TestContext.CancellationToken);
                     }
@@ -546,7 +546,7 @@ namespace Chummer.Tests
                         x.SendToBack();
 #endif
                     }, TestContext.CancellationToken);
-                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                    while (!frmTestForm.IsFinishedLoading) // Hacky, but necessary to get MSTest to play nice because it can't deal well with the dreaded WinForms + async combo
                     {
                         Utils.SafeSleep(TestContext.CancellationToken);
                     }
@@ -589,7 +589,7 @@ namespace Chummer.Tests
                                     }, TestContext.CancellationToken);
                                     while
                                         (!frmCharacterForm
-                                            .IsFinishedInitializing) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                            .IsFinishedInitializing) // Hacky, but necessary to get MSTest to play nice because it can't deal well with the dreaded WinForms + async combo
                                     {
                                         Utils.SafeSleep(TestContext.CancellationToken);
                                     }
@@ -602,7 +602,7 @@ namespace Chummer.Tests
                                         while
                                             (!blnFormClosed &&
                                              !frmCharacterForm
-                                                 .IsDisposed) // Hacky, but necessary to get xUnit to play nice because it can't deal well with the dreaded WinForms + async combo
+                                                 .IsDisposed) // Hacky, but necessary to get MSTest to play nice because it can't deal well with the dreaded WinForms + async combo
                                         {
                                             Utils.SafeSleep(TestContext.CancellationToken);
                                         }

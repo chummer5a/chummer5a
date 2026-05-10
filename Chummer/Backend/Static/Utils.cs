@@ -100,7 +100,7 @@ namespace Chummer
                 // We already created a context, but it would still be valid for us because we're still on the same thread, so we can skip the re-creation.
                 if (s_objJoinableTaskContext != null && s_intUnitTestMainThreadId == Environment.CurrentManagedThreadId)
                     return s_objJoinableTaskContext;
-                s_intUnitTestMainThreadId = Environment.CurrentManagedThreadId;
+                s_objJoinableTaskContext = null; // temporarily set the current context to null to make sure everything remains kosher with our thread-safe way of regenerating the context.
             }
             else if (!Program.IsMainThread)
                 throw new InvalidOperationException("Cannot call CreateSynchronizationContext outside of the main thread.");
@@ -114,6 +114,8 @@ namespace Chummer
                     objNewContext.Dispose();
                     return objOldContext;
                 }
+                else if (Utils.IsUnitTest) // Unit tests need to keep manual track of the main thread's ID because it can change depending on the unit test.
+                    s_intUnitTestMainThreadId = Environment.CurrentManagedThreadId;
 
                 MySynchronizationContext = SynchronizationContext.Current;
                 if (!IsRunningInVisualStudio && s_objJoinableTaskFactory != null)
