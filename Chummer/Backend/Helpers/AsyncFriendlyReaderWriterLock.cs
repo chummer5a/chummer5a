@@ -67,7 +67,7 @@ namespace Chummer
         private static void ValueChangedHandler(AsyncLocalValueChangedArgs<ValueTuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>> objArgs)
         {
             // We should never be setting the local to a value where the current helper is disposed, because disposal will always happen after a new value is set
-            if (!objArgs.ThreadContextChanged && objArgs.CurrentValue != null && objArgs.CurrentValue.Item1?.IsDisposed == true)
+            if (!objArgs.ThreadContextChanged && objArgs.CurrentValue.Item1?.IsDisposed == true)
                 Utils.BreakIfDebug();
         }
 #else
@@ -1248,7 +1248,7 @@ namespace Chummer
 #if DEBUG
                 ValueTuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
                     objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                if (objAsyncLocals.Item1 != _objNextHelper)
                 {
                     Utils.BreakIfDebug();
                 }
@@ -1374,7 +1374,7 @@ namespace Chummer
 #if DEBUG
                 ValueTuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
                     objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                if (objAsyncLocals.Item1 != _objNextHelper)
                 {
                     Utils.BreakIfDebug();
                 }
@@ -1520,7 +1520,7 @@ namespace Chummer
 #if DEBUG
                 ValueTuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
                     objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                if (objAsyncLocals.Item1 != _objNextHelper)
                 {
                     Utils.BreakIfDebug();
                 }
@@ -1647,7 +1647,7 @@ namespace Chummer
 #if DEBUG
                 ValueTuple<LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, LinkedAsyncRWLockHelper, string>
                     objAsyncLocals = _objReaderWriterLock._objAsyncLocalCurrentsContainer.Value;
-                if (objAsyncLocals != null && objAsyncLocals.Item1 != _objNextHelper)
+                if (objAsyncLocals.Item1 != _objNextHelper)
                 {
                     Utils.BreakIfDebug();
                 }
