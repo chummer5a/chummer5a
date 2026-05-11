@@ -108,7 +108,7 @@ namespace SevenZip.Compression.LZ
                     int size = 0 - _bufferOffset + _blockSize - _streamPos;
                     if (size == 0)
                         return;
-                    int numReadBytes = await _stream.ReadAsync(_bufferBase, _bufferOffset + _streamPos, size, token).ConfigureAwait(false);
+                    int numReadBytes = await _stream.ReadAsync(_bufferBase.AsMemory(_bufferOffset + _streamPos, size), token).ConfigureAwait(false);
                     if (numReadBytes == 0)
                     {
                         _posLimit = _streamPos;
@@ -133,15 +133,12 @@ namespace SevenZip.Compression.LZ
         [CLSCompliant(false)]
         public void Create(int keepSizeBefore, int keepSizeAfter, int keepSizeReserve)
         {
-            if (keepSizeBefore > 2147483591) // System.Array.MaxByteArrayLength
-                throw new ArgumentOutOfRangeException(nameof(keepSizeBefore));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(keepSizeBefore, 2147483591, nameof(keepSizeBefore)); // System.Array.MaxByteArrayLength
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(keepSizeBefore + keepSizeAfter, 2147483591, nameof(keepSizeAfter)); // System.Array.MaxByteArrayLength
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(keepSizeBefore + keepSizeAfter + keepSizeReserve, 2147483591, nameof(keepSizeReserve)); // System.Array.MaxByteArrayLength
             _keepSizeBefore = keepSizeBefore;
-            if (keepSizeBefore + keepSizeAfter > 2147483591) // System.Array.MaxByteArrayLength
-                throw new ArgumentOutOfRangeException(nameof(keepSizeAfter));
             _keepSizeAfter = keepSizeAfter;
             int blockSize = keepSizeBefore + keepSizeAfter + keepSizeReserve;
-            if (blockSize > 2147483591) // System.Array.MaxByteArrayLength
-                throw new ArgumentOutOfRangeException(nameof(keepSizeReserve));
             if (_bufferBase == null || _blockSize != blockSize)
             {
                 Free();

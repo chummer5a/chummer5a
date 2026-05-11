@@ -3008,20 +3008,6 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Syntactic sugar for a version of Contains(string) for strings based on a specified StringComparison
-        /// </summary>
-        /// <param name="strHaystack">Input string to search.</param>
-        /// <param name="strNeedle">String for which to look.</param>
-        /// <param name="eComparison">Comparison to use.</param>
-        [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool Contains(this string strHaystack, string strNeedle, StringComparison eComparison)
-        {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
-            return strHaystack.IndexOf(strNeedle, eComparison) != -1;
-        }
-
-        /// <summary>
         /// Syntactic sugar for a version of Contains(string) for strings from a specific starting index
         /// </summary>
         /// <param name="strHaystack">Input string to search.</param>
@@ -5262,7 +5248,7 @@ namespace Chummer
         /// </summary>
         public static bool HasAnyXmlInvalidUnicodeChars(this string strInput)
         {
-            return !string.IsNullOrEmpty(strInput) && strInput.IndexOfAny(s_achrXmlInvalidUnicodeChars) >= 0;
+            return !string.IsNullOrEmpty(strInput) && strInput.AsSpan().IndexOfAny(s_achrXmlInvalidUnicodeCharsSearchValues) >= 0;
         }
 
         /// <summary>
@@ -5730,6 +5716,7 @@ namespace Chummer
             '\u001E',
             '\u001F'
         };
+        private static readonly SearchValues<char> s_achrXmlInvalidUnicodeCharsSearchValues = SearchValues.Create("\0\u0001\u0002\u0003\u0004\u0005\u0006\a\b\v\f\u000e\u000f\u0010\u0011\u0012\u0013\u0014\u0015\u0016\u0017\u0018\u0019\u001a\u001b\u001c\u001d\u001e\u001f");
 
         // Order is important so that we replace composites before chars
         private static readonly string[] s_astrLineEndingStrings = new[] { "\r\n", "\n\r", "\n", "\r" };

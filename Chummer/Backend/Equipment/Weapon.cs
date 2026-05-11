@@ -5325,9 +5325,8 @@ namespace Chummer.Backend.Equipment
                                 if (decAmmoBonusPercent != 1.0m)
                                     decAmmo *= decAmmoBonusPercent;
 
-                                strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
-                                              + strAmmo.Substring(strAmmo.IndexOf('('),
-                                                  strAmmo.Length - strAmmo.IndexOf('('));
+                                strThisAmmo = string.Concat(decAmmo.StandardRound().ToString(objCulture),
+                                                strAmmo.AsSpan(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('(')));
                             }
                         }
                         else

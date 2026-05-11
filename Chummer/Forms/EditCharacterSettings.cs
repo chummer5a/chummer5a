@@ -659,7 +659,7 @@ namespace Chummer
                 }
                 else
                 {
-                    if (int.TryParse(strLimbCount.Substring(0, intSeparatorIndex), NumberStyles.Any,
+                    if (int.TryParse(strLimbCount.AsSpan(0, intSeparatorIndex), NumberStyles.Any,
                                      GlobalSettings.InvariantCultureInfo, out int intLimbCount))
                     {
                         await _objCharacterSettings.SetLimbCountAsync(intLimbCount).ConfigureAwait(false);
@@ -1290,8 +1290,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strGuid))
                             {
                                 // For entries without GUID, use the key itself
-                                if (!dicDeduplicatedByGuid.ContainsKey(kvpKeyAndEnabled.Key))
-                                    dicDeduplicatedByGuid.Add(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
+                                dicDeduplicatedByGuid.TryAdd(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
                             }
                             else
                             {
@@ -1437,8 +1436,7 @@ namespace Chummer
                             if (string.IsNullOrEmpty(strGuid))
                             {
                                 // For entries without GUID, use the key itself
-                                if (!dicDeduplicatedByGuid.ContainsKey(kvpKeyAndEnabled.Key))
-                                    dicDeduplicatedByGuid.Add(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
+                                dicDeduplicatedByGuid.TryAdd(kvpKeyAndEnabled.Key, kvpKeyAndEnabled);
                             }
                             else
                             {

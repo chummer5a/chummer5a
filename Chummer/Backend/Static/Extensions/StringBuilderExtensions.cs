@@ -76,7 +76,7 @@ namespace Chummer
                     if (strOriginal.Contains(strOldValue))
                         sbdInput.Replace(strOldValue, funcNewValueFactory.Invoke());
                 }
-                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strOriginal.Contains(strOldValue, eStringComparison))
                 {
                     string strOldStringBuilderValue = sbdInput.ToString();
                     sbdInput.Clear();
@@ -138,7 +138,7 @@ namespace Chummer
                         sbdInput.Replace(strOldValue, strFactoryResult);
                     }
                 }
-                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strOriginal.Contains(strOldValue, eStringComparison))
                 {
                     token.ThrowIfCancellationRequested();
                     string strFactoryResult = string.Empty;
@@ -210,7 +210,7 @@ namespace Chummer
                         sbdInput.Replace(strOldValue, await tskReplaceTask.ConfigureAwait(false));
                     }
                 }
-                else if (strOriginal.IndexOf(strOldValue, eStringComparison) != -1)
+                else if (strOriginal.Contains(strOldValue, eStringComparison))
                 {
                     token.ThrowIfCancellationRequested();
                     Task<string> tskReplaceTask = funcNewValueFactory.Invoke();

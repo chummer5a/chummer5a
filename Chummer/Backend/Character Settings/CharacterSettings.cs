@@ -3628,7 +3628,7 @@ namespace Chummer
                 // Format in which nuyen values are displayed
                 objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
-                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && _strWeightFormat.IndexOf('.') == -1)
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && !_strWeightFormat.Contains('.'))
                 {
                     _strWeightFormat += ".###";
                 }
@@ -4490,7 +4490,7 @@ namespace Chummer
                 // Format in which nuyen values are displayed
                 objXmlNode.TryGetStringFieldQuickly("nuyenformat", ref _strNuyenFormat);
                 // Format in which weight values are displayed
-                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && _strWeightFormat.IndexOf('.') == -1)
+                if (objXmlNode.TryGetStringFieldQuickly("weightformat", ref _strWeightFormat) && !_strWeightFormat.Contains('.'))
                 {
                     _strWeightFormat += ".###";
                 }

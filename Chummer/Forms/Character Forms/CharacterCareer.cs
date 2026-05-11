@@ -22924,8 +22924,7 @@ namespace Chummer
                                     string strKey = strLoop;
                                     if (strSelectedLocation != strLoopLocation)
                                         strKey += strLoopLocation;
-                                    if (!dicDisallowedMounts.ContainsKey(strKey))
-                                        dicDisallowedMounts.Add(strKey, int.MaxValue);
+                                    dicDisallowedMounts.TryAdd(strKey, int.MaxValue);
                                 }
 
                                 strLoopHasModularMount = strSelectedLocation != strLoopLocation

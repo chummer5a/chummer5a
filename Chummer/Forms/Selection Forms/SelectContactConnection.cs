@@ -283,10 +283,10 @@ namespace Chummer
             if (_blnSkipUpdate)
                 return;
 
-            int.TryParse(cboMembership.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMembership);
-            int.TryParse(cboAreaOfInfluence.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intAreaOfInfluence);
-            int.TryParse(cboMagicalResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMagicalResources);
-            int.TryParse(cboMatrixResources.Text.Substring(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMatrixResources);
+            int.TryParse(cboMembership.Text.AsSpan(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMembership);
+            int.TryParse(cboAreaOfInfluence.Text.AsSpan(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intAreaOfInfluence);
+            int.TryParse(cboMagicalResources.Text.AsSpan(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMagicalResources);
+            int.TryParse(cboMatrixResources.Text.AsSpan(0, 2), System.Globalization.NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out _intMatrixResources);
             _strGroupName = txtGroupName.Text;
             _blnFree = chkFreeContact.Checked;
 

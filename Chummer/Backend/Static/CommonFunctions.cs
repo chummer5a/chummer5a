@@ -55,8 +55,7 @@ namespace Chummer
 
         private static readonly ReadOnlyCollection<char> s_LstInvariantXPathLegalChars = Array.AsReadOnly("1234567890+-*abcdefghilmnorstuvw()[]{}!=<>&;,. ".ToCharArray());
 
-        // Treat as ReadOnlyCollection please, it's only not that because string.IndexOfAny() cannot use a ReadOnlyCollection as its argument
-        private static readonly char[] s_LstCharsMarkingNeedOfProcessing = "abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙".ToCharArray();
+        private static readonly SearchValues<char> s_LstCharsMarkingNeedOfProcessing = SearchValues.Create("abcdfghijklmnopqrstuvwxyzABCDFGHIJKLMNOPQRSTUVWXYZ()[]{}!=<>&;+*/\\÷×∙");
 
         /// <summary>
         /// Check if a string needs to be processed by an invariant XPath processor to be converted into a number.
@@ -69,7 +68,7 @@ namespace Chummer
             decExpressionAsNumber = 0;
             if (string.IsNullOrWhiteSpace(strExpression))
                 return false;
-            if (strExpression.IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1)
+            if (strExpression.AsSpan().IndexOfAny(s_LstCharsMarkingNeedOfProcessing) != -1)
                 return true;
             string strTrimmedExpression = strExpression.Trim();
             // If there is a minus sign anywhere except at the very front of the string with a digit following it, return true
@@ -93,8 +92,8 @@ namespace Chummer
                 return false;
             if (blnIncludeLetters)
                 // We do not want to fire on lowercase letters because XPath functions are all-lowercase, while every single value we use for replacements has at least one uppercase letter
-                return strExpression.IndexOfAny(s_achrUppercaseLatinCharsAndOpenCurlyBracket) >= 0;
-            return strExpression.IndexOf('{') >= 0;
+                return strExpression.AsSpan().IndexOfAny(s_achrUppercaseLatinCharsAndOpenCurlyBracketSearchValues) >= 0;
+            return strExpression.Contains('{');
         }
 
         /// <summary>
@@ -128,6 +127,7 @@ namespace Chummer
         };
 
         private static readonly HashSet<char> s_setUppercaseLatinCharsAndOpenCurlyBracket = new HashSet<char>(s_achrUppercaseLatinCharsAndOpenCurlyBracket);
+        private static readonly SearchValues<char> s_achrUppercaseLatinCharsAndOpenCurlyBracketSearchValues = SearchValues.Create("{ABCDEFGHIJKLMNOPQRSTUVWXYZ");
 
         /// <summary>
         /// Evaluate a string consisting of an XPath Expression that could be evaluated on an empty document.

@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Buffers;
 using System.IO;
 using System.Threading;
@@ -159,7 +160,7 @@ namespace SevenZip.Compression.RangeCoder
                             byte paddingValue = (byte)(0xFF + shiftedLow);
                             for (int i = 1; i < _cacheSize; ++i)
                                 data[i] = paddingValue;
-                            await Stream.WriteAsync(data, 0, _cacheSize, token).ConfigureAwait(false);
+                            await Stream.WriteAsync(data.AsMemory(0, _cacheSize), token).ConfigureAwait(false);
                         }
                     }
                     else
@@ -303,7 +304,7 @@ namespace SevenZip.Compression.RangeCoder
             Range = 0xFFFFFFFF;
             using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, 5, out byte[] achrBuffer))
             {
-                _ = await Stream.ReadAsync(achrBuffer, 0, 5, token).ConfigureAwait(false);
+                _ = await Stream.ReadAsync(achrBuffer.AsMemory(0, 5), token).ConfigureAwait(false);
                 unchecked
                 {
                     unsafe
@@ -365,7 +366,7 @@ namespace SevenZip.Compression.RangeCoder
                     return;
                 using (new Chummer.FetchSafelyFromArrayPool<byte>(ArrayPool<byte>.Shared, intNumReads, out byte[] achrBuffer))
                 {
-                    _ = await Stream.ReadAsync(achrBuffer, 0, intNumReads, token).ConfigureAwait(false);
+                    _ = await Stream.ReadAsync(achrBuffer.AsMemory(0, intNumReads), token).ConfigureAwait(false);
                     int i = 0;
                     unsafe
                     {

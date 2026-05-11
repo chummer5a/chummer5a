@@ -100,11 +100,11 @@ namespace SevenZip.Buffer
             {
                 int intToWrite1 = (int)(m_Pos / 2);
                 int intToWrite2 = intToWrite1 + (int)(m_Pos & 1);
-                await m_Stream.WriteAsync(m_Buffer, 0, intToWrite1, token).ConfigureAwait(false);
-                await m_Stream.WriteAsync(m_Buffer, intToWrite1, intToWrite2, token).ConfigureAwait(false);
+                await m_Stream.WriteAsync(m_Buffer.AsMemory(0, intToWrite1), token).ConfigureAwait(false);
+                await m_Stream.WriteAsync(m_Buffer.AsMemory(intToWrite1, intToWrite2), token).ConfigureAwait(false);
             }
             else
-                await m_Stream.WriteAsync(m_Buffer, 0, (int)m_Pos, token).ConfigureAwait(false);
+                await m_Stream.WriteAsync(m_Buffer.AsMemory(0, (int)m_Pos), token).ConfigureAwait(false);
             m_Pos = 0;
         }
 

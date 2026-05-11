@@ -17235,17 +17235,15 @@ namespace Chummer
                                     string strKey = strLoop;
                                     if (strSelectedLocation != strLoopLocation)
                                         strKey += strLoopLocation;
-                                    if (!dicDisallowedMounts.ContainsKey(strKey))
-                                        dicDisallowedMounts.Add(strKey, int.MaxValue);
+                                    dicDisallowedMounts.TryAdd(strKey, int.MaxValue);
                                 }
 
                                 strLoopHasModularMount = strSelectedLocation != strLoopLocation
                                     ? await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) +
                                       strLoopLocation
                                     : await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strLoopHasModularMount)
-                                    && !dicHasMounts.ContainsKey(strLoopHasModularMount))
-                                    dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                    dicHasMounts.TryAdd(strLoopHasModularMount, int.MaxValue);
                             }
                         }
                         else

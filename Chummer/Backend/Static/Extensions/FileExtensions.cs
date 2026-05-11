@@ -367,7 +367,7 @@ namespace Chummer
                 for (int intOffset = 0; intCount > 0; intCount -= intLoop)
                 {
                     token.ThrowIfCancellationRequested();
-                    intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                    intLoop = await objFileStream.ReadAsync(achrReturn.AsMemory(intOffset, intCount), token).ConfigureAwait(false);
                     if (intLoop == 0)
                         throw new EndOfStreamException();
                     intOffset += intLoop;
@@ -393,7 +393,7 @@ namespace Chummer
             using (FileStream objFileStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
             {
                 token.ThrowIfCancellationRequested();
-                await objFileStream.WriteAsync(achrBytes, 0, achrBytes.Length, token).ConfigureAwait(false);
+                await objFileStream.WriteAsync(achrBytes, token).ConfigureAwait(false);
             }
         }
 
@@ -455,7 +455,7 @@ namespace Chummer
                     for (int intOffset = 0; intCount > 0; intCount -= intLoop)
                     {
                         token.ThrowIfCancellationRequested();
-                        intLoop = await objFileStream.ReadAsync(achrReturn, intOffset, intCount, token).ConfigureAwait(false);
+                        intLoop = await objFileStream.ReadAsync(achrReturn.AsMemory(intOffset, intCount), token).ConfigureAwait(false);
                         if (intLoop == 0)
                             throw new EndOfStreamException();
                         intOffset += intLoop;

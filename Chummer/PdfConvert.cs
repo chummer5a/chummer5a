@@ -384,7 +384,7 @@ namespace Codaxy.WkHtmlToPdf
                                             if (blnSync)
                                             {
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                stream.BaseStream.Write(buffer, 0, buffer.Length);
+                                                stream.BaseStream.Write(buffer);
                                                 // ReSharper disable once MethodHasAsyncOverload
                                                 stream.WriteLine();
                                             }
@@ -392,8 +392,7 @@ namespace Codaxy.WkHtmlToPdf
                                             {
                                                 try
                                                 {
-                                                    await stream.BaseStream
-                                                                .WriteAsync(buffer, 0, buffer.Length, objToken)
+                                                    await stream.BaseStream.WriteAsync(buffer, objToken)
                                                                 .ConfigureAwait(false);
                                                     await stream.WriteLineAsync().ConfigureAwait(false);
                                                 }
@@ -473,15 +472,15 @@ namespace Codaxy.WkHtmlToPdf
                             if (blnSync)
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                while ((read = fs.Read(buffer, 0, buffer.Length)) > 0)
+                                while ((read = fs.Read(buffer)) > 0)
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     woutput.OutputStream.Write(buffer, 0, read);
                             }
                             else
                             {
-                                while ((read = await fs.ReadAsync(buffer, 0, buffer.Length, token)
+                                while ((read = await fs.ReadAsync(buffer, token)
                                                        .ConfigureAwait(false)) > 0)
-                                    await woutput.OutputStream.WriteAsync(buffer, 0, read, token).ConfigureAwait(false);
+                                    await woutput.OutputStream.WriteAsync(buffer.AsMemory(0, read), token).ConfigureAwait(false);
                             }
                         }
                     }

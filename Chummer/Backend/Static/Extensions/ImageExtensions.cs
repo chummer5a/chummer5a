@@ -365,7 +365,7 @@ namespace Chummer
                 using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, null, intArrayLength))
                 {
                     token.ThrowIfCancellationRequested();
-                    await objStream.WriteAsync(achrBuffer, 0, intArrayLength, token).ConfigureAwait(false);
+                    await objStream.WriteAsync(achrBuffer.AsMemory(0, intArrayLength), token).ConfigureAwait(false);
                     token.ThrowIfCancellationRequested();
                     return Image.FromStream(objStream, true);
                 }

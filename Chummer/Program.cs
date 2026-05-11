@@ -1643,7 +1643,7 @@ namespace Chummer
                 frmReturn.MyForm.Reset(intCount);
             frmReturn.MyForm.DoThreadSafe(x =>
             {
-                x.Closed += (sender, args) =>
+                x.FormClosed += (sender, args) =>
                 {
                     s_setLoadingBars.Remove(x);
                     Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);
@@ -1672,7 +1672,7 @@ namespace Chummer
                 await frmReturn.MyForm.ResetAsync(intCount, token).ConfigureAwait(false);
             await frmReturn.MyForm.DoThreadSafeAsync(x =>
             {
-                x.Closed += (sender, args) =>
+                x.FormClosed += (sender, args) =>
                 {
                     s_setLoadingBars.Remove(x);
                     Interlocked.CompareExchange(ref s_frmTopMostLoadingBar, null, x);

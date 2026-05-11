@@ -941,7 +941,7 @@ namespace Chummer
 
                 using (RecyclableMemoryStream objStream = new RecyclableMemoryStream(Utils.MemoryStreamManager, null, bytes.Length))
                 {
-                    await objStream.WriteAsync(bytes, 0, bytes.Length).ConfigureAwait(false);
+                    await objStream.WriteAsync(bytes,).ConfigureAwait(false);
                     using (StreamReader reader = new StreamReader(objStream, Encoding.UTF8, true))
                     {
                         string response = await reader.ReadToEndAsync().ConfigureAwait(false);

@@ -1818,7 +1818,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                    if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.Substring(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
+                    if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.AsSpan(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
                         return decTemp * objChildGear.Quantity;
                     return 0;
                 });
@@ -1855,7 +1855,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 // Only items that contain square brackets should consume Capacity. Everything else is treated as [0].
-                if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.Substring(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
+                if (strCapacity.StartsWith('[') && decimal.TryParse(strCapacity.AsSpan(1, strCapacity.Length - 2), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decTemp))
                     return decTemp * objChildGear.Quantity;
                 return 0;
             }, token: token).ConfigureAwait(false);

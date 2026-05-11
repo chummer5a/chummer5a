@@ -87,7 +87,7 @@ namespace SevenZip.Buffer
                 aNumProcessedBytes = (uint)await tskRead1.ConfigureAwait(false) + (uint)await tskRead2.ConfigureAwait(false);
             }
             else
-                aNumProcessedBytes = (uint)await m_Stream.ReadAsync(m_Buffer, 0, (int)m_BufferSize, token).ConfigureAwait(false);
+                aNumProcessedBytes = (uint)await m_Stream.ReadAsync(m_Buffer.AsMemory(0, (int)m_BufferSize), token).ConfigureAwait(false);
             m_Pos = 0;
             m_Limit = aNumProcessedBytes;
             m_StreamWasExhausted = aNumProcessedBytes == 0;

@@ -126,8 +126,7 @@ namespace Chummer
             }
 
             foreach (string strPriority in _lstPriorities)
-                if (!_dicSumtoTenValues.ContainsKey(strPriority))
-                    _dicSumtoTenValues.Add(strPriority, 0);
+                _dicSumtoTenValues.TryAdd(strPriority, 0);
         }
 
         private async Task<string> GetSelectedPriorityAsync(ComboBox comboBox, CancellationToken token)

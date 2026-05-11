@@ -348,7 +348,7 @@ namespace Chummer
                     return xmlUserMacroNode.Value;
                 }
 
-                return "(Unknown Macro $DOLLAR" + innerText.Substring(1) + ")";
+                return string.Concat("(Unknown Macro $DOLLAR", innerText.AsSpan(1), ")");
             }
             finally
             {

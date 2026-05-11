@@ -217,17 +217,14 @@ namespace SevenZip.Compression.LZMA
 
         private void SetLiteralProperties(int lp, int lc)
         {
-            if (lp > 8)
-                throw new ArgumentOutOfRangeException(nameof(lp));
-            if (lc > 8)
-                throw new ArgumentOutOfRangeException(nameof(lc));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(lp, 8, nameof(lp));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(lc, 8, nameof(lc));
             m_LiteralDecoder.Create(lp, lc);
         }
 
         private void SetPosBitsProperties(int pb)
         {
-            if (pb > Base.kNumPosStatesBitsMax)
-                throw new ArgumentOutOfRangeException(nameof(pb));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(pb, Base.kNumPosStatesBitsMax, nameof(pb));
             unchecked
             {
                 uint numPosStates = (uint)1 << pb;
@@ -501,8 +498,7 @@ namespace SevenZip.Compression.LZMA
 
         public void SetDecoderProperties(byte[] properties)
         {
-            if (properties.Length < 5)
-                throw new ArgumentOutOfRangeException(nameof(properties));
+            ArgumentOutOfRangeException.ThrowIfLessThan(properties.Length, 5, nameof(properties));
             int remainder = MathExtensions.DivRem(properties[0], 9, out int lc);
             int pb = remainder.DivRem(5, out int lp);
             if (pb > Base.kNumPosStatesBitsMax)
