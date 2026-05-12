@@ -668,9 +668,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     using (CustomActivity opFrmChummerMain = Timekeeper.StartSyncron(
                                "frmChummerMain_Load", null, CustomActivity.OperationType.DependencyOperation,
@@ -688,7 +686,7 @@ namespace Chummer
                             }
 
                             NativeMethods.ChangeFilterStruct changeFilter = default;
-                            changeFilter.size = (uint) Marshal.SizeOf(changeFilter);
+                            changeFilter.size = (uint)Marshal.SizeOf(changeFilter);
                             changeFilter.info = 0;
                             if (NativeMethods.ChangeWindowMessageFilterEx(
                                     await this.DoThreadSafeFuncAsync(x => x.Handle, token: _objGenericToken)
@@ -1069,10 +1067,6 @@ namespace Chummer
                     }
 
                     IsFinishedLoading = true;
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1540,17 +1534,12 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
                            = await ThreadSafeForm<EditGlobalSettings>.GetAsync(
                                () => new EditGlobalSettings(), _objGenericToken).ConfigureAwait(false))
                         await frmOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1563,8 +1552,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     Character objSelectedCharacter = (tabForms.SelectedTab?.Tag as IHasCharacterObject)?.CharacterObject;
                     CharacterSettings objSeletedSettings = objSelectedCharacter != null ? await objSelectedCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false) : null;
@@ -1572,10 +1560,6 @@ namespace Chummer
                            await ThreadSafeForm<EditCharacterSettings>.GetAsync(() =>
                                new EditCharacterSettings(objSeletedSettings), _objGenericToken).ConfigureAwait(false))
                         await frmCharacterOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1933,15 +1917,14 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
-                    Character objCharacter = new Character();
-                    try
+                    // Fine to use using here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                    await using (Character objCharacter = new Character())
                     {
                         using (ThreadSafeForm<SelectBuildMethod> frmPickSetting
-                               = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
-                                   () => new SelectBuildMethod(objCharacter), _objGenericToken).ConfigureAwait(false))
+                                = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
+                                    () => new SelectBuildMethod(objCharacter), _objGenericToken).ConfigureAwait(false))
                         {
                             if (await frmPickSetting.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                                 return;
@@ -1954,8 +1937,8 @@ namespace Chummer
 
                         // Show the Metatype selection window.
                         using (ThreadSafeForm<SelectMetatypeKarma> frmSelectMetatype =
-                               await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
-                                   new SelectMetatypeKarma(objCharacter), _objGenericToken).ConfigureAwait(false))
+                                await ThreadSafeForm<SelectMetatypeKarma>.GetAsync(() =>
+                                    new SelectMetatypeKarma(objCharacter), _objGenericToken).ConfigureAwait(false))
                         {
                             if (await frmSelectMetatype.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false) == DialogResult.Cancel)
                                 return;
@@ -1964,15 +1947,6 @@ namespace Chummer
                         await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
                         await OpenCharacter(objCharacter, false, _objGenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCharacter
-                              .DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1988,18 +1962,13 @@ namespace Chummer
                 string strFileName = await mnuProcessFile.DoThreadSafeFuncAsync(() => ((ToolStripMenuItem)sender).Tag, token: _objGenericToken).ConfigureAwait(false) as string;
                 if (string.IsNullOrEmpty(strFileName))
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     Character objCharacter;
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
                            = await Program.CreateAndShowProgressBarAsync(strFileName, Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                         objCharacter = await Program.LoadCharacterAsync(strFileName, frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken).ConfigureAwait(false);
                     await OpenCharacter(objCharacter, token: _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2273,8 +2242,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (objCharacter == null)
                         return false;
@@ -2303,10 +2271,6 @@ namespace Chummer
 
                     return true;
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -2328,8 +2292,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (objCharacter == null)
                         return false;
@@ -2372,10 +2335,6 @@ namespace Chummer
                         return true;
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -2397,8 +2356,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (objCharacter == null)
                         return false;
@@ -2425,10 +2383,6 @@ namespace Chummer
                         x.BringToFront();
                     }, token).ConfigureAwait(false);
                     return true;
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -2707,11 +2661,10 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     // Open each file that has been dropped into the window.
-                    string[] s = (string[]) e.Data.GetData(DataFormats.FileDrop, false);
+                    string[] s = (string[])e.Data.GetData(DataFormats.FileDrop, false);
                     if (s.Length == 0)
                         return;
                     Character[] lstCharacters = new Character[s.Length];
@@ -2730,10 +2683,6 @@ namespace Chummer
                     }
 
                     await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -3216,11 +3165,10 @@ namespace Chummer
         {
             try
             {
-                Character objCharacter = new Character();
-                try
+                // Fine to use using here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
+                await using (Character objCharacter = new Character())
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                     {
                         // Show the BP selection window.
                         using (ThreadSafeForm<SelectBuildMethod> frmBP
@@ -3255,13 +3203,8 @@ namespace Chummer
 
                         await Program.OpenCharacters.AddAsync(objCharacter, _objGenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
 
-                    objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                     {
                         await this.DoThreadSafeAsync(x =>
                         {
@@ -3296,14 +3239,6 @@ namespace Chummer
                             }
                         }, token: _objGenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCharacter.DisposeAsync().ConfigureAwait(false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
             }
             catch (OperationCanceledException)
@@ -3321,8 +3256,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false)
                         != DialogResult.OK)
@@ -3363,10 +3297,6 @@ namespace Chummer
 
                     await OpenCharacterList(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -3404,8 +3334,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (lstCharacters == null)
                         return;
@@ -3471,7 +3400,7 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(y =>
                                 {
                                     CharacterShared frmNewCharacter = objCharacter.Created
-                                        ? (CharacterShared) new CharacterCareer(objCharacter)
+                                        ? (CharacterShared)new CharacterCareer(objCharacter)
                                         : new CharacterCreate(objCharacter);
                                     frmNewCharacter.MdiParent = y;
                                     bool blnMaximizePreShow = y.MdiChildren.Length <= 1 && (y.MdiChildren.Length == 0
@@ -3520,10 +3449,6 @@ namespace Chummer
                         _objFormOpeningSemaphore.Release();
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -3537,8 +3462,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false)
                         != DialogResult.OK)
@@ -3579,10 +3503,6 @@ namespace Chummer
 
                     await OpenCharacterListForPrinting(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -3617,8 +3537,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (lstCharacters == null)
                         return;
@@ -3760,10 +3679,6 @@ namespace Chummer
                         _objFormOpeningSemaphore.Release();
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -3777,8 +3692,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x), token: _objGenericToken).ConfigureAwait(false)
                         != DialogResult.OK)
@@ -3819,10 +3733,6 @@ namespace Chummer
 
                     await OpenCharacterListForExport(lstCharacters, token: _objGenericToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -3857,8 +3767,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (lstCharacters == null)
                         return;
@@ -3974,10 +3883,6 @@ namespace Chummer
                         _objFormOpeningSemaphore.Release();
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -4000,9 +3905,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     List<Character> lstCharacters = new List<Character>(setCharactersToOpen.Count);
                     using (ThreadSafeForm<LoadingBar> frmLoadingBar
@@ -4016,10 +3919,6 @@ namespace Chummer
                     }
 
                     await OpenCharacterList(lstCharacters, token: token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -4055,12 +3954,10 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker = await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await GlobalSettings.FavoriteCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    IAsyncDisposable objLocker2 = await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await GlobalSettings.MostRecentlyUsedCharacters.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         int intFavoriteCharactersCount = await GlobalSettings.FavoriteCharacters.GetCountAsync(token).ConfigureAwait(false);
@@ -4238,14 +4135,6 @@ namespace Chummer
                             await menuStrip.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -4323,14 +4212,9 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, _objGenericToken).ConfigureAwait(false))
                 {
                     await GlobalSettings.MostRecentlyUsedCharacters.ClearAsync(_objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

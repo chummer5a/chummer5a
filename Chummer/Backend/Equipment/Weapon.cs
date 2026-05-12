@@ -2355,9 +2355,7 @@ namespace Chummer.Backend.Equipment
             }
 
             // <weapon>
-            XmlElementWriteHelper objBaseElement =
-                await objWriter.StartElementAsync("weapon", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("weapon", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -2558,19 +2556,13 @@ namespace Chummer.Backend.Equipment
                 if (await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // <accessories>
-                    XmlElementWriteHelper objAccessoriesElement =
-                        await objWriter.StartElementAsync("accessories", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("accessories", token).ConfigureAwait(false))
                     {
                         await WeaponAccessories.ForEachAsync(
                                 x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token)
                             .ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </accessories>
-                        await objAccessoriesElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </accessories>
                 }
 
                 Dictionary<string, string> dicRanges =
@@ -2581,9 +2573,7 @@ namespace Chummer.Backend.Equipment
                 bool blnRangeAmmoChange = !CommonFunctions.DictionaryValuesEqual(dicRanges, dicRangesNoAmmo);
 
                 // <ranges>
-                XmlElementWriteHelper objRangesElement =
-                    await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false))
                 {
                     await objWriter.WriteElementStringAsync("name",
                             await DisplayRangeAsync(strLanguageToPrint, blnRangeAmmoChange, token).ConfigureAwait(false), token)
@@ -2597,16 +2587,10 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("extreme", dicRanges["extreme"], token)
                         .ConfigureAwait(false);
                 }
-                finally
-                {
-                    // </ranges>
-                    await objRangesElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </ranges>
 
                 // <alternateranges>
-                XmlElementWriteHelper objAlternateRangesElement =
-                    await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false))
                 {
                     await objWriter.WriteElementStringAsync("name",
                             await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
@@ -2623,19 +2607,13 @@ namespace Chummer.Backend.Equipment
                     await objWriter.WriteElementStringAsync("extreme", dicRanges["alternateextreme"], token)
                         .ConfigureAwait(false);
                 }
-                finally
-                {
-                    // </alternateranges>
-                    await objAlternateRangesElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </alternateranges>
 
                 // Only include the unloaded range numbers if the dictionary values differ
                 if (blnRangeAmmoChange)
                 {
                     // <ranges>
-                    XmlElementWriteHelper objRangesNoAmmoElement =
-                    await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("ranges", token).ConfigureAwait(false))
                     {
                         await objWriter.WriteElementStringAsync("name",
                                 await DisplayRangeAsync(strLanguageToPrint, false, token).ConfigureAwait(false), token)
@@ -2652,16 +2630,10 @@ namespace Chummer.Backend.Equipment
                         await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["extreme"], token)
                             .ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </ranges>
-                        await objRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </ranges>
 
                     // <alternateranges>
-                    XmlElementWriteHelper objAlternateRangesNoAmmoElement =
-                        await objWriter.StartElementAsync("alternateranges", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("alternateranges", token))
                     {
                         await objWriter.WriteElementStringAsync("name",
                                 await DisplayAlternateRangeAsync(strLanguageToPrint, token).ConfigureAwait(false), token)
@@ -2678,28 +2650,18 @@ namespace Chummer.Backend.Equipment
                         await objWriter.WriteElementStringAsync("extreme", dicRangesNoAmmo["alternateextreme"], token)
                             .ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </alternateranges>
-                        await objAlternateRangesNoAmmoElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </alternateranges>
                 }
 
                 await Children.ForEachAsync(async objUnderbarrel =>
                 {
                     // <underbarrel>
-                    XmlElementWriteHelper objUnderbarrelElement =
-                        await objWriter.StartElementAsync("underbarrel", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("underbarrel", token).ConfigureAwait(false))
                     {
                         await objUnderbarrel.Print(objWriter, objCulture, strLanguageToPrint, token: token)
                             .ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </underbarrel>
-                        await objUnderbarrelElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </underbarrel>
                 }, token).ConfigureAwait(false);
 
                 // Currently loaded Ammo.
@@ -2715,9 +2677,7 @@ namespace Chummer.Backend.Equipment
                         .ConfigureAwait(false), token).ConfigureAwait(false);
 
                 // <clips>
-                XmlElementWriteHelper objClipsElement =
-                    await objWriter.StartElementAsync("clips", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("clips", token).ConfigureAwait(false))
                 {
                     if (RequireAmmo)
                     {
@@ -2732,11 +2692,7 @@ namespace Chummer.Backend.Equipment
                             .ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    // </clips>
-                    await objClipsElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </clips>
 
                 await objWriter.WriteElementStringAsync("dicepool",
                         (await GetDicePoolAsync(token: token).ConfigureAwait(false)).ToString(objCulture), token)
@@ -2758,11 +2714,7 @@ namespace Chummer.Backend.Equipment
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </weapon>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </weapon>
         }
 
         /// <summary>
@@ -5336,9 +5288,8 @@ namespace Chummer.Backend.Equipment
                                 decAmmo += (decAmmo * decAmmoBonus) / 100.0m;
                             if (decAmmoBonusPercent != 1.0m)
                                 decAmmo *= decAmmoBonusPercent;
-                            strThisAmmo = decAmmo.StandardRound().ToString(objCulture)
-                                          + strAmmo.Substring(strAmmo.IndexOf('('),
-                                              strAmmo.Length - strAmmo.IndexOf('('));
+                            strThisAmmo = string.Concat(decAmmo.StandardRound().ToString(objCulture),
+                                strAmmo.AsSpan(strAmmo.IndexOf('('), strAmmo.Length - strAmmo.IndexOf('(')));
                         }
 
                         if (!string.IsNullOrEmpty(strPrepend))
@@ -12391,9 +12342,7 @@ namespace Chummer.Backend.Equipment
                 if (objInternalClip == null)
                 {
                     await RecreateInternalClipAsync(token).ConfigureAwait(false);
-                    objInternalClip = GetClip(ActiveAmmoSlot);
-                    if (objInternalClip == null)
-                        throw new InvalidOperationException(nameof(objInternalClip));
+                    objInternalClip = GetClip(ActiveAmmoSlot) ?? throw new InvalidOperationException(nameof(objInternalClip));
                 }
 
                 int intCurrentAmmoCount = objInternalClip.Ammo;
@@ -14220,8 +14169,7 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
@@ -14237,10 +14185,6 @@ namespace Chummer.Backend.Equipment
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return false;

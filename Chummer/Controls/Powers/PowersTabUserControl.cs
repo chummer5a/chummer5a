@@ -95,14 +95,9 @@ namespace Chummer.UI.Powers
         {
             if (_objCharacter != null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false))
             {
                 await RealLoad(MyToken, MyToken).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -137,8 +132,7 @@ namespace Chummer.UI.Powers
             if (Utils.IsDesignerMode || Utils.IsRunningInVisualStudio)
                 return;
 
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 ThreadSafeBindingList<Power>
@@ -216,10 +210,6 @@ namespace Chummer.UI.Powers
                 lstPowers.ListChangedAsync += OnPowersListChanged;
                 _objCharacter.MultiplePropertiesChangedAsync += OnCharacterPropertyChanged;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private void UnbindPowersTabUserControl()
@@ -255,32 +245,27 @@ namespace Chummer.UI.Powers
             token.ThrowIfCancellationRequested();
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     switch (e.ListChangedType)
                     {
                         case ListChangedType.ItemChanged:
-                        {
-                            string propertyName = e.PropertyDescriptor?.Name;
-                            if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
                             {
-                                // recalculation of power points on rating/free levels change
-                                await CalculatePowerPoints(token).ConfigureAwait(false);
-                            }
+                                string propertyName = e.PropertyDescriptor?.Name;
+                                if (propertyName == nameof(Power.FreeLevels) || propertyName == nameof(Power.TotalRating))
+                                {
+                                    // recalculation of power points on rating/free levels change
+                                    await CalculatePowerPoints(token).ConfigureAwait(false);
+                                }
 
-                            break;
-                        }
+                                break;
+                            }
                         case ListChangedType.Reset:
                         case ListChangedType.ItemAdded:
                         case ListChangedType.ItemDeleted:
                             await CalculatePowerPoints(token).ConfigureAwait(false);
                             break;
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -338,8 +323,7 @@ namespace Chummer.UI.Powers
                 using (CancellationTokenSource objJoinedSource = CancellationTokenSource.CreateLinkedTokenSource(MyToken, objNewSource.Token))
                 {
                     CancellationToken objJoinedToken = objJoinedSource.Token;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false))
                     {
                         if (!(cboDisplayFilter.SelectedItem is Tuple<string, Func<Power, CancellationToken, Task<bool>>> selectedItem))
                             return;
@@ -355,10 +339,6 @@ namespace Chummer.UI.Powers
                             _blnSearchMode = false;
                             await _table.SetFilterAsync(selectedItem.Item2, objJoinedToken).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -384,8 +364,7 @@ namespace Chummer.UI.Powers
                     using (CancellationTokenSource objJoinedSource = CancellationTokenSource.CreateLinkedTokenSource(MyToken, objNewSource.Token))
                     {
                         CancellationToken objJoinedToken = objJoinedSource.Token;
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: objJoinedToken).ConfigureAwait(false))
                         {
                             await _table.SetFilterAsync(
                                 async (power, t) =>
@@ -404,10 +383,6 @@ namespace Chummer.UI.Powers
                                     }
                                 }, objJoinedToken).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
                 }
                 catch (OperationCanceledException)
@@ -421,8 +396,7 @@ namespace Chummer.UI.Powers
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: MyToken).ConfigureAwait(false))
                 {
                     // Open the Cyberware XML file and locate the selected piece.
                     XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("powers.xml", token: MyToken)
@@ -463,10 +437,6 @@ namespace Chummer.UI.Powers
                         }
                     } while (blnAddAgain);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -479,8 +449,7 @@ namespace Chummer.UI.Powers
         /// </summary>
         public async Task CalculatePowerPoints(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 decimal decPowerPointsTotal = await _objCharacter.GetPowerPointsTotalAsync(token).ConfigureAwait(false);
                 decimal decPowerPointsRemaining = decPowerPointsTotal -
@@ -492,10 +461,6 @@ namespace Chummer.UI.Powers
                     decPowerPointsRemaining,
                     await LanguageManager.GetStringAsync("String_Remaining", token: token).ConfigureAwait(false));
                 await lblPowerPoints.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -523,17 +488,11 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return string.Compare((await name1.ConfigureAwait(false)).ToString(),
                                         (await name2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
                                         CompareOptions.Ordinal);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -546,15 +505,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await power.GetCurrentDisplayNameAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -580,17 +533,11 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return string.Compare((await action1.ConfigureAwait(false)).ToString(),
                                         (await action2.ConfigureAwait(false)).ToString(), GlobalSettings.CultureInfo,
                                         CompareOptions.Ordinal);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -603,15 +550,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await power.GetDisplayActionAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -639,16 +580,9 @@ namespace Chummer.UI.Powers
 
                             async Task ValueUpdater(Power p, decimal newRating, CancellationToken t)
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     await p.SetRatingAsync(newRating.StandardRound(), t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync()
-                                        .ConfigureAwait(false);
                                 }
                             }
 
@@ -675,18 +609,12 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            CursorWait objCursorWait =
-                                await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                            try
+                            await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                             {
                                 if (await o1.ConfigureAwait(false) is Power objPower1 &&
                                     await o2.ConfigureAwait(false) is Power objPower2)
                                     return await objPower1.GetRatingAsync(t).ConfigureAwait(false) -
                                            await objPower2.GetRatingAsync(t).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         catch (OperationCanceledException)
@@ -721,15 +649,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await power.GetTotalRatingAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -742,15 +664,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await item.GetTotalRatingToolTipAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -763,18 +679,12 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     if (await o1.ConfigureAwait(false) is Power objPower1 &&
                                         await o2.ConfigureAwait(false) is Power objPower2)
                                         return await objPower1.GetTotalRatingAsync(t).ConfigureAwait(false) -
                                                await objPower2.GetTotalRatingAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -807,15 +717,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await power.GetDisplayPointsAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -828,15 +732,9 @@ namespace Chummer.UI.Powers
                         {
                             try
                             {
-                                CursorWait objCursorWait =
-                                    await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                try
+                                await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                 {
                                     return await item.GetDisplayPointsToolTipAsync(t).ConfigureAwait(false);
-                                }
-                                finally
-                                {
-                                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (OperationCanceledException)
@@ -865,15 +763,9 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            CursorWait objCursorWait =
-                                await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                            try
+                            await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                             {
                                 return await power.GetSourceDetailAsync(t).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         catch (OperationCanceledException)
@@ -886,15 +778,9 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            CursorWait objCursorWait =
-                                await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                            try
+                            await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                             {
                                 return await (await item.GetSourceDetailAsync(t).ConfigureAwait(false)).GetLanguageBookTooltipAsync(t).ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         catch (OperationCanceledException)
@@ -977,9 +863,7 @@ namespace Chummer.UI.Powers
                             {
                                 try
                                 {
-                                    CursorWait objCursorWait =
-                                        await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                    try
+                                    await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                     {
                                         string strNotes = await p.GetNotesAsync(t).ConfigureAwait(false);
                                         Color objColor = await p.GetNotesColorAsync(t).ConfigureAwait(false);
@@ -994,10 +878,6 @@ namespace Chummer.UI.Powers
                                                 await p.SetNotesColorAsync(frmPowerNotes.MyForm.NotesColor, t).ConfigureAwait(false);
                                             }
                                         }
-                                    }
-                                    finally
-                                    {
-                                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                     }
                                 }
                                 catch (OperationCanceledException)
@@ -1016,9 +896,7 @@ namespace Chummer.UI.Powers
                     {
                         try
                         {
-                            CursorWait objCursorWait =
-                                await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                            try
+                            await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                             {
                                 string strTooltip = await LanguageManager
                                     .GetStringAsync("Tip_Power_EditNotes", token: t).ConfigureAwait(false);
@@ -1027,10 +905,6 @@ namespace Chummer.UI.Powers
                                     strTooltip += Environment.NewLine + Environment.NewLine +
                                                   await strNotes.RtfToPlainTextAsync(token: t).ConfigureAwait(false);
                                 return strTooltip.WordWrap();
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                             }
                         }
                         catch (OperationCanceledException)
@@ -1068,9 +942,7 @@ namespace Chummer.UI.Powers
                             {
                                 try
                                 {
-                                    CursorWait objCursorWait =
-                                        await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                    try
+                                    await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                     {
                                         //Cache the parentform prior to deletion, otherwise the relationship is broken.
                                         Form frmParent = await this.DoThreadSafeFuncAsync(x => x.ParentForm, token: t)
@@ -1099,10 +971,6 @@ namespace Chummer.UI.Powers
 
                                         if (frmParent is CharacterShared objParent)
                                             objParent.RequestCharacterUpdate(t);
-                                    }
-                                    finally
-                                    {
-                                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                     }
                                 }
                                 catch (OperationCanceledException)
@@ -1162,9 +1030,7 @@ namespace Chummer.UI.Powers
                             {
                                 try
                                 {
-                                    CursorWait objCursorWait =
-                                        await CursorWait.NewAsync(this, token: t).ConfigureAwait(false);
-                                    try
+                                    await using (await CursorWait.NewAsync(this, token: t).ConfigureAwait(false))
                                     {
                                         switch (ParentForm)
                                         {
@@ -1181,10 +1047,6 @@ namespace Chummer.UI.Powers
                                                     .ConfigureAwait(false);
                                                 break;
                                         }
-                                    }
-                                    finally
-                                    {
-                                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                                     }
                                 }
                                 catch (OperationCanceledException)

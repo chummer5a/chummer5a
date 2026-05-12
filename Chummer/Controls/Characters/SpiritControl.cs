@@ -249,8 +249,7 @@ namespace Chummer
                     if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
                         objOpenCharacter = objLinkedCharacter;
                 }
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false))
                 {
                     if (objOpenCharacter == null)
                     {
@@ -265,10 +264,6 @@ namespace Chummer
 
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
                         await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -717,16 +712,13 @@ namespace Chummer
                 return;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(ParentForm, token: token).ConfigureAwait(false))
             {
                 // The Critter should use the same settings file as the character.
                 Character objCharacter = new Character();
                 try
                 {
-                    IAsyncDisposable objLocker =
-                        await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         await objCharacter.SetSettingsKeyAsync(
                             await _objSpirit.CharacterObject.GetSettingsKeyAsync(token).ConfigureAwait(false),
@@ -796,10 +788,6 @@ namespace Chummer
                                 return;
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     // Link the newly-created Critter to the Spirit.
                     string strText = await LanguageManager.GetStringAsync(
@@ -817,10 +805,6 @@ namespace Chummer
                         .ConfigureAwait(
                             false); // Fine here because Dispose()/DisposeAsync() code is skipped if the character is open in a form
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

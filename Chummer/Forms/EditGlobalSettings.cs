@@ -134,8 +134,7 @@ namespace Chummer
 
         private async void cmdOK_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 if (_blnDirty)
                 {
@@ -152,10 +151,6 @@ namespace Chummer
 
                 await this.DoThreadSafeAsync(x => x.DialogResult = DialogResult.OK).ConfigureAwait(false);
                 await SaveRegistrySettings().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             if (_blnDirty)
@@ -198,14 +193,9 @@ namespace Chummer
                 {
                     if (intLoading == 1)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
                         {
                             await TranslateForm().ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -226,35 +216,24 @@ namespace Chummer
 
         private async void cboSheetLanguage_SelectedIndexChanged(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await PopulateXsltList().ConfigureAwait(false);
                 OptionsChanged(sender, e);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void cmdVerify_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await LanguageManager.VerifyStrings(_strSelectedLanguage).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async void cmdVerifyData_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 string strSelectedLanguage = _strSelectedLanguage;
                 // Build a list of Sourcebooks that will be passed to the Verify method.
@@ -284,10 +263,6 @@ namespace Chummer
                         _strSelectedLanguage).ConfigureAwait(false),
                     MessageBoxButtons.OK,
                     MessageBoxIcon.Information).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -348,8 +323,7 @@ namespace Chummer
 
         private async void cmdPDFTest_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await CommonFunctions.OpenPdf(
                     await lstGlobalSourcebookInfos.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)
@@ -357,10 +331,6 @@ namespace Chummer
                     await cboPDFParameters.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString()).ConfigureAwait(false)
                     ?? string.Empty,
                     await txtPDFAppPath.DoThreadSafeFuncAsync(x => x.Text).ConfigureAwait(false)).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -391,15 +361,10 @@ namespace Chummer
                 {
                     if (intLoading == 1)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
                         {
                             await cboUseLoggingApplicationInsights
                                   .DoThreadSafeAsync(x => x.SelectedItem = UseAILogging.Info).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -434,14 +399,9 @@ namespace Chummer
                 {
                     if (intLoading == 1)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
                         {
                             await chkUseLogging.DoThreadSafeAsync(x => x.Checked = false).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -539,8 +499,7 @@ namespace Chummer
         {
             if (_intLoading > 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 if (Enum.TryParse(
                         await cboColorMode.DoThreadSafeFuncAsync(x => x.SelectedValue.ToString()).ConfigureAwait(false),
@@ -551,34 +510,30 @@ namespace Chummer
                     switch (eNewColorMode)
                     {
                         case ColorMode.Automatic:
-                        {
-                            bool blnLightMode = !ColorManager.DoesRegistrySayDarkMode();
-                            Color objPreviewColor = blnLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
-                            await this.UpdateLightDarkModeAsync(blnLightMode).ConfigureAwait(false);
-                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
-                            break;
-                        }
+                            {
+                                bool blnLightMode = !ColorManager.DoesRegistrySayDarkMode();
+                                Color objPreviewColor = blnLightMode ? _objSelectedHasNotesColor : ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
+                                await this.UpdateLightDarkModeAsync(blnLightMode).ConfigureAwait(false);
+                                await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
+                                break;
+                            }
 
                         case ColorMode.Light:
-                        {
-                            await this.UpdateLightDarkModeAsync(true).ConfigureAwait(false);
-                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = _objSelectedHasNotesColor).ConfigureAwait(false);
-                            break;
-                        }
+                            {
+                                await this.UpdateLightDarkModeAsync(true).ConfigureAwait(false);
+                                await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = _objSelectedHasNotesColor).ConfigureAwait(false);
+                                break;
+                            }
 
                         case ColorMode.Dark:
-                        {
-                            Color objPreviewColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
-                            await this.UpdateLightDarkModeAsync(false).ConfigureAwait(false);
-                            await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
-                            break;
-                        }
+                            {
+                                Color objPreviewColor = ColorManager.GenerateDarkModeColor(_objSelectedHasNotesColor);
+                                await this.UpdateLightDarkModeAsync(false).ConfigureAwait(false);
+                                await pnlHasNotesColorPreview.DoThreadSafeAsync(x => x.BackColor = objPreviewColor).ConfigureAwait(false);
+                                break;
+                            }
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             OptionsChanged(sender, e);
@@ -962,8 +917,7 @@ namespace Chummer
             await clbPlugins.DoThreadSafeAsync(x => x.Items.Clear()).ConfigureAwait(false);
             if (await Program.PluginLoader.MyPlugins.GetCountAsync().ConfigureAwait(false) == 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await Program.PluginLoader.MyPlugins.ForEachAsync(async objPlugin =>
                 {
@@ -995,10 +949,6 @@ namespace Chummer
                     }
                 }).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private void clbPlugins_SelectedValueChanged(object sender, EventArgs e)
@@ -1013,17 +963,12 @@ namespace Chummer
 
         private async void clbPlugins_ItemCheck(object sender, ItemCheckEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 string strPlugin = (await clbPlugins.DoThreadSafeFuncAsync(x => x.Items[e.Index]).ConfigureAwait(false))?.ToString() ?? string.Empty;
                 bool blnNewValue = e.NewValue == CheckState.Checked;
                 GlobalSettings.PluginsEnabledDic.AddOrUpdate(strPlugin, blnNewValue, (x, y) => blnNewValue);
                 OptionsChanged(sender, e);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1155,8 +1100,7 @@ namespace Chummer
             if (!await txtPDFLocation.DoThreadSafeFuncAsync(x => x.Enabled, token).ConfigureAwait(false))
                 return;
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strNewFileName = string.Empty;
                 string strFilter
@@ -1214,18 +1158,13 @@ namespace Chummer
                 await lstGlobalSourcebookInfos.DoThreadSafeAsync(() => UpdateSourcebookInfoPath(strNewFileName), token: token).ConfigureAwait(false);
                 await txtPDFLocation.DoThreadSafeAsync(x => x.Text = strNewFileName, token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task PromptPdfAppPath(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strFileName = string.Empty;
                 string strFilter
@@ -1285,10 +1224,6 @@ namespace Chummer
 
                     return true;
                 }, token: token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1621,7 +1556,7 @@ namespace Chummer
             GlobalSettings.DefaultHasNotesColor = _objSelectedHasNotesColor;
             GlobalSettings.DpiScalingMethodSetting = await cboDpiScalingMethod.DoThreadSafeFuncAsync(
                 x => x.SelectedIndex >= 0
-                    ? (DpiScalingMethod) Enum.Parse(typeof(DpiScalingMethod), x.SelectedValue.ToString())
+                    ? Enum.Parse<DpiScalingMethod>(x.SelectedValue.ToString())
                     : GlobalSettings.DefaultDpiScalingMethod, token).ConfigureAwait(false);
             GlobalSettings.StartupFullscreen = await chkStartupFullscreen.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                          .ConfigureAwait(false);
@@ -1718,8 +1653,7 @@ namespace Chummer
 
             GlobalSettings.Chum5lzCompressionLevel = await cboChum5lzCompressionLevel.DoThreadSafeFuncAsync(
                 x => x.SelectedIndex >= 0
-                    ? (LzmaHelper.ChummerCompressionPreset) Enum.Parse(typeof(LzmaHelper.ChummerCompressionPreset),
-                                                                       x.SelectedValue.ToString())
+                    ? Enum.Parse<LzmaHelper.ChummerCompressionPreset>(x.SelectedValue.ToString())
                     : GlobalSettings.DefaultChum5lzCompressionLevel, token).ConfigureAwait(false);
             GlobalSettings.CustomDateTimeFormats = await chkCustomDateTimeFormats
                                                          .DoThreadSafeFuncAsync(x => x.Checked, token)
@@ -1840,9 +1774,7 @@ namespace Chummer
                 LzmaHelper.ChummerCompressionPreset eOldSelected
                     = await cboChum5lzCompressionLevel.DoThreadSafeFuncAsync(
                         x => x.SelectedIndex >= 0
-                            ? (LzmaHelper.ChummerCompressionPreset)Enum.Parse(
-                                typeof(LzmaHelper.ChummerCompressionPreset),
-                                x.SelectedValue.ToString())
+                            ? Enum.Parse<LzmaHelper.ChummerCompressionPreset>(x.SelectedValue.ToString())
                             : GlobalSettings.Chum5lzCompressionLevel, token).ConfigureAwait(false);
                 await cboChum5lzCompressionLevel.PopulateWithListItemsAsync(lstChum5lzCompressionLevelOptions, token)
                     .ConfigureAwait(false);
@@ -2004,7 +1936,7 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstUseAIOptions))
             {
-                foreach (UseAILogging eOption in Enum.GetValues(typeof(UseAILogging)))
+                foreach (UseAILogging eOption in Enum.GetValues<UseAILogging>())
                 {
                     //we don't want to allow the user to set the logging options in stable builds to higher than "not set".
                     if (Utils.IsMilestoneVersion && !Debugger.IsAttached
@@ -2022,7 +1954,7 @@ namespace Chummer
                 await cboUseLoggingApplicationInsights.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelected))
-                        x.SelectedValue = Enum.Parse(typeof(UseAILogging), strOldSelected);
+                        x.SelectedValue = Enum.Parse<UseAILogging>(strOldSelected);
                     if (x.SelectedIndex == -1 && lstUseAIOptions.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
@@ -2038,7 +1970,7 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstColorModes))
             {
-                foreach (ColorMode eLoopColorMode in Enum.GetValues(typeof(ColorMode)))
+                foreach (ColorMode eLoopColorMode in Enum.GetValues<ColorMode>())
                 {
                     lstColorModes.Add(new ListItem(eLoopColorMode,
                                                    await LanguageManager.GetStringAsync(
@@ -2051,7 +1983,7 @@ namespace Chummer
                 await cboColorMode.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelected))
-                        x.SelectedValue = Enum.Parse(typeof(ColorMode), strOldSelected);
+                        x.SelectedValue = Enum.Parse<ColorMode>(strOldSelected);
                     if (x.SelectedIndex == -1 && lstColorModes.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
@@ -2069,7 +2001,7 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                            out List<ListItem> lstDpiScalingMethods))
             {
-                foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues(typeof(DpiScalingMethod)))
+                foreach (DpiScalingMethod eLoopDpiScalingMethod in Enum.GetValues<DpiScalingMethod>())
                 {
                     switch (eLoopDpiScalingMethod)
                     {
@@ -2099,7 +2031,7 @@ namespace Chummer
                 await cboDpiScalingMethod.DoThreadSafeAsync(x =>
                 {
                     if (!string.IsNullOrEmpty(strOldSelected))
-                        x.SelectedValue = Enum.Parse(typeof(DpiScalingMethod), strOldSelected);
+                        x.SelectedValue = Enum.Parse<DpiScalingMethod>(strOldSelected);
                     if (x.SelectedIndex == -1 && lstDpiScalingMethods.Count > 0)
                         x.SelectedIndex = 0;
                 }, token).ConfigureAwait(false);
@@ -2385,8 +2317,7 @@ namespace Chummer
         private async void bScanForPDFs_Click(object sender, EventArgs e)
         {
             // Prompt the user to select a save file to associate with this Contact.
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 Task<XPathNavigator> tskLoadBooks
                     = XmlManager.LoadXPathAsync("books.xml", strLanguage: _strSelectedLanguage);
@@ -2533,10 +2464,6 @@ namespace Chummer
                             MessageBoxIcon.Information).ConfigureAwait(false);
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

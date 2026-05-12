@@ -112,15 +112,10 @@ namespace Chummer.Backend.Skills
 
         public async Task<CharacterAttrib> GetAttributeObjectAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _objAttribute;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -162,8 +157,7 @@ namespace Chummer.Backend.Skills
 
         protected async Task RecacheAttributeAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strAttributeString = await GetDefaultAttributeAsync(token).ConfigureAwait(false);
@@ -200,10 +194,6 @@ namespace Chummer.Backend.Skills
 
                 await this.OnMultiplePropertyChangedAsync(token, nameof(AttributeModifiers), nameof(Enabled))
                     .ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -269,14 +259,11 @@ namespace Chummer.Backend.Skills
             if (objWriter == null)
                 return;
 
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // <skill>
-                XmlElementWriteHelper objBaseElement =
-                    await objWriter.StartElementAsync("skill", token: token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("skill", token: token).ConfigureAwait(false))
                 {
                     int intPool = await GetPoolAsync(token).ConfigureAwait(false);
                     int intSpecPool = intPool + await GetSpecializationBonusAsync(token: token).ConfigureAwait(false);
@@ -395,30 +382,16 @@ namespace Chummer.Backend.Skills
                         (await GetCurrentKarmaCostAsync(token).ConfigureAwait(false)).ToString(objCulture),
                         token: token).ConfigureAwait(false);
                     // <skillspecializations>
-                    XmlElementWriteHelper objSkillSpecializationsElement = await objWriter
-                        .StartElementAsync("skillspecializations", token: token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("skillspecializations", token: token).ConfigureAwait(false))
                     {
                         await (await GetSpecializationsAsync(token).ConfigureAwait(false))
                             .ForEachAsync(
                                 objSpec => objSpec.Print(objWriter, objCulture, strLanguageToPrint, token: token),
                                 token).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        // </skillspecializations>
-                        await objSkillSpecializationsElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </skillspecializations>
                 }
-                finally
-                {
-                    // </skill>
-                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                // </skill>
             }
         }
 
@@ -1387,8 +1360,7 @@ namespace Chummer.Backend.Skills
 
         private async Task OnAttributesCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (e.Action)
@@ -1431,10 +1403,6 @@ namespace Chummer.Backend.Skills
                     }
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task OnAttributeSectionChanged(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
@@ -1442,16 +1410,10 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (e.PropertyName == nameof(AttributeSection.AttributeCategory))
             {
-                IAsyncDisposable objLocker =
-                    await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     await RecacheAttributeAsync(token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -1523,10 +1485,14 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // No need to write lock because interlocked guarantees safety
-                    if (Interlocked.Exchange(ref _intBase, value) == value)
+                    if (_intBase == value)
                         return;
-                    OnPropertyChanged();
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intBase, value) == value)
+                            return;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1536,15 +1502,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetBasePointsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _intBase;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1553,18 +1514,17 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task SetBasePointsAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
-                if (Interlocked.Exchange(ref _intBase, value) == value)
+                if (_intBase == value)
                     return;
-                await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
+                {
+                    if (Interlocked.Exchange(ref _intBase, value) == value)
+                        return;
+                    await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -1575,16 +1535,11 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Interlocked.Add(ref _intBase, value);
                 await OnPropertyChangedAsync(nameof(BasePoints), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1602,10 +1557,14 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // No need to write lock because interlocked guarantees safety
-                    if (Interlocked.Exchange(ref _intKarma, value) == value)
+                    if (_intKarma == value)
                         return;
-                    OnPropertyChanged();
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _intKarma, value) == value)
+                            return;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
@@ -1615,15 +1574,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetKarmaPointsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _intKarma;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1632,18 +1586,17 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task SetKarmaPointsAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
-                if (Interlocked.Exchange(ref _intKarma, value) == value)
+                if (_intKarma == value)
                     return;
-                await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
+                {
+                    if (Interlocked.Exchange(ref _intKarma, value) == value)
+                        return;
+                    await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -1654,16 +1607,11 @@ namespace Chummer.Backend.Skills
         {
             if (value == 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Interlocked.Add(ref _intKarma, value);
                 await OnPropertyChangedAsync(nameof(KarmaPoints), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1689,8 +1637,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<bool> GetBaseUnlockedAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await CharacterObject.GetEffectiveBuildMethodUsesPriorityTablesAsync(token).ConfigureAwait(false))
@@ -1705,10 +1652,6 @@ namespace Chummer.Backend.Skills
                                    || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)));
                 }
                 return false;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1737,8 +1680,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<bool> GetKarmaUnlockedAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await CharacterObjectSettings.GetStrictSkillGroupsInCreateModeAsync(token).ConfigureAwait(false)
@@ -1750,10 +1692,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return true;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1824,8 +1762,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetBaseAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (SkillGroupObject != null)
@@ -1851,10 +1788,6 @@ namespace Chummer.Backend.Skills
                 return Math.Min(await GetBasePointsAsync(token).ConfigureAwait(false) + await GetFreeBaseAsync(token).ConfigureAwait(false),
                                 await GetRatingMaximumAsync(token).ConfigureAwait(false));
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -1864,8 +1797,7 @@ namespace Chummer.Backend.Skills
         public async Task SetBaseAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intSkillGroupBase = SkillGroupObject != null
@@ -1881,12 +1813,7 @@ namespace Chummer.Backend.Skills
                         return;
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intSkillGroupBase = SkillGroupObject != null
@@ -1906,8 +1833,7 @@ namespace Chummer.Backend.Skills
                 int intOverMax = value + await GetKarmaAsync(token).ConfigureAwait(false) -
                                  await GetRatingMaximumAsync(token).ConfigureAwait(false)
                                  + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (intOverMax > 0) //Too much
@@ -1927,14 +1853,6 @@ namespace Chummer.Backend.Skills
                         Math.Max(0, value - (await GetFreeBaseAsync(token).ConfigureAwait(false) + intSkillGroupBase)),
                         token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1986,8 +1904,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetKarmaAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intGroupKarma = 0;
@@ -2007,10 +1924,6 @@ namespace Chummer.Backend.Skills
                 return Math.Min(await GetKarmaPointsAsync(token).ConfigureAwait(false) + await GetFreeKarmaAsync(token).ConfigureAwait(false) + intGroupKarma,
                     await GetRatingMaximumAsync(token).ConfigureAwait(false));
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -2018,16 +1931,14 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task SetKarmaAsync(int value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 //Calculate how far above maximum we are.
                 int intOverMax = value + await GetBaseAsync(token).ConfigureAwait(false)
                                  - await GetRatingMaximumAsync(token).ConfigureAwait(false)
                                  + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (intOverMax > 0) //Too much
@@ -2051,14 +1962,6 @@ namespace Chummer.Backend.Skills
                                 ? await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false)
                                 : 0))), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2081,15 +1984,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(await GetCyberwareRatingAsync(token).ConfigureAwait(false), await GetTotalBaseRatingAsync(token).ConfigureAwait(false));
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2108,16 +2006,10 @@ namespace Chummer.Backend.Skills
         protected virtual async Task ResetCachedTotalBaseRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _intCachedTotalBaseRating = int.MinValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2152,43 +2044,25 @@ namespace Chummer.Backend.Skills
         public async Task<int> GetTotalBaseRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCachedTotalBaseRatingLock.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedTotalBaseRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedTotalBaseRating != int.MinValue)
                     return _intCachedTotalBaseRating;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await _objCachedTotalBaseRatingLock.EnterUpgradeableReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedTotalBaseRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedTotalBaseRating != int.MinValue)
                     return _intCachedTotalBaseRating;
 
-                IAsyncDisposable objLocker2 =
-                    await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCachedTotalBaseRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     return _intCachedTotalBaseRating = await GetLearnedRatingAsync(token).ConfigureAwait(false)
                         + await RatingModifiersAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2207,16 +2081,10 @@ namespace Chummer.Backend.Skills
         protected virtual async Task ResetCachedLearnedRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _intCachedLearnedRating = int.MinValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2255,42 +2123,24 @@ namespace Chummer.Backend.Skills
         public async Task<int> GetLearnedRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCachedLearnedRatingLock.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedLearnedRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedLearnedRating != int.MinValue)
                     return _intCachedLearnedRating;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await _objCachedLearnedRatingLock.EnterUpgradeableReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedLearnedRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedLearnedRating != int.MinValue)
                     return _intCachedLearnedRating;
 
-                IAsyncDisposable objLocker2 =
-                    await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCachedLearnedRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     return _intCachedLearnedRating = await GetKarmaAsync(token).ConfigureAwait(false) + await GetBaseAsync(token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2324,8 +2174,7 @@ namespace Chummer.Backend.Skills
 
         public virtual async Task<bool> GetBuyWithKarmaAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
@@ -2333,16 +2182,11 @@ namespace Chummer.Backend.Skills
                        && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
                        && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public virtual async Task SetBuyWithKarmaAsync(bool value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
@@ -2353,21 +2197,12 @@ namespace Chummer.Backend.Skills
                         && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
                 if (_blnBuyWithKarma == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _blnBuyWithKarma = value;
                     await OnPropertyChangedAsync(nameof(BuyWithKarma), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2403,8 +2238,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetRatingMaximumAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intOtherBonus =
@@ -2424,10 +2258,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return intBaseMax + intOtherBonus;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2449,15 +2279,10 @@ namespace Chummer.Backend.Skills
         public async Task<bool> GetNonTrivialPoolAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return !await GetIsLanguageAsync(token).ConfigureAwait(false) && await GetEnabledAsync(token).ConfigureAwait(false) && await GetAttributeModifiersAsync(token).ConfigureAwait(false) > 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2509,8 +2334,7 @@ namespace Chummer.Backend.Skills
         public async Task<int> PoolOtherAttributeAsync(string strAttribute, bool blnIncludeConditionals = false,
             int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await GetIsNativeLanguageAsync(token).ConfigureAwait(false))
@@ -2537,10 +2361,6 @@ namespace Chummer.Backend.Skills
                         await CharacterObject.GetWoundModifierAsync(token).ConfigureAwait(false) +
                         await CharacterObject.GetSustainingPenaltyAsync(token).ConfigureAwait(false))
                     : 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2607,8 +2427,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<int> GetDefaultModifierAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if ((await ImprovementManager.GetCachedImprovementListForValueOfAsync(CharacterObject,
@@ -2680,10 +2499,6 @@ namespace Chummer.Backend.Skills
 
                 return -1;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         // ReSharper disable once InconsistentNaming
@@ -2701,16 +2516,10 @@ namespace Chummer.Backend.Skills
         protected virtual async Task ResetCachedPoolModifiersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _intCachedPoolModifiers = int.MinValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2729,16 +2538,10 @@ namespace Chummer.Backend.Skills
         protected virtual async Task ResetCachedRatingModifiersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _intCachedRatingModifiers = int.MinValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2782,50 +2585,30 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (!blnIncludeConditionals)
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (strUseAttribute == await GetAttributeAsync(token).ConfigureAwait(false))
                     {
-                        IAsyncDisposable objLocker2 = await _objCachedPoolModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await _objCachedPoolModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (_intCachedPoolModifiers != int.MinValue)
                                 return _intCachedPoolModifiers;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        objLocker2 = await _objCachedPoolModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await _objCachedPoolModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (_intCachedPoolModifiers != int.MinValue)
                                 return _intCachedPoolModifiers;
-                            IAsyncDisposable objLocker3 = await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
+                            await using (await _objCachedPoolModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 return _intCachedPoolModifiers = await BonusAsync(false, strUseAttribute, token: token).ConfigureAwait(false);
                             }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             return await BonusAsync(false, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
@@ -2871,50 +2654,30 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (!blnIncludeConditionals)
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (strUseAttribute == await GetAttributeAsync(token).ConfigureAwait(false))
                     {
-                        IAsyncDisposable objLocker2 = await _objCachedRatingModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await _objCachedRatingModifiersLock.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (_intCachedRatingModifiers != int.MinValue)
                                 return _intCachedRatingModifiers;
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
 
-                        objLocker2 = await _objCachedRatingModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await _objCachedRatingModifiersLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (_intCachedRatingModifiers != int.MinValue)
                                 return _intCachedRatingModifiers;
-                            IAsyncDisposable objLocker3 = await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                            try
+                            await using (await _objCachedRatingModifiersLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 return _intCachedRatingModifiers = await BonusAsync(true, strUseAttribute, token: token).ConfigureAwait(false);
                             }
-                            finally
-                            {
-                                await objLocker3.DisposeAsync().ConfigureAwait(false);
-                            }
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             return await BonusAsync(true, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
@@ -2960,8 +2723,7 @@ namespace Chummer.Backend.Skills
 
         protected async Task<int> BonusAsync(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
@@ -3000,10 +2762,6 @@ namespace Chummer.Backend.Skills
                     return (decReturn + decMaxConditionalValue).StandardRound();
                 }
                 return lstImprovements.Sum(x => x.Value).StandardRound();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3138,8 +2896,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strNameToUse = await GetDictionaryKeyAsync(token).ConfigureAwait(false);
@@ -3274,10 +3031,6 @@ namespace Chummer.Backend.Skills
 
                 return lstReturn;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -3343,8 +3096,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public virtual async Task<int> GetCurrentSpCostAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intBasePoints = await GetBasePointsAsync(token).ConfigureAwait(false);
@@ -3392,10 +3144,6 @@ namespace Chummer.Backend.Skills
                     cost += decExtra.StandardRound();
 
                 return Math.Max(cost, 0);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3485,8 +3233,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public virtual async Task<int> GetCurrentKarmaCostAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 //No rating can obv not cost anything
@@ -3586,10 +3333,6 @@ namespace Chummer.Backend.Skills
 
                 return Math.Max(0, intCost);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -3606,15 +3349,10 @@ namespace Chummer.Backend.Skills
 
         public async Task<int> GetPoolAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await PoolOtherAttributeAsync(await GetAttributeAsync(token).ConfigureAwait(false), token: token);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3629,15 +3367,10 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> GetLeveledAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await GetRatingAsync(token).ConfigureAwait(false) > 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3652,18 +3385,13 @@ namespace Chummer.Backend.Skills
 
         public async Task<Color> GetPreferredControlColorAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await GetLeveledAsync(token).ConfigureAwait(false)
                        && await GetEnabledAsync(token).ConfigureAwait(false)
                     ? ColorManager.Control
                     : ColorManager.ControlLighter;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3704,8 +3432,7 @@ namespace Chummer.Backend.Skills
 
         public virtual async Task<bool> GetCanHaveSpecsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -3736,10 +3463,6 @@ namespace Chummer.Backend.Skills
 
                 return intReturn > 0;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public Character CharacterObject { get; }
@@ -3767,15 +3490,10 @@ namespace Chummer.Backend.Skills
         public async Task<string> GetAttributeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return AttributeObject.Abbrev;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3790,48 +3508,46 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // No need to write lock because interlocked guarantees safety
-                    if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
+                    if (_strDefaultAttribute == value)
                         return;
-                    if (IsLoading)
-                        RecacheAttribute();
-                    else
-                        OnPropertyChanged();
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
+                            return;
+                        if (IsLoading)
+                            RecacheAttribute();
+                        else
+                            OnPropertyChanged();
+                    }
                 }
             }
         }
 
         public async Task<string> GetDefaultAttributeAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _strDefaultAttribute;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetDefaultAttributeAsync(string value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
-                if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
+                if (_strDefaultAttribute == value)
                     return;
-                if (IsLoading)
-                    await RecacheAttributeAsync(token).ConfigureAwait(false);
-                else
-                    await OnPropertyChangedAsync(nameof(DefaultAttribute), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
+                {
+                    if (Interlocked.Exchange(ref _strDefaultAttribute, value) == value)
+                        return;
+                    if (IsLoading)
+                        await RecacheAttributeAsync(token).ConfigureAwait(false);
+                    else
+                        await OnPropertyChangedAsync(nameof(DefaultAttribute), token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -3854,16 +3570,11 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<string> DisplayAttributeMethodAsync(string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await LanguageManager.GetStringAsync("String_Attribute" + await GetAttributeAsync(token).ConfigureAwait(false) + "Short", strLanguage,
                     token: token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3989,8 +3700,7 @@ namespace Chummer.Backend.Skills
         //TODO handle aspected/adepts who cannot (always) get magic skills
         public async Task<bool> GetEnabledAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -4115,10 +3825,6 @@ namespace Chummer.Backend.Skills
                         return true;
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public bool ForceDisabled
@@ -4151,53 +3857,33 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> GetForceDisabledAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _blnForceDisabled;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetForceDisabledAsync(bool value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnForceDisabled == value)
                     return;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnForceDisabled == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _blnForceDisabled = value;
                     await OnPropertyChangedAsync(nameof(ForceDisabled), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4232,15 +3918,10 @@ namespace Chummer.Backend.Skills
         public async Task<bool> GetRequiresGroundMovementAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _blnRequiresGroundMovement;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4275,15 +3956,10 @@ namespace Chummer.Backend.Skills
         public async Task<bool> GetRequiresSwimMovementAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _blnRequiresSwimMovement;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4318,15 +3994,10 @@ namespace Chummer.Backend.Skills
         public async Task<bool> GetRequiresFlyMovementAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _blnRequiresFlyMovement;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4354,8 +4025,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> GetCanUpgradeCareerAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -4373,10 +4043,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return intReturn > 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4438,8 +4104,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> GetDefaultAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 List<Improvement> lstRelevantImprovements = await RelevantImprovementsAsync(x =>
@@ -4464,10 +4129,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return true;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4551,15 +4212,10 @@ namespace Chummer.Backend.Skills
 
         public virtual async Task<string> GetDictionaryKeyAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _strDictionaryKey = _strDictionaryKey ?? await GetNameAsync(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4574,11 +4230,12 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // Interlocked guarantees thread safety here without write lock
-                    if (Interlocked.Exchange(ref _strName, value) == value)
+                    if (_strName == value)
                         return;
                     using (LockObject.EnterWriteLock())
                     {
+                        if (Interlocked.Exchange(ref _strName, value) == value)
+                            return;
                         _strDictionaryKey = null;
                         _intCachedFreeBase = int.MinValue;
                         _intCachedFreeKarma = int.MinValue;
@@ -4590,44 +4247,30 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetNameAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _strName;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetNameAsync(string value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // Interlocked guarantees thread safety here without write lock
-                if (Interlocked.Exchange(ref _strName, value) == value)
+                if (_strName == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
+                    if (Interlocked.Exchange(ref _strName, value) == value)
+                        return;
                     _strDictionaryKey = null;
                     _intCachedFreeBase = int.MinValue;
                     _intCachedFreeKarma = int.MinValue;
                     await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4667,54 +4310,34 @@ namespace Chummer.Backend.Skills
 
         public async Task<Guid> GetIdAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _guidInternalId;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         private async Task SetIdAsync(Guid value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_guidInternalId == value)
                     return;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_guidInternalId == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _guidInternalId = value;
                     await OnPropertyChangedAsync(nameof(Id), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4796,15 +4419,10 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<Guid> GetSkillIdAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _guidSkillId;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4816,26 +4434,19 @@ namespace Chummer.Backend.Skills
         public async Task SetSkillIdAsync(Guid value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_guidSkillId == value)
                     return;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_guidSkillId == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _guidSkillId = value;
@@ -4844,14 +4455,6 @@ namespace Chummer.Backend.Skills
                     _blnRecalculateCachedSuggestedSpecializations = true;
                     await OnPropertyChangedAsync(nameof(SkillId), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4927,29 +4530,20 @@ namespace Chummer.Backend.Skills
         public async Task<IReadOnlyList<ListItem>> GetCGLSpecializationsAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCachedSuggestedSpecializationsLock.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedSuggestedSpecializationsLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (!_blnRecalculateCachedSuggestedSpecializations)
                     return _lstCachedSuggestedSpecializations;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await _objCachedSuggestedSpecializationsLock
-                .EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedSuggestedSpecializationsLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (!_blnRecalculateCachedSuggestedSpecializations)
                     return _lstCachedSuggestedSpecializations;
 
-                IAsyncDisposable objLocker2 = await _objCachedSuggestedSpecializationsLock
-                    .EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCachedSuggestedSpecializationsLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _blnRecalculateCachedSuggestedSpecializations = false;
@@ -4978,12 +4572,12 @@ namespace Chummer.Backend.Skills
                     }
 
                     foreach (string strSpecializationName in (await ImprovementManager
-                                 .GetCachedImprovementListForValueOfAsync(
-                                     CharacterObject,
-                                     Improvement.ImprovementType
-                                         .SkillSpecializationOption,
-                                     await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
-                                 .ConfigureAwait(false)).Select(x => x.UniqueName))
+                                    .GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType
+                                            .SkillSpecializationOption,
+                                        await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
+                                    .ConfigureAwait(false)).Select(x => x.UniqueName))
                     {
                         if (_lstCachedSuggestedSpecializations.Exists(
                                 y => y.Value?.ToString() == strSpecializationName))
@@ -4997,16 +4591,8 @@ namespace Chummer.Backend.Skills
 
                     _lstCachedSuggestedSpecializations.Sort(CompareListItems.CompareNames);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
 
                 return _lstCachedSuggestedSpecializations;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5029,8 +4615,7 @@ namespace Chummer.Backend.Skills
 
         public virtual async Task<string> DisplaySpecializationAsync(string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_dicCachedStringSpec.TryGetValue(strLanguage, out string strReturn))
@@ -5043,10 +4628,6 @@ namespace Chummer.Backend.Skills
                 _dicCachedStringSpec.Add(strLanguage, strReturn);
 
                 return strReturn;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5069,15 +4650,10 @@ namespace Chummer.Backend.Skills
 
         public async Task<ThreadSafeObservableCollection<SkillSpecialization>> GetSpecializationsAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _lstSpecializations;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5151,8 +4727,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetTopMostDisplaySpecializationAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (IsExoticSkill)
@@ -5166,10 +4741,6 @@ namespace Chummer.Backend.Skills
                 SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task SetTopMostDisplaySpecializationAsync(string value, CancellationToken token = default)
@@ -5179,14 +4750,12 @@ namespace Chummer.Backend.Skills
                 await (await GetSpecializationsAsync(token).ConfigureAwait(false)).RemoveAllAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return;
             }
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 ThreadSafeObservableCollection<SkillSpecialization> lstSpecs
                     = await GetSpecializationsAsync(token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await lstSpecs.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await lstSpecs.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     int intIndexToReplace = await lstSpecs.FindIndexAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -5231,14 +4800,6 @@ namespace Chummer.Backend.Skills
                             = await lstSpecs.FindIndexAsync(intIndexToReplace + 1, async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5263,8 +4824,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> HasSpecializationAsync(string strSpecialization, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (IsExoticSkill)
@@ -5285,10 +4845,6 @@ namespace Chummer.Backend.Skills
                                CharacterObject, Improvement.ImprovementType.DisableSpecializationEffects,
                                await GetDictionaryKeyAsync(token).ConfigureAwait(false), token: token)
                            .ConfigureAwait(false)).Count == 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5313,8 +4869,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<SkillSpecialization> GetSpecializationAsync(string strSpecialization, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
@@ -5333,10 +4888,6 @@ namespace Chummer.Backend.Skills
                                        strSpecialization, token: token)
                         .ConfigureAwait(false)
                     : null;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5681,8 +5232,7 @@ namespace Chummer.Backend.Skills
             string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null,
             CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await GetIsNativeLanguageAsync(token).ConfigureAwait(false))
@@ -6063,10 +5613,6 @@ namespace Chummer.Backend.Skills
                     return sbdReturn.ToString();
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public string UpgradeToolTip
@@ -6086,8 +5632,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetUpgradeToolTipAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intCost = await GetUpgradeKarmaCostAsync(token).ConfigureAwait(false);
@@ -6098,10 +5643,6 @@ namespace Chummer.Backend.Skills
                                     await LanguageManager.GetStringAsync("Tip_ImproveItem", token: token)
                                                          .ConfigureAwait(false),
                                     await GetRatingAsync(token).ConfigureAwait(false) + 1, intCost);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6141,8 +5682,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetAddSpecToolTipAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intPrice = IsKnowledgeSkill
@@ -6170,10 +5710,6 @@ namespace Chummer.Backend.Skills
                 return string.Format(GlobalSettings.CultureInfo,
                                      await LanguageManager.GetStringAsync("Tip_Skill_AddSpecialization", token: token)
                                                           .ConfigureAwait(false), intPrice);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6204,8 +5740,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetSkillToolTipAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
@@ -6224,10 +5759,6 @@ namespace Chummer.Backend.Skills
                                 .GetLanguageBookTooltipAsync(token).ConfigureAwait(false);
                 return strReturn;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public string Notes
@@ -6241,42 +5772,40 @@ namespace Chummer.Backend.Skills
             {
                 using (LockObject.EnterUpgradeableReadLock())
                 {
-                    // No need to write lock because interlocked guarantees safety
-                    if (Interlocked.Exchange(ref _strNotes, value) == value)
+                    if (_strNotes == value)
                         return;
-                    OnPropertyChanged();
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (Interlocked.Exchange(ref _strNotes, value) == value)
+                            return;
+                        OnPropertyChanged();
+                    }
                 }
             }
         }
 
         public async Task<string> GetNotesAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _strNotes;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetNotesAsync(string value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                // No need to write lock because interlocked guarantees safety
-                if (Interlocked.Exchange(ref _strNotes, value) == value)
+                if (_strNotes == value)
                     return;
-                await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
+                {
+                    if (Interlocked.Exchange(ref _strNotes, value) == value)
+                        return;
+                    await OnPropertyChangedAsync(nameof(Notes), token).ConfigureAwait(false);
+                }
             }
         }
 
@@ -6313,53 +5842,33 @@ namespace Chummer.Backend.Skills
 
         public async Task<Color> GetNotesColorAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _colNotes;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetNotesColorAsync(Color value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (value == _colNotes)
                     return;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_colNotes == value)
                     return;
-                IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _colNotes = value;
                     await OnPropertyChangedAsync(nameof(NotesColor), token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6376,17 +5885,12 @@ namespace Chummer.Backend.Skills
 
         public async Task<Color> GetPreferredColorAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return !string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false))
                     ? ColorManager.GenerateCurrentModeColor(await GetNotesColorAsync(token).ConfigureAwait(false))
                     : ColorManager.ControlText;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6420,8 +5924,7 @@ namespace Chummer.Backend.Skills
         /// <returns></returns>
         public async Task<string> DisplayPageAsync(string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -6429,10 +5932,6 @@ namespace Chummer.Backend.Skills
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 string strReturn = objNode?.SelectSingleNodeAndCacheExpression("altpage", token: token)?.Value ?? Page;
                 return !string.IsNullOrWhiteSpace(strReturn) ? strReturn : Page;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6455,15 +5954,10 @@ namespace Chummer.Backend.Skills
         public async Task<int> GetAttributeModifiersAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await (await GetAttributeObjectAsync(token).ConfigureAwait(false)).GetTotalValueAsync(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6480,8 +5974,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> DisplayNameAsync(string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -6491,10 +5984,6 @@ namespace Chummer.Backend.Skills
                 return objNode != null
                     ? objNode.SelectSingleNodeAndCacheExpression("translate", token: token)?.Value ?? Name
                     : Name;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6526,8 +6015,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> DisplayCategoryAsync(string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
@@ -6540,10 +6028,6 @@ namespace Chummer.Backend.Skills
                                                             + "]/@translate")?.Value;
 
                 return strReturn ?? SkillCategory;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6558,17 +6042,12 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> GetDisplayPoolAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await GetIsNativeLanguageAsync(token).ConfigureAwait(false)
                     ? await LanguageManager.GetStringAsync("Skill_NativeLanguageShort", token: token).ConfigureAwait(false)
                     : await DisplayOtherAttributeAsync(await GetAttributeAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6609,8 +6088,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<string> DisplayOtherAttributeAsync(string strAttribute, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intPool = await PoolOtherAttributeAsync(strAttribute, token: token).ConfigureAwait(false);
@@ -6642,10 +6120,6 @@ namespace Chummer.Backend.Skills
                     intPool, await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false),
                     Math.Max(intPool + intSpecBonus,
                         intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6684,8 +6158,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<int> GetSpecializationBonusAsync(string strSpecialization = "", CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (IsExoticSkill
@@ -6722,10 +6195,6 @@ namespace Chummer.Backend.Skills
                 return objTargetSpecialization != null
                     ? await objTargetSpecialization.GetSpecializationBonusAsync(token).ConfigureAwait(false)
                     : 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6822,16 +6291,10 @@ namespace Chummer.Backend.Skills
         protected virtual async Task ResetCachedCyberwareRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _intCachedCyberwareRating = int.MinValue;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6902,30 +6365,20 @@ namespace Chummer.Backend.Skills
         public virtual async Task<int> GetCyberwareRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCachedCyberwareRatingLock.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedCyberwareRatingLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await _objCachedCyberwareRatingLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_intCachedCyberwareRating != int.MinValue)
                     return _intCachedCyberwareRating;
 
-                IAsyncDisposable objLocker2 =
-                    await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCachedCyberwareRatingLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     //TODO: method is here, but not used in any form, needs testing (worried about child items...)
@@ -6976,14 +6429,6 @@ namespace Chummer.Backend.Skills
 
                     return _intCachedCyberwareRating = 0;
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7456,8 +6901,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (IsLoading)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -7481,8 +6925,7 @@ namespace Chummer.Backend.Skills
 
                     if (setNamesOfChangedProperties.Overlaps(s_SetPropertyNamesWithCachedValues))
                     {
-                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             if (setNamesOfChangedProperties.Contains(nameof(FreeBase)))
@@ -7529,10 +6972,6 @@ namespace Chummer.Backend.Skills
                                         await lstSpecs.ClearAsync(token).ConfigureAwait(false);
                                 }
                             }
-                        }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
                         }
                     }
 
@@ -7628,10 +7067,6 @@ namespace Chummer.Backend.Skills
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task OnSkillGroupChanged(object sender, MultiplePropertiesChangedEventArgs e,
@@ -7640,8 +7075,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (IsLoading || CharacterObject?.IsLoading != false)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (!await GetEnabledAsync(token).ConfigureAwait(false)) // Skip updates for disabled skills because it's unnecessary
@@ -7727,10 +7161,6 @@ namespace Chummer.Backend.Skills
                         await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task OnCharacterChanged(object sender, MultiplePropertiesChangedEventArgs e,
@@ -7760,8 +7190,7 @@ namespace Chummer.Backend.Skills
                 if (e.PropertyNames.Contains(nameof(Character.IsCritter)))
                     setProperties.Add(nameof(Default));
 
-                IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (e.PropertyNames.Contains(nameof(Character.GetMovement)) &&
@@ -7795,8 +7224,7 @@ namespace Chummer.Backend.Skills
 
                     if (e.PropertyNames.Contains(nameof(Character.Settings)))
                     {
-                        IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             CharacterSettings objNewSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
@@ -7821,18 +7249,10 @@ namespace Chummer.Backend.Skills
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
 
                     if (setProperties.Count > 0)
                         await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -7843,8 +7263,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (IsLoading || CharacterObject?.IsLoading != false)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
@@ -7915,10 +7334,6 @@ namespace Chummer.Backend.Skills
                         await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task OnLinkedAttributeChanged(object sender, MultiplePropertiesChangedEventArgs e,
@@ -7946,10 +7361,9 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            
+
             // Use upgradeable read lock like other collection change handlers in the codebase
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Needed to make sure we don't call this method another time when we set the specialization's Parent
@@ -7982,10 +7396,6 @@ namespace Chummer.Backend.Skills
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task SpecializationsOnBeforeClearCollectionChanged(object sender,
@@ -7994,8 +7404,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (_intSkipSpecializationRefresh > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Needed to make sure we don't call this method another time when we set the specialization's Parent
@@ -8016,10 +7425,6 @@ namespace Chummer.Backend.Skills
                 {
                     Interlocked.Decrement(ref _intSkipSpecializationRefresh);
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8156,8 +7561,7 @@ namespace Chummer.Backend.Skills
             else
                 cost = intLevelsModded * await objSettings.GetKarmaImproveActiveSkillAsync(token).ConfigureAwait(false);
 
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intSkillGroupCostAdjustment = 0;
@@ -8256,10 +7660,6 @@ namespace Chummer.Backend.Skills
                 if (cost < intSkillGroupCostAdjustment)
                     cost = intSkillGroupCostAdjustment;
                 return cost;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8375,8 +7775,7 @@ namespace Chummer.Backend.Skills
         /// <returns>Price in karma</returns>
         public virtual async Task<int> GetUpgradeKarmaCostAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalBaseRating = await GetTotalBaseRatingAsync(token).ConfigureAwait(false);
@@ -8473,16 +7872,11 @@ namespace Chummer.Backend.Skills
                     upgrade = intMinCost + intSkillGroupCostAdjustment;
                 return upgrade;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task Upgrade(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
@@ -8519,10 +7913,6 @@ namespace Chummer.Backend.Skills
 
                 await SetKarmaAsync(await GetKarmaAsync(token).ConfigureAwait(false) + 1, token)
                     .ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8578,8 +7968,7 @@ namespace Chummer.Backend.Skills
 
         public async Task<bool> GetCanAffordSpecializationAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -8623,16 +8012,11 @@ namespace Chummer.Backend.Skills
 
                 return intReturn > 0;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task AddSpecialization(string strName, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 SkillSpecialization nspec = new SkillSpecialization(CharacterObject, this, strName);
@@ -8686,16 +8070,11 @@ namespace Chummer.Backend.Skills
                         await CharacterObject.ModifyKarmaAsync(-intPrice, token).ConfigureAwait(false);
                     }
 
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AddAsync(nspec, token)
                             .ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch
@@ -8703,10 +8082,6 @@ namespace Chummer.Backend.Skills
                     await nspec.DisposeAsync().ConfigureAwait(false);
                     throw;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8739,8 +8114,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetFreeKarmaAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -8756,10 +8130,6 @@ namespace Chummer.Backend.Skills
                                                              await GetDictionaryKeyAsync(token).ConfigureAwait(false),
                                                              token: token).ConfigureAwait(false))
                     .StandardRound();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8792,8 +8162,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         public async Task<int> GetFreeBaseAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -8808,10 +8177,6 @@ namespace Chummer.Backend.Skills
                                                              false,
                                                              await GetDictionaryKeyAsync(token).ConfigureAwait(false),
                                                              token: token).ConfigureAwait(false)).StandardRound();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8854,8 +8219,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         private async Task<bool> GetForcedBuyWithKarmaAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -8884,10 +8248,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return intReturn > 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8925,8 +8285,7 @@ namespace Chummer.Backend.Skills
         /// </summary>
         private async Task<bool> GetForcedNotBuyWithKarmaAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // intReturn for thread safety
@@ -8950,10 +8309,6 @@ namespace Chummer.Backend.Skills
                 }
 
                 return intReturn > 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -8993,8 +8348,7 @@ namespace Chummer.Backend.Skills
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task<string> FormattedDicePoolAsync(int intPool, string strValidSpec = "", CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
@@ -9013,10 +8367,6 @@ namespace Chummer.Backend.Skills
 
                 return strReturn;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public void Remove()
@@ -9030,17 +8380,12 @@ namespace Chummer.Backend.Skills
 
         public async Task RemoveAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 SkillGroup objGroup = SkillGroupObject;
                 if (objGroup != null)
                     await objGroup.RemoveAsync(this, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             await DisposeAsync().ConfigureAwait(false);
         }
@@ -9211,16 +8556,11 @@ namespace Chummer.Backend.Skills
                     }
                 }
 
-                IAsyncDisposable objLocker = await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
+                await using (await _lstSpecializations.LockObject.EnterWriteLockAsync().ConfigureAwait(false))
                 {
                     _lstSpecializations.CollectionChangedAsync -= SpecializationsOnCollectionChanged;
                     _lstSpecializations.BeforeClearCollectionChangedAsync -= SpecializationsOnBeforeClearCollectionChanged;
                     await _lstSpecializations.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
                 await _lstSpecializations.DisposeAsync().ConfigureAwait(false);
                 await _objCachedCyberwareRatingLock.DisposeAsync().ConfigureAwait(false);
@@ -9242,14 +8582,9 @@ namespace Chummer.Backend.Skills
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync().ConfigureAwait(false))
             {
                 await DisposeAsync(true).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             GC.SuppressFinalize(this);

@@ -48,8 +48,7 @@ namespace Chummer
             if (string.IsNullOrWhiteSpace(strLanguage))
                 strLanguage = GlobalSettings.Language;
 
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 //Little bit of data required for following steps
@@ -116,10 +115,6 @@ namespace Chummer
                     ArrayPool<string>.Shared.Return(story);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task<StringBuilder> Write(StringBuilder story, string innerText, int levels, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
@@ -127,8 +122,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (levels <= 0)
                 return story;
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int startingLength = story.Length;
@@ -183,10 +177,6 @@ namespace Chummer
 
                 return story;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task<string> Macro(string innerText, XPathNavigator xmlBaseMacrosNode, CancellationToken token = default)
@@ -214,8 +204,7 @@ namespace Chummer
                 macroName = macroPool = endString;
             }
 
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (macroName.ToUpperInvariant())
@@ -349,10 +338,6 @@ namespace Chummer
                 }
 
                 return string.Concat("(Unknown Macro $DOLLAR", innerText.AsSpan(1), ")");
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

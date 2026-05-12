@@ -117,8 +117,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task LoadAsync(XmlNode objNode, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 objNode.TryGetField("guid", Guid.TryParse, out _guiID);
@@ -144,10 +143,6 @@ namespace Chummer
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -244,15 +239,10 @@ namespace Chummer
         public async Task<int> GetTotalForceAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await Gear.SumAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync();
             }
         }
 
@@ -395,8 +385,7 @@ namespace Chummer
         public async Task<int> GetBindingCostAsync(CancellationToken token = default)
         {
             decimal decCost = 0;
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 decCost += await Gear.SumAsync(async objFocus =>
@@ -533,10 +522,6 @@ namespace Chummer
                     return await objFocus.GetRatingAsync(token).ConfigureAwait(false) * decKarmaMultiplier + decExtraKarmaCost;
                 }, token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
             return decCost.StandardRound();
         }
@@ -575,8 +560,7 @@ namespace Chummer
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdReturn))
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     await Gear.ForEachAsync(async objGear =>
@@ -584,10 +568,6 @@ namespace Chummer
                         sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
                                                       .ConfigureAwait(false), ',', strSpace);
                     }, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 // Remove the trailing comma.
@@ -623,8 +603,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objGear == null)
                 throw new ArgumentNullException(nameof(objGear));
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 TreeNode objNode = await objGear.CreateTreeNode(cmsStackedFocus, null, token).ConfigureAwait(false);
 
@@ -637,10 +616,6 @@ namespace Chummer
                 objNode.Checked = Bonded;
 
                 return objNode;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -656,14 +631,9 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync().ConfigureAwait(false))
             {
                 await _lstGear.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

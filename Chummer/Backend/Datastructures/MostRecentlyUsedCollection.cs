@@ -54,8 +54,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.Insert" />
         public override async Task InsertAsync(int index, T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
@@ -63,10 +62,6 @@ namespace Chummer
                     await base.InsertAsync(index, item, token).ConfigureAwait(false);
                 else
                     await MoveAsync(intExistingIndex, Math.Min(index, await GetCountAsync(token).ConfigureAwait(false) - 1), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -98,8 +93,7 @@ namespace Chummer
 
         public override async Task AddAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
@@ -108,10 +102,6 @@ namespace Chummer
                 else
                     await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
                         .ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -131,8 +121,7 @@ namespace Chummer
         /// <inheritdoc />
         public override async Task<bool> TryAddAsync(T item, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intExistingIndex = await IndexOfAsync(item, token).ConfigureAwait(false);
@@ -141,10 +130,6 @@ namespace Chummer
                 await MoveAsync(intExistingIndex, await GetCountAsync(token).ConfigureAwait(false) - 1, token)
                     .ConfigureAwait(false);
                 return true;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
     }

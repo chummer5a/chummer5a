@@ -295,9 +295,7 @@ namespace Chummer
             {
                 try
                 {
-                    CursorWait objCursorWait =
-                        await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                     {
                         Task tskAutosave = Task.CompletedTask; // Separate out the autosave task so that we can work on it while the UI is drawing
                         using (CustomActivity op_load_frm_create = Timekeeper.StartSyncron(
@@ -1506,7 +1504,7 @@ namespace Chummer
                                                    out List<ListItem> lstFireModes))
                                         {
                                             foreach (FiringMode mode in
-                                                     Enum.GetValues(typeof(FiringMode)))
+                                                     Enum.GetValues<FiringMode>())
                                             {
                                                 if (mode == FiringMode.NumFiringModes)
                                                     continue;
@@ -1781,7 +1779,7 @@ namespace Chummer
                                 {
                                     // Directly awaiting here so that we can properly unset the dirty flag after the update
                                     await RequestAndProcessCharacterUpdate(GenericToken).ConfigureAwait(false);
-                                    
+
                                     // Update tradition UI after character loading is complete
                                     Tradition objTradition = await CharacterObject.GetMagicTraditionAsync(GenericToken).ConfigureAwait(false);
                                     if (objTradition != null && objTradition.IsCustomTradition)
@@ -1800,7 +1798,7 @@ namespace Chummer
                                         await cboSpiritIllusion.DoThreadSafeAsync(x => { x.Enabled = true; x.Visible = true; }, GenericToken).ConfigureAwait(false);
                                         await cboSpiritManipulation.DoThreadSafeAsync(x => { x.Enabled = true; x.Visible = true; }, GenericToken).ConfigureAwait(false);
                                     }
-                                    
+
                                     // Clear the Dirty flag which gets set when creating a new Character.
                                     if (!await CharacterObject.GetLoadAsDirtyAsync(GenericToken).ConfigureAwait(false))
                                         IsDirty = false;
@@ -1879,10 +1877,6 @@ namespace Chummer
 
                         await tskAutosave.ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
                 finally
                 {
@@ -1916,8 +1910,7 @@ namespace Chummer
 
                     try
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                         {
                             bool blnDoClose = false;
                             IsLoading = true;
@@ -2043,10 +2036,6 @@ namespace Chummer
                                 if (!blnDoClose)
                                     IsLoading = false;
                             }
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
 
                         // Now we close the original caller (weird async FormClosing event issue workaround)
@@ -2833,9 +2822,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (e.PropertyNames.Contains(nameof(CharacterSettings.Books)) && !IsLoading)
                     {
@@ -3223,10 +3210,6 @@ namespace Chummer
                             .ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
 
                 RequestCharacterUpdate(token);
             }
@@ -3340,8 +3323,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<SelectBuildMethod> frmPickBP
                            = await ThreadSafeForm<SelectBuildMethod>.GetAsync(
@@ -3349,10 +3331,6 @@ namespace Chummer
                     {
                         await frmPickBP.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -3683,12 +3661,9 @@ namespace Chummer
                                                       CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker
-                    = await CharacterObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -4503,14 +4478,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             await SetDirty(true, token).ConfigureAwait(false);
@@ -4625,280 +4592,279 @@ namespace Chummer
                     }, GenericToken).ConfigureAwait(false);
                 }
 
-                IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(GenericToken).ConfigureAwait(false);
-                try
+                await using (await GlobalSettings.EnterClipboardReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     switch (await GlobalSettings.GetClipboardContentTypeAsync(GenericToken).ConfigureAwait(false))
                     {
                         case ClipboardContentType.Armor:
-                        {
-                            // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armor");
-                            if (objXmlNode != null)
                             {
-                                Armor objArmor = new Armor(CharacterObject);
-                                try
+                                // Paste Armor.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armor");
+                                if (objXmlNode != null)
                                 {
-                                    await objArmor.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                    await CharacterObject.Armor.AddAsync(objArmor, GenericToken).ConfigureAwait(false);
+                                    Armor objArmor = new Armor(CharacterObject);
+                                    try
+                                    {
+                                        await objArmor.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                        await CharacterObject.Armor.AddAsync(objArmor, GenericToken).ConfigureAwait(false);
 
-                                    await AddChildVehicles(objArmor.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objArmor.InternalId).ConfigureAwait(false);
+                                        await AddChildVehicles(objArmor.InternalId).ConfigureAwait(false);
+                                        await AddChildWeapons(objArmor.InternalId).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objArmor.DeleteArmorAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
-                                catch
-                                {
-                                    await objArmor.DeleteArmorAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                    throw;
-                                }
+
+                                break;
                             }
-
-                            break;
-                        }
                         case ClipboardContentType.ArmorMod:
-                        {
-                            if (!(objSelectedObject is Armor selectedArmor &&
-                                  await selectedArmor.AllowPasteXml(GenericToken).ConfigureAwait(false)))
-                                break;
-                            // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armormod");
-                            if (objXmlNode != null)
                             {
-                                ArmorMod objArmorMod = new ArmorMod(CharacterObject, selectedArmor);
-                                try
+                                if (!(objSelectedObject is Armor selectedArmor &&
+                                      await selectedArmor.AllowPasteXml(GenericToken).ConfigureAwait(false)))
+                                    break;
+                                // Paste Armor.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/armormod");
+                                if (objXmlNode != null)
                                 {
-                                    await objArmorMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                    await selectedArmor.ArmorMods.AddAsync(objArmorMod, GenericToken).ConfigureAwait(false);
+                                    ArmorMod objArmorMod = new ArmorMod(CharacterObject, selectedArmor);
+                                    try
+                                    {
+                                        await objArmorMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                        await selectedArmor.ArmorMods.AddAsync(objArmorMod, GenericToken).ConfigureAwait(false);
 
-                                    await AddChildVehicles(objArmorMod.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objArmorMod.InternalId).ConfigureAwait(false);
+                                        await AddChildVehicles(objArmorMod.InternalId).ConfigureAwait(false);
+                                        await AddChildWeapons(objArmorMod.InternalId).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objArmorMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
                                 }
-                                catch
-                                {
-                                    await objArmorMod.DeleteArmorModAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                    throw;
-                                }
+
+                                break;
                             }
-
-                            break;
-                        }
                         case ClipboardContentType.Cyberware:
-                        {
-                            // Paste Cyberware.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/cyberware");
-                            if (objXmlNode != null)
                             {
-                                Cyberware objCyberware = new Cyberware(CharacterObject);
-                                try
+                                // Paste Cyberware.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/cyberware");
+                                if (objXmlNode != null)
                                 {
-                                    await objCyberware.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                    if (objSelectedObject is Cyberware objCyberwareParent)
+                                    Cyberware objCyberware = new Cyberware(CharacterObject);
+                                    try
                                     {
-                                        if (!await objCyberwareParent.AllowPasteObject(objCyberware, GenericToken)
-                                                .ConfigureAwait(false))
+                                        await objCyberware.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                        if (objSelectedObject is Cyberware objCyberwareParent)
                                         {
-                                            await objCyberware.DeleteCyberwareAsync(token: GenericToken)
+                                            if (!await objCyberwareParent.AllowPasteObject(objCyberware, GenericToken)
+                                                    .ConfigureAwait(false))
+                                            {
+                                                await objCyberware.DeleteCyberwareAsync(token: GenericToken)
+                                                    .ConfigureAwait(false);
+                                                return;
+                                            }
+
+                                            await objCyberware.SetGradeAsync(await objCyberwareParent.GetGradeAsync(GenericToken).ConfigureAwait(false),
+                                                token: GenericToken).ConfigureAwait(false);
+                                            await (await objCyberwareParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objCyberware, GenericToken)
                                                 .ConfigureAwait(false);
-                                            return;
+                                        }
+                                        else
+                                        {
+                                            if (!string.IsNullOrEmpty(await objCyberware.GetLimbSlotAsync(GenericToken)
+                                                    .ConfigureAwait(false)) &&
+                                                !await objCyberware.GetValidLimbSlotAsync(
+                                                    await objCyberware.GetNodeXPathAsync(GlobalSettings.Language, GenericToken)
+                                                        .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
+                                            {
+                                                await objCyberware.DeleteCyberwareAsync(token: GenericToken)
+                                                    .ConfigureAwait(false);
+                                                return;
+                                            }
+
+                                            await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
+                                                .ConfigureAwait(false);
                                         }
 
-                                        await objCyberware.SetGradeAsync(await objCyberwareParent.GetGradeAsync(GenericToken).ConfigureAwait(false),
-                                            token: GenericToken).ConfigureAwait(false);
-                                        await (await objCyberwareParent.GetChildrenAsync(GenericToken).ConfigureAwait(false)).AddAsync(objCyberware, GenericToken)
-                                            .ConfigureAwait(false);
+                                        await AddChildVehicles(objCyberware.InternalId).ConfigureAwait(false);
+                                        await AddChildWeapons(objCyberware.InternalId).ConfigureAwait(false);
                                     }
-                                    else
+                                    catch
                                     {
-                                        if (!string.IsNullOrEmpty(await objCyberware.GetLimbSlotAsync(GenericToken)
-                                                .ConfigureAwait(false)) &&
-                                            !await objCyberware.GetValidLimbSlotAsync(
-                                                await objCyberware.GetNodeXPathAsync(GlobalSettings.Language, GenericToken)
-                                                    .ConfigureAwait(false), GenericToken).ConfigureAwait(false))
-                                        {
-                                            await objCyberware.DeleteCyberwareAsync(token: GenericToken)
-                                                .ConfigureAwait(false);
-                                            return;
-                                        }
-
-                                        await CharacterObject.Cyberware.AddAsync(objCyberware, GenericToken)
-                                            .ConfigureAwait(false);
+                                        await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
                                     }
+                                }
 
-                                    await AddChildVehicles(objCyberware.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objCyberware.InternalId).ConfigureAwait(false);
-                                }
-                                catch
-                                {
-                                    await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                    throw;
-                                }
+                                break;
                             }
-
-                            break;
-                        }
                         case ClipboardContentType.Gear:
-                        {
-                            // Paste Gear.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/gear");
-                            if (objXmlNode == null)
-                                break;
-                            Gear objGear = new Gear(CharacterObject);
-                            await objGear.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                            if (objSelectedObject is ICanPaste selected &&
-                                await selected.AllowPasteXml(GenericToken).ConfigureAwait(false) &&
-                                objSelectedObject is IHasGear gear)
                             {
-                                await gear.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                                if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
-                                    await objGear.ChangeEquippedStatusAsync(false, token: GenericToken)
-                                        .ConfigureAwait(false);
-                            }
-                            else
-                            {
-                                await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
-                            }
+                                // Paste Gear.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/gear");
+                                if (objXmlNode == null)
+                                    break;
+                                Gear objGear = new Gear(CharacterObject);
+                                await objGear.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                if (objSelectedObject is ICanPaste selected &&
+                                    await selected.AllowPasteXml(GenericToken).ConfigureAwait(false) &&
+                                    objSelectedObject is IHasGear gear)
+                                {
+                                    await gear.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                    if (gear is ICanEquip selectedEquip && !selectedEquip.Equipped)
+                                        await objGear.ChangeEquippedStatusAsync(false, token: GenericToken)
+                                            .ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    await CharacterObject.Gear.AddAsync(objGear, GenericToken).ConfigureAwait(false);
+                                }
 
-                            await AddChildVehicles(objGear.InternalId).ConfigureAwait(false);
-                            await AddChildWeapons(objGear.InternalId).ConfigureAwait(false);
-                            break;
-                        }
+                                await AddChildVehicles(objGear.InternalId).ConfigureAwait(false);
+                                await AddChildWeapons(objGear.InternalId).ConfigureAwait(false);
+                                break;
+                            }
                         case ClipboardContentType.Lifestyle:
-                        {
-                            // Lifestyle Tab.
-                            if (await tabStreetGearTabs
-                                    .DoThreadSafeFuncAsync(x => x.SelectedTab != tabLifestyle, GenericToken)
-                                    .ConfigureAwait(false))
-                                break;
-
-                            // Paste Lifestyle.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/lifestyle");
-                            if (objXmlNode == null)
-                                break;
-
-                            Lifestyle objLifestyle = new Lifestyle(CharacterObject);
-                            try
                             {
-                                await objLifestyle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                // Reset the number of months back to 1 since 0 isn't valid in Create Mode.
-                                await objLifestyle.SetIncrementsAsync(1, GenericToken).ConfigureAwait(false);
-                                await (await CharacterObject.GetLifestylesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
+                                // Lifestyle Tab.
+                                if (await tabStreetGearTabs
+                                        .DoThreadSafeFuncAsync(x => x.SelectedTab != tabLifestyle, GenericToken)
+                                        .ConfigureAwait(false))
+                                    break;
+
+                                // Paste Lifestyle.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/lifestyle");
+                                if (objXmlNode == null)
+                                    break;
+
+                                Lifestyle objLifestyle = new Lifestyle(CharacterObject);
+                                try
+                                {
+                                    await objLifestyle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                    // Reset the number of months back to 1 since 0 isn't valid in Create Mode.
+                                    await objLifestyle.SetIncrementsAsync(1, GenericToken).ConfigureAwait(false);
+                                    await (await CharacterObject.GetLifestylesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objLifestyle, GenericToken).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objLifestyle.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+                                break;
                             }
-                            catch
-                            {
-                                await objLifestyle.RemoveAsync(false, CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                            break;
-                        }
                         case ClipboardContentType.Vehicle:
-                        {
-                            // Paste Vehicle.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/vehicle");
-                            Vehicle objVehicle = new Vehicle(CharacterObject);
-                            try
                             {
-                                await objVehicle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
-                            }
-                            catch
-                            {
-                                await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                            break;
-                        }
-                        case ClipboardContentType.Weapon:
-                        {
-                            // Paste Weapon.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/weapon");
-                            if (objXmlNode != null)
-                            {
-                                Weapon objWeapon = null;
+                                // Paste Vehicle.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/vehicle");
+                                Vehicle objVehicle = new Vehicle(CharacterObject);
                                 try
                                 {
-                                    switch (objSelectedObject)
-                                    {
-                                        case Weapon objWeaponParent when !await objWeaponParent.AllowPasteXml(GenericToken)
-                                            .ConfigureAwait(false):
-                                            return;
-
-                                        case Weapon objWeaponParent:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objWeaponParent.Children.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
-
-                                        case WeaponMount objWeaponMount
-                                            when !await objWeaponMount.AllowPasteXml(GenericToken).ConfigureAwait(false):
-                                            return;
-
-                                        case WeaponMount objWeaponMount:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
-
-                                        case VehicleMod objMod
-                                            when !await objMod.AllowPasteXml(GenericToken).ConfigureAwait(false):
-                                            return;
-
-                                        case VehicleMod objMod:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
-                                            break;
-
-                                        default:
-                                            objWeapon = new Weapon(CharacterObject);
-                                            await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                            await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
-                                                .ConfigureAwait(false);
-                                            break;
-                                    }
-
-                                    await AddChildVehicles(objWeapon.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objWeapon.InternalId).ConfigureAwait(false);
+                                    await objVehicle.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                    await (await CharacterObject.GetVehiclesAsync(GenericToken).ConfigureAwait(false)).AddAsync(objVehicle, GenericToken).ConfigureAwait(false);
                                 }
                                 catch
                                 {
-                                    if (objWeapon != null)
-                                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    await objVehicle.DeleteVehicleAsync(CancellationToken.None).ConfigureAwait(false);
                                     throw;
                                 }
-                            }
-
-                            break;
-                        }
-                        case ClipboardContentType.WeaponAccessory:
-                        {
-                            if (!(objSelectedObject is Weapon selectedWeapon &&
-                                  await selectedWeapon.AllowPasteXml(GenericToken).ConfigureAwait(false)))
                                 break;
-                            // Paste Armor.
-                            XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/accessory");
-                            if (objXmlNode != null)
-                            {
-                                WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
-                                try
-                                {
-                                    await objMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
-                                    await selectedWeapon.WeaponAccessories.AddAsync(objMod, GenericToken)
-                                        .ConfigureAwait(false);
-
-                                    await AddChildVehicles(objMod.InternalId).ConfigureAwait(false);
-                                    await AddChildWeapons(objMod.InternalId).ConfigureAwait(false);
-                                }
-                                catch
-                                {
-                                    await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                    throw;
-                                }
                             }
+                        case ClipboardContentType.Weapon:
+                            {
+                                // Paste Weapon.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/weapon");
+                                if (objXmlNode != null)
+                                {
+                                    Weapon objWeapon = null;
+                                    try
+                                    {
+                                        switch (objSelectedObject)
+                                        {
+                                            case Weapon objWeaponParent when !await objWeaponParent.AllowPasteXml(GenericToken)
+                                                .ConfigureAwait(false):
+                                                return;
 
-                            break;
-                        }
+                                            case Weapon objWeaponParent:
+                                                objWeapon = new Weapon(CharacterObject);
+                                                await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                                await objWeaponParent.Children.AddAsync(objWeapon, GenericToken)
+                                                    .ConfigureAwait(false);
+                                                break;
+
+                                            case WeaponMount objWeaponMount
+                                                when !await objWeaponMount.AllowPasteXml(GenericToken).ConfigureAwait(false):
+                                                return;
+
+                                            case WeaponMount objWeaponMount:
+                                                objWeapon = new Weapon(CharacterObject);
+                                                await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                                await objWeaponMount.Weapons.AddAsync(objWeapon, GenericToken)
+                                                    .ConfigureAwait(false);
+                                                break;
+
+                                            case VehicleMod objMod
+                                                when !await objMod.AllowPasteXml(GenericToken).ConfigureAwait(false):
+                                                return;
+
+                                            case VehicleMod objMod:
+                                                objWeapon = new Weapon(CharacterObject);
+                                                await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                                await objMod.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
+                                                break;
+
+                                            default:
+                                                objWeapon = new Weapon(CharacterObject);
+                                                await objWeapon.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                                await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken)
+                                                    .ConfigureAwait(false);
+                                                break;
+                                        }
+
+                                        await AddChildVehicles(objWeapon.InternalId).ConfigureAwait(false);
+                                        await AddChildWeapons(objWeapon.InternalId).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        if (objWeapon != null)
+                                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }
+
+                                break;
+                            }
+                        case ClipboardContentType.WeaponAccessory:
+                            {
+                                if (!(objSelectedObject is Weapon selectedWeapon &&
+                                      await selectedWeapon.AllowPasteXml(GenericToken).ConfigureAwait(false)))
+                                    break;
+                                // Paste Armor.
+                                XmlNode objXmlNode = (await GlobalSettings.GetClipboardAsync(GenericToken).ConfigureAwait(false)).SelectSingleNode("/character/accessory");
+                                if (objXmlNode != null)
+                                {
+                                    WeaponAccessory objMod = new WeaponAccessory(CharacterObject);
+                                    try
+                                    {
+                                        await objMod.LoadAsync(objXmlNode, true, GenericToken).ConfigureAwait(false);
+                                        await selectedWeapon.WeaponAccessories.AddAsync(objMod, GenericToken)
+                                            .ConfigureAwait(false);
+
+                                        await AddChildVehicles(objMod.InternalId).ConfigureAwait(false);
+                                        await AddChildWeapons(objMod.InternalId).ConfigureAwait(false);
+                                    }
+                                    catch
+                                    {
+                                        await objMod.DeleteWeaponAccessoryAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                        throw;
+                                    }
+                                }
+
+                                break;
+                            }
                         default:
                             Utils.BreakIfDebug();
                             break;
@@ -4951,10 +4917,6 @@ namespace Chummer
                             }
                         }
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -5063,8 +5025,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("spells.xml", token: GenericToken)
                                                                   .ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -5116,10 +5077,6 @@ namespace Chummer
                             }
                         }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -5253,8 +5210,7 @@ namespace Chummer
                     = await CharacterObject.LoadDataAsync("complexforms.xml", token: GenericToken)
                                            .ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -5315,10 +5271,6 @@ namespace Chummer
                         }
                     } while (blnAddAgain);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -5333,8 +5285,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("programs.xml", token: GenericToken)
                                                                   .ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -5392,10 +5343,6 @@ namespace Chummer
                         await CharacterObject.AIPrograms.AddAsync(objProgram, GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -5448,12 +5395,9 @@ namespace Chummer
 
         private async Task<bool> AddWeapon(Location objLocation = null, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     using (ThreadSafeForm<SelectWeapon> frmPickWeapon
@@ -5505,14 +5449,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5534,8 +5470,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -5574,10 +5509,6 @@ namespace Chummer
                             throw;
                         }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -5639,8 +5570,7 @@ namespace Chummer
 
         private async Task<bool> AddVehicle(Location objLocation = null, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 using (ThreadSafeForm<SelectVehicle> frmPickVehicle
                        = await ThreadSafeForm<SelectVehicle>.GetAsync(() => new SelectVehicle(CharacterObject), token)
@@ -5690,10 +5620,6 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cmdAddVehicle_Click(object sender, EventArgs e)
@@ -5732,14 +5658,9 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     await MartialArt.Purchase(CharacterObject, GenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -5914,12 +5835,9 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker =
-                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                     {
                         GenericToken.ThrowIfCancellationRequested();
                         if (await CharacterObject.GetMAGEnabledAsync(GenericToken).ConfigureAwait(false))
@@ -6014,14 +5932,6 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -6053,8 +5963,7 @@ namespace Chummer
                     = await CharacterObject.LoadDataAsync("critterpowers.xml", token: GenericToken)
                                            .ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -6079,10 +5988,6 @@ namespace Chummer
                             await CharacterObject.CritterPowers.AddAsync(objPower, GenericToken).ConfigureAwait(false);
                         }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -6144,8 +6049,7 @@ namespace Chummer
                 if (xmlStagesParentNode == null)
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -6223,10 +6127,6 @@ namespace Chummer
                         //To do group skills (not that anything else is sane)
                     } while (blnAddAgain);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -6241,9 +6141,7 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("qualities.xml", token: GenericToken)
                                                                   .ConfigureAwait(false);
 
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -6274,10 +6172,7 @@ namespace Chummer
                             }
 
                             // Helps to capture a write lock here for performance purposes
-                            IAsyncDisposable objLocker = await CharacterObject
-                                                               .LockObject.EnterWriteLockAsync(GenericToken)
-                                                               .ConfigureAwait(false);
-                            try
+                            await using (await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false))
                             {
                                 GenericToken.ThrowIfCancellationRequested();
                                 for (int i = 1; i <= intRatingToAdd; ++i)
@@ -6402,16 +6297,8 @@ namespace Chummer
                                     }
                                 }
                             }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -6451,11 +6338,9 @@ namespace Chummer
                     return false;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.MetatypeRemovable)
@@ -6609,17 +6494,9 @@ namespace Chummer
                             objXmlDeleteQuality.SelectAndCacheExpressionAsNavigator("addqualities/addquality", token),
                             token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
 
                 // Perform removal
                 await objSelectedQuality.DeleteQualityAsync(blnCompleteDelete, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;
@@ -6648,9 +6525,7 @@ namespace Chummer
             // Can't do a foreach because we're removing items, this is the next best thing
             bool blnFirstRemoval = true;
             // Helps to capture a write lock here for performance purposes
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterWriteLockAsync(token)
-                                                              .ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 for (int i = await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
@@ -6667,10 +6542,6 @@ namespace Chummer
                         i = intCount;
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -6861,12 +6732,9 @@ namespace Chummer
         private async Task<bool> AddArmor(Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     using (ThreadSafeForm<SelectArmor> frmPickArmor = await ThreadSafeForm<SelectArmor>
@@ -6924,14 +6792,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7216,8 +7076,7 @@ namespace Chummer
                     return;
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -7230,10 +7089,6 @@ namespace Chummer
                             true,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7279,14 +7134,12 @@ namespace Chummer
                     }
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectArmorMod> frmPickArmorMod
@@ -7348,15 +7201,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7403,8 +7248,7 @@ namespace Chummer
                                        .ConfigureAwait(false) is Vehicle
                         objVehicle))
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<CreateWeaponMount> frmPickVehicleMod
                            = await ThreadSafeForm<CreateWeaponMount>.GetAsync(
@@ -7416,10 +7260,6 @@ namespace Chummer
                         await objVehicle.WeaponMounts.AddAsync(frmPickVehicleMod.MyForm.WeaponMount, GenericToken)
                                         .ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7437,8 +7277,7 @@ namespace Chummer
                 if (objVehicle == null)
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -7452,10 +7291,6 @@ namespace Chummer
                             false,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7526,8 +7361,7 @@ namespace Chummer
 
         private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
@@ -7586,10 +7420,6 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void tsVehicleAddWeaponAccessory_Click(object sender, EventArgs e)
@@ -7613,8 +7443,7 @@ namespace Chummer
                     return;
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -7627,10 +7456,6 @@ namespace Chummer
                             true,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7700,8 +7525,7 @@ namespace Chummer
 
                 XmlDocument xmlDocument = await CharacterObject.LoadDataAsync("martialarts.xml", token: GenericToken).ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -7730,10 +7554,6 @@ namespace Chummer
 
                         await objMartialArt.Techniques.AddAsync(objTechnique, GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7824,16 +7644,13 @@ namespace Chummer
                 }
 
                 List<Weapon> lstWeapons = new List<Weapon>(1);
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
                         lstWeapons.Clear();
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             Gear objGear;
@@ -7906,15 +7723,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -7971,8 +7780,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -8011,10 +7819,6 @@ namespace Chummer
                             throw;
                         }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8841,8 +8645,7 @@ namespace Chummer
                 if (objCyberware == null)
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -8858,10 +8661,6 @@ namespace Chummer
                             NuyenExpenseType.AddCyberwareGear,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8884,8 +8683,7 @@ namespace Chummer
                 if (objCyberware == null)
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -8901,10 +8699,6 @@ namespace Chummer
                             NuyenExpenseType.AddCyberwareGear,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -8959,15 +8753,12 @@ namespace Chummer
                     }
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
@@ -9025,15 +8816,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9086,15 +8869,12 @@ namespace Chummer
                     }
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
@@ -9150,15 +8930,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9197,15 +8969,12 @@ namespace Chummer
                     strCategories = sbdCategories.ToString();
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
@@ -9257,15 +9026,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9312,15 +9073,12 @@ namespace Chummer
                 XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("gear.xml", token: GenericToken)
                                                                   .ConfigureAwait(false);
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
@@ -9378,15 +9136,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9436,9 +9186,7 @@ namespace Chummer
         {
             try
             {
-                IAsyncDisposable objLocker =
-                    await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     using (ThreadSafeForm<CreateNaturalWeapon> frmCreateNaturalWeapon
@@ -9452,10 +9200,6 @@ namespace Chummer
                         Weapon objWeapon = frmCreateNaturalWeapon.MyForm.SelectedWeapon;
                         await CharacterObject.Weapons.AddAsync(objWeapon, GenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9497,15 +9241,12 @@ namespace Chummer
                     }
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
                     {
-                        IAsyncDisposable objLocker =
-                            await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             using (ThreadSafeForm<SelectGear> frmPickGear
@@ -9568,15 +9309,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     } while (blnAddAgain);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -9614,8 +9347,7 @@ namespace Chummer
                     strCategories = sbdCategories.ToString();
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
                     bool blnAddAgain;
                     do
@@ -9670,10 +9402,6 @@ namespace Chummer
                         }
                     } while (blnAddAgain);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -9723,9 +9451,7 @@ namespace Chummer
                     await lblQualityBPLabel.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await lblQualitySource.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
                     await lblQualityBP.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objQuality.LockObject.EnterReadLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
+                    await using (await objQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         await UpdateQualityLevelValue(objQuality, token).ConfigureAwait(false);
@@ -9740,10 +9466,6 @@ namespace Chummer
                               + await LanguageManager.GetStringAsync("String_Karma", token: token)
                                   .ConfigureAwait(false);
                         await lblQualityBP.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -9775,8 +9497,7 @@ namespace Chummer
                 return;
             }
 
-            IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await objSelectedQuality.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await objSelectedQuality.GetOriginSourceAsync(token).ConfigureAwait(false) ==
@@ -9850,10 +9571,6 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private int _intSkipQualityLevelChanged;
@@ -9869,17 +9586,14 @@ namespace Chummer
                                         .ConfigureAwait(false) is Quality objSelectedQuality))
                     return;
                 bool blnDoRemoveQuality = false;
-                IAsyncDisposable objLocker = await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                try
+                await using (await objSelectedQuality.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
                     GenericToken.ThrowIfCancellationRequested();
                     int intCurrentLevels = await objSelectedQuality.GetLevelsAsync(GenericToken).ConfigureAwait(false);
                     int intSelectedLevels = await nudQualityLevel.DoThreadSafeFuncAsync(x => x.ValueAsInt, GenericToken)
                         .ConfigureAwait(false);
                     // Helps to capture a write lock here for performance purposes
-                    IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
-                        .ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false))
                     {
                         GenericToken.ThrowIfCancellationRequested();
                         // Adding new levels
@@ -9918,10 +9632,10 @@ namespace Chummer
                                     // If the item being checked would cause the limit of 25 BP spent on Positive Qualities to be exceed, do not let it be checked and display a message.
                                     string strAmount
                                         = intMaxQualityAmount.ToString(GlobalSettings.CultureInfo)
-                                          + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                                              .ConfigureAwait(false)
-                                          + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken)
-                                              .ConfigureAwait(false);
+                                            + await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
+                                                .ConfigureAwait(false)
+                                            + await LanguageManager.GetStringAsync("String_Karma", token: GenericToken)
+                                                .ConfigureAwait(false);
 
                                     // Add the cost of the Quality that is being added.
                                     int intBP = await objQuality.GetBPAsync(GenericToken).ConfigureAwait(false);
@@ -9949,7 +9663,7 @@ namespace Chummer
                                                 blnAddItem = false;
                                             }
                                             else if (await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < 0
-                                                     && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < intMaxQualityAmount * -1)
+                                                        && intBP + await CharacterObject.GetMetatypeBPAsync(GenericToken).ConfigureAwait(false) < intMaxQualityAmount * -1)
                                             {
                                                 await Program.ShowScrollableMessageBoxAsync(
                                                     this,
@@ -10034,10 +9748,10 @@ namespace Chummer
                         {
                             Quality objInvisibleQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(
                                 async x => x.SourceID == guiSourceID
-                                     && await x.GetExtraAsync(GenericToken).ConfigureAwait(false) == strExtra
-                                     && await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false) == strSourceName
-                                     && x.InternalId != strInternalId
-                                     && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
+                                        && await x.GetExtraAsync(GenericToken).ConfigureAwait(false) == strExtra
+                                        && await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false) == strSourceName
+                                        && x.InternalId != strInternalId
+                                        && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
                             if (objInvisibleQuality == null
                                 || !await RemoveQuality(objInvisibleQuality, false, false, GenericToken)
                                     .ConfigureAwait(false))
@@ -10047,14 +9761,6 @@ namespace Chummer
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 if (blnDoRemoveQuality && !await RemoveQuality(objSelectedQuality, false, false, GenericToken)
@@ -10150,9 +9856,7 @@ namespace Chummer
                     // Locate the selected piece of Cyberware.
                     case Cyberware objCyberware:
                     {
-                        IAsyncDisposable objLocker =
-                            await objCyberware.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await objCyberware.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             GenericToken.ThrowIfCancellationRequested();
                             // Update the selected Cyberware Rating.
@@ -10190,9 +9894,9 @@ namespace Chummer
                                     List<Cyberware> lstPairableCyberwares = await CharacterObject.Cyberware
                                         .DeepWhereAsync(x => x.GetChildrenAsync(GenericToken),
                                             async x => objCyberware.IncludePair.Contains(x.Name)
-                                                       && x.Extra == objCyberware.Extra &&
-                                                       await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
-                                                           .ConfigureAwait(false),
+                                                        && x.Extra == objCyberware.Extra &&
+                                                        await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
+                                                            .ConfigureAwait(false),
                                             GenericToken).ConfigureAwait(false);
                                     int intCyberwaresCount = lstPairableCyberwares.Count;
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
@@ -10211,7 +9915,7 @@ namespace Chummer
 
                                         // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
                                         intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) *
-                                                             2;
+                                                                2;
                                     }
 
                                     foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
@@ -10246,10 +9950,6 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             await treCyberware.DoThreadSafeAsync(() => objSelectedNode.Text = strText, GenericToken)
                                 .ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -10394,13 +10094,9 @@ namespace Chummer
                                          .ConfigureAwait(false) is Lifestyle objLifestyle))
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker =
-                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken)
-                            .ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                     {
                         GenericToken.ThrowIfCancellationRequested();
                         string strGuid = objLifestyle.InternalId;
@@ -10442,14 +10138,6 @@ namespace Chummer
                             .ConfigureAwait(false);
                         await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -11760,12 +11448,9 @@ namespace Chummer
 
             try
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                 {
-                    CursorWait objCursorWait =
-                        await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                     {
                         // Don't bother to do anything since a node is being unchecked.
                         if (await treViewToUse.DoThreadSafeFuncAsync(() => e.Node.Checked, GenericToken)
@@ -11879,9 +11564,7 @@ namespace Chummer
                             }
                         }
 
-                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken)
-                            .ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterWriteLockAsync(GenericToken).ConfigureAwait(false))
                         {
                             if (objSelectedFocus != null)
                             {
@@ -12025,19 +11708,7 @@ namespace Chummer
                             }
                             await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -13019,9 +12690,7 @@ namespace Chummer
                 ? await LanguageManager.GetStringAsync("String_Karma", token: token).ConfigureAwait(false)
                 : string.Empty;
 
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // ------------------------------------------------------------------------------
@@ -13993,10 +13662,6 @@ namespace Chummer
 
                 return intKarmaPointsRemain;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task UpdateSkillRelatedInfo(CancellationToken token = default)
@@ -14122,18 +13787,12 @@ namespace Chummer
                     return;
 
                 // Character is not dirty and their save file was updated outside of Chummer5 while it is open, so reload them
-                CursorWait objCursorWaitOuter
-                    = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker =
-                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(GenericToken).ConfigureAwait(false))
                     {
                         GenericToken.ThrowIfCancellationRequested();
-                        CursorWait objCursorWait
-                            = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false))
                         {
                             using (ThreadSafeForm<LoadingBar> frmLoadingBar = await Program
                                        .CreateAndShowProgressBarAsync(
@@ -14180,10 +13839,6 @@ namespace Chummer
                                     SkipUpdate = false;
                                 }
                             }
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
 
                         // Immediately call character update because we know it's necessary
@@ -14236,14 +13891,6 @@ namespace Chummer
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWaitOuter.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -14268,19 +13915,14 @@ namespace Chummer
             SkipUpdate = true;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, token).ConfigureAwait(false))
                 {
                     // Upgradeable read lock so that we make sure all potential write locks are finished before executing
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         // Read lock to make sure we are not writing anything despite being in an upgradeable read lock
-                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterReadLockAsync(token)
-                            .ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             ProcessCharacterUpdateHasStarted();
@@ -14344,19 +13986,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                             await tskAutosave.ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -16794,12 +16424,10 @@ namespace Chummer
         /// </summary>
         public override async Task<bool> SaveCharacterAsCreated(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     SkipUpdate = true;
@@ -16966,14 +16594,6 @@ namespace Chummer
                         throw;
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;
@@ -16987,12 +16607,9 @@ namespace Chummer
                                                     CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     using (ThreadSafeForm<SelectCyberware> frmPickCyberware
@@ -17007,195 +16624,195 @@ namespace Chummer
                         {
                             // Apply the character's Cyberware Essence cost multiplier if applicable.
                             case Improvement.ImprovementSource.Cyberware:
-                            {
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject, Improvement.ImprovementType.CyberwareEssCost,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
                                 {
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject, Improvement.ImprovementType.CyberwareEssCost,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
-                                }
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.CyberwareTotalEssMultiplier,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
+                                    {
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier *= objImprovement.Value / 100.0m;
+                                        }
 
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                    }
+
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
+                                            token: token).ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
+                                    {
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
+                                    }
+
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                             CharacterObject,
-                                            Improvement.ImprovementType.CyberwareTotalEssMultiplier,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                            Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive,
+                                            token: token).ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier *= objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                    break;
                                 }
-
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
-                                        token: token).ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
-                                    {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                                    }
-
-                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
-                                }
-
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive,
-                                        token: token).ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
-                                    {
-                                        decMultiplier *= objImprovement.Value / 100.0m;
-                                    }
-
-                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                                }
-
-                                break;
-                            }
                             // Apply the character's Bioware Essence cost multiplier if applicable.
                             case Improvement.ImprovementSource.Bioware:
-                            {
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject, Improvement.ImprovementType.BiowareEssCost,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
                                 {
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject, Improvement.ImprovementType.BiowareEssCost,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
-                                }
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.BiowareTotalEssMultiplier,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
+                                    {
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier *= objImprovement.Value / 100.0m;
+                                        }
 
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                    }
+
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.BiowareEssCostNonRetroactive,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
+                                    {
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
+                                    }
+
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
                                             CharacterObject,
-                                            Improvement.ImprovementType.BiowareTotalEssMultiplier,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                            Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive,
+                                            token: token).ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier *= objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                                }
-
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject,
-                                            Improvement.ImprovementType.BiowareEssCostNonRetroactive,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                    // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.BasicBiowareEssCost, token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
-                                }
-
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                        CharacterObject,
-                                        Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive,
-                                        token: token).ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                    // Apply the character's Genetech Essence cost multiplier if applicable.
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.GenetechEssMultiplier,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
-                                }
-
-                                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject,
-                                            Improvement.ImprovementType.BasicBiowareEssCost, token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
+                                    // Genetech Cost multiplier.
+                                    lstImprovements
+                                        = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                                CharacterObject,
+                                                Improvement.ImprovementType.GenetechCostMultiplier,
+                                                token: token)
+                                            .ConfigureAwait(false);
+                                    if (lstImprovements.Count != 0)
                                     {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        decMultiplier = 1.0m;
+                                        foreach (Improvement objImprovement in lstImprovements)
+                                        {
+                                            decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                        }
+
+                                        frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
                                     }
 
-                                    frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
+                                    break;
                                 }
-
-                                // Apply the character's Genetech Essence cost multiplier if applicable.
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject,
-                                            Improvement.ImprovementType.GenetechEssMultiplier,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
-                                    {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                                    }
-
-                                    frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
-                                }
-
-                                // Genetech Cost multiplier.
-                                lstImprovements
-                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
-                                            CharacterObject,
-                                            Improvement.ImprovementType.GenetechCostMultiplier,
-                                            token: token)
-                                        .ConfigureAwait(false);
-                                if (lstImprovements.Count != 0)
-                                {
-                                    decMultiplier = 1.0m;
-                                    foreach (Improvement objImprovement in lstImprovements)
-                                    {
-                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
-                                    }
-
-                                    frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
-                                }
-
-                                break;
-                            }
                         }
 
                         Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
@@ -17418,14 +17035,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17435,12 +17044,9 @@ namespace Chummer
         private async Task<bool> PickGear(string strSelectedId, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     bool blnNullParent = false;
@@ -17593,14 +17199,6 @@ namespace Chummer
                         return frmPickGear.MyForm.AddAgain;
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17614,12 +17212,9 @@ namespace Chummer
                                                     CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     (Gear objSelectedGear, Armor objSelectedArmor, ArmorMod objSelectedMod)
@@ -17763,14 +17358,6 @@ namespace Chummer
                         return frmPickGear.MyForm.AddAgain;
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -19969,8 +19556,7 @@ namespace Chummer
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                           out StringBuilder sbdMessage))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     // Check if the character has more than 1 Martial Art, not counting qualities.
                     int intMartialArts = await (await CharacterObject.GetMartialArtsAsync(token).ConfigureAwait(false))
@@ -21211,10 +20797,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
 
                 if (!blnValid && sbdMessage.Length > 0)
                 {
@@ -21239,14 +20821,10 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
 
-            IAsyncDisposable objLocker =
-                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await CharacterObjectSettings.LockObject.EnterReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await CharacterObjectSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     int intBuildPoints = await CalculateBPandRefreshBPDisplays(false, token).ConfigureAwait(false);
@@ -21272,18 +20850,18 @@ namespace Chummer
                                     return false;
                             }
                             else if (await Program.ShowScrollableMessageBoxAsync(this, string.Format(GlobalSettings.CultureInfo,
-                                             await LanguageManager
-                                                 .GetStringAsync(
-                                                     "Message_ExtraKarma", token: token)
-                                                 .ConfigureAwait(false),
-                                             intBuildPoints.ToString(
-                                                 GlobalSettings.CultureInfo),
-                                             (await CharacterObjectSettings.GetKarmaCarryoverAsync(token)
-                                                 .ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
-                                         await LanguageManager
-                                             .GetStringAsync("MessageTitle_ExtraKarma", token: token)
-                                             .ConfigureAwait(false), MessageBoxButtons.YesNo,
-                                         MessageBoxIcon.Warning, token: token).ConfigureAwait(false) == DialogResult.No)
+                                                await LanguageManager
+                                                    .GetStringAsync(
+                                                        "Message_ExtraKarma", token: token)
+                                                    .ConfigureAwait(false),
+                                                intBuildPoints.ToString(
+                                                    GlobalSettings.CultureInfo),
+                                                (await CharacterObjectSettings.GetKarmaCarryoverAsync(token)
+                                                    .ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo)),
+                                            await LanguageManager
+                                                .GetStringAsync("MessageTitle_ExtraKarma", token: token)
+                                                .ConfigureAwait(false), MessageBoxButtons.YesNo,
+                                            MessageBoxIcon.Warning, token: token).ConfigureAwait(false) == DialogResult.No)
                             {
                                 return false;
                             }
@@ -21343,23 +20921,21 @@ namespace Chummer
 
                             strNewName += await LanguageManager.GetStringAsync("String_Space", token: token)
                                     .ConfigureAwait(false) + "("
-                                                           + await LanguageManager
-                                                               .GetStringAsync(
-                                                                   "Title_CreateMode", token: token)
-                                                               .ConfigureAwait(false)
-                                                           + ").chum5";
+                                                            + await LanguageManager
+                                                                .GetStringAsync(
+                                                                    "Title_CreateMode", token: token)
+                                                                .ConfigureAwait(false)
+                                                            + ").chum5";
                             if (CharacterObject.FileName?.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase) ==
                                 true)
                                 strNewName += "lz";
                             strNewName = Path.Combine(Utils.GetBackupSavesFolderPath, strNewName);
 
-                            CursorWait objCursorWait =
-                                await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                            try
+                            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                             {
                                 using (ThreadSafeForm<LoadingBar> frmLoadingBar
-                                       = await Program.CreateAndShowProgressBarAsync(token: token)
-                                           .ConfigureAwait(false))
+                                        = await Program.CreateAndShowProgressBarAsync(token: token)
+                                            .ConfigureAwait(false))
                                 {
                                     await frmLoadingBar.MyForm.PerformStepAsync(CharacterObject.CharacterName,
                                         LoadingBar.ProgressBarTextPatterns.Saving,
@@ -21368,10 +20944,6 @@ namespace Chummer
                                             .ConfigureAwait(false))
                                         return false;
                                 }
-                            }
-                            finally
-                            {
-                                await objCursorWait.DisposeAsync().ConfigureAwait(false);
                             }
                         }
 
@@ -21403,9 +20975,9 @@ namespace Chummer
 
                             decimal decStartingNuyen;
                             using (ThreadSafeForm<SelectLifestyleStartingNuyen> frmStartingNuyen
-                                   = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
-                                       () => new SelectLifestyleStartingNuyen(CharacterObject),
-                                       token).ConfigureAwait(false))
+                                    = await ThreadSafeForm<SelectLifestyleStartingNuyen>.GetAsync(
+                                        () => new SelectLifestyleStartingNuyen(CharacterObject),
+                                        token).ConfigureAwait(false))
                             {
                                 if (await frmStartingNuyen.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
                                     != DialogResult.OK)
@@ -21435,14 +21007,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return false;
@@ -21474,9 +21038,7 @@ namespace Chummer
                                                CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Create the Cyberware object.
@@ -21550,10 +21112,6 @@ namespace Chummer
                     throw;
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -21586,8 +21144,7 @@ namespace Chummer
             if (objXmlKit == null)
                 return false;
             const bool blnCreateChildren = true;
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Update Qualities.
@@ -22575,10 +22132,6 @@ namespace Chummer
                     }
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
             return blnAddAgain;
         }
@@ -22603,14 +22156,10 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strInitTip;
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await CharacterObjectSettings.LockObject.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-                try
+                await using (await CharacterObjectSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     decimal decMultiplier = 1.0m;
@@ -22625,8 +22174,8 @@ namespace Chummer
                             decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
                         int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
                         intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
-                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
-                                     * decMultiplier).StandardRound();
+                                        + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                        * decMultiplier).StandardRound();
                         token.ThrowIfCancellationRequested();
                         strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager
@@ -22645,8 +22194,8 @@ namespace Chummer
                             decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
                         int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
                         intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
-                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
-                                     * decMultiplier).StandardRound();
+                                        + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                        * decMultiplier).StandardRound();
                         token.ThrowIfCancellationRequested();
                         strInitTip = string.Format(GlobalSettings.CultureInfo,
                             await LanguageManager
@@ -22656,14 +22205,6 @@ namespace Chummer
                             intAmount.ToString(GlobalSettings.CultureInfo));
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             token.ThrowIfCancellationRequested();
@@ -23152,9 +22693,7 @@ namespace Chummer
         private async Task AddCyberwareSuite(Improvement.ImprovementSource objSource,
                                                   CancellationToken token = default)
         {
-            IAsyncDisposable objLocker =
-                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite
@@ -23203,10 +22742,6 @@ namespace Chummer
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23347,9 +22882,7 @@ namespace Chummer
                                        bool blnCreateChildren, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker =
-                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Grade objGrade = await Grade.ConvertToCyberwareGradeAsync(xmlCyberware["grade"]?.InnerTextViaPool(token),
@@ -23460,10 +22993,6 @@ namespace Chummer
                     await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
                     throw;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -23810,9 +23339,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, true, token: GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, token: GenericToken).ConfigureAwait(false))
                 {
                     StoryBuilder objBuilder = new StoryBuilder(CharacterObject);
                     if (Interlocked.CompareExchange(ref _objStoryBuilder, objBuilder, null) == null)
@@ -23826,10 +23353,6 @@ namespace Chummer
                     await CharacterObject
                         .SetBackgroundAsync(await _objStoryBuilder.GetStory(token: GenericToken).ConfigureAwait(false),
                             GenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -24368,15 +23891,10 @@ namespace Chummer
             try
             {
                 string strReturn;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, GenericToken).ConfigureAwait(false))
                 {
                     strReturn = (await CharacterObject.CalculateKarmaValue(
                         GlobalSettings.Language, GlobalSettings.CultureInfo, GenericToken).ConfigureAwait(false)).Item1;
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await Program.ShowScrollableMessageBoxAsync(this, strReturn,

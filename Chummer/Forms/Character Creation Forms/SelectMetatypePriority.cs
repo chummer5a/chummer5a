@@ -197,8 +197,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -491,10 +490,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -565,8 +560,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -585,10 +579,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -600,14 +590,9 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await MetatypeSelected(_objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -620,8 +605,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -632,10 +616,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1031,8 +1011,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1063,10 +1042,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1086,8 +1061,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1110,10 +1084,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1127,8 +1097,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1182,10 +1151,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1199,8 +1164,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1230,10 +1194,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1247,8 +1207,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1269,10 +1228,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1286,8 +1241,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1308,10 +1262,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1325,8 +1275,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -1347,10 +1296,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1362,15 +1307,10 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     bool blnTemp = await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
                     await cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = blnTemp, _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1388,8 +1328,7 @@ namespace Chummer
         /// </summary>
         private async Task MetatypeSelected(CancellationToken token = default)
         {
-            System.IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (await _objCharacter.GetEffectiveBuildMethodAsync(token).ConfigureAwait(false) == CharacterBuildMethod.SumtoTen)
@@ -1562,9 +1501,7 @@ namespace Chummer
 
                 strSelectedMetatype = objXmlMetatype["id"]?.InnerTextViaPool(token) ?? Utils.GuidEmptyString;
 
-                System.IAsyncDisposable objLocker2
-                    = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // Clear out all priority-only qualities that the character bought normally (relevant when switching from Karma to Priority/Sum-to-Ten)
@@ -1679,7 +1616,7 @@ namespace Chummer
                         lstNewPrioritySkills.Add(strSkill2);
                     if (!string.IsNullOrEmpty(strSkill3))
                         lstNewPrioritySkills.Add(strSkill3);
-                    
+
                     bool blnSkillChoicesChanged = lstCurrentPrioritySkills.Count != lstNewPrioritySkills.Count ||
                         !lstCurrentPrioritySkills.SequenceEqual(lstNewPrioritySkills);
 
@@ -1687,7 +1624,7 @@ namespace Chummer
                     // Load the Priority information.
 
                     // Set the character priority selections
-                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    (string Heritage, string Attributes, string Talent, string Skills, string Resources) prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
                     await _objCharacter.SetMetatypePriorityAsync(prioritySelections.Heritage, token)
                         .ConfigureAwait(false);
                     await _objCharacter.SetAttributesPriorityAsync(prioritySelections.Attributes, token)
@@ -2012,7 +1949,7 @@ namespace Chummer
                                                  || x.ImproveType == Improvement.ImprovementType.SkillGroupBase),
                                         token).ConfigureAwait(false),
                                 token: token).ConfigureAwait(false);
-                        
+
                         // Handle skill choice changes even when talent priority doesn't change
                         if (blnSkillChoicesChanged && !blnRemoveFreeSkills)
                         {
@@ -2022,7 +1959,7 @@ namespace Chummer
                                 + strNewSpecialPriority.CleanXPath() +
                                 " and (not(prioritytable) or prioritytable = "
                                 + strPriorityTable + ")]");
-                            
+
                             foreach (XPathNavigator xmlBaseTalentPriorityForSkills in xmlBaseTalentPriorityListForSkills)
                             {
                                 if (xmlBaseTalentPriorityListForSkills.Count == 1
@@ -2064,7 +2001,7 @@ namespace Chummer
                                                                  || x.ImproveType == Improvement.ImprovementType.SkillGroupBase),
                                                         token).ConfigureAwait(false),
                                                 token: token).ConfigureAwait(false);
-                                            
+
                                             // Add new skill improvements
                                             await AddFreeSkills(intFreeLevels, eType, strSkill1, strSkill2, strSkill3,
                                                 token).ConfigureAwait(false);
@@ -2358,20 +2295,12 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
 
                 await this.DoThreadSafeAsync(x =>
                 {
                     x.DialogResult = DialogResult.OK;
                     x.Close();
                 }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2588,7 +2517,7 @@ namespace Chummer
                 using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
                 {
                     token = objJoinedCancellationTokenSource.Token;
-                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    (string Heritage, string Attributes, string Talent, string Skills, string Resources) prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
                     intReturn = GetSumToTenValue(prioritySelections.Heritage)
                                 + GetSumToTenValue(prioritySelections.Attributes)
                                 + GetSumToTenValue(prioritySelections.Talent)
@@ -2602,7 +2531,7 @@ namespace Chummer
             }
             else
             {
-                var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                (string Heritage, string Attributes, string Talent, string Skills, string Resources) prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
                 intReturn = GetSumToTenValue(prioritySelections.Heritage)
                             + GetSumToTenValue(prioritySelections.Attributes)
                             + GetSumToTenValue(prioritySelections.Talent)

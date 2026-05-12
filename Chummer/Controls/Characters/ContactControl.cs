@@ -566,8 +566,7 @@ namespace Chummer
                     if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
                         objOpenCharacter = objLinkedCharacter;
                 }
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false))
                 {
                     if (objOpenCharacter == null)
                     {
@@ -582,10 +581,6 @@ namespace Chummer
 
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
                         await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -607,8 +602,7 @@ namespace Chummer
                     "|" + await LanguageManager.GetStringAsync("DialogFilter_Chum5lz", token: _objMyToken)
                         .ConfigureAwait(false) + "|" + await LanguageManager
                         .GetStringAsync("DialogFilter_All", token: _objMyToken).ConfigureAwait(false);
-                IAsyncDisposable objLocker = await _objContact.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                try
+                await using (await _objContact.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     string strOldFileName = await _objContact.GetFileNameAsync(_objMyToken).ConfigureAwait(false);
@@ -647,21 +641,12 @@ namespace Chummer
                     Uri uriFile = new Uri(strFileName);
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
 
-                    IAsyncDisposable objLocker2 = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
                         await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -692,16 +677,11 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
                     }
-                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
                         await _objContact.SetRelativeFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -812,8 +792,7 @@ namespace Chummer
                 }
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -841,10 +820,6 @@ namespace Chummer
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -936,8 +911,7 @@ namespace Chummer
 
         private async Task CreateSecondRowAsync(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -1022,7 +996,7 @@ namespace Chummer
                         Anchor = AnchorStyles.Right,
                         AutoSize = true,
                         AutoSizeMode = AutoSizeMode.GrowAndShrink,
-                        FlatAppearance = {BorderSize = 0},
+                        FlatAppearance = { BorderSize = 0 },
                         FlatStyle = FlatStyle.Flat,
                         Padding = new Padding(1),
                         MinimumSize = new Size(24, 24),
@@ -1172,10 +1146,6 @@ namespace Chummer
                         x.ResumeLayout(true);
                     }
                 }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1427,8 +1397,7 @@ namespace Chummer
         /// </summary>
         private async Task CreateStatBlockAsync(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x =>
                 {
@@ -1439,11 +1408,11 @@ namespace Chummer
                         Name = "cboMetatype"
                     };
                     x.cboGender = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboGender" };
                     x.cboAge = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboAge" };
                     x.cboType = new ElasticComboBox
-                        {Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType"};
+                    { Anchor = AnchorStyles.Left | AnchorStyles.Right, FormattingEnabled = true, Name = "cboType" };
                     x.cboPersonalLife = new ElasticComboBox
                     {
                         Anchor = AnchorStyles.Left | AnchorStyles.Right,
@@ -1730,10 +1699,6 @@ namespace Chummer
                 Interlocked.Decrement(ref _intUpdatingPersonalLife);
                 Interlocked.Decrement(ref _intUpdatingPreferredPayment);
                 Interlocked.Decrement(ref _intUpdatingHobbiesVice);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

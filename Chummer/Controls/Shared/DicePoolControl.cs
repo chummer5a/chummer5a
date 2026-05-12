@@ -122,56 +122,36 @@ namespace Chummer.UI.Shared.Components
         public async Task<decimal> GetDicePoolAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _decDicePool;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
         public async Task SetDicePoolAsync(decimal value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objDicePoolLockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_decDicePool == value)
                     return;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-            objLocker = await _objDicePoolLockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objDicePoolLockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_decDicePool == value)
                     return;
-                IAsyncDisposable objLocker2 = await _objDicePoolLockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objDicePoolLockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _decDicePool = value;
-                }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
                 }
                 string strText = CanBeRolled
                         ? value.ToString(GlobalSettings.CultureInfo)
                         : value.ToString("+#,0.##;-#,0.##;0.##", GlobalSettings.CultureInfo);
                 await lblDicePool.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

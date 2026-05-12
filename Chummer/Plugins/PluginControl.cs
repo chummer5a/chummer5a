@@ -448,8 +448,7 @@ namespace Chummer.Plugins
         {
             if (!GlobalSettings.PluginsEnabled)
                 return Array.Empty<IPlugin>();
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 List<IPlugin> result = new List<IPlugin>(await MyPlugins.GetCountAsync(token).ConfigureAwait(false));
@@ -461,10 +460,6 @@ namespace Chummer.Plugins
                 }, token).ConfigureAwait(false);
 
                 return result;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -559,8 +554,7 @@ namespace Chummer.Plugins
 
         internal async Task CallPlugins(CharacterCareer frmCareer, CustomActivity parentActivity, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
@@ -587,17 +581,12 @@ namespace Chummer.Plugins
                     }
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         internal async Task CallPlugins(CharacterCreate frmCreate, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
@@ -623,18 +612,13 @@ namespace Chummer.Plugins
                     }
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         [SupportedOSPlatform("windows")]
         internal async Task CallPlugins(ToolStripMenuItem menu, CustomActivity parentActivity,
                                         CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (IPlugin plugin in await GetMyActivePluginsAsync(token).ConfigureAwait(false))
@@ -661,10 +645,6 @@ namespace Chummer.Plugins
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -724,14 +704,9 @@ namespace Chummer.Plugins
         {
             if (Interlocked.CompareExchange(ref _intIsDisposed, 1, 0) > 0)
                 return;
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync().ConfigureAwait(false))
             {
                 await DisposeAsync(true).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await LockObject.DisposeAsync().ConfigureAwait(false);

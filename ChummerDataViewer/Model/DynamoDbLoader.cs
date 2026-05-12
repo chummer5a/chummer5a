@@ -86,8 +86,7 @@ namespace ChummerDataViewer.Model
                         }
 
                         //Otherwise, add _NEW_ items to db
-                        SQLiteTransaction transaction = PersistentState.Database.GetTransaction();
-                        try
+                        await using (SQLiteTransaction transaction = PersistentState.Database.GetTransaction())
                         {
                             if (response.LastEvaluatedKey.Count == 0)
                             {
@@ -117,10 +116,6 @@ namespace ChummerDataViewer.Model
                             }
 
                             await transaction.CommitAsync().ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await transaction.DisposeAsync().ConfigureAwait(false);
                         }
 
                         //Tell the good news that we have new items. Also tell guids so it can be found

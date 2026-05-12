@@ -373,8 +373,7 @@ namespace Chummer
         public async Task<string> CheckDependencyAsync(CharacterSettings objCharacterSettings,
                                                             CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
@@ -471,10 +470,6 @@ namespace Chummer
                     return sbdReturn.ToString();
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -559,9 +554,7 @@ namespace Chummer
         {
             List<CustomDataDirectoryInfo> lstEnabledCustomData
                 = new List<CustomDataDirectoryInfo>(IncompatibilitiesList.Count);
-            IAsyncDisposable objLocker =
-                await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await objCharacterSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 IReadOnlyList<CustomDataDirectoryInfo> lstEnabledCustomDataDirectoryInfos =
@@ -622,10 +615,6 @@ namespace Chummer
 
                     return sbdReturn.ToString();
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

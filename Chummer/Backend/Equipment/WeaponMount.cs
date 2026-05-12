@@ -2154,37 +2154,32 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Weapon:
-                    {
-                        if (!string.IsNullOrEmpty(AllowedWeapons))
                         {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name", token)?.Value ?? string.Empty;
-                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
-                                return false;
-                        }
+                            if (!string.IsNullOrEmpty(AllowedWeapons))
+                            {
+                                string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("name", token)?.Value ?? string.Empty;
+                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeapons.Contains(strCheckValue))
+                                    return false;
+                            }
 
-                        if (!string.IsNullOrEmpty(AllowedWeaponCategories))
-                        {
-                            string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
-                            if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
-                                return false;
-                        }
+                            if (!string.IsNullOrEmpty(AllowedWeaponCategories))
+                            {
+                                string strCheckValue = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                                if (string.IsNullOrEmpty(strCheckValue) || !AllowedWeaponCategories.Contains(strCheckValue))
+                                    return false;
+                            }
 
-                        return await GetIsWeaponsFullAsync(token).ConfigureAwait(false);
-                    }
+                            return await GetIsWeaponsFullAsync(token).ConfigureAwait(false);
+                        }
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

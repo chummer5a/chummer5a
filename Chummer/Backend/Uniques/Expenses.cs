@@ -369,8 +369,7 @@ namespace Chummer
             if (Amount != 0 || GlobalSettings.PrintFreeExpenses)
             {
                 // <expense>
-                XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("expense", token: token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("expense", token: token).ConfigureAwait(false))
                 {
                     await objWriter.WriteElementStringAsync("guid", InternalId, token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("date", Date.ToString(objCulture), token: token).ConfigureAwait(false);
@@ -381,11 +380,7 @@ namespace Chummer
                     await objWriter.WriteElementStringAsync("type", Type.ToString(), token: token).ConfigureAwait(false);
                     await objWriter.WriteElementStringAsync("refund", Refund.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    // </expense>
-                    await objBaseElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </expense>
             }
         }
 

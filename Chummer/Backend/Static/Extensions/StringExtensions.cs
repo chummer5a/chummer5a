@@ -35,7 +35,7 @@ using RtfPipe;
 
 namespace Chummer
 {
-    public static class StringExtensions
+    public static partial class StringExtensions
     {
         public static bool IsEmptyGuid(this string strInput)
         {
@@ -2930,8 +2930,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, StringSplitOptions eSplitOptions)
         {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
+            ArgumentNullException.ThrowIfNull(strInput, nameof(strInput));
             return strInput.Split(new[] { chrSeparator }, eSplitOptions);
         }
 
@@ -2944,8 +2943,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, int intCount)
         {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
+            ArgumentNullException.ThrowIfNull(strInput, nameof(strInput));
             return strInput.Split(new[] { chrSeparator }, intCount);
         }
 
@@ -2959,8 +2957,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, char chrSeparator, int intCount, StringSplitOptions eSplitOptions)
         {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
+            ArgumentNullException.ThrowIfNull(strInput, nameof(strInput));
             return strInput.Split(new[] { chrSeparator }, intCount, eSplitOptions);
         }
 
@@ -2973,8 +2970,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, string strSeparator, StringSplitOptions eSplitOptions)
         {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
+            ArgumentNullException.ThrowIfNull(strInput, nameof(strInput));
             return strInput.Split(new[] {strSeparator}, eSplitOptions);
         }
 
@@ -2988,8 +2984,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static string[] Split(this string strInput, string strSeparator, int intCount, StringSplitOptions eSplitOptions)
         {
-            if (strInput == null)
-                throw new ArgumentNullException(nameof(strInput));
+            ArgumentNullException.ThrowIfNull(strInput, nameof(strInput));
             return strInput.Split(new[] { strSeparator }, intCount, eSplitOptions);
         }
 
@@ -3002,8 +2997,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, char chrNeedle, int intStartIndex = 0)
         {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
+            ArgumentNullException.ThrowIfNull(strHaystack, nameof(strHaystack));
             return strHaystack.IndexOf(chrNeedle, intStartIndex) != -1;
         }
 
@@ -3016,8 +3010,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex)
         {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
+            ArgumentNullException.ThrowIfNull(strHaystack, nameof(strHaystack));
             return strHaystack.IndexOf(strNeedle, intStartIndex, StringComparison.Ordinal) != -1;
         }
 
@@ -3031,8 +3024,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool Contains(this string strHaystack, string strNeedle, int intStartIndex, StringComparison eComparison)
         {
-            if (strHaystack == null)
-                throw new ArgumentNullException(nameof(strHaystack));
+            ArgumentNullException.ThrowIfNull(strHaystack, nameof(strHaystack));
             return strHaystack.IndexOf(strNeedle, intStartIndex, eComparison) != -1;
         }
 
@@ -3247,8 +3239,7 @@ namespace Chummer
         public static string[] SplitFixedSize(this string strInput, char chrSplit, int intSize,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
-            if (intSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             string[] astrReturn = new string[intSize];
             Array.Clear(astrReturn, 0, intSize);
             if (string.IsNullOrEmpty(strInput))
@@ -3290,8 +3281,7 @@ namespace Chummer
         public static string[] SplitFixedSize(this string strInput, string strSplit, int intSize,
             StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
-            if (intSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             string[] astrReturn = new string[intSize];
             Array.Clear(astrReturn, 0, intSize);
             if (string.IsNullOrEmpty(strInput))
@@ -3332,8 +3322,7 @@ namespace Chummer
         /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static string[] SplitFixedSize(this string strInput, int intSize, params char[] achrSplit)
         {
-            if (intSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             string[] astrReturn = new string[intSize];
             Array.Clear(astrReturn, 0, intSize);
             if (string.IsNullOrEmpty(strInput))
@@ -3373,8 +3362,7 @@ namespace Chummer
         public static string[] SplitFixedSizePooledArray(this string strInput, char chrSplit, int intSize,
                                                        StringSplitOptions eSplitOptions = StringSplitOptions.None)
         {
-            if (intSize < 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             if (intSize == 0)
                 return ArrayPool<string>.Shared.Rent(0);
             string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
@@ -3427,8 +3415,7 @@ namespace Chummer
         public static string[] SplitFixedSizePooledArray(this string strInput, string strSplit, int intSize,
             StringSplitOptions eSplitOptions = StringSplitOptions.None, StringComparison eComparison = StringComparison.Ordinal)
         {
-            if (intSize < 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             if (intSize == 0)
                 return ArrayPool<string>.Shared.Rent(0);
             string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
@@ -3480,8 +3467,7 @@ namespace Chummer
         /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, params char[] achrSplit)
         {
-            if (intSize < 0)
-                throw new ArgumentOutOfRangeException(nameof(intSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(intSize, nameof(intSize));
             if (intSize == 0)
                 return ArrayPool<string>.Shared.Rent(0);
             string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
@@ -4732,8 +4718,7 @@ namespace Chummer
         /// </summary>
         public static bool IsAllLettersUpperCase(this string strText)
         {
-            if (strText == null)
-                throw new ArgumentNullException(nameof(strText));
+            ArgumentNullException.ThrowIfNull(strText, nameof(strText));
             return string.IsNullOrEmpty(strText) || strText.All(x => !char.IsLetter(x) || char.IsUpper(x));
         }
 
@@ -5901,13 +5886,13 @@ namespace Chummer
             }
         }
 
-        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => new Regex(
-            @"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)",
-            RegexOptions.IgnoreCase | RegexOptions.Singleline | RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        [GeneratedRegex(@"\\([a-z]{1,32})(-?\d{1,10})?[ ]?|\\'([0-9a-f]{2})|\\([^a-z])|([{}])|[\r\n]+|(.)", RegexOptions.IgnoreCase | RegexOptions.Compiled | RegexOptions.Singleline | RegexOptions.CultureInvariant)]
+        private static partial Regex RtfStripperRegex();
+        private static readonly Lazy<Regex> s_RtfStripperRegex = new Lazy<Regex>(() => RtfStripperRegex());
 
-        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => new Regex(
-            @"\\red(\d+)\\green(\d+)\\blue(\d+);",
-            RegexOptions.CultureInvariant | RegexOptions.Compiled));
+        [GeneratedRegex(@"\\red(\d+)\\green(\d+)\\blue(\d+);", RegexOptions.Compiled | RegexOptions.CultureInvariant)]
+        private static partial Regex ColorsRegex();
+        private static readonly Lazy<Regex> s_RtfColorsRegex = new Lazy<Regex>(() => ColorsRegex());
 
         private static readonly IReadOnlyCollection<string> s_SetRtfDestinations = new HashSet<string>
         {
@@ -5985,10 +5970,7 @@ namespace Chummer
         public static byte[] ToBase64PooledByteArray(this string s, out int arrayLength, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
+            ArgumentNullException.ThrowIfNull(s, nameof(s));
 
             arrayLength = 0;
 
@@ -6251,10 +6233,7 @@ namespace Chummer
         public static void ToBase64Stream(this string s, Stream stream, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (s == null)
-            {
-                throw new ArgumentNullException(nameof(s));
-            }
+            ArgumentNullException.ThrowIfNull(s, nameof(s));
 
             unchecked
             {

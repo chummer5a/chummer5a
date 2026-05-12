@@ -79,15 +79,14 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
                     {
                         // Populate the Metatype Category list.
                         using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstCategories))
+                                                                        out List<ListItem> lstCategories))
                         {
                             // Create a list of Categories.
                             XPathNavigator xmlMetatypesNode
@@ -98,24 +97,24 @@ namespace Chummer
                                                                                 out HashSet<string> setAlreadyProcessed))
                                 {
                                     foreach (XPathNavigator objXmlCategory in _xmlBaseMetatypeDataNode
-                                                 .SelectAndCacheExpression(
-                                                     "categories/category", _objGenericToken))
+                                                    .SelectAndCacheExpression(
+                                                        "categories/category", _objGenericToken))
                                     {
                                         string strInnerText = objXmlCategory.Value;
                                         if (!setAlreadyProcessed.Add(strInnerText))
                                             continue;
                                         if (xmlMetatypesNode.SelectSingleNode(
                                                 "metatype[category = " + strInnerText.CleanXPath()
-                                                                       + " and " + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false)
-                                                                       + "]")
+                                                                        + " and " + await (await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false)).BookXPathAsync(token: _objGenericToken).ConfigureAwait(false)
+                                                                        + "]")
                                             != null)
                                         {
                                             lstCategories.Add(new ListItem(strInnerText,
-                                                                           objXmlCategory
-                                                                               .SelectSingleNodeAndCacheExpression(
-                                                                                   "@translate", _objGenericToken)
-                                                                           ?.Value
-                                                                           ?? strInnerText));
+                                                                            objXmlCategory
+                                                                                .SelectSingleNodeAndCacheExpression(
+                                                                                    "@translate", _objGenericToken)
+                                                                            ?.Value
+                                                                            ?? strInnerText));
                                         }
                                     }
                                 }
@@ -141,13 +140,13 @@ namespace Chummer
                             await LanguageManager.GetStringAsync("Tip_Metatype_PossessionTradition", token: _objGenericToken).ConfigureAwait(false), _objGenericToken).ConfigureAwait(false);
 
                         using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
-                                                                       out List<ListItem> lstMethods))
+                                                                        out List<ListItem> lstMethods))
                         {
                             if (GlobalSettings.Language != GlobalSettings.DefaultLanguage)
                             {
                                 XmlNode objCritterPowersDataNode = await _xmlCritterPowerDocumentPowersNode
-                                                                         .GetValueAsync(_objGenericToken)
-                                                                         .ConfigureAwait(false);
+                                                                            .GetValueAsync(_objGenericToken)
+                                                                            .ConfigureAwait(false);
                                 if (objCritterPowersDataNode != null)
                                 {
                                     lstMethods.Add(new ListItem("Possession",
@@ -201,10 +200,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -245,8 +240,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -257,10 +251,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -280,14 +270,9 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await MetatypeSelected(_objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -302,8 +287,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -314,10 +298,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -345,8 +325,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -357,10 +336,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -373,15 +348,10 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     bool blnTemp = await chkPossessionBased.DoThreadSafeFuncAsync(x => x.Checked, _objGenericToken).ConfigureAwait(false);
                     await cboPossessionMethod.DoThreadSafeAsync(x => x.Enabled = blnTemp, _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -419,8 +389,7 @@ namespace Chummer
                     return;
                 }
 
-                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // Remove all priority-given qualities (relevant when switching from Priority/Sum-to-Ten to Karma)
@@ -525,10 +494,6 @@ namespace Chummer
                         await objGroup.SetBasePointsAsync(0, token).ConfigureAwait(false);
                         await objGroup.ModifyKarmaPointsAsync(intBase, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await this.DoThreadSafeAsync(x =>

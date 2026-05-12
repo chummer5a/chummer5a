@@ -81,9 +81,7 @@ namespace Chummer
         {
             try
             {
-                IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken)
-                                                                     .ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterWriteLockAsync(_objGenericToken).ConfigureAwait(false))
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
                     _objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
@@ -105,10 +103,6 @@ namespace Chummer
                     _objCharacter.CritterPowers.CollectionChangedAsync += OnCharacterCollectionChanged;
                     _objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
                     _objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
-                }
-                finally
-                {
-                    await objInnerLocker.DisposeAsync().ConfigureAwait(false);
                 }
 
                 await LanguageManager
@@ -239,9 +233,7 @@ namespace Chummer
             }
 
             // ReSharper disable once MethodSupportsCancellation
-            IAsyncDisposable objInnerLocker = await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None)
-                                                                 .ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterWriteLockAsync(CancellationToken.None).ConfigureAwait(false))
             {
                 _objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
                 _objCharacter.SettingsPropertyChangedAsync -= ObjCharacterOnSettingsPropertyChanged;
@@ -261,10 +253,6 @@ namespace Chummer
                 _objCharacter.CritterPowers.CollectionChangedAsync -= OnCharacterCollectionChanged;
                 _objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
                 _objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
-            }
-            finally
-            {
-                await objInnerLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             Task tskOld = Interlocked.Exchange(ref _tskXmlGenerator, null);
@@ -330,8 +318,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(_strXslt))
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 if (_strXslt == "JSON")
                 {
@@ -341,10 +328,6 @@ namespace Chummer
                 {
                     await ExportNormal(token: token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -408,8 +391,7 @@ namespace Chummer
                     _strXslt = await cboXSLT.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token).ConfigureAwait(false);
                     if (!string.IsNullOrEmpty(_strXslt))
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             string strText = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
@@ -488,10 +470,6 @@ namespace Chummer
                                 else
                                     await tskNew.ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -586,8 +564,7 @@ namespace Chummer
         private async Task GenerateCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strGeneratingData = await LanguageManager.GetStringAsync("String_Generating_Data", token: token).ConfigureAwait(false);
                 await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -604,10 +581,6 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if ((_objCharacterXml = objNewDocument) != null)
                     await DoXsltUpdate(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -693,8 +666,7 @@ namespace Chummer
         private async Task GenerateXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -801,17 +773,12 @@ namespace Chummer
                     await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task GenerateJson(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await cmdExport.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                 await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -827,10 +794,6 @@ namespace Chummer
                     await cmdExport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     await cmdExportClose.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

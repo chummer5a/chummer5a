@@ -272,8 +272,7 @@ namespace Chummer
                                                               bool blnSetCostToZeroWhenFree,
                                                               CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
@@ -366,10 +365,6 @@ namespace Chummer
                         throw;
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -648,8 +643,7 @@ namespace Chummer
             }
 
             XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false);
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 bool blnAddAgain;
                 do
@@ -694,7 +688,7 @@ namespace Chummer
                                     {
                                         if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
                                             && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                                || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                                || setDisallowedMounts.Contains(string.Concat(strLoop.AsSpan(0, strLoop.Length - 4), "Right"))))
                                         {
                                             sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
                                         }
@@ -767,7 +761,7 @@ namespace Chummer
                                     {
                                         if (!strLoop.EndsWith("Right", StringComparison.Ordinal)
                                             && (!strLoop.EndsWith("Left", StringComparison.Ordinal)
-                                                || setDisallowedMounts.Contains(strLoop.Substring(0, strLoop.Length - 4) + "Right")))
+                                                || setDisallowedMounts.Contains(string.Concat(strLoop.AsSpan(0, strLoop.Length - 4), "Right"))))
                                         {
                                             sbdDisallowedMounts.Append(strLoop.TrimEndOnce("Left"), ',');
                                         }
@@ -830,10 +824,6 @@ namespace Chummer
                         }
                     }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -903,8 +893,7 @@ namespace Chummer
                 }
             }
 
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 using (ThreadSafeForm<SelectGear> frmPickGear
@@ -1000,10 +989,6 @@ namespace Chummer
                     await objCyberware.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
                     return frmPickGear.MyForm.AddAgain;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1257,8 +1242,7 @@ namespace Chummer
             try
             {
                 _tmrAutosaveRequestTimer?.Stop();
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, true, token).ConfigureAwait(false))
                 {
                     try
                     {
@@ -1282,8 +1266,7 @@ namespace Chummer
                             }
                         }
 
-                        IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
                             string strCharacterName = await CharacterObject.GetCharacterNameAsync(token)
                                 .ConfigureAwait(false);
@@ -1343,19 +1326,11 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            await objLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
                     finally
                     {
                         AutosaveStopwatch?.Restart();
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -1378,44 +1353,45 @@ namespace Chummer
             TreeNode objSelectedNode = await treLimit.DoThreadSafeFuncAsync(x => x.SelectedNode, token).ConfigureAwait(false);
             if (objSelectedNode == null || objSelectedNode.Level == 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
-                    return;
-                LimitModifier objLimitModifier = await CharacterObject.LimitModifiers.FindByIdAsync(strGuid, token).ConfigureAwait(false);
-                //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
-                if (objLimitModifier == null)
+                SkipUpdate = true;
+                try
                 {
-                    await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
-                    return;
-                }
-
-                using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
-                       await ThreadSafeForm<SelectLimitModifier>.GetAsync(
-                           () => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token).ConfigureAwait(false))
-                {
-                    if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                    string strGuid = (objSelectedNode.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                    if (string.IsNullOrEmpty(strGuid) || strGuid.IsEmptyGuid())
                         return;
+                    LimitModifier objLimitModifier = await CharacterObject.LimitModifiers.FindByIdAsync(strGuid, token).ConfigureAwait(false);
+                    //If the LimitModifier couldn't be found (Ie it comes from an Improvement or the user hasn't properly selected a treenode, fail out early.
+                    if (objLimitModifier == null)
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Warning_NoLimitFound", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                        return;
+                    }
 
-                    //Remove the old LimitModifier to ensure we don't double up.
-                    await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier, token).ConfigureAwait(false);
-                    // Create the new limit modifier.
-                    LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
-                    objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
-                                               frmPickLimitModifier.MyForm.SelectedBonus,
-                                               frmPickLimitModifier.MyForm.SelectedLimitType,
-                                               frmPickLimitModifier.MyForm.SelectedCondition, true);
+                    using (ThreadSafeForm<SelectLimitModifier> frmPickLimitModifier =
+                            await ThreadSafeForm<SelectLimitModifier>.GetAsync(
+                                () => new SelectLimitModifier(objLimitModifier, "Physical", "Mental", "Social"), token).ConfigureAwait(false))
+                    {
+                        if (await frmPickLimitModifier.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                            return;
 
-                    await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier, token).ConfigureAwait(false);
+                        //Remove the old LimitModifier to ensure we don't double up.
+                        await CharacterObject.LimitModifiers.RemoveAsync(objLimitModifier, token).ConfigureAwait(false);
+                        // Create the new limit modifier.
+                        LimitModifier objNewLimitModifier = new LimitModifier(CharacterObject, strGuid);
+                        objNewLimitModifier.Create(frmPickLimitModifier.MyForm.SelectedName,
+                                                    frmPickLimitModifier.MyForm.SelectedBonus,
+                                                    frmPickLimitModifier.MyForm.SelectedLimitType,
+                                                    frmPickLimitModifier.MyForm.SelectedCondition, true);
+
+                        await CharacterObject.LimitModifiers.AddAsync(objNewLimitModifier, token).ConfigureAwait(false);
+                    }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -1429,43 +1405,44 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (!(treNode?.Tag is IHasNotes objNotes))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
-                Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
-                using (ThreadSafeForm<EditNotes> frmItemNotes =
-                       await ThreadSafeForm<EditNotes>.GetAsync(
-                           () => new EditNotes(strNotes, objColor, token), token).ConfigureAwait(false))
+                SkipUpdate = true;
+                try
                 {
-                    if (await frmItemNotes.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
-                        return;
-                    await objNotes.SetNotesAsync(frmItemNotes.MyForm.Notes, token).ConfigureAwait(false);
-                    await objNotes.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, token).ConfigureAwait(false);
-                }
-                await SetDirty(true, token).ConfigureAwait(false);
-                strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
-                objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
-                TreeView objTreeView = treNode.TreeView;
-                if (objTreeView != null)
-                {
-                    await objTreeView.DoThreadSafeAsync(() =>
+                    string strNotes = await objNotes.GetNotesAsync(token).ConfigureAwait(false);
+                    Color objColor = await objNotes.GetNotesColorAsync(token).ConfigureAwait(false);
+                    using (ThreadSafeForm<EditNotes> frmItemNotes =
+                           await ThreadSafeForm<EditNotes>.GetAsync(
+                               () => new EditNotes(strNotes, objColor, token), token).ConfigureAwait(false))
+                    {
+                        if (await frmItemNotes.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                            return;
+                        await objNotes.SetNotesAsync(frmItemNotes.MyForm.Notes, token).ConfigureAwait(false);
+                        await objNotes.SetNotesColorAsync(frmItemNotes.MyForm.NotesColor, token).ConfigureAwait(false);
+                    }
+                    await SetDirty(true, token).ConfigureAwait(false);
+                    strNotes = (await objNotes.GetNotesAsync(token).ConfigureAwait(false)).WordWrap();
+                    objColor = await objNotes.GetPreferredColorAsync(token).ConfigureAwait(false);
+                    TreeView objTreeView = treNode.TreeView;
+                    if (objTreeView != null)
+                    {
+                        await objTreeView.DoThreadSafeAsync(() =>
+                        {
+                            treNode.ForeColor = objColor;
+                            treNode.ToolTipText = strNotes;
+                        }, token).ConfigureAwait(false);
+                    }
+                    else
                     {
                         treNode.ForeColor = objColor;
                         treNode.ToolTipText = strNotes;
-                    }, token).ConfigureAwait(false);
+                    }
                 }
-                else
+                finally
                 {
-                    treNode.ForeColor = objColor;
-                    treNode.ToolTipText = strNotes;
+                    SkipUpdate = false;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1486,268 +1463,251 @@ namespace Chummer
         {
             if (pnlAttributes == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    ThreadSafeObservableCollection<CharacterAttrib> lstAttributes =
-                        await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributesAsync(token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await lstAttributes.LockObject.EnterReadLockAsync(token)
-                        .ConfigureAwait(false);
-                    try
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        token.ThrowIfCancellationRequested();
-                        int intAttributeCount = await lstAttributes.GetCountAsync(token).ConfigureAwait(false);
-                        if (intAttributeCount <= 0)
+                        ThreadSafeObservableCollection<CharacterAttrib> lstAttributes =
+                            await (await CharacterObject.GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAttributesAsync(token).ConfigureAwait(false);
+                        await using (await lstAttributes.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                         {
+                            token.ThrowIfCancellationRequested();
+                            int intAttributeCount = await lstAttributes.GetCountAsync(token).ConfigureAwait(false);
+                            if (intAttributeCount <= 0)
+                            {
+                                await pnlAttributes.DoThreadSafeAsync(x =>
+                                {
+                                    x.SuspendLayout();
+                                    try
+                                    {
+                                        x.Controls.Clear();
+                                    }
+                                    finally
+                                    {
+                                        x.ResumeLayout();
+                                    }
+                                }, token).ConfigureAwait(false);
+
+                                return;
+                            }
+
                             await pnlAttributes.DoThreadSafeAsync(x =>
                             {
                                 x.SuspendLayout();
                                 try
                                 {
                                     x.Controls.Clear();
+                                    int intNameWidth = lblName?.PreferredWidth ?? 0;
+                                    Control[] aobjControls
+                                        = new Control[intAttributeCount];
+                                    for (int i = 0; i < intAttributeCount; ++i)
+                                    {
+                                        AttributeControl objControl =
+                                            new AttributeControl(lstAttributes[i], GenericToken);
+                                        objControl.MinimumSize
+                                            = new Size(x.ClientSize.Width, objControl.MinimumSize.Height);
+                                        objControl.MaximumSize
+                                            = new Size(x.ClientSize.Width, objControl.MaximumSize.Height);
+                                        objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                        intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
+                                        aobjControls[i] = objControl;
+                                    }
+
+                                    if (lblName != null)
+                                        lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
+                                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                        objControl.UpdateWidths(intNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
+                                            intLimitsWidth, token);
+                                    x.Controls.AddRange(aobjControls);
                                 }
                                 finally
                                 {
                                     x.ResumeLayout();
                                 }
                             }, token).ConfigureAwait(false);
-
-                            return;
                         }
-
-                        await pnlAttributes.DoThreadSafeAsync(x =>
+                    }
+                    else
+                    {
+                        switch (e.Action)
                         {
-                            x.SuspendLayout();
-                            try
-                            {
-                                x.Controls.Clear();
-                                int intNameWidth = lblName?.PreferredWidth ?? 0;
-                                Control[] aobjControls
-                                    = new Control[intAttributeCount];
-                                for (int i = 0; i < intAttributeCount; ++i)
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    AttributeControl objControl =
-                                        new AttributeControl(lstAttributes[i], GenericToken);
-                                    objControl.MinimumSize
-                                        = new Size(x.ClientSize.Width, objControl.MinimumSize.Height);
-                                    objControl.MaximumSize
-                                        = new Size(x.ClientSize.Width, objControl.MaximumSize.Height);
-                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    intNameWidth = Math.Max(intNameWidth, objControl.NameWidth);
-                                    aobjControls[i] = objControl;
+                                    int intNewNameWidth = -1;
+                                    Control[] aobjControls = new Control[e.NewItems.Count];
+                                    await pnlAttributes.DoThreadSafeAsync(x =>
+                                    {
+                                        for (int i = 0; i < e.NewItems.Count; ++i)
+                                        {
+                                            AttributeControl objControl =
+                                                new AttributeControl(
+                                                    e.NewItems[i] as CharacterAttrib, GenericToken);
+                                            objControl.MinimumSize = new Size(x.ClientSize.Width,
+                                                                              objControl.MinimumSize.Height);
+                                            objControl.MaximumSize = new Size(x.ClientSize.Width,
+                                                                              objControl.MaximumSize.Height);
+                                            objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                            intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
+                                            aobjControls[i] = objControl;
+                                        }
+
+                                        int intOldNameWidth = 0;
+                                        if (lblName != null)
+                                            intOldNameWidth = lblName.Width;
+                                        else
+                                        {
+                                            foreach (Control objControl in x.Controls)
+                                            {
+                                                if (objControl is AttributeControl objAttributeControl)
+                                                {
+                                                    intOldNameWidth = objAttributeControl.NameWidth;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (intNewNameWidth > intOldNameWidth)
+                                        {
+                                            if (lblName != null)
+                                                lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                            x.Controls.AddRange(aobjControls);
+                                            foreach (AttributeControl objControl in x.Controls)
+                                                objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
+                                                                        intLimitsWidth, token);
+                                        }
+                                        else
+                                        {
+                                            foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                                objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
+                                                                        intLimitsWidth, token);
+                                            x.Controls.AddRange(aobjControls);
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                    break;
                                 }
 
-                                if (lblName != null)
-                                    lblName.MinimumSize = new Size(intNameWidth, lblName.MinimumSize.Height);
-                                foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                    objControl.UpdateWidths(intNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
-                                        intLimitsWidth, token);
-                                x.Controls.AddRange(aobjControls);
-                            }
-                            finally
-                            {
-                                x.ResumeLayout();
-                            }
-                        }, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                            case NotifyCollectionChangedAction.Remove:
+                                {
+                                    foreach (CharacterAttrib objAttrib in e.OldItems)
+                                    {
+                                        await using (await objAttrib.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            await pnlAttributes.DoThreadSafeAsync(x =>
+                                            {
+                                                foreach (AttributeControl objControl in x.Controls)
+                                                {
+                                                    if (objControl.AttributeName == objAttrib.Abbrev)
+                                                    {
+                                                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                                                        x.Controls.Remove(objControl);
+                                                        objControl.Dispose();
+                                                    }
+                                                }
+                                            }, token).ConfigureAwait(false);
+
+                                            if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                                            {
+                                                await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
+                                                await objAttrib.SetKarmaAsync(0, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+
+                                    break;
+                                }
+
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    foreach (CharacterAttrib objAttrib in e.OldItems)
+                                    {
+                                        await using (await objAttrib.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            await pnlAttributes.DoThreadSafeAsync(x =>
+                                            {
+                                                foreach (AttributeControl objControl in x.Controls)
+                                                {
+                                                    if (objControl.AttributeName == objAttrib.Abbrev)
+                                                    {
+                                                        objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
+                                                        x.Controls.Remove(objControl);
+                                                        objControl.Dispose();
+                                                    }
+                                                }
+                                            }, token).ConfigureAwait(false);
+
+                                            if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
+                                            {
+                                                await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
+                                                await objAttrib.SetKarmaAsync(0, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+
+                                    int intNewNameWidth = -1;
+                                    Control[] aobjControls = new Control[e.NewItems.Count];
+                                    await pnlAttributes.DoThreadSafeAsync(x =>
+                                    {
+                                        for (int i = 0; i < e.NewItems.Count; ++i)
+                                        {
+                                            AttributeControl objControl =
+                                                new AttributeControl(
+                                                    e.NewItems[i] as CharacterAttrib, GenericToken);
+                                            objControl.MinimumSize = new Size(x.ClientSize.Width,
+                                                                              objControl.MinimumSize.Height);
+                                            objControl.MaximumSize = new Size(x.ClientSize.Width,
+                                                                              objControl.MaximumSize.Height);
+                                            objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
+                                            intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
+                                            aobjControls[i] = objControl;
+                                        }
+
+                                        int intOldNameWidth = 0;
+                                        if (lblName != null)
+                                            intOldNameWidth = lblName.Width;
+                                        else
+                                        {
+                                            foreach (Control objControl in x.Controls)
+                                            {
+                                                if (objControl is AttributeControl objAttributeControl)
+                                                {
+                                                    intOldNameWidth = objAttributeControl.NameWidth;
+                                                    break;
+                                                }
+                                            }
+                                        }
+
+                                        if (intNewNameWidth > intOldNameWidth)
+                                        {
+                                            if (lblName != null)
+                                                lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
+                                            x.Controls.AddRange(aobjControls);
+                                            foreach (AttributeControl objControl in x.Controls)
+                                                objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
+                                                                        intLimitsWidth, token);
+                                        }
+                                        else
+                                        {
+                                            foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
+                                                objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
+                                                                        intLimitsWidth, token);
+                                            x.Controls.AddRange(aobjControls);
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                    break;
+                                }
+                        }
                     }
                 }
-                else
+                finally
                 {
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                        {
-                            int intNewNameWidth = -1;
-                            Control[] aobjControls = new Control[e.NewItems.Count];
-                            await pnlAttributes.DoThreadSafeAsync(x =>
-                            {
-                                for (int i = 0; i < e.NewItems.Count; ++i)
-                                {
-                                    AttributeControl objControl =
-                                        new AttributeControl(
-                                            e.NewItems[i] as CharacterAttrib, GenericToken);
-                                    objControl.MinimumSize = new Size(x.ClientSize.Width,
-                                                                      objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(x.ClientSize.Width,
-                                                                      objControl.MaximumSize.Height);
-                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
-                                    aobjControls[i] = objControl;
-                                }
-
-                                int intOldNameWidth = 0;
-                                if (lblName != null)
-                                    intOldNameWidth = lblName.Width;
-                                else
-                                {
-                                    foreach (Control objControl in x.Controls)
-                                    {
-                                        if (objControl is AttributeControl objAttributeControl)
-                                        {
-                                            intOldNameWidth = objAttributeControl.NameWidth;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (intNewNameWidth > intOldNameWidth)
-                                {
-                                    if (lblName != null)
-                                        lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
-                                    x.Controls.AddRange(aobjControls);
-                                    foreach (AttributeControl objControl in x.Controls)
-                                        objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth, token);
-                                }
-                                else
-                                {
-                                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                        objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth, token);
-                                    x.Controls.AddRange(aobjControls);
-                                }
-                            }, token).ConfigureAwait(false);
-                            break;
-                        }
-
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (CharacterAttrib objAttrib in e.OldItems)
-                            {
-                                IAsyncDisposable objLocker =
-                                    await objAttrib.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    await pnlAttributes.DoThreadSafeAsync(x =>
-                                    {
-                                        foreach (AttributeControl objControl in x.Controls)
-                                        {
-                                            if (objControl.AttributeName == objAttrib.Abbrev)
-                                            {
-                                                objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                                x.Controls.Remove(objControl);
-                                                objControl.Dispose();
-                                            }
-                                        }
-                                    }, token).ConfigureAwait(false);
-
-                                    if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
-                                    {
-                                        await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
-                                        await objAttrib.SetKarmaAsync(0, token).ConfigureAwait(false);
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            break;
-                        }
-
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            foreach (CharacterAttrib objAttrib in e.OldItems)
-                            {
-                                IAsyncDisposable objLocker =
-                                    await objAttrib.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                                try
-                                {
-                                    token.ThrowIfCancellationRequested();
-                                    await pnlAttributes.DoThreadSafeAsync(x =>
-                                    {
-                                        foreach (AttributeControl objControl in x.Controls)
-                                        {
-                                            if (objControl.AttributeName == objAttrib.Abbrev)
-                                            {
-                                                objControl.ValueChanged -= MakeDirtyWithCharacterUpdate;
-                                                x.Controls.Remove(objControl);
-                                                objControl.Dispose();
-                                            }
-                                        }
-                                    }, token).ConfigureAwait(false);
-
-                                    if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
-                                    {
-                                        await objAttrib.SetBaseAsync(0, token).ConfigureAwait(false);
-                                        await objAttrib.SetKarmaAsync(0, token).ConfigureAwait(false);
-                                    }
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                                }
-                            }
-
-                            int intNewNameWidth = -1;
-                            Control[] aobjControls = new Control[e.NewItems.Count];
-                            await pnlAttributes.DoThreadSafeAsync(x =>
-                            {
-                                for (int i = 0; i < e.NewItems.Count; ++i)
-                                {
-                                    AttributeControl objControl =
-                                        new AttributeControl(
-                                            e.NewItems[i] as CharacterAttrib, GenericToken);
-                                    objControl.MinimumSize = new Size(x.ClientSize.Width,
-                                                                      objControl.MinimumSize.Height);
-                                    objControl.MaximumSize = new Size(x.ClientSize.Width,
-                                                                      objControl.MaximumSize.Height);
-                                    objControl.ValueChanged += MakeDirtyWithCharacterUpdate;
-                                    intNewNameWidth = Math.Max(intNewNameWidth, objControl.NameWidth);
-                                    aobjControls[i] = objControl;
-                                }
-
-                                int intOldNameWidth = 0;
-                                if (lblName != null)
-                                    intOldNameWidth = lblName.Width;
-                                else
-                                {
-                                    foreach (Control objControl in x.Controls)
-                                    {
-                                        if (objControl is AttributeControl objAttributeControl)
-                                        {
-                                            intOldNameWidth = objAttributeControl.NameWidth;
-                                            break;
-                                        }
-                                    }
-                                }
-
-                                if (intNewNameWidth > intOldNameWidth)
-                                {
-                                    if (lblName != null)
-                                        lblName.MinimumSize = new Size(intNewNameWidth, lblName.MinimumSize.Height);
-                                    x.Controls.AddRange(aobjControls);
-                                    foreach (AttributeControl objControl in x.Controls)
-                                        objControl.UpdateWidths(intNewNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth, token);
-                                }
-                                else
-                                {
-                                    foreach (AttributeControl objControl in aobjControls.OfType<AttributeControl>())
-                                        objControl.UpdateWidths(intOldNameWidth, intBaseWidth, intKarmaWidth, intValueWidth,
-                                                                intLimitsWidth, token);
-                                    x.Controls.AddRange(aobjControls);
-                                }
-                            }, token).ConfigureAwait(false);
-                            break;
-                        }
-                    }
+                    SkipUpdate = false;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1771,136 +1731,137 @@ namespace Chummer
             TreeNode objManipulationNode = null;
             TreeNode objRitualsNode = null;
             TreeNode objEnchantmentsNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    string strSelectedId
-                        = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                            IHasInternalId)?.InternalId ?? string.Empty;
-                    string strSelectedMetamagicId =
-                        treMetamagic != null
-                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                                IHasInternalId)?.InternalId ?? string.Empty
-                            : string.Empty;
-
-                    // Clear the default nodes of entries.
-                    await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                    // Add the Spells that exist.
-                    await CharacterObject.Spells.ForEachAsync(async objSpell =>
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        if (objSpell.Grade > 0 && treMetamagic != null)
+                        string strSelectedId
+                            = (await treSpells.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                IHasInternalId)?.InternalId ?? string.Empty;
+                        string strSelectedMetamagicId =
+                            treMetamagic != null
+                                ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                    IHasInternalId)?.InternalId ?? string.Empty
+                                : string.Empty;
+
+                        // Clear the default nodes of entries.
+                        await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                        // Add the Spells that exist.
+                        await CharacterObject.Spells.ForEachAsync(async objSpell =>
                         {
-                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(),
+                            if (objSpell.Grade > 0 && treMetamagic != null)
+                            {
+                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objSpell)?.Remove(),
+                                                                     token).ConfigureAwait(false);
+                            }
+
+                            await AddToTree(objSpell, false).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+
+                        await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
+                        if (treMetamagic != null)
+                            await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
                                                                  token).ConfigureAwait(false);
-                        }
-
-                        await AddToTree(objSpell, false).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
-                    await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
-                    if (treMetamagic != null)
-                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
-                                                             token).ConfigureAwait(false);
-                }
-                else
-                {
-                    await treSpells.DoThreadSafeAsync(x =>
+                    }
+                    else
                     {
-                        objCombatNode = x.FindNode("Node_SelectedCombatSpells", false);
-                        objDetectionNode = x.FindNode("Node_SelectedDetectionSpells", false);
-                        objHealthNode = x.FindNode("Node_SelectedHealthSpells", false);
-                        objIllusionNode = x.FindNode("Node_SelectedIllusionSpells", false);
-                        objManipulationNode = x.FindNode("Node_SelectedManipulationSpells", false);
-                        objRitualsNode = x.FindNode("Node_SelectedGeomancyRituals", false);
-                        objEnchantmentsNode = x.FindNode("Node_SelectedEnchantments", false);
-                    }, token).ConfigureAwait(false);
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
+                        await treSpells.DoThreadSafeAsync(x =>
                         {
-                            foreach (Spell objSpell in e.NewItems)
-                            {
-                                await AddToTree(objSpell).ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
+                            objCombatNode = x.FindNode("Node_SelectedCombatSpells", false);
+                            objDetectionNode = x.FindNode("Node_SelectedDetectionSpells", false);
+                            objHealthNode = x.FindNode("Node_SelectedHealthSpells", false);
+                            objIllusionNode = x.FindNode("Node_SelectedIllusionSpells", false);
+                            objManipulationNode = x.FindNode("Node_SelectedManipulationSpells", false);
+                            objRitualsNode = x.FindNode("Node_SelectedGeomancyRituals", false);
+                            objEnchantmentsNode = x.FindNode("Node_SelectedEnchantments", false);
+                        }, token).ConfigureAwait(false);
+                        switch (e.Action)
                         {
-                            foreach (Spell objSpell in e.OldItems)
-                            {
-                                await treSpells.DoThreadSafeAsync(x =>
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objSpell);
-                                    if (objNode != null)
+                                    foreach (Spell objSpell in e.NewItems)
                                     {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
+                                        await AddToTree(objSpell).ConfigureAwait(false);
                                     }
-                                }, token).ConfigureAwait(false);
 
-                                if (objSpell.Grade > 0 && treMetamagic != null)
-                                {
-                                    await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
+                                    break;
                                 }
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParents =
-                                new List<TreeNode>(e.OldItems.Count);
-                            foreach (Spell objSpell in e.OldItems)
-                            {
-                                await treSpells.DoThreadSafeAsync(x =>
+                            case NotifyCollectionChangedAction.Remove:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objSpell);
-                                    if (objNode != null)
+                                    foreach (Spell objSpell in e.OldItems)
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
+                                        await treSpells.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objSpell);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        }, token).ConfigureAwait(false);
+
+                                        if (objSpell.Grade > 0 && treMetamagic != null)
+                                        {
+                                            await treMetamagic.DoThreadSafeAsync(
+                                                x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
+                                        }
                                     }
-                                }, token).ConfigureAwait(false);
 
-                                if (objSpell.Grade > 0 && treMetamagic != null)
-                                {
-                                    await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
+                                    break;
                                 }
-                            }
-
-                            foreach (Spell objSpell in e.NewItems)
-                            {
-                                await AddToTree(objSpell).ConfigureAwait(false);
-                            }
-
-                            await treSpells.DoThreadSafeAsync(() =>
-                            {
-                                foreach (TreeNode objOldParent in lstOldParents)
+                            case NotifyCollectionChangedAction.Replace:
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    foreach (Spell objSpell in e.OldItems)
+                                    {
+                                        await treSpells.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objSpell);
+                                            if (objNode != null)
+                                            {
+                                                lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                            }
+                                        }, token).ConfigureAwait(false);
 
-                            break;
+                                        if (objSpell.Grade > 0 && treMetamagic != null)
+                                        {
+                                            await treMetamagic.DoThreadSafeAsync(
+                                                x => x.FindNodeByTag(objSpell)?.Remove(), token).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    foreach (Spell objSpell in e.NewItems)
+                                    {
+                                        await AddToTree(objSpell).ConfigureAwait(false);
+                                    }
+
+                                    await treSpells.DoThreadSafeAsync(() =>
+                                    {
+                                        foreach (TreeNode objOldParent in lstOldParents)
+                                        {
+                                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                                objOldParent.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
+                                }
                         }
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
@@ -2130,101 +2091,102 @@ namespace Chummer
             if (treAIPrograms == null)
                 return;
             TreeNode objParentNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    string strSelectedId =
-                        (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                            IHasInternalId)?.InternalId ?? string.Empty;
-
-                    await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                    // Add AI Programs.
-                    await CharacterObject.AIPrograms
-                                         .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false), token)
-                                         .ConfigureAwait(false);
-
-                    await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
-                }
-                else
-                {
-                    objParentNode
-                        = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false),
-                                                                    token).ConfigureAwait(false);
-                    switch (e.Action)
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        case NotifyCollectionChangedAction.Add:
-                        {
-                            foreach (AIProgram objAIProgram in e.NewItems)
-                            {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
-                            }
+                        string strSelectedId =
+                            (await treAIPrograms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                IHasInternalId)?.InternalId ?? string.Empty;
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
+                        await treAIPrograms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                        // Add AI Programs.
+                        await CharacterObject.AIPrograms
+                                             .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false), token)
+                                             .ConfigureAwait(false);
+
+                        await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        objParentNode
+                            = await treAIPrograms.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedAIPrograms", false),
+                                                                        token).ConfigureAwait(false);
+                        switch (e.Action)
                         {
-                            await treAIPrograms.DoThreadSafeAsync(x =>
-                            {
-                                foreach (AIProgram objAIProgram in e.OldItems)
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objAIProgram);
-                                    if (objNode != null)
+                                    foreach (AIProgram objAIProgram in e.NewItems)
                                     {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
+                                        await AddToTree(objAIProgram).ConfigureAwait(false);
                                     }
-                                }
-                            }, token).ConfigureAwait(false);
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParents =
-                                new List<TreeNode>(e.OldItems.Count);
-                            await treAIPrograms.DoThreadSafeAsync(x =>
-                            {
-                                foreach (AIProgram objAIProgram in e.OldItems)
+                                    break;
+                                }
+                            case NotifyCollectionChangedAction.Remove:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objAIProgram);
-                                    if (objNode != null)
+                                    await treAIPrograms.DoThreadSafeAsync(x =>
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
+                                        foreach (AIProgram objAIProgram in e.OldItems)
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objAIProgram);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
                                 }
-                            }, token).ConfigureAwait(false);
-
-                            foreach (AIProgram objAIProgram in e.NewItems)
-                            {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
-                            }
-
-                            await treAIPrograms.DoThreadSafeAsync(() =>
-                            {
-                                foreach (TreeNode objOldParent in lstOldParents)
+                            case NotifyCollectionChangedAction.Replace:
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    await treAIPrograms.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (AIProgram objAIProgram in e.OldItems)
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objAIProgram);
+                                            if (objNode != null)
+                                            {
+                                                lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
 
-                            break;
+                                    foreach (AIProgram objAIProgram in e.NewItems)
+                                    {
+                                        await AddToTree(objAIProgram).ConfigureAwait(false);
+                                    }
+
+                                    await treAIPrograms.DoThreadSafeAsync(() =>
+                                    {
+                                        foreach (TreeNode objOldParent in lstOldParents)
+                                        {
+                                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                                objOldParent.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
+                                }
                         }
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
@@ -2280,129 +2242,130 @@ namespace Chummer
             if (treComplexForms == null)
                 return;
             TreeNode objParentNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    string strSelectedId =
-                        (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                            IHasInternalId)?.InternalId ?? string.Empty;
-                    string strSelectedMetamagicId =
-                        treMetamagic != null
-                            ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                                IHasInternalId)?.InternalId ?? string.Empty
-                            : string.Empty;
-
-                    await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                    // Add Complex Forms.
-                    await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        if (objComplexForm.Grade > 0 && treMetamagic != null)
+                        string strSelectedId =
+                            (await treComplexForms.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                IHasInternalId)?.InternalId ?? string.Empty;
+                        string strSelectedMetamagicId =
+                            treMetamagic != null
+                                ? (await treMetamagic.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                    IHasInternalId)?.InternalId ?? string.Empty
+                                : string.Empty;
+
+                        await treComplexForms.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                        // Add Complex Forms.
+                        await CharacterObject.ComplexForms.ForEachAsync(async objComplexForm =>
                         {
-                            await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(),
+                            if (objComplexForm.Grade > 0 && treMetamagic != null)
+                            {
+                                await treMetamagic.DoThreadSafeAsync(x => x.FindNodeByTag(objComplexForm)?.Remove(),
+                                                                     token).ConfigureAwait(false);
+                            }
+
+                            await AddToTree(objComplexForm, false).ConfigureAwait(false);
+                        }, token).ConfigureAwait(false);
+
+                        await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                                token).ConfigureAwait(false);
+                        if (treMetamagic != null)
+                            await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
                                                                  token).ConfigureAwait(false);
-                        }
-
-                        await AddToTree(objComplexForm, false).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
-
-                    await treComplexForms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                            token).ConfigureAwait(false);
-                    if (treMetamagic != null)
-                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedMetamagicId),
-                                                             token).ConfigureAwait(false);
-                }
-                else
-                {
-                    objParentNode
-                        = await treComplexForms.DoThreadSafeFuncAsync(
-                            x => x.FindNode("Node_SelectedAdvancedComplexForms", false), token).ConfigureAwait(false);
-                    switch (e.Action)
+                    }
+                    else
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        objParentNode
+                            = await treComplexForms.DoThreadSafeFuncAsync(
+                                x => x.FindNode("Node_SelectedAdvancedComplexForms", false), token).ConfigureAwait(false);
+                        switch (e.Action)
                         {
-                            foreach (ComplexForm objComplexForm in e.NewItems)
-                            {
-                                await AddToTree(objComplexForm).ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (ComplexForm objComplexForm in e.OldItems)
-                            {
-                                await treComplexForms.DoThreadSafeAsync(x =>
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objComplexForm);
-                                    if (objNode != null)
+                                    foreach (ComplexForm objComplexForm in e.NewItems)
                                     {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
+                                        await AddToTree(objComplexForm).ConfigureAwait(false);
                                     }
-                                }, token).ConfigureAwait(false);
 
-                                if (objComplexForm.Grade > 0 && treMetamagic != null)
-                                {
-                                    await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
+                                    break;
                                 }
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParents =
-                                new List<TreeNode>(e.OldItems.Count);
-                            foreach (ComplexForm objComplexForm in e.OldItems)
-                            {
-                                await treComplexForms.DoThreadSafeAsync(x =>
+                            case NotifyCollectionChangedAction.Remove:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objComplexForm);
-                                    if (objNode != null)
+                                    foreach (ComplexForm objComplexForm in e.OldItems)
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
+                                        await treComplexForms.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objComplexForm);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        }, token).ConfigureAwait(false);
+
+                                        if (objComplexForm.Grade > 0 && treMetamagic != null)
+                                        {
+                                            await treMetamagic.DoThreadSafeAsync(
+                                                x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
+                                        }
                                     }
-                                }, token).ConfigureAwait(false);
 
-                                if (objComplexForm.Grade > 0 && treMetamagic != null)
-                                {
-                                    await treMetamagic.DoThreadSafeAsync(
-                                        x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
+                                    break;
                                 }
-                            }
-
-                            foreach (ComplexForm objComplexForm in e.NewItems)
-                            {
-                                await AddToTree(objComplexForm).ConfigureAwait(false);
-                            }
-
-                            await treComplexForms.DoThreadSafeAsync(() =>
-                            {
-                                foreach (TreeNode objOldParent in lstOldParents)
+                            case NotifyCollectionChangedAction.Replace:
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    foreach (ComplexForm objComplexForm in e.OldItems)
+                                    {
+                                        await treComplexForms.DoThreadSafeAsync(x =>
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objComplexForm);
+                                            if (objNode != null)
+                                            {
+                                                lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                            }
+                                        }, token).ConfigureAwait(false);
 
-                            break;
+                                        if (objComplexForm.Grade > 0 && treMetamagic != null)
+                                        {
+                                            await treMetamagic.DoThreadSafeAsync(
+                                                x => x.FindNodeByTag(objComplexForm)?.Remove(), token).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    foreach (ComplexForm objComplexForm in e.NewItems)
+                                    {
+                                        await AddToTree(objComplexForm).ConfigureAwait(false);
+                                    }
+
+                                    await treComplexForms.DoThreadSafeAsync(() =>
+                                    {
+                                        foreach (TreeNode objOldParent in lstOldParents)
+                                        {
+                                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                                objOldParent.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
+                                }
                         }
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(ComplexForm objComplexForm, bool blnSingleAdd = true)
@@ -2488,121 +2451,122 @@ namespace Chummer
         {
             if (treMetamagic == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                SkipUpdate = true;
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                try
                 {
-                    (string strSelectedId, TreeNodeCollection lstRootNodes) = await treMetamagic.DoThreadSafeFuncAsync(
-                        x =>
-                        {
-                            string strReturn =
-                                (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
-                            TreeNodeCollection lstReturn = x.Nodes;
-                            lstReturn.Clear();
-                            return new ValueTuple<string, TreeNodeCollection>(strReturn, lstReturn);
-                        }, token).ConfigureAwait(false);
-
-                    await CharacterObject.InitiationGrades.ForEachAsync(objGrade => AddToTree(objGrade), token)
-                                         .ConfigureAwait(false);
-                    int intOffset = lstRootNodes.Count;
-                    await CharacterObject.Metamagics.ForEachAsync(async objMetamagic =>
+                    SkipUpdate = true;
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        if (objMetamagic.Grade < 0)
-                        {
-                            TreeNode objNode = await objMetamagic.CreateTreeNode(cmsInitiationNotes, true, token).ConfigureAwait(false);
-                            if (objNode != null)
+                        (string strSelectedId, TreeNodeCollection lstRootNodes) = await treMetamagic.DoThreadSafeFuncAsync(
+                            x =>
                             {
-                                int intNodesCount = lstRootNodes.Count;
-                                int intTargetIndex = intOffset;
-                                for (; intTargetIndex < intNodesCount; ++intTargetIndex)
+                                string strReturn =
+                                    (x.SelectedNode?.Tag as IHasInternalId)?.InternalId ?? string.Empty;
+                                TreeNodeCollection lstReturn = x.Nodes;
+                                lstReturn.Clear();
+                                return new ValueTuple<string, TreeNodeCollection>(strReturn, lstReturn);
+                            }, token).ConfigureAwait(false);
+
+                        await CharacterObject.InitiationGrades.ForEachAsync(objGrade => AddToTree(objGrade), token)
+                                             .ConfigureAwait(false);
+                        int intOffset = lstRootNodes.Count;
+                        await CharacterObject.Metamagics.ForEachAsync(async objMetamagic =>
+                        {
+                            if (objMetamagic.Grade < 0)
+                            {
+                                TreeNode objNode = await objMetamagic.CreateTreeNode(cmsInitiationNotes, true, token).ConfigureAwait(false);
+                                if (objNode != null)
                                 {
-                                    if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                                    int intNodesCount = lstRootNodes.Count;
+                                    int intTargetIndex = intOffset;
+                                    for (; intTargetIndex < intNodesCount; ++intTargetIndex)
                                     {
-                                        break;
+                                        if (CompareTreeNodes.CompareText(lstRootNodes[intTargetIndex], objNode) >= 0)
+                                        {
+                                            break;
+                                        }
                                     }
-                                }
 
-                                lstRootNodes.Insert(intTargetIndex, objNode);
-                                objNode.Expand();
+                                    lstRootNodes.Insert(intTargetIndex, objNode);
+                                    objNode.Expand();
+                                }
                             }
-                        }
-                    }, token).ConfigureAwait(false);
-                    await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
-                }
-                else
-                {
-                    switch (e.Action)
+                        }, token).ConfigureAwait(false);
+                        await treMetamagic.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
+                    }
+                    else
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        switch (e.Action)
                         {
-                            int intNewIndex = e.NewStartingIndex;
-                            foreach (InitiationGrade objGrade in e.NewItems)
-                            {
-                                await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
-                                ++intNewIndex;
-                            }
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            await treMetamagic.DoThreadSafeAsync(x =>
-                            {
-                                foreach (InitiationGrade objGrade in e.OldItems)
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    x.FindNodeByTag(objGrade)?.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            await treMetamagic.DoThreadSafeAsync(x =>
-                            {
-                                foreach (InitiationGrade objGrade in e.OldItems)
-                                {
-                                    x.FindNodeByTag(objGrade)?.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
-
-                            int intNewIndex = e.NewStartingIndex;
-                            foreach (InitiationGrade objGrade in e.NewItems)
-                            {
-                                await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
-                                ++intNewIndex;
-                            }
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Move:
-                        {
-                            int intNewIndex = e.NewStartingIndex;
-                            await treMetamagic.DoThreadSafeAsync(x =>
-                            {
-                                foreach (InitiationGrade objGrade in e.OldItems)
-                                {
-                                    TreeNode nodGrade = x.FindNodeByTag(objGrade);
-                                    if (nodGrade != null)
+                                    int intNewIndex = e.NewStartingIndex;
+                                    foreach (InitiationGrade objGrade in e.NewItems)
                                     {
-                                        nodGrade.Remove();
-                                        x.Nodes.Insert(intNewIndex, nodGrade);
+                                        await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
                                         ++intNewIndex;
                                     }
                                 }
-                            }, token).ConfigureAwait(false);
+                                break;
+
+                            case NotifyCollectionChangedAction.Remove:
+                                {
+                                    await treMetamagic.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (InitiationGrade objGrade in e.OldItems)
+                                        {
+                                            x.FindNodeByTag(objGrade)?.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+                                break;
+
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    await treMetamagic.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (InitiationGrade objGrade in e.OldItems)
+                                        {
+                                            x.FindNodeByTag(objGrade)?.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    int intNewIndex = e.NewStartingIndex;
+                                    foreach (InitiationGrade objGrade in e.NewItems)
+                                    {
+                                        await AddToTree(objGrade, intNewIndex).ConfigureAwait(false);
+                                        ++intNewIndex;
+                                    }
+                                }
+                                break;
+
+                            case NotifyCollectionChangedAction.Move:
+                                {
+                                    int intNewIndex = e.NewStartingIndex;
+                                    await treMetamagic.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (InitiationGrade objGrade in e.OldItems)
+                                        {
+                                            TreeNode nodGrade = x.FindNodeByTag(objGrade);
+                                            if (nodGrade != null)
+                                            {
+                                                nodGrade.Remove();
+                                                x.Nodes.Insert(intNewIndex, nodGrade);
+                                                ++intNewIndex;
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+                                break;
                         }
-                            break;
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(InitiationGrade objInitiationGrade, int intIndex = -1)
@@ -2754,61 +2718,62 @@ namespace Chummer
         {
             if (treMetamagic == null || e == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                switch (e.Action)
+                SkipUpdate = true;
+                try
                 {
-                    case NotifyCollectionChangedAction.Add:
+                    switch (e.Action)
                     {
-                        foreach (Art objArt in e.NewItems)
-                        {
-                            await AddToTree(objArt).ConfigureAwait(false);
-                        }
-                    }
-                        break;
-
-                    case NotifyCollectionChangedAction.Remove:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Art objArt in e.OldItems)
+                        case NotifyCollectionChangedAction.Add:
                             {
-                                x.FindNodeByTag(objArt)?.Remove();
+                                foreach (Art objArt in e.NewItems)
+                                {
+                                    await AddToTree(objArt).ConfigureAwait(false);
+                                }
                             }
-                        }, token).ConfigureAwait(false);
-                    }
-                        break;
+                            break;
 
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Art objArt in e.OldItems)
+                        case NotifyCollectionChangedAction.Remove:
                             {
-                                x.FindNodeByTag(objArt)?.Remove();
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Art objArt in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objArt)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
                             }
-                        }, token).ConfigureAwait(false);
+                            break;
 
-                        foreach (Art objArt in e.NewItems)
-                        {
-                            await AddToTree(objArt).ConfigureAwait(false);
-                        }
-                    }
-                        break;
+                        case NotifyCollectionChangedAction.Replace:
+                            {
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Art objArt in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objArt)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
 
-                    case NotifyCollectionChangedAction.Reset:
-                    {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                                foreach (Art objArt in e.NewItems)
+                                {
+                                    await AddToTree(objArt).ConfigureAwait(false);
+                                }
+                            }
+                            break;
+
+                        case NotifyCollectionChangedAction.Reset:
+                            {
+                                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                            }
+                            break;
                     }
-                        break;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(Art objArt, bool blnSingleAdd = true)
@@ -2852,61 +2817,62 @@ namespace Chummer
             if (treMetamagic == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                switch (e.Action)
+                SkipUpdate = true;
+                try
                 {
-                    case NotifyCollectionChangedAction.Add:
+                    switch (e.Action)
                     {
-                        foreach (Enhancement objEnhancement in e.NewItems)
-                        {
-                            await AddToTree(objEnhancement).ConfigureAwait(false);
-                        }
-                    }
-                        break;
-
-                    case NotifyCollectionChangedAction.Remove:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Enhancement objEnhancement in e.OldItems)
+                        case NotifyCollectionChangedAction.Add:
                             {
-                                x.FindNodeByTag(objEnhancement)?.Remove();
+                                foreach (Enhancement objEnhancement in e.NewItems)
+                                {
+                                    await AddToTree(objEnhancement).ConfigureAwait(false);
+                                }
                             }
-                        }, token).ConfigureAwait(false);
-                    }
-                        break;
+                            break;
 
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Enhancement objEnhancement in e.OldItems)
+                        case NotifyCollectionChangedAction.Remove:
                             {
-                                x.FindNodeByTag(objEnhancement)?.Remove();
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Enhancement objEnhancement in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objEnhancement)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
                             }
-                        }, token).ConfigureAwait(false);
+                            break;
 
-                        foreach (Enhancement objEnhancement in e.NewItems)
-                        {
-                            await AddToTree(objEnhancement).ConfigureAwait(false);
-                        }
-                    }
-                        break;
+                        case NotifyCollectionChangedAction.Replace:
+                            {
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Enhancement objEnhancement in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objEnhancement)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
 
-                    case NotifyCollectionChangedAction.Reset:
-                    {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                                foreach (Enhancement objEnhancement in e.NewItems)
+                                {
+                                    await AddToTree(objEnhancement).ConfigureAwait(false);
+                                }
+                            }
+                            break;
+
+                        case NotifyCollectionChangedAction.Reset:
+                            {
+                                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                            }
+                            break;
                     }
-                        break;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(Enhancement objEnhancement, bool blnSingleAdd = true)
@@ -2947,61 +2913,62 @@ namespace Chummer
 
         protected async Task RefreshPowerCollectionListChanged(TreeView treMetamagic, ContextMenuStrip cmsMetamagic, ContextMenuStrip cmsInitiationNotes, ListChangedEventArgs e = null, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                switch (e?.ListChangedType)
+                SkipUpdate = true;
+                try
                 {
-                    case ListChangedType.ItemAdded:
+                    switch (e?.ListChangedType)
                     {
-                        CharacterObject.Powers[e.NewIndex].Enhancements
-                                             .AddTaggedCollectionChanged(
-                                                 treMetamagic, MakeDirtyWithCharacterUpdate);
-                        CharacterObject.Powers[e.NewIndex].Enhancements
-                                             .AddTaggedCollectionChanged(treMetamagic, FuncDelegateToAdd);
+                        case ListChangedType.ItemAdded:
+                            {
+                                CharacterObject.Powers[e.NewIndex].Enhancements
+                                                     .AddTaggedCollectionChanged(
+                                                         treMetamagic, MakeDirtyWithCharacterUpdate);
+                                CharacterObject.Powers[e.NewIndex].Enhancements
+                                                     .AddTaggedCollectionChanged(treMetamagic, FuncDelegateToAdd);
 
-                        Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                            RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                y, innerToken);
+                                Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                    RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                        y, innerToken);
+                            }
+                            break;
+
+                        case ListChangedType.Reset:
+                            {
+                                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                            }
+                            break;
+
+                        case ListChangedType.ItemDeleted:
+                        case ListChangedType.ItemChanged:
+                            break;
+                        case ListChangedType.ItemMoved:
+                        case ListChangedType.PropertyDescriptorAdded:
+                        case ListChangedType.PropertyDescriptorDeleted:
+                        case ListChangedType.PropertyDescriptorChanged:
+                            return;
+                        case null:
+                            {
+                                await CharacterObject.Powers.ForEachWithSideEffectsAsync(objPower =>
+                                {
+                                    objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
+                                        MakeDirtyWithCharacterUpdate);
+                                    objPower.Enhancements.AddTaggedCollectionChanged(
+                                        treMetamagic, FuncDelegateToAdd);
+
+                                    Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                                        RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
+                                            y, innerToken);
+                                }, token).ConfigureAwait(false);
+                            }
+                            break;
                     }
-                        break;
-
-                    case ListChangedType.Reset:
-                    {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
-                    }
-                        break;
-
-                    case ListChangedType.ItemDeleted:
-                    case ListChangedType.ItemChanged:
-                        break;
-                    case ListChangedType.ItemMoved:
-                    case ListChangedType.PropertyDescriptorAdded:
-                    case ListChangedType.PropertyDescriptorDeleted:
-                    case ListChangedType.PropertyDescriptorChanged:
-                        return;
-                    case null:
-                    {
-                        await CharacterObject.Powers.ForEachWithSideEffectsAsync(objPower =>
-                        {
-                            objPower.Enhancements.AddTaggedCollectionChanged(treMetamagic,
-                                MakeDirtyWithCharacterUpdate);
-                            objPower.Enhancements.AddTaggedCollectionChanged(
-                                treMetamagic, FuncDelegateToAdd);
-
-                            Task FuncDelegateToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
-                                RefreshEnhancementCollection(treMetamagic, cmsMetamagic, cmsInitiationNotes,
-                                    y, innerToken);
-                        }, token).ConfigureAwait(false);
-                    }
-                        break;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
@@ -3009,19 +2976,20 @@ namespace Chummer
 
         protected async Task RefreshPowerCollectionBeforeRemove(TreeView treMetamagic, RemovingOldEventArgs removingOldEventArgs, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (removingOldEventArgs?.OldObject is Power objPower)
+                SkipUpdate = true;
+                try
                 {
-                    await objPower.Enhancements.RemoveTaggedAsyncCollectionChangedAsync(treMetamagic, token).ConfigureAwait(false);
+                    if (removingOldEventArgs?.OldObject is Power objPower)
+                    {
+                        await objPower.Enhancements.RemoveTaggedAsyncCollectionChangedAsync(treMetamagic, token).ConfigureAwait(false);
+                    }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -3029,61 +2997,62 @@ namespace Chummer
         {
             if (treMetamagic == null || e == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                switch (e.Action)
+                SkipUpdate = true;
+                try
                 {
-                    case NotifyCollectionChangedAction.Add:
+                    switch (e.Action)
                     {
-                        foreach (Metamagic objMetamagic in e.NewItems)
-                        {
-                            await AddToTree(objMetamagic).ConfigureAwait(false);
-                        }
-                    }
-                        break;
-
-                    case NotifyCollectionChangedAction.Remove:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Metamagic objMetamagic in e.OldItems)
+                        case NotifyCollectionChangedAction.Add:
                             {
-                                x.FindNodeByTag(objMetamagic)?.Remove();
+                                foreach (Metamagic objMetamagic in e.NewItems)
+                                {
+                                    await AddToTree(objMetamagic).ConfigureAwait(false);
+                                }
                             }
-                        }, token).ConfigureAwait(false);
-                    }
-                        break;
+                            break;
 
-                    case NotifyCollectionChangedAction.Replace:
-                    {
-                        await treMetamagic.DoThreadSafeAsync(x =>
-                        {
-                            foreach (Metamagic objMetamagic in e.OldItems)
+                        case NotifyCollectionChangedAction.Remove:
                             {
-                                x.FindNodeByTag(objMetamagic)?.Remove();
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Metamagic objMetamagic in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objMetamagic)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
                             }
-                        }, token).ConfigureAwait(false);
+                            break;
 
-                        foreach (Metamagic objMetamagic in e.NewItems)
-                        {
-                            await AddToTree(objMetamagic).ConfigureAwait(false);
-                        }
-                    }
-                        break;
+                        case NotifyCollectionChangedAction.Replace:
+                            {
+                                await treMetamagic.DoThreadSafeAsync(x =>
+                                {
+                                    foreach (Metamagic objMetamagic in e.OldItems)
+                                    {
+                                        x.FindNodeByTag(objMetamagic)?.Remove();
+                                    }
+                                }, token).ConfigureAwait(false);
 
-                    case NotifyCollectionChangedAction.Reset:
-                    {
-                        await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                                foreach (Metamagic objMetamagic in e.NewItems)
+                                {
+                                    await AddToTree(objMetamagic).ConfigureAwait(false);
+                                }
+                            }
+                            break;
+
+                        case NotifyCollectionChangedAction.Reset:
+                            {
+                                await RefreshInitiationGrades(treMetamagic, cmsMetamagic, cmsInitiationNotes, token: token).ConfigureAwait(false);
+                            }
+                            break;
                     }
-                        break;
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(Metamagic objMetamagic, bool blnSingleAdd = true)
@@ -3164,103 +3133,104 @@ namespace Chummer
                 return;
             TreeNode objPowersNode = null;
             TreeNode objWeaknessesNode = null;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null
-                    || e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    string strSelectedId
-                        = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                              IHasInternalId)
-                          ?.InternalId ??
-                          string.Empty;
-                    await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-                    // Add the Critter Powers that exist.
-                    await CharacterObject.CritterPowers.ForEachAsync(objPower => AddToTree(objPower, false), token)
-                                         .ConfigureAwait(false);
-
-                    await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
-                                                             token).ConfigureAwait(false);
-                }
-                else
-                {
-                    await treCritterPowers.DoThreadSafeAsync(x =>
+                    if (e == null
+                        || e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        objPowersNode = x.FindNode("Node_CritterPowers", false);
-                        objWeaknessesNode = x.FindNode("Node_CritterWeaknesses", false);
-                    }, token).ConfigureAwait(false);
-                    switch (e.Action)
+                        string strSelectedId
+                            = (await treCritterPowers.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                  IHasInternalId)
+                              ?.InternalId ??
+                              string.Empty;
+                        await treCritterPowers.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+                        // Add the Critter Powers that exist.
+                        await CharacterObject.CritterPowers.ForEachAsync(objPower => AddToTree(objPower, false), token)
+                                             .ConfigureAwait(false);
+
+                        await treCritterPowers.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId),
+                                                                 token).ConfigureAwait(false);
+                    }
+                    else
                     {
-                        case NotifyCollectionChangedAction.Add:
+                        await treCritterPowers.DoThreadSafeAsync(x =>
                         {
-                            foreach (CritterPower objPower in e.NewItems)
-                            {
-                                await AddToTree(objPower).ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
+                            objPowersNode = x.FindNode("Node_CritterPowers", false);
+                            objWeaknessesNode = x.FindNode("Node_CritterWeaknesses", false);
+                        }, token).ConfigureAwait(false);
+                        switch (e.Action)
                         {
-                            await treCritterPowers.DoThreadSafeAsync(x =>
-                            {
-                                foreach (CritterPower objPower in e.OldItems)
+                            case NotifyCollectionChangedAction.Add:
                                 {
-                                    TreeNode objNode = x.FindNodeByTag(objPower);
-                                    if (objNode != null)
+                                    foreach (CritterPower objPower in e.NewItems)
                                     {
-                                        TreeNode objParent = objNode.Parent;
-                                        objNode.Remove();
-                                        if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                            objParent.Remove();
+                                        await AddToTree(objPower).ConfigureAwait(false);
                                     }
-                                }
-                            }, token).ConfigureAwait(false);
 
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParents =
-                                new List<TreeNode>(e.OldItems.Count);
-                            await treCritterPowers.DoThreadSafeAsync(x =>
-                            {
-                                foreach (CritterPower objPower in e.OldItems)
+                                    break;
+                                }
+                            case NotifyCollectionChangedAction.Remove:
                                 {
-                                    TreeNode objNode = x.FindNode(objPower.InternalId);
-                                    if (objNode != null)
+                                    await treCritterPowers.DoThreadSafeAsync(x =>
                                     {
-                                        lstOldParents.Add(objNode.Parent);
-                                        objNode.Remove();
-                                    }
+                                        foreach (CritterPower objPower in e.OldItems)
+                                        {
+                                            TreeNode objNode = x.FindNodeByTag(objPower);
+                                            if (objNode != null)
+                                            {
+                                                TreeNode objParent = objNode.Parent;
+                                                objNode.Remove();
+                                                if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                    objParent.Remove();
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
                                 }
-                            }, token).ConfigureAwait(false);
-
-                            foreach (CritterPower objPower in e.NewItems)
-                            {
-                                await AddToTree(objPower).ConfigureAwait(false);
-                            }
-
-                            await treCritterPowers.DoThreadSafeAsync(() =>
-                            {
-                                foreach (TreeNode objOldParent in lstOldParents)
+                            case NotifyCollectionChangedAction.Replace:
                                 {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    await treCritterPowers.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (CritterPower objPower in e.OldItems)
+                                        {
+                                            TreeNode objNode = x.FindNode(objPower.InternalId);
+                                            if (objNode != null)
+                                            {
+                                                lstOldParents.Add(objNode.Parent);
+                                                objNode.Remove();
+                                            }
+                                        }
+                                    }, token).ConfigureAwait(false);
 
-                            break;
+                                    foreach (CritterPower objPower in e.NewItems)
+                                    {
+                                        await AddToTree(objPower).ConfigureAwait(false);
+                                    }
+
+                                    await treCritterPowers.DoThreadSafeAsync(() =>
+                                    {
+                                        foreach (TreeNode objOldParent in lstOldParents)
+                                        {
+                                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                                objOldParent.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
+                                }
                         }
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(CritterPower objPower, bool blnSingleAdd = true)
@@ -3351,159 +3321,160 @@ namespace Chummer
             TreeNode objNegativeQualityRoot = null;
             TreeNode objLifeModuleRoot = null;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    string strSelectedNode =
-                        (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
-                            IHasInternalId)?.InternalId ?? string.Empty;
-
-                    // Create the root nodes.
-                    await CharacterObject.Qualities.ForEachWithSideEffectsAsync(x => x.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged, token).ConfigureAwait(false);
-
-                    await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                    // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
-                    using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
-                                                                    out HashSet<string> setQualitiesToPrint))
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        await CharacterObject.Qualities.ForEachAsync(async objQuality =>
+                        string strSelectedNode =
+                            (await treQualities.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
+                                IHasInternalId)?.InternalId ?? string.Empty;
+
+                        // Create the root nodes.
+                        await CharacterObject.Qualities.ForEachWithSideEffectsAsync(x => x.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged, token).ConfigureAwait(false);
+
+                        await treQualities.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
+
+                        // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
+                        using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                                                        out HashSet<string> setQualitiesToPrint))
                         {
-                            setQualitiesToPrint.Add(objQuality.SourceIDString + "|" +
-                                                    await objQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
-                                                                    .ConfigureAwait(false) + "|" +
-                                                    objQuality.Extra);
-                        }, token).ConfigureAwait(false);
-
-                        // Add Qualities
-                        await CharacterObject.Qualities.ForEachAsync(async objQuality =>
-                        {
-                            if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + "|" +
-                                                            await objQuality
-                                                                  .DisplaySourceNameAsync(GlobalSettings.Language, token)
-                                                                  .ConfigureAwait(false)
-                                                            + "|" +
-                                                            objQuality.Extra))
-                                return;
-
-                            await AddToTree(objQuality, false).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
-                    }
-
-                    await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode),
-                                                         token).ConfigureAwait(false);
-                }
-                else
-                {
-                    await treQualities.DoThreadSafeAsync(x =>
-                    {
-                        objPositiveQualityRoot = x.FindNodeByTag("Node_SelectedPositiveQualities", false);
-                        objNegativeQualityRoot = x.FindNodeByTag("Node_SelectedNegativeQualities", false);
-                        objLifeModuleRoot = x.FindNodeByTag("String_LifeModules", false);
-                    }, token).ConfigureAwait(false);
-                    bool blnDoNameRefresh = false;
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                        {
-                            foreach (Quality objQuality in e.NewItems)
+                            await CharacterObject.Qualities.ForEachAsync(async objQuality =>
                             {
-                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
-                                    blnDoNameRefresh = true;
-                                else
-                                    await AddToTree(objQuality).ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (Quality objQuality in e.OldItems)
-                            {
-                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
-                                    blnDoNameRefresh = true;
-                                else
-                                {
-                                    await treQualities.DoThreadSafeAsync(x =>
-                                    {
-                                        TreeNode objNode = x.FindNodeByTag(objQuality);
-                                        if (objNode != null)
-                                        {
-                                            TreeNode objParent = objNode.Parent;
-                                            objNode.Remove();
-                                            if (objParent.Level == 0 && objParent.Nodes.Count == 0)
-                                                objParent.Remove();
-                                        }
-                                    }, token).ConfigureAwait(false);
-                                    objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
-                                }
-                            }
-
-                            break;
-                        }
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            List<TreeNode> lstOldParents =
-                                new List<TreeNode>(e.OldItems.Count);
-                            foreach (Quality objQuality in e.OldItems)
-                            {
-                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
-                                    blnDoNameRefresh = true;
-                                else
-                                {
-                                    TreeNode objNode
-                                        = await treQualities.DoThreadSafeFuncAsync(
-                                            x => x.FindNodeByTag(objQuality), token).ConfigureAwait(false);
-                                    if (objNode != null)
-                                    {
-                                        await treQualities.DoThreadSafeAsync(() =>
-                                        {
-                                            if (objNode.Parent != null)
-                                                lstOldParents.Add(objNode.Parent);
-                                            objNode.Remove();
-                                        }, token).ConfigureAwait(false);
-                                        objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
-                                    }
-                                    else
-                                    {
-                                        await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
-                                    }
-                                }
-                            }
-
-                            foreach (Quality objQuality in e.NewItems)
-                            {
-                                if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
-                                    blnDoNameRefresh = true;
-                                else
-                                    await AddToTree(objQuality).ConfigureAwait(false);
-                            }
-
-                            await treQualities.DoThreadSafeAsync(() =>
-                            {
-                                foreach (TreeNode objOldParent in lstOldParents)
-                                {
-                                    if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
-                                        objOldParent.Remove();
-                                }
+                                setQualitiesToPrint.Add(objQuality.SourceIDString + "|" +
+                                                        await objQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
+                                                                        .ConfigureAwait(false) + "|" +
+                                                        objQuality.Extra);
                             }, token).ConfigureAwait(false);
 
-                            break;
-                        }
-                    }
+                            // Add Qualities
+                            await CharacterObject.Qualities.ForEachAsync(async objQuality =>
+                            {
+                                if (!setQualitiesToPrint.Remove(objQuality.SourceIDString + "|" +
+                                                                await objQuality
+                                                                      .DisplaySourceNameAsync(GlobalSettings.Language, token)
+                                                                      .ConfigureAwait(false)
+                                                                + "|" +
+                                                                objQuality.Extra))
+                                    return;
 
-                    if (blnDoNameRefresh)
-                        await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
+                                await AddToTree(objQuality, false).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+                        }
+
+                        await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedNode),
+                                                             token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        await treQualities.DoThreadSafeAsync(x =>
+                        {
+                            objPositiveQualityRoot = x.FindNodeByTag("Node_SelectedPositiveQualities", false);
+                            objNegativeQualityRoot = x.FindNodeByTag("Node_SelectedNegativeQualities", false);
+                            objLifeModuleRoot = x.FindNodeByTag("String_LifeModules", false);
+                        }, token).ConfigureAwait(false);
+                        bool blnDoNameRefresh = false;
+                        switch (e.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
+                                {
+                                    foreach (Quality objQuality in e.NewItems)
+                                    {
+                                        if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
+                                            blnDoNameRefresh = true;
+                                        else
+                                            await AddToTree(objQuality).ConfigureAwait(false);
+                                    }
+
+                                    break;
+                                }
+                            case NotifyCollectionChangedAction.Remove:
+                                {
+                                    foreach (Quality objQuality in e.OldItems)
+                                    {
+                                        if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
+                                            blnDoNameRefresh = true;
+                                        else
+                                        {
+                                            await treQualities.DoThreadSafeAsync(x =>
+                                            {
+                                                TreeNode objNode = x.FindNodeByTag(objQuality);
+                                                if (objNode != null)
+                                                {
+                                                    TreeNode objParent = objNode.Parent;
+                                                    objNode.Remove();
+                                                    if (objParent.Level == 0 && objParent.Nodes.Count == 0)
+                                                        objParent.Remove();
+                                                }
+                                            }, token).ConfigureAwait(false);
+                                            objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
+                                        }
+                                    }
+
+                                    break;
+                                }
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    List<TreeNode> lstOldParents =
+                                        new List<TreeNode>(e.OldItems.Count);
+                                    foreach (Quality objQuality in e.OldItems)
+                                    {
+                                        if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 0)
+                                            blnDoNameRefresh = true;
+                                        else
+                                        {
+                                            TreeNode objNode
+                                                = await treQualities.DoThreadSafeFuncAsync(
+                                                    x => x.FindNodeByTag(objQuality), token).ConfigureAwait(false);
+                                            if (objNode != null)
+                                            {
+                                                await treQualities.DoThreadSafeAsync(() =>
+                                                {
+                                                    if (objNode.Parent != null)
+                                                        lstOldParents.Add(objNode.Parent);
+                                                    objNode.Remove();
+                                                }, token).ConfigureAwait(false);
+                                                objQuality.MultiplePropertiesChangedAsync -= AddedQualityOnPropertyChanged;
+                                            }
+                                            else
+                                            {
+                                                await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+
+                                    foreach (Quality objQuality in e.NewItems)
+                                    {
+                                        if (await objQuality.GetLevelsAsync(token).ConfigureAwait(false) > 1)
+                                            blnDoNameRefresh = true;
+                                        else
+                                            await AddToTree(objQuality).ConfigureAwait(false);
+                                    }
+
+                                    await treQualities.DoThreadSafeAsync(() =>
+                                    {
+                                        foreach (TreeNode objOldParent in lstOldParents)
+                                        {
+                                            if (objOldParent.Level == 0 && objOldParent.Nodes.Count == 0)
+                                                objOldParent.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    break;
+                                }
+                        }
+
+                        if (blnDoNameRefresh)
+                            await RefreshQualityNames(treQualities, token).ConfigureAwait(false);
+                    }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
 
             async Task AddToTree(Quality objQuality, bool blnSingleAdd = true)
@@ -3633,37 +3604,38 @@ namespace Chummer
                                                          .ConfigureAwait(false);
             if (intTopLevelNodeCount <= 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                List<ValueTuple<TreeNode, Task<string>>> lstNames = new List<ValueTuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
-                TreeNode objSelectedNode = await treQualities.DoThreadSafeFuncAsync(x =>
+                SkipUpdate = true;
+                try
                 {
-                    foreach (TreeNode objQualityTypeNode in x.Nodes)
+                    List<ValueTuple<TreeNode, Task<string>>> lstNames = new List<ValueTuple<TreeNode, Task<string>>>(intTopLevelNodeCount);
+                    TreeNode objSelectedNode = await treQualities.DoThreadSafeFuncAsync(x =>
                     {
-                        foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
+                        foreach (TreeNode objQualityTypeNode in x.Nodes)
                         {
-                            if (objQualityNode.Tag is Quality objLoopQuality)
-                                lstNames.Add(new ValueTuple<TreeNode, Task<string>>(
-                                                 objQualityNode,
-                                                 objLoopQuality.GetCurrentDisplayNameAsync(token)));
+                            foreach (TreeNode objQualityNode in objQualityTypeNode.Nodes)
+                            {
+                                if (objQualityNode.Tag is Quality objLoopQuality)
+                                    lstNames.Add(new ValueTuple<TreeNode, Task<string>>(
+                                                     objQualityNode,
+                                                     objLoopQuality.GetCurrentDisplayNameAsync(token)));
+                            }
                         }
-                    }
 
-                    return x.SelectedNode;
-                }, token).ConfigureAwait(false);
-                foreach (ValueTuple<TreeNode, Task<string>> tupLoop in lstNames)
-                {
-                    string strLoopText = await tupLoop.Item2.ConfigureAwait(false);
-                    await treQualities.DoThreadSafeAsync(() => tupLoop.Item1.Text = strLoopText, token).ConfigureAwait(false);
+                        return x.SelectedNode;
+                    }, token).ConfigureAwait(false);
+                    foreach (ValueTuple<TreeNode, Task<string>> tupLoop in lstNames)
+                    {
+                        string strLoopText = await tupLoop.Item2.ConfigureAwait(false);
+                        await treQualities.DoThreadSafeAsync(() => tupLoop.Item1.Text = strLoopText, token).ConfigureAwait(false);
+                    }
+                    await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(objSelectedNode?.Tag), token).ConfigureAwait(false);
                 }
-                await treQualities.DoThreadSafeAsync(x => x.SortCustomAlphabetically(objSelectedNode?.Tag), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -3678,27 +3650,28 @@ namespace Chummer
         {
             if (objNodeList == null || objNodeList.Count <= 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                foreach (XPathNavigator objNode in objNodeList)
+                SkipUpdate = true;
+                try
                 {
-                    Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token).ConfigureAwait(false);
-                    if (objQuality != null)
+                    foreach (XPathNavigator objNode in objNodeList)
                     {
-                        string strInternalId = objQuality.InternalId;
-                        await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
-                        await ImprovementManager.RemoveImprovementsAsync(
-                            CharacterObject, Improvement.ImprovementSource.CritterPower,
-                            strInternalId, token).ConfigureAwait(false);
+                        Quality objQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(x => x.Name == objNode.Value, token).ConfigureAwait(false);
+                        if (objQuality != null)
+                        {
+                            string strInternalId = objQuality.InternalId;
+                            await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                CharacterObject, Improvement.ImprovementSource.CritterPower,
+                                strInternalId, token).ConfigureAwait(false);
+                        }
                     }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -3709,8 +3682,7 @@ namespace Chummer
             if (treArmor == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId
                     = (await treArmor.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
@@ -3722,10 +3694,6 @@ namespace Chummer
                                       strSelectedId,
                                       "Node_SelectedArmor", token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshGearLocations(TreeView treGear, ContextMenuStrip cmsGearLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -3733,8 +3701,7 @@ namespace Chummer
             if (treGear == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId
                     = (await treGear.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
@@ -3746,10 +3713,6 @@ namespace Chummer
                                       strSelectedId,
                                       "Node_SelectedGear", token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshVehicleLocations(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -3757,8 +3720,7 @@ namespace Chummer
             if (treVehicles == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId
                     = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
@@ -3772,10 +3734,6 @@ namespace Chummer
                                       strSelectedId,
                                       "Node_SelectedVehicles", token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshLocationsInVehicle(TreeView treVehicles, Vehicle objVehicle, ContextMenuStrip cmsVehicleLocation, Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -3783,8 +3741,7 @@ namespace Chummer
             if (treVehicles == null || objVehicle == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId
                     = (await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag,
@@ -3797,10 +3754,6 @@ namespace Chummer
                                       e,
                                       strSelectedId, "Node_SelectedVehicles", false, token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshWeaponLocations(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -3808,8 +3761,7 @@ namespace Chummer
             if (treWeapons == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId
                     = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
@@ -3822,10 +3774,6 @@ namespace Chummer
                                       strSelectedId,
                                       "Node_SelectedWeapons", token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshCustomImprovementLocations(TreeView treImprovements, ContextMenuStrip cmsImprovementLocation, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -3833,8 +3781,7 @@ namespace Chummer
             if (treImprovements == null || e == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelectedId =
                     (await treImprovements.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as
@@ -4007,10 +3954,6 @@ namespace Chummer
 
                 await treImprovements.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private Task RefreshLocation(TreeView treSelected, TreeNode nodRoot, ContextMenuStrip cmsLocation,
@@ -4028,8 +3971,7 @@ namespace Chummer
                                                 NotifyCollectionChangedEventArgs e, string strSelectedId, string strNodeName,
                                                 bool rootSibling = true, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 switch (e.Action)
                 {
@@ -4202,10 +4144,6 @@ namespace Chummer
 
                 await treSelected.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         #endregion Locations
@@ -4215,8 +4153,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treWeapons == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -4231,10 +4168,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshWeapons(TreeView treWeapons, ContextMenuStrip cmsWeaponLocation, ContextMenuStrip cmsWeapon, ContextMenuStrip cmsWeaponAccessory, ContextMenuStrip cmsWeaponAccessoryGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -4242,197 +4175,198 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treWeapons == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            SkipUpdate = true;
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                string strSelectedId
-                    = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
-                    ?.InternalId ?? string.Empty;
-
-                TreeNode nodRoot = null;
-
-                if (e == null ||
-                    e.Action == NotifyCollectionChangedAction.Reset)
+                SkipUpdate = true;
+                try
                 {
-                    await treWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                    try
+                    string strSelectedId
+                        = (await treWeapons.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) as IHasInternalId)
+                        ?.InternalId ?? string.Empty;
+
+                    TreeNode nodRoot = null;
+
+                    if (e == null ||
+                        e.Action == NotifyCollectionChangedAction.Reset)
                     {
-                        await treWeapons.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
-
-                        // Start by populating Locations.
-                        await CharacterObject.WeaponLocations
-                            .ForEachAsync(
-                                async objLocation =>
-                                {
-                                    TreeNode objNode = await objLocation.CreateTreeNode(cmsWeaponLocation, token).ConfigureAwait(false);
-                                    await treWeapons.DoThreadSafeAsync(
-                                        x => x.Nodes.Add(objNode),
-                                        token).ConfigureAwait(false);
-                                }, token).ConfigureAwait(false);
-
-                        await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
+                        await treWeapons.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
+                        try
                         {
-                            await AddToTree(objWeapon, -1, false).ConfigureAwait(false);
-                            await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(
-                                true, treWeapons, cmsWeapon, cmsWeaponAccessory,
-                                cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
+                            await treWeapons.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
-                        await treWeapons.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
-                                                           token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
-                    }
-                }
-                else
-                {
-                    nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
-                                                                     token).ConfigureAwait(false);
+                            // Start by populating Locations.
+                            await CharacterObject.WeaponLocations
+                                .ForEachAsync(
+                                    async objLocation =>
+                                    {
+                                        TreeNode objNode = await objLocation.CreateTreeNode(cmsWeaponLocation, token).ConfigureAwait(false);
+                                        await treWeapons.DoThreadSafeAsync(
+                                            x => x.Nodes.Add(objNode),
+                                            token).ConfigureAwait(false);
+                                    }, token).ConfigureAwait(false);
 
-                    switch (e.Action)
-                    {
-                        case NotifyCollectionChangedAction.Add:
-                        {
-                            int intNewIndex = e.NewStartingIndex;
-                            foreach (Weapon objWeapon in e.NewItems)
+                            await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
                             {
-                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
-                                ++intNewIndex;
-                                await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon,
-                                    cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                            }
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Remove:
-                        {
-                            foreach (Weapon objWeapon in e.OldItems)
-                            {
-                                await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token).ConfigureAwait(false);
-                                await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
-                                                                   token).ConfigureAwait(false);
-                            }
-
-                            await treWeapons.DoThreadSafeAsync(() =>
-                            {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
-                                {
-                                    nodRoot.Remove();
-                                }
-                            }, token).ConfigureAwait(false);
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Replace:
-                        {
-                            foreach (Weapon objWeapon in e.OldItems)
-                            {
-                                await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token).ConfigureAwait(false);
-                                await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
-                                                                   token).ConfigureAwait(false);
-                            }
-
-                            int intNewIndex = e.NewStartingIndex;
-                            foreach (Weapon objWeapon in e.NewItems)
-                            {
-                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
-                                ++intNewIndex;
-                                await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon,
-                                    cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
-                            }
-
-                            await treWeapons.DoThreadSafeAsync(x =>
-                            {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
-                                {
-                                    nodRoot.Remove();
-                                }
-
-                                x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token).ConfigureAwait(false);
-                        }
-                            break;
-
-                        case NotifyCollectionChangedAction.Move:
-                        {
-                            await treWeapons.DoThreadSafeAsync(x =>
-                            {
-                                foreach (Weapon objWeapon in e.OldItems)
-                                {
-                                    x.FindNode(objWeapon.InternalId)?.Remove();
-                                }
+                                await AddToTree(objWeapon, -1, false).ConfigureAwait(false);
+                                await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(
+                                    true, treWeapons, cmsWeapon, cmsWeaponAccessory,
+                                    cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
 
-                            int intNewIndex = e.NewStartingIndex;
-                            foreach (Weapon objWeapon in e.NewItems)
-                            {
-                                await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
-                                ++intNewIndex;
-                            }
-
-                            await treWeapons.DoThreadSafeAsync(x =>
-                            {
-                                if (nodRoot != null && nodRoot.Nodes.Count == 0)
-                                {
-                                    nodRoot.Remove();
-                                }
-
-                                x.SelectedNode = x.FindNode(strSelectedId);
-                            }, token).ConfigureAwait(false);
-                            break;
+                            await treWeapons.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId),
+                                                               token).ConfigureAwait(false);
                         }
-                    }
-                }
-
-                async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
-                {
-                    TreeNode objNode = await objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
-                    if (objNode == null)
-                        return;
-                    TreeNode nodParent = null;
-                    if (objWeapon.Location != null)
-                    {
-                        nodParent = await treWeapons.DoThreadSafeFuncAsync(
-                            x => x.FindNode(objWeapon.Location.InternalId, false), token).ConfigureAwait(false);
-                    }
-
-                    if (nodParent == null)
-                    {
-                        if (nodRoot == null)
+                        finally
                         {
-                            nodRoot = new TreeNode
-                            {
-                                Tag = "Node_SelectedWeapons",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons", token: token).ConfigureAwait(false)
-                            };
-                            // ReSharper disable once AssignNullToNotNullAttribute
-                            await treWeapons.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
+                            await treWeapons.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
                         }
+                    }
+                    else
+                    {
+                        nodRoot = await treWeapons.DoThreadSafeFuncAsync(x => x.FindNode("Node_SelectedWeapons", false),
+                                                                         token).ConfigureAwait(false);
 
-                        nodParent = nodRoot;
+                        switch (e.Action)
+                        {
+                            case NotifyCollectionChangedAction.Add:
+                                {
+                                    int intNewIndex = e.NewStartingIndex;
+                                    foreach (Weapon objWeapon in e.NewItems)
+                                    {
+                                        await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
+                                        ++intNewIndex;
+                                        await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon,
+                                            cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
+                                    }
+                                }
+                                break;
+
+                            case NotifyCollectionChangedAction.Remove:
+                                {
+                                    foreach (Weapon objWeapon in e.OldItems)
+                                    {
+                                        await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token).ConfigureAwait(false);
+                                        await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
+                                                                           token).ConfigureAwait(false);
+                                    }
+
+                                    await treWeapons.DoThreadSafeAsync(() =>
+                                    {
+                                        if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                        {
+                                            nodRoot.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+                                }
+                                break;
+
+                            case NotifyCollectionChangedAction.Replace:
+                                {
+                                    foreach (Weapon objWeapon in e.OldItems)
+                                    {
+                                        await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(false, treWeapons, token: token).ConfigureAwait(false);
+                                        await treWeapons.DoThreadSafeAsync(x => x.FindNode(objWeapon.InternalId)?.Remove(),
+                                                                           token).ConfigureAwait(false);
+                                    }
+
+                                    int intNewIndex = e.NewStartingIndex;
+                                    foreach (Weapon objWeapon in e.NewItems)
+                                    {
+                                        await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
+                                        ++intNewIndex;
+                                        await objWeapon.SetupChildrenWeaponsCollectionChangedAsync(true, treWeapons, cmsWeapon,
+                                            cmsWeaponAccessory, cmsWeaponAccessoryGear, MakeDirtyWithCharacterUpdate, token).ConfigureAwait(false);
+                                    }
+
+                                    await treWeapons.DoThreadSafeAsync(x =>
+                                    {
+                                        if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                        {
+                                            nodRoot.Remove();
+                                        }
+
+                                        x.SelectedNode = x.FindNode(strSelectedId);
+                                    }, token).ConfigureAwait(false);
+                                }
+                                break;
+
+                            case NotifyCollectionChangedAction.Move:
+                                {
+                                    await treWeapons.DoThreadSafeAsync(x =>
+                                    {
+                                        foreach (Weapon objWeapon in e.OldItems)
+                                        {
+                                            x.FindNode(objWeapon.InternalId)?.Remove();
+                                        }
+                                    }, token).ConfigureAwait(false);
+
+                                    int intNewIndex = e.NewStartingIndex;
+                                    foreach (Weapon objWeapon in e.NewItems)
+                                    {
+                                        await AddToTree(objWeapon, intNewIndex).ConfigureAwait(false);
+                                        ++intNewIndex;
+                                    }
+
+                                    await treWeapons.DoThreadSafeAsync(x =>
+                                    {
+                                        if (nodRoot != null && nodRoot.Nodes.Count == 0)
+                                        {
+                                            nodRoot.Remove();
+                                        }
+
+                                        x.SelectedNode = x.FindNode(strSelectedId);
+                                    }, token).ConfigureAwait(false);
+                                    break;
+                                }
+                        }
                     }
 
-                    await treWeapons.DoThreadSafeAsync(x =>
+                    async ValueTask AddToTree(Weapon objWeapon, int intIndex = -1, bool blnSingleAdd = true)
                     {
-                        if (nodParent == null)
+                        TreeNode objNode = await objWeapon.CreateTreeNode(cmsWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
+                        if (objNode == null)
                             return;
-                        if (intIndex >= 0)
-                            nodParent.Nodes.Insert(intIndex, objNode);
-                        else
-                            nodParent.Nodes.Add(objNode);
-                        nodParent.Expand();
-                        if (blnSingleAdd)
-                            x.SelectedNode = objNode;
-                    }, token).ConfigureAwait(false);
+                        TreeNode nodParent = null;
+                        if (objWeapon.Location != null)
+                        {
+                            nodParent = await treWeapons.DoThreadSafeFuncAsync(
+                                x => x.FindNode(objWeapon.Location.InternalId, false), token).ConfigureAwait(false);
+                        }
+
+                        if (nodParent == null)
+                        {
+                            if (nodRoot == null)
+                            {
+                                nodRoot = new TreeNode
+                                {
+                                    Tag = "Node_SelectedWeapons",
+                                    Text = await LanguageManager.GetStringAsync("Node_SelectedWeapons", token: token).ConfigureAwait(false)
+                                };
+                                // ReSharper disable once AssignNullToNotNullAttribute
+                                await treWeapons.DoThreadSafeAsync(x => x.Nodes.Insert(0, nodRoot), token).ConfigureAwait(false);
+                            }
+
+                            nodParent = nodRoot;
+                        }
+
+                        await treWeapons.DoThreadSafeAsync(x =>
+                        {
+                            if (nodParent == null)
+                                return;
+                            if (intIndex >= 0)
+                                nodParent.Nodes.Insert(intIndex, objNode);
+                            else
+                                nodParent.Nodes.Add(objNode);
+                            nodParent.Expand();
+                            if (blnSingleAdd)
+                                x.SelectedNode = objNode;
+                        }, token).ConfigureAwait(false);
+                    }
                 }
-            }
-            finally
-            {
-                SkipUpdate = false;
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                finally
+                {
+                    SkipUpdate = false;
+                }
             }
         }
 
@@ -4441,8 +4375,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -4485,10 +4418,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshArmor(TreeView treArmor, ContextMenuStrip cmsArmorLocation, ContextMenuStrip cmsArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -4496,8 +4425,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -4942,10 +4870,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshArmorModsClearBindings(TreeView treArmor, Armor objArmor, CancellationToken token = default)
@@ -4953,8 +4877,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treArmor == null || objArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -4976,10 +4899,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshArmorMods(TreeView treArmor, Armor objArmor, ContextMenuStrip cmsArmorMod, ContextMenuStrip cmsArmorGear, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -4990,8 +4909,7 @@ namespace Chummer
             TreeNode nodArmor = await treArmor.DoThreadSafeFuncAsync(x => x.FindNode(objArmor.InternalId), token).ConfigureAwait(false);
             if (nodArmor == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5178,10 +5096,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshGearsClearBindings(TreeView treGear, CancellationToken token = default)
@@ -5189,8 +5103,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treGear == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5204,10 +5117,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshGears(TreeView treGear, ContextMenuStrip cmsGearLocation, ContextMenuStrip cmsGear, ContextMenuStrip cmsCustomGear, bool blnCommlinksOnly, bool blnHideLoadedAmmo, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -5215,8 +5124,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treGear == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5404,10 +5312,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshDrugs(TreeView treDrugs, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -5415,8 +5319,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treDrugs == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5541,10 +5444,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshCyberwareClearBindings(TreeView treCyberware, CancellationToken token = default)
@@ -5552,8 +5451,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treCyberware == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5568,10 +5466,6 @@ namespace Chummer
                 {
                     SkipUpdate = false;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5588,8 +5482,7 @@ namespace Chummer
             TreeNode objHoleNode = null;
             TreeNode objAntiHoleNode = null;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -5910,10 +5803,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshVehiclesClearBindings(TreeView treVehicles, CancellationToken token = default)
@@ -5921,8 +5810,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treVehicles == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -6035,10 +5923,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshVehicles(TreeView treVehicles, ContextMenuStrip cmsVehicleLocation, ContextMenuStrip cmsVehicle, ContextMenuStrip cmsVehicleWeapon, ContextMenuStrip cmsVehicleWeaponAccessory, ContextMenuStrip cmsVehicleWeaponAccessoryGear, ContextMenuStrip cmsVehicleGear, ContextMenuStrip cmsVehicleWeaponMount, ContextMenuStrip cmsCyberware, ContextMenuStrip cmsCyberwareGear, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -6046,8 +5930,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treVehicles == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -7257,10 +7140,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task RefreshFociFromGear(TreeView treFoci, ContextMenuStrip cmsFocus, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -7268,8 +7147,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treFoci == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -7579,10 +7457,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshMartialArtsClearBindings(TreeView treMartialArts, CancellationToken token = default)
@@ -7590,8 +7464,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treMartialArts == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -7606,10 +7479,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshMartialArts(TreeView treMartialArts, ContextMenuStrip cmsMartialArts, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -7617,8 +7486,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treMartialArts == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -7842,10 +7710,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task RefreshMartialArtTechniques(TreeView treMartialArts, MartialArt objMartialArt, ContextMenuStrip cmsTechnique, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -7856,8 +7720,7 @@ namespace Chummer
             TreeNode nodMartialArt = await treMartialArts.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objMartialArt), token).ConfigureAwait(false);
             if (nodMartialArt == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -7947,10 +7810,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -7961,8 +7820,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treImprovements == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -8151,7 +8009,7 @@ namespace Chummer
                             switch (objImprovement.ImproveType)
                             {
                                 case Improvement.ImprovementType.LimitModifier:
-                                    intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                                    intTargetLimit = (int)Enum.Parse<LimitType>(objImprovement.ImprovedName);
                                     break;
 
                                 case Improvement.ImprovementType.PhysicalLimit:
@@ -8363,10 +8221,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         protected async Task RefreshLifestyles(TreeView treLifestyles, ContextMenuStrip cmsBasicLifestyle,
@@ -8375,8 +8229,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (treLifestyles == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -8534,10 +8387,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -8548,8 +8397,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstCalendar == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -8705,18 +8553,13 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task RefreshContactsClearBindings(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies,
             FlowLayoutPanel panPets, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -8800,10 +8643,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task RefreshContacts(FlowLayoutPanel panContacts, FlowLayoutPanel panEnemies, FlowLayoutPanel panPets, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -8812,8 +8651,7 @@ namespace Chummer
             if (panContacts == null && panEnemies == null && panPets == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -9194,17 +9032,12 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task RefreshSustainedSpellsClearBindings(Panel pnlSustainedSpells, Panel pnlSustainedComplexForms, Panel pnlSustainedCritterPowers, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -9286,10 +9119,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -9308,8 +9137,7 @@ namespace Chummer
             if (pnlSustainedSpells == null && pnlSustainedComplexForms == null && pnlSustainedCritterPowers == null)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -9649,10 +9477,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task DeleteSustainedObject(object sender, EventArgs e, CancellationToken token = default)
@@ -9670,8 +9494,7 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     SkipUpdate = true;
                     try
@@ -9701,10 +9524,6 @@ namespace Chummer
                         SkipUpdate = false;
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -9732,8 +9551,7 @@ namespace Chummer
 
             if (lstNodes == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -9770,10 +9588,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -9782,313 +9596,61 @@ namespace Chummer
         protected async Task CopyObject(object selectedObject, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await GlobalSettings.EnterClipboardUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     switch (selectedObject)
                     {
                         case Armor objCopyArmor:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
                             {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
                                 {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
                                     {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
-
-                                        objCopyArmor.Save(objWriter);
-
-                                        if (!objCopyArmor.WeaponID.IsEmptyGuid())
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
                                         {
-                                            // <weapons>
-                                            await objWriter.WriteStartElementAsync("weapons", token)
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
                                                 .ConfigureAwait(false);
-                                            // Copy any Weapon that comes with the Gear.
-                                            foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
-                                                         .DeepWhereAsync(
-                                                             x => x.Children,
-                                                             x => x.ParentID == objCopyArmor.InternalId, token)
-                                                         .ConfigureAwait(false))
+
+                                            objCopyArmor.Save(objWriter);
+
+                                            if (!objCopyArmor.WeaponID.IsEmptyGuid())
                                             {
-                                                objCopyWeapon.Save(objWriter);
-                                            }
-
-                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                        }
-
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
-                                    }
-
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
-                                }
-
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Armor, GenericToken)
-                                    .ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case ArmorMod objCopyArmorMod:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
-                            {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                                {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
-                                    {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
-
-                                        objCopyArmorMod.Save(objWriter);
-
-                                        if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
-                                        {
-                                            // <weapons>
-                                            await objWriter.WriteStartElementAsync("weapons", token)
-                                                .ConfigureAwait(false);
-                                            // Copy any Weapon that comes with the Gear.
-                                            foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
-                                                         .DeepWhereAsync(
-                                                             x => x.Children,
-                                                             x => x.ParentID == objCopyArmorMod.InternalId, token)
-                                                         .ConfigureAwait(false))
-                                            {
-                                                objCopyWeapon.Save(objWriter);
-                                            }
-
-                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                        }
-
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
-                                    }
-
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
-                                }
-
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.ArmorMod, GenericToken)
-                                    .ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case Cyberware objCopyCyberware:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
-                            {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                                {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
-                                    {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
-
-                                        objCopyCyberware.Save(objWriter);
-
-                                        if (!objCopyCyberware.WeaponID.IsEmptyGuid())
-                                        {
-                                            // <weapons>
-                                            objWriter.WriteStartElement("weapons");
-                                            // Copy any Weapon that comes with the Gear.
-                                            foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
-                                                         .DeepWhereAsync(
-                                                             x => x.Children,
-                                                             x => x.ParentID == objCopyCyberware.InternalId, token)
-                                                         .ConfigureAwait(false))
-                                            {
-                                                objCopyWeapon.Save(objWriter);
-                                            }
-
-                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                        }
-
-                                        if (!objCopyCyberware.VehicleID.IsEmptyGuid())
-                                        {
-                                            // <vehicles>
-                                            objWriter.WriteStartElement("vehicles");
-                                            // Copy any Vehicle that comes with the Gear.
-                                            await CharacterObject.Vehicles.ForEachAsync(objCopyVehicle =>
-                                            {
-                                                if (objCopyVehicle.ParentID == objCopyCyberware.InternalId)
+                                                // <weapons>
+                                                await objWriter.WriteStartElementAsync("weapons", token)
+                                                    .ConfigureAwait(false);
+                                                // Copy any Weapon that comes with the Gear.
+                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                             .DeepWhereAsync(
+                                                                 x => x.Children,
+                                                                 x => x.ParentID == objCopyArmor.InternalId, token)
+                                                             .ConfigureAwait(false))
                                                 {
-                                                    // ReSharper disable once AccessToDisposedClosure
-                                                    objCopyVehicle.Save(objWriter);
+                                                    objCopyWeapon.Save(objWriter);
                                                 }
-                                            }, GenericToken).ConfigureAwait(false);
 
-                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-                                        }
-
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
-                                    }
-
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
-                                }
-
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Cyberware, GenericToken)
-                                    .ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case Gear objCopyGear:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
-                            {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                                {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
-                                    {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
-
-                                        objCopyGear.Save(objWriter);
-
-                                        if (!objCopyGear.WeaponID.IsEmptyGuid())
-                                        {
-                                            // <weapons>
-                                            objWriter.WriteStartElement("weapons");
-                                            // Copy any Weapon that comes with the Gear.
-                                            foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
-                                                         .DeepWhereAsync(
-                                                             x => x.Children,
-                                                             x => x.ParentID == objCopyGear.InternalId, token)
-                                                         .ConfigureAwait(false))
-                                            {
-                                                objCopyWeapon.Save(objWriter);
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                                             }
 
+                                            // </characters>
                                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
                                         }
-
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
-                                    }
-
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
-                                }
-
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Gear, GenericToken)
-                                    .ConfigureAwait(false);
-                            }
-
-                            break;
-                        }
-                        case Lifestyle objCopyLifestyle:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
-                            {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
-                                {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
-                                    {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
-
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
-
-                                        objCopyLifestyle.Save(objWriter);
-
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
-
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
 
                                         // Read the stream.
                                         objStream.Position = 0;
 
-                                        using (StreamReader objReader =
-                                               new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
                                         using (XmlReader objXmlReader =
                                                XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
                                             // Put the stream into an XmlDocument
@@ -10096,168 +9658,411 @@ namespace Chummer
                                                 .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
                                                 .ConfigureAwait(false);
                                     }
+
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Armor, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
 
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Lifestyle, GenericToken)
-                                    .ConfigureAwait(false);
+                                break;
                             }
+                        case ArmorMod objCopyArmorMod:
+                            {
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
+                                {
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                    {
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
-                            break;
-                        }
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
+
+                                            objCopyArmorMod.Save(objWriter);
+
+                                            if (!objCopyArmorMod.WeaponID.IsEmptyGuid())
+                                            {
+                                                // <weapons>
+                                                await objWriter.WriteStartElementAsync("weapons", token)
+                                                    .ConfigureAwait(false);
+                                                // Copy any Weapon that comes with the Gear.
+                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                             .DeepWhereAsync(
+                                                                 x => x.Children,
+                                                                 x => x.ParentID == objCopyArmorMod.InternalId, token)
+                                                             .ConfigureAwait(false))
+                                                {
+                                                    objCopyWeapon.Save(objWriter);
+                                                }
+
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
+
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                .ConfigureAwait(false);
+                                    }
+
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.ArmorMod, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
+                        case Cyberware objCopyCyberware:
+                            {
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
+                                {
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                    {
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
+
+                                            objCopyCyberware.Save(objWriter);
+
+                                            if (!objCopyCyberware.WeaponID.IsEmptyGuid())
+                                            {
+                                                // <weapons>
+                                                await objWriter.WriteStartElementAsync("weapons", token)
+                                                    .ConfigureAwait(false);
+                                                // Copy any Weapon that comes with the Gear.
+                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                            .DeepWhereAsync(
+                                                                x => x.Children,
+                                                                x => x.ParentID == objCopyCyberware.InternalId, token)
+                                                            .ConfigureAwait(false))
+                                                {
+                                                    objCopyWeapon.Save(objWriter);
+                                                }
+
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
+
+                                            if (!objCopyCyberware.VehicleID.IsEmptyGuid())
+                                            {
+                                                // <vehicles>
+                                                await objWriter.WriteStartElementAsync("vehicles", token).ConfigureAwait(false);
+                                                // Copy any Vehicle that comes with the Gear.
+                                                await CharacterObject.Vehicles.ForEachAsync(objCopyVehicle =>
+                                                {
+                                                    if (objCopyVehicle.ParentID == objCopyCyberware.InternalId)
+                                                    {
+                                                        // ReSharper disable once AccessToDisposedClosure
+                                                        objCopyVehicle.Save(objWriter);
+                                                    }
+                                                }, token).ConfigureAwait(false);
+
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
+
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), token)
+                                                .ConfigureAwait(false);
+                                    }
+
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Cyberware, token)
+                                        .ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
+                        case Gear objCopyGear:
+                            {
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
+                                {
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                    {
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
+
+                                            objCopyGear.Save(objWriter);
+
+                                            if (!objCopyGear.WeaponID.IsEmptyGuid())
+                                            {
+                                                // <weapons>
+                                                await objWriter.WriteStartElementAsync("weapons", token)
+                                                    .ConfigureAwait(false);
+                                                // Copy any Weapon that comes with the Gear.
+                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                            .DeepWhereAsync(
+                                                                x => x.Children,
+                                                                x => x.ParentID == objCopyGear.InternalId, token)
+                                                            .ConfigureAwait(false))
+                                                {
+                                                    objCopyWeapon.Save(objWriter);
+                                                }
+
+                                                await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            }
+
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                .ConfigureAwait(false);
+                                    }
+
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Gear, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
+                        case Lifestyle objCopyLifestyle:
+                            {
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
+                                {
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                    {
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
+
+                                            objCopyLifestyle.Save(objWriter);
+
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+
+                                            // Read the stream.
+                                            objStream.Position = 0;
+
+                                            using (StreamReader objReader =
+                                                   new StreamReader(objStream, Encoding.UTF8, true))
+                                            using (XmlReader objXmlReader =
+                                                   XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                                // Put the stream into an XmlDocument
+                                                await TaskExtensions
+                                                    .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                    .ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Lifestyle, GenericToken)
+                                        .ConfigureAwait(false);
+                                }
+
+                                break;
+                            }
                         case Vehicle objCopyVehicle:
-                        {
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
                             {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
                                 {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
                                     {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
 
-                                        objCopyVehicle.Save(objWriter);
+                                            objCopyVehicle.Save(objWriter);
 
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                .ConfigureAwait(false);
                                     }
 
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Vehicle, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
 
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Vehicle, GenericToken)
-                                    .ConfigureAwait(false);
+                                break;
                             }
-
-                            break;
-                        }
                         case Weapon objCopyWeapon:
-                        {
-                            // Do not let the user copy Gear or Cyberware Weapons.
-                            if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
-                                return;
-
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
                             {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                // Do not let the user copy Gear or Cyberware Weapons.
+                                if (objCopyWeapon.Category == "Gear" || objCopyWeapon.Cyberware)
+                                    return;
+
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
                                 {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
                                     {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token)
-                                            .ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token)
+                                                .ConfigureAwait(false);
 
-                                        objCopyWeapon.Save(objWriter);
+                                            objCopyWeapon.Save(objWriter);
 
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                .ConfigureAwait(false);
                                     }
 
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.Weapon, GenericToken)
+                                        .ConfigureAwait(false);
                                 }
 
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.Weapon, GenericToken)
-                                    .ConfigureAwait(false);
+                                break;
                             }
-
-                            break;
-                        }
                         case WeaponAccessory objCopyAccessory:
-                        {
-                            // Do not let the user copy accessories that are unique to its parent.
-                            if (objCopyAccessory.IncludedInWeapon)
-                                return;
-
-                            using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
-                                       out XmlDocument objCharacterXml))
                             {
-                                using (RecyclableMemoryStream objStream =
-                                       new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                                // Do not let the user copy accessories that are unique to its parent.
+                                if (objCopyAccessory.IncludedInWeapon)
+                                    return;
+
+                                using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool,
+                                           out XmlDocument objCharacterXml))
                                 {
-                                    using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                    using (RecyclableMemoryStream objStream =
+                                           new RecyclableMemoryStream(Utils.MemoryStreamManager))
                                     {
-                                        await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
+                                        using (XmlWriter objWriter = Utils.GetStandardXmlWriter(objStream))
+                                        {
+                                            await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
 
-                                        // </characters>
-                                        await objWriter.WriteStartElementAsync("character", token).ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteStartElementAsync("character", token).ConfigureAwait(false);
 
-                                        objCopyAccessory.Save(objWriter);
+                                            objCopyAccessory.Save(objWriter);
 
-                                        // </characters>
-                                        await objWriter.WriteEndElementAsync().ConfigureAwait(false);
+                                            // </characters>
+                                            await objWriter.WriteEndElementAsync().ConfigureAwait(false);
 
-                                        // Finish the document and flush the Writer and Stream.
-                                        await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
-                                        await objWriter.FlushAsync().ConfigureAwait(false);
+                                            // Finish the document and flush the Writer and Stream.
+                                            await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
+                                            await objWriter.FlushAsync().ConfigureAwait(false);
+                                        }
+
+                                        // Read the stream.
+                                        objStream.Position = 0;
+
+                                        using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
+                                        using (XmlReader objXmlReader =
+                                               XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
+                                            // Put the stream into an XmlDocument
+                                            await TaskExtensions
+                                                .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
+                                                .ConfigureAwait(false);
                                     }
 
-                                    // Read the stream.
-                                    objStream.Position = 0;
-
-                                    using (StreamReader objReader = new StreamReader(objStream, Encoding.UTF8, true))
-                                    using (XmlReader objXmlReader =
-                                           XmlReader.Create(objReader, GlobalSettings.SafeXmlReaderSettings))
-                                        // Put the stream into an XmlDocument
-                                        await TaskExtensions
-                                            .RunWithoutEC(() => objCharacterXml.Load(objXmlReader), GenericToken)
-                                            .ConfigureAwait(false);
+                                    await GlobalSettings
+                                        .SetClipboardAsync(objCharacterXml, ClipboardContentType.WeaponAccessory,
+                                            GenericToken)
+                                        .ConfigureAwait(false);
                                 }
 
-                                await GlobalSettings
-                                    .SetClipboardAsync(objCharacterXml, ClipboardContentType.WeaponAccessory,
-                                        GenericToken)
-                                    .ConfigureAwait(false);
+                                break;
                             }
-
-                            break;
-                        }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -10464,8 +10269,7 @@ namespace Chummer
         protected async Task AddContactsFromFile(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -10539,10 +10343,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         #endregion Additional Relationships Tab Control Events
@@ -10550,8 +10350,7 @@ namespace Chummer
         public async Task RefreshSpiritsClearBindings(Panel panSpirits, Panel panSprites, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -10607,10 +10406,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task RefreshSpirits(Panel panSpirits, Panel panSprites, NotifyCollectionChangedEventArgs e = null, CancellationToken token = default)
@@ -10618,8 +10413,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (panSpirits == null && panSprites == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -10971,10 +10765,6 @@ namespace Chummer
                     SkipUpdate = false;
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         #region SpiritControl Events
@@ -11123,8 +10913,7 @@ namespace Chummer
         protected async Task<bool> AddMugshot(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 SkipUpdate = true;
                 try
@@ -11249,10 +11038,6 @@ namespace Chummer
                 {
                     SkipUpdate = false;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -12050,13 +11835,11 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     if (blnDoCreated)
                     {
-                        IAsyncDisposable objLocker2 = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             // If the Character does not have a file name, trigger the Save As menu item instead.
@@ -12070,18 +11853,13 @@ namespace Chummer
                             // If this character has just been saved as Created, close this form and re-open the character which will open it in the Career window instead.
                             return await SaveCharacterAsCreated(token).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
                     // If the Character does not have a file name, trigger the Save As menu item instead.
                     else if (string.IsNullOrEmpty(await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false)))
                     {
                         return await SaveCharacterAs(false, token).ConfigureAwait(false);
                     }
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         using (ThreadSafeForm<LoadingBar> frmLoadingBar
@@ -12110,14 +11888,6 @@ namespace Chummer
 
                         return true;
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -12145,11 +11915,9 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         // If the Created is checked, make sure the user wants to actually save this character.
@@ -12197,14 +11965,6 @@ namespace Chummer
                             throw;
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -12292,11 +12052,9 @@ namespace Chummer
 
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         // If this is the Obsolete Mod, the user must select a percentage. This will create an Expense that costs X% of the Vehicle's base cost to remove the special Obsolete Mod.
@@ -12365,14 +12123,6 @@ namespace Chummer
                         }
                         await objRemovable.RemoveAsync(token: token).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             finally
@@ -12386,8 +12136,7 @@ namespace Chummer
         public async Task PurchaseVehicleGear(Vehicle objSelectedVehicle, Location objLocation = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 XmlDocument objXmlDocument =
                     await CharacterObject.LoadDataAsync("gear.xml", token: token).ConfigureAwait(false);
@@ -12395,9 +12144,7 @@ namespace Chummer
 
                 do
                 {
-                    IAsyncDisposable objLocker =
-                        await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         using (ThreadSafeForm<SelectGear> frmPickGear
@@ -12542,15 +12289,7 @@ namespace Chummer
 
                         await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
                 } while (blnAddAgain);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -12647,8 +12386,7 @@ namespace Chummer
         protected async Task<bool> ChangeModularMountLocationAsync(Cyberware objModularCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strSelectedParentID = await SelectModularMountLocationAsync(objModularCyberware, token).ConfigureAwait(false);
@@ -12658,10 +12396,10 @@ namespace Chummer
                 // Apply the mount change
                 Cyberware objOldParent = await objModularCyberware.GetParentAsync(token).ConfigureAwait(false);
                 ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null 
-                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false) 
+                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null
+                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false)
                     : null;
-                
+
                 if (objOldParent != null)
                     await objModularCyberware.ChangeModularEquipAsync(false, token: token)
                         .ConfigureAwait(false);
@@ -12736,10 +12474,6 @@ namespace Chummer
 
                 return true;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -12751,8 +12485,7 @@ namespace Chummer
         protected async Task<bool> ChangeVehicleModularMountLocationAsync(Cyberware objModularCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strSelectedParentID = await SelectModularMountLocationAsync(objModularCyberware, token).ConfigureAwait(false);
@@ -12767,10 +12500,10 @@ namespace Chummer
 
                 Cyberware objOldParent = await objModularCyberware.GetParentAsync(token).ConfigureAwait(false);
                 ThreadSafeObservableCollection<Cyberware> lstCyberware = await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false);
-                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null 
-                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false) 
+                ThreadSafeObservableCollection<Cyberware> lstOldParentChildren = objOldParent != null
+                    ? await objOldParent.GetChildrenAsync(token).ConfigureAwait(false)
                     : null;
-                
+
                 if (objOldParent != null)
                     await objModularCyberware.ChangeModularEquipAsync(false, token: token)
                         .ConfigureAwait(false);
@@ -12847,10 +12580,6 @@ namespace Chummer
                 }
 
                 return true;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

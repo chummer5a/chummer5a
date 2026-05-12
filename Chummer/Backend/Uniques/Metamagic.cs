@@ -360,8 +360,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <metamagic>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("metamagic", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("metamagic", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -394,11 +393,7 @@ namespace Chummer
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </metamagic>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </metamagic>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

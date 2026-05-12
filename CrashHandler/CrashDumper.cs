@@ -238,9 +238,9 @@ namespace CrashHandler
                 string strFileName = Path.Combine(Utils.GetStartupPath, CrashDumpName + ".zip");
                 if (e.Cancel)
                     return;
-                await TaskExtensions.RunWithoutEC(() => ZipFile.CreateFromDirectory(WorkingDirectory,
+                await TaskExtensions.RunWithoutEC(() => ZipFile.CreateFromDirectoryAsync(WorkingDirectory,
                                                                  strFileName,
-                                                                 CompressionLevel.Optimal, false, Encoding.UTF8), token: _objToken).ConfigureAwait(false);
+                                                                 CompressionLevel.Optimal, false, Encoding.UTF8, _objToken), token: _objToken).ConfigureAwait(false);
                 if (e.Cancel)
                     return;
                 await CrashLogWriter.WriteLineAsync("Zip file created").ConfigureAwait(false);

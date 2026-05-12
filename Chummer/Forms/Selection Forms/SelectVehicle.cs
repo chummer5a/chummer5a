@@ -594,8 +594,7 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     string strCategory = await cboCategory
@@ -655,10 +654,6 @@ namespace Chummer
                     await BuildVehicleList(_xmlBaseVehicleDataNode.Select("vehicles/vehicle" + strFilter), token)
                         .ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
         }
 
@@ -679,8 +674,7 @@ namespace Chummer
                 bool blnHasSearch = await txtSearch.DoThreadSafeFuncAsync(x => x.TextLength != 0, token).ConfigureAwait(false);
                 if (await tabViews.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) == 1)
                 {
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         DataTable tabVehicles = new DataTable("vehicles");
@@ -740,8 +734,7 @@ namespace Chummer
                                     }
                                 }
 
-                                Vehicle objVehicle = new Vehicle(_objCharacter);
-                                try
+                                await using (Vehicle objVehicle = new Vehicle(_objCharacter))
                                 {
                                     dummy.RemoveAll();
                                     await objVehicle
@@ -854,10 +847,6 @@ namespace Chummer
                                         strWeapons, strMounts,
                                         objAvail, strSource, strCost);
                                 }
-                                finally
-                                {
-                                    await objVehicle.DisposeAsync().ConfigureAwait(false);
-                                }
                             }
                         }
 
@@ -872,10 +861,6 @@ namespace Chummer
                             x.DataSource = set;
                             x.DataMember = "vehicles";
                         }, token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 else

@@ -252,8 +252,7 @@ namespace Chummer
                     }
 
                     CancellationToken objTokenToUse = objTemp.Token;
-                    System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterReadLockAsync(objTokenToUse).ConfigureAwait(false);
-                    try
+                    await using (await _objCachePurgeReaderWriterLock.EnterReadLockAsync(objTokenToUse).ConfigureAwait(false))
                     {
                         objTokenToUse.ThrowIfCancellationRequested();
                         await _objCharacterRosterFolderWatcherSemaphore.WaitAsync(objTokenToUse).ConfigureAwait(false);
@@ -302,10 +301,6 @@ namespace Chummer
                             _objCharacterRosterFolderWatcherSemaphore.Release();
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
             }
             catch (ObjectDisposedException)
@@ -322,8 +317,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     try
                     {
@@ -405,10 +399,6 @@ namespace Chummer
                         //swallow this
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -426,8 +416,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     if (Interlocked.CompareExchange(ref _intIsClosing, 1, 0) > 0) // Needed to prevent crashes on disposal
                         return;
@@ -519,10 +508,6 @@ namespace Chummer
                     }
 
                     _objGenericFormClosingCancellationTokenSource.Cancel(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1170,8 +1155,7 @@ namespace Chummer
 
             TreeNode[] lstFavoritesNodes = intFavoritesCount > 0 ? new TreeNode[intFavoritesCount] : Array.Empty<TreeNode>();
             TreeNode[] lstRecentsNodes = intRecentsCount > 0 ? new TreeNode[intRecentsCount] : Array.Empty<TreeNode>();
-            System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (intFavoritesCount > 0 || intRecentsCount > 0)
@@ -1300,10 +1284,6 @@ namespace Chummer
                     }
                 }, token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task LoadWatchFolderCharacters(CancellationToken token = default)
@@ -1406,8 +1386,7 @@ namespace Chummer
                 return;
 
             Dictionary<TreeNode, string> dicWatchNodes = new Dictionary<TreeNode, string>(dicWatch.Count);
-            System.IAsyncDisposable objLocker = await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachePurgeReaderWriterLock.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 await ParallelExtensions.ForEachAsync(dicWatch.Keys, async strKey =>
@@ -1416,7 +1395,7 @@ namespace Chummer
                     if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
                         dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
                 }, token).ConfigureAwait(false);
-                
+
                 foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
                 {
                     token.ThrowIfCancellationRequested();
@@ -1501,10 +1480,6 @@ namespace Chummer
                     }
                     x.ResumeLayout();
                 }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1616,12 +1591,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (_objCachePurgeReaderWriterLock.IsInUpgradeableReadLock)
                 return; // This is the only place where we enter an upgradeable read lock, so if we are already in one, that means we are already mid-purge, so skip
-            System.IAsyncDisposable objLocker1 = await _objCachePurgeReaderWriterLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCachePurgeReaderWriterLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                System.IAsyncDisposable objLocker2 = await _objCachePurgeReaderWriterLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCachePurgeReaderWriterLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // Done in two steps because we want the entire ConcurrentDictionary read-locked via the enumerator while we collect the caches we want to purge
@@ -1640,14 +1613,6 @@ namespace Chummer
                             await objCacheToDelete.DisposeAsync().ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker1.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1769,8 +1734,7 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     await tlpRight.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -1779,8 +1743,7 @@ namespace Chummer
                         if (objCache != null)
                         {
                             string strUnknown = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
-                            System.IAsyncDisposable objLocker = await objCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                            try
+                            await using (await objCache.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 string strTemp1 = await (await objCache.GetDescriptionAsync(token).ConfigureAwait(false)).RtfToPlainTextAsync(token).ConfigureAwait(false);
@@ -1875,10 +1838,6 @@ namespace Chummer
                                     await txtCharacterBio.DoThreadSafeAsync(x => x.ForeColor = ColorManager.WindowText, token).ConfigureAwait(false);
                                 }
                             }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
                         else
                         {
@@ -1923,10 +1882,6 @@ namespace Chummer
                         await tlpRight.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
         }
 
@@ -1945,17 +1900,12 @@ namespace Chummer
                     return;
                 if (objSelectedNode.Tag is CharacterCache objCache)
                 {
-                    System.IAsyncDisposable objLocker = await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false);
-                    try
+                    await using (await objCache.LockObject.EnterUpgradeableReadLockAsync(_objGenericToken).ConfigureAwait(false))
                     {
                         _objGenericToken.ThrowIfCancellationRequested();
                         if (objCache.OnMyAfterSelect != null)
                             await objCache.OnMyAfterSelect(sender, e, _objGenericToken).ConfigureAwait(false);
                         await UpdateCharacter(objCache, _objGenericToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 await treCharacterList.DoThreadSafeAsync(x => x.ClearNodeBackground(x.SelectedNode), _objGenericToken).ConfigureAwait(false);
@@ -1982,15 +1932,10 @@ namespace Chummer
                         return;
 
                     case CharacterCache objCache:
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                         {
                             if (objCache.OnMyDoubleClick != null)
                                 await objCache.OnMyDoubleClick(sender, e, _objGenericToken).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
 
                         break;
@@ -2224,8 +2169,7 @@ namespace Chummer
 
                 if (t?.Tag is CharacterCache objCache)
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                     {
                         string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                         Character objCharacter
@@ -2249,10 +2193,6 @@ namespace Chummer
                         if (!await Program.SwitchToOpenCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
                             await Program.OpenCharacter(objCharacter, token: _objGenericToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
             }
             catch (OperationCanceledException)
@@ -2271,8 +2211,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
@@ -2296,10 +2235,6 @@ namespace Chummer
                     if (!await Program.SwitchToOpenPrintCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
                         await Program.OpenCharacterForPrinting(objCharacter, token: _objGenericToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -2317,8 +2252,7 @@ namespace Chummer
                 TreeNode t = await treCharacterList.DoThreadSafeFuncAsync(x => x.SelectedNode, _objGenericToken).ConfigureAwait(false);
                 if (!(t?.Tag is CharacterCache objCache))
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     string strFileName = await objCache.GetFileNameAsync(_objGenericToken).ConfigureAwait(false);
                     Character objCharacter
@@ -2341,10 +2275,6 @@ namespace Chummer
 
                     if (!await Program.SwitchToOpenExportCharacter(objCharacter, _objGenericToken).ConfigureAwait(false))
                         await Program.OpenCharacterForExport(objCharacter, token: _objGenericToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -2444,9 +2374,7 @@ namespace Chummer
                 string strFile = objSelectedNode?.Tag?.ToString();
                 if (string.IsNullOrEmpty(strFile))
                     return;
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     Character objOpenCharacter
                         = await Program.OpenCharacters.FirstOrDefaultAsync(x => x.FileName == strFile, _objGenericToken)
@@ -2467,10 +2395,6 @@ namespace Chummer
                         while (stkToClose.Count > 0)
                             await stkToClose.Pop().DoThreadSafeAsync(x => x.Close(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

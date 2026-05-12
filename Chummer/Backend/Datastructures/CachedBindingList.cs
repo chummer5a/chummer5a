@@ -568,7 +568,7 @@ namespace Chummer
             finally
             {
                 if (objLocker != null)
-                    await objLocker.DisposeAsync();
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             RaiseListChangedEvents = false;
@@ -635,30 +635,19 @@ namespace Chummer
             if (item is not INotifyPropertyChangedAsync notifyPropertyChanged)
                 return;
 
-            IAsyncDisposable objLocker = await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await BindingListLock.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (propertyChangedAsyncEventHandler == null)
                 {
-                    IAsyncDisposable objLocker2 =
-                        await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await BindingListLock.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         propertyChangedAsyncEventHandler = Child_PropertyChangedAsync;
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
 
                 notifyPropertyChanged.PropertyChangedAsync += propertyChangedAsyncEventHandler;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

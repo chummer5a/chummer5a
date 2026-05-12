@@ -129,8 +129,7 @@ namespace Chummer
                     }
                 }
 
-                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync().ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterReadLockAsync().ConfigureAwait(false))
                 {
                     using (FileStream objStream =
                            new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
@@ -968,10 +967,6 @@ namespace Chummer
 
                         await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 

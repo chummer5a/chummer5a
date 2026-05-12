@@ -36,12 +36,9 @@ namespace Chummer
         /// <param name="objComparer">The <see cref="System.Collections.Generic.IComparer{T}"/> generic interface implementation to use when comparing elements, or null to use the <see cref="System.IComparable{T}"/> generic interface implementation of each element.</param>
         public static void Sort<T>(this BindingList<T> lstCollection, int index, int length, IComparer<T> objComparer = null) where T : IComparable
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            if (length < 0)
-                throw new ArgumentOutOfRangeException(nameof(length));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
             if (index + length > lstCollection.Count)
                 throw new InvalidOperationException(nameof(length));
             if (length == 0)

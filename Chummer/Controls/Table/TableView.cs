@@ -263,8 +263,7 @@ namespace Chummer.UI.Table
 
         private async Task ItemPropertyChanged(int intIndex, T objItem, string strProperty, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -293,10 +292,6 @@ namespace Chummer.UI.Table
                 {
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(true), token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -445,8 +440,7 @@ namespace Chummer.UI.Table
 
         private async Task CreateCellsForColumn(int insertIndex, TableColumn<T> column, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -581,10 +575,6 @@ namespace Chummer.UI.Table
                     await this.DoThreadSafeAsync(x => x.ResumeLayout(false), token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         internal async Task ColumnAdded(TableColumn<T> column, CancellationToken token = default)
@@ -641,8 +631,7 @@ namespace Chummer.UI.Table
         {
             if (Items == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                 try
@@ -679,10 +668,6 @@ namespace Chummer.UI.Table
                     await this.DoThreadSafeAsync(x => x.RestartLayout(performLayout), token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private void RestartLayout(bool performLayout)
@@ -713,8 +698,7 @@ namespace Chummer.UI.Table
                     T item = await Items.GetValueAtAsync(e.NewIndex, token).ConfigureAwait(false);
                     if (e.PropertyDescriptor == null)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                             try
@@ -746,10 +730,6 @@ namespace Chummer.UI.Table
                             {
                                 await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                             }
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                     else
@@ -793,8 +773,7 @@ namespace Chummer.UI.Table
                             row.Dispose();
                             throw;
                         }
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                         {
                             await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                             try
@@ -832,10 +811,6 @@ namespace Chummer.UI.Table
                                 await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                             }
                         }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
                     catch
                     {
@@ -858,8 +833,7 @@ namespace Chummer.UI.Table
                         objToRemove.Dispose();
                     }
 
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
                         try
@@ -889,10 +863,6 @@ namespace Chummer.UI.Table
                         {
                             await this.DoThreadSafeAsync(x => x.RestartLayout(true), token: token).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
 
                     break;
@@ -1087,20 +1057,14 @@ namespace Chummer.UI.Table
 
         public async Task SetItemsAsync(ThreadSafeBindingList<T> value, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objItemsLocker.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objItemsLocker.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_lstItems == value)
                     return;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
 
-            objLocker = await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objItemsLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intOldCount = 0;
@@ -1114,15 +1078,13 @@ namespace Chummer.UI.Table
                     intOldCount = lstOldItems.Count;
                 }
 
-                IAsyncDisposable objLocker2 = await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objItemsLocker.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (lstOldItems != null)
                         _lstPermutation.Clear();
                     int intNewCount = value != null ? await value.GetCountAsync(token).ConfigureAwait(false) : 0;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                         try
@@ -1215,24 +1177,12 @@ namespace Chummer.UI.Table
                                 .ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     if (value != null)
                     {
                         value.ListChangedAsync += ItemsChanged;
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

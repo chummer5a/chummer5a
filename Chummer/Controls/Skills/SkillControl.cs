@@ -711,15 +711,10 @@ namespace Chummer.UI.Skills
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
                 return;
-            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 await DoDataBindingsAsync(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             Interlocked.Decrement(ref _intUpdatingSpec);
         }
@@ -960,8 +955,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                try
+                await using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     string strConfirm = string.Format(GlobalSettings.CultureInfo,
@@ -981,10 +975,6 @@ namespace Chummer.UI.Skills
 
                     await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -996,8 +986,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                try
+                await using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     Character objCharacter = _objCharacter;
@@ -1043,10 +1032,6 @@ namespace Chummer.UI.Skills
                         await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken)
                             .ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -1142,8 +1127,7 @@ namespace Chummer.UI.Skills
                 return;
             if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
                 return;
-            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (!await GetCustomAttributeSet(token).ConfigureAwait(false))
@@ -1158,10 +1142,6 @@ namespace Chummer.UI.Skills
                 await SetAttributeActiveAsync(
                     await _objCharacter.GetAttributeAsync(strNewAttribute, token: token)
                         .ConfigureAwait(false), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             string strText = await cboSelectAttribute.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false);
@@ -1222,9 +1202,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                CursorWait objCursorWait
-                    = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false))
                 {
                     Character objCharacter = _objCharacter;
                     await CommonFunctions.OpenPdf(
@@ -1233,10 +1211,6 @@ namespace Chummer.UI.Skills
                         objCharacter != null
                             ? await objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false)
                             : null, token: _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

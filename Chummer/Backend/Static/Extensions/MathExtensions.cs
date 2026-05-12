@@ -496,8 +496,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FloorLog2(this int n)
         {
-            if (n <= 0)
-                throw new ArgumentOutOfRangeException(nameof(n));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(n, nameof(n));
             // n is between 2^31 - 1 and 0, which means the fastest way is going to be to binary search, but we can get help from a lookup table
             int intTemp = n >> 16;
             if (intTemp > 0)
@@ -515,8 +514,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CeilingLog2(this int n)
         {
-            if (n <= 0)
-                throw new ArgumentOutOfRangeException(nameof(n));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(n, nameof(n));
             return FloorLog2(n) + (n & 1);
         }
 
@@ -526,8 +524,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FloorLog10(this int n)
         {
-            if (n <= 0)
-                throw new ArgumentOutOfRangeException(nameof(n));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(n, nameof(n));
             // n is between 2*10^9 and 0, which means the fastest way is going to be to binary search
             if (n >= 100000)
             {
@@ -559,8 +556,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int CeilingLog10(this int n)
         {
-            if (n <= 0)
-                throw new ArgumentOutOfRangeException(nameof(n));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(n, nameof(n));
             int num = FloorLog10(n);
             if (n % 10 != 0)
                 ++num;
@@ -1126,8 +1122,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Log(this decimal a, decimal newBase, decimal decEpsilon)
         {
-            if (newBase == 1.0m)
-                throw new ArgumentOutOfRangeException(nameof(newBase));
+            ArgumentOutOfRangeException.ThrowIfEqual(newBase, 1.0m, nameof(newBase));
             decimal decReturn = Log2(a, decEpsilon);
             if (newBase != 2.0m)
                 decReturn /= Log2(newBase, decEpsilon);
@@ -1141,8 +1136,7 @@ namespace Chummer
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         public static decimal Log(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
         {
-            if (d <= 0)
-                throw new ArgumentOutOfRangeException(nameof(d));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(d, nameof(d));
             if (d == 1)
                 return 0;
             // Calculate as log_2 instead of as ln(x) directly because integer part can be calculated more exactly with integer division
@@ -1214,8 +1208,7 @@ namespace Chummer
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="d"/> is less than or equal to 0, which is outside the domain for a logarithm.</exception>
         private static decimal Log2(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
         {
-            if (d <= 0)
-                throw new ArgumentOutOfRangeException(nameof(d));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(d, nameof(d));
             if (d == 1)
                 return 0;
             bool blnNegate = d < 1;

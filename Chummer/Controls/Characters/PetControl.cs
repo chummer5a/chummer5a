@@ -215,8 +215,7 @@ namespace Chummer
                     if (await Program.OpenCharacters.ContainsAsync(objLinkedCharacter, _objMyToken).ConfigureAwait(false))
                         objOpenCharacter = objLinkedCharacter;
                 }
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false))
                 {
                     if (objOpenCharacter == null)
                     {
@@ -231,10 +230,6 @@ namespace Chummer
 
                     if (!await Program.SwitchToOpenCharacter(objOpenCharacter, _objMyToken).ConfigureAwait(false))
                         await Program.OpenCharacter(objOpenCharacter, token: _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -277,8 +272,7 @@ namespace Chummer
                 if (eResult != DialogResult.OK)
                     return;
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(ParentForm, token: _objMyToken).ConfigureAwait(false))
                 {
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_OpenFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
@@ -287,21 +281,12 @@ namespace Chummer
                     Uri uriApplication = new Uri(Utils.GetStartupPath);
                     Uri uriFile = new Uri(strFileName);
                     Uri uriRelative = uriApplication.MakeRelativeUri(uriFile);
-                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(strFileName, _objMyToken).ConfigureAwait(false);
                         await _objContact.SetRelativeFileNameAsync("../" + uriRelative.ToString(), _objMyToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -324,16 +309,11 @@ namespace Chummer
                 {
                     string strText = await LanguageManager.GetStringAsync("Tip_Contact_LinkFile", token: _objMyToken).ConfigureAwait(false);
                     await cmdLink.SetToolTipTextAsync(strText, _objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await _objContact.LockObject.EnterWriteLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         await _objContact.SetFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
                         await _objContact.SetRelativeFileNameAsync(string.Empty, _objMyToken).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }

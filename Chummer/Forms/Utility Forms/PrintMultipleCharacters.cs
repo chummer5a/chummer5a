@@ -307,8 +307,7 @@ namespace Chummer
         private async Task DoPrint(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, true, token).ConfigureAwait(false))
             {
                 try
                 {
@@ -329,7 +328,7 @@ namespace Chummer
                             = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
                         lstCharacters[i] = await InnerLoad(strLoopFile, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
-                    
+
                     async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)
                     {
                         innerToken.ThrowIfCancellationRequested();
@@ -378,10 +377,6 @@ namespace Chummer
                     await cmdPrint.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     await prgProgress.DoThreadSafeAsync(x => x.Value = 0, token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

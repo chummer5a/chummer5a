@@ -276,9 +276,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         private async Task ParseNode(XmlNode xmlSuite, Grade objGrade, ICollection<Cyberware> lstChildren, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker =
-                await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Run through all of the items in the Suite list.
@@ -319,10 +317,6 @@ namespace Chummer
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

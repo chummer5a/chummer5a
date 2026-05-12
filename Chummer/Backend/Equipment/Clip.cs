@@ -278,9 +278,7 @@ namespace Chummer.Backend.Equipment
                 if (await objAmmoGear.Children.GetCountAsync(token).ConfigureAwait(false) > 0)
                 {
                     // <children>
-                    XmlElementWriteHelper objChildrenElement
-                        = await objWriter.StartElementAsync("children", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("children", token).ConfigureAwait(false))
                     {
                         foreach (Gear objGear in await objAmmoGear.Children
                                                                .DeepWhereAsync(
@@ -296,11 +294,7 @@ namespace Chummer.Backend.Equipment
                             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        // </children>
-                        await objChildrenElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </children>
                 }
 
                 // Here for Legacy reasons

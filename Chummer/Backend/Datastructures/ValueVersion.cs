@@ -42,14 +42,10 @@ namespace Chummer
         /// <paramref name="major" />, <paramref name="minor" />, <paramref name="build" />, or <paramref name="revision" /> is less than zero.</exception>
         public ValueVersion(int major, int minor, int build, int revision)
         {
-            if (major < 0)
-                throw new ArgumentOutOfRangeException(nameof(major));
-            if (minor < 0)
-                throw new ArgumentOutOfRangeException(nameof(minor));
-            if (build < 0)
-                throw new ArgumentOutOfRangeException(nameof(build));
-            if (revision < 0)
-                throw new ArgumentOutOfRangeException(nameof(revision));
+            ArgumentOutOfRangeException.ThrowIfNegative(major, nameof(major));
+            ArgumentOutOfRangeException.ThrowIfNegative(minor, nameof(minor));
+            ArgumentOutOfRangeException.ThrowIfNegative(build, nameof(build));
+            ArgumentOutOfRangeException.ThrowIfNegative(revision, nameof(revision));
             _Major = major;
             _Minor = minor;
             _Build = build;
@@ -64,12 +60,9 @@ namespace Chummer
         /// <paramref name="major" />, <paramref name="minor" />, or <paramref name="build" /> is less than zero.</exception>
         public ValueVersion(int major, int minor, int build)
         {
-            if (major < 0)
-                throw new ArgumentOutOfRangeException(nameof(major));
-            if (minor < 0)
-                throw new ArgumentOutOfRangeException(nameof(minor));
-            if (build < 0)
-                throw new ArgumentOutOfRangeException(nameof(build));
+            ArgumentOutOfRangeException.ThrowIfNegative(major, nameof(major));
+            ArgumentOutOfRangeException.ThrowIfNegative(minor, nameof(minor));
+            ArgumentOutOfRangeException.ThrowIfNegative(build, nameof(build));
             _Major = major;
             _Minor = minor;
             _Build = build;
@@ -83,10 +76,8 @@ namespace Chummer
         /// <paramref name="major" /> or <paramref name="minor" /> is less than zero.</exception>
         public ValueVersion(int major, int minor)
         {
-            if (major < 0)
-                throw new ArgumentOutOfRangeException(nameof(major));
-            if (minor < 0)
-                throw new ArgumentOutOfRangeException(nameof(minor));
+            ArgumentOutOfRangeException.ThrowIfNegative(major, nameof(major));
+            ArgumentOutOfRangeException.ThrowIfNegative(minor, nameof(minor));
             _Major = major;
             _Minor = minor;
             _Build = -1;
@@ -95,6 +86,7 @@ namespace Chummer
 
         public ValueVersion(int major = 0)
         {
+            ArgumentOutOfRangeException.ThrowIfNegative(major, nameof(major));
             _Major = major;
             _Minor = 0;
             _Build = -1;
@@ -722,7 +714,7 @@ namespace Chummer
                     throw GetValueVersionParseException();
             }
 
-            internal Exception GetValueVersionParseException()
+            internal readonly Exception GetValueVersionParseException()
             {
                 switch (m_failure)
                 {

@@ -63,8 +63,7 @@ namespace Chummer
 
         public ThreadSafeCachedRandom(int seed, int cacheSize, bool blnImmediatelyRegenerateCache = false) : base(seed)
         {
-            if (cacheSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(cacheSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cacheSize, nameof(cacheSize));
             _aintCache = ArrayPool<int>.Shared.Rent(cacheSize);
             if (blnImmediatelyRegenerateCache)
                 RegenerateCache();
@@ -74,8 +73,7 @@ namespace Chummer
 
         public ThreadSafeCachedRandom(Random objRandom, int cacheSize, bool blnImmediatelyRegenerateCache = false) : base(objRandom)
         {
-            if (cacheSize <= 0)
-                throw new ArgumentOutOfRangeException(nameof(cacheSize));
+            ArgumentOutOfRangeException.ThrowIfNegativeOrZero(cacheSize, nameof(cacheSize));
             _aintCache = ArrayPool<int>.Shared.Rent(cacheSize);
             if (blnImmediatelyRegenerateCache)
                 RegenerateCache();
@@ -120,8 +118,7 @@ namespace Chummer
         /// <inheritdoc />
         public override int Next(int maxValue)
         {
-            if (maxValue < 0)
-                throw new ArgumentOutOfRangeException(nameof(maxValue));
+            ArgumentOutOfRangeException.ThrowIfNegative(maxValue, nameof(maxValue));
             if (maxValue <= 1)
                 return 0;
             return Next() % maxValue;

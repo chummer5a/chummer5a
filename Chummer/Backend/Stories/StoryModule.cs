@@ -89,8 +89,7 @@ namespace Chummer
 
         public async Task CreateAsync(XPathNavigator xmlStoryModuleDataNode, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 xmlStoryModuleDataNode.TryGetField("id", Guid.TryParse, out _guiSourceID);
@@ -111,10 +110,6 @@ namespace Chummer
                     if (string.IsNullOrEmpty(_strDefaultTextKey))
                         _strDefaultTextKey = _dicEnglishTexts.FirstOrDefault().Key;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -217,16 +212,11 @@ namespace Chummer
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Name;
 
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 XPathNavigator objNode = await this.GetNodeXPathAsync(strLanguage, token: token).ConfigureAwait(false);
                 return objNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -270,8 +260,7 @@ namespace Chummer
 
         public async Task<string> DisplayTextAsync(string strKey, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strReturn;
@@ -285,40 +274,26 @@ namespace Chummer
 
                 return _dicEnglishTexts.TryGetValue(strKey, out strReturn) ? strReturn : "<" + strKey + ">";
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task<string> TestRunToGeneratePersistents(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await ResolveMacros(await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false),
                                            objCulture, strLanguage, true, token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task<string> PrintModule(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return (await ResolveMacros(
                     await DisplayTextAsync(DefaultKey, strLanguage, token).ConfigureAwait(false), objCulture,
                     strLanguage, token: token).ConfigureAwait(false)).NormalizeWhiteSpace();
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -327,8 +302,7 @@ namespace Chummer
             string strReturn = strInput;
             // Boolean in tuple is set to true if substring is a macro in need of processing, otherwise it's set to false
             List<ValueTuple<string, bool>> lstSubstrings = new List<ValueTuple<string, bool>>(1);
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 while (!string.IsNullOrEmpty(strReturn))
@@ -429,10 +403,6 @@ namespace Chummer
                     ArrayPool<string>.Shared.Return(astrOutputStrings);
                 }
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         // Treat as ReadOnlyCollection please, it's only not that because key string methods cannot use a ReadOnlyCollection as their argument
@@ -441,8 +411,7 @@ namespace Chummer
 
         public async Task<string> ProcessSingleMacro(string strInput, CultureInfo objCulture, string strLanguage, bool blnGeneratePersistents, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Process Macros nested inside of single macro
@@ -772,10 +741,6 @@ namespace Chummer
 
                 return await LanguageManager.GetStringAsync("String_Error", strLanguage, token: token)
                                             .ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

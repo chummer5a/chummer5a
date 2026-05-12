@@ -1615,15 +1615,10 @@ namespace Chummer
         public static async Task<XmlDocument> GetClipboardAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return s_xmlClipboard;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1634,26 +1629,19 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             string strNewOuterXml = value.OuterXmlViaPool(token);
-            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
-            objLocker = await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objClipboardLocker.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (eType == _eClipboardContentType && s_xmlClipboard.OuterXmlViaPool(token) == strNewOuterXml)
                     return;
 
-                IAsyncDisposable objLocker2 = await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objClipboardLocker.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     _eClipboardContentType = eType;
@@ -1664,14 +1652,6 @@ namespace Chummer
                         await ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token).ConfigureAwait(false);
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1693,15 +1673,10 @@ namespace Chummer
         public static async Task<ClipboardContentType> GetClipboardContentTypeAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objClipboardLocker.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return _eClipboardContentType;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

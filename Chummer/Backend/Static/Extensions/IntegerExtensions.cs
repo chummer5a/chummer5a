@@ -62,8 +62,7 @@ namespace Chummer
         /// <returns>True if <paramref name="intYear"/> would be a long year under the ISO 8601 standard, false if it would be a short year.</returns>
         internal static bool IsYearLongYear(this int intYear, out bool blnIsLeapYear)
         {
-            if (intYear == 0)
-                throw new ArgumentOutOfRangeException(nameof(intYear));
+            ArgumentOutOfRangeException.ThrowIfZero(intYear, nameof(intYear));
             int intYearDiv4 = intYear.DivRem(4, out int intYearMod4);
             int intYearDiv100 = intYear.DivRem(100, out int intYearMod100);
             int intYearDiv400 = intYear.DivRem(400, out int intYearMod400);
@@ -77,8 +76,7 @@ namespace Chummer
         /// </summary>
         internal static bool IsYearLeapYear(this int intYear)
         {
-            if (intYear == 0)
-                throw new ArgumentOutOfRangeException(nameof(intYear));
+            ArgumentOutOfRangeException.ThrowIfZero(intYear, nameof(intYear));
             return (intYear & 0x3) == 0 && (intYear % 100 != 0 || intYear % 400 == 0);
         }
 
@@ -87,8 +85,7 @@ namespace Chummer
         /// </summary>
         internal static IsoWeekCalendar GetWeekCalenderForYear(this int intYear)
         {
-            if (intYear == 0)
-                throw new ArgumentOutOfRangeException(nameof(intYear));
+            ArgumentOutOfRangeException.ThrowIfZero(intYear, nameof(intYear));
             if (intYear < 0) // Adjust for year 0 not existing
                 ++intYear;
             int intCycleYear = intYear % 400;
@@ -519,8 +516,7 @@ namespace Chummer
         /// </summary>
         internal static int GetWeekOfTheDayForJan4(this int intYear)
         {
-            if (intYear == 0)
-                throw new ArgumentOutOfRangeException(nameof(intYear));
+            ArgumentOutOfRangeException.ThrowIfZero(intYear, nameof(intYear));
             switch (intYear.GetWeekCalenderForYear())
             {
                 case IsoWeekCalendar.LetterA:

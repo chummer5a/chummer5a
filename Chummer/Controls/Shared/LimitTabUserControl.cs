@@ -62,14 +62,9 @@ namespace Chummer.UI.Shared
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false))
                 {
                     await RealLoad(_objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -359,7 +354,7 @@ namespace Chummer.UI.Shared
                 // Add Limit Modifiers.
                 await _objCharacter.LimitModifiers.ForEachAsync(async objLimitModifier =>
                 {
-                    int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                    int intTargetLimit = (int)Enum.Parse<LimitType>(objLimitModifier.Limit);
                     TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                     if (objParentNode != null)
                     {
@@ -384,7 +379,7 @@ namespace Chummer.UI.Shared
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.LimitModifier:
-                            intTargetLimit = (int)Enum.Parse(typeof(LimitType), objImprovement.ImprovedName);
+                            intTargetLimit = (int)Enum.Parse<LimitType>(objImprovement.ImprovedName);
                             break;
 
                         case Improvement.ImprovementType.PhysicalLimit:
@@ -456,7 +451,7 @@ namespace Chummer.UI.Shared
                         {
                             foreach (LimitModifier objLimitModifier in e.NewItems)
                             {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                                int intTargetLimit = (int)Enum.Parse<LimitType>(objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                                 if (objParentNode != null)
                                 {
@@ -528,7 +523,7 @@ namespace Chummer.UI.Shared
                             }, token: token).ConfigureAwait(false);
                             foreach (LimitModifier objLimitModifier in e.NewItems)
                             {
-                                int intTargetLimit = (int)Enum.Parse(typeof(LimitType), objLimitModifier.Limit);
+                                int intTargetLimit = (int)Enum.Parse<LimitType>(objLimitModifier.Limit);
                                 TreeNode objParentNode = await GetLimitModifierParentNode(intTargetLimit).ConfigureAwait(false);
                                 if (objParentNode != null)
                                 {

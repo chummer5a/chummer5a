@@ -57,8 +57,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     Interlocked.Increment(ref _intLoading);
                     try
@@ -88,10 +87,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intLoading);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -103,8 +98,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -118,10 +112,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
 
                 Interlocked.Decrement(ref _intLoading);
@@ -222,8 +212,7 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     Interlocked.Increment(ref _intLoading);
                     try
@@ -274,10 +263,6 @@ namespace Chummer
                         Interlocked.Decrement(ref _intLoading);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
         }
 
@@ -287,8 +272,7 @@ namespace Chummer
                 return;
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), _objGenericToken).ConfigureAwait(false);
                     try
@@ -299,10 +283,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -392,8 +372,7 @@ namespace Chummer
             if (eResult != DialogResult.OK)
                 return;
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 if (!await _objExportSemaphore.WaitAsync(Utils.WaitEmergencyReleaseMaxTicks, token).ConfigureAwait(false))
                     throw new OperationCanceledException();
@@ -411,8 +390,7 @@ namespace Chummer
                     if (!strSaveArchive.EndsWith(".zip", StringComparison.OrdinalIgnoreCase))
                         strSaveArchive += ".zip";
                     await Utils.SafeDeleteDirectoryAsync(strSaveArchive, token: token).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         try
@@ -454,20 +432,12 @@ namespace Chummer
                             throw;
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
                 finally
                 {
                     _objExportSemaphore.Release();
                     await ValidateIfExportPossible(token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -33,15 +33,13 @@ namespace Chummer
         /// </summary>
         public static T ElementAtBetter<T>(this IEnumerable<T> source, int index)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
             if (source is IReadOnlyList<T> list1)
                 return list1[index];
             // Just in case we have classes that inherit from IList but not from IReadOnlyList
             if (source is IList<T> list2)
                 return list2[index];
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
             using (IEnumerator<T> enumerator = source.GetEnumerator())
             {
                 while (enumerator.MoveNext())
@@ -58,8 +56,7 @@ namespace Chummer
         /// </summary>
         public static T ElementAtOrDefaultBetter<T>(this IEnumerable<T> source, int index)
         {
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
             if (index >= 0)
             {
                 if (source is IReadOnlyList<T> list1)

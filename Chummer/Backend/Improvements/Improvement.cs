@@ -471,7 +471,7 @@ namespace Chummer
 
             if (strValue == "ContactForceLoyalty")
                 strValue = "ContactForcedLoyalty";
-            return (ImprovementType)Enum.Parse(typeof(ImprovementType), strValue);
+            return Enum.Parse<ImprovementType>(strValue);
         }
 
         /// <summary>
@@ -482,7 +482,7 @@ namespace Chummer
         {
             if (strValue == "MartialArtAdvantage")
                 strValue = "MartialArtTechnique";
-            return (ImprovementSource)Enum.Parse(typeof(ImprovementSource), strValue);
+            return Enum.Parse<ImprovementSource>(strValue);
         }
 
         #endregion Helper Methods

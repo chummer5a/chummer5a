@@ -854,12 +854,10 @@ namespace Chummer
                             return;
                         await objWriter.WriteStartDocumentAsync().ConfigureAwait(false);
                         // <bonus>
-                        XmlElementWriteHelper objBonusNode = await objWriter.StartElementAsync("bonus", token: token).ConfigureAwait(false);
-                        try
+                        await using (await objWriter.StartElementAsync("bonus", token: token).ConfigureAwait(false))
                         {
                             // <whatever element>
-                            XmlElementWriteHelper objInternalNode = await objWriter.StartElementAsync(strInternal, token: token).ConfigureAwait(false);
-                            try
+                            await using (await objWriter.StartElementAsync(strInternal, token: token).ConfigureAwait(false))
                             {
                                 // Retrieve the XML data from the document and replace the values as necessary.
                                 foreach (XPathNavigator xmlAttribute in objFetchNode.SelectAndCacheExpression("xml/@*", token))
@@ -919,17 +917,9 @@ namespace Chummer
 
                                 // Write the rest of the document.
                             }
-                            finally
-                            {
-                                // </whatever element>
-                                await objInternalNode.DisposeAsync().ConfigureAwait(false);
-                            }
+                            // </whatever element>
                         }
-                        finally
-                        {
-                            // </bonus>
-                            await objBonusNode.DisposeAsync().ConfigureAwait(false);
-                        }
+                        // </bonus>
                         await objWriter.WriteEndDocumentAsync().ConfigureAwait(false);
                         await objWriter.FlushAsync().ConfigureAwait(false);
                     }

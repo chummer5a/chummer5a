@@ -63,29 +63,19 @@ namespace Chummer
             /// </summary>
             public async Task<bool> GetDuplicatesCheckedAsync(CancellationToken token = default)
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     return _intDuplicatesChecked > 0;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
             public async Task SetDuplicatesCheckedAsync(bool blnNewValue, CancellationToken token = default)
             {
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     Interlocked.Exchange(ref _intDuplicatesChecked, blnNewValue.ToInt32());
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -142,15 +132,10 @@ namespace Chummer
                         return null;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     return _xmlContent;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -206,15 +191,12 @@ namespace Chummer
             public async Task SetXmlContentAsync(XmlDocument objContent, CancellationToken token = default)
             {
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker =
-                    await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     if (ReferenceEquals(_xmlContent, objContent))
                         return;
-                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         XmlDocument objOldContent = Interlocked.Exchange(ref _xmlContent, objContent);
@@ -249,14 +231,6 @@ namespace Chummer
                             throw;
                         }
                     }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -311,15 +285,10 @@ namespace Chummer
                         return null;
                     await Utils.SafeSleepAsync(token).ConfigureAwait(false);
                 }
-                IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     return _objXPathContent;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -423,8 +392,7 @@ namespace Chummer
 
         public static async Task RebuildDataDirectoryInfoAsync(IEnumerable<CustomDataDirectoryInfo> lstCustomDirectories, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await s_objDataDirectoriesLock.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 List<XmlReference> lstReferences = s_DicXmlDocuments.GetValuesToListSafe();
@@ -467,10 +435,6 @@ namespace Chummer
                         setLoop.AddRange(CompileRelevantCustomDataPaths(strFileName, s_SetDataDirectories, token));
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -340,8 +340,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <critterpower>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("critterpower", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("critterpower", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -367,11 +366,7 @@ namespace Chummer
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </critterpower>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </critterpower>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

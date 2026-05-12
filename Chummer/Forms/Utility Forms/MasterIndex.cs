@@ -188,8 +188,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     await SourceString.Blank.SetControlAsync(lblSource, this, _objGenericToken).ConfigureAwait(false);
 
@@ -230,10 +229,6 @@ namespace Chummer
 
                     if (objSettings?.IsDisposed == false)
                         objSettings.MultiplePropertiesChangedAsync += OnSelectedSettingChanged;
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -311,14 +306,9 @@ namespace Chummer
             {
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         await LoadContent(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch (OperationCanceledException)
@@ -345,8 +335,7 @@ namespace Chummer
                 CancellationToken token = objJoinedCancellationTokenSource.Token;
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         string strSelectedSetting
                             = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, token)
@@ -383,10 +372,6 @@ namespace Chummer
 
                             await LoadContent(token).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch (OperationCanceledException)
@@ -728,8 +713,7 @@ namespace Chummer
                 CancellationToken token = objJoinedCancellationTokenSource.Token;
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         string strFileFilter
                                     = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
@@ -821,10 +805,6 @@ namespace Chummer
                                 Utils.ListItemListPool.Return(ref lstFilteredItems);
                         }
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -850,8 +830,7 @@ namespace Chummer
                 CancellationToken token = objJoinedCancellationTokenSource.Token;
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         if (await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false) is
                             MasterIndexEntry objEntry)
@@ -900,10 +879,6 @@ namespace Chummer
                             await txtNotes.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
                 catch (OperationCanceledException)
                 {
@@ -942,8 +917,7 @@ namespace Chummer
             try
             {
                 CharacterSettings objSettings = await cboCharacterSetting.DoThreadSafeFuncAsync(x => x.SelectedValue, _objGenericToken).ConfigureAwait(false) as CharacterSettings;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<EditCharacterSettings> frmOptions
                            = await ThreadSafeForm<EditCharacterSettings>.GetAsync(
@@ -951,10 +925,6 @@ namespace Chummer
                                _objGenericToken).ConfigureAwait(false))
                         await frmOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
                     // Do not repopulate the character settings list because that will happen from frmCharacterSettings where appropriate
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -971,8 +941,7 @@ namespace Chummer
                    = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, token))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
                     try
@@ -983,10 +952,6 @@ namespace Chummer
                     {
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

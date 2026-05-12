@@ -151,10 +151,7 @@ namespace Chummer.UI.Table
             set
             {
                 CheckLive();
-                if (value < 0)
-                {
-                    throw new ArgumentOutOfRangeException(nameof(MinWidth));
-                }
+                ArgumentOutOfRangeException.ThrowIfNegative(value, nameof(value));
                 _intMinWidth = value;
             }
         }

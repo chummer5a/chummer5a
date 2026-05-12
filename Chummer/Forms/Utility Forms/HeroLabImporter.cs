@@ -60,8 +60,7 @@ namespace Chummer
             // Prompt the user to select a save file to possess.
             if (await this.DoThreadSafeFuncAsync(x => dlgOpenFile.ShowDialog(x)).ConfigureAwait(false) != DialogResult.OK)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 string strSelectedFile = dlgOpenFile.FileName;
                 TreeNode objNode = await CacheCharacters(strSelectedFile).ConfigureAwait(false);
@@ -74,10 +73,6 @@ namespace Chummer
                         x.SelectedNode = objNode.Nodes.Count > 0 ? objNode.Nodes[0] : objNode;
                     }).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -100,8 +95,8 @@ namespace Chummer
             ConcurrentBag<XPathNavigator> lstCharacterXmlStatblocks = new ConcurrentBag<XPathNavigator>();
             try
             {
-                using (ZipArchive zipArchive
-                       = ZipFile.Open(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                await using (ZipArchive zipArchive
+                       = await ZipFile.OpenAsync(strFile, ZipArchiveMode.Read, Encoding.GetEncoding(850), token).ConfigureAwait(false))
                 {
                     // NOTE: Cannot parallelize because ZipFile.Open creates one handle on the entire zip file that gets messed up if we try to get it to read multiple files at once
                     foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
@@ -148,7 +143,7 @@ namespace Chummer
                         else if (strEntryFullName.StartsWith("images", StringComparison.Ordinal)
                                  && strEntryFullName.Contains('.'))
                         {
-                            using (Stream objStream = objEntry.Open())
+                            using (Stream objStream = await objEntry.OpenAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 using (Bitmap bmpMugshot = new Bitmap(objStream, true))
@@ -621,8 +616,7 @@ namespace Chummer
             string strCharacterId = objCache.CharacterId;
             if (string.IsNullOrEmpty(strFile) || string.IsNullOrEmpty(strCharacterId))
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 bool blnLoaded = false;
                 Character objCharacter = new Character();
@@ -704,10 +698,6 @@ namespace Chummer
                     await cmdImport.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                     await cmdSelectFile.DoThreadSafeAsync(x => x.Enabled = true, token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             await this.DoThreadSafeAsync(x => x.Close(), token).ConfigureAwait(false);

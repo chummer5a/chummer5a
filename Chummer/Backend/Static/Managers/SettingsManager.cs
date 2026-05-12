@@ -65,8 +65,7 @@ namespace Chummer
 
         private static async void ObjSettingsFolderWatcherOnChanged(object sender, FileSystemEventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync().ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync().ConfigureAwait(false))
             {
                 switch (e.ChangeType)
                 {
@@ -107,10 +106,6 @@ namespace Chummer
                         }
                         break;
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -486,8 +481,7 @@ namespace Chummer
                 }, Utils.JoinableTaskFactory);
                 await Program.OpenCharacters.ForEachAsync(async objCharacter =>
                 {
-                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
@@ -498,10 +492,6 @@ namespace Chummer
                                 : await strBestMatchForNonCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
                                     token).ConfigureAwait(false);
                         }
-                    }
-                    finally
-                    {
-                        await objLocker2.DisposeAsync().ConfigureAwait(false);
                     }
                 }, token: token).ConfigureAwait(false);
             }

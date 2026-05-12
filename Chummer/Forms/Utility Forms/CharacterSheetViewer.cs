@@ -385,8 +385,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     string strPdfPrinter = string.Empty;
                     try
@@ -514,10 +513,6 @@ namespace Chummer
                     {
                         await Program.ShowScrollableMessageBoxAsync(this, ex.ToString(), token: _objGenericToken).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -855,47 +850,45 @@ namespace Chummer
         private async Task RefreshCharacterXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, true, token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, true, token).ConfigureAwait(false))
             {
-                _blnCanPrint = false;
                 try
                 {
-                    await this.DoThreadSafeAsync(x =>
+                    _blnCanPrint = false;
+                    try
                     {
-                        x.tsPrintPreview.Enabled = false;
-                        x.tsSaveAsHtml.Enabled = false;
-                    }, token).ConfigureAwait(false);
-                    await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                    await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token).ConfigureAwait(false);
-                    token.ThrowIfCancellationRequested();
-                    _objCharacterXml = aobjCharacters.Length > 0
-                        ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
-                                                                            _objRefresherCancellationTokenSource.Token,
-                                                                            aobjCharacters).ConfigureAwait(false)
-                        : null;
-                    token.ThrowIfCancellationRequested();
-                    await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token).ConfigureAwait(false);
+                        await this.DoThreadSafeAsync(x =>
+                        {
+                            x.tsPrintPreview.Enabled = false;
+                            x.tsSaveAsHtml.Enabled = false;
+                        }, token).ConfigureAwait(false);
+                        await cmdPrint.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        await cmdSaveAsPdf.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        Character[] aobjCharacters = await _lstCharacters.ToArrayAsync(token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        _objCharacterXml = aobjCharacters.Length > 0
+                            ? await CommonFunctions.GenerateCharactersExportXml(_objPrintCulture, _strPrintLanguage,
+                                                                                _objRefresherCancellationTokenSource.Token,
+                                                                                aobjCharacters).ConfigureAwait(false)
+                            : null;
+                        token.ThrowIfCancellationRequested();
+                        await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = _objCharacterXml != null, token).ConfigureAwait(false);
+                    }
+                    finally
+                    {
+                        await RefreshSheet(token).ConfigureAwait(false);
+                    }
                 }
-                finally
+                catch (OperationCanceledException)
                 {
-                    await RefreshSheet(token).ConfigureAwait(false);
+                    throw;
                 }
-            }
-            catch (OperationCanceledException)
-            {
-                throw;
-            }
-            catch
-            {
-                await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = false, token).ConfigureAwait(false);
-                throw;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                catch
+                {
+                    await this.DoThreadSafeAsync(x => x.tsSaveAsXml.Enabled = false, token).ConfigureAwait(false);
+                    throw;
+                }
             }
         }
 
@@ -907,8 +900,7 @@ namespace Chummer
         private async Task AsyncGenerateOutput(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 _blnCanPrint = false;
                 await this.DoThreadSafeAsync(x =>
@@ -1094,10 +1086,6 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void webViewer_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -1259,16 +1247,14 @@ namespace Chummer
         public async Task SetCharacters(CancellationToken token = default, params Character[] lstCharacters)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _lstCharacters.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _lstCharacters.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 foreach (Character objCharacter in _lstCharacters)
                 {
                     if (objCharacter.IsDisposed)
                         continue;
-                    IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         objCharacter.MultiplePropertiesChangedAsync -= ObjCharacterOnPropertyChanged;
@@ -1290,10 +1276,6 @@ namespace Chummer
                         objCharacter.SustainedCollection.CollectionChangedAsync -= OnCharacterCollectionChanged;
                         objCharacter.InitiationGrades.CollectionChangedAsync -= OnCharacterCollectionChanged;
                     }
-                    finally
-                    {
-                        await objInnerLocker.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
                 await _lstCharacters.ClearAsync(token).ConfigureAwait(false);
                 if (lstCharacters != null)
@@ -1302,8 +1284,7 @@ namespace Chummer
                     {
                         if (objCharacter.IsDisposed)
                             continue;
-                        IAsyncDisposable objInnerLocker = await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             objCharacter.MultiplePropertiesChangedAsync += ObjCharacterOnPropertyChanged;
@@ -1326,17 +1307,9 @@ namespace Chummer
                             objCharacter.SustainedCollection.CollectionChangedAsync += OnCharacterCollectionChanged;
                             objCharacter.InitiationGrades.CollectionChangedAsync += OnCharacterCollectionChanged;
                         }
-                        finally
-                        {
-                            await objInnerLocker.DisposeAsync().ConfigureAwait(false);
-                        }
                         await _lstCharacters.AddAsync(objCharacter, token).ConfigureAwait(false);
                     }
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await UpdateWindowTitleAsync(token).ConfigureAwait(false);

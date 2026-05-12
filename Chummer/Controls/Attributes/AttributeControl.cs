@@ -342,9 +342,7 @@ namespace Chummer.UI.Attributes
                 try
                 {
                     CharacterAttrib objAttrib = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttrib.LockObject.EnterReadLockAsync(_objMyToken)
-                        .ConfigureAwait(false);
-                    try
+                    await using (await objAttrib.LockObject.EnterReadLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         string strName = await objAttrib.GetDisplayNameFormattedAsync(_objMyToken).ConfigureAwait(false);
@@ -407,10 +405,6 @@ namespace Chummer.UI.Attributes
 
                         _objCharacter.AttributeSection.RegisterAsyncPropertyChangedForActiveAttribute(AttributeName,
                             OnAttributePropertyChanged);
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 finally
@@ -535,13 +529,10 @@ namespace Chummer.UI.Attributes
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false))
                 {
                     CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttribute.LockObject
-                        .EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         int intUpgradeKarmaCost =
@@ -573,17 +564,9 @@ namespace Chummer.UI.Attributes
 
                         await objAttribute.Upgrade(token: _objMyToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     if (ValueChanged != null)
                         await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -615,63 +598,58 @@ namespace Chummer.UI.Attributes
             {
                 int intValue = await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
-                Interlocked.Increment(ref _intChangingBase);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false))
                 {
-                    CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttribute.LockObject
-                        .EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                    Interlocked.Increment(ref _intChangingBase);
                     try
                     {
-                        _objMyToken.ThrowIfCancellationRequested();
-                        int intOldBase = await objAttribute.GetBaseAsync(_objMyToken).ConfigureAwait(false);
-                        if (intOldBase == intValue)
-                            return;
-                        if (!await CanBeMetatypeMax(
-                                    Math.Max(
-                                        await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
-                                            .ConfigureAwait(false) +
-                                        await objAttribute.GetFreeBaseAsync(_objMyToken).ConfigureAwait(false)
-                                        + await objAttribute.GetRawMinimumAsync(_objMyToken).ConfigureAwait(false) +
-                                        await objAttribute.GetAttributeValueModifiersAsync(_objMyToken)
-                                            .ConfigureAwait(false),
-                                        await objAttribute.GetTotalMinimumAsync(_objMyToken).ConfigureAwait(false)) +
-                                    intValue, _objMyToken)
-                                .ConfigureAwait(false))
+                        CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
+                        await using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                         {
-                            // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                            int intPriorityMaximum = await objAttribute.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
-                            if (intOldBase > intPriorityMaximum)
+                            _objMyToken.ThrowIfCancellationRequested();
+                            int intOldBase = await objAttribute.GetBaseAsync(_objMyToken).ConfigureAwait(false);
+                            if (intOldBase == intValue)
+                                return;
+                            if (!await CanBeMetatypeMax(
+                                        Math.Max(
+                                            await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                                                .ConfigureAwait(false) +
+                                            await objAttribute.GetFreeBaseAsync(_objMyToken).ConfigureAwait(false)
+                                            + await objAttribute.GetRawMinimumAsync(_objMyToken).ConfigureAwait(false) +
+                                            await objAttribute.GetAttributeValueModifiersAsync(_objMyToken)
+                                                .ConfigureAwait(false),
+                                            await objAttribute.GetTotalMinimumAsync(_objMyToken).ConfigureAwait(false)) +
+                                        intValue, _objMyToken)
+                                    .ConfigureAwait(false))
                             {
-                                intOldBase = intPriorityMaximum;
-                            }
-                            if (intOldBase < 0)
-                            {
-                                int intOldBaseLocal = intOldBase;
-                                await nudKarma.DoThreadSafeAsync(x => x.ValueAsInt -= intOldBaseLocal, token: _objMyToken).ConfigureAwait(false);
-                                intOldBase = 0;
+                                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
+                                int intPriorityMaximum = await objAttribute.GetPriorityMaximumAsync(_objMyToken).ConfigureAwait(false);
+                                if (intOldBase > intPriorityMaximum)
+                                {
+                                    intOldBase = intPriorityMaximum;
+                                }
+                                if (intOldBase < 0)
+                                {
+                                    int intOldBaseLocal = intOldBase;
+                                    await nudKarma.DoThreadSafeAsync(x => x.ValueAsInt -= intOldBaseLocal, token: _objMyToken).ConfigureAwait(false);
+                                    intOldBase = 0;
+                                }
+
+                                await nudBase.DoThreadSafeAsync(x => x.ValueAsInt = intOldBase, token: _objMyToken)
+                                    .ConfigureAwait(false);
+                                return;
                             }
 
-                            await nudBase.DoThreadSafeAsync(x => x.ValueAsInt = intOldBase, token: _objMyToken)
-                                .ConfigureAwait(false);
-                            return;
+                            await objAttribute.SetBaseAsync(intValue, _objMyToken).ConfigureAwait(false);
                         }
 
-                        await objAttribute.SetBaseAsync(intValue, _objMyToken).ConfigureAwait(false);
+                        if (ValueChanged != null)
+                            await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        Interlocked.Decrement(ref _intChangingBase);
                     }
-
-                    if (ValueChanged != null)
-                        await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    Interlocked.Decrement(ref _intChangingBase);
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -700,64 +678,59 @@ namespace Chummer.UI.Attributes
             {
                 int intValue = await nudKarma.DoThreadSafeFuncAsync(x => x.ValueAsInt, _objMyToken)
                     .ConfigureAwait(false);
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
-                Interlocked.Increment(ref _intChangingKarma);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false))
                 {
-                    CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttribute.LockObject
-                        .EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
+                    Interlocked.Increment(ref _intChangingKarma);
                     try
                     {
-                        _objMyToken.ThrowIfCancellationRequested();
-                        int intOldKarma = await objAttribute.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
-                        if (intOldKarma == intValue)
-                            return;
-                        if (!await CanBeMetatypeMax(
-                                    Math.Max(
-                                        await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
-                                            .ConfigureAwait(false) +
-                                        await objAttribute.GetFreeBaseAsync(_objMyToken).ConfigureAwait(false)
-                                        + await objAttribute.GetRawMinimumAsync(_objMyToken).ConfigureAwait(false) +
-                                        await objAttribute.GetAttributeValueModifiersAsync(_objMyToken)
-                                            .ConfigureAwait(false),
-                                        await objAttribute.GetTotalMinimumAsync(_objMyToken).ConfigureAwait(false)) +
-                                    intValue, _objMyToken)
-                                .ConfigureAwait(false))
+                        CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
+                        await using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                         {
-                            // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
-                            int intKarmaMaximum =
-                                await objAttribute.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
-                            if (intOldKarma > intKarmaMaximum)
+                            _objMyToken.ThrowIfCancellationRequested();
+                            int intOldKarma = await objAttribute.GetKarmaAsync(_objMyToken).ConfigureAwait(false);
+                            if (intOldKarma == intValue)
+                                return;
+                            if (!await CanBeMetatypeMax(
+                                        Math.Max(
+                                            await nudBase.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: _objMyToken)
+                                                .ConfigureAwait(false) +
+                                            await objAttribute.GetFreeBaseAsync(_objMyToken).ConfigureAwait(false)
+                                            + await objAttribute.GetRawMinimumAsync(_objMyToken).ConfigureAwait(false) +
+                                            await objAttribute.GetAttributeValueModifiersAsync(_objMyToken)
+                                                .ConfigureAwait(false),
+                                            await objAttribute.GetTotalMinimumAsync(_objMyToken).ConfigureAwait(false)) +
+                                        intValue, _objMyToken)
+                                    .ConfigureAwait(false))
                             {
-                                intOldKarma = intKarmaMaximum - 1;
-                            }
-                            if (intOldKarma < 0)
-                            {
-                                int intOldKarmaLocal = intOldKarma;
-                                await nudBase.DoThreadSafeAsync(x => x.ValueAsInt -= intOldKarmaLocal, token: _objMyToken).ConfigureAwait(false);
-                                intOldKarma = 0;
+                                // It's possible that the attribute maximum was reduced by an improvement, so confirm the appropriate value to bounce up/down to.
+                                int intKarmaMaximum =
+                                    await objAttribute.GetKarmaMaximumAsync(_objMyToken).ConfigureAwait(false);
+                                if (intOldKarma > intKarmaMaximum)
+                                {
+                                    intOldKarma = intKarmaMaximum - 1;
+                                }
+                                if (intOldKarma < 0)
+                                {
+                                    int intOldKarmaLocal = intOldKarma;
+                                    await nudBase.DoThreadSafeAsync(x => x.ValueAsInt -= intOldKarmaLocal, token: _objMyToken).ConfigureAwait(false);
+                                    intOldKarma = 0;
+                                }
+
+                                await nudKarma.DoThreadSafeAsync(x => x.ValueAsInt = intOldKarma, token: _objMyToken)
+                                    .ConfigureAwait(false);
+                                return;
                             }
 
-                            await nudKarma.DoThreadSafeAsync(x => x.ValueAsInt = intOldKarma, token: _objMyToken)
-                                .ConfigureAwait(false);
-                            return;
+                            await objAttribute.SetKarmaAsync(intValue, _objMyToken).ConfigureAwait(false);
                         }
 
-                        await objAttribute.SetKarmaAsync(intValue, _objMyToken).ConfigureAwait(false);
+                        if (ValueChanged != null)
+                            await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
+                        Interlocked.Decrement(ref _intChangingKarma);
                     }
-
-                    if (ValueChanged != null)
-                        await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    Interlocked.Decrement(ref _intChangingKarma);
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -775,8 +748,7 @@ namespace Chummer.UI.Attributes
         private async Task<bool> CanBeMetatypeMax(int intValue, CancellationToken token = default)
         {
             CharacterAttrib objAttribute = await GetAttributeObjectAsync(token).ConfigureAwait(false);
-            IAsyncDisposable objLocker = await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalMaximum = await objAttribute.GetTotalMaximumAsync(token).ConfigureAwait(false);
@@ -797,10 +769,6 @@ namespace Chummer.UI.Attributes
                     MessageBoxIcon.Information, token: token).ConfigureAwait(false);
                 return false;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public string AttributeName => _strAttributeName;
@@ -820,14 +788,11 @@ namespace Chummer.UI.Attributes
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objMyToken).ConfigureAwait(false))
                 {
                     // Edge cannot go below 1.
                     CharacterAttrib objAttribute = await GetAttributeObjectAsync(_objMyToken).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objAttribute.LockObject
-                        .EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                    try
+                    await using (await objAttribute.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                     {
                         _objMyToken.ThrowIfCancellationRequested();
                         if (await objAttribute.GetValueAsync(_objMyToken).ConfigureAwait(false) <= 0)
@@ -854,17 +819,9 @@ namespace Chummer.UI.Attributes
 
                         await objAttribute.Degrade(token: _objMyToken).ConfigureAwait(false);
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     if (ValueChanged != null)
                         await ValueChanged.Invoke(this, e, _objMyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

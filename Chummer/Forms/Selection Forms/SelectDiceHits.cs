@@ -38,8 +38,7 @@ namespace Chummer
 
         private async void SelectDiceHits_Load(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 int intDice = Dice;
                 string strText = await LanguageManager.GetStringAsync("String_DiceHits_HitsOn").ConfigureAwait(false)
@@ -54,10 +53,6 @@ namespace Chummer
                     x.Minimum = intDice;
                 }).ConfigureAwait(false);
                 await DoRoll().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -75,14 +70,9 @@ namespace Chummer
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await DoRoll().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

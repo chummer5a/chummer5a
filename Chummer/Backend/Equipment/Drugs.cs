@@ -241,8 +241,7 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <drug>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("drug", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("drug", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -271,16 +270,14 @@ namespace Chummer.Backend.Equipment
                     "cost", (await GetTotalCostAsync(token).ConfigureAwait(false)).ToString(strNuyenFormat, objCulture), token).ConfigureAwait(false);
 
                 // <attributes>
-                XmlElementWriteHelper objAttributesElement = await objWriter.StartElementAsync("attributes", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("attributes", token).ConfigureAwait(false))
                 {
                     foreach (KeyValuePair<string, decimal> objAttribute in await GetAttributesAsync(token).ConfigureAwait(false))
                     {
                         if (objAttribute.Value != 0)
                         {
                             // <attribute>
-                            XmlElementWriteHelper objAttributeElement = await objWriter.StartElementAsync("attribute", token).ConfigureAwait(false);
-                            try
+                            await using (await objWriter.StartElementAsync("attribute", token).ConfigureAwait(false))
                             {
                                 await objWriter.WriteElementStringAsync(
                                     "name",
@@ -291,31 +288,21 @@ namespace Chummer.Backend.Equipment
                                 await objWriter.WriteElementStringAsync(
                                     "value", objAttribute.Value.ToString("+#.#;-#.#", objCulture), token).ConfigureAwait(false);
                             }
-                            finally
-                            {
-                                // </attribute>
-                                await objAttributeElement.DisposeAsync().ConfigureAwait(false);
-                            }
+                            // </attribute>
                         }
                     }
                 }
-                finally
-                {
-                    // </attributes>
-                    await objAttributesElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </attributes>
 
                 // <limits>
-                XmlElementWriteHelper objLimitsElement = await objWriter.StartElementAsync("limits", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("limits", token).ConfigureAwait(false))
                 {
                     foreach (KeyValuePair<string, int> objLimit in await GetLimitsAsync(token).ConfigureAwait(false))
                     {
                         if (objLimit.Value != 0)
                         {
                             // <limit>
-                            XmlElementWriteHelper objLimitElement = await objWriter.StartElementAsync("limit", token).ConfigureAwait(false);
-                            try
+                            await using (await objWriter.StartElementAsync("limit", token).ConfigureAwait(false))
                             {
                                 await objWriter.WriteElementStringAsync(
                                     "name",
@@ -324,82 +311,50 @@ namespace Chummer.Backend.Equipment
                                 await objWriter.WriteElementStringAsync(
                                     "value", objLimit.Value.ToString("+#;-#", objCulture), token).ConfigureAwait(false);
                             }
-                            finally
-                            {
-                                // </limit>
-                                await objLimitElement.DisposeAsync().ConfigureAwait(false);
-                            }
+                            // </limit>
                         }
                     }
                 }
-                finally
-                {
-                    // </limits>
-                    await objLimitsElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </limits>
 
                 // <qualities>
-                XmlElementWriteHelper objQualitiesElement = await objWriter.StartElementAsync("qualities", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("qualities", token).ConfigureAwait(false))
                 {
                     foreach (string strQualityText in (await GetQualitiesAsync(token).ConfigureAwait(false)).Select(x => x.InnerTextViaPool(token)))
                     {
                         // <quality>
-                        XmlElementWriteHelper objQualityElement = await objWriter.StartElementAsync("quality", token).ConfigureAwait(false);
-                        try
+                        await using (await objWriter.StartElementAsync("quality", token).ConfigureAwait(false))
                         {
                             await objWriter.WriteElementStringAsync(
                                 "name", await _objCharacter.TranslateExtraAsync(strQualityText, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name_english", strQualityText, token).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            // </quality>
-                            await objQualityElement.DisposeAsync().ConfigureAwait(false);
-                        }
+                        // </quality>
                     }
                 }
-                finally
-                {
-                    // </qualities>
-                    await objQualitiesElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </qualities>
 
                 // <infos>
-                XmlElementWriteHelper objInfosElement = await objWriter.StartElementAsync("infos", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("infos", token).ConfigureAwait(false))
                 {
                     foreach (string strInfo in await GetInfosAsync(token).ConfigureAwait(false))
                     {
                         // <info>
-                        XmlElementWriteHelper objInfoElement = await objWriter.StartElementAsync("info", token).ConfigureAwait(false);
-                        try
+                        await using (await objWriter.StartElementAsync("info", token).ConfigureAwait(false))
                         {
                             await objWriter.WriteElementStringAsync(
                                 "name", await _objCharacter.TranslateExtraAsync(strInfo, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                             await objWriter.WriteElementStringAsync("name_english", strInfo, token).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            // </info>
-                            await objInfoElement.DisposeAsync().ConfigureAwait(false);
-                        }
+                        // </info>
                     }
                 }
-                finally
-                {
-                    // </infos>
-                    await objInfosElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </infos>
 
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </drug>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </drug>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

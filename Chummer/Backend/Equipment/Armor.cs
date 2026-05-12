@@ -1344,8 +1344,7 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <armor>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("armor", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("armor", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -1373,33 +1372,23 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("ratinglabel", RatingLabel, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 // <armormods>
-                XmlElementWriteHelper objArmorModsElement = await objWriter.StartElementAsync("armormods", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("armormods", token).ConfigureAwait(false))
                 {
                     foreach (ArmorMod objMod in ArmorMods)
                     {
                         await objMod.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    // </armormods>
-                    await objArmorModsElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </armormods>
                 // <gears>
-                XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("gears", token).ConfigureAwait(false))
                 {
                     foreach (Gear objGear in GearChildren)
                     {
                         await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    // </gears>
-                    await objGearsElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </gears>
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(Extra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("location", Location != null ? await Location.DisplayNameShortAsync(strLanguageToPrint, token).ConfigureAwait(false) : string.Empty, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("attack", (await this.GetTotalMatrixAttributeAsync("Attack", token).ConfigureAwait(false)).ToString(objCulture), token).ConfigureAwait(false);
@@ -1422,11 +1411,7 @@ namespace Chummer.Backend.Equipment
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </armor>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </armor>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -3818,44 +3803,39 @@ namespace Chummer.Backend.Equipment
                 .ConfigureAwait(false);
             if (string.IsNullOrEmpty(strCapacity) || strCapacity == "0")
                 return false;
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strPasteCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.ArmorMod:
-                    {
-                        XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                        if (xmlNode == null)
-                            return strPasteCategory == "General";
-                        XPathNavigator xmlForceModCategory =
-                            xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory", token);
-                        if (xmlForceModCategory != null)
-                            return xmlForceModCategory.Value == strPasteCategory;
-                        if (strPasteCategory == "General")
-                            return true;
-                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
-                        return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
-                            .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
-                    }
+                        {
+                            XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                            if (xmlNode == null)
+                                return strPasteCategory == "General";
+                            XPathNavigator xmlForceModCategory =
+                                xmlNode.SelectSingleNodeAndCacheExpression("forcemodcategory", token);
+                            if (xmlForceModCategory != null)
+                                return xmlForceModCategory.Value == strPasteCategory;
+                            if (strPasteCategory == "General")
+                                return true;
+                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
+                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
+                                .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                        }
                     case ClipboardContentType.Gear:
-                    {
-                        XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
-                        if (xmlNode == null)
-                            return false;
-                        XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
-                        return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
-                            .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
-                    }
+                        {
+                            XPathNavigator xmlNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
+                            if (xmlNode == null)
+                                return false;
+                            XPathNodeIterator xmlAddonCategoryList = xmlNode.SelectAndCacheExpression("addoncategory", token);
+                            return xmlAddonCategoryList.Count <= 0 || xmlAddonCategoryList.Cast<XPathNavigator>()
+                                .Any(xmlCategory => xmlCategory.Value == strPasteCategory);
+                        }
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

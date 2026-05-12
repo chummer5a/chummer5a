@@ -427,14 +427,12 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (count == 0)
                 return;
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             if (lstCollection.Count == 0)
                 return;
-            if (index < 0 || index >= lstCollection.Count)
-                throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, lstCollection.Count);
+            ArgumentOutOfRangeException.ThrowIfNegative(count, nameof(count));
             IDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
                 ? objHasLockObject.LockObject.EnterWriteLock(token)
                 : null;
@@ -586,17 +584,14 @@ namespace Chummer
                 return;
             }
 
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
 
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfNegative(count, nameof(count));
 
             if (count == 0)
                 return;
 
-            if (lstCollection.Count - index < count)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(count, lstCollection.Count - index, nameof(count));
 
             IntrospectiveSort(lstCollection, index, count, comparer);
         }

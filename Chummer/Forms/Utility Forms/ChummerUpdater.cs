@@ -870,7 +870,7 @@ namespace Chummer
                                     await using (FileStream objFileStream = new FileStream(strFile, FileMode.Open, FileAccess.Read, FileShare.Read))
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        await using (Stream objStream = objEntry.Open())
+                                        await using (Stream objStream = await objEntry.OpenAsync(token).ConfigureAwait(false))
                                         {
                                             //magic number default buffer size, no overload that is only stream+token
                                             await objFileStream.CopyToAsync(objStream, 81920, token).ConfigureAwait(false);
@@ -917,8 +917,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -979,10 +978,6 @@ namespace Chummer
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
         }
 
@@ -994,8 +989,7 @@ namespace Chummer
                 return;
             if (Directory.Exists(_strAppPath) && File.Exists(_strTempLatestVersionZipPath))
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     await cmdUpdate.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
                     await cmdRestart.DoThreadSafeAsync(x => x.Enabled = false, token).ConfigureAwait(false);
@@ -1030,10 +1024,6 @@ namespace Chummer
 
                     await InstallUpdateFromZip(_strTempLatestVersionZipPath, lstFilesToDelete, token).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
         }
 
@@ -1041,8 +1031,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnDoRestart = true;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 List<string> lstPathsToRestoreOnFail = new List<string>(lstFilesToDelete.Count);
                 List<string> lstPathsToDeleteOnFail = new List<string>(lstFilesToDelete.Count);
@@ -1050,8 +1039,8 @@ namespace Chummer
                 Log.Info("Extracting downloaded archive into application path: " + strZipPath);
                 try
                 {
-                    using (ZipArchive zipArchive
-                           = ZipFile.Open(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850)))
+                    await using (ZipArchive zipArchive
+                           = await ZipFile.OpenAsync(strZipPath, ZipArchiveMode.Read, Encoding.GetEncoding(850), token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         foreach (ZipArchiveEntry objEntry in zipArchive.Entries)
@@ -1090,7 +1079,7 @@ namespace Chummer
                                 else
                                     lstPathsToDeleteOnFail.Add(strLoopPath);
 
-                                objEntry.ExtractToFile(strLoopPath, true);
+                                await objEntry.ExtractToFileAsync(strLoopPath, true, token).ConfigureAwait(false);
                             }
                             catch (IOException)
                             {
@@ -1316,10 +1305,6 @@ namespace Chummer
                         }
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
             if (blnDoRestart)

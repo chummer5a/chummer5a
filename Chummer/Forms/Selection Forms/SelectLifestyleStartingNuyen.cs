@@ -73,8 +73,7 @@ namespace Chummer
 
         private async Task RefreshResultLabel(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                 string strFormat = await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false)
@@ -90,10 +89,6 @@ namespace Chummer
                 }
                 await lblResult.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cboSelectLifestyle_SelectionChanged(object sender, EventArgs e)
@@ -108,11 +103,10 @@ namespace Chummer
                 return;
             if (await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false) < 0)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 _objLifestyle
-                    = ((ListItem) await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
+                    = ((ListItem)await cboSelectLifestyle.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false))
                     .Value as Lifestyle;
                 int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
                 string strDice = string.Format(GlobalSettings.CultureInfo,
@@ -123,17 +117,12 @@ namespace Chummer
                 await cmdRoll.DoThreadSafeAsync(x => x.Enabled = intDice > 0, token).ConfigureAwait(false);
                 await DoRoll(token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task RefreshSelectLifestyle(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 _blnIsSelectLifestyleRefreshing = true;
                 try
@@ -143,7 +132,7 @@ namespace Chummer
                     ListItem objPreferredLifestyleItem = default;
                     Lifestyle objCurrentlySelectedLifestyle = await cboSelectLifestyle.DoThreadSafeFuncAsync(
                         x => x.SelectedIndex >= 0
-                            ? ((ListItem) x.SelectedItem).Value as Lifestyle
+                            ? ((ListItem)x.SelectedItem).Value as Lifestyle
                             : null, token).ConfigureAwait(false);
                     using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                    out List<ListItem> lstLifestyleItems))
@@ -193,16 +182,11 @@ namespace Chummer
 
                 await RefreshBaseLifestyle(token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task RefreshCalculation(CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 int intDice = SelectedLifestyle != null ? await SelectedLifestyle.GetDiceAsync(token).ConfigureAwait(false) : 0;
                 await nudDiceResult.DoThreadSafeAsync(x =>
@@ -222,24 +206,15 @@ namespace Chummer
                 }, token: token).ConfigureAwait(false);
                 await RefreshResultLabel(token).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cmdRoll_Click(object sender, EventArgs e)
         {
             if (SelectedLifestyle == null)
                 return;
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 await DoRoll().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

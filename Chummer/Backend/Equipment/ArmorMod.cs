@@ -715,8 +715,7 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <armormod>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("armormod", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("armormod", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -743,28 +742,19 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("equipped", Equipped.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("wirelesson", WirelessOn.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
                 // <gears>
-                XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("gears", token).ConfigureAwait(false))
                 {
                     foreach (Gear objGear in GearChildren)
                     {
                         await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    // </gears>
-                    await objGearsElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </gears>
                 await objWriter.WriteElementStringAsync("extra", await _objCharacter.TranslateExtraAsync(_strExtra, strLanguageToPrint, token: token).ConfigureAwait(false), token).ConfigureAwait(false);
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </armormod>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </armormod>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -2564,30 +2554,25 @@ namespace Chummer.Backend.Equipment
             string strGearCapacity = await GetCalculatedGearCapacityAsync(token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strGearCapacity) || strGearCapacity == "0")
                 return false;
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Gear:
-                    {
-                        XPathNodeIterator xmlAddonCategoryList =
-                            (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                            ?.SelectAndCacheExpression("addoncategory", token);
-                        if (!(xmlAddonCategoryList?.Count > 0))
-                            return true;
-                        string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
-                        return xmlAddonCategoryList.Cast<XPathNavigator>()
-                            .Any(xmlCategory => xmlCategory.Value == strGearCategory);
-                    }
+                        {
+                            XPathNodeIterator xmlAddonCategoryList =
+                                (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
+                                ?.SelectAndCacheExpression("addoncategory", token);
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return true;
+                            string strGearCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                            return xmlAddonCategoryList.Cast<XPathNavigator>()
+                                .Any(xmlCategory => xmlCategory.Value == strGearCategory);
+                        }
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -1454,8 +1454,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (objGear == null)
                 return;
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token))
             {
                 token.ThrowIfCancellationRequested();
                 _objCachedMyXmlNode = await objGear.GetNodeAsync(token).ConfigureAwait(false);
@@ -1531,10 +1530,6 @@ namespace Chummer.Backend.Equipment
                 _strModDataProcessing = objGear.ModDataProcessing;
                 _strModFirewall = objGear.ModFirewall;
                 _strModAttributeArray = objGear.ModAttributeArray;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2374,8 +2369,7 @@ namespace Chummer.Backend.Equipment
                 return;
 
             // <gear>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("gear", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("gear", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -2442,30 +2436,21 @@ namespace Chummer.Backend.Equipment
                 await objWriter.WriteElementStringAsync("matrixcmfilled", MatrixCMFilled.ToString(objCulture), token).ConfigureAwait(false);
 
                 // <children>
-                XmlElementWriteHelper objChildrenElement = await objWriter.StartElementAsync("children", token).ConfigureAwait(false);
-                try
+                await using (await objWriter.StartElementAsync("children", token).ConfigureAwait(false))
                 {
                     foreach (Gear objGear in Children)
                     {
                         await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    // </children>
-                    await objChildrenElement.DisposeAsync().ConfigureAwait(false);
-                }
+                // </children>
 
                 await PrintWeaponBonusEntries(objWriter, strLanguageToPrint, token: token).ConfigureAwait(false);
 
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </gear>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </gear>
         }
 
         public async Task PrintWeaponBonusEntries(XmlWriter objWriter, string strLanguageToPrint, bool blnForcePrintAllBlocks = false, CancellationToken token = default)
@@ -3180,8 +3165,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetRatingAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
@@ -3192,10 +3176,6 @@ namespace Chummer.Backend.Equipment
 
                 return Math.Max(Math.Min(_intRating, await GetMaxRatingValueAsync(token).ConfigureAwait(false)), await GetMinRatingValueAsync(token).ConfigureAwait(false));
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -3204,8 +3184,7 @@ namespace Chummer.Backend.Equipment
         public async Task SetRatingAsync(int value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (Name == "Sensor Array" && Category == "Sensors" && IncludedInParent && Parent is Vehicle objVehicle)
@@ -3234,10 +3213,6 @@ namespace Chummer.Backend.Equipment
 
                     await OnPropertyChangedAsync(nameof(Rating), token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -7400,30 +7375,25 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Gear:
-                    {
-                        XPathNodeIterator xmlAddonCategoryList =
-                            (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                            ?.SelectAndCacheExpression("addoncategory", token);
-                        if (!(xmlAddonCategoryList?.Count > 0))
-                            return false;
-                        string strCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
-                        return xmlAddonCategoryList.Cast<XPathNavigator>()
-                            .Any(xmlCategory => xmlCategory.Value == strCategory);
-                    }
+                        {
+                            XPathNodeIterator xmlAddonCategoryList =
+                                (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
+                                ?.SelectAndCacheExpression("addoncategory", token);
+                            if (!(xmlAddonCategoryList?.Count > 0))
+                                return false;
+                            string strCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false)).SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                            return xmlAddonCategoryList.Cast<XPathNavigator>()
+                                .Any(xmlCategory => xmlCategory.Value == strCategory);
+                        }
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

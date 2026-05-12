@@ -149,8 +149,7 @@ namespace Chummer
             //Whichever value is lower becomes the value of the improvement.
             if (intGrade > 0 && blnTechnomancer)
             {
-                IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
@@ -180,8 +179,7 @@ namespace Chummer
                                 await objRes.MaximumNoEssenceLossAsync(token: token).ConfigureAwait(false) - intGrade + 1 -
                                 await objRes.GetValueAsync(token).ConfigureAwait(false));
                         token.ThrowIfCancellationRequested();
-                        IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                        try
+                        await using (await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
                             try
@@ -201,15 +199,7 @@ namespace Chummer
 
                             await ImprovementManager.CommitAsync(_objCharacter, token).ConfigureAwait(false);
                         }
-                        finally
-                        {
-                            await objLocker2.DisposeAsync().ConfigureAwait(false);
-                        }
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -267,8 +257,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <initiationgrade>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("initiationgrade", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("initiationgrade", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("grade", Grade.ToString(objCulture), token).ConfigureAwait(false);
@@ -279,11 +268,7 @@ namespace Chummer
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", Notes, token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </initiationgrade>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </initiationgrade>
         }
 
         #endregion Constructor, Create, Save, and Load Methods
@@ -685,8 +670,7 @@ namespace Chummer
                                                  CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Stop if this isn't the highest grade
@@ -740,8 +724,7 @@ namespace Chummer
                     return false;
 
                 token.ThrowIfCancellationRequested();
-                IAsyncDisposable objLocker2 = await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await _objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     await _objCharacter.InitiationGrades.RemoveAsync(this, token).ConfigureAwait(false);
@@ -795,14 +778,6 @@ namespace Chummer
                             await objLoop.RemoveAsync(false, token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             return true;

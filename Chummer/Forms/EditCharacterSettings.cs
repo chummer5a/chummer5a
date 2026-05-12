@@ -126,8 +126,7 @@ namespace Chummer
 
         private async void cmdGlobalOptionsCustomData_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 using (ThreadSafeForm<EditGlobalSettings> frmOptions =
                        await ThreadSafeForm<EditGlobalSettings>.GetAsync(() =>
@@ -135,10 +134,6 @@ namespace Chummer
                                                                                  "tabCustomDataDirectories"))
                                                                .ConfigureAwait(false))
                     await frmOptions.ShowDialogSafeAsync(this).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -158,8 +153,7 @@ namespace Chummer
                 _objCharacterSettings.Name = frmSelectName.MyForm.SelectedValue;
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
@@ -197,10 +191,6 @@ namespace Chummer
                 _intOldSelectedSettingIndex
                     = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cmdDelete_Click(object sender, EventArgs e)
@@ -216,8 +206,7 @@ namespace Chummer
                     MessageBoxButtons.YesNo, MessageBoxIcon.Warning).ConfigureAwait(false) != DialogResult.Yes)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 ConcurrentDictionary<string, CharacterSettings> dicCharacterSettings
                     = await SettingsManager.GetLoadedCharacterSettingsAsModifiableAsync().ConfigureAwait(false);
@@ -275,10 +264,6 @@ namespace Chummer
                     if (Interlocked.Decrement(ref _intSuspendLayoutCount) == 0)
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -368,8 +353,7 @@ namespace Chummer
                 }
             } while (string.IsNullOrWhiteSpace(strSelectedName));
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 _objCharacterSettings.Name = strSelectedName;
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
@@ -424,16 +408,11 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cmdSave_Click(object sender, EventArgs e)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 if (await _objReferenceCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false) != await _objCharacterSettings.GetBuildMethodAsync().ConfigureAwait(false))
                 {
@@ -480,10 +459,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cboSetting_SelectedIndexChanged(object sender, EventArgs e)
@@ -525,8 +500,7 @@ namespace Chummer
                 await SetIsDirtyAsync(false).ConfigureAwait(false);
             }
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
@@ -567,10 +541,6 @@ namespace Chummer
 
                 _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async void cmdRestoreDefaults_Click(object sender, EventArgs e)
@@ -582,8 +552,7 @@ namespace Chummer
                     MessageBoxButtons.YesNo, MessageBoxIcon.Question).ConfigureAwait(false) != DialogResult.Yes)
                 return;
 
-            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this).ConfigureAwait(false))
             {
                 Interlocked.Increment(ref _intLoading);
                 try
@@ -623,10 +592,6 @@ namespace Chummer
                 }
 
                 _intOldSelectedSettingIndex = cboSetting.SelectedIndex;
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -813,12 +778,9 @@ namespace Chummer
             int intIndex = nodSelected.Index;
             if (intIndex <= 0)
                 return;
-            IAsyncDisposable objLocker = await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
+            await using (await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject.EnterWriteLockAsync().ConfigureAwait(false))
             {
-                IAsyncDisposable objLocker2
-                    = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-                try
+                await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLockAsync().ConfigureAwait(false))
                 {
                     for (int i = intIndex; i > 0; --i)
                     {
@@ -826,14 +788,6 @@ namespace Chummer
                         await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(i - 1, 2).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
@@ -850,27 +804,16 @@ namespace Chummer
             if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                 return;
 
-            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
-            try
+            await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
-                IAsyncDisposable objLocker2 = await _dicEnabledCharacterCustomDataDirectorys.LockObject
-                    .EnterWriteLockAsync().ConfigureAwait(false);
-                try
+                await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLockAsync().ConfigureAwait(false))
                 {
                     await _dicEnabledCharacterCustomDataDirectorys.ReverseAsync(intIndex, 2).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
 
                 await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).ReverseAsync(intIndex, 2).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
@@ -886,19 +829,16 @@ namespace Chummer
             if (intIndex >= await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false) - 1)
                     return;
 
-            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false);
-            try
+            await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync().ConfigureAwait(false))
             {
                 int intCount = await _dicEnabledCharacterCustomDataDirectorys.GetCountAsync().ConfigureAwait(false);
                 if (intIndex >= intCount - 1)
                     return;
-                IAsyncDisposable objLocker2 = await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject
-                    .EnterWriteLockAsync().ConfigureAwait(false);
-                try
+                await using (await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync().ConfigureAwait(false)).LockObject
+                    .EnterWriteLockAsync().ConfigureAwait(false))
                 {
-                    IAsyncDisposable objLocker3 = await _dicEnabledCharacterCustomDataDirectorys.LockObject
-                        .EnterWriteLockAsync().ConfigureAwait(false);
-                    try
+                    await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject
+                        .EnterWriteLockAsync().ConfigureAwait(false))
                     {
                         for (int i = intIndex; i < intCount - 1; ++i)
                         {
@@ -907,19 +847,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        await objLocker3.DisposeAsync().ConfigureAwait(false);
-                    }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
             await _objCharacterSettings.OnPropertyChangedAsync(nameof(CharacterSettings.CustomDataDirectoryKeys)).ConfigureAwait(false);
             await PopulateCustomDataDirectoryTreeView().ConfigureAwait(false);
@@ -1270,9 +1198,7 @@ namespace Chummer
                                                               .ConfigureAwait(false);
                 Color objErrorColor = ColorManager.ErrorColor;
                 Color objGrayTextColor = ColorManager.GrayText;
-                IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync(token)
-                    .ConfigureAwait(false);
-                try
+                await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     int intNewCount
@@ -1339,7 +1265,7 @@ namespace Chummer
                                     })
                                     .FirstOrDefault();
                             }
-                            
+
                             if (objInfo != null)
                             {
                                 objNode.Tag = objInfo;
@@ -1406,7 +1332,7 @@ namespace Chummer
                                         }
                                     }
                                 }
-                                
+
                                 objNode.Tag = kvpKeyAndEnabled.Key;
                                 objNode.Text = strDisplayText;
                                 objNode.ForeColor = objGrayTextColor;
@@ -1518,7 +1444,7 @@ namespace Chummer
                                             }
                                         }
                                     }
-                                    
+
                                     objNode.Tag = kvpKeyAndEnabled.Key;
                                     objNode.Text = strDisplayText;
                                     objNode.ForeColor = objGrayTextColor;
@@ -1557,7 +1483,7 @@ namespace Chummer
                                     .ConfigureAwait(false);
                                 if (objNode == null)
                                     break;
-                                
+
                                 // Use the same logic as RecalculateEnabledCustomDataDirectories to find the actual version being used
                                 string strKey = kvpKeyAndEnabled.Key;
                                 string strId = CustomDataDirectoryInfo.GetIdFromCharacterSettingsSaveKey(
@@ -1587,12 +1513,12 @@ namespace Chummer
                                         })
                                         .FirstOrDefault();
                                 }
-                                
+
                                 if (objInfo != null)
                                 {
                                     // Always show the actual version being used (from objInfo.MyVersion)
                                     string strText = await objInfo.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                                    
+
                                     // Check if we're using a higher version than the minimum specified
                                     if (objPreferredVersion != default(ValueVersion) && objInfo.MyVersion > objPreferredVersion)
                                     {
@@ -1600,7 +1526,7 @@ namespace Chummer
                                         string strUsingVersion = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                         strText += $"{strUsingVersion}(≥{objPreferredVersion})";
                                     }
-                                    
+
                                     await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
                                             objNode.Tag = objInfo;
@@ -1652,7 +1578,7 @@ namespace Chummer
                                             objNode.ForeColor = objWindowTextColor;
                                         }, token: token).ConfigureAwait(false);
                                     }
-                                    
+
                                     intNodeIndex++;
                                 }
                                 else
@@ -1684,10 +1610,6 @@ namespace Chummer
                         }
                     }
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
             }
             finally
             {
@@ -1701,8 +1623,7 @@ namespace Chummer
         private async Task PopulateOptions(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 if (Interlocked.Increment(ref _intSuspendLayoutCount) == 1)
                     await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
@@ -1720,17 +1641,12 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), CancellationToken.None).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task PopulatePriorityTableList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstPriorityTables))
@@ -1783,17 +1699,12 @@ namespace Chummer
                     _objCharacterSettings.PriorityTable != strSelectedTable)
                     _objCharacterSettings.PriorityTable = strSelectedTable;
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task PopulateLimbCountList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 Interlocked.Increment(ref _intSkipLimbCountUpdate);
                 try
@@ -1851,17 +1762,12 @@ namespace Chummer
                     Interlocked.Decrement(ref _intSkipLimbCountUpdate);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task PopulateAllowedGrades(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool,
                                                                out List<ListItem> lstGrades))
@@ -1957,10 +1863,6 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                 }
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private void RebuildCustomDataDirectoryInfos()
@@ -1978,9 +1880,7 @@ namespace Chummer
 
         private async Task RebuildCustomDataDirectoryInfosAsync(CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _dicEnabledCharacterCustomDataDirectorys.LockObject
-                .EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _dicEnabledCharacterCustomDataDirectorys.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 await _dicEnabledCharacterCustomDataDirectorys.ClearAsync(token).ConfigureAwait(false);
@@ -1988,10 +1888,6 @@ namespace Chummer
                     .ForEachAsync(kvpCustomDataDirectory => _dicEnabledCharacterCustomDataDirectorys.AddAsync(
                         kvpCustomDataDirectory.Key,
                         kvpCustomDataDirectory.Value, token), token: token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3186,8 +3082,7 @@ namespace Chummer
         private async Task PopulateSettingsList(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 string strSelect = string.Empty;
                 if (_intLoading == 0)
@@ -3217,16 +3112,11 @@ namespace Chummer
                 _intOldSelectedSettingIndex = await cboSetting.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
                                                               .ConfigureAwait(false);
             }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         private async Task SettingsChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
             {
                 if (Interlocked.CompareExchange(ref _intLoading, 1, 0) == 0)
                 {
@@ -3270,10 +3160,6 @@ namespace Chummer
                         await txtNuyenExpression.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
                     }
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 

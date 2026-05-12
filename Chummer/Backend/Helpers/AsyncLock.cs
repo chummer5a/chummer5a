@@ -87,8 +87,7 @@ namespace Chummer
 
         public IDisposable TakeLock(CancellationToken token = default)
         {
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(AsyncLock));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             token.ThrowIfCancellationRequested();
             DebuggableSemaphoreSlim objNextSemaphore = Utils.SemaphorePool.Get();
             DebuggableSemaphoreSlim objCurrentSemaphore = _objCurrentSemaphore.Value ?? _objTopLevelSemaphore;

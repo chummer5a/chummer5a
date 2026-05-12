@@ -59,25 +59,19 @@ namespace Chummer
             {
                 case NotifyCollectionChangedAction.Add:
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
                         foreach (StoryModule objModule in e.NewItems)
                             objModule.ParentStory = this;
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Remove:
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
@@ -90,17 +84,12 @@ namespace Chummer
                             }
                         }
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Replace:
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         _blnNeedToRegeneratePersistents = true;
@@ -116,23 +105,14 @@ namespace Chummer
                         foreach (StoryModule objModule in e.NewItems)
                             objModule.ParentStory = this;
                     }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
-                    }
 
                     break;
                 }
                 case NotifyCollectionChangedAction.Reset:
                 {
-                    IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         _blnNeedToRegeneratePersistents = true;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
                     break;
@@ -222,8 +202,7 @@ namespace Chummer
 
         public async Task GeneratePersistentsAsync(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 List<string> lstPersistentKeysToRemove
@@ -245,22 +224,16 @@ namespace Chummer
                              .ConfigureAwait(false);
                 _blnNeedToRegeneratePersistents = false;
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         public async Task<string> PrintStory(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 if (_blnNeedToRegeneratePersistents)
                     await GeneratePersistentsAsync(objCulture, strLanguage, token).ConfigureAwait(false);
-                IAsyncDisposable objLocker2 = await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await Modules.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     int intCount = await Modules.GetCountAsync(token).ConfigureAwait(false);
@@ -283,14 +256,6 @@ namespace Chummer
                             ArrayPool<string>.Shared.Return(astrModuleOutputStrings);
                     }
                 }
-                finally
-                {
-                    await objLocker2.DisposeAsync().ConfigureAwait(false);
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -306,14 +271,9 @@ namespace Chummer
         /// <inheritdoc />
         public async ValueTask DisposeAsync()
         {
-            IAsyncDisposable objLocker = await LockObject.EnterWriteLockAsync().ConfigureAwait(false);
-            try
+            await using (await LockObject.EnterWriteLockAsync().ConfigureAwait(false))
             {
                 await _lstStoryModules.DisposeAsync().ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

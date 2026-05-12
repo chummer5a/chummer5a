@@ -107,8 +107,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(token: MyToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(token: MyToken).ConfigureAwait(false))
                 {
                     if (_objCharacter == null)
                         await RealLoad(MyToken, MyToken).ConfigureAwait(false);
@@ -126,10 +125,6 @@ namespace Chummer.UI.Skills
                             x.ResumeLayout(true);
                         }
                     }, MyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -415,19 +410,13 @@ namespace Chummer.UI.Skills
                     await UpdateKnoSkillRemainingAsync(token).ConfigureAwait(false);
                 }
 
-                IAsyncDisposable objLocker = await objSkillSection.LockObject
-                    .EnterWriteLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await objSkillSection.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     lstSkills.ListChangedAsync += SkillsOnListChanged;
                     lstSkillGroups.ListChanged += SkillGroupsOnListChanged;
                     lstKnoSkills.ListChanged += KnowledgeSkillsOnListChanged;
                     objSkillSection.MultiplePropertiesChangedAsync += SkillsSectionOnPropertyChanged;
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
 #if DEBUG
             }
@@ -672,8 +661,7 @@ namespace Chummer.UI.Skills
                 try
                 {
                     SkillsSection objSkillsSection = await objCharacter.GetSkillsSectionAsync(CancellationToken.None).ConfigureAwait(false);
-                    IAsyncDisposable objLocker = await objSkillsSection.LockObject.EnterWriteLockAsync(CancellationToken.None);
-                    try
+                    await using (await objSkillsSection.LockObject.EnterWriteLockAsync(CancellationToken.None))
                     {
                         objSkillsSection.MultiplePropertiesChangedAsync -= SkillsSectionOnPropertyChanged;
                         ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync(CancellationToken.None).ConfigureAwait(false);
@@ -685,10 +673,6 @@ namespace Chummer.UI.Skills
                         ThreadSafeBindingList<KnowledgeSkill> lstKnoSkills = await objSkillsSection.GetKnowledgeSkillsAsync(CancellationToken.None).ConfigureAwait(false);
                         if (lstKnoSkills?.IsDisposed == false)
                             lstKnoSkills.ListChanged -= KnowledgeSkillsOnListChanged;
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch (ObjectDisposedException)
@@ -1380,8 +1364,7 @@ namespace Chummer.UI.Skills
                         MyToken).ConfigureAwait(false);
                 }
 
-                IAsyncDisposable objLocker = await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false);
-                try
+                await using (await objSkill.LockObject.EnterUpgradeableReadLockAsync(MyToken).ConfigureAwait(false))
                 {
                     MyToken.ThrowIfCancellationRequested();
                     // Karma check needs to come after the skill is created to make sure bonus-based modifiers (e.g. JoAT) get applied properly (since they can potentially trigger off of the specific exotic skill target)
@@ -1398,10 +1381,6 @@ namespace Chummer.UI.Skills
                     }
 
                     await objSkill.Upgrade(MyToken).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

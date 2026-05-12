@@ -236,8 +236,7 @@ namespace Chummer
             if (objWriter == null)
                 return;
             // <martialarttechnique>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("martialarttechnique", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("martialarttechnique", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -248,11 +247,7 @@ namespace Chummer
                 await objWriter.WriteElementStringAsync("source", Source, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </martialarttechnique>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </martialarttechnique>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods

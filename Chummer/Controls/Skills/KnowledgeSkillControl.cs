@@ -703,15 +703,10 @@ namespace Chummer.UI.Skills
             token.ThrowIfCancellationRequested();
             if (Interlocked.CompareExchange(ref _intLoaded, 1, 0) > 0)
                 return;
-            IAsyncDisposable objLocker = await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objSkill.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 await DoDataBindingsAsync(token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
             Interlocked.Decrement(ref _intUpdatingName);
@@ -989,8 +984,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false);
-                try
+                await using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     int intKarmaCost = await _objSkill.GetUpgradeKarmaCostAsync(_objMyToken).ConfigureAwait(false);
@@ -1017,10 +1011,6 @@ namespace Chummer.UI.Skills
 
                     await _objSkill.Upgrade(_objMyToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -1032,9 +1022,7 @@ namespace Chummer.UI.Skills
         {
             try
             {
-                IAsyncDisposable objLocker = await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken)
-                    .ConfigureAwait(false);
-                try
+                await using (await _objSkill.LockObject.EnterUpgradeableReadLockAsync(_objMyToken).ConfigureAwait(false))
                 {
                     _objMyToken.ThrowIfCancellationRequested();
                     int intPrice = await (await _objCharacter.GetSettingsAsync(_objMyToken).ConfigureAwait(false))
@@ -1070,7 +1058,7 @@ namespace Chummer.UI.Skills
 
                     using (ThreadSafeForm<SelectSpec> selectForm =
                            await ThreadSafeForm<SelectSpec>.GetAsync(() => new SelectSpec(_objSkill)
-                               { Mode = "Knowledge" }, _objMyToken).ConfigureAwait(false))
+                           { Mode = "Knowledge" }, _objMyToken).ConfigureAwait(false))
                     {
                         if (await selectForm.ShowDialogSafeAsync(_objCharacter, _objMyToken)
                                 .ConfigureAwait(false)
@@ -1079,10 +1067,6 @@ namespace Chummer.UI.Skills
                         await _objSkill.AddSpecialization(selectForm.MyForm.SelectedItem, _objMyToken)
                             .ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

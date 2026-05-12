@@ -2176,8 +2176,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetPilotAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intReturn = BasePilot;
@@ -2195,10 +2194,6 @@ namespace Chummer.Backend.Equipment
                     }
                 }, token).ConfigureAwait(false);
                 return intReturn;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2659,8 +2654,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetCalculatedSensorAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalSensor = _intSensor;
@@ -2700,10 +2694,6 @@ namespace Chummer.Backend.Equipment
                 }, token: token).ConfigureAwait(false);
 
                 return intTotalSensor + intTotalBonusSensor;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3090,18 +3080,13 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetSlotsUsedAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await Mods.SumAsync(objMod => !objMod.IncludedInVehicle && objMod.Equipped,
                            objMod => objMod.GetCalculatedSlotsAsync(token), token).ConfigureAwait(false)
                        + await WeaponMounts.SumAsync(wm => !wm.IncludedInVehicle && wm.Equipped,
                            wm => wm.GetCalculatedSlotsAsync(token), token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3149,8 +3134,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             int intDowngraded = 0;
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Mods that are included with a Vehicle by default do not count toward the Slots used.
@@ -3176,10 +3160,6 @@ namespace Chummer.Backend.Equipment
 
                         return 0;
                     }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3210,8 +3190,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetDroneModSlotsUsedAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 //Downgrade mods apply a bonus to the maximum number of mods and pre-installed mods are already accounted for in the statblock.
@@ -3223,10 +3202,6 @@ namespace Chummer.Backend.Equipment
                     await WeaponMounts.SumAsync(wm => !wm.IncludedInVehicle && wm.Equipped,
                         wm => wm.GetCalculatedSlotsAsync(token), token).ConfigureAwait(false);
                 return intModSlotsUsed;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3251,8 +3226,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return await GetOwnCostAsync(token).ConfigureAwait(false) +
@@ -3261,10 +3235,6 @@ namespace Chummer.Backend.Equipment
                            .SumAsync(wm => wm.GetTotalCostAsync(token), token).ConfigureAwait(false)
                        + await GearChildren.SumAsync(objGear => objGear.GetTotalCostAsync(token), token)
                            .ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3410,8 +3380,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetTotalSeatsAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // First check for mods that overwrite the seat value
@@ -3455,10 +3424,6 @@ namespace Chummer.Backend.Equipment
                     }, token).ConfigureAwait(false);
 
                 return intTotalSeats + intTotalBonusSeats;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3575,8 +3540,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> GetTotalSpeedAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalSpeed = Speed;
@@ -3683,10 +3647,6 @@ namespace Chummer.Backend.Equipment
                 }
 
                 return (intTotalSpeed + intTotalBonusSpeed - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -3802,8 +3762,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> GetTotalAccelAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intTotalAccel = Accel;
@@ -3907,10 +3866,6 @@ namespace Chummer.Backend.Equipment
 
                 return (intTotalAccel + intTotalBonusAccel - intPenalty).ToString(GlobalSettings.InvariantCultureInfo);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -3952,8 +3907,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<int> GetTotalBodyAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 return Body + await Mods.SumAsync(x => !x.IncludedInVehicle && x.Equipped && !ReferenceEquals(x, objExcludeMod),
@@ -3975,10 +3929,6 @@ namespace Chummer.Backend.Equipment
 
                         return intTemp;
                     }, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4097,8 +4047,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public async Task<string> GetTotalHandlingAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intBaseHandling = Handling;
@@ -4206,10 +4155,6 @@ namespace Chummer.Backend.Equipment
                 return (intBaseHandling + intTotalBonusHandling - intPenalty).ToString(GlobalSettings
                     .InvariantCultureInfo);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -4275,8 +4220,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetTotalArmorAsync(VehicleMod objExcludeMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 int intArmor = Armor;
@@ -4326,10 +4270,6 @@ namespace Chummer.Backend.Equipment
 
                 return Math.Min(await GetMaxArmorAsync(token).ConfigureAwait(false), intModArmor + intArmor);
             }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
-            }
         }
 
         /// <summary>
@@ -4365,8 +4305,7 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetMaxArmorAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // If ignoring the rules, do not limit Armor to the Vehicle's standard rules.
@@ -4385,10 +4324,6 @@ namespace Chummer.Backend.Equipment
                     : Math.Max(Body + Armor, 1);
 
                 return intReturn;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -4718,18 +4653,13 @@ namespace Chummer.Backend.Equipment
         public async Task<int> GetManeuverAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await _objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 Gear objGear = await GearChildren.DeepFirstOrDefaultAsync(x => x.Children,
                     x => x.Name == "[Model] Maneuvering Autosoft" && x.Extra == Name && !x.InternalId.IsEmptyGuid(),
                     token: token).ConfigureAwait(false);
                 return objGear != null ? await objGear.GetRatingAsync(token).ConfigureAwait(false) : 0;
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -5972,34 +5902,29 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
                 {
                     case ClipboardContentType.Gear:
-                    {
-                        string strClipboardCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
-                            .SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
-                        if (!string.IsNullOrEmpty(strClipboardCategory))
                         {
-                            XPathNodeIterator xmlAddonCategoryList =
-                                (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
-                                ?.SelectAndCacheExpression("addoncategory", token);
-                            return xmlAddonCategoryList?.Count > 0 && xmlAddonCategoryList.Cast<XPathNavigator>()
-                                .Any(xmlLoop => xmlLoop.Value == strClipboardCategory);
-                        }
+                            string strClipboardCategory = (await GlobalSettings.GetClipboardAsync(token).ConfigureAwait(false))
+                                .SelectSingleNodeAndCacheExpressionAsNavigator("category", token)?.Value ?? string.Empty;
+                            if (!string.IsNullOrEmpty(strClipboardCategory))
+                            {
+                                XPathNodeIterator xmlAddonCategoryList =
+                                    (await this.GetNodeXPathAsync(token: token).ConfigureAwait(false))
+                                    ?.SelectAndCacheExpression("addoncategory", token);
+                                return xmlAddonCategoryList?.Count > 0 && xmlAddonCategoryList.Cast<XPathNavigator>()
+                                    .Any(xmlLoop => xmlLoop.Value == strClipboardCategory);
+                            }
 
-                        return false;
-                    }
+                            return false;
+                        }
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

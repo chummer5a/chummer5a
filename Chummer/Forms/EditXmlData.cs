@@ -339,8 +339,7 @@ namespace Chummer
                     return;
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     // Load the base XML document (without amendments)
@@ -376,10 +375,6 @@ namespace Chummer
                         await this.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
                     }
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (Exception ex)
             {
@@ -408,8 +403,7 @@ namespace Chummer
                     return;
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     // Parse the amendment XML
                     try
@@ -444,10 +438,6 @@ namespace Chummer
                     }
                     // Generate diff
                     await UpdateDiffPreviewAsync(token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex)
@@ -489,16 +479,11 @@ namespace Chummer
 
                     if (dlgSave.ShowDialog(this) == DialogResult.OK)
                     {
-                        CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                        try
+                        await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                         {
                             await FileExtensions.WriteAllTextAsync(dlgSave.FileName, strText, Encoding.UTF8, token).ConfigureAwait(false);
-                            
+
                             await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_SaveSuccess", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("XmlEditor_SaveSuccessTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                        }
-                        finally
-                        {
-                            await objCursorWait.DisposeAsync().ConfigureAwait(false);
                         }
                     }
                 }
@@ -530,8 +515,7 @@ namespace Chummer
                     return;
                 }
 
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     // Generate a clean, user-friendly diff
                     string strDiffOutput = await GenerateCleanDiffAsync(_strBaseXmlContent, _strResultXmlContent, token).ConfigureAwait(false);
@@ -541,10 +525,6 @@ namespace Chummer
                         x.Text = strDiffOutput;
                         x.ForeColor = ColorManager.WindowText;
                     }, token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
             catch (Exception ex) when (!(ex is OperationCanceledException))

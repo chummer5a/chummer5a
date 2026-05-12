@@ -221,8 +221,7 @@ namespace Chummer
                 using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
                 {
                     CancellationToken token = objJoinedCancellationTokenSource.Token;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         XmlNode xmlArmor = null;
@@ -232,8 +231,7 @@ namespace Chummer
                             xmlArmor = _objXmlDocument.TryGetNodeByNameOrId("/chummer/armors/armor", strSelectedId);
                         if (xmlArmor != null)
                         {
-                            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                            try
+                            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 // Create the Armor so we can show its Total Avail (some Armor includes Chemical Seal which adds +6 which wouldn't be factored in properly otherwise).
@@ -343,10 +341,6 @@ namespace Chummer
                                     throw;
                                 }
                             }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
                         else
                         {
@@ -366,10 +360,6 @@ namespace Chummer
                         }
 
                         await UpdateArmorInfo(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -645,8 +635,7 @@ namespace Chummer
                    CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
@@ -690,7 +679,7 @@ namespace Chummer
                         decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
                         decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
                         decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        
+
                         if (decExactCost > 0)
                         {
                             // Exact cost filtering
@@ -705,10 +694,6 @@ namespace Chummer
                         await BuildArmorList(_objXmlDocument.SelectNodes(sbdFilter.Append(']').ToString()),
                             token).ConfigureAwait(false);
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
@@ -743,8 +728,7 @@ namespace Chummer
                     tabArmor.Columns.Add("Cost");
                     tabArmor.Columns["Cost"].DataType = typeof(NuyenString);
 
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         // Populate the Armor list.
@@ -762,8 +746,7 @@ namespace Chummer
                                                                    objXmlArmor, _objCharacter, decNuyen, decCostMultiplier,
                                                                    token: token).ConfigureAwait(false)))
                             {
-                                Armor objArmor = new Armor(_objCharacter);
-                                try
+                                await using (Armor objArmor = new Armor(_objCharacter))
                                 {
                                     List<Weapon> lstWeapons = new List<Weapon>(1);
                                     await objArmor
@@ -809,16 +792,8 @@ namespace Chummer
                                             sbdAccessories.ToString(), strSource, strCost);
                                     }
                                 }
-                                finally
-                                {
-                                    await objArmor.DisposeAsync().ConfigureAwait(false);
-                                }
                             }
                         }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
                     DataSet set = new DataSet("armor");
@@ -905,9 +880,7 @@ namespace Chummer
         private async Task AcceptForm(CancellationToken token = default)
         {
             string strSelectedId = string.Empty;
-            CursorWait objCursorWait
-                = await CursorWait.NewAsync(this, true, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(this, true, token: token).ConfigureAwait(false))
             {
                 switch (await tabControl.DoThreadSafeFuncAsync(x => x.SelectedIndex, token).ConfigureAwait(false))
                 {
@@ -950,10 +923,6 @@ namespace Chummer
                     _intRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token).ConfigureAwait(false);
                     _blnBlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
                 }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
             await this.DoThreadSafeAsync(x =>
             {

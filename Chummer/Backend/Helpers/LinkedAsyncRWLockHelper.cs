@@ -153,8 +153,7 @@ namespace Chummer
         private void AddChild()
 #endif
         {
-            if (IsDisposed || _objDisposalToken.IsCancellationRequested)
-                throw new  ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(IsDisposed || _objDisposalToken.IsCancellationRequested, this);
             if (Interlocked.Increment(ref _intNumChildren) == 1)
             {
                 try
@@ -184,8 +183,7 @@ namespace Chummer
 #endif
         {
             token.ThrowIfCancellationRequested();
-            if (IsDisposed || _objDisposalToken.IsCancellationRequested)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(IsDisposed || _objDisposalToken.IsCancellationRequested, this);
             if (Interlocked.Increment(ref _intNumChildren) == 1)
             {
                 using (CancellationTokenSource objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
@@ -197,8 +195,7 @@ namespace Chummer
                     catch (OperationCanceledException)
                     {
                         Interlocked.Decrement(ref _intNumChildren);
-                        if (_objDisposalToken.IsCancellationRequested)
-                            throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+                        ObjectDisposedException.ThrowIf(_objDisposalToken.IsCancellationRequested, this);
                         throw;
                     }
                     catch
@@ -735,8 +732,7 @@ namespace Chummer
         public void TakeUpgradeableReadLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (CancellationTokenSource objNewTokenSource =
                    CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
             {
@@ -752,8 +748,7 @@ namespace Chummer
         public async Task TakeUpgradeableReadLockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (CancellationTokenSource objNewTokenSource =
                    CancellationTokenSource.CreateLinkedTokenSource(token, _objDisposalToken))
             {
@@ -768,8 +763,7 @@ namespace Chummer
 
         public void ReleaseUpgradeableReadLock()
         {
-            if (_intDisposedStatus > 1)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus > 1, this);
             // Use locals for thread safety
             DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             try
@@ -790,8 +784,7 @@ namespace Chummer
         public void TakeWriteLock(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (new FetchSafelyFromSafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
                        out Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
@@ -925,8 +918,7 @@ namespace Chummer
         public async Task TakeWriteLockAsync(LinkedAsyncRWLockHelper objTopMostHeldWriter, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (new FetchSafelyFromSafeObjectPool<Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>>>(
                        s_objWriterLockHelperStackPool,
                        out Stack<ValueTuple<LinkedAsyncRWLockHelper, DebuggableSemaphoreSlim>> stkUndo))
@@ -1061,8 +1053,7 @@ namespace Chummer
         public void TakeSingleWriteLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
@@ -1167,8 +1158,7 @@ namespace Chummer
         public async Task TakeSingleWriteLockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             using (new FetchSafelyFromSafeObjectPool<Stack<DebuggableSemaphoreSlim>>(s_objSemaphoreStackPool,
                        out Stack<DebuggableSemaphoreSlim> stkLockedSemaphores))
             {
@@ -1269,8 +1259,7 @@ namespace Chummer
         public void SingleUpgradeToWriteLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             // Use locals for thread safety
             DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
@@ -1371,8 +1360,7 @@ namespace Chummer
         public async Task SingleUpgradeToWriteLockAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
             // Use locals for thread safety
             DebuggableSemaphoreSlim objLoopSemaphore = ActiveUpgradeableReaderSemaphore;
             if (objLoopSemaphore.CurrentCount != 0)
@@ -1475,8 +1463,7 @@ namespace Chummer
 
         public void ReleaseWriteLock(LinkedAsyncRWLockHelper objTopMostHeldUReader, LinkedAsyncRWLockHelper objTopMostHeldWriter)
         {
-            if (_intDisposedStatus > 1)
-                throw new ObjectDisposedException(nameof(LinkedAsyncRWLockHelper));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus > 1, this);
 
             // There are upgradeable readers into which we have re-entered, so go up the chain
             if (objTopMostHeldUReader != null)
@@ -1498,8 +1485,7 @@ namespace Chummer
                         // Announce to readers that we are no longer active
                         Interlocked.Add(ref objLoopHelper._lngNumReaders, MaxReaderCount);
 
-                        if (objLoopHelper._intDisposedStatus > 1)
-                            throw new ObjectDisposedException(nameof(objLoopHelper));
+                        ObjectDisposedException.ThrowIf(objLoopHelper._intDisposedStatus > 1, objLoopHelper);
                         // Use locals for thread safety
                         // Release our reader lock, allowing waiting readers to pass through
                         DebuggableSemaphoreSlim objLoopSemaphore2 = objLoopHelper.ActiveWriterSemaphore;

@@ -854,16 +854,10 @@ namespace Chummer.Controls.Shared
                         {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
-                                    .ConfigureAwait(false);
-                                try
+                                await using (await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objItem.PropertyChangedAsync += objReturn.item_ChangedEventAsync;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (ObjectDisposedException)
@@ -880,16 +874,10 @@ namespace Chummer.Controls.Shared
                         {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
-                                    .ConfigureAwait(false);
-                                try
+                                await using (await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objItem2.PropertyChanged += objReturn.item_ChangedEvent;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (ObjectDisposedException)
@@ -1216,16 +1204,10 @@ namespace Chummer.Controls.Shared
                         {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
-                                    .ConfigureAwait(false);
-                                try
+                                await using (await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objItem.PropertyChangedAsync -= item_ChangedEventAsync;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (ObjectDisposedException)
@@ -1242,16 +1224,10 @@ namespace Chummer.Controls.Shared
                         {
                             try
                             {
-                                IAsyncDisposable objLocker = await objHasLock.LockObject.EnterWriteLockAsync(token)
-                                    .ConfigureAwait(false);
-                                try
+                                await using (await objHasLock.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objItem2.PropertyChanged -= item_ChangedEvent;
-                                }
-                                finally
-                                {
-                                    await objLocker.DisposeAsync().ConfigureAwait(false);
                                 }
                             }
                             catch (ObjectDisposedException)

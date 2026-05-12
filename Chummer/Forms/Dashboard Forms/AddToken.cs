@@ -81,8 +81,7 @@ namespace Chummer
                 try
                 {
                     await objCharacter.SetFileNameAsync(fileName, token).ConfigureAwait(false);
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         if (!await objCharacter.LoadAsync(token: token).ConfigureAwait(false))
                         {
@@ -101,10 +100,6 @@ namespace Chummer
                         Character objOldCharacter = Interlocked.Exchange(ref _character, objCharacter);
                         if (objOldCharacter != null)
                             await objOldCharacter.DisposeAsync().ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
                 catch

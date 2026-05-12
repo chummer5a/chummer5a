@@ -1076,14 +1076,12 @@ namespace Chummer
         {
             if (count == 0)
                 return;
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             if (await lstCollection.GetCountAsync(token).ConfigureAwait(false) == 0)
                 return;
             if (index < 0 || index >= await lstCollection.GetCountAsync(token).ConfigureAwait(false))
                 throw new ArgumentOutOfRangeException(nameof(index));
-            if (count < 0)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfNegative(count, nameof(count));
             IAsyncDisposable objLocker = lstCollection is IHasLockObject objHasLockObject
                     ? await objHasLockObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false)
                     : null;

@@ -1419,8 +1419,7 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                IAsyncDisposable objLocker = await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
-                try
+                await using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     Enhancement objReturn =
                         await objCharacter.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
@@ -1432,10 +1431,6 @@ namespace Chummer
                         objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objLocker.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -1644,9 +1639,7 @@ namespace Chummer
                 !string.IsNullOrEmpty(strNameOnPage))
                 strEnglishNameOnPage = strNameOnPage;
 
-            IAsyncDisposable objLocker = await objSettings.LockObject.EnterReadLockAsync(token)
-                .ConfigureAwait(false);
-            try
+            await using (await objSettings.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 string strNotes = await GetTextFromPdfAsync(strSource + " " + strPage, strEnglishNameOnPage, objSettings, token).ConfigureAwait(false);
@@ -1668,10 +1661,6 @@ namespace Chummer
 
                 return await GetTextFromPdfAsync(strSource + " " + strDisplayPage,
                                                  strTranslatedNameOnPage, objSettings, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2001,8 +1990,7 @@ namespace Chummer
                     try
                     {
                         // </characters>
-                        XmlElementWriteHelper objCharactersElement = await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false);
-                        try
+                        await using (await objWriter.StartElementAsync("characters", token: objToken).ConfigureAwait(false))
                         {
                             foreach (Character objCharacter in lstCharacters)
                             {
@@ -2016,11 +2004,7 @@ namespace Chummer
                                 }
                             }
                         }
-                        finally
-                        {
-                            // </characters>
-                            await objCharactersElement.DisposeAsync().ConfigureAwait(false);
-                        }
+                        // </characters>
                     }
                     finally
                     {
@@ -2108,16 +2092,10 @@ namespace Chummer
         {
             if (!(sender is Control objControl))
                 return;
-            CursorWait objCursorWait
-                = await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? objControl, token: token).ConfigureAwait(false);
-            try
+            await using (await CursorWait.NewAsync(await objControl.DoThreadSafeFuncAsync(x => x.FindForm(), token: token).ConfigureAwait(false) ?? objControl, token: token).ConfigureAwait(false))
             {
                 await OpenPdf(await objControl.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false), objSettings, string.Empty,
                               string.Empty, true, token).ConfigureAwait(false);
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -2144,8 +2122,7 @@ namespace Chummer
                 if (!blnOpenOptions || await Program.ShowScrollableMessageBoxAsync(await LanguageManager.GetStringAsync("Message_NoPDFProgramSet", token: token).ConfigureAwait(false),
                         await LanguageManager.GetStringAsync("MessageTitle_NoPDFProgramSet", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
                            = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
@@ -2158,10 +2135,6 @@ namespace Chummer
                         strPdfParameters = GlobalSettings.PdfParameters;
                         strPdfAppPath = GlobalSettings.PdfAppPath;
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 
@@ -2241,8 +2214,7 @@ namespace Chummer
                 if (await Program.ShowScrollableMessageBoxAsync(string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Message_NoLinkedPDF", token: token).ConfigureAwait(false), await LanguageBookLongAsync(strBook, token: token).ConfigureAwait(false)),
                         await LanguageManager.GetStringAsync("MessageTitle_NoLinkedPDF", token: token).ConfigureAwait(false), MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) != DialogResult.Yes)
                     return;
-                CursorWait objCursorWait = await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(Program.MainForm, token: token).ConfigureAwait(false))
                 {
                     using (ThreadSafeForm<EditGlobalSettings> frmOptions
                            = await ThreadSafeForm<EditGlobalSettings>.GetAsync(() => new EditGlobalSettings(), token).ConfigureAwait(false))
@@ -2262,10 +2234,6 @@ namespace Chummer
                             objBookInfo.Path = string.Empty;
                         }
                     }
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
 

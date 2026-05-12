@@ -153,14 +153,9 @@ namespace Chummer
             return frmMain == null ? Task.CompletedTask : Inner();
             async Task Inner()
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(frmMain, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(frmMain, token: token).ConfigureAwait(false))
                 {
                     await frmMain.UpdateLightDarkModeAsync(token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }

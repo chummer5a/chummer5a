@@ -340,14 +340,12 @@ namespace Chummer
         {
             get
             {
-                if (index >= Count)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count, nameof(index));
                 return _aobjInternal[index];
             }
             set
             {
-                if (index >= Count)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index, Count, nameof(index));
                 _aobjInternal[index] = value;
             }
         }

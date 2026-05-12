@@ -806,8 +806,7 @@ namespace Chummer.Backend.Equipment
             if (objWriter == null)
                 return;
             // <accessory>
-            XmlElementWriteHelper objBaseElement = await objWriter.StartElementAsync("accessory", token).ConfigureAwait(false);
-            try
+            await using (await objWriter.StartElementAsync("accessory", token).ConfigureAwait(false))
             {
                 await objWriter.WriteElementStringAsync("guid", InternalId, token).ConfigureAwait(false);
                 await objWriter.WriteElementStringAsync("sourceid", SourceIDString, token).ConfigureAwait(false);
@@ -837,28 +836,19 @@ namespace Chummer.Backend.Equipment
                 if (GearChildren.Count > 0)
                 {
                     // <gears>
-                    XmlElementWriteHelper objGearsElement = await objWriter.StartElementAsync("gears", token).ConfigureAwait(false);
-                    try
+                    await using (await objWriter.StartElementAsync("gears", token).ConfigureAwait(false))
                     {
                         foreach (Gear objGear in GearChildren)
                         {
                             await objGear.Print(objWriter, objCulture, strLanguageToPrint, token).ConfigureAwait(false);
                         }
                     }
-                    finally
-                    {
-                        // </gears>
-                        await objGearsElement.DisposeAsync().ConfigureAwait(false);
-                    }
+                    // </gears>
                 }
                 if (GlobalSettings.PrintNotes)
                     await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
             }
-            finally
-            {
-                // </accessory>
-                await objBaseElement.DisposeAsync().ConfigureAwait(false);
-            }
+            // </accessory>
         }
 
         #endregion Constructor, Create, Save, Load, and Print Methods
@@ -2698,8 +2688,7 @@ namespace Chummer.Backend.Equipment
         public async Task<bool> AllowPasteXml(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            IAsyncDisposable objLocker = await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false);
-            try
+            await using (await GlobalSettings.EnterClipboardReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 switch (await GlobalSettings.GetClipboardContentTypeAsync(token).ConfigureAwait(false))
@@ -2737,10 +2726,6 @@ namespace Chummer.Backend.Equipment
                     default:
                         return false;
                 }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 

@@ -88,8 +88,7 @@ namespace Chummer
         {
             try
             {
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: _objGenericToken).ConfigureAwait(false))
                 {
                     _objGenericToken.ThrowIfCancellationRequested();
                     CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(_objGenericToken).ConfigureAwait(false);
@@ -176,10 +175,6 @@ namespace Chummer
                     Interlocked.Decrement(ref _intLoading);
                     await RefreshList(_objGenericToken).ConfigureAwait(false);
                 }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
-                }
             }
             catch (OperationCanceledException)
             {
@@ -240,8 +235,7 @@ namespace Chummer
                 using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
                 {
                     CancellationToken token = objJoinedCancellationTokenSource.Token;
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                    try
+                    await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         // Retireve the information for the selected Weapon.
@@ -253,8 +247,7 @@ namespace Chummer
                             xmlWeapon = _objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon", strSelectedId);
                         if (xmlWeapon != null)
                         {
-                            IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                            try
+                            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 Weapon objWeapon = new Weapon(_objCharacter);
@@ -275,10 +268,6 @@ namespace Chummer
                                     throw;
                                 }
                             }
-                            finally
-                            {
-                                await objLocker.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
                         else
                         {
@@ -298,10 +287,6 @@ namespace Chummer
                                 await objOldWeapon.DisposeAsync().ConfigureAwait(false);
                             throw;
                         }
-                    }
-                    finally
-                    {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
                     }
                 }
             }
@@ -521,8 +506,7 @@ namespace Chummer
                     XmlNode xmlParentWeaponDataNode = ParentWeapon != null
                         ? _objXmlDocument.TryGetNodeById("/chummer/weapons/weapon", ParentWeapon.SourceID)
                         : null;
-                    IAsyncDisposable objLocker = await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-                    try
+                    await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         foreach (XmlNode objXmlWeapon in objNodeList)
@@ -577,8 +561,7 @@ namespace Chummer
                                     continue;
                             }
 
-                            Weapon objWeapon = new Weapon(_objCharacter);
-                            try
+                            await using (Weapon objWeapon = new Weapon(_objCharacter))
                             {
                                 await objWeapon.CreateAsync(objXmlWeapon, null, true, false, true, token: token)
                                     .ConfigureAwait(false);
@@ -634,15 +617,7 @@ namespace Chummer
                                         strSource, strCost);
                                 }
                             }
-                            finally
-                            {
-                                await objWeapon.DisposeAsync().ConfigureAwait(false);
-                            }
                         }
-                    }
-                    finally
-                    {
-                        await objLocker.DisposeAsync().ConfigureAwait(false);
                     }
 
                     DataSet set = new DataSet("weapons");
@@ -1078,8 +1053,7 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
-                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-                try
+                await using (await CursorWait.NewAsync(this, token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     string strCategory = await cboCategory
@@ -1125,7 +1099,7 @@ namespace Chummer
                         decimal decMinimumCost = await nudMinimumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
                         decimal decMaximumCost = await nudMaximumCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
                         decimal decExactCost = await nudExactCost.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
-                        
+
                         if (decExactCost > 0)
                         {
                             // Exact cost filtering
@@ -1148,10 +1122,6 @@ namespace Chummer
 
                     XmlNodeList objXmlWeaponList = _objXmlDocument.SelectNodes("/chummer/weapons/weapon" + strFilter);
                     return await BuildWeaponList(objXmlWeaponList, token: token).ConfigureAwait(false);
-                }
-                finally
-                {
-                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
