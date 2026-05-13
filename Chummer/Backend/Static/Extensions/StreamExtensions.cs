@@ -396,5 +396,55 @@ namespace Chummer
                 return num3;
             }
         }
+
+        /// <summary>
+        /// Version of <see cref="Stream.CopyToAsync(Stream, CancellationToken)"/> that also supports progress reporting
+        /// </summary>
+        public static Task CopyToWithProgressAsync(this Stream source, Stream destination, IProgress<long> objProgress, CancellationToken token = default)
+        {
+            return CopyToWithProgressAsync(source, destination, 81920, objProgress, token);
+        }
+
+        /// <summary>
+        /// Version of <see cref="Stream.CopyToAsync(Stream, int, CancellationToken)"/> that also supports progress reporting
+        /// </summary>
+        public static Task CopyToWithProgressAsync(this Stream source, Stream destination, int bufferSize, IProgress<long> objProgress, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (source == null)
+                return Task.FromException(new ArgumentNullException(nameof(source)));
+            if (objProgress == null)
+                return source.CopyToAsync(destination, bufferSize, token);
+            if (!source.CanRead)
+                return Task.FromException(new ArgumentException("Cannot read input stream.", nameof(source)));
+            if (destination == null)
+                return Task.FromException(new ArgumentNullException(nameof(destination)));
+            if (!destination.CanWrite)
+                return Task.FromException(new ArgumentException("Cannot write to output stream.", nameof(destination)));
+            if (bufferSize <= 0)
+                return Task.FromException(new ArgumentOutOfRangeException(nameof(bufferSize)));
+            return Inner();
+            async Task Inner()
+            {
+                byte[] achrBuffer = ArrayPool<byte>.Shared.Rent(bufferSize);
+                try
+                {
+                    long lngTotalBytesRead = 0;
+                    int intLoopBytesRead;
+                    while ((intLoopBytesRead = await source.ReadAsync(achrBuffer.AsMemory(0, bufferSize), token).ConfigureAwait(false)) != 0)
+                    {
+                        await destination.WriteAsync(achrBuffer.AsMemory(0, intLoopBytesRead), token).ConfigureAwait(false);
+                        lngTotalBytesRead += intLoopBytesRead;
+                        objProgress.Report(lngTotalBytesRead);
+                        await Task.Yield(); // Need this to make sure report's handlers are processed as close as possible to when the report above happens
+                    }
+                }
+                finally
+                {
+                    ArrayPool<byte>.Shared.Return(achrBuffer, true); // Clear just in case contents might be sensitive
+                }
+            }
+        }
     }
 }

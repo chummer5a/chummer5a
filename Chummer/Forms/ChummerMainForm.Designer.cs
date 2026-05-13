@@ -19,6 +19,12 @@ namespace Chummer
             {
 #if !DEBUG
                 _objVersionUpdaterCancellationTokenSource?.Dispose();
+                System.Net.Http.HttpClient objClient = System.Threading.Interlocked.Exchange(ref _clientUpdateFetcher, null);
+                if (objClient != null)
+                {
+                    objClient.CancelPendingRequests();
+                    objClient.Dispose();
+                }
 #endif
                 _tmrCharactersToOpenCheck?.Dispose();
                 _tmrPerformLayoutCheck?.Dispose();

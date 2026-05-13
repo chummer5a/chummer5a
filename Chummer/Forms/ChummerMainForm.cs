@@ -1215,7 +1215,7 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
-        private HttpClient _clientUpdateFetcher = new HttpClient();
+        private HttpClient _clientUpdateFetcher;
 
         private Task _tskVersionUpdate;
 
@@ -1235,11 +1235,12 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 try
                 {
-                    // Get the response.
-                    using (HttpResponseMessage response
-                           = await _clientUpdateFetcher.GetAsync(UpdateLocation, token).ConfigureAwait(false))
+                    // Get the stream containing content returned by the server.
+                    using (Stream dataStream = await _clientUpdateFetcher.GetStreamAsync(UpdateLocation, token).ConfigureAwait(false))
                     {
-                        if (response == null)
+                        token.ThrowIfCancellationRequested();
+
+                        if (dataStream == null)
                         {
                             Utils.CachedGitVersion = null;
                             return;
@@ -1247,67 +1248,55 @@ namespace Chummer
 
                         token.ThrowIfCancellationRequested();
 
-                        // Get the stream containing content returned by the server.
-                        using (Stream dataStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
+                        // Open the stream using a StreamReader for easy access.
+                        using (StreamReader objReader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
                         {
-                            if (dataStream == null)
+                            token.ThrowIfCancellationRequested();
+
+                            string strVersionLine = null;
+                            // Read the content.
+                            for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
+                                    strLine != null;
+                                    strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                             {
-                                Utils.CachedGitVersion = null;
-                                return;
+                                token.ThrowIfCancellationRequested();
+                                if (strLine.Contains("tag_name"))
+                                {
+                                    strVersionLine = strLine.Substring(strLine.IndexOf(':') + 1).TrimEnd(',');
+                                    break;
+                                }
                             }
 
                             token.ThrowIfCancellationRequested();
 
-                            // Open the stream using a StreamReader for easy access.
-                            using (StreamReader objReader = new StreamReader(dataStream, System.Text.Encoding.UTF8, true))
+                            Version verLatestVersion = null;
+                            if (!string.IsNullOrEmpty(strVersionLine))
                             {
-                                token.ThrowIfCancellationRequested();
+                                string strVersion = strVersionLine.Substring(strVersionLine.IndexOf(':') + 1);
+                                int intPos = strVersion.IndexOf('}');
+                                if (intPos != -1)
+                                    strVersion = strVersion.Substring(0, intPos);
+                                strVersion = strVersion.FastEscape('\"');
 
-                                string strVersionLine = null;
-                                // Read the content.
-                                for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
-                                     strLine != null;
-                                     strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
+                                // Adds zeroes if minor and/or build version are missing
+                                if (strVersion.Count(x => x == '.') < 2)
                                 {
-                                    token.ThrowIfCancellationRequested();
-                                    if (strLine.Contains("tag_name"))
-                                    {
-                                        strVersionLine = strLine.Substring(strLine.IndexOf(':') + 1).TrimEnd(',');
-                                        break;
-                                    }
-                                }
-
-                                token.ThrowIfCancellationRequested();
-
-                                Version verLatestVersion = null;
-                                if (!string.IsNullOrEmpty(strVersionLine))
-                                {
-                                    string strVersion = strVersionLine.Substring(strVersionLine.IndexOf(':') + 1);
-                                    int intPos = strVersion.IndexOf('}');
-                                    if (intPos != -1)
-                                        strVersion = strVersion.Substring(0, intPos);
-                                    strVersion = strVersion.FastEscape('\"');
-
-                                    // Adds zeroes if minor and/or build version are missing
+                                    strVersion += ".0";
                                     if (strVersion.Count(x => x == '.') < 2)
                                     {
                                         strVersion += ".0";
-                                        if (strVersion.Count(x => x == '.') < 2)
-                                        {
-                                            strVersion += ".0";
-                                        }
                                     }
-
-                                    token.ThrowIfCancellationRequested();
-
-                                    if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
-                                        verLatestVersion = null;
-
-                                    token.ThrowIfCancellationRequested();
                                 }
 
-                                Utils.CachedGitVersion = verLatestVersion;
+                                token.ThrowIfCancellationRequested();
+
+                                if (!Version.TryParse(strVersion.TrimStartOnce("Nightly-v"), out verLatestVersion))
+                                    verLatestVersion = null;
+
+                                token.ThrowIfCancellationRequested();
                             }
+
+                            Utils.CachedGitVersion = verLatestVersion;
                         }
                     }
                 }
@@ -1379,6 +1368,22 @@ namespace Chummer
                     Interlocked.CompareExchange(ref _objVersionUpdaterCancellationTokenSource, null, objNewSource);
                     objNewSource.Dispose();
                     throw;
+                }
+
+                if (_clientUpdateFetcher == null)
+                {
+                    HttpClient objClient = new HttpClient
+                    {
+                       Timeout = TimeSpan.FromSeconds(5)
+                    };
+                    if (Interlocked.CompareExchange(ref _clientUpdateFetcher, objClient, null) != null)
+                    {
+                        objClient.DefaultRequestHeaders.Add("User-Agent", "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)");
+                    }
+                    else
+                    {
+                        objClient.Dispose();
+                    }
                 }
 
                 Task tskNew = Task.Run(async () =>
@@ -2743,10 +2748,6 @@ namespace Chummer
                         //swallow this
                     }
                 }
-
-                HttpClient objClient = Interlocked.Exchange(ref _clientUpdateFetcher, null);
-                objClient.CancelPendingRequests();
-                objClient.Dispose();
 #endif
                 FormWindowState eWindowState = await this
                     .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)

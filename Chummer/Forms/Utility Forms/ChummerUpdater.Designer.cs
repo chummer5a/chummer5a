@@ -16,9 +16,25 @@ namespace Chummer
             if (disposing)
             {
                 _objGenericFormClosingCancellationTokenSource.Dispose();
-                _clientChangelogDownloader.Dispose();
-                _clientDownloader.Dispose();
                 _objConnectionLoaderCancellationTokenSource?.Dispose();
+                System.Net.Http.HttpClient objClient1 = System.Threading.Interlocked.Exchange(ref _clientUpdateFetcher, null);
+                if (objClient1 != null)
+                {
+                    objClient1.CancelPendingRequests();
+                    objClient1.Dispose();
+                }
+                System.Net.Http.HttpClient objClient2 = System.Threading.Interlocked.Exchange(ref _clientChangelogDownloader, null);
+                if (objClient2 != null)
+                {
+                    objClient2.CancelPendingRequests();
+                    objClient2.Dispose();
+                }
+                System.Net.Http.HttpClient objClient3 = System.Threading.Interlocked.Exchange(ref _clientUpdateDownloader, null);
+                if (objClient3 != null)
+                {
+                    objClient3.CancelPendingRequests();
+                    objClient3.Dispose();
+                }
                 if (components != null)
                     components.Dispose();
             }
