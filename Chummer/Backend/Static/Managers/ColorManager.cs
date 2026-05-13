@@ -1479,6 +1479,12 @@ namespace Chummer
         /// <returns>A Color with RGBA values corresponding to the HSLA inputs.</returns>
         public static Color FromHsla(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
         {
+            if (float.IsNaN(fltHue))
+                fltHue = 0;
+            if (float.IsNaN(fltSaturation))
+                fltSaturation = 0;
+            if (float.IsNaN(fltLightness))
+                fltLightness = 0;
             ArgumentOutOfRangeException.ThrowIfGreaterThan(fltHue, 1.0f, nameof(fltHue));
             ArgumentOutOfRangeException.ThrowIfNegative(fltHue, nameof(fltHue));
             ArgumentOutOfRangeException.ThrowIfGreaterThan(fltSaturation, 1.0f, nameof(fltSaturation));
@@ -1563,6 +1569,12 @@ namespace Chummer
         /// <returns>A Color with RGBA values corresponding to the HSVA inputs.</returns>
         public static Color FromHsva(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
         {
+            if (float.IsNaN(fltHue))
+                fltHue = 0;
+            if (float.IsNaN(fltSaturation))
+                fltSaturation = 0;
+            if (float.IsNaN(fltValue))
+                fltValue = 0;
             ArgumentOutOfRangeException.ThrowIfGreaterThan(fltHue, 1.0f, nameof(fltHue));
             ArgumentOutOfRangeException.ThrowIfNegative(fltHue, nameof(fltHue));
             ArgumentOutOfRangeException.ThrowIfGreaterThan(fltSaturation, 1.0f, nameof(fltSaturation));
