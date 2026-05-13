@@ -27,7 +27,7 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public interface IAsyncCollection<T> : ICollection<T>, IAsyncEnumerable<T>
+    public interface IAsyncCollection<T> : ICollection<T>, IEnumerableWithAsync<T>
     {
         Task<int> GetCountAsync(CancellationToken token = default);
 
@@ -52,7 +52,7 @@ namespace Chummer
                 await lstCollection.AddAsync(objItem, token).ConfigureAwait(false);
         }
 
-        public static async Task AddRangeAsync<T>(this IAsyncCollection<T> lstCollection, IAsyncEnumerable<T> lstToAdd, CancellationToken token = default)
+        public static async Task AddRangeAsync<T>(this IAsyncCollection<T> lstCollection, IEnumerableWithAsync<T> lstToAdd, CancellationToken token = default)
         {
             ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             ArgumentNullException.ThrowIfNull(lstToAdd, nameof(lstToAdd));

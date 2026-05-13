@@ -5357,7 +5357,7 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills with comprehensive target checking (async overload)
         /// </summary>
-        private static Task ProcessSkillsWithPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
+        private static Task ProcessSkillsWithPropertyComprehensiveAsync<T>(IEnumerableWithAsync<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
             return skills.ForEachAsync(async objTargetSkill =>
             {
@@ -5402,7 +5402,7 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
+        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IEnumerableWithAsync<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
             string strPropertyName, Func<T, string> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
             return skills.ForEachAsync(objTargetSkill =>
@@ -5441,7 +5441,7 @@ namespace Chummer
         /// <summary>
         /// Helper method to process skills by group/category/attribute with comprehensive target checking (async version)
         /// </summary>
-        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
+        private static Task ProcessSkillsByPropertyComprehensiveAsync<T>(IEnumerableWithAsync<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget,
             string strPropertyName, Func<T, Task<string>> propertySelector, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
             return skills.ForEachAsync(async objTargetSkill =>
@@ -5520,7 +5520,7 @@ namespace Chummer
         /// Helper method to process skill groups with comprehensive target checking (async overload)
         /// </summary>
         private static Task ProcessSkillsWithPropertyComprehensiveAsync(
-            IAsyncEnumerable<SkillGroup> skillGroups, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
+            IEnumerableWithAsync<SkillGroup> skillGroups, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
             string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
             return skillGroups.ForEachAsync(async objTargetGroup =>

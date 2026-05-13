@@ -257,7 +257,7 @@ namespace Chummer
             _aobjInternal[7] = item8;
         }
 
-        public static async Task<TemporaryArray<T>> NewAsync(IAsyncEnumerable<T> items, CancellationToken token = default)
+        public static async Task<TemporaryArray<T>> NewAsync(IEnumerableWithAsync<T> items, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (IEnumerator<T> enumerator = await items.GetEnumeratorAsync(token).ConfigureAwait(false))

@@ -23,7 +23,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public interface IAsyncReadOnlyCollection<T> : IAsyncEnumerable<T>, IReadOnlyCollection<T>
+    public interface IAsyncReadOnlyCollection<T> : IEnumerableWithAsync<T>, IReadOnlyCollection<T>
     {
         Task<int> GetCountAsync(CancellationToken token = default);
     }

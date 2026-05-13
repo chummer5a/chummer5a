@@ -26,7 +26,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class LockingHashSet<T> : IAsyncSet<T>, IAsyncProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>, IAsyncEnumerableWithSideEffects<T>
+    public class LockingHashSet<T> : IAsyncSet<T>, IAsyncProducerConsumerCollection<T>, IHasLockObject, IAsyncReadOnlyCollection<T>, IEnumerableWithAsyncAndSideEffects<T>
     {
         private readonly HashSet<T> _setData;
         public AsyncFriendlyReaderWriterLock LockObject { get; }

@@ -27,7 +27,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T>, IHasLockObject
+    public class ThreadSafeList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IList, IAsyncProducerConsumerCollection<T>, IEnumerableWithAsyncAndSideEffects<T>, IHasLockObject
     {
         private readonly List<T> _lstData;
         public AsyncFriendlyReaderWriterLock LockObject { get; }
@@ -743,7 +743,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.ForEach" />
         public Task ForEachAsync(Func<T, Task> action, CancellationToken token = default)
         {
-            return AsyncEnumerableExtensions.ForEachAsync(this, action, token);
+            return EnumerableWithAsyncExtensions.ForEachAsync(this, action, token);
         }
 
         /// <inheritdoc cref="List{T}.ForEach" />

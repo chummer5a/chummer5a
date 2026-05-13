@@ -1204,7 +1204,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns><paramref name="sbdInput" /> with values appended.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerableWithAsync<T> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
@@ -1259,7 +1259,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns><paramref name="sbdInput" /> with values appended.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerableWithAsync<string> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
@@ -1315,7 +1315,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns><paramref name="sbdInput" /> with values appended.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
+        public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerableWithAsync<T> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
@@ -1370,7 +1370,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns><paramref name="sbdInput" /> with values appended.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
+        public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerableWithAsync<string> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));

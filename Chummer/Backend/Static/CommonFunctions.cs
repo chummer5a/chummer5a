@@ -480,7 +480,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<ValueTuple<Gear, Vehicle, WeaponAccessory, Cyberware>> FindVehicleGearAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid,
+        public static async Task<ValueTuple<Gear, Vehicle, WeaponAccessory, Cyberware>> FindVehicleGearAsync(this IEnumerableWithAsync<Vehicle> lstVehicles, string strGuid,
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -654,7 +654,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Weapon to find.</param>
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<ValueTuple<Weapon, Vehicle, WeaponMount, VehicleMod>> FindVehicleWeaponAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
+        public static async Task<ValueTuple<Weapon, Vehicle, WeaponMount, VehicleMod>> FindVehicleWeaponAsync(this IEnumerableWithAsync<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
@@ -1060,7 +1060,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstArmors">List of Armors to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<ValueTuple<Gear, Armor, ArmorMod>> FindArmorGearAsync(this IAsyncEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
+        public static async Task<ValueTuple<Gear, Armor, ArmorMod>> FindArmorGearAsync(this IEnumerableWithAsync<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
             ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             Gear objReturn = null;
@@ -1184,7 +1184,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstCyberware">List of Cyberware to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<ValueTuple<Gear, Cyberware>> FindCyberwareGearAsync(this IAsyncEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
+        public static async Task<ValueTuple<Gear, Cyberware>> FindCyberwareGearAsync(this IEnumerableWithAsync<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
             ArgumentNullException.ThrowIfNull(lstCyberware, nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
@@ -1236,7 +1236,7 @@ namespace Chummer
             ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                if (lstWeapons is IAsyncEnumerable<Weapon> lstWeaponsAsync)
+                if (lstWeapons is IEnumerableWithAsync<Weapon> lstWeaponsAsync)
                 {
                     foreach (Weapon objWeapon in await lstWeaponsAsync.DeepWhereAsync(x => x.Children,
                                  async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token: token).ConfigureAwait(false))
@@ -1314,7 +1314,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Gear to find.</param>
         /// <param name="lstWeapons">List of Weapons to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task<ValueTuple<Gear, WeaponAccessory>> FindWeaponGearAsync(this IAsyncEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
+        public static async Task<ValueTuple<Gear, WeaponAccessory>> FindWeaponGearAsync(this IEnumerableWithAsync<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));

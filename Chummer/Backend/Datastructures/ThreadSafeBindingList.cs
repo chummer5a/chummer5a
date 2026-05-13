@@ -32,7 +32,7 @@ namespace Chummer
     /// Thread-safe-wrapped version of <see cref="CachedBindingList{T}"/>, but also with constraints on the generic type so that it can only be used on a class with <see cref="INotifyPropertyChanged"/>.
     /// Use <see cref="ThreadSafeObservableCollection{T}"/> instead for classes without <see cref="INotifyPropertyChanged"/>.
     /// </summary>
-    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T> where T : INotifyPropertyChanged
+    public class ThreadSafeBindingList<T> : IAsyncList<T>, IAsyncReadOnlyList<T>, IBindingList, ICancelAddNew, IRaiseItemChangedEvents, IHasLockObject, IAsyncProducerConsumerCollection<T>, IEnumerableWithAsyncAndSideEffects<T> where T : INotifyPropertyChanged
     {
         /// <inheritdoc />
         public AsyncFriendlyReaderWriterLock LockObject { get; }

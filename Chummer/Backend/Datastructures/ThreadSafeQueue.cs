@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeQueue<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>, IAsyncEnumerableWithSideEffects<T>
+    public class ThreadSafeQueue<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>, IEnumerableWithAsyncAndSideEffects<T>
     {
         private readonly Queue<T> _queData;
 

@@ -25,7 +25,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeStack<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>, IAsyncEnumerableWithSideEffects<T>
+    public class ThreadSafeStack<T> : IHasLockObject, IAsyncProducerConsumerCollection<T>, IAsyncCollection<T>, IAsyncReadOnlyCollection<T>, IEnumerableWithAsyncAndSideEffects<T>
     {
         private readonly Stack<T> _stkData;
 

@@ -49,7 +49,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<T> DeepFindByIdAsync<T>(this IAsyncEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasChildren<T>, IHasInternalId
+        public static Task<T> DeepFindByIdAsync<T>(this IEnumerableWithAsync<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasChildren<T>, IHasInternalId
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<T>(token);
@@ -76,7 +76,7 @@ namespace Chummer
         /// <param name="strGuid">InternalId of the Needle to Find.</param>
         /// <param name="lstHaystack">Haystack to search.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static Task<T> FindByIdAsync<T>(this IAsyncEnumerable<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasInternalId
+        public static Task<T> FindByIdAsync<T>(this IEnumerableWithAsync<T> lstHaystack, string strGuid, CancellationToken token = default) where T : IHasInternalId
         {
             if (token.IsCancellationRequested)
                 return Task.FromCanceled<T>(token);

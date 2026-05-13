@@ -337,7 +337,7 @@ namespace Chummer
                 await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           Action<T, T> funcOverrideIfEquals = null,
                                                           CancellationToken token = default) where T : IComparable
         {
@@ -360,7 +360,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           IComparer<T> comparer, Action<T, T> funcOverrideIfEquals = null,
                                                           CancellationToken token = default)
         {
@@ -384,7 +384,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           Comparison<T> funcComparison,
                                                           Action<T, T> funcOverrideIfEquals = null,
                                                           CancellationToken token = default)
@@ -891,7 +891,7 @@ namespace Chummer
                 await AddWithSortAsync(lstCollection, objItem, funcComparison, funcOverrideIfEquals, token).ConfigureAwait(false);
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           Func<T, T, Task> funcOverrideIfEquals,
                                                           CancellationToken token = default) where T : IComparable
         {
@@ -914,7 +914,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           IComparer<T> comparer, Func<T, T, Task> funcOverrideIfEquals,
                                                           CancellationToken token = default)
         {
@@ -938,7 +938,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                           Comparison<T> funcComparison,
                                                           Func<T, T, Task> funcOverrideIfEquals,
                                                           CancellationToken token = default)
@@ -963,7 +963,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                                Func<T, T, Task<int>> funcComparison,
                                                                Action<T, T> funcOverrideIfEquals = null,
                                                                CancellationToken token = default)
@@ -988,7 +988,7 @@ namespace Chummer
             }
         }
 
-        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IAsyncEnumerable<T> lstToAdd,
+        public static async Task AddAsyncRangeWithSortAsync<T>(this IAsyncList<T> lstCollection, IEnumerableWithAsync<T> lstToAdd,
                                                                Func<T, T, Task<int>> funcComparison,
                                                                Func<T, T, Task> funcOverrideIfEquals,
                                                                CancellationToken token = default)
@@ -1119,7 +1119,7 @@ namespace Chummer
         }
 
         public static async Task InsertAsyncRangeAsync<T>(this IAsyncList<T> lstCollection, int index,
-                                                     [NotNull] IAsyncEnumerable<T> collection, CancellationToken token = default)
+                                                     [NotNull] IEnumerableWithAsync<T> collection, CancellationToken token = default)
         {
             ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             List<T> lstToAdd = await collection.ToListAsync(token).ConfigureAwait(false);

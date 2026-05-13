@@ -24,7 +24,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public interface IAsyncProducerConsumerCollection<T> : IProducerConsumerCollection<T>, IAsyncEnumerable<T>
+    public interface IAsyncProducerConsumerCollection<T> : IProducerConsumerCollection<T>, IEnumerableWithAsync<T>
     {
         Task CopyToAsync(T[] array, int index, CancellationToken token = default);
 

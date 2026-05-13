@@ -28,7 +28,7 @@ using System.Threading.Tasks;
 
 namespace Chummer
 {
-    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IAsyncEnumerableWithSideEffects<T>, IHasLockObject
+    public class ThreadSafeObservableCollection<T> : IAsyncList<T>, IList, IAsyncReadOnlyList<T>, INotifyCollectionChanged, IAsyncProducerConsumerCollection<T>, IEnumerableWithAsyncAndSideEffects<T>, IHasLockObject
     {
         [CLSCompliant(false)]
         protected readonly EnhancedObservableCollection<T> _lstData;

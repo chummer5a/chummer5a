@@ -639,7 +639,7 @@ namespace Chummer
         /// <summary>
         /// Async version of <see cref="string.Concat(IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc, but is potentially slower if the string ends up being larger than our stackalloc limit.
         /// </summary>
-        public static async Task<string> ConcatFastAsync(IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
+        public static async Task<string> ConcatFastAsync(IEnumerableWithAsync<string> lstStrings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
@@ -1871,7 +1871,7 @@ namespace Chummer
         /// <summary>
         /// Async version of <see cref="string.Join(string, IEnumerable{string})"/> that is faster for shorter strings because it uses stackalloc instead of <see cref="StringBuilder"/>, but needs to enumerate over the input strings twice and so needs a collection as an input.
         /// </summary>
-        public static async Task<string> JoinFastAsync(string strSeparator, IAsyncEnumerable<string> lstStrings, CancellationToken token = default)
+        public static async Task<string> JoinFastAsync(string strSeparator, IEnumerableWithAsync<string> lstStrings, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intSeparatorLength = strSeparator.Length;

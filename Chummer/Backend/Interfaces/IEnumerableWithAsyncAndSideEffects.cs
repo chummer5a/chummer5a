@@ -25,16 +25,20 @@ using Chummer.Annotations;
 
 namespace Chummer
 {
-    public interface IAsyncEnumerableWithSideEffects<T> : IAsyncEnumerable<T>
+    /// <summary>
+    /// Version of <see cref="Chummer.IEnumerableWithAsync{T}"/> where the we can allow "side effects" during enumeration.
+    /// This is mainly for locking collections that share their locks with other objects. "Side effects" allow the lock to be upgraded to a write lock during enumeration, but the collection still remains (or needs to remain) unchanged during enumeration.
+    /// </summary>
+    public interface IEnumerableWithAsyncAndSideEffects<T> : IEnumerableWithAsync<T>
     {
         IEnumerator<T> EnumerateWithSideEffects();
 
         Task<IEnumerator<T>> EnumerateWithSideEffectsAsync(CancellationToken token = default);
     }
 
-    public static class AsyncEnumerableWithSideEffectsExtensions
+    public static class EnumerableWithAsyncAndSideEffectsExtensions
     {
-        public static IEnumerable<T> AsEnumerableWithSideEffects<T>(this IAsyncEnumerableWithSideEffects<T> objInput)
+        public static IEnumerable<T> AsEnumerableWithSideEffects<T>(this IEnumerableWithAsyncAndSideEffects<T> objInput)
         {
             using (IEnumerator<T> objEnumerator = objInput.EnumerateWithSideEffects())
             {
@@ -43,7 +47,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -64,7 +68,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -85,12 +89,12 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
@@ -101,7 +105,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static void ForEachWithSideEffectsWithBreak<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static void ForEachWithSideEffectsWithBreak<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             foreach (T objItem in objEnumerable.AsEnumerableWithSideEffects())
             {
@@ -117,7 +121,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static void ForEachWithSideEffectsWithBreak<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static void ForEachWithSideEffectsWithBreak<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             foreach (T objItem in objEnumerable.AsEnumerableWithSideEffects())
             {
@@ -133,7 +137,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -161,7 +165,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -189,7 +193,7 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
@@ -200,7 +204,7 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
@@ -211,7 +215,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -239,7 +243,7 @@ namespace Chummer
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -267,7 +271,7 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
@@ -278,12 +282,12 @@ namespace Chummer
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
@@ -323,7 +327,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromSafeObjectPool<List<Task>>(Utils.TaskListPool, out List<Task> lstTasks))
@@ -363,17 +367,17 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -442,7 +446,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -509,17 +513,17 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -588,7 +592,7 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
@@ -657,17 +661,17 @@ namespace Chummer
             }
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        public static async Task ForEachWithSideEffectsParallelWithBreakAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
         {
             await ForEachWithSideEffectsParallelWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -690,7 +694,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -713,17 +717,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -746,7 +750,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -769,17 +773,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -802,7 +806,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -825,17 +829,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -858,7 +862,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -881,17 +885,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -914,7 +918,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -937,17 +941,17 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -994,7 +998,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1041,17 +1045,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1098,7 +1102,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1145,17 +1149,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1202,7 +1206,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1249,17 +1253,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1306,7 +1310,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1353,17 +1357,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1410,7 +1414,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1457,17 +1461,17 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -1491,7 +1495,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -1515,17 +1519,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -1549,7 +1553,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -1573,17 +1577,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -1607,7 +1611,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -1631,17 +1635,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -1665,7 +1669,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -1689,17 +1693,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -1723,7 +1727,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -1747,17 +1751,17 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1804,7 +1808,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1858,17 +1862,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1915,7 +1919,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -1969,17 +1973,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2026,7 +2030,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2080,17 +2084,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2137,7 +2141,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2191,17 +2195,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2248,7 +2252,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2302,17 +2306,17 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -2336,7 +2340,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             int intReturn = 0;
@@ -2360,17 +2364,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -2394,7 +2398,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             long lngReturn = 0;
@@ -2418,17 +2422,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -2452,7 +2456,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             float fltReturn = 0;
@@ -2476,17 +2480,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -2510,7 +2514,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             double dblReturn = 0;
@@ -2534,17 +2538,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -2568,7 +2572,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             decimal decReturn = 0;
@@ -2592,17 +2596,17 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2656,7 +2660,7 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<int>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2710,17 +2714,17 @@ namespace Chummer
             return intReturn;
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
+        public static async Task<int> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2774,7 +2778,7 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<long>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2828,17 +2832,17 @@ namespace Chummer
             return lngReturn;
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, long> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
+        public static async Task<long> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2892,7 +2896,7 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<float>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -2946,17 +2950,17 @@ namespace Chummer
             return fltReturn;
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, float> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
+        public static async Task<float> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -3010,7 +3014,7 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<double>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -3064,17 +3068,17 @@ namespace Chummer
             return dblReturn;
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, double> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
+        public static async Task<double> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -3128,7 +3132,7 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this IEnumerableWithAsyncAndSideEffects<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             List<Task<decimal>> lstTasks = objEnumerable is IAsyncReadOnlyCollection<T> objTemp
@@ -3182,12 +3186,12 @@ namespace Chummer
             return decReturn;
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }
 
-        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
+        public static async Task<decimal> SumParallelWithSideEffectsAsync<T>(this Task<IEnumerableWithAsyncAndSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default)
         {
             return await SumParallelWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, funcSelector, token).ConfigureAwait(false);
         }

@@ -36,7 +36,7 @@ namespace Chummer
     /// <typeparam name="TKey">Key to use for the dictionary.</typeparam>
     /// <typeparam name="TValue">Values to use for the dictionary.</typeparam>
     [Serializable]
-    public class LockingDictionary<TKey, TValue> : IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IAsyncEnumerableWithSideEffects<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
+    public class LockingDictionary<TKey, TValue> : IAsyncDictionary<TKey, TValue>, IAsyncReadOnlyDictionary<TKey, TValue>, IAsyncProducerConsumerCollection<KeyValuePair<TKey, TValue>>, IEnumerableWithAsyncAndSideEffects<KeyValuePair<TKey, TValue>>, IHasLockObject, ISerializable, IDeserializationCallback
     {
         private readonly Dictionary<TKey, TValue> _dicData;
         public AsyncFriendlyReaderWriterLock LockObject { get; }

@@ -129,7 +129,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Func<TSource, Task> funcCodeToRun, CancellationToken token = default)
+        public static async Task ForEachAsync<TSource>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, Task> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -180,7 +180,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Action<TSource> funcCodeToRun, CancellationToken token = default)
+        public static async Task ForEachAsync<TSource>(IEnumerableWithAsync<TSource> lstItems, Action<TSource> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -350,7 +350,7 @@ namespace Chummer
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
-        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, Task<TResult>> funcCodeToRun, CancellationToken token = default)
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, Task<TResult>> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -411,7 +411,7 @@ namespace Chummer
         /// <param name="funcCodeToRun">Code to run in parallel.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the results of <paramref name="funcCodeToRun"/> when run over <paramref name="lstItems"/>.</returns>
-        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, TResult> funcCodeToRun, CancellationToken token = default)
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, TResult> funcCodeToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -589,7 +589,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        public static async Task ForEachAsync<TSource>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, CancellationTokenSource, Task> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -649,7 +649,7 @@ namespace Chummer
         /// <param name="lstItems">Enumerable supplying the source of items for the code we want to run in parallel.</param>
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public static async Task ForEachAsync<TSource>(IAsyncEnumerable<TSource> lstItems, Action<TSource, CancellationTokenSource> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        public static async Task ForEachAsync<TSource>(IEnumerableWithAsync<TSource> lstItems, Action<TSource, CancellationTokenSource> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -893,7 +893,7 @@ namespace Chummer
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
-        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, CancellationTokenSource, Task<TResult>> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer
@@ -987,7 +987,7 @@ namespace Chummer
         /// <param name="funcCodeToRunWithPotentialBreak">Code to run in parallel. CancellationTokenSource argument is for early termination of the loop, request it to cancel (but don't throw an exception) to make the loop terminate early.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         /// <returns>List of the results of <paramref name="funcCodeToRunWithPotentialBreak"/> when run over <paramref name="lstItems"/>.</returns>
-        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IAsyncEnumerable<TSource> lstItems, Func<TSource, CancellationTokenSource, TResult> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
+        public static async Task<List<TResult>> ForEachAsync<TSource, TResult>(IEnumerableWithAsync<TSource> lstItems, Func<TSource, CancellationTokenSource, TResult> funcCodeToRunWithPotentialBreak, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             // Acquire enumerator first so that if we have a collection with a read lock, we acquire it before we create our buffer

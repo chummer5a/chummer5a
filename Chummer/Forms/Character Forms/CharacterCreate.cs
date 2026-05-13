@@ -12606,8 +12606,8 @@ namespace Chummer
         /// <summary>
         /// Calculate the BP used by Primary Attributes.
         /// </summary>
-        private static async Task<int> CalculateAttributeBP(IAsyncEnumerable<CharacterAttrib> attribs,
-                                                                 IAsyncEnumerable<CharacterAttrib> extraAttribs = null,
+        private static async Task<int> CalculateAttributeBP(IEnumerableWithAsync<CharacterAttrib> attribs,
+                                                                 IEnumerableWithAsync<CharacterAttrib> extraAttribs = null,
                                                                  CancellationToken token = default)
         {
             // Primary and Special Attributes are calculated separately since you can only spend a maximum of 1/2 your BP allotment on Primary Attributes.
@@ -12622,8 +12622,8 @@ namespace Chummer
             return intBP;
         }
 
-        private async Task<int> CalculateAttributePriorityPoints(IAsyncEnumerable<CharacterAttrib> attribs,
-                                                                      IAsyncEnumerable<CharacterAttrib> extraAttribs
+        private async Task<int> CalculateAttributePriorityPoints(IEnumerableWithAsync<CharacterAttrib> attribs,
+                                                                      IEnumerableWithAsync<CharacterAttrib> extraAttribs
                                                                           = null, CancellationToken token = default)
         {
             int intAtt = 0;

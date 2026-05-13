@@ -1532,7 +1532,7 @@ namespace Chummer.Backend.Attributes
                         return new ValueTuple<int, int>(intLimbCountReturn, intLimbTotalReturn);
                     }
 
-                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IAsyncEnumerable<Cyberware> lstToCheck)
+                    async Task<ValueTuple<int, int>> ProcessCyberlimbsAsync(IEnumerableWithAsync<Cyberware> lstToCheck)
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
