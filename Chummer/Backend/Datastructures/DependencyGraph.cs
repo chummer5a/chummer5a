@@ -184,8 +184,7 @@ namespace Chummer
         /// <param name="objDependencyGraphNode"></param>
         public DependencyGraphNode<T, T2> TryAddCopyToDictionary(DependencyGraphNode<T, T2> objDependencyGraphNode)
         {
-            if (objDependencyGraphNode == null)
-                throw new ArgumentNullException(nameof(objDependencyGraphNode));
+            ArgumentNullException.ThrowIfNull(objDependencyGraphNode, nameof(objDependencyGraphNode));
             T objLoopKey = objDependencyGraphNode.MyObject;
             if (!NodeDictionary.TryGetValue(objLoopKey, out DependencyGraphNode<T, T2> objExistingValue))
             {

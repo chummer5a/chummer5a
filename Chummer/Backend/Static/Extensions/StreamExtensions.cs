@@ -35,10 +35,7 @@ namespace Chummer
         /// <param name="objStream">Stream to convert to a byte array.</param>
         public static byte[] ToArray(this Stream objStream)
         {
-            if (objStream == null)
-            {
-                throw new ArgumentNullException(nameof(objStream));
-            }
+            ArgumentNullException.ThrowIfNull(objStream, nameof(objStream));
             objStream.Position = 0;
             int arrayLength = Convert.ToInt32(objStream.Length);
             byte[] achrReturn = new byte[arrayLength];
@@ -73,10 +70,7 @@ namespace Chummer
         /// <param name="arrayLength">Length of the returned array. Needs to be stored and handled separately because we cannot guarantee that a pooled array will not be longer than necessary.</param>
         public static byte[] ToPooledArray(this Stream objStream, out int arrayLength)
         {
-            if (objStream == null)
-            {
-                throw new ArgumentNullException(nameof(objStream));
-            }
+            ArgumentNullException.ThrowIfNull(objStream, nameof(objStream));
             objStream.Position = 0;
             arrayLength = Convert.ToInt32(objStream.Length);
             byte[] achrReturn = ArrayPool<byte>.Shared.Rent(arrayLength);
@@ -148,10 +142,7 @@ namespace Chummer
                                             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objStream == null)
-            {
-                throw new ArgumentNullException(nameof(objStream));
-            }
+            ArgumentNullException.ThrowIfNull(objStream, nameof(objStream));
 
             long intLength = objStream.Length;
             if (intLength == 0)
@@ -287,10 +278,7 @@ namespace Chummer
                                             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objStream == null)
-            {
-                throw new ArgumentNullException(nameof(objStream));
-            }
+            ArgumentNullException.ThrowIfNull(objStream, nameof(objStream));
 
             long intLength = objStream.Length;
             if (intLength == 0)

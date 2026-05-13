@@ -130,8 +130,7 @@ namespace Chummer
 public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             // Get the level value from the bonus node
             int intLevel = await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
@@ -158,8 +157,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task surprise(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Surprise, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -167,8 +165,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spellresistance(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellResistance, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -176,8 +173,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task mentalmanipulationresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MentalManipulationResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -185,8 +181,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physicalmanipulationresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalManipulationResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -194,8 +189,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task manaillusionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ManaIllusionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -203,8 +197,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physicalillusionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalIllusionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -212,8 +205,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task detectionspellresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DetectionSpellResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -221,8 +213,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task directmanaspellresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectManaSpellResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -230,8 +221,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task directphysicalspellresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DirectPhysicalSpellResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -239,8 +229,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreasebodresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseBODResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -248,8 +237,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreaseagiresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseAGIResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -257,8 +245,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreaserearesist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseREAResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -266,8 +253,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreasestrresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseSTRResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -275,8 +261,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreasecharesist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseCHAResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -284,8 +269,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreaseintresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseINTResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -293,8 +277,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreaselogresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseLOGResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -302,8 +285,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task decreasewilresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DecreaseWILResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -311,8 +293,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task enableattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             switch (bonusNode["name"]?.InnerTextViaPool(token).ToUpperInvariant())
             {
                 case "MAG":
@@ -339,8 +320,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task replaceattributes(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (XmlNodeList objXmlAttributes = bonusNode.SelectNodes("replaceattribute"))
             {
                 if (objXmlAttributes == null)
@@ -375,8 +355,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task enabletab(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             using (XmlNodeList xmlEnableList = bonusNode.SelectNodes("name"))
             {
@@ -426,8 +405,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task disabletab(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (XmlNodeList xmlDisableList = bonusNode.SelectNodes("name"))
             {
                 if (xmlDisableList?.Count > 0)
@@ -457,8 +435,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectrestricted(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -491,8 +468,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selecttradition(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -552,8 +528,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberseeker(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             //Check if valid attrib
             string strBonusNodeText = bonusNode.InnerTextViaPool(token);
             if (strBonusNodeText == "BOX" || AttributeSection.AttributeStrings.Contains(strBonusNodeText))
@@ -569,9 +544,8 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberlimbattributebonus(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
-            
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
+
             string strAttribute = bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
             decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
 
@@ -592,8 +566,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task blockskillgroupdefaulting(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strExclude = bonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
             string strSelect = bonusNode.InnerTextViaPool(token);
@@ -638,8 +611,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task blockskilldefaulting(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strSelectedSkill = bonusNode.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strSelectedSkill))
             {
@@ -668,8 +640,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectskill(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             if (ForcedValue == "+2 to a Combat Skill")
                 ForcedValue = string.Empty;
@@ -834,8 +805,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         // Select a Skill Group.
         public async Task selectskillgroup(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strExclude = string.Empty;
             if (bonusNode.Attributes?["excludecategory"] != null)
@@ -887,8 +857,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
         public async Task selectattributes(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             bool blnSingleSelected = true;
             List<string> selectedValues = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlSelectAttributeList = bonusNode.SelectNodes("selectattribute"))
@@ -1055,8 +1024,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
@@ -1177,8 +1145,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectlimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             List<string> strLimits = new List<string>(4);
             using (XmlNodeList xmlDefinedLimits = bonusNode.SelectNodes("limit"))
@@ -1294,8 +1261,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         // Select an CharacterAttribute to use instead of the default on a skill.
         public async Task swapskillattribute(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
@@ -1432,8 +1398,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task swapskillspecattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             List<string> lstAbbrevs = new List<string>(AttributeSection.AttributeStrings.Count);
             using (XmlNodeList xmlAttributeList = bonusNode.SelectNodes("attribute"))
@@ -1573,8 +1538,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         // Select a Spell.
         public async Task selectspell(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             XmlNode node;
             // Display the Select Spell window.
@@ -1655,8 +1619,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addspell(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             XmlDocument objXmlSpellDocument = await _objCharacter.LoadDataAsync("spells.xml", token: token).ConfigureAwait(false);
 
@@ -1712,8 +1675,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectcomplexform(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strSelectedComplexForm = ForcedValue;
 
@@ -1765,8 +1727,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addcomplexform(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             XmlDocument objXmlComplexFormDocument = await _objCharacter.LoadDataAsync("complexforms.xml", token: token).ConfigureAwait(false);
 
@@ -1797,8 +1758,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addgear(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             Gear objNewGear = await Purchase(bonusNode).ConfigureAwait(false);
             using (XmlNodeList xmlChildren = bonusNode["children"]?.ChildNodes)
@@ -1893,8 +1853,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addweapon(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strName = bonusNode["name"]?.InnerTextViaPool(token) ?? throw new AbortedException();
             XmlNode node = (await _objCharacter.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/weapons/weapon", strName) ?? throw new AbortedException();
@@ -1942,8 +1901,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task naturalweapon(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             Weapon objWeapon = new Weapon(_objCharacter);
             try
@@ -1984,8 +1942,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectaiprogram(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = await _objCharacter.LoadDataAsync("programs.xml", token: token).ConfigureAwait(false);
@@ -2052,8 +2009,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectinherentaiprogram(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             XmlNode xmlProgram = null;
             XmlDocument xmlDocument = await _objCharacter.LoadDataAsync("programs.xml", token: token).ConfigureAwait(false);
@@ -2120,8 +2076,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectcontact(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strMode = bonusNode["type"]?.InnerTextViaPool(token) ?? "all";
 
@@ -2198,8 +2153,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addcontact(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             int intLoyalty = 1;
             int intConnection = 1;
@@ -2254,8 +2208,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specificattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             // Display the Select CharacterAttribute window and record which CharacterAttribute was selected.
             // Record the improvement.
@@ -2303,8 +2256,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task attributelevel(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strAttrib = string.Empty;
             decimal decValue = 1;
             bonusNode.TryGetDecFieldQuickly("val", ref decValue);
@@ -2393,8 +2345,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skilllevel(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strSkill = string.Empty;
             decimal decValue = 1;
             bonusNode.TryGetDecFieldQuickly("val", ref decValue);
@@ -2417,8 +2368,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task pushtext(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strPush = bonusNode.InnerTextViaPool(token);
             if (!string.IsNullOrWhiteSpace(strPush))
             {
@@ -2446,8 +2396,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task activesoft(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strSelectedValue = ForcedValue;
             bool blnKnowledgeSkill = false;
@@ -2514,8 +2463,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillsoft(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strForcedValue = ForcedValue;
 
             SelectedValue = string.IsNullOrEmpty(strForcedValue)
@@ -2545,8 +2493,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskilllevel(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             decimal decVal = bonusNode["val"] != null ? await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"].InnerTextViaPool(token), _intRating, token).ConfigureAwait(false) : 1;
             if (bonusNode["selectskill"] != null)
             {
@@ -2563,8 +2510,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskillpoints(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeKnowledgeSkills, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode.Value, _intRating, token).ConfigureAwait(false), token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -2572,8 +2518,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgrouplevel(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strSkillGroup = string.Empty;
             decimal decValue = 1;
             bonusNode.TryGetDecFieldQuickly("val", ref decValue);
@@ -2599,8 +2544,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task nuyenmaxbp(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NuyenMaxBP, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -2609,8 +2553,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physicallimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync("Physical", _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalLimit,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -2620,8 +2563,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task mentallimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync("Mental", _objImprovementSource, SourceName, Improvement.ImprovementType.MentalLimit,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -2631,8 +2573,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task sociallimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync("Social", _objImprovementSource, SourceName, Improvement.ImprovementType.SocialLimit,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -2642,8 +2583,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task nuyenamt(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(strCondition, _objImprovementSource, SourceName, Improvement.ImprovementType.Nuyen, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -2653,8 +2593,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task conditionmonitor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strTemp = bonusNode["physical"]?.InnerTextViaPool(token);
             // Physical Condition.
             if (!string.IsNullOrEmpty(strTemp))
@@ -2721,8 +2660,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task livingpersona(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             // Device Rating.
             string strBonus = bonusNode["devicerating"]?.InnerTextViaPool(token);
@@ -2806,8 +2744,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specificskill(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             bool blnAddToRating = bonusNode["applytorating"]?.InnerTextIsTrueString() == true;
             string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
 
@@ -2895,8 +2832,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task martialart(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNode objXmlArt = (await _objCharacter.LoadDataAsync("martialarts.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/martialarts/martialart", bonusNode.InnerTextViaPool(token));
 
             MartialArt objMartialArt = new MartialArt(_objCharacter);
@@ -2921,8 +2857,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task limitmodifier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strLimit = bonusNode["limit"]?.InnerTextViaPool(token);
             decimal decBonus = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
@@ -2939,8 +2874,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategory(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
@@ -2960,8 +2894,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroup(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strName = bonusNode["name"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strName))
             {
@@ -2980,8 +2913,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token) ?? bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@precedence", token);
             if (xmlPrecedenceNode != null)
@@ -3006,8 +2938,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skilllinkedattribute(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token) ?? bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@precedence", token);
             if (xmlPrecedenceNode != null)
@@ -3032,8 +2963,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillarticulation(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EnhancedArticulation,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["bonus"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -3043,8 +2973,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task armor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3067,8 +2996,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task firearmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3091,8 +3019,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task coldarmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3115,8 +3042,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task electricityarmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3139,8 +3065,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task acidarmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3163,8 +3088,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task fallingarmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3187,8 +3111,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task dodge(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3211,8 +3134,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task reach(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strWeapon = bonusNode.Attributes?["name"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(strWeapon, _objImprovementSource, SourceName, Improvement.ImprovementType.Reach,
                 _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -3222,8 +3144,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task unarmeddv(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedDV, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3242,8 +3163,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task unarmedap(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedAP, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3252,8 +3172,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task unarmedreach(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.UnarmedReach, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3262,8 +3181,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task initiative(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Initiative, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3278,8 +3196,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task initiativedice(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = bonusNode.Name;
             string strPrecedence = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecedence))
@@ -3299,8 +3216,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task initiativediceadd(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.InitiativeDiceAdd, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3309,8 +3225,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task matrixinitiative(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiative, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3325,8 +3240,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task matrixinitiativedice(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 "matrixinitiativepass", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3341,8 +3255,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task matrixinitiativediceadd(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MatrixInitiativeDice,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -3350,8 +3263,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
         public async Task availability(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
             string strForId = bonusNode.Attributes?["id"]?.InnerTextViaPool(token) ?? string.Empty;
             string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
@@ -3363,8 +3275,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task lifestylecost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
             string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerTextViaPool(token) ?? string.Empty;
             string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
@@ -3376,8 +3287,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task basiclifestylecost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // If the Lifestyle node is present, we restrict to a specific lifestyle type.
             string strBaseLifestyle = bonusNode.Attributes?["lifestyle"]?.InnerTextViaPool(token) ?? string.Empty;
             string strCondition = bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
@@ -3389,8 +3299,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task genetechcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechCostMultiplier,
                 _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3399,8 +3308,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task genetechessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.GenetechEssMultiplier,
                 _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3409,8 +3317,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task basicbiowareessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BasicBiowareEssCost,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -3420,8 +3327,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task biowareessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3430,8 +3336,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task biowaretotalessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3440,8 +3345,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberwareessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3450,8 +3354,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberwaretotalessmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3460,8 +3363,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task biowareessmultipliernonretroactive(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareEssCostNonRetroactive, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3470,8 +3372,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task biowaretotalessmultipliernonretroactive(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3480,8 +3381,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberwareessmultipliernonretroactive(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareEssCostNonRetroactive, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3490,8 +3390,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task cyberwaretotalessmultipliernonretroactive(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3500,8 +3399,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task prototypetranshuman(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             decimal decValue = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
             await _objCharacter.ModifyPrototypeTranshumanAsync(decValue, token).ConfigureAwait(false);
             await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.PrototypeTranshuman, _strUnique, intRating: _intRating, token: token).ConfigureAwait(false);
@@ -3532,8 +3430,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task trustfund(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.TrustFund,
                 _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -3583,8 +3480,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task restrictedgear(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strValue = bonusNode["availability"]?.InnerTextViaPool(token);
             string strCount = bonusNode["amount"]?.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strCount))
@@ -3605,8 +3501,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task nativelanguagelimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NativeLanguageLimit, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -3656,8 +3551,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         private async Task CreateWeaponCategoryImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strSelectedValue = string.Empty;
             decimal decValue = 0;
@@ -3774,8 +3668,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         private async Task CreateWeaponSpecificImprovementAsync(XmlNode bonusNode, Improvement.ImprovementType improvementType, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstGeneralItems))
             {
                 string strType = bonusNode.Attributes?["type"]?.InnerTextViaPool(token);
@@ -3838,8 +3731,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectmentorspirit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (ThreadSafeForm<SelectMentorSpirit> frmPickMentorSpirit = await ThreadSafeForm<SelectMentorSpirit>.GetAsync(() => new SelectMentorSpirit(_objCharacter)
                    {
                        ForcedMentor = ForcedValue
@@ -3885,8 +3777,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectparagon(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (ThreadSafeForm<SelectMentorSpirit> frmPickMentorSpirit = await ThreadSafeForm<SelectMentorSpirit>.GetAsync(() => new SelectMentorSpirit(_objCharacter, "paragons.xml")
                    {
                        ForcedMentor = ForcedValue
@@ -3931,8 +3822,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task smartlink(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Smartlink,
                 "smartlink", await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4007,8 +3897,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task walkmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
@@ -4035,8 +3924,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task runmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
@@ -4063,8 +3951,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task sprintbonus(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strCategory = bonusNode["category"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strCategory))
             {
@@ -4091,8 +3978,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task freepositivequalities(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreePositiveQualities, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4101,8 +3987,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task freenegativequalities(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeNegativeQualities, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4111,8 +3996,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectside(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strDescription = string.Format(GlobalSettings.CultureInfo, await LanguageManager.GetStringAsync("Label_SelectSide", token: token).ConfigureAwait(false), _strFriendlyName);
             using (ThreadSafeForm<SelectSide> frmPickSide = await ThreadSafeForm<SelectSide>.GetAsync(() => new SelectSide
                    {
@@ -4135,8 +4019,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task freespiritpowerpoints(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FreeSpiritPowerPoints, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4145,8 +4028,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task adeptpowerpoints(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.AdeptPowerPoints, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4155,8 +4037,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specificpower(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // If the character isn't an adept or mystic adept, skip the rest of this.
             if (await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false))
             {
@@ -4214,8 +4095,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectpowers(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // If the character isn't an adept or mystic adept, skip the rest of this.
             if (await _objCharacter.GetAdeptEnabledAsync(token).ConfigureAwait(false))
             {
@@ -4301,8 +4181,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task armorencumbrancepenalty(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ArmorEncumbrancePenalty, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4310,8 +4189,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addart(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNode objXmlSelectedArt = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/arts/art", bonusNode.InnerTextViaPool(token));
 
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
@@ -4336,8 +4214,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectart(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false);
             XmlNode objXmlSelectedArt;
             using (XmlNodeList xmlArtList = bonusNode.SelectNodes("art"))
@@ -4413,8 +4290,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addmetamagic(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNode objXmlSelectedMetamagic = (await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false)).TryGetNodeByNameOrId("/chummer/metamagics/metamagic", bonusNode.InnerTextViaPool(token));
             // Makes sure we aren't over our limits for this particular metamagic from this overall source
             if (bonusNode.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
@@ -4440,8 +4316,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectmetamagic(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("metamagic.xml", token: token).ConfigureAwait(false);
             string strForceValue = string.Empty;
             XmlNode objXmlSelectedMetamagic;
@@ -4529,8 +4404,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addecho(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("echoes.xml", token: token).ConfigureAwait(false);
             XmlNode objXmlSelectedEcho = objXmlDocument.TryGetNodeByNameOrId("/chummer/echoes/echo", bonusNode.InnerTextViaPool(token));
 
@@ -4557,8 +4431,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectecho(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("echoes.xml", token: token).ConfigureAwait(false);
             string strForceValue = string.Empty;
             XmlNode xmlSelectedEcho;
@@ -4646,8 +4519,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillwire(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecendenceString))
@@ -4661,8 +4533,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task hardwires(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strSelectedValue = ForcedValue;
             if (string.IsNullOrEmpty(strSelectedValue))
@@ -4705,8 +4576,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task damageresistance(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DamageResistance, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4715,8 +4585,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task judgeintentions(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentions, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4725,8 +4594,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task judgeintentionsoffense(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentionsOffense, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4735,8 +4603,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task judgeintentionsdefense(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.JudgeIntentionsDefense, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4745,8 +4612,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task composure(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Composure, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4755,8 +4621,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task liftandcarry(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.LiftAndCarry, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4765,8 +4630,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task memory(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Memory, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4775,8 +4639,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task fatigueresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FatigueResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4785,8 +4648,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task radiationresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.RadiationResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4795,8 +4657,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task sonicresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SonicResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4805,8 +4666,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task toxincontactresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinContactResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4815,8 +4675,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task toxiningestionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinIngestionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4825,8 +4684,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task toxininhalationresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInhalationResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4835,8 +4693,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task toxininjectionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ToxinInjectionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4845,8 +4702,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task pathogencontactresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenContactResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4855,8 +4711,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task pathogeningestionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenIngestionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4865,8 +4720,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task pathogeninhalationresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInhalationResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4875,8 +4729,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task pathogeninjectionresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PathogenInjectionResist, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4965,8 +4818,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physiologicaladdictionfirsttime(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionFirstTime, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4975,8 +4827,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task psychologicaladdictionfirsttime(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionFirstTime, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4985,8 +4836,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physiologicaladdictionalreadyaddicted(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysiologicalAddictionAlreadyAddicted, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -4995,8 +4845,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task psychologicaladdictionalreadyaddicted(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PsychologicalAddictionAlreadyAddicted, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5005,8 +4854,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task stuncmrecovery(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StunCMRecovery, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5015,8 +4863,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task physicalcmrecovery(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PhysicalCMRecovery, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5045,8 +4892,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task concealability(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Concealability, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5055,8 +4901,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task drainresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainResistance, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5065,8 +4910,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task drainvalue(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.DrainValue, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5075,8 +4919,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task fadingresist(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingResistance, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5085,8 +4928,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task fadingvalue(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode.Attributes?["specific"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.FadingValue, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5095,8 +4937,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task notoriety(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.Notoriety, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5105,8 +4946,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task streetcred(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCred, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5115,8 +4955,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task streetcredmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.StreetCredMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5125,8 +4964,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task complexformlimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ComplexFormLimit, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5135,8 +4973,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spelllimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpellLimit, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5145,8 +4982,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task freespells(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlAttributeCollection objNodeAttributes = bonusNode.Attributes;
             if (objNodeAttributes != null)
             {
@@ -5186,8 +5022,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spellcategorydicepool(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategory, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5196,8 +5031,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spelldicepool(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["id"]?.InnerTextViaPool(token) ?? bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDicePool, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5206,8 +5040,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spellcategorydrain(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string s = bonusNode["category"]?.InnerTextViaPool(token) ?? SelectedValue;
             if (string.IsNullOrWhiteSpace(s))
                 throw new AbortedException();
@@ -5219,8 +5052,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spellcategorydamage(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["category"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellCategoryDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5229,8 +5061,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spelldescriptordamage(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["descriptor"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDescriptorDamage, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5239,8 +5070,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task spelldescriptordrain(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["descriptor"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SpellDescriptorDrain, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5249,8 +5079,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task throwrange(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRange, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5259,8 +5088,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task throwrangestr(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowRangeSTR, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5269,8 +5097,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task throwstr(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ThrowSTR, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5279,8 +5106,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillsoftaccess(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strUseUnique = _strUnique;
             string strPrecendenceString = bonusNode.Attributes?["precedence"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strPrecendenceString))
@@ -5335,8 +5161,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencepenalty(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenalty, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5345,8 +5170,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencepenaltyt100(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyT100, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5355,8 +5179,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencepenaltymagonlyt100(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyMAGOnlyT100, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5365,8 +5188,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencepenaltyresonlyt100(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyRESOnlyT100, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5375,8 +5197,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencepenaltydeponlyt100(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssencePenaltyDEPOnlyT100, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5385,8 +5206,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specialattburnmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttBurn, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5395,8 +5215,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specialatttotalburnmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialAttTotalBurnMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5405,8 +5224,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task essencemax(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.EssenceMax, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5415,8 +5233,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectsprite(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstCritters))
             {
                 using (XmlNodeList objXmlNodeList = (await _objCharacter.LoadDataAsync("critters.xml", token: token).ConfigureAwait(false))
@@ -5455,8 +5272,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task blackmarketdiscount(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XPathNodeIterator nodeList = (await _objCharacter.LoadDataXPathAsync("options.xml", token: token).ConfigureAwait(false)).SelectAndCacheExpression("/chummer/blackmarketpipelinecategories/category", token);
             SelectedValue = string.Empty;
             if (nodeList.Count > 0)
@@ -5493,8 +5309,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectarmor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
@@ -5565,8 +5380,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectcyberware(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
@@ -5625,8 +5439,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectweapon(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
                 LimitSelection = ForcedValue;
 
@@ -5727,8 +5540,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task optionalpowers(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             // Check to see if there is only one possible selection because of _strLimitSelection.
             if (!string.IsNullOrEmpty(ForcedValue))
@@ -5802,8 +5614,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task critterpowers(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("critterpowers.xml", token: token).ConfigureAwait(false);
             using (XmlNodeList xmlPowerList = bonusNode.SelectNodes("power"))
             {
@@ -5836,8 +5647,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task critterpowerlevels(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (XmlNodeList xmlPowerList = bonusNode.SelectNodes("power"))
             {
                 if (xmlPowerList?.Count > 0)
@@ -5855,8 +5665,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task publicawareness(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.PublicAwareness, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -5864,8 +5673,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task dealerconnection(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstItems))
             {
                 using (XmlNodeList objXmlList = bonusNode.SelectNodes("category"))
@@ -5921,8 +5729,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task unlockskills(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             List<string> options = bonusNode.InnerTextViaPool(token).SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToList();
             string final;
             switch (options.Count)
@@ -5976,8 +5783,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addqualities(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
             using (XmlNodeList xmlQualityList = bonusNode.SelectNodes("addquality"))
             {
@@ -6006,8 +5812,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectquality(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlDocument objXmlDocument = await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstQualities))
             {
@@ -6149,8 +5954,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addskillspecialization(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             string strSkill = bonusNode["skill"]?.InnerTextViaPool(token) ?? string.Empty;
             Skill objSkill = await _objCharacter.SkillsSection.GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
             if (objSkill != null)
@@ -6174,8 +5978,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addskillspecializationoption(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNodeList xmlSkillsList = bonusNode.SelectNodes("skills/skill");
             List<Skill> lstSkills = new List<Skill>(xmlSkillsList?.Count ?? 0);
             if (xmlSkillsList?.Count > 0)
@@ -6235,8 +6038,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task allowspellcategory(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
                 await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.AllowSpellCategory, token).ConfigureAwait(false);
@@ -6273,8 +6075,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task limitspellcategory(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!bonusNode.IsNullOrInnerTextIsEmpty())
             {
                 await CreateImprovementAsync(bonusNode.InnerTextViaPool(token), Improvement.ImprovementType.LimitSpellCategory, token).ConfigureAwait(false);
@@ -6304,8 +6105,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task limitspelldescriptor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // Display the Select Spell window.
             string strSelected;
             if (!bonusNode.IsNullOrInnerTextIsEmpty())
@@ -6333,8 +6133,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task blockspelldescriptor(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             // Display the Select Spell window.
             string strSelected;
             if (!bonusNode.IsNullOrInnerTextIsEmpty())
@@ -6421,8 +6220,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         private async Task AddSpiritOrSprite(string strXmlDoc, XmlNodeList xmlAllowedSpirits, Improvement.ImprovementType impType, bool addToSelectedValue = true, string strCritterCategory = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (xmlAllowedSpirits == null)
-                throw new ArgumentNullException(nameof(xmlAllowedSpirits));
+            ArgumentNullException.ThrowIfNull(xmlAllowedSpirits, nameof(xmlAllowedSpirits));
             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                                             out HashSet<string> setAllowed))
             {
@@ -6491,8 +6289,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task movementreplace(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             Improvement.ImprovementType imp = Improvement.ImprovementType.WalkSpeed;
             string strSpeed = bonusNode["speed"]?.InnerTextViaPool(token);
@@ -6531,8 +6328,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addlimb(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strUseUnique = _strUnique;
             XPathNavigator xmlPrecedenceNode = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@precedence", token);
@@ -6546,8 +6342,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task attributekarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AttributeKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6560,8 +6355,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task activeskillkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ActiveSkillKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6574,8 +6368,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6588,8 +6381,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskillkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6602,8 +6394,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskillkarmacostmin(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCostMinimum, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6643,8 +6434,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupdisablechoice(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -6718,8 +6508,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupcategorykarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6732,8 +6521,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategorykarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategoryKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6746,8 +6534,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategoryspecializationkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategorySpecializationKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6760,8 +6547,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task attributepointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.AttributePointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6774,8 +6560,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task activeskillpointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.ActiveSkillPointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6788,8 +6573,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgrouppointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupPointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6802,8 +6586,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskillpointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillPointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6816,8 +6599,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupcategorypointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryPointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6830,8 +6612,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategorypointcost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillCategoryPointCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6844,8 +6625,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newspellkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerTextViaPool(token) ?? string.Empty,
                 _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0,
@@ -6856,8 +6636,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newcomplexformkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -6865,8 +6644,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newaiprogramkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -6874,8 +6652,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newaiadvancedprogramkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -6883,8 +6660,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task attributekarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AttributeKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6894,8 +6670,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task activeskillkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6905,8 +6680,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6918,8 +6692,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
         public async Task knowledgeskillkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.KnowledgeSkillKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6932,8 +6705,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupcategorykarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName,
                 Improvement.ImprovementType.SkillGroupCategoryKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6946,8 +6718,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategorykarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6957,8 +6728,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategoryspecializationkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategorySpecializationKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6968,8 +6738,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task attributepointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.AttributePointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6979,8 +6748,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task activeskillpointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.ActiveSkillPointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -6990,8 +6758,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgrouppointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupPointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -7001,8 +6768,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task knowledgeskillpointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.KnowledgeSkillPointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -7012,8 +6778,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillgroupcategorypointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillGroupCategoryPointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -7023,8 +6788,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task skillcategorypointcostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.SkillCategoryPointCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
                 1, await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["min"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), await ImprovementManager.ValueToIntAsync(_objCharacter, bonusNode["max"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false),
@@ -7034,8 +6798,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newspellkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode.Attributes?["type"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewSpellKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -7043,8 +6806,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newcomplexformkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewComplexFormKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -7052,8 +6814,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newaiprogramkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIProgramKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -7061,8 +6822,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task newaiadvancedprogramkarmacostmultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.NewAIAdvancedProgramKarmaCostMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, string.Empty, bonusNode.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty, token).ConfigureAwait(false);
         }
@@ -7089,8 +6849,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task focusbindingkarmacost(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaCost, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerTextViaPool(token) ?? string.Empty, token: token).ConfigureAwait(false);
         }
@@ -7099,8 +6858,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task focusbindingkarmamultiplier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token), _objImprovementSource, SourceName, Improvement.ImprovementType.FocusBindingKarmaMultiplier, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["val"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), 1, 0, 0, 0, 0, string.Empty, false, bonusNode["extracontains"]?.InnerTextViaPool(token) ?? string.Empty, token: token).ConfigureAwait(false);
         }
@@ -7127,8 +6885,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task addware(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNode node;
             Improvement.ImprovementSource eSource;
             string strName = bonusNode["name"]?.InnerTextViaPool(token);
@@ -7217,24 +6974,21 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task weaponaccuracy(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponAccuracy, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task weaponrangemodifier(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.WeaponRangeModifier, _strUnique, await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode["value"]?.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
 
         public async Task weaponskillaccuracy(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strSelectedValue = ForcedValue;
             if (string.IsNullOrEmpty(strSelectedValue))
@@ -7262,8 +7016,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task metageniclimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.MetageneticLimit, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -7271,8 +7024,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task specialmodificationlimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.SpecialModificationLimit, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -7293,8 +7045,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task actiondicepool(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             if (!string.IsNullOrEmpty(ForcedValue))
             {
                 SelectedValue = ForcedValue;
@@ -7363,8 +7114,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task contactkarma(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaDiscount, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -7372,8 +7122,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task contactkarmaminimum(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName, Improvement.ImprovementType.ContactKarmaMinimum, _strUnique,
                 await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false), token: token).ConfigureAwait(false);
         }
@@ -7428,8 +7177,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task metamagiclimit(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
             XmlNodeList xmlMetamagicsList = bonusNode.SelectNodes("metamagic");
             if (xmlMetamagicsList != null)
             {
@@ -7465,8 +7213,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task selectexpertise(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             // Select the skill to get the expertise
             string strForcedValue = ForcedValue;
@@ -7514,8 +7261,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
         public async Task penaltyfreesustain(XmlNode bonusNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (bonusNode == null)
-                throw new ArgumentNullException(nameof(bonusNode));
+            ArgumentNullException.ThrowIfNull(bonusNode, nameof(bonusNode));
 
             string strDummy = string.Empty;
             int intCount = 1;

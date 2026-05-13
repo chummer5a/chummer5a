@@ -241,8 +241,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<T> lstValues)
         {
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
                 if (objEnumerator.MoveNext())
@@ -283,8 +282,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<string> lstValues)
         {
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
                 if (objEnumerator.MoveNext())
@@ -327,14 +325,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, string strSeparator, string[] astrValues, int intStartIndex, int intCount)
         {
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            if (intStartIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            if (intCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(intCount));
-            if (intStartIndex + intCount >= astrValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
+            ArgumentOutOfRangeException.ThrowIfNegative(intStartIndex, nameof(intStartIndex));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCount, nameof(intCount));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intStartIndex + intCount, astrValues.Length, nameof(intStartIndex));
             if (intCount > 0)
             {
                 int intExtraLength = 0;
@@ -381,8 +375,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, string strSeparator, params string[] astrValues)
         {
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
@@ -430,8 +423,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, string strSeparator, params object[] aobjValues)
         {
-            if (aobjValues == null)
-                throw new ArgumentNullException(nameof(aobjValues));
+            ArgumentNullException.ThrowIfNull(aobjValues, nameof(aobjValues));
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
@@ -472,8 +464,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<T> lstValues)
         {
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<T> objEnumerator = lstValues.GetEnumerator())
             {
                 if (objEnumerator.MoveNext())
@@ -514,8 +505,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<string> lstValues)
         {
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<string> objEnumerator = lstValues.GetEnumerator())
             {
                 if (objEnumerator.MoveNext())
@@ -558,14 +548,10 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, char chrSeparator, string[] astrValues, int intStartIndex, int intCount)
         {
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            if (intStartIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            if (intCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(intCount));
-            if (intStartIndex + intCount >= astrValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
+            ArgumentOutOfRangeException.ThrowIfNegative(intStartIndex, nameof(intStartIndex));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCount, nameof(intCount));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intStartIndex + intCount, astrValues.Length, nameof(intStartIndex));
             if (intCount > 0)
             {
                 int intExtraLength = 0;
@@ -612,8 +598,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, char chrSeparator, params string[] astrValues)
         {
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
@@ -661,8 +646,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static StringBuilder AppendJoin([NotNull] this StringBuilder sbdInput, char chrSeparator, params object[] aobjValues)
         {
-            if (aobjValues == null)
-                throw new ArgumentNullException(nameof(aobjValues));
+            ArgumentNullException.ThrowIfNull(aobjValues, nameof(aobjValues));
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
@@ -704,8 +688,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<Task<T>> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
@@ -758,8 +741,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IEnumerable<Task<string>> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
@@ -814,14 +796,10 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, Task<string>[] astrValues, int intStartIndex, int intCount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            if (intStartIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            if (intCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(intCount));
-            if (intStartIndex + intCount >= astrValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
+            ArgumentOutOfRangeException.ThrowIfNegative(intStartIndex, nameof(intStartIndex));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCount, nameof(intCount));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intStartIndex + intCount, astrValues.Length, nameof(intStartIndex));
             if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
@@ -868,8 +846,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, CancellationToken token = default, params Task<string>[] astrValues)
         {
             token.ThrowIfCancellationRequested();
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
@@ -917,8 +894,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, CancellationToken token = default, params Task<object>[] aobjValues)
         {
             token.ThrowIfCancellationRequested();
-            if (aobjValues == null)
-                throw new ArgumentNullException(nameof(aobjValues));
+            ArgumentNullException.ThrowIfNull(aobjValues, nameof(aobjValues));
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
@@ -967,8 +943,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<Task<T>> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             using (IEnumerator<Task<T>> objEnumerator = lstValues.GetEnumerator())
             {
                 token.ThrowIfCancellationRequested();
@@ -1025,8 +1000,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IEnumerable<Task<string>> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             token.ThrowIfCancellationRequested();
             using (IEnumerator<Task<string>> objEnumerator = lstValues.GetEnumerator())
             {
@@ -1086,14 +1060,10 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, Task<string>[] astrValues, int intStartIndex, int intCount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
-            if (intStartIndex < 0)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
-            if (intCount < 0)
-                throw new ArgumentOutOfRangeException(nameof(intCount));
-            if (intStartIndex + intCount >= astrValues.Length)
-                throw new ArgumentOutOfRangeException(nameof(intStartIndex));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
+            ArgumentOutOfRangeException.ThrowIfNegative(intStartIndex, nameof(intStartIndex));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCount, nameof(intCount));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intStartIndex + intCount, astrValues.Length, nameof(intStartIndex));
             if (intCount > 0)
             {
                 token.ThrowIfCancellationRequested();
@@ -1140,8 +1110,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, CancellationToken token = default, params Task<string>[] astrValues)
         {
             token.ThrowIfCancellationRequested();
-            if (astrValues == null)
-                throw new ArgumentNullException(nameof(astrValues));
+            ArgumentNullException.ThrowIfNull(astrValues, nameof(astrValues));
             int intLength = astrValues.Length;
             if (intLength > 0)
             {
@@ -1189,8 +1158,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, CancellationToken token = default, params Task<object>[] aobjValues)
         {
             token.ThrowIfCancellationRequested();
-            if (aobjValues == null)
-                throw new ArgumentNullException(nameof(aobjValues));
+            ArgumentNullException.ThrowIfNull(aobjValues, nameof(aobjValues));
             int intLength = aobjValues.Length;
             if (intLength > 0)
             {
@@ -1239,8 +1207,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
             try
             {
@@ -1295,8 +1262,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, string strSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
             try
             {
@@ -1352,8 +1318,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync<T>([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<T> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             IEnumerator<T> objEnumerator = lstValues.GetEnumerator();
             try
             {
@@ -1408,8 +1373,7 @@ namespace Chummer
         public static async Task<StringBuilder> AppendJoinAsync([NotNull] this StringBuilder sbdInput, char chrSeparator, IAsyncEnumerable<string> lstValues, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstValues == null)
-                throw new ArgumentNullException(nameof(lstValues));
+            ArgumentNullException.ThrowIfNull(lstValues, nameof(lstValues));
             IEnumerator<string> objEnumerator = lstValues.GetEnumerator();
             try
             {

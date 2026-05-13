@@ -760,8 +760,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="xmlNode">XmlNode to create the object from.</param>
         public void CreateByName(XmlNode xmlNode)
         {
-            if (xmlNode == null)
-                throw new ArgumentNullException(nameof(xmlNode));
+            ArgumentNullException.ThrowIfNull(xmlNode, nameof(xmlNode));
             XmlDocument xmlDoc = _objCharacter.LoadData("vehicles.xml");
             string strSize = xmlNode["size"]?.InnerTextViaPool();
             if (string.IsNullOrEmpty(strSize))
@@ -848,8 +847,7 @@ namespace Chummer.Backend.Equipment
         public async Task CreateByNameAsync(XmlNode xmlNode, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (xmlNode == null)
-                throw new ArgumentNullException(nameof(xmlNode));
+            ArgumentNullException.ThrowIfNull(xmlNode, nameof(xmlNode));
             XmlDocument xmlDoc = await _objCharacter.LoadDataAsync("vehicles.xml", token: token).ConfigureAwait(false);
             string strSize = xmlNode["size"]?.InnerTextViaPool(token);
             if (string.IsNullOrEmpty(strSize))

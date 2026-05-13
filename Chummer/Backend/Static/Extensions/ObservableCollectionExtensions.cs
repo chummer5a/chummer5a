@@ -60,10 +60,8 @@ namespace Chummer
         /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
         public static void Sort<T>(this ObservableCollection<T> lstCollection, Comparison<T> funcComparison)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (funcComparison == null)
-                throw new ArgumentNullException(nameof(funcComparison));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(funcComparison, nameof(funcComparison));
             int intCollectionSize = lstCollection.Count;
             T[] aobjSorted = new T[intCollectionSize];
             for (int i = 0; i < intCollectionSize; ++i)
@@ -84,8 +82,7 @@ namespace Chummer
         /// interface implementation of each element.</param>
         public static void Sort<T>(this ObservableCollection<T> lstCollection, IComparer<T> objComparer = null)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             int intCollectionSize = lstCollection.Count;
             T[] aobjSorted = new T[intCollectionSize];
             for (int i = 0; i < intCollectionSize; ++i)

@@ -958,8 +958,7 @@ namespace Chummer
                     }
             }
             int intFinalIndex = startIndex + count;
-            if (intFinalIndex >= lstStrings.Count)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intFinalIndex, lstStrings.Count, nameof(count));
             int intTotalLength = 0;
             using (IEnumerator<string> objEnumerator = lstStrings.GetEnumerator())
             {
@@ -1146,8 +1145,7 @@ namespace Chummer
                     }
             }
             int intFinalIndex = startIndex + count;
-            if (intFinalIndex >= lstStrings.Count)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intFinalIndex, lstStrings.Count, nameof(count));
             int intTotalLength = 0;
             IEnumerator<string> objEnumerator = await lstStrings.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
@@ -2143,8 +2141,7 @@ namespace Chummer
                     }
             }
             int intFinalIndex = startIndex + count;
-            if (intFinalIndex >= lstStrings.Count)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intFinalIndex, lstStrings.Count, nameof(count));
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return ConcatFast(lstStrings, startIndex, count);
@@ -2286,8 +2283,7 @@ namespace Chummer
                     }
             }
             int intFinalIndex = startIndex + count;
-            if (intFinalIndex >= lstStrings.Count)
-                throw new ArgumentOutOfRangeException(nameof(count));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(intFinalIndex, lstStrings.Count, nameof(count));
             int intSeparatorLength = strSeparator.Length;
             if (intSeparatorLength == 0)
                 return await ConcatFastAsync(lstStrings, startIndex, count, token).ConfigureAwait(false);
@@ -2436,8 +2432,7 @@ namespace Chummer
         {
             if (string.IsNullOrEmpty(strInput) || string.IsNullOrEmpty(strOldValue))
                 return strInput;
-            if (strNewValue == null)
-                throw new ArgumentNullException(nameof(strNewValue));
+            ArgumentNullException.ThrowIfNull(strNewValue, nameof(strNewValue));
             // Built-in Replace method uses Ordinal comparison, so just defer to that if that is what we have defined
             if (eStringComparison == StringComparison.Ordinal)
                 return strInput.Replace(strOldValue, strNewValue);
@@ -4646,8 +4641,7 @@ namespace Chummer
         /// <param name="sbdInput">StringBuilder to clean.</param>
         public static StringBuilder CleanStylisticLigatures(this StringBuilder sbdInput)
         {
-            if (sbdInput == null)
-                throw new ArgumentNullException(nameof(sbdInput));
+            ArgumentNullException.ThrowIfNull(sbdInput, nameof(sbdInput));
             foreach (KeyValuePair<string, string> kvpLigature in s_DicLigaturesMap)
                 sbdInput.Replace(kvpLigature.Key, kvpLigature.Value);
             return sbdInput;

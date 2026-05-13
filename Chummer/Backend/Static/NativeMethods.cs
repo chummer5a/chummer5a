@@ -517,8 +517,7 @@ namespace Chummer
 
         internal static void ShowProcessWindow(Process objProcess)
         {
-            if (objProcess == null)
-                throw new ArgumentNullException(nameof(objProcess));
+            ArgumentNullException.ThrowIfNull(objProcess, nameof(objProcess));
             if (objProcess.MainWindowHandle == IntPtr.Zero)
             {
                 // the window is hidden so try to restore it before setting focus.
@@ -555,8 +554,8 @@ namespace Chummer
         /// <param name="intSystemStringId">Id of the system string to use.</param>
         internal static string GetSystemString(int intSystemStringId)
         {
-            if (intSystemStringId < 0 || intSystemStringId > 10)
-                throw new ArgumentOutOfRangeException(nameof(intSystemStringId));
+            ArgumentOutOfRangeException.ThrowIfNegative(intSystemStringId, nameof(intSystemStringId));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(intSystemStringId, 10, nameof(intSystemStringId));
             try
             {
                 return Marshal.PtrToStringAuto(MB_GetString(intSystemStringId));

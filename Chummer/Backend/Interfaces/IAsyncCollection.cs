@@ -46,20 +46,16 @@ namespace Chummer
     {
         public static async Task AddRangeAsync<T>(this IAsyncCollection<T> lstCollection, IEnumerable<T> lstToAdd, CancellationToken token = default)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (lstToAdd == null)
-                throw new ArgumentNullException(nameof(lstToAdd));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstToAdd, nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
                 await lstCollection.AddAsync(objItem, token).ConfigureAwait(false);
         }
 
         public static async Task AddRangeAsync<T>(this IAsyncCollection<T> lstCollection, IAsyncEnumerable<T> lstToAdd, CancellationToken token = default)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (lstToAdd == null)
-                throw new ArgumentNullException(nameof(lstToAdd));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstToAdd, nameof(lstToAdd));
             IEnumerator<T> objEnumerator = await lstToAdd.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
             {

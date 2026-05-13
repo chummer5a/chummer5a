@@ -385,10 +385,8 @@ namespace Chummer
         public static async Task WriteAllBytesAsync(string strPath, byte[] achrBytes, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (string.IsNullOrEmpty(strPath))
-                throw new ArgumentException("Path is empty.", nameof(strPath));
-            if (achrBytes == null)
-                throw new ArgumentNullException(nameof(achrBytes));
+            ArgumentException.ThrowIfNullOrEmpty(strPath, nameof(strPath));
+            ArgumentNullException.ThrowIfNull(achrBytes, nameof(achrBytes));
 
             using (FileStream objFileStream = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.Write, 4096, true))
             {

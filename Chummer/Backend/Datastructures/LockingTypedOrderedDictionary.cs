@@ -425,8 +425,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                if (arrayIndex + _lstIndexes.Count >= array.Length)
-                    throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + _lstIndexes.Count, array.Length, nameof(arrayIndex));
                 int i = 0;
                 foreach (TKey objKey in _lstIndexes)
                 {
@@ -440,8 +439,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                if (arrayIndex + _lstIndexes.Count >= array.Length)
-                    throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + _lstIndexes.Count, array.Length, nameof(arrayIndex));
                 int i = 0;
                 foreach (TKey objKey in _lstIndexes)
                 {
@@ -455,8 +453,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                if (arrayIndex + _lstIndexes.Count >= array.Length)
-                    throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + _lstIndexes.Count, array.Length, nameof(arrayIndex));
                 int i = 0;
                 foreach (TKey objKey in _lstIndexes)
                 {
@@ -471,8 +468,7 @@ namespace Chummer
         {
             using (LockObject.EnterReadLock())
             {
-                if (index + _lstIndexes.Count >= array.Length)
-                    throw new ArgumentOutOfRangeException(nameof(index));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + _lstIndexes.Count, array.Length, nameof(index));
                 int i = 0;
                 foreach (TKey objKey in _lstIndexes)
                 {
@@ -2181,8 +2177,7 @@ namespace Chummer
 
         public void Insert(int index, Tuple<TKey, TValue> item)
         {
-            if (item == default)
-                throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
             using (LockObject.EnterReadLock())
             {
                 if (_dicUnorderedData.ContainsKey(item.Item1))

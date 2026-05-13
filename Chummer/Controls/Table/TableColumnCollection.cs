@@ -53,10 +53,7 @@ namespace Chummer.UI.Table
 
         public void Add(TableColumn<T> objColumn, CancellationToken token = default)
         {
-            if (objColumn == null)
-            {
-                throw new ArgumentNullException(nameof(objColumn));
-            }
+            ArgumentNullException.ThrowIfNull(objColumn, nameof(objColumn));
 
             _lstColumns.Add(objColumn);
             TableView<T> table = _table;
@@ -65,10 +62,7 @@ namespace Chummer.UI.Table
 
         public Task AddAsync(TableColumn<T> objColumn, CancellationToken token = default)
         {
-            if (objColumn == null)
-            {
-                throw new ArgumentNullException(nameof(objColumn));
-            }
+            ArgumentNullException.ThrowIfNull(objColumn, nameof(objColumn));
 
             _lstColumns.Add(objColumn);
             return _table.ColumnAdded(objColumn, token);

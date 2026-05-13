@@ -272,8 +272,7 @@ namespace Chummer
         /// <inheritdoc cref="ISet{T}.CopyTo" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (arrayIndex + DicInternal.Count > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + DicInternal.Count, array.Length, nameof(arrayIndex));
             foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
                 array[arrayIndex] = kvpLoop.Key;
@@ -290,8 +289,7 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            if (index + DicInternal.Count > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index + DicInternal.Count, array.Length, nameof(index));
             foreach (KeyValuePair<T, bool> kvpLoop in DicInternal)
             {
                 array.SetValue(kvpLoop.Key, index);

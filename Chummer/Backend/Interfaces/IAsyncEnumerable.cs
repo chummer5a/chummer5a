@@ -175,15 +175,13 @@ namespace Chummer
         public static async Task<T> ElementAtBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
             if (source is IAsyncReadOnlyList<T> list1)
                 return await list1.GetValueAtAsync(index, token).ConfigureAwait(false);
             // Just in case we have classes that inherit from IList but not from IReadOnlyList
             if (source is IAsyncList<T> list2)
                 return await list2.GetValueAtAsync(index, token).ConfigureAwait(false);
-            if (index < 0)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
             IEnumerator<T> objEnumerator = await source.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
             {
@@ -209,8 +207,7 @@ namespace Chummer
         public static async Task<T> ElementAtOrDefaultBetterAsync<T>(this IAsyncEnumerable<T> source, int index, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (source == null)
-                throw new ArgumentNullException(nameof(source));
+            ArgumentNullException.ThrowIfNull(source, nameof(source));
             if (index >= 0)
             {
                 if (source is IAsyncReadOnlyList<T> list1)

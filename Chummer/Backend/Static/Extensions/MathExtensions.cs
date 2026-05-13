@@ -715,8 +715,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static decimal Sqrt(this decimal d, decimal decEpsilon = DecimalExtensions.Epsilon)
         {
-            if (d < 0)
-                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            ArgumentOutOfRangeException.ThrowIfNegative(d, nameof(d));
 
             // Couple of common and/or trivial cases
             if (d < s_adecIntRoots.Length)
@@ -731,8 +730,7 @@ namespace Chummer
             // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
             if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
                 return Convert.ToDecimal(Math.Sqrt(Convert.ToDouble(d)));
-            if (decEpsilon < 0)
-                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            ArgumentOutOfRangeException.ThrowIfNegative(decEpsilon, nameof(decEpsilon));
             if (decEpsilon == 0)
                 decEpsilon = DecimalExtensions.Epsilon;
 
@@ -777,8 +775,7 @@ namespace Chummer
         /// <exception cref="ArgumentOutOfRangeException"><paramref name="intBase"/> is less than 0, which is outside the domain for a square root.</exception>
         public static int FastSqrtAndStandardRound(this int intBase)
         {
-            if (intBase < 0)
-                throw new ArgumentOutOfRangeException(nameof(intBase), "Cannot get square root of a negative number");
+            ArgumentOutOfRangeException.ThrowIfNegative(intBase, nameof(intBase));
             // Handle trivial cases first (up to the size of our lookup table)
             if (intBase < s_abytSqrtIntResults.Length)
                 return s_abytSqrtIntResults[intBase];
@@ -810,8 +807,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FastSqrtAndStandardRound(this decimal d)
         {
-            if (d < 0)
-                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            ArgumentOutOfRangeException.ThrowIfNegative(d, nameof(d));
             // Square roots of non-integers cannot be integers and sqrt is a monotonic function
             // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
             return decimal.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
@@ -824,8 +820,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FastSqrtAndStandardRound(this double d)
         {
-            if (d < 0)
-                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            ArgumentOutOfRangeException.ThrowIfNegative(d, nameof(d));
             // Square roots of non-integers cannot be integers and sqrt is a monotonic function
             // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
             return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
@@ -838,8 +833,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FastSqrtAndStandardRound(this float d)
         {
-            if (d < 0)
-                throw new ArgumentOutOfRangeException(nameof(d), "Cannot get square root of a negative number");
+            ArgumentOutOfRangeException.ThrowIfNegative(d, nameof(d));
             // Square roots of non-integers cannot be integers and sqrt is a monotonic function
             // Therefore, ceil(sqrt(d)) == ceil(sqrt(ceil(d)))
             return Convert.ToInt32(Math.Ceiling(d)).FastSqrtAndStandardRound();
@@ -876,14 +870,12 @@ namespace Chummer
             if (intPower == y)
                 return x.Pow(intPower);
 
-            if (x < 0)
-                throw new ArgumentOutOfRangeException(nameof(x), "Cannot raise negative number to a fractional power");
+            ArgumentOutOfRangeException.ThrowIfNegative(x, nameof(x));
 
             // If the amount of precision we need is sufficiently met by Math.Sqrt, then just use that
             if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
                 return Convert.ToDecimal(Math.Pow(Convert.ToDouble(x), Convert.ToDouble(y)));
-            if (decEpsilon < 0)
-                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            ArgumentOutOfRangeException.ThrowIfNegative(decEpsilon, nameof(decEpsilon));
             if (decEpsilon == 0)
                 decEpsilon = DecimalExtensions.Epsilon;
 
@@ -1145,8 +1137,7 @@ namespace Chummer
             // If the amount of precision we need is sufficiently met by Math.Log, then just use that
             if (decEpsilon >= DecimalExtensions.DoubleEpsilon)
                 return Convert.ToDecimal(Math.Log(Convert.ToDouble(d)));
-            if (decEpsilon < 0)
-                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            ArgumentOutOfRangeException.ThrowIfNegative(decEpsilon, nameof(decEpsilon));
             if (decEpsilon == 0)
                 decEpsilon = DecimalExtensions.Epsilon;
             // We know we are between 1/e and e, so our integer part will be 0, and we can jump straight to a Taylor series of ln(x)
@@ -1237,8 +1228,7 @@ namespace Chummer
                 decReturn += Convert.ToDecimal(Math.Log(Convert.ToDouble(d), 2.0));
                 return blnNegate ? -decReturn : decReturn;
             }
-            if (decEpsilon < 0)
-                throw new ArgumentOutOfRangeException(nameof(decEpsilon), "Epsilons should not be negative");
+            ArgumentOutOfRangeException.ThrowIfNegative(decEpsilon, nameof(decEpsilon));
             if (decEpsilon == 0)
                 decEpsilon = DecimalExtensions.Epsilon;
             decimal decReturnFraction = 0;

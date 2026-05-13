@@ -556,8 +556,8 @@ namespace Chummer
             try
             {
                 WindowsPrincipal principal = new WindowsPrincipal(WindowsIdentity.GetCurrent());
-                DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(strPath) ??
-                                                                throw new ArgumentOutOfRangeException(nameof(strPath)));
+                DirectoryInfo directoryInfo = new DirectoryInfo(Path.GetDirectoryName(strPath)
+                    ?? throw new ArgumentOutOfRangeException(nameof(strPath)));
                 DirectorySecurity security = directoryInfo.GetAccessControl();
                 foreach (FileSystemAccessRule accessRule in security.GetAccessRules(true, true, typeof(SecurityIdentifier)))
                 {

@@ -285,8 +285,7 @@ namespace Chummer
         public IDisposable EnterWriteLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
 #if READERLOCKSTACKTRACEDEBUG
             string strReadLockStacktrace = _objIsInReadLockContainer.Value;
             bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
@@ -488,8 +487,7 @@ namespace Chummer
         public IDisposable EnterUpgradeableReadLock(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (_intDisposedStatus != 0)
-                throw new ObjectDisposedException(nameof(AsyncFriendlyReaderWriterLock));
+            ObjectDisposedException.ThrowIf(_intDisposedStatus != 0, this);
 #if READERLOCKSTACKTRACEDEBUG
             string strReadLockStacktrace = _objIsInReadLockContainer.Value;
             bool blnIsInReadLock = !string.IsNullOrEmpty(strReadLockStacktrace);
@@ -1046,8 +1044,7 @@ namespace Chummer
                 bool blnIsInReadLock, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objCurrentHelper == null)
-                    throw new ArgumentNullException(nameof(objCurrentHelper));
+                ArgumentNullException.ThrowIfNull(objCurrentHelper, nameof(objCurrentHelper));
 #if DEBUG
                 LinkedAsyncRWLockHelper objLastHelper = objCurrentHelper.ParentLinkedHelper;
                 if (objLastHelper != null && objLastHelper == objCurrentHelper)
@@ -1181,8 +1178,7 @@ namespace Chummer
                 LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objNextHelper == null)
-                    throw new ArgumentNullException(nameof(objNextHelper));
+                ArgumentNullException.ThrowIfNull(objNextHelper, nameof(objNextHelper));
 #if DEBUG
                 LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
                 if (objCurrentHelper != null)
@@ -1224,8 +1220,7 @@ namespace Chummer
 
             public void DisposeAsyncPre()
             {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
+                ObjectDisposedException.ThrowIf(_objReaderWriterLock._intDisposedStatus > 1, _objReaderWriterLock);
 
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
@@ -1350,8 +1345,7 @@ namespace Chummer
             /// <inheritdoc />
             public void Dispose()
             {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
+                ObjectDisposedException.ThrowIf(_objReaderWriterLock._intDisposedStatus > 1, _objReaderWriterLock);
                 _objParentRelease?.Dispose();
                 switch (_objParentReleaseAsync)
                 {
@@ -1454,8 +1448,7 @@ namespace Chummer
                 LinkedAsyncRWLockHelper objPreviousTopMostHeldWriter, AsyncFriendlyReaderWriterLock objReaderWriterLock,
                 bool blnSkipUnlockOnDispose = false, IDisposable objParentRelease = null, IAsyncDisposable objParentReleaseAsync = null)
             {
-                if (objNextHelper == null)
-                    throw new ArgumentNullException(nameof(objNextHelper));
+                ArgumentNullException.ThrowIfNull(objNextHelper, nameof(objNextHelper));
 #if DEBUG
                 LinkedAsyncRWLockHelper objCurrentHelper = objNextHelper.ParentLinkedHelper;
                 if (objCurrentHelper != null)
@@ -1497,8 +1490,7 @@ namespace Chummer
 
             public void DisposeAsyncPre()
             {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
+                ObjectDisposedException.ThrowIf(_objReaderWriterLock._intDisposedStatus > 1, _objReaderWriterLock);
                 // Update _objReaderWriterLock._objAsyncLocalCurrentsContainer in the calling ExecutionContext
                 // and defer any awaits to DisposeCoreAsync(). If this isn't done, the update will happen in a
                 // copy of the ExecutionContext and the caller won't see the changes.
@@ -1623,8 +1615,7 @@ namespace Chummer
             /// <inheritdoc />
             public void Dispose()
             {
-                if (_objReaderWriterLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objReaderWriterLock));
+                ObjectDisposedException.ThrowIf(_objReaderWriterLock._intDisposedStatus > 1, _objReaderWriterLock);
                 _objParentRelease?.Dispose();
                 switch (_objParentReleaseAsync)
                 {

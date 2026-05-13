@@ -1103,12 +1103,10 @@ namespace Chummer
             ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
             if (length == 0)
                 return;
-            if (index + length > Count)
-                throw new InvalidOperationException(nameof(length));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index + length, Count, nameof(length));
             using (LockObject.EnterUpgradeableReadLock())
             {
-                if (index + length > _lstData.Count)
-                    throw new InvalidOperationException(nameof(length));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + length, _lstData.Count, nameof(length));
                 IDisposable[] aobjLockers = _lstData[index] is IHasLockObject ? new IDisposable[length] : null;
                 T[] aobjSorted = new T[length];
                 for (int i = 0; i < length; ++i)
@@ -1203,8 +1201,7 @@ namespace Chummer
         /// <param name="funcComparison">The System.Comparison`1 to use when comparing elements.</param>
         public void Sort(Comparison<T> funcComparison)
         {
-            if (funcComparison == null)
-                throw new ArgumentNullException(nameof(funcComparison));
+            ArgumentNullException.ThrowIfNull(funcComparison, nameof(funcComparison));
             if (Count == 0)
                 return;
             using (LockObject.EnterUpgradeableReadLock())
@@ -1418,8 +1415,7 @@ namespace Chummer
         {
             ArgumentOutOfRangeException.ThrowIfNegative(index, nameof(index));
             ArgumentOutOfRangeException.ThrowIfNegative(length, nameof(length));
-            if (index + length > await GetCountAsync(token).ConfigureAwait(false))
-                throw new InvalidOperationException(nameof(length));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(index + length, await GetCountAsync(token).ConfigureAwait(false), nameof(length));
             if (length == 0)
                 return;
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -1527,8 +1523,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public async Task SortAsync(Comparison<T> funcComparison, CancellationToken token = default)
         {
-            if (funcComparison == null)
-                throw new ArgumentNullException(nameof(funcComparison));
+            ArgumentNullException.ThrowIfNull(funcComparison, nameof(funcComparison));
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();

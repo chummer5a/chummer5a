@@ -79,8 +79,7 @@ namespace Chummer
         /// <param name="control">The control to add</param>
         public void AddControl(Control control)
         {
-            if (control == null)
-                throw new ArgumentNullException(nameof(control));
+            ArgumentNullException.ThrowIfNull(control, nameof(control));
             _lstControls.Add(control);
             control.DoThreadSafe(x => x.MouseLeave += control_MouseLeave);
         }
@@ -95,15 +94,14 @@ namespace Chummer
             if (token.IsCancellationRequested)
                 return Task.FromCanceled(token);
             if (control == null)
-                throw new ArgumentNullException(nameof(control));
+                return Task.FromException(new ArgumentNullException(nameof(control)));
             _lstControls.Add(control);
             return control.DoThreadSafeAsync(x => x.MouseLeave += control_MouseLeave, token);
         }
 
         public void AddControlRecursive(Control control)
         {
-            if (control == null)
-                throw new ArgumentNullException(nameof(control));
+            ArgumentNullException.ThrowIfNull(control, nameof(control));
             _lstControls.Add(control);
             control.DoThreadSafe(x =>
             {
@@ -133,7 +131,7 @@ namespace Chummer
         public Task AddControlRecursiveAsync(Control control, CancellationToken token = default)
         {
             if (control == null)
-                throw new ArgumentNullException(nameof(control));
+                return Task.FromException(new ArgumentNullException(nameof(control)));
             _lstControls.Add(control);
             return control.DoThreadSafeAsync(x =>
             {

@@ -74,8 +74,7 @@ namespace Chummer.Forms
 
         private ScrollableMessageBox(string text, string caption = null, MessageBoxButtons buttons = MessageBoxButtons.OK, MessageBoxIcon icon = MessageBoxIcon.None, MessageBoxDefaultButton defButton = MessageBoxDefaultButton.Button1, MessageBoxOptions options = 0)
         {
-            if (text == null)
-                throw new ArgumentNullException(nameof(text));
+            ArgumentNullException.ThrowIfNull(text, nameof(text));
 
             InitializeComponent();
             this.UpdateLightDarkMode();

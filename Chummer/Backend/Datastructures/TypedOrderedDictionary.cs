@@ -197,16 +197,14 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(KeyValuePair<TKey, TValue>[] array, int arrayIndex)
         {
-            if (arrayIndex + Count >= array.Length)
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex + Count, array.Length, nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
                 array[i + arrayIndex] = this[i];
         }
 
         public void CopyTo(Tuple<TKey, TValue>[] array, int arrayIndex)
         {
-            if (arrayIndex + Count >= array.Length)
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex + Count, array.Length, nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
             {
                 array[i + arrayIndex] =
@@ -216,8 +214,7 @@ namespace Chummer
 
         public void CopyTo(ValueTuple<TKey, TValue>[] array, int arrayIndex)
         {
-            if (arrayIndex + Count >= array.Length)
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(arrayIndex + Count, array.Length, nameof(arrayIndex));
             for (int i = 0; i < Count; ++i)
             {
                 array[i + arrayIndex] =
@@ -228,8 +225,7 @@ namespace Chummer
         /// <inheritdoc />
         public void CopyTo(Array array, int index)
         {
-            if (index + Count >= array.Length)
-                throw new ArgumentOutOfRangeException(nameof(index));
+            ArgumentOutOfRangeException.ThrowIfGreaterThanOrEqual(index + Count, array.Length, nameof(index));
             for (int i = 0; i < Count; ++i)
                 array.SetValue(this[i], i + index);
         }
@@ -546,8 +542,7 @@ namespace Chummer
 
         public void Insert(int index, Tuple<TKey, TValue> item)
         {
-            if (item == null)
-                throw new ArgumentNullException(nameof(item));
+            ArgumentNullException.ThrowIfNull(item, nameof(item));
             if (_dicUnorderedData.ContainsKey(item.Item1))
                 throw new ArgumentException(null, nameof(item));
             _dicUnorderedData.Add(item.Item1, item.Item2);

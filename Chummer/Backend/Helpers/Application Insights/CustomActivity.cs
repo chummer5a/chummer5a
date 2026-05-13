@@ -85,33 +85,27 @@ namespace Chummer
 
         private void SetParent(string operationName, CustomActivity parentActivity)
         {
-            if (parentActivity != null)
+            ArgumentNullException.ThrowIfNull(parentActivity, nameof(parentActivity));
+            MyOperationType = parentActivity.MyOperationType;
+            SetParentId(parentActivity.Id ?? string.Empty);
+            MyTelemetryClient = parentActivity.MyTelemetryClient;
+            MyTelemetryTarget = parentActivity.MyTelemetryTarget;
+            switch (MyOperationType)
             {
-                MyOperationType = parentActivity.MyOperationType;
-                SetParentId(parentActivity.Id ?? string.Empty);
-                MyTelemetryClient = parentActivity.MyTelemetryClient;
-                MyTelemetryTarget = parentActivity.MyTelemetryTarget;
-                switch (MyOperationType)
-                {
-                    case OperationType.DependencyOperation:
-                        MyDependencyTelemetry = new DependencyTelemetry(operationName, null, operationName, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                        MyDependencyTelemetry.Context.Operation.ParentId = ParentId;
-                        break;
+                case OperationType.DependencyOperation:
+                    MyDependencyTelemetry = new DependencyTelemetry(operationName, null, operationName, null, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
+                    MyDependencyTelemetry.Context.Operation.ParentId = ParentId;
+                    break;
 
-                    case OperationType.RequestOperation:
-                        MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
-                        MyRequestTelemetry.Context.Operation.ParentId = ParentId;
-                        if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri uriResult))
-                            MyRequestTelemetry.Url = uriResult;
-                        break;
+                case OperationType.RequestOperation:
+                    MyRequestTelemetry = new RequestTelemetry(operationName, DateTimeOffset.UtcNow, TimeSpan.Zero, "not disposed", true);
+                    MyRequestTelemetry.Context.Operation.ParentId = ParentId;
+                    if (!string.IsNullOrEmpty(MyTelemetryTarget) && Uri.TryCreate(MyTelemetryTarget, UriKind.Absolute, out Uri uriResult))
+                        MyRequestTelemetry.Url = uriResult;
+                    break;
 
-                    default:
-                        throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);
-                }
-            }
-            else
-            {
-                throw new ArgumentNullException(nameof(parentActivity), "operationType must be supplied in case of parentActivity == null!");
+                default:
+                    throw new NotImplementedException("Implement OperationType " + parentActivity.MyOperationType);
             }
         }
 

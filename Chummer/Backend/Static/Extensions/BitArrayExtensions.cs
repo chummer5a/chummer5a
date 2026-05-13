@@ -33,8 +33,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int[] ToIntArray(this BitArray ablnArray)
         {
-            if (ablnArray == null)
-                throw new ArgumentNullException(nameof(ablnArray));
+            ArgumentNullException.ThrowIfNull(ablnArray, nameof(ablnArray));
             int intReturnLength = ((ablnArray.Count - 1) >> 4) + 1;
             int[] aintReturn = new int[intReturnLength];
             ablnArray.CopyTo(aintReturn, 0);
@@ -51,8 +50,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this BitArray ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
-            if (ablnArray == null)
-                throw new ArgumentNullException(nameof(ablnArray));
+            ArgumentNullException.ThrowIfNull(ablnArray, nameof(ablnArray));
             if (intTo > ablnArray.Count)
                 intTo = ablnArray.Count;
             for (; intFrom < intTo; ++intFrom)
@@ -71,8 +69,7 @@ namespace Chummer
         /// <param name="ablnToCount">Array to process</param>
         public static int CountTrues(this BitArray ablnToCount)
         {
-            if (ablnToCount == null)
-                throw new ArgumentNullException(nameof(ablnToCount));
+            ArgumentNullException.ThrowIfNull(ablnToCount, nameof(ablnToCount));
             int intMaskSize = ablnToCount.Count.DivRem(32, out int intArraySizeModulo32);
             if (intArraySizeModulo32 != 0)
                 ++intMaskSize;

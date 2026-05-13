@@ -29,10 +29,8 @@ namespace Chummer
     {
         public static void AddRange<T>(this ICollection<T> lstCollection, IEnumerable<T> lstToAdd)
         {
-            if (lstCollection == null)
-                throw new ArgumentNullException(nameof(lstCollection));
-            if (lstToAdd == null)
-                throw new ArgumentNullException(nameof(lstToAdd));
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstToAdd, nameof(lstToAdd));
             foreach (T objItem in lstToAdd)
                 lstCollection.Add(objItem);
         }

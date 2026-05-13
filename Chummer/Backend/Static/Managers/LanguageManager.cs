@@ -2483,8 +2483,7 @@ namespace Chummer
                                                      CultureInfo defaultCulture = null,
                                                      CancellationToken token = default)
         {
-            if (cboLanguage == null)
-                throw new ArgumentNullException(nameof(cboLanguage));
+            ArgumentNullException.ThrowIfNull(cboLanguage, nameof(cboLanguage));
             string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
             int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
             if (intLastIndexDirectorySeparator.HasValue && intLastIndexDirectorySeparator != -1)

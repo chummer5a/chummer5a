@@ -601,8 +601,7 @@ namespace Chummer
         public async Task<TreeNode> CreateTreeNode(Gear objGear, ContextMenuStrip cmsStackedFocus, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objGear == null)
-                throw new ArgumentNullException(nameof(objGear));
+            ArgumentNullException.ThrowIfNull(objGear, nameof(objGear));
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 TreeNode objNode = await objGear.CreateTreeNode(cmsStackedFocus, null, token).ConfigureAwait(false);

@@ -30,10 +30,8 @@ namespace Chummer
         [CLSCompliant(false)]
         public static bool UploadObject(TelemetryClient tc, object obj)
         {
-            if (tc == null)
-                throw new ArgumentNullException(nameof(tc));
-            if (obj == null)
-                throw new ArgumentNullException(nameof(obj));
+            ArgumentNullException.ThrowIfNull(tc, nameof(tc));
+            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
 
             PropertyInfo[] allProperties;
             string name;

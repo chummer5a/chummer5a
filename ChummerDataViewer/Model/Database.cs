@@ -117,7 +117,7 @@ namespace ChummerDataViewer.Model
 
         public void SetKey(string key, string value)
         {
-            if (key == null) throw new ArgumentNullException(nameof(key));
+            ArgumentNullException.ThrowIfNull(key, nameof(key));
 
             lock (_syncRoot)
             {

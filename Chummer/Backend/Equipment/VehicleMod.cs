@@ -182,8 +182,7 @@ namespace Chummer.Backend.Equipment
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objParent == null)
-                throw new ArgumentNullException(nameof(objParent));
+            ArgumentNullException.ThrowIfNull(objParent, nameof(objParent));
             await SetParentAsync(objParent, token).ConfigureAwait(false);
             if (objXmlMod == null) Utils.BreakIfDebug();
             if (!objXmlMod.TryGetField("id", Guid.TryParse, out _guiSourceID))

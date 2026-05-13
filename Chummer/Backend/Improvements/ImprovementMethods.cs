@@ -39,11 +39,12 @@ namespace Chummer
         /// <returns>Function pointer to the named function if one is found. If none are found, returns a null pointer.</returns>
         public static Action<XmlNode> GetMethod(string strMethodName, [Annotations.NotNull] AddImprovementCollection objImprovementAdder)
         {
-            if (objImprovementAdder == null)
-                throw new ArgumentNullException(nameof(objImprovementAdder));
+            ArgumentNullException.ThrowIfNull(objImprovementAdder, nameof(objImprovementAdder));
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
             switch (strMethodName)
             {
+                case "QUALITYLEVEL":
+                    return objImprovementAdder.qualitylevel;
                 case "SURPRISE":
                     return objImprovementAdder.surprise;
                 case "SPELLRESISTANCE":
@@ -146,6 +147,8 @@ namespace Chummer
                     return objImprovementAdder.skilllevel;
                 case "PUSHTEXT":
                     return objImprovementAdder.pushtext;
+                case "PUSHTEXTFORQUALITYGROUP":
+                    return objImprovementAdder.pushtextforqualitygroup;
                 case "ACTIVESOFT":
                     return objImprovementAdder.activesoft;
                 case "SKILLSOFT":
@@ -292,14 +295,14 @@ namespace Chummer
                     return objImprovementAdder.weaponcategorydv;
                 case "WEAPONCATEGORYDICE":
                     return objImprovementAdder.weaponcategorydice;
-                case "WEAPONSPECIFICDICE":
-                    return objImprovementAdder.weaponspecificdice;
                 case "WEAPONCATEGORYAP":
                     return objImprovementAdder.weaponcategoryap;
                 case "WEAPONCATEGORYACCURACY":
                     return objImprovementAdder.weaponcategoryaccuracy;
                 case "WEAPONCATEGORYREACH":
                     return objImprovementAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDICE":
+                    return objImprovementAdder.weaponspecificdice;
                 case "WEAPONSPECIFICDV":
                     return objImprovementAdder.weaponspecificdv;
                 case "WEAPONSPECIFICAP":
@@ -562,10 +565,10 @@ namespace Chummer
                     return objImprovementAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAdder.knowledgeskillkarmacostmin;
-                case "SKILLENABLEMOVEMENT":
-                    return objImprovementAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAdder.skilldisable;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAdder.skillenablemovement;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAdder.skillgroupdisable;
                 case "SKILLGROUPDISABLECHOICE":
@@ -686,8 +689,6 @@ namespace Chummer
                     return objImprovementAdder.penaltyfreesustain;
                 case "REPLACESKILLSPELL":
                     return objImprovementAdder.replaceskillspell;
-                case "QUALITYLEVEL":
-                    return objImprovementAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementCollection.selecttext;
                 // No method matches, return a null pointer
@@ -704,11 +705,12 @@ namespace Chummer
         /// <returns>Function pointer to the named function if one is found. If none are found, returns a null pointer.</returns>
         public static Func<XmlNode, CancellationToken, Task> GetAsyncMethod(string strMethodName, [Annotations.NotNull] AddImprovementAsyncCollection objImprovementAsyncAdder)
         {
-            if (objImprovementAsyncAdder == null)
-                throw new ArgumentNullException(nameof(objImprovementAsyncAdder));
+            ArgumentNullException.ThrowIfNull(objImprovementAsyncAdder, nameof(objImprovementAsyncAdder));
             // Switch-cases get compiled as hashes, so this is as close as you can get to a compile-time Dictionary
             switch (strMethodName)
             {
+                case "QUALITYLEVEL":
+                    return objImprovementAsyncAdder.qualitylevel;
                 case "SURPRISE":
                     return objImprovementAsyncAdder.surprise;
                 case "SPELLRESISTANCE":
@@ -811,6 +813,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.skilllevel;
                 case "PUSHTEXT":
                     return objImprovementAsyncAdder.pushtext;
+                case "PUSHTEXTFORQUALITYGROUP":
+                    return objImprovementAsyncAdder.pushtextforqualitygroup;
                 case "ACTIVESOFT":
                     return objImprovementAsyncAdder.activesoft;
                 case "SKILLSOFT":
@@ -957,14 +961,14 @@ namespace Chummer
                     return objImprovementAsyncAdder.weaponcategorydv;
                 case "WEAPONCATEGORYDICE":
                     return objImprovementAsyncAdder.weaponcategorydice;
-                case "WEAPONSPECIFICDICE":
-                    return objImprovementAsyncAdder.weaponspecificdice;
                 case "WEAPONCATEGORYAP":
                     return objImprovementAsyncAdder.weaponcategoryap;
                 case "WEAPONCATEGORYACCURACY":
                     return objImprovementAsyncAdder.weaponcategoryaccuracy;
                 case "WEAPONCATEGORYREACH":
                     return objImprovementAsyncAdder.weaponcategoryreach;
+                case "WEAPONSPECIFICDICE":
+                    return objImprovementAsyncAdder.weaponspecificdice;
                 case "WEAPONSPECIFICDV":
                     return objImprovementAsyncAdder.weaponspecificdv;
                 case "WEAPONSPECIFICAP":
@@ -1227,10 +1231,10 @@ namespace Chummer
                     return objImprovementAsyncAdder.knowledgeskillkarmacost;
                 case "KNOWLEDGESKILLKARMACOSTMIN":
                     return objImprovementAsyncAdder.knowledgeskillkarmacostmin;
-                case "SKILLENABLEMOVEMENT":
-                    return objImprovementAsyncAdder.skillenablemovement;
                 case "SKILLDISABLE":
                     return objImprovementAsyncAdder.skilldisable;
+                case "SKILLENABLEMOVEMENT":
+                    return objImprovementAsyncAdder.skillenablemovement;
                 case "SKILLGROUPDISABLE":
                     return objImprovementAsyncAdder.skillgroupdisable;
                 case "SKILLGROUPDISABLECHOICE":
@@ -1351,8 +1355,6 @@ namespace Chummer
                     return objImprovementAsyncAdder.penaltyfreesustain;
                 case "REPLACESKILLSPELL":
                     return objImprovementAsyncAdder.replaceskillspell;
-                case "QUALITYLEVEL":
-                    return objImprovementAsyncAdder.qualitylevel;
                 case "SELECTTEXT":
                     return AddImprovementAsyncCollection.selecttext;
                 // No method matches, return a null pointer

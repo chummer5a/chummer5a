@@ -769,8 +769,7 @@ namespace Chummer
             //Log.Info("strImprovedName = " + ("" + strImprovedName).ToString());
             token.ThrowIfCancellationRequested();
 
-            if (funcValueGetter == null)
-                throw new ArgumentNullException(nameof(funcValueGetter));
+            ArgumentNullException.ThrowIfNull(funcValueGetter, nameof(funcValueGetter));
 
             if (objCharacter == null)
                 return new ValueTuple<decimal, List<Improvement>>(0, new List<Improvement>(8));
@@ -1576,10 +1575,8 @@ namespace Chummer
                                            string strFriendlyName, bool blnIsKnowledgeSkill, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (xmlBonusNode == null)
-                throw new ArgumentNullException(nameof(xmlBonusNode));
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(xmlBonusNode, nameof(xmlBonusNode));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
             string strSelectedSkill;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill
                                   || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerTextIsTrueString() == true;
@@ -2221,10 +2218,8 @@ namespace Chummer
             Character objCharacter, string strFriendlyName, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (xmlBonusNode == null)
-                throw new ArgumentNullException(nameof(xmlBonusNode));
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(xmlBonusNode, nameof(xmlBonusNode));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
             string strExclude = xmlBonusNode.Attributes?["excludecategory"]?.InnerTextViaPool(token) ?? string.Empty;
             string strDescription = !string.IsNullOrEmpty(strFriendlyName)
                 ? (blnSync
@@ -2947,10 +2942,8 @@ namespace Chummer
                                                              IReadOnlyCollection<Improvement> objImprovementList,
                                                              CancellationToken token = default)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            if (objImprovementList == null)
-                throw new ArgumentNullException(nameof(objImprovementList));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(objImprovementList, nameof(objImprovementList));
 
             await using (await objCharacter.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
@@ -3638,10 +3631,8 @@ namespace Chummer
                                                               IReadOnlyCollection<Improvement> objImprovementList,
                                                               CancellationToken token = default)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            if (objImprovementList == null)
-                throw new ArgumentNullException(nameof(objImprovementList));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(objImprovementList, nameof(objImprovementList));
 
             IDisposable objLocker = null;
             IAsyncDisposable objAsyncLocker = null;

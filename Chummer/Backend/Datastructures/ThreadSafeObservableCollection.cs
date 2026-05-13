@@ -608,8 +608,7 @@ namespace Chummer
                 int intCount = _lstData.Count;
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
             }
 
             using (LockObject.EnterUpgradeableReadLock())
@@ -617,8 +616,7 @@ namespace Chummer
                 int intCount = _lstData.Count;
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
                 IDisposable[] aobjLockers = _lstData[0] is IHasLockObject ? new IDisposable[count] : null;
                 T[] aobjSorted = new T[count];
                 for (int i = 0; i < count; ++i)
@@ -821,8 +819,7 @@ namespace Chummer
                 int intCount = await _lstData.GetCountAsync(token).ConfigureAwait(false);
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
             }
 
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -831,8 +828,7 @@ namespace Chummer
                 int intCount = await _lstData.GetCountAsync(token).ConfigureAwait(false);
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
                 Stack<IAsyncDisposable> stkLockers =
                     await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false) is IHasLockObject
                         ? new Stack<IAsyncDisposable>(count)
@@ -1006,8 +1002,7 @@ namespace Chummer
                 int intCount = await _lstData.GetCountAsync(token).ConfigureAwait(false);
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
             }
 
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
@@ -1016,8 +1011,7 @@ namespace Chummer
                 int intCount = await _lstData.GetCountAsync(token).ConfigureAwait(false);
                 if (intCount == 0)
                     return;
-                if (intCount < index + count)
-                    throw new ArgumentOutOfRangeException(nameof(count));
+                ArgumentOutOfRangeException.ThrowIfGreaterThan(index + count, intCount, nameof(count));
                 Stack<IAsyncDisposable> stkLockers =
                     await _lstData.GetValueAtAsync(0, token).ConfigureAwait(false) is IHasLockObject
                         ? new Stack<IAsyncDisposable>(intCount)

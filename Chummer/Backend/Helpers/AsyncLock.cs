@@ -173,8 +173,7 @@ namespace Chummer
 
             public ValueTask DisposeAsync()
             {
-                if (_objAsyncLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objAsyncLock));
+                ObjectDisposedException.ThrowIf(_objAsyncLock._intDisposedStatus > 1, _objAsyncLock);
                 DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {
@@ -223,8 +222,7 @@ namespace Chummer
 
             public void Dispose()
             {
-                if (_objAsyncLock._intDisposedStatus > 1)
-                    throw new ObjectDisposedException(nameof(_objAsyncLock));
+                ObjectDisposedException.ThrowIf(_objAsyncLock._intDisposedStatus > 1, _objAsyncLock);
                 DebuggableSemaphoreSlim objNextSemaphoreSlim = _objAsyncLock._objCurrentSemaphore.Value;
                 if (_objNextSemaphore != objNextSemaphoreSlim)
                 {

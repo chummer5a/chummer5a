@@ -2610,8 +2610,7 @@ namespace Chummer
         {
             using (LockObject.EnterWriteLock(token))
             {
-                if (objXmlMetatype == null)
-                    throw new ArgumentNullException(nameof(objXmlMetatype));
+                ArgumentNullException.ThrowIfNull(objXmlMetatype, nameof(objXmlMetatype));
                 // Remove any Improvements the character received from their Metatype.
                 ImprovementManager.RemoveImprovements(this,
                     Improvements.Where(objImprovement =>
@@ -3378,8 +3377,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
             {
-                if (objXmlMetatype == null)
-                    throw new ArgumentNullException(nameof(objXmlMetatype));
+                ArgumentNullException.ThrowIfNull(objXmlMetatype, nameof(objXmlMetatype));
                 // Remove any Improvements the character received from their Metatype.
                 await ImprovementManager.RemoveImprovementsAsync(this,
                     await Improvements.ToListAsync(objImprovement =>

@@ -57,8 +57,7 @@ namespace Chummer
 
         public static T ToDictionaryOfPublicMembers<T>(this object objSource) where T : IDictionary<string, object>, new()
         {
-            if (objSource == null)
-                throw new ArgumentNullException(nameof(objSource));
+            ArgumentNullException.ThrowIfNull(objSource, nameof(objSource));
             Type objSourceType = objSource.GetType();
             T dicReturn = new T();
             foreach (FieldInfo objLoopInfo in objSourceType.GetFields(BindingFlags.GetField | BindingFlags.Public |

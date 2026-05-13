@@ -37,8 +37,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public void Initialize(ITelemetry telemetry)
         {
-            if (telemetry == null)
-                throw new ArgumentNullException(nameof(telemetry));
+            ArgumentNullException.ThrowIfNull(telemetry, nameof(telemetry));
             if (telemetry.Context.GlobalProperties.ContainsKey("Milestone"))
                 telemetry.Context.GlobalProperties["Milestone"] = Utils.IsMilestoneVersion.ToString(GlobalSettings.InvariantCultureInfo);
             else

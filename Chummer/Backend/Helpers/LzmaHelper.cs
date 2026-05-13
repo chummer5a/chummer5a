@@ -130,10 +130,10 @@ namespace Chummer
                                               Encoder.EMatchFinderType mf = Encoder.EMatchFinderType.BT4,
                                               Action<long, long> funcOnProgress = null)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 27)
-                throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
-            if (numFastBytes < 5 || numFastBytes > 255)
-                throw new ArgumentOutOfRangeException(nameof(numFastBytes));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCompressionLevel, nameof(intCompressionLevel));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(intCompressionLevel, 27, nameof(intCompressionLevel));
+            ArgumentOutOfRangeException.ThrowIfLessThan(numFastBytes, 5, nameof(numFastBytes));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(numFastBytes, 255, nameof(numFastBytes));
             int dictionary = 1 << intCompressionLevel;
             const int posStateBits = 2;
             const int litContextBits = 3; // for normal files
@@ -258,10 +258,10 @@ namespace Chummer
                                                    Func<long, long, CancellationToken, Task> funcOnProgress = null,
                                                    CancellationToken token = default)
         {
-            if (intCompressionLevel < 0 || intCompressionLevel > 27)
-                throw new ArgumentOutOfRangeException(nameof(intCompressionLevel));
-            if (numFastBytes < 5 || numFastBytes > 255)
-                throw new ArgumentOutOfRangeException(nameof(numFastBytes));
+            ArgumentOutOfRangeException.ThrowIfNegative(intCompressionLevel, nameof(intCompressionLevel));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(intCompressionLevel, 27, nameof(intCompressionLevel));
+            ArgumentOutOfRangeException.ThrowIfLessThan(numFastBytes, 5, nameof(numFastBytes));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(numFastBytes, 255, nameof(numFastBytes));
             int dictionary = 1 << intCompressionLevel;
             const int posStateBits = 2;
             const int litContextBits = 3; // for normal files

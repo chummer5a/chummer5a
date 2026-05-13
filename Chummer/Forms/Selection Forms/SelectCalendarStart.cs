@@ -49,8 +49,7 @@ namespace Chummer
 
         public SelectCalendarStart(CalendarWeek objWeek)
         {
-            if (objWeek == null)
-                throw new ArgumentNullException(nameof(objWeek));
+            ArgumentNullException.ThrowIfNull(objWeek, nameof(objWeek));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();

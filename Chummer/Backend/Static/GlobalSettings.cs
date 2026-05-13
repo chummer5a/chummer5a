@@ -99,8 +99,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfReader objPdfReader)
         {
-            if (string.IsNullOrEmpty(strPath))
-                throw new ArgumentNullException(nameof(strPath));
+            ArgumentException.ThrowIfNullOrEmpty(strPath, nameof(strPath));
             _strPath = strPath;
             _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
             _objPdfDocument = new PdfDocument(objPdfReader);
@@ -114,8 +113,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfDocument objPdfDocument)
         {
-            if (string.IsNullOrEmpty(strPath))
-                throw new ArgumentNullException(nameof(strPath));
+            ArgumentException.ThrowIfNullOrEmpty(strPath, nameof(strPath));
             _strPath = strPath;
             _objPdfReader = objPdfDocument.GetReader() ?? throw new ArgumentException("objPdfDocument has no associated reader", nameof(objPdfDocument));
             _objPdfDocument = objPdfDocument;
@@ -131,8 +129,7 @@ namespace Chummer
         [CLSCompliant(false)]
         public SourcebookInfo(string strPath, PdfReader objPdfReader, PdfDocument objPdfDocument)
         {
-            if (string.IsNullOrEmpty(strPath))
-                throw new ArgumentNullException(nameof(strPath));
+            ArgumentException.ThrowIfNullOrEmpty(strPath, nameof(strPath));
             _strPath = strPath;
             _objPdfReader = objPdfReader ?? throw new ArgumentNullException(nameof(objPdfReader));
             if (objPdfDocument?.GetReader() != objPdfReader)

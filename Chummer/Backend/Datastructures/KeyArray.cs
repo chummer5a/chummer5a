@@ -77,8 +77,7 @@ namespace Chummer
         /// <inheritdoc cref="List{T}.CopyTo(T[], int)" />
         public void CopyTo(T[] array, int arrayIndex)
         {
-            if (arrayIndex + Length > array.Length)
-                throw new ArgumentOutOfRangeException(nameof(arrayIndex));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(arrayIndex + Length, array.Length, nameof(arrayIndex));
             for (int i = 0; i < Length; ++i)
             {
                 array[arrayIndex] = this[i];

@@ -2367,8 +2367,7 @@ namespace Chummer
         /// <returns>Is the Quality valid on said Character</returns>
         public static bool IsValid(Character objCharacter, XmlNode objXmlQuality, out QualityFailureReasons reason, out List<Quality> conflictingQualities, CancellationToken token = default)
         {
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
             using (objCharacter.LockObject.EnterReadLock(token))
             {
                 conflictingQualities = new List<Quality>(objCharacter.Qualities.Count);
@@ -2525,8 +2524,7 @@ namespace Chummer
         /// <returns>A XmlNode containing the id and all nodes of its parrents</returns>
         public static XmlNode GetNodeOverrideable(string id, XmlDocument xmlDoc)
         {
-            if (xmlDoc == null)
-                throw new ArgumentNullException(nameof(xmlDoc));
+            ArgumentNullException.ThrowIfNull(xmlDoc, nameof(xmlDoc));
             XmlNode node = xmlDoc.TryGetNodeByNameOrId(".//*", id)
                            ?? throw new ArgumentException("Could not find node " + id + " in xmlDoc " + xmlDoc.Name
                                                           + ".");
@@ -2602,8 +2600,7 @@ namespace Chummer
         public async Task<bool> Swap(Quality objOldQuality, XmlNode objXmlQuality, int intNewQualityRating,
                                           CancellationToken token = default)
         {
-            if (objOldQuality == null)
-                throw new ArgumentNullException(nameof(objOldQuality));
+            ArgumentNullException.ThrowIfNull(objOldQuality, nameof(objOldQuality));
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();

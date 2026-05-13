@@ -437,8 +437,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             return lstVehicles.FindVehicleGear(strGuid, out Vehicle _, out WeaponAccessory _, out Cyberware _);
         }
 
@@ -454,8 +453,7 @@ namespace Chummer
         public static Gear FindVehicleGear(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponAccessory objFoundWeaponAccessory, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -486,8 +484,7 @@ namespace Chummer
             CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             Gear objReturn = null;
             WeaponAccessory objReturnAccessory = null;
             Cyberware objReturnCyberware = null;
@@ -517,8 +514,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             return lstVehicles.FindVehicleMod(funcPredicate, out Vehicle _, out WeaponMount _, token);
         }
 
@@ -533,8 +529,7 @@ namespace Chummer
         public static VehicleMod FindVehicleMod([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 VehicleMod objMod = objVehicle.FindVehicleMod(funcPredicate, out objFoundWeaponMount, token);
@@ -558,8 +553,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ValueTuple<VehicleMod, Vehicle, WeaponMount>> FindVehicleModAsync([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<VehicleMod, bool> funcPredicate, CancellationToken token = default)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 (VehicleMod objMod, WeaponMount objFoundWeaponMount) = await objVehicle.FindVehicleModAsync(funcPredicate, token).ConfigureAwait(false);
@@ -580,8 +574,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             return lstVehicles.FindVehicleWeapon(strGuid, out Vehicle _, out WeaponMount _, out VehicleMod _, token);
         }
 
@@ -597,8 +590,7 @@ namespace Chummer
         public static Weapon FindVehicleWeapon(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle, out WeaponMount objFoundWeaponMount, out VehicleMod objFoundVehicleMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -665,8 +657,7 @@ namespace Chummer
         public static async Task<ValueTuple<Weapon, Vehicle, WeaponMount, VehicleMod>> FindVehicleWeaponAsync(this IAsyncEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             Weapon objReturn = null;
             Vehicle objReturnVehicle = null;
             WeaponMount objReturnMount = null;
@@ -749,8 +740,7 @@ namespace Chummer
         /// <param name="objFoundVehicle">Vehicle in which the Weapon Mount was found.</param>
         public static WeaponMount FindVehicleWeaponMount(this IEnumerable<Vehicle> lstVehicles, string strGuid, out Vehicle objFoundVehicle)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -779,8 +769,7 @@ namespace Chummer
         public static async Task<ValueTuple<WeaponMount, Vehicle>> FindVehicleWeaponMountAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -813,8 +802,7 @@ namespace Chummer
         /// <param name="outMount">Weapon Mount in which the Vehicle Mod was found.</param>
         public static VehicleMod FindVehicleWeaponMountMod(this IEnumerable<Vehicle> lstVehicles, string strGuid, out WeaponMount outMount)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -845,8 +833,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ValueTuple<VehicleMod, WeaponMount>> FindVehicleWeaponMountModAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -880,8 +867,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static WeaponAccessory FindVehicleWeaponAccessory(this IEnumerable<Vehicle> lstVehicles, string strGuid)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -923,8 +909,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<WeaponAccessory> FindVehicleWeaponAccessoryAsync(this IEnumerable<Vehicle> lstVehicles, string strGuid, CancellationToken token = default)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Vehicle objVehicle in lstVehicles)
@@ -967,8 +952,7 @@ namespace Chummer
         /// <param name="lstVehicles">List of Vehicles to search.</param>
         public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             return lstVehicles.FindVehicleCyberware(funcPredicate, out VehicleMod _);
         }
 
@@ -980,8 +964,7 @@ namespace Chummer
         /// <param name="objFoundVehicleMod">Vehicle Mod to which the Cyberware belongs.</param>
         public static Cyberware FindVehicleCyberware([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, out VehicleMod objFoundVehicleMod)
         {
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 Cyberware objReturn = objVehicle.FindVehicleCyberware(funcPredicate, out objFoundVehicleMod);
@@ -1004,8 +987,7 @@ namespace Chummer
         public static async Task<ValueTuple<Cyberware, VehicleMod>> FindVehicleCyberwareAsync([NotNull] this IEnumerable<Vehicle> lstVehicles, [NotNull] Func<Cyberware, bool> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstVehicles == null)
-                throw new ArgumentNullException(nameof(lstVehicles));
+            ArgumentNullException.ThrowIfNull(lstVehicles, nameof(lstVehicles));
             foreach (Vehicle objVehicle in lstVehicles)
             {
                 (Cyberware objReturn, VehicleMod objReturnMod) = await objVehicle.FindVehicleCyberwareAsync(funcPredicate, token).ConfigureAwait(false);
@@ -1026,8 +1008,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
-            if (lstArmors == null)
-                throw new ArgumentNullException(nameof(lstArmors));
+            ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             return lstArmors.FindArmorGear(strGuid, out Armor _, out ArmorMod _, token);
         }
 
@@ -1042,8 +1023,7 @@ namespace Chummer
         public static Gear FindArmorGear(this IEnumerable<Armor> lstArmors, string strGuid, out Armor objFoundArmor, out ArmorMod objFoundArmorMod, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstArmors == null)
-                throw new ArgumentNullException(nameof(lstArmors));
+            ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Armor objArmor in lstArmors)
@@ -1082,8 +1062,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ValueTuple<Gear, Armor, ArmorMod>> FindArmorGearAsync(this IAsyncEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
-            if (lstArmors == null)
-                throw new ArgumentNullException(nameof(lstArmors));
+            ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             Gear objReturn = null;
             Armor objReturnArmor = null;
             ArmorMod objReturnMod = null;
@@ -1126,8 +1105,7 @@ namespace Chummer
         /// <param name="lstArmors">List of Armors to search.</param>
         public static ArmorMod FindArmorMod(this IEnumerable<Armor> lstArmors, string strGuid)
         {
-            if (lstArmors == null)
-                throw new ArgumentNullException(nameof(lstArmors));
+            ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 return lstArmors.SelectMany(objArmor => objArmor.ArmorMods).FirstOrDefault(objMod => objMod.InternalId == strGuid);
@@ -1144,8 +1122,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ArmorMod> FindArmorModAsync(this IEnumerable<Armor> lstArmors, string strGuid, CancellationToken token = default)
         {
-            if (lstArmors == null)
-                throw new ArgumentNullException(nameof(lstArmors));
+            ArgumentNullException.ThrowIfNull(lstArmors, nameof(lstArmors));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Armor objArmor in lstArmors)
@@ -1168,8 +1145,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
-            if (lstCyberware == null)
-                throw new ArgumentNullException(nameof(lstCyberware));
+            ArgumentNullException.ThrowIfNull(lstCyberware, nameof(lstCyberware));
             return lstCyberware.FindCyberwareGear(strGuid, out Cyberware _, token);
         }
 
@@ -1183,8 +1159,7 @@ namespace Chummer
         public static Gear FindCyberwareGear(this IEnumerable<Cyberware> lstCyberware, string strGuid, out Cyberware objFoundCyberware, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstCyberware == null)
-                throw new ArgumentNullException(nameof(lstCyberware));
+            ArgumentNullException.ThrowIfNull(lstCyberware, nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Cyberware objCyberware in lstCyberware.DeepWhere(x => x.Children, x => x.GearChildren.Count > 0))
@@ -1211,8 +1186,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task<ValueTuple<Gear, Cyberware>> FindCyberwareGearAsync(this IAsyncEnumerable<Cyberware> lstCyberware, string strGuid, CancellationToken token = default)
         {
-            if (lstCyberware == null)
-                throw new ArgumentNullException(nameof(lstCyberware));
+            ArgumentNullException.ThrowIfNull(lstCyberware, nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Cyberware objCyberware in await lstCyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
@@ -1239,8 +1213,7 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons to search.</param>
         public static WeaponAccessory FindWeaponAccessory(this IEnumerable<Weapon> lstWeapons, string strGuid)
         {
-            if (lstWeapons == null)
-                throw new ArgumentNullException(nameof(lstWeapons));
+            ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 return lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Count > 0)
@@ -1260,8 +1233,7 @@ namespace Chummer
         public static async Task<WeaponAccessory> FindWeaponAccessoryAsync(this IEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstWeapons == null)
-                throw new ArgumentNullException(nameof(lstWeapons));
+            ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 if (lstWeapons is IAsyncEnumerable<Weapon> lstWeaponsAsync)
@@ -1299,8 +1271,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
-            if (lstWeapons == null)
-                throw new ArgumentNullException(nameof(lstWeapons));
+            ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             return lstWeapons.FindWeaponGear(strGuid, out WeaponAccessory _, token);
         }
 
@@ -1314,8 +1285,7 @@ namespace Chummer
         public static Gear FindWeaponGear(this IEnumerable<Weapon> lstWeapons, string strGuid, out WeaponAccessory objFoundAccessory, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstWeapons == null)
-                throw new ArgumentNullException(nameof(lstWeapons));
+            ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 foreach (Weapon objWeapon in lstWeapons.DeepWhere(x => x.Children, x => x.WeaponAccessories.Any(y => y.GearChildren.Count > 0, token)))
@@ -1347,8 +1317,7 @@ namespace Chummer
         public static async Task<ValueTuple<Gear, WeaponAccessory>> FindWeaponGearAsync(this IAsyncEnumerable<Weapon> lstWeapons, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstWeapons == null)
-                throw new ArgumentNullException(nameof(lstWeapons));
+            ArgumentNullException.ThrowIfNull(lstWeapons, nameof(lstWeapons));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 Gear objReturn = null;
@@ -1386,8 +1355,7 @@ namespace Chummer
         public static Enhancement FindEnhancement(this Character objCharacter, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 using (objCharacter.LockObject.EnterReadLock(token))
@@ -1415,8 +1383,7 @@ namespace Chummer
         public static async Task<Enhancement> FindEnhancementAsync(this Character objCharacter, string strGuid, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
                 await using (await objCharacter.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))

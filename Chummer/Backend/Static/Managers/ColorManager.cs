@@ -1479,12 +1479,12 @@ namespace Chummer
         /// <returns>A Color with RGBA values corresponding to the HSLA inputs.</returns>
         public static Color FromHsla(float fltHue, float fltSaturation, float fltLightness, byte chrAlpha)
         {
-            if (fltHue > 1.0f || fltHue < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltHue));
-            if (fltSaturation > 1.0f || fltSaturation < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltSaturation));
-            if (fltLightness > 1.0f || fltLightness < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltLightness));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltHue, 1.0f, nameof(fltHue));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltHue, nameof(fltHue));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltSaturation, 1.0f, nameof(fltSaturation));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltSaturation, nameof(fltSaturation));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltLightness, 1.0f, nameof(fltLightness));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltLightness, nameof(fltLightness));
             // Ramp up precision for intermediates
             double dblChroma = fltSaturation * (1.0 - Math.Abs(2.0 * fltLightness - 1.0));
             double dblCommon = fltLightness - dblChroma / 2.0;
@@ -1563,12 +1563,12 @@ namespace Chummer
         /// <returns>A Color with RGBA values corresponding to the HSVA inputs.</returns>
         public static Color FromHsva(float fltHue, float fltSaturation, float fltValue, byte chrAlpha)
         {
-            if (fltHue > 1.0f || fltHue < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltHue));
-            if (fltSaturation > 1.0f || fltSaturation < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltSaturation));
-            if (fltValue > 1.0f || fltValue < 0)
-                throw new ArgumentOutOfRangeException(nameof(fltValue));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltHue, 1.0f, nameof(fltHue));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltHue, nameof(fltHue));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltSaturation, 1.0f, nameof(fltSaturation));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltSaturation, nameof(fltSaturation));
+            ArgumentOutOfRangeException.ThrowIfGreaterThan(fltValue, 1.0f, nameof(fltValue));
+            ArgumentOutOfRangeException.ThrowIfNegative(fltValue, nameof(fltValue));
             // Ramp up precision for intermediates
             double dblChroma = fltSaturation * (double)fltValue;
             double dblCommon = fltValue - dblChroma;

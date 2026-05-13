@@ -34,8 +34,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int FirstMatching(this bool[] ablnArray, bool blnValue, int intFrom = 0, int intTo = int.MaxValue)
         {
-            if (ablnArray == null)
-                throw new ArgumentNullException(nameof(ablnArray));
+            ArgumentNullException.ThrowIfNull(ablnArray, nameof(ablnArray));
             if (intTo > ablnArray.Length)
                 intTo = ablnArray.Length;
             if (intFrom < 0)

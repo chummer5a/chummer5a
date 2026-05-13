@@ -281,14 +281,10 @@ namespace Chummer
         {
             if (objThis == null)
                 return;
-            if (cboAttack == null)
-                throw new ArgumentNullException(nameof(cboAttack));
-            if (cboSleaze == null)
-                throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDataProcessing == null)
-                throw new ArgumentNullException(nameof(cboDataProcessing));
-            if (cboFirewall == null)
-                throw new ArgumentNullException(nameof(cboFirewall));
+            ArgumentNullException.ThrowIfNull(cboAttack, nameof(cboAttack));
+            ArgumentNullException.ThrowIfNull(cboSleaze, nameof(cboSleaze));
+            ArgumentNullException.ThrowIfNull(cboDataProcessing, nameof(cboDataProcessing));
+            ArgumentNullException.ThrowIfNull(cboFirewall, nameof(cboFirewall));
 
             IDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
@@ -433,14 +429,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return;
-            if (cboAttack == null)
-                throw new ArgumentNullException(nameof(cboAttack));
-            if (cboSleaze == null)
-                throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDataProcessing == null)
-                throw new ArgumentNullException(nameof(cboDataProcessing));
-            if (cboFirewall == null)
-                throw new ArgumentNullException(nameof(cboFirewall));
+            ArgumentNullException.ThrowIfNull(cboAttack, nameof(cboAttack));
+            ArgumentNullException.ThrowIfNull(cboSleaze, nameof(cboSleaze));
+            ArgumentNullException.ThrowIfNull(cboDataProcessing, nameof(cboDataProcessing));
+            ArgumentNullException.ThrowIfNull(cboFirewall, nameof(cboFirewall));
 
             IAsyncDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
@@ -585,18 +577,12 @@ namespace Chummer
         {
             if (objThis == null)
                 return false;
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            if (cboChangedAttribute == null)
-                throw new ArgumentNullException(nameof(cboChangedAttribute));
-            if (cboAttack == null)
-                throw new ArgumentNullException(nameof(cboAttack));
-            if (cboSleaze == null)
-                throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDataProcessing == null)
-                throw new ArgumentNullException(nameof(cboDataProcessing));
-            if (cboFirewall == null)
-                throw new ArgumentNullException(nameof(cboFirewall));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(cboChangedAttribute, nameof(cboChangedAttribute));
+            ArgumentNullException.ThrowIfNull(cboAttack, nameof(cboAttack));
+            ArgumentNullException.ThrowIfNull(cboSleaze, nameof(cboSleaze));
+            ArgumentNullException.ThrowIfNull(cboDataProcessing, nameof(cboDataProcessing));
+            ArgumentNullException.ThrowIfNull(cboFirewall, nameof(cboFirewall));
 
             IDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
@@ -702,18 +688,12 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (objThis == null)
                 return false;
-            if (objCharacter == null)
-                throw new ArgumentNullException(nameof(objCharacter));
-            if (cboChangedAttribute == null)
-                throw new ArgumentNullException(nameof(cboChangedAttribute));
-            if (cboAttack == null)
-                throw new ArgumentNullException(nameof(cboAttack));
-            if (cboSleaze == null)
-                throw new ArgumentNullException(nameof(cboSleaze));
-            if (cboDataProcessing == null)
-                throw new ArgumentNullException(nameof(cboDataProcessing));
-            if (cboFirewall == null)
-                throw new ArgumentNullException(nameof(cboFirewall));
+            ArgumentNullException.ThrowIfNull(objCharacter, nameof(objCharacter));
+            ArgumentNullException.ThrowIfNull(cboChangedAttribute, nameof(cboChangedAttribute));
+            ArgumentNullException.ThrowIfNull(cboAttack, nameof(cboAttack));
+            ArgumentNullException.ThrowIfNull(cboSleaze, nameof(cboSleaze));
+            ArgumentNullException.ThrowIfNull(cboDataProcessing, nameof(cboDataProcessing));
+            ArgumentNullException.ThrowIfNull(cboFirewall, nameof(cboFirewall));
 
             IAsyncDisposable objThisLocker = null;
             if (objThis is IHasLockObject objHasLock)
