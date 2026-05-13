@@ -26,6 +26,9 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+#if !DEBUG
+using System.Net.Http;
+#endif
 using System.Runtime.InteropServices;
 using System.Security;
 using System.Threading;
@@ -1212,6 +1215,8 @@ namespace Chummer
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
             : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
 
+        private HttpClient _clientUpdateFetcher = new HttpClient();
+
         private Task _tskVersionUpdate;
 
         private CancellationTokenSource _objVersionUpdaterCancellationTokenSource;
@@ -1228,36 +1233,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                System.Net.ServicePointManager.SecurityProtocol = System.Net.SecurityProtocolType.Tls12;
-                System.Net.HttpWebRequest request;
-                try
-                {
-                    System.Net.WebRequest objTemp = System.Net.WebRequest.Create(UpdateLocation);
-                    request = objTemp as System.Net.HttpWebRequest;
-                }
-                catch (SecurityException ex)
-                {
-                    Utils.CachedGitVersion = null;
-                    Log.Error(ex);
-                    return;
-                }
-
-                if (request == null)
-                {
-                    Utils.CachedGitVersion = null;
-                    return;
-                }
-
-                token.ThrowIfCancellationRequested();
-
-                request.UserAgent = "Mozilla/5.0 (compatible; MSIE 10.0; Windows NT 6.1; Trident/6.0)";
-                request.Accept = "application/json";
-
                 try
                 {
                     // Get the response.
-                    using (System.Net.HttpWebResponse response
-                           = await request.GetResponseAsync() as System.Net.HttpWebResponse)
+                    using (HttpResponseMessage response
+                           = await _clientUpdateFetcher.GetAsync(UpdateLocation, token).ConfigureAwait(false))
                     {
                         if (response == null)
                         {
@@ -1268,7 +1248,7 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
 
                         // Get the stream containing content returned by the server.
-                        using (Stream dataStream = response.GetResponseStream())
+                        using (Stream dataStream = await response.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
                         {
                             if (dataStream == null)
                             {
@@ -1285,9 +1265,9 @@ namespace Chummer
 
                                 string strVersionLine = null;
                                 // Read the content.
-                                for (string strLine = await objReader.ReadLineAsync().ConfigureAwait(false);
+                                for (string strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false);
                                      strLine != null;
-                                     strLine = await objReader.ReadLineAsync().ConfigureAwait(false))
+                                     strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (strLine.Contains("tag_name"))
@@ -1331,7 +1311,7 @@ namespace Chummer
                         }
                     }
                 }
-                catch (System.Net.WebException ex)
+                catch (HttpRequestException ex)
                 {
                     Utils.CachedGitVersion = null;
                     Log.Error(ex);
@@ -2742,6 +2722,8 @@ namespace Chummer
                 }, CancellationToken.None).ConfigureAwait(false);
 
 #if !DEBUG
+                // Initial cancellation just to be safe, we'll do a second cancellation later
+                _clientUpdateFetcher.CancelPendingRequests();
                 CancellationTokenSource objTemp = Interlocked.Exchange(ref _objVersionUpdaterCancellationTokenSource, null);
                 if (objTemp?.IsCancellationRequested == false)
                 {
@@ -2761,6 +2743,10 @@ namespace Chummer
                         //swallow this
                     }
                 }
+
+                HttpClient objClient = Interlocked.Exchange(ref _clientUpdateFetcher, null);
+                objClient.CancelPendingRequests();
+                objClient.Dispose();
 #endif
                 FormWindowState eWindowState = await this
                     .DoThreadSafeFuncAsync(x => x.WindowState, CancellationToken.None)
