@@ -1841,7 +1841,7 @@ namespace Chummer.Backend.Skills
                                                                 Utils.BreakIfDebug();
                                                                 if (blnNewSkill)
                                                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                    objSkill?.Remove();
+                                                                    objSkill.Remove();
                                                             }
                                                         }
                                                         else
@@ -1860,7 +1860,7 @@ namespace Chummer.Backend.Skills
                                                             else
                                                             {
                                                                 Utils.BreakIfDebug();
-                                                                if (blnNewSkill && objSkill != null)
+                                                                if (blnNewSkill)
                                                                     await objSkill.RemoveAsync(token).ConfigureAwait(false);
                                                             }
                                                         }
@@ -1871,8 +1871,8 @@ namespace Chummer.Backend.Skills
                                                         {
                                                             if (blnSync)
                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                                objSkill?.Remove();
-                                                            else if (objSkill != null)
+                                                                objSkill.Remove();
+                                                            else
                                                                 await objSkill.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
                                                         }
                                                         throw;

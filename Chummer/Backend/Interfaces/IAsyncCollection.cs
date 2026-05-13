@@ -86,6 +86,7 @@ namespace Chummer
         public static async Task<int> GetOrderInvariantEnsembleHashCodeSmartAsync<T>(this IAsyncReadOnlyCollection<T> lstItems, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            ArgumentNullException.ThrowIfNull(lstItems, nameof(lstItems));
             return await lstItems.GetCountAsync(token).ConfigureAwait(false) > ushort.MaxValue
                 ? await lstItems.GetOrderInvariantEnsembleHashCodeParallelAsync(token).ConfigureAwait(false)
                 : await lstItems.GetOrderInvariantEnsembleHashCodeAsync(token).ConfigureAwait(false);

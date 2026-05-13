@@ -273,6 +273,7 @@ namespace Chummer
         public static void Move<T>(this BindingList<T> lstCollection, int intOldIndex, int intNewIndex)
         {
             int intParity = intOldIndex < intNewIndex ? 1 : -1;
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
             bool blnOldRaiseListChangedEvents = lstCollection.RaiseListChangedEvents;
             try
             {

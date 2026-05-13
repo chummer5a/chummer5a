@@ -19,17 +19,24 @@
 
 using Microsoft.ApplicationInsights.Extensibility;
 using Microsoft.ApplicationInsights.Extensibility.PerfCounterCollector.QuickPulse;
+using System;
 
 namespace Chummer
 {
-    public class LiveStreamProvider
+    public sealed class LiveStreamProvider : IDisposable
     {
         private readonly TelemetryConfiguration _configuration;
+        private QuickPulseTelemetryModule _module;
 
         [System.CLSCompliant(false)]
         public LiveStreamProvider(TelemetryConfiguration configuration)
         {
             _configuration = configuration;
+        }
+
+        public void Dispose()
+        {
+            _module?.Dispose();
         }
 
         public void Enable()
@@ -44,9 +51,9 @@ namespace Chummer
                 })
                 .Build();
 
-            QuickPulseTelemetryModule quickPulse = new QuickPulseTelemetryModule();
-            quickPulse.Initialize(_configuration);
-            quickPulse.RegisterTelemetryProcessor(processor);
+            _module = new QuickPulseTelemetryModule();
+            _module.Initialize(_configuration);
+            _module.RegisterTelemetryProcessor(processor);
         }
     }
 }

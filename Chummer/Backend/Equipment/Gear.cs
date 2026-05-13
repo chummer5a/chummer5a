@@ -1450,7 +1450,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (objGear == null)
                 return;
-            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token))
+            await using (await _objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 _objCachedMyXmlNode = await objGear.GetNodeAsync(token).ConfigureAwait(false);
@@ -2965,9 +2965,9 @@ namespace Chummer.Backend.Equipment
                         if (Parent is IHasRating objCastParent)
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
-                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                async () => (await objCastParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
-                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                async () => (await objCastParent.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             if (objCastParent is Gear objParentGear)
                             {
                                 await sbdValue.CheapReplaceAsync(strExpression, "{Parent Cost}",

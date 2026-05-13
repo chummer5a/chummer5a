@@ -188,43 +188,50 @@ namespace Chummer
             if (imgToConvert == null)
                 return null;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone;
-            while (true)
-            {
-                token.ThrowIfCancellationRequested();
-                try
-                {
-                    bmpClone = new Bitmap(imgToConvert);
-                }
-                catch (InvalidOperationException)
-                {
-                    Utils.SafeSleep(token);
-                    continue;
-                }
-                break;
-            }
-
-            token.ThrowIfCancellationRequested();
-            EncoderParameters lstJpegParameters = new EncoderParameters(1)
-            {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
-            };
-            token.ThrowIfCancellationRequested();
-
+            Bitmap bmpClone = null;
             try
             {
-                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                while (true)
                 {
                     token.ThrowIfCancellationRequested();
-                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                    try
+                    {
+                        bmpClone = new Bitmap(imgToConvert);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Utils.SafeSleep(token);
+                        continue;
+                    }
+                    break;
+                }
+
+                token.ThrowIfCancellationRequested();
+                EncoderParameters lstJpegParameters = new EncoderParameters(1)
+                {
+                    Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
+                };
+                try
+                {
                     token.ThrowIfCancellationRequested();
-                    objImageStream.Position = 0;
-                    return Image.FromStream(objImageStream, true);
+
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                        token.ThrowIfCancellationRequested();
+                        objImageStream.Position = 0;
+                        return Image.FromStream(objImageStream, true);
+                    }
+                }
+                finally
+                {
+                    lstJpegParameters.Dispose();
                 }
             }
             finally
             {
-                bmpClone.Dispose();
+                bmpClone?.Dispose();
             }
         }
 
@@ -242,46 +249,53 @@ namespace Chummer
             if (imgToConvert == null)
                 return null;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone;
-            while (true)
+            Bitmap bmpClone = null;
+            try
             {
-                token.ThrowIfCancellationRequested();
-                try
+                while (true)
                 {
-                    bmpClone = new Bitmap(imgToConvert);
-                }
-                catch (InvalidOperationException)
-                {
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-            token.ThrowIfCancellationRequested();
-            EncoderParameters lstJpegParameters = new EncoderParameters(1)
-            {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
-            };
-            token.ThrowIfCancellationRequested();
-
-            return await TaskExtensions.RunWithoutEC(() =>
-            {
-                try
-                {
-                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    token.ThrowIfCancellationRequested();
+                    try
                     {
-                        token.ThrowIfCancellationRequested();
-                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                        token.ThrowIfCancellationRequested();
-                        objImageStream.Position = 0;
-                        return Image.FromStream(objImageStream, true);
+                        bmpClone = new Bitmap(imgToConvert);
                     }
+                    catch (InvalidOperationException)
+                    {
+                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                        continue;
+                    }
+                    break;
+                }
+                token.ThrowIfCancellationRequested();
+                EncoderParameters lstJpegParameters = new EncoderParameters(1)
+                {
+                    Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
+                };
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+
+                    return await TaskExtensions.RunWithoutEC(() =>
+                    {
+                        using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                        {
+                            token.ThrowIfCancellationRequested();
+                            bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                            token.ThrowIfCancellationRequested();
+                            objImageStream.Position = 0;
+                            return Image.FromStream(objImageStream, true);
+                        }
+                    }, token).ConfigureAwait(false);
                 }
                 finally
                 {
-                    bmpClone.Dispose();
+                    lstJpegParameters.Dispose();
                 }
-            }, token).ConfigureAwait(false);
+            }
+            finally
+            {
+                bmpClone?.Dispose();
+            }
         }
 
         /// <summary>
@@ -630,34 +644,41 @@ namespace Chummer
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone;
-            while (true)
-            {
-                token.ThrowIfCancellationRequested();
-                try
-                {
-                    bmpClone = new Bitmap(imgToConvert);
-                }
-                catch (InvalidOperationException)
-                {
-                    Utils.SafeSleep(token);
-                    continue;
-                }
-                break;
-            }
-
-            EncoderParameters lstJpegParameters = new EncoderParameters(1)
-            {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
-            };
-
+            Bitmap bmpClone = null;
             try
             {
-                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                while (true)
                 {
                     token.ThrowIfCancellationRequested();
-                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
-                    return objImageStream.ToBase64String(token: token);
+                    try
+                    {
+                        bmpClone = new Bitmap(imgToConvert);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        Utils.SafeSleep(token);
+                        continue;
+                    }
+                    break;
+                }
+
+                EncoderParameters lstJpegParameters = new EncoderParameters(1)
+                {
+                    Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
+                };
+
+                try
+                {
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                        return objImageStream.ToBase64String(token: token);
+                    }
+                }
+                finally
+                {
+                    lstJpegParameters.Dispose();
                 }
             }
             finally
@@ -680,35 +701,42 @@ namespace Chummer
             if (imgToConvert == null)
                 return string.Empty;
             // We need to clone the image before saving it because of weird GDI+ errors that can happen if we don't
-            Bitmap bmpClone;
-            while (true)
-            {
-                token.ThrowIfCancellationRequested();
-                try
-                {
-                    bmpClone = new Bitmap(imgToConvert);
-                }
-                catch (InvalidOperationException)
-                {
-                    await Utils.SafeSleepAsync(token).ConfigureAwait(false);
-                    continue;
-                }
-                break;
-            }
-            token.ThrowIfCancellationRequested();
-            EncoderParameters lstJpegParameters = new EncoderParameters(1)
-            {
-                Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
-            };
-            token.ThrowIfCancellationRequested();
+            Bitmap bmpClone = null;
             try
             {
-                using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                while (true)
                 {
                     token.ThrowIfCancellationRequested();
-                    bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                    try
+                    {
+                        bmpClone = new Bitmap(imgToConvert);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        await Utils.SafeSleepAsync(token).ConfigureAwait(false);
+                        continue;
+                    }
+                    break;
+                }
+                token.ThrowIfCancellationRequested();
+                EncoderParameters lstJpegParameters = new EncoderParameters(1)
+                {
+                    Param = { [0] = new EncoderParameter(Encoder.Quality, ProcessJpegQualitySetting(bmpClone, intQuality)) }
+                };
+                try
+                {
                     token.ThrowIfCancellationRequested();
-                    return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
+                    using (RecyclableMemoryStream objImageStream = new RecyclableMemoryStream(Utils.MemoryStreamManager))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        bmpClone.Save(objImageStream, s_LzyJpegEncoder.Value, lstJpegParameters);
+                        token.ThrowIfCancellationRequested();
+                        return await objImageStream.ToBase64StringAsync(token: token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    lstJpegParameters.Dispose();
                 }
             }
             finally

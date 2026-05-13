@@ -509,7 +509,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     else if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor,
-                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token),
+                                 _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false),
                                  await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
@@ -843,7 +843,7 @@ namespace Chummer.Backend.Equipment
                     {
                         intAddWeaponRating = blnSync
                             ? ProcessRatingString(strLoopRating, () => Rating)
-                            : await ProcessRatingStringAsync(strLoopRating, () => GetRatingAsync(token), token);
+                            : await ProcessRatingStringAsync(strLoopRating, () => GetRatingAsync(token), token).ConfigureAwait(false);
                     }
 
                     Weapon objGearWeapon = new Weapon(_objCharacter);
@@ -1303,7 +1303,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!string.IsNullOrEmpty(Extra))
                         ImprovementManager.SetForcedValue(Extra, _objCharacter);
-                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), Bonus, await GetRatingAsync(token).ConfigureAwait(false), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
                     string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
                     if (!string.IsNullOrEmpty(strSelectedValue))
                     {
@@ -1315,7 +1315,7 @@ namespace Chummer.Backend.Equipment
                 {
                     ImprovementManager.SetForcedValue(Extra, _objCharacter);
 
-                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, await GetRatingAsync(token), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                    if (!await ImprovementManager.CreateImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Armor, _guiID.ToString("D", GlobalSettings.InvariantCultureInfo), WirelessBonus, await GetRatingAsync(token).ConfigureAwait(false), await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         _guiID = Guid.Empty;
                         return;
@@ -2403,7 +2403,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token)).Item1;
+            decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token).ConfigureAwait(false)).Item1;
             if (DiscountCost)
                 decReturn *= 0.9m;
             return decReturn;

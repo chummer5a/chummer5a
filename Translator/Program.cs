@@ -33,6 +33,8 @@ namespace Translator
         {
             Application.EnableVisualStyles();
             Application.SetCompatibleTextRenderingDefault(false);
+            if (!Application.SetHighDpiMode(HighDpiMode.PerMonitorV2))
+                Application.SetHighDpiMode(HighDpiMode.PerMonitor);
             Utils.CreateSynchronizationContext();
             _frmMain = new TranslatorMain();
             Application.Run(_frmMain);

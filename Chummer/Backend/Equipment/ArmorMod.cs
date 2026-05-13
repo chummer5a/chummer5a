@@ -575,7 +575,7 @@ namespace Chummer.Backend.Equipment
                 (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             if (!objNode.TryGetStringFieldQuickly("category", ref _strCategory)
-                || (_strCategory.EndsWith("Liners") && _objCharacter.LastSavedVersion < new ValueVersion(5, 255, 949)))
+                || (_strCategory.EndsWith("Liners", StringComparison.Ordinal) && _objCharacter.LastSavedVersion < new ValueVersion(5, 255, 949)))
             {
                 // Legacy shim for liners
                 (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetStringFieldQuickly("category", ref _strCategory);

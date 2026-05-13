@@ -17,6 +17,7 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using Microsoft.Extensions.ObjectPool;
@@ -43,6 +44,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public bool Return(T obj)
         {
+            ArgumentNullException.ThrowIfNull(obj, nameof(obj));
             obj.Clear();
             return true;
         }

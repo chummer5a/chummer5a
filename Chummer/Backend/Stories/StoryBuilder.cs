@@ -128,7 +128,7 @@ namespace Chummer
                 int startingLength = story.Length;
 
                 IEnumerable<string> words;
-                if (innerText.StartsWith('$') && innerText.IndexOf(' ') < 0)
+                if (innerText.StartsWith('$') && !innerText.Contains(' '))
                 {
                     words = (await Macro(innerText, xmlBaseMacrosNode, token).ConfigureAwait(false)).SplitNoAlloc(
                         StringSplitOptions.RemoveEmptyEntries, ' ', '\n', '\r', '\t');

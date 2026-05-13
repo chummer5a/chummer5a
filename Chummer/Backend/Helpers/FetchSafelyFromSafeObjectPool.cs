@@ -26,7 +26,7 @@ namespace Chummer
     /// Syntactic Sugar for wrapping <see cref="SafeObjectPool{T}.Get"/> and <see cref="SafeObjectPool{T}.Return"/> into something that hooks into `using`
     /// and that guarantees that pooled objects will be returned
     /// </summary>
-    public struct FetchSafelyFromSafeObjectPool<T> : IDisposable where T : class // struct unfortunately cannot be readonly because SafeObjectPool.Return requires a reference argument
+    public struct FetchSafelyFromSafeObjectPool<T> : IDisposable, IEquatable<FetchSafelyFromSafeObjectPool<T>> where T : class // struct unfortunately cannot be readonly because SafeObjectPool.Return requires a reference argument
     {
         private readonly SafeObjectPool<T> _objMySafePool;
         private T _objMyValue;
@@ -35,6 +35,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public FetchSafelyFromSafeObjectPool(SafeObjectPool<T> objMySafePool, out T objReturn)
         {
+            ArgumentNullException.ThrowIfNull(objMySafePool, nameof(objMySafePool));
             _objMySafePool = objMySafePool;
             objReturn = _objMyValue = objMySafePool.Get();
         }
@@ -43,6 +44,31 @@ namespace Chummer
         public void Dispose()
         {
             _objMySafePool?.Return(ref _objMyValue);
+        }
+
+        public override bool Equals(object obj)
+        {
+            return Equals((FetchSafelyFromSafeObjectPool<T>)obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (_objMyValue, _objMySafePool).GetHashCode();
+        }
+
+        public static bool operator ==(FetchSafelyFromSafeObjectPool<T> left, FetchSafelyFromSafeObjectPool<T> right)
+        {
+            return left.Equals(right);
+        }
+
+        public static bool operator !=(FetchSafelyFromSafeObjectPool<T> left, FetchSafelyFromSafeObjectPool<T> right)
+        {
+            return !(left == right);
+        }
+
+        public bool Equals(FetchSafelyFromSafeObjectPool<T> other)
+        {
+            return other._objMySafePool == _objMySafePool && other._objMyValue == _objMyValue;
         }
     }
 }
