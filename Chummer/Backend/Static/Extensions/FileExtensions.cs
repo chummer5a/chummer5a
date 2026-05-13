@@ -194,8 +194,7 @@ namespace Chummer
                     for (string strLine = objReader.ReadLine(); strLine != null; strLine = objReader.ReadLine())
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!string.IsNullOrEmpty(strLine))
-                            sbdReturn.AppendLine(strLine);
+                        sbdReturn.AppendLine(strLine); // Empty lines should still be appended
                     }
                 }
                 return sbdReturn.ToString();
@@ -224,8 +223,7 @@ namespace Chummer
                     for (string strLine = objReader.ReadLine(); strLine != null; strLine = objReader.ReadLine())
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!string.IsNullOrEmpty(strLine))
-                            sbdReturn.AppendLine(strLine);
+                        sbdReturn.AppendLine(strLine); // Empty lines should still be appended
                     }
                 }
                 return sbdReturn.ToString();
@@ -258,8 +256,7 @@ namespace Chummer
                              strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
-                            if (!string.IsNullOrEmpty(strLine))
-                                sbdReturn.AppendLine(strLine);
+                            sbdReturn.AppendLine(strLine); // Empty lines should still be appended
                         }
                     }
                 }
@@ -295,8 +292,7 @@ namespace Chummer
                              strLine = await objReader.ReadLineAsync(token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
-                            if (!string.IsNullOrEmpty(strLine))
-                                sbdReturn.AppendLine(strLine);
+                            sbdReturn.AppendLine(strLine); // Empty lines should still be appended
                         }
                     }
                 }
