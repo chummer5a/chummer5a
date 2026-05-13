@@ -56,7 +56,8 @@ namespace Chummer
         private readonly CancellationTokenSource _objGenericFormClosingCancellationTokenSource = new CancellationTokenSource();
         private readonly CancellationToken _objGenericToken;
         private readonly WebClient _clientDownloader;
-        private readonly WebClient _clientChangelogDownloader;
+        private HttpClient _clientChangelogDownloader;
+        private bool _blnClientChangelogDownloaderIsBusy;
         private string _strExceptionString;
         private HttpClient _clientUpdateFetcher;
         private readonly Uri _uriUpdateLocation;
@@ -79,7 +80,10 @@ namespace Chummer
             _uriUpdateLocation = new Uri(_blnPreferNightly
                 ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
                 : "https://api.github.com/repos/chummer5a/chummer5a/releases/latest");
-            _clientChangelogDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
+            _clientChangelogDownloader = new HttpClient()
+            {
+                Timeout = TimeSpan.FromMinutes(5)
+            };
             _clientDownloader = new WebClient { Proxy = WebRequest.DefaultWebProxy, Encoding = Encoding.UTF8, Credentials = CredentialCache.DefaultNetworkCredentials };
             _clientDownloader.DownloadFileCompleted += wc_DownloadCompleted;
             _clientDownloader.DownloadProgressChanged += wc_DownloadProgressChanged;
@@ -224,6 +228,7 @@ namespace Chummer
             _blnFormClosing = true;
             // Initial cancellation just to be safe, we'll do a second, proper cancellation later
             _clientUpdateFetcher.CancelPendingRequests();
+            _clientChangelogDownloader.CancelPendingRequests();
             CancellationTokenSource objTemp
                 = Interlocked.Exchange(ref _objConnectionLoaderCancellationTokenSource, null);
             if (objTemp?.IsCancellationRequested == false)
@@ -246,7 +251,6 @@ namespace Chummer
                 objTemp.Dispose();
             }
             _clientDownloader.CancelAsync();
-            _clientChangelogDownloader.CancelAsync();
             Task tskOld = Interlocked.Exchange(ref _tskChangelogDownloader, null);
             if (tskOld != null)
             {
@@ -273,6 +277,9 @@ namespace Chummer
             }
             _objGenericFormClosingCancellationTokenSource?.Cancel(false);
             HttpClient objClient = Interlocked.Exchange(ref _clientUpdateFetcher, null);
+            objClient.CancelPendingRequests();
+            objClient.Dispose();
+            objClient = Interlocked.Exchange(ref _clientChangelogDownloader, null);
             objClient.CancelPendingRequests();
             objClient.Dispose();
         }
@@ -370,7 +377,7 @@ namespace Chummer
 
         private async Task LoadConnection(CancellationToken token = default)
         {
-            while (_clientChangelogDownloader.IsBusy)
+            while (_blnClientChangelogDownloaderIsBusy)
             {
                 token.ThrowIfCancellationRequested();
                 await Utils.SafeSleepAsync(token).ConfigureAwait(false);
@@ -507,11 +514,25 @@ namespace Chummer
                 if (!await FileExtensions.SafeDeleteAsync(_strTempLatestVersionChangelogPath + ".tmp", !SilentMode, token: token)
                                          .ConfigureAwait(false))
                     return;
-                await _clientChangelogDownloader
-                      .DownloadFileTaskAsync(uriConnectionAddress, _strTempLatestVersionChangelogPath + ".tmp")
-                      .ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                File.Move(_strTempLatestVersionChangelogPath + ".tmp", _strTempLatestVersionChangelogPath);
+                _blnClientChangelogDownloaderIsBusy = true;
+                try
+                {
+                    using (FileStream objChangelogFileStream = new FileStream(_strTempLatestVersionChangelogPath + ".tmp", FileMode.Create, FileAccess.Write, FileShare.None))
+                    {
+                        using (HttpResponseMessage objResponse = await _clientChangelogDownloader.GetAsync(uriConnectionAddress, token).ConfigureAwait(false))
+                        {
+                            using (Stream objDownload = await objResponse.Content.ReadAsStreamAsync(token).ConfigureAwait(false))
+                                await objDownload.CopyToAsync(objChangelogFileStream, token).ConfigureAwait(false);
+                        }
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    File.Move(_strTempLatestVersionChangelogPath + ".tmp", _strTempLatestVersionChangelogPath);
+                }
+                finally
+                {
+                    _blnClientChangelogDownloaderIsBusy = false;
+                }
             }
             catch (WebException ex)
             {
