@@ -282,8 +282,7 @@ namespace Chummer
                                ParentWeapon = objSelectedWeapon
                            }, token).ConfigureAwait(false))
                 {
-                    frmPickWeapon.MyForm.Mounts.UnionWith(
-                        await objSelectedWeapon.GetAccessoryMountsAsync(token: token).ConfigureAwait(false));
+                    await frmPickWeapon.MyForm.Mounts.AddRangeAsync(objSelectedWeapon.GetAccessoryMountsAsync(token: token), token).ConfigureAwait(false);
 
                     if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
                         return false;

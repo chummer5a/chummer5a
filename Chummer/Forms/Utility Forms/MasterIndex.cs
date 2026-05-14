@@ -571,7 +571,7 @@ namespace Chummer
                                                             if (lstItemsNeedingNameChanges.Count == 0)
                                                             {
                                                                 _lstItems.Add(
-                                                                    objItem); // Not using AddRange because of potential memory issues
+                                                                    objItem); // Not using AddRangeAsync because of potential memory issues
                                                                 lstExistingItems.Add(objItem);
                                                             }
                                                             else
@@ -583,7 +583,7 @@ namespace Chummer
                                                                         StringExtensions.JoinFast(
                                                                             "," + strSpace, objEntry.FileNames)));
                                                                 _lstItems.Add(
-                                                                    objItemToAdd); // Not using AddRange because of potential memory issues
+                                                                    objItemToAdd); // Not using AddRangeAsync because of potential memory issues
                                                                 lstExistingItems.Add(objItemToAdd);
 
                                                                 foreach (ListItem objToRename in
@@ -604,7 +604,7 @@ namespace Chummer
                                                                                 "," + strSpace,
                                                                                 objExistingEntry.FileNames)));
                                                                     _lstItems.Add(
-                                                                        objItemToAdd); // Not using AddRange because of potential memory issues
+                                                                        objItemToAdd); // Not using AddRangeAsync because of potential memory issues
                                                                     lstExistingItems.Add(objItemToAdd);
                                                                 }
                                                             }
@@ -614,7 +614,7 @@ namespace Chummer
                                                 else
                                                 {
                                                     _lstItems.Add(
-                                                        objItem); // Not using AddRange because of potential memory issues
+                                                        objItem); // Not using AddRangeAsync because of potential memory issues
                                                     List<ListItem> lstHelperItems = Utils.ListItemListPool.Get();
                                                     lstHelperItems.Add(objItem);
                                                     dicHelper.Add(strKey, lstHelperItems);

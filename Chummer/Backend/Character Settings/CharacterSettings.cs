@@ -996,39 +996,38 @@ namespace Chummer
             }
         }
 
-        public async Task<List<string>> GetDifferingPropertyNamesAsync(CharacterSettings objOther, CancellationToken token = default)
+        public async IAsyncEnumerable<string> GetDifferingPropertyNamesAsync(CharacterSettings objOther, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             PropertyInfo[] aobjProperties = typeof(CharacterSettings).GetProperties();
-            List<string> lstReturn = new List<string>(aobjProperties.Length);
             if (IsDisposed)
             {
                 if (objOther?.IsDisposed != true)
                 {
-                    lstReturn.Add(nameof(SourceIdString));
-                    lstReturn.Add(nameof(FileName));
+                    yield return nameof(SourceIdString);
+                    yield return nameof(FileName);
                     foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
-                        lstReturn.Add(objProperty.Name);
-                    lstReturn.Add(nameof(CustomDataDirectoryKeys));
-                    lstReturn.Add(nameof(Books));
-                    lstReturn.Add(nameof(BannedWareGrades));
+                        yield return objProperty.Name;
+                    yield return nameof(CustomDataDirectoryKeys);
+                    yield return nameof(Books);
+                    yield return nameof(BannedWareGrades);
                 }
-                return lstReturn;
+                yield break;
             }
             else if (objOther?.IsDisposed != false)
             {
-                lstReturn.Add(nameof(SourceIdString));
-                lstReturn.Add(nameof(FileName));
+                yield return nameof(SourceIdString);
+                yield return nameof(FileName);
                 foreach (PropertyInfo objProperty in aobjProperties.Where(x => x.CanRead && x.CanWrite))
-                    lstReturn.Add(objProperty.Name);
-                lstReturn.Add(nameof(CustomDataDirectoryKeys));
-                lstReturn.Add(nameof(Books));
-                lstReturn.Add(nameof(BannedWareGrades));
-                return lstReturn;
+                    yield return objProperty.Name;
+                yield return nameof(CustomDataDirectoryKeys);
+                yield return nameof(Books);
+                yield return nameof(BannedWareGrades);
+                yield break;
             }
 
             if (objOther == this)
-                return lstReturn;
+                yield break;
 
             await using (await objOther.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -1038,14 +1037,14 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     if (!_guiSourceId.Equals(objOther._guiSourceId))
                     {
-                        lstReturn.Add(nameof(SourceIdString));
+                        yield return nameof(SourceIdString);
                     }
 
                     token.ThrowIfCancellationRequested();
 
                     if (!_strFileName.Equals(objOther._strFileName))
                     {
-                        lstReturn.Add(nameof(FileName));
+                        yield return nameof(FileName);
                     }
 
                     token.ThrowIfCancellationRequested();
@@ -1058,31 +1057,29 @@ namespace Chummer
                         object objOtherValue = objProperty.GetValue(objOther);
                         if (objMyValue?.Equals(objOtherValue) != false)
                             continue;
-                        lstReturn.Add(objProperty.Name);
+                        yield return objProperty.Name;
                     }
 
                     if (!await _dicCustomDataDirectoryKeys.SequenceEqualAsync(await objOther.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false), token).ConfigureAwait(false))
                     {
-                        lstReturn.Add(nameof(CustomDataDirectoryKeys));
+                        yield return nameof(CustomDataDirectoryKeys);
                     }
 
                     token.ThrowIfCancellationRequested();
 
                     if (!_setBooks.SetEquals(await objOther.GetBooksWritableAsync(token).ConfigureAwait(false)))
                     {
-                        lstReturn.Add(nameof(Books));
+                        yield return nameof(Books);
                     }
 
                     token.ThrowIfCancellationRequested();
 
                     if (!_setBannedWareGrades.SetEquals(await objOther.GetBannedWareGradesAsync(token).ConfigureAwait(false)))
                     {
-                        lstReturn.Add(nameof(BannedWareGrades));
+                        yield return nameof(BannedWareGrades);
                     }
                 }
             }
-
-            return lstReturn;
         }
 
         public bool HasIdenticalSettings(CharacterSettings objOther, CancellationToken token = default)

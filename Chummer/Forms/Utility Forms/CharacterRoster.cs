@@ -1127,14 +1127,16 @@ namespace Chummer
             bool blnAddRecentNode = false;
             List<string> lstRecents = (await GlobalSettings.MostRecentlyUsedCharacters.ToArrayAsync(token).ConfigureAwait(false)).ToList();
             // Add any characters that are open to the displayed list so we can have more than 10 characters listed
-            foreach (Character objCharacter in Program.MainForm.OpenFormsWithCharacters.SelectMany(
-                         x => x.CharacterObjects))
+            await foreach (IHasCharacterObjects frmOpenForm in Program.MainForm.GetOpenFormsWithCharactersAsync(token).ConfigureAwait(false))
             {
-                string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
-                token.ThrowIfCancellationRequested();
-                // Make sure we're not loading a character that was already loaded by the MRU list.
-                if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
-                    lstRecents.Add(strFile);
+                foreach (Character objCharacter in frmOpenForm.CharacterObjects)
+                {
+                    string strFile = await objCharacter.GetFileNameAsync(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    // Make sure we're not loading a character that was already loaded by the MRU list.
+                    if (!lstFavorites.Contains(strFile) && !lstRecents.Contains(strFile))
+                        lstRecents.Add(strFile);
+                }
             }
             foreach (string strFavorite in lstFavorites)
                 lstRecents.Remove(strFavorite);
@@ -2382,7 +2384,7 @@ namespace Chummer
                     if (objOpenCharacter != null)
                     {
                         Stack<Form> stkToClose = new Stack<Form>();
-                        foreach (IHasCharacterObjects objOpenForm in Program.MainForm.OpenFormsWithCharacters)
+                        await foreach (IHasCharacterObjects objOpenForm in Program.MainForm.GetOpenFormsWithCharactersAsync(_objGenericToken).ConfigureAwait(false))
                         {
                             _objGenericToken.ThrowIfCancellationRequested();
                             if (objOpenForm.CharacterObjects.Contains(objOpenCharacter)
@@ -2424,8 +2426,8 @@ namespace Chummer
                             = (strTag.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase)
                                || strTag.EndsWith(
                                    ".chum5lz", StringComparison.OrdinalIgnoreCase))
-                              && Program.MainForm.OpenFormsWithCharacters.Any(
-                                  x => x.CharacterObjects.Any(y => y.FileName == strTag));
+                              && await Program.MainForm.GetOpenFormsWithCharactersAsync(_objGenericToken).AnyAsync(
+                                  x => x.CharacterObjects.Any(y => y.FileName == strTag), _objGenericToken).ConfigureAwait(false);
                         ContextMenuStrip objStrip =
                             await CreateContextMenuStripAsync(blnIncludeCloseOpenCharacter, _objGenericToken)
                                 .ConfigureAwait(false);

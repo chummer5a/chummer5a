@@ -16091,6 +16091,58 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Return an enumerable of CyberwareGrades from XML files.
+        /// </summary>
+        /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
+        /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        public async IAsyncEnumerable<Grade> GetGradesAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                string strXPath;
+                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
+                {
+                    if (Settings != null)
+                    {
+                        sbdFilter.Append('(', Settings.BookXPath(token: token), ") and ");
+                        if (!await GetIgnoreRulesAsync(token).ConfigureAwait(false) && !await GetCreatedAsync(token).ConfigureAwait(false) && !blnIgnoreBannedGrades)
+                        {
+                            foreach (string strBannedGrade in await (await GetSettingsAsync(token).ConfigureAwait(false)).GetBannedWareGradesAsync(token).ConfigureAwait(false))
+                            {
+                                sbdFilter.Append("not(contains(name, ", strBannedGrade.CleanXPath(), ")) and ");
+                            }
+                        }
+                    }
+
+                    if (sbdFilter.Length != 0)
+                    {
+                        sbdFilter.Length -= 5;
+                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
+                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
+                    }
+                    else
+                        strXPath = "/chummer/grades/grade";
+                }
+
+                using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource), token: token).ConfigureAwait(false))
+                           .SelectNodes(strXPath))
+                {
+                    if (xmlGradeList?.Count > 0)
+                    {
+                        foreach (XmlNode objNode in xmlGradeList)
+                        {
+                            Grade objGrade = new Grade(this, objSource);
+                            await objGrade.LoadAsync(objNode, token).ConfigureAwait(false);
+                            yield return objGrade;
+                        }
+                    }
+                }
+            }
+        }
+
+        /// <summary>
         /// Return a specific Cyberware grade based on its name.
         /// </summary>
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
@@ -16122,57 +16174,17 @@ namespace Chummer
         public async Task<Grade> GetGradeByNameAsync(Improvement.ImprovementSource objSource, string strName, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            Grade objStandardGrade = null;
+            await foreach (Grade objGrade in GetGradesAsync(objSource, blnIgnoreBannedGrades, token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                Grade objStandardGrade = null;
-                string strXPath;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
-                {
-                    CharacterSettings objSettings = await GetSettingsAsync(token).ConfigureAwait(false);
-                    if (objSettings != null)
-                    {
-                        sbdFilter.Append(await objSettings.BookXPathAsync(token: token).ConfigureAwait(false), " and ");
-                        if (!await GetIgnoreRulesAsync(token).ConfigureAwait(false) && !await GetCreatedAsync(token).ConfigureAwait(false) && !blnIgnoreBannedGrades)
-                        {
-                            foreach (string strBannedGrade in objSettings.BannedWareGrades)
-                            {
-                                sbdFilter.Append("not(contains(name, ", strBannedGrade.CleanXPath(), ")) and ");
-                            }
-                        }
-                    }
-
-                    if (sbdFilter.Length != 0)
-                    {
-                        sbdFilter.Length -= 5;
-                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
-                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
-                    }
-                    else
-                        strXPath = "/chummer/grades/grade";
-                }
-
-                using (XmlNodeList xmlGradeList =
-                       (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource), token: token).ConfigureAwait(false))
-                           .SelectNodes(strXPath))
-                {
-                    if (xmlGradeList?.Count > 0)
-                    {
-                        foreach (XmlNode objNode in xmlGradeList)
-                        {
-                            Grade objGrade = new Grade(this, objSource);
-                            await objGrade.LoadAsync(objNode, token).ConfigureAwait(false);
-                            string strGradeName = objGrade.Name;
-                            if (strGradeName == strName)
-                                return objGrade;
-                            if (strGradeName == "Standard")
-                                objStandardGrade = objGrade;
-                        }
-                    }
-                }
-
-                return objStandardGrade;
+                string strGradeName = objGrade.Name;
+                if (strGradeName == strName)
+                    return objGrade;
+                if (strGradeName == "Standard")
+                    objStandardGrade = objGrade;
             }
+            return objStandardGrade;
         }
 
         /// <summary>
@@ -16192,54 +16204,9 @@ namespace Chummer
         /// <param name="objSource">Source to load the Grades from, either Bioware or Cyberware.</param>
         /// <param name="blnIgnoreBannedGrades">Whether to ignore grades banned at chargen.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
+        public Task<List<Grade>> GetGradesListAsync(Improvement.ImprovementSource objSource, bool blnIgnoreBannedGrades = false, CancellationToken token = default)
         {
-            List<Grade> lstReturn;
-            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
-            {
-                token.ThrowIfCancellationRequested();
-                string strXPath;
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdFilter))
-                {
-                    if (Settings != null)
-                    {
-                        sbdFilter.Append(await (await GetSettingsAsync(token).ConfigureAwait(false)).BookXPathAsync(token: token).ConfigureAwait(false), " and ");
-                        if (!blnIgnoreBannedGrades && !await GetCreatedAsync(token).ConfigureAwait(false) && !await GetIgnoreRulesAsync(token).ConfigureAwait(false))
-                        {
-                            foreach (string strBannedGrade in (await GetSettingsAsync(token).ConfigureAwait(false)).BannedWareGrades)
-                            {
-                                sbdFilter.Append("not(contains(name, ", strBannedGrade.CleanXPath(), ")) and ");
-                            }
-                        }
-                    }
-
-                    if (sbdFilter.Length != 0)
-                    {
-                        sbdFilter.Length -= 5;
-                        // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
-                        strXPath = string.Concat("/chummer/grades/grade[(", sbdFilter.Append(")]").ToString());
-                    }
-                    else
-                        strXPath = "/chummer/grades/grade";
-                }
-
-                using (XmlNodeList xmlGradeList = (await LoadDataAsync(Grade.GetDataFileNameFromImprovementSource(objSource), token: token).ConfigureAwait(false))
-                           .SelectNodes(strXPath))
-                {
-                    lstReturn = new List<Grade>(xmlGradeList?.Count ?? 0);
-                    if (xmlGradeList?.Count > 0)
-                    {
-                        foreach (XmlNode objNode in xmlGradeList)
-                        {
-                            Grade objGrade = new Grade(this, objSource);
-                            await objGrade.LoadAsync(objNode, token).ConfigureAwait(false);
-                            lstReturn.Add(objGrade);
-                        }
-                    }
-                }
-            }
-
-            return lstReturn;
+            return GetGradesAsync(objSource, blnIgnoreBannedGrades, token).ToListAsync(token).AsTask();
         }
 
         /// <summary>
@@ -16928,24 +16895,23 @@ namespace Chummer
         /// <summary>
         /// Creates a list of keywords for each category of an XML node. Used to preselect whether items of that category are discounted by the Black Market Pipeline quality.
         /// </summary>
-        public async Task<List<string>> GenerateBlackMarketMappingsAsync(XPathNavigator xmlCategoryList, CancellationToken token = default)
+        public async IAsyncEnumerable<string> GenerateBlackMarketMappingsAsync(XPathNavigator xmlCategoryList, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<string> lstReturn;
             if (xmlCategoryList == null)
-                return new List<string>();
+                yield break;
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
                 // Character has no Black Market discount qualities. Fail out early.
                 if (!BlackMarketDiscount)
-                    return new List<string>();
+                    yield break;
                 // if the passed list is still the root, assume we're looking for default categories. Special cases like vehicle modcategories are expected to be passed through by the parameter.
                 if (xmlCategoryList.Name == "chummer")
                 {
                     xmlCategoryList = xmlCategoryList.SelectSingleNodeAndCacheExpression("categories", token);
                     if (xmlCategoryList == null)
-                        return new List<string>();
+                        yield break;
                 }
 
                 // Get all the improved names of the Black Market Pipeline improvements. In most cases this should only be 1 item, but supports custom content.
@@ -16959,7 +16925,6 @@ namespace Chummer
                     }
 
                     XPathNodeIterator lstCategories = xmlCategoryList.SelectAndCacheExpression("category", token);
-                    lstReturn = new List<string>(lstCategories.Count);
 
                     // For each category node, split the comma-separated blackmarket attribute (if present on the node), then add each category where any of those items matches a Black Market Pipeline improvement.
                     foreach (XPathNavigator xmlCategoryNode in lstCategories)
@@ -16970,12 +16935,11 @@ namespace Chummer
                             strBlackMarketAttribute.SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries)
                                                    .Any(x => setNames.Contains(x)))
                         {
-                            lstReturn.Add(xmlCategoryNode.Value);
+                            yield return xmlCategoryNode.Value;
                         }
                     }
                 }
             }
-            return lstReturn;
         }
 
         /// <summary>
@@ -18806,7 +18770,7 @@ namespace Chummer
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
                                     await OptionsOnMultiplePropertyChanged(await value
-                                            .GetDifferingPropertyNamesAsync(objOldSettings).ConfigureAwait(false))
+                                            .GetDifferingPropertyNamesAsync(objOldSettings).ToListAsync().ConfigureAwait(false))
                                         .ConfigureAwait(false);
                                 });
                             }
@@ -18815,7 +18779,7 @@ namespace Chummer
                                 Utils.SafelyRunSynchronously(async () =>
                                 {
                                     await OptionsOnMultiplePropertyChanged(await objOldSettings
-                                            .GetDifferingPropertyNamesAsync(null).ConfigureAwait(false))
+                                            .GetDifferingPropertyNamesAsync(null).ToListAsync().ConfigureAwait(false))
                                         .ConfigureAwait(false);
                                 });
                             }
@@ -18890,13 +18854,13 @@ namespace Chummer
                         if (value?.IsDisposed == false)
                         {
                             await OptionsOnMultiplePropertyChanged(await value
-                                    .GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false), token)
+                                    .GetDifferingPropertyNamesAsync(objOldSettings, token).ToListAsync(token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                         }
                         else if (objOldSettings != null)
                         {
                             await OptionsOnMultiplePropertyChanged(await objOldSettings
-                                    .GetDifferingPropertyNamesAsync(null, token).ConfigureAwait(false), token)
+                                    .GetDifferingPropertyNamesAsync(null, token).ToListAsync(token).ConfigureAwait(false), token)
                                 .ConfigureAwait(false);
                         }
                     }
@@ -40671,45 +40635,44 @@ namespace Chummer
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                out HashSet<string> setWeaponBlackMarketMaps))
                     {
-                        setArmorBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                        await setArmorBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false))
-                                .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
-                        setArmorModBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                                .SelectSingleNodeAndCacheExpression("/chummer", token), token), token).ConfigureAwait(false);
+                        await setArmorModBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                                 (await LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false))
                                     .SelectSingleNodeAndCacheExpression(
-                                        "/chummer/modcategories", token), token)
-                            .ConfigureAwait(false));
-                        setBiowareBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                                        "/chummer/modcategories", token), token), token)
+                            .ConfigureAwait(false);
+                        await setBiowareBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
-                        setCyberwareBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                            token), token).ConfigureAwait(false);
+                        await setCyberwareBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("cyberware.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
-                        setGearBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                            token), token).ConfigureAwait(false);
+                        await setGearBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
-                        setVehicleBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                            token), token).ConfigureAwait(false);
+                        await setVehicleBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
-                        setVehicleModBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                            token), token).ConfigureAwait(false);
+                        await setVehicleModBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                                 (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
                                     .SelectSingleNodeAndCacheExpression(
-                                        "/chummer/modcategories", token), token)
-                            .ConfigureAwait(false));
-                        setWeaponMountBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                                        "/chummer/modcategories", token), token), token)
+                            .ConfigureAwait(false);
+                        await setWeaponMountBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                                 (await LoadDataXPathAsync("vehicles.xml", token: token).ConfigureAwait(false))
                                     .SelectSingleNodeAndCacheExpression(
-                                        "/chummer/weaponmountcategories", token), token)
-                            .ConfigureAwait(false));
-                        setWeaponBlackMarketMaps.AddRange(await GenerateBlackMarketMappingsAsync(
+                                        "/chummer/weaponmountcategories", token), token), token)
+                            .ConfigureAwait(false);
+                        await setWeaponBlackMarketMaps.AddRangeAsync(GenerateBlackMarketMappingsAsync(
                             (await LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false))
                                 .SelectSingleNodeAndCacheExpression("/chummer", token),
-                            token).ConfigureAwait(false));
+                            token), token).ConfigureAwait(false);
 
                         await Armor.ForEachWithSideEffectsAsync(async objArmor =>
                         {

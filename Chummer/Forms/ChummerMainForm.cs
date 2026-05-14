@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
+using System.Runtime.CompilerServices;
 #if !DEBUG
 using System.Net.Http;
 #endif
@@ -4539,6 +4540,66 @@ namespace Chummer
                 {
                     objLocker1?.Dispose();
                 }
+            }
+        }
+
+        public async IAsyncEnumerable<IHasCharacterObjects> GetOpenFormsWithCharactersAsync([EnumeratorCancellation] CancellationToken token = default)
+        {
+            // Weird structure with assignment to locals and null checks needed in case we dispose the list in the middle of an iteration
+            // Locks should not be upgradeable because if we want to modify these lists, we should do so individually instead of through this property
+            ThreadSafeObservableCollection<CharacterShared> lstForms1 = _lstOpenCharacterEditorForms;
+            IAsyncDisposable objLocker1 = lstForms1 != null ? await lstForms1.LockObject.EnterReadLockAsync(token).ConfigureAwait(false) : null;
+            try
+            {
+                if (lstForms1 != null)
+                {
+                    foreach (CharacterShared frmLoop in lstForms1)
+                        yield return frmLoop;
+                }
+
+                // Keep the old read locks active until we are completely done with our iterations so that we don't randomly get new characters opened while we are still checking later forms
+                ThreadSafeObservableCollection<CharacterSheetViewer> lstForms2 = _lstOpenCharacterSheetViewers;
+                IAsyncDisposable objLocker2 = lstForms2 != null ? await lstForms2.LockObject.EnterReadLockAsync(token).ConfigureAwait(false) : null;
+                try
+                {
+                    if (lstForms2 != null)
+                    {
+                        foreach (CharacterSheetViewer frmLoop in _lstOpenCharacterSheetViewers)
+                            yield return frmLoop;
+                    }
+
+                    ThreadSafeObservableCollection<ExportCharacter> lstForms3 = _lstOpenCharacterExportForms;
+                    IAsyncDisposable objLocker3 = lstForms3 != null ? await lstForms3.LockObject.EnterReadLockAsync(token).ConfigureAwait(false) : null;
+                    try
+                    {
+                        if (lstForms3 != null)
+                        {
+                            foreach (ExportCharacter frmLoop in _lstOpenCharacterExportForms)
+                                yield return frmLoop;
+                        }
+
+                        PrintMultipleCharacters frmToProcess = _frmOpenPrintMultipleCharacters;
+                        if (frmToProcess != null)
+                        {
+                            yield return frmToProcess;
+                        }
+                    }
+                    finally
+                    {
+                        if (objLocker3 != null)
+                            await objLocker3.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (objLocker2 != null)
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objLocker1 != null)
+                    await objLocker1.DisposeAsync().ConfigureAwait(false);
             }
         }
 

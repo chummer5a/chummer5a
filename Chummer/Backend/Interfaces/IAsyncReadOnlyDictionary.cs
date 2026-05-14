@@ -44,7 +44,7 @@ namespace Chummer
             if (await dicLeft.GetCountAsync(token).ConfigureAwait(false)
                 != await dicRight.GetCountAsync(token).ConfigureAwait(false))
                 return false;
-            await using (IAsyncEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = dicLeft.GetEnumeratorAsync(token))
+            IEnumerator<KeyValuePair<object, IComparable>> objLeftEnumerator = await dicLeft.GetEnumeratorAsync(token).ConfigureAwait(false);
             try
             {
                 while (objLeftEnumerator.MoveNext())

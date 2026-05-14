@@ -2588,13 +2588,13 @@ namespace Chummer.Backend.Skills
                             objNewSettings.MultiplePropertiesChangedAsync += OnCharacterSettingsPropertyChanged;
                             if (!await objNewSettings.HasIdenticalSettingsAsync(objOldSettings, token).ConfigureAwait(false))
                             {
-                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ConfigureAwait(false));
+                                MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objNewSettings.GetDifferingPropertyNamesAsync(objOldSettings, token).ToListAsync(token).ConfigureAwait(false));
                                 await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
                             }
                         }
                         else
                         {
-                            MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ConfigureAwait(false));
+                            MultiplePropertiesChangedEventArgs e2 = new MultiplePropertiesChangedEventArgs(await objOldSettings.GetDifferingPropertyNamesAsync(objNewSettings, token).ToListAsync(token).ConfigureAwait(false));
                             await OnCharacterSettingsPropertyChanged(this, e2, token).ConfigureAwait(false);
                         }
                     }

@@ -35,6 +35,18 @@ namespace Chummer
                 lstCollection.Add(objItem);
         }
 
+        public static async Task AddRangeAsync<T>(this ICollection<T> lstCollection, IAsyncEnumerable<T> lstToAdd, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            ArgumentNullException.ThrowIfNull(lstCollection, nameof(lstCollection));
+            ArgumentNullException.ThrowIfNull(lstToAdd, nameof(lstToAdd));
+            await foreach (T objItem in lstToAdd.ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                lstCollection.Add(objItem);
+            }
+        }
+
         /// <summary>
         /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant.
         /// Uses the parallel option for large enough collections where it could potentially be faster

@@ -26,6 +26,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -6157,20 +6158,16 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public async Task<List<string>> GetAccessoryMountsAsync(bool blnWithInternalAndNone = true, CancellationToken token = default)
+        public async IAsyncEnumerable<string> GetAccessoryMountsAsync(bool blnWithInternalAndNone = true, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             string strSlots = ModificationSlots;
             if (string.IsNullOrEmpty(strSlots) && await WeaponAccessories.AllAsync(x => !x.Equipped || string.IsNullOrEmpty(x.AddMount), token).ConfigureAwait(false))
             {
-                return blnWithInternalAndNone
-                    ? new List<string>(1)
-                        {
-                            "None"
-                        }
-                    : new List<string>();
+                if (blnWithInternalAndNone)
+                    yield return "None";
+                yield break;
             }
-            List<string> lstReturn = new List<string>(8);
             int intOldValue;
             Dictionary<string, int> dicMounts = new Dictionary<string, int>(8);
             foreach (string strMount in strSlots.SplitNoAlloc(
@@ -6227,22 +6224,18 @@ namespace Chummer.Backend.Equipment
 
             foreach (KeyValuePair<string, int> kvpMount in dicMounts)
             {
-                token.ThrowIfCancellationRequested();
                 for (int i = 0; i < kvpMount.Value; ++i)
                 {
-                    token.ThrowIfCancellationRequested();
-                    lstReturn.Add(kvpMount.Key);
+                    yield return kvpMount.Key;
                 }
             }
-
             if (blnWithInternalAndNone)
             {
                 if (!dicMounts.ContainsKey("Internal"))
-                    lstReturn.Add("Internal");
+                    yield return "Internal";
                 if (!dicMounts.ContainsKey("None"))
-                    lstReturn.Add("None");
+                    yield return "None";
             }
-            return lstReturn;
         }
 
         public string DisplayAccessoryMounts(string strLanguage)
@@ -6270,7 +6263,7 @@ namespace Chummer.Backend.Equipment
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdMounts))
             {
                 token.ThrowIfCancellationRequested();
-                foreach (string strMount in await GetAccessoryMountsAsync(token: token).ConfigureAwait(false))
+                await foreach (string strMount in GetAccessoryMountsAsync(token: token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     sbdMounts.Append(strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
@@ -14329,7 +14322,7 @@ namespace Chummer.Backend.Equipment
             {
                 if (!blnExtraMountFound)
                 {
-                    List<string> lstAvailableMounts = await GetAccessoryMountsAsync(token: token).ConfigureAwait(false);
+                    List<string> lstAvailableMounts = await GetAccessoryMountsAsync(token: token).ToListAsync(token).ConfigureAwait(false);
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                         out HashSet<string> setPossibleMounts))
                     using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
@@ -14406,7 +14399,7 @@ namespace Chummer.Backend.Equipment
                             setPossibleMounts.Add(strLoopMount);
                         }
                         token.ThrowIfCancellationRequested();
-                        blnMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleMounts.Contains(x));
+                        blnMountFound = await GetAccessoryMountsAsync(token: token).AnyAsync(x => setPossibleMounts.Contains(x), token).ConfigureAwait(false);
                     }
                 }
             }
@@ -14422,7 +14415,7 @@ namespace Chummer.Backend.Equipment
                         setPossibleExtraMounts.Add(strLoopMount);
                     }
                     token.ThrowIfCancellationRequested();
-                    blnExtraMountFound = (await GetAccessoryMountsAsync(token: token)).Any(x => setPossibleExtraMounts.Contains(x));
+                    blnExtraMountFound = await GetAccessoryMountsAsync(token: token).AnyAsync(x => setPossibleExtraMounts.Contains(x), token).ConfigureAwait(false);
                 }
             }
 
