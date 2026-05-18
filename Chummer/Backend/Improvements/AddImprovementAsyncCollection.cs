@@ -5477,7 +5477,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     bool blnIncludeUnarmed = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@includeunarmed", token)?.Value == bool.TrueString;
                     string strExclude = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@excludecategory", token)?.Value ?? string.Empty;
                     string strWeaponDetails = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@weapondetails", token)?.Value ?? string.Empty;
-                    foreach (Weapon objWeapon in await _objCharacter.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                    await foreach (Weapon objWeapon in _objCharacter.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (!string.IsNullOrEmpty(strExclude) && objWeapon.RangeType == strExclude)
                             continue;

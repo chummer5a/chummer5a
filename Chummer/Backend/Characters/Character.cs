@@ -794,7 +794,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 // First remove all existing bindings
-                foreach (CharacterAttrib objAttribute in await GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
+                await foreach (CharacterAttrib objAttribute in GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
                     switch (objAttribute.Abbrev.ToUpperInvariant())
@@ -9215,7 +9215,7 @@ namespace Chummer
                                         : await (await GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(x => x.GetChildrenAsync(token),
                                                                          async x => objCyberware.IncludePair.Contains(x.Name)
                                                                               && x.Extra == objCyberware.Extra
-                                                                              && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                                                              && await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false), token).ToListAsync(token).ConfigureAwait(false);
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                     if (!string.IsNullOrEmpty(objCyberware.Location) &&
                                         objCyberware.IncludePair.All(x => x == objCyberware.Name))
@@ -11149,7 +11149,7 @@ namespace Chummer
                             }
                             else if (!await GetCreatedAsync(token).ConfigureAwait(false))
                             {
-                                foreach (CharacterAttrib objAttrib in await GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
+                                await foreach (CharacterAttrib objAttrib in GetAllAttributesForModificationAsync(token).ConfigureAwait(false))
                                 {
                                     while (await objAttrib.GetBaseAsync(token).ConfigureAwait(false) > 0 &&
                                            await objAttrib.GetKarmaMaximumAsync(token).ConfigureAwait(false) < 0)
@@ -13769,7 +13769,7 @@ namespace Chummer
             }
         }
 
-        public async Task<List<IHasInternalId>> GetItemsByInternalIdsAsync(IEnumerable<string> lstIds, bool blnOnlyValidImprovementSources = false, CancellationToken token = default)
+        public async IAsyncEnumerable<IHasInternalId> GetItemsByInternalIdsAsync(IEnumerable<string> lstIds, bool blnOnlyValidImprovementSources = false, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setIds))
@@ -13780,665 +13780,576 @@ namespace Chummer
                     if (!string.IsNullOrEmpty(strId))
                         setIds.Add(strId.TrimEndOnce("Pair").TrimEndOnce("Wireless"));
                 }
-                List<IHasInternalId> lstReturn = new List<IHasInternalId>(setIds.Count);
                 if (setIds.Count == 0)
-                    return lstReturn;
+                    yield break;
                 await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
-                    await (await Gear.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                    await foreach (Gear objGear in Gear.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
-                        if (setIds.Remove(x.InternalId))
+                        if (setIds.Remove(objGear.InternalId))
                         {
-                            lstReturn.Add(x);
+                            yield return objGear;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Armor.ForEachWithBreakAsync(async objArmor =>
+                    }
+
+                    foreach (Armor objArmor in Armor)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objArmor.InternalId))
                         {
-                            lstReturn.Add(objArmor);
+                            yield return objArmor;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                        foreach (ArmorMod objMod in objArmor.ArmorMods)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objMod.InternalId))
                             {
-                                lstReturn.Add(objMod);
+                                yield return objMod;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await foreach (Gear objGear in objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
-                                if (setIds.Remove(x.InternalId))
+                                if (setIds.Remove(objGear.InternalId))
                                 {
-                                    lstReturn.Add(x);
+                                    yield return objGear;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return false;
-                        await (await objArmor.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
-                        {
-                            if (setIds.Remove(x.InternalId))
-                            {
-                                lstReturn.Add(x);
-                                if (setIds.Count == 0)
-                                    return false;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await (await Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                        }
+                        await foreach (Gear objGear in objArmor.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                        {
+                            if (setIds.Remove(objGear.InternalId))
+                            {
+                                yield return objGear;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                    }
+
+                    await foreach (Weapon objWeapon in Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                     {
                         if (setIds.Remove(objWeapon.InternalId))
                         {
-                            lstReturn.Add(objWeapon);
+                            yield return objWeapon;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                        foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objMod.InternalId))
                             {
-                                lstReturn.Add(objMod);
+                                yield return objMod;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await foreach (Gear objGear in objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
-                                if (setIds.Remove(x.InternalId))
+                                if (setIds.Remove(objGear.InternalId))
                                 {
-                                    lstReturn.Add(x);
+                                    yield return objGear;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await (await Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                            }
+                        }
+                    }
+
+                    await foreach (Cyberware objCyberware in Cyberware.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
-                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objCyberware.InternalId))
                         {
-                            lstReturn.Add(objCyberware);
+                            yield return objCyberware;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                        await foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
-                            if (setIds.Remove(x.InternalId))
+                            if (setIds.Remove(objGear.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objGear;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Drugs.ForEachWithBreakAsync(async objDrug =>
+                        }
+                    }
+
+                    foreach (Drug objDrug in Drugs)
                     {
                         token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objDrug.InternalId))
                         {
-                            lstReturn.Add(objDrug);
+                            yield return objDrug;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await objDrug.Components.ForEachWithBreakAsync(x =>
+                        foreach (DrugComponent objComponent in objDrug.Components)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objComponent.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objComponent;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Lifestyles.ForEachWithBreakAsync(async objLifestyle =>
+                        }
+                    }
+
+                    foreach (Lifestyle objLifestyle in Lifestyles)
                     {
                         token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objLifestyle.InternalId))
                         {
-                            lstReturn.Add(objLifestyle);
+                            yield return objLifestyle;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await objLifestyle.LifestyleQualities.ForEachWithBreakAsync(x =>
+                        foreach (LifestyleQuality objQuality in objLifestyle.LifestyleQualities)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objQuality.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objQuality;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Improvements.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Arts.ForEachWithBreakAsync(x =>
+                    }
+
+                    foreach (Improvement objImprovement in Improvements)
                     {
-                        if (setIds.Remove(x.InternalId))
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objImprovement.InternalId))
                         {
-                            lstReturn.Add(x);
+                            yield return objImprovement;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await CritterPowers.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
-                        }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Enhancements.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
-                        }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await InitiationGrades.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
-                        }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await LimitModifiers.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
-                        }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await MartialArts.ForEachWithBreakAsync(async objArt =>
+                    }
+
+                    foreach (Art objArt in Arts)
                     {
                         token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objArt.InternalId))
                         {
-                            lstReturn.Add(objArt);
+                            yield return objArt;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        await objArt.Techniques.ForEachWithBreakAsync(x =>
+                    }
+                    foreach (CritterPower objCritterPower in CritterPowers)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objCritterPower.InternalId))
                         {
-                            if (setIds.Remove(x.InternalId))
+                            yield return objCritterPower;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (Enhancement objEnhancement in Enhancements)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objEnhancement.InternalId))
+                        {
+                            yield return objEnhancement;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (InitiationGrade objGrade in InitiationGrades)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objGrade.InternalId))
+                        {
+                            yield return objGrade;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (LimitModifier objModifier in LimitModifiers)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objModifier.InternalId))
+                        {
+                            yield return objModifier;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
+                    foreach (MartialArt objArt in MartialArts)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objArt.InternalId))
+                        {
+                            yield return objArt;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                        foreach (MartialArtTechnique objTechnique in objArt.Techniques)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objTechnique.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objTechnique;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        return setIds.Count > 0;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await MentorSpirits.ForEachWithBreakAsync(x =>
-                    {
-                        if (setIds.Remove(x.InternalId))
-                        {
-                            lstReturn.Add(x);
-                            if (setIds.Count == 0)
-                                return false;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Metamagics.ForEachWithBreakAsync(x =>
+                    }
+                    foreach (MentorSpirit objMentor in MentorSpirits)
                     {
-                        if (setIds.Remove(x.InternalId))
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objMentor.InternalId))
                         {
-                            lstReturn.Add(x);
+                            yield return objMentor;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Powers.ForEachWithBreakAsync(x =>
+                    }
+                    foreach (Metamagic objMetamagic in Metamagics)
                     {
-                        if (setIds.Remove(x.InternalId))
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objMetamagic.InternalId))
                         {
-                            lstReturn.Add(x);
+                            yield return objMetamagic;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
-                    await Qualities.ForEachWithBreakAsync(x =>
+                    }
+                    foreach (Power objPower in Powers)
                     {
-                        if (setIds.Remove(x.InternalId))
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objPower.InternalId))
                         {
-                            lstReturn.Add(x);
+                            yield return objPower;
                             if (setIds.Count == 0)
-                                return false;
+                                yield break;
                         }
-                        return true;
-                    }, token).ConfigureAwait(false);
-                    if (setIds.Count == 0)
-                        return lstReturn;
+                    }
+                    foreach (Quality objQuality in Qualities)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (setIds.Remove(objQuality.InternalId))
+                        {
+                            yield return objQuality;
+                            if (setIds.Count == 0)
+                                yield break;
+                        }
+                    }
                     token.ThrowIfCancellationRequested();
                     if (setIds.Remove(MagicTradition.InternalId))
                     {
-                        lstReturn.Add(MagicTradition);
+                        yield return MagicTradition;
                         if (setIds.Count == 0)
-                            return lstReturn;
+                            yield break;
                     }
 
                     if (!blnOnlyValidImprovementSources)
                     {
-                        await Vehicles.ForEachWithBreakAsync(async objVehicle =>
+                        foreach (Vehicle objVehicle in Vehicles)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objVehicle.InternalId))
                             {
-                                lstReturn.Add(objVehicle);
+                                yield return objVehicle;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            await (await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await foreach (Gear objGear in objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
-                                if (setIds.Remove(x.InternalId))
+                                if (setIds.Remove(objGear.InternalId))
                                 {
-                                    lstReturn.Add(x);
+                                    yield return objGear;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            if (setIds.Count == 0)
-                                return false;
-                            await (await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                            }
+                            await foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                             {
                                 if (setIds.Remove(objWeapon.InternalId))
                                 {
-                                    lstReturn.Add(objWeapon);
+                                    yield return objWeapon;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (setIds.Remove(objMod.InternalId))
                                     {
-                                        lstReturn.Add(objMod);
+                                        yield return objMod;
                                         if (setIds.Count == 0)
-                                            return false;
+                                            yield break;
                                     }
-                                    await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    await foreach (Gear objGear in objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                     {
-                                        if (setIds.Remove(x.InternalId))
+                                        if (setIds.Remove(objGear.InternalId))
                                         {
-                                            lstReturn.Add(x);
+                                            yield return objGear;
                                             if (setIds.Count == 0)
-                                                return false;
+                                                yield break;
                                         }
-                                        return true;
-                                    }, token).ConfigureAwait(false);
-                                    return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
-                                return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
-                            if (setIds.Count == 0)
-                                return false;
-                            await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                                    }
+                                }
+                            }
+                            foreach (VehicleMod objMod in objVehicle.Mods)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (setIds.Remove(objMod.InternalId))
                                 {
-                                    lstReturn.Add(objMod);
+                                    yield return objMod;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                 {
                                     if (setIds.Remove(objCyberware.InternalId))
                                     {
-                                        lstReturn.Add(objCyberware);
+                                        yield return objCyberware;
                                         if (setIds.Count == 0)
-                                            return false;
+                                            yield break;
                                     }
-                                    await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    await foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                     {
-                                        if (setIds.Remove(x.InternalId))
+                                        if (setIds.Remove(objGear.InternalId))
                                         {
-                                            lstReturn.Add(x);
+                                            yield return objGear;
                                             if (setIds.Count == 0)
-                                                return false;
+                                                yield break;
                                         }
-                                        return true;
-                                    }, token).ConfigureAwait(false);
-                                    return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
-                                return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
-                            if (setIds.Count == 0)
-                                return false;
-                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                                    }
+                                }
+                            }
+                            foreach (WeaponMount objMount in objVehicle.WeaponMounts)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (setIds.Remove(objMount.InternalId))
                                 {
-                                    lstReturn.Add(objMount);
+                                    yield return objMount;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                await objMount.WeaponMountOptions.ForEachWithBreakAsync(objOption =>
+                                foreach (WeaponMountOption objOption in objMount.WeaponMountOptions)
                                 {
                                     token.ThrowIfCancellationRequested();
                                     if (setIds.Remove(objOption.InternalId))
                                     {
-                                        lstReturn.Add(objOption);
+                                        yield return objOption;
                                         if (setIds.Count == 0)
-                                            return false;
+                                            yield break;
                                     }
-                                    return true;
-                                }, token).ConfigureAwait(false);
-                                if (setIds.Count == 0)
-                                    return false;
-                                await (await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                                }
+                                await foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token).ConfigureAwait(false))
                                 {
                                     if (setIds.Remove(objWeapon.InternalId))
                                     {
-                                        lstReturn.Add(objWeapon);
+                                        yield return objWeapon;
                                         if (setIds.Count == 0)
-                                            return false;
+                                            yield break;
                                     }
-                                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                    foreach (WeaponAccessory objMod in objWeapon.WeaponAccessories)
                                     {
+                                        token.ThrowIfCancellationRequested();
                                         if (setIds.Remove(objMod.InternalId))
                                         {
-                                            lstReturn.Add(objMod);
+                                            yield return objMod;
                                             if (setIds.Count == 0)
-                                                return false;
+                                                yield break;
                                         }
-                                        await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        await foreach (Gear objGear in objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                         {
-                                            if (setIds.Remove(x.InternalId))
+                                            if (setIds.Remove(objGear.InternalId))
                                             {
-                                                lstReturn.Add(x);
+                                                yield return objGear;
                                                 if (setIds.Count == 0)
-                                                    return false;
+                                                    yield break;
                                             }
-                                            return true;
-                                        }, token).ConfigureAwait(false);
-                                        return setIds.Count > 0;
-                                    }, token).ConfigureAwait(false);
-                                    return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
-                                if (setIds.Count == 0)
-                                    return false;
-                                await objMount.Mods.ForEachWithBreakAsync(async objMod =>
+                                        }
+                                    }
+                                }
+                                foreach (VehicleMod objMod in objMount.Mods)
                                 {
+                                    token.ThrowIfCancellationRequested();
                                     if (setIds.Remove(objMod.InternalId))
                                     {
-                                        lstReturn.Add(objMod);
+                                        yield return objMod;
                                         if (setIds.Count == 0)
-                                            return false;
+                                            yield break;
                                     }
-                                    await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                    await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                     {
                                         if (setIds.Remove(objCyberware.InternalId))
                                         {
-                                            lstReturn.Add(objCyberware);
+                                            yield return objCyberware;
                                             if (setIds.Count == 0)
-                                                return false;
+                                                yield break;
                                         }
-                                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        await foreach (Gear objGear in objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                         {
-                                            if (setIds.Remove(x.InternalId))
+                                            if (setIds.Remove(objGear.InternalId))
                                             {
-                                                lstReturn.Add(x);
+                                                yield return objGear;
                                                 if (setIds.Count == 0)
-                                                    return false;
+                                                    yield break;
                                             }
-                                            return true;
-                                        }, token).ConfigureAwait(false);
-                                        return setIds.Count > 0;
-                                    }, token).ConfigureAwait(false);
-                                    return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
-                                return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
-                            return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
+                                        }
+                                    }
+                                }
+                            }
+                        }
 
-                        await SkillsSection.Skills.ForEachWithBreakAsync(async objSkill =>
+                        foreach (Skill objSkill in SkillsSection.Skills)
                         {
                             token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objSkill.InternalId))
                             {
-                                lstReturn.Add(objSkill);
+                                yield return objSkill;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            await objSkill.Specializations.ForEachWithBreakAsync(x =>
+                            foreach (SkillSpecialization objSpec in objSkill.Specializations)
                             {
-                                if (setIds.Remove(x.InternalId))
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objSpec.InternalId))
                                 {
-                                    lstReturn.Add(x);
+                                    yield return objSpec;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await SkillsSection.SkillGroups.ForEachWithBreakAsync(x =>
-                        {
-                            if (setIds.Remove(x.InternalId))
-                            {
-                                lstReturn.Add(x);
-                                if (setIds.Count == 0)
-                                    return false;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await SkillsSection.KnowledgeSkills.ForEachWithBreakAsync(async objSkill =>
+                        }
+                        foreach (SkillGroup objGroup in SkillsSection.SkillGroups)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objGroup.InternalId))
+                            {
+                                yield return objGroup;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (KnowledgeSkill objSkill in SkillsSection.KnowledgeSkills)
                         {
                             token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objSkill.InternalId))
                             {
-                                lstReturn.Add(objSkill);
+                                yield return objSkill;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            await objSkill.Specializations.ForEachWithBreakAsync(x =>
+                            foreach (SkillSpecialization objSpec in objSkill.Specializations)
                             {
-                                if (setIds.Remove(x.InternalId))
+                                token.ThrowIfCancellationRequested();
+                                if (setIds.Remove(objSpec.InternalId))
                                 {
-                                    lstReturn.Add(x);
+                                    yield return objSpec;
                                     if (setIds.Count == 0)
-                                        return false;
+                                        yield break;
                                 }
-                                return true;
-                            }, token).ConfigureAwait(false);
-                            return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await Contacts.ForEachWithBreakAsync(x =>
-                        {
-                            if (setIds.Remove(x.InternalId))
-                            {
-                                lstReturn.Add(x);
-                                if (setIds.Count == 0)
-                                    return false;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await Spirits.ForEachWithBreakAsync(x =>
-                        {
-                            if (setIds.Remove(x.InternalId))
-                            {
-                                lstReturn.Add(x);
-                                if (setIds.Count == 0)
-                                    return false;
-                            }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
+                        }
 
-                        await AIPrograms.ForEachWithBreakAsync(x =>
+                        foreach (Contact objContact in Contacts)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objContact.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objContact;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await Calendar.ForEachWithBreakAsync(x =>
+                        }
+                        foreach (Spirit objSpirit in Spirits)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSpirit.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objSpirit;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await ComplexForms.ForEachWithBreakAsync(x =>
+                        }
+
+                        foreach (AIProgram objProgram in AIPrograms)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objProgram.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objProgram;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await ExpenseEntries.ForEachWithBreakAsync(x =>
+                        }
+                        foreach (CalendarWeek objWeek in Calendar)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objWeek.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objWeek;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await Foci.ForEachWithBreakAsync(x =>
+                        }
+                        foreach (ComplexForm objComplexForm in ComplexForms)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objComplexForm.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objComplexForm;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await Spells.ForEachWithBreakAsync(x =>
+                        }
+                        foreach (ExpenseLogEntry objEntry in ExpenseEntries)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objEntry.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objEntry;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
-                        await SustainedCollection.ForEachWithBreakAsync(x =>
+                        }
+                        foreach (Focus objFocus in Foci)
                         {
-                            if (setIds.Remove(x.InternalId))
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objFocus.InternalId))
                             {
-                                lstReturn.Add(x);
+                                yield return objFocus;
                                 if (setIds.Count == 0)
-                                    return false;
+                                    yield break;
                             }
-                            return true;
-                        }, token).ConfigureAwait(false);
-                        if (setIds.Count == 0)
-                            return lstReturn;
+                        }
+                        foreach (Spell objSpell in Spells)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSpell.InternalId))
+                            {
+                                yield return objSpell;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
+                        foreach (SustainedObject objSustained in SustainedCollection)
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (setIds.Remove(objSustained.InternalId))
+                            {
+                                yield return objSustained;
+                                if (setIds.Count == 0)
+                                    yield break;
+                            }
+                        }
                     }
-                    return lstReturn;
                 }
             }
         }
@@ -15338,7 +15249,7 @@ namespace Chummer
                                     return false;
                                 }
 
-                                foreach (Weapon objWeapon in await objVehicle.Weapons.DeepWhereAsync(x => x.Children,
+                                await foreach (Weapon objWeapon in objVehicle.Weapons.DeepWhereAsync(x => x.Children,
                                              x => x.WeaponAccessories.AnyAsync(
                                                  async y =>
                                                      await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0,
@@ -15394,7 +15305,7 @@ namespace Chummer
 
                                 await objVehicle.Mods.ForEachWithBreakAsync(async objVehicleMod =>
                                 {
-                                    foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
+                                    await foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhereAsync(
                                                  x => x.Children,
                                                  x => x.WeaponAccessories.AnyAsync(
                                                      async y => await y.GearChildren.GetCountAsync(token)
@@ -15457,7 +15368,7 @@ namespace Chummer
                                             return false;
                                     }
 
-                                    foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
+                                    await foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhereAsync(
                                                  x => x.GetChildrenAsync(token),
                                                  async x =>
                                                      await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0,
@@ -15514,7 +15425,7 @@ namespace Chummer
                                 {
                                     await objMount.Mods.ForEachWithBreakAsync(async objVehicleMod =>
                                     {
-                                        foreach (Weapon objWeapon in await objVehicleMod.Weapons.DeepWhereAsync(
+                                        await foreach (Weapon objWeapon in objVehicleMod.Weapons.DeepWhereAsync(
                                                          x => x.Children,
                                                          x => x.WeaponAccessories.AnyAsync(
                                                              y => y.GearChildren.Count > 0, token), token)
@@ -15587,7 +15498,7 @@ namespace Chummer
                                                 }, token).ConfigureAwait(false);
                                         }
 
-                                        foreach (Cyberware objCyberware in await objVehicleMod.Cyberware.DeepWhereAsync(
+                                        await foreach (Cyberware objCyberware in objVehicleMod.Cyberware.DeepWhereAsync(
                                                      x => x.GetChildrenAsync(token),
                                                      async x => await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                                         {
@@ -16396,80 +16307,108 @@ namespace Chummer
         /// Construct a list of possible places to put a piece of modular cyberware. Names are display names of the given items, values are internalIDs of the given items.
         /// </summary>
         /// <param name="objModularCyberware">Cyberware for which to construct the list.</param>
-        /// <param name="blnUsePool">If set to true, the returned list will be taken from <see cref="Utils.ListItemListPool"/> instead of newly allocated.</param>
         /// <param name="token">CancellationToken to listen to.</param>
-        public async Task<List<ListItem>> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware, bool blnUsePool = false,
-            CancellationToken token = default)
+        public async IAsyncEnumerable<ListItem> ConstructModularCyberlimbListAsync([NotNull] Cyberware objModularCyberware,
+            [EnumeratorCancellation] CancellationToken token = default)
         {
-            List<ListItem> lstReturn = blnUsePool ? Utils.ListItemListPool.Get() : new List<ListItem>(3);
-            try
+            yield return new ListItem("None",
+                        await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false));
+
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                lstReturn.Add(new ListItem("None",
-                        await LanguageManager.GetStringAsync("String_None", token: token).ConfigureAwait(false)));
-
-                string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-
-                await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                await foreach (Cyberware objCyberware in (await GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                 {
-                    token.ThrowIfCancellationRequested();
-                    Grade objGrade = await objModularCyberware.GetGradeAsync(token).ConfigureAwait(false);
-                    await (await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                        .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, null), token).ConfigureAwait(false);
-
-                    await (await GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopVehicle =>
-                    {
-                        await objLoopVehicle.Mods.ForEachAsync(async objLoopVehicleMod =>
-                        {
-                            await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                                .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
-                        }, token).ConfigureAwait(false);
-
-                        await objLoopVehicle.WeaponMounts.ForEachAsync(objLoopWeaponMount =>
-                        {
-                            return objLoopWeaponMount.Mods.ForEachAsync(async objLoopVehicleMod =>
-                            {
-                                await (await objLoopVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
-                                    .ConfigureAwait(false)).ForEachAsync(x => ProcessCyberware(x, objGrade, objLoopVehicleMod), token).ConfigureAwait(false);
-                            }, token);
-                        }, token).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                    ListItem? objItem = await ProcessCyberware(objCyberware, objGrade, null).ConfigureAwait(false);
+                    if (objItem.HasValue)
+                        yield return objItem.Value;
                 }
 
-                return lstReturn;
-
-                async Task ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+                token.ThrowIfCancellationRequested();
+                foreach (Vehicle objVehicle in await GetVehiclesAsync(token).ConfigureAwait(false))
                 {
-                    // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
-                    if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
-                        && objLoopCyberware.Location == objModularCyberware.Location
-                        && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
-                        objGrade.Name
-                        && objLoopCyberware != objModularCyberware
-                        // Make sure it's not the place where the mount is already occupied (either by us or something else)
-                        && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
-                                x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
-                            .ConfigureAwait(false))
+                    token.ThrowIfCancellationRequested();
+                    await foreach (ListItem objItem in ProcessCyberwareInVehicle(objGrade, objVehicle, token).ConfigureAwait(false))
                     {
-                        string strName = objVehicleMod != null
-                            ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
-                                  .ConfigureAwait(false) + strSpace
-                            : string.Empty;
-                        Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
-                        if (objLoopParent != null)
-                            strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
-                                      .ConfigureAwait(false);
-                        else if (objVehicleMod != null)
-                            strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
-                                      .ConfigureAwait(false);
-                        lstReturn.Add(new ListItem(objLoopCyberware.InternalId, strName));
+                        yield return objItem;
                     }
                 }
             }
-            catch
+
+            async IAsyncEnumerable<ListItem> ProcessCyberwareInVehicle(Grade objGrade, Vehicle objVehicle, [EnumeratorCancellation] CancellationToken innerToken)
             {
-                if (blnUsePool)
-                    Utils.ListItemListPool.Return(ref lstReturn);
-                throw;
+                innerToken.ThrowIfCancellationRequested();
+                foreach (VehicleMod objMod in objVehicle.Mods)
+                {
+                    await foreach (ListItem objItem in ProcessCyberwareInVehicleMod(objGrade, objMod, token).ConfigureAwait(false))
+                    {
+                        yield return objItem;
+                    }
+                }
+
+                innerToken.ThrowIfCancellationRequested();
+                foreach (WeaponMount objMount in objVehicle.WeaponMounts)
+                {
+                    await foreach (ListItem objItem in ProcessCyberwareInWeaponMount(objGrade, objMount, token).ConfigureAwait(false))
+                    {
+                        yield return objItem;
+                    }
+                }
+            }
+
+            async IAsyncEnumerable<ListItem> ProcessCyberwareInWeaponMount(Grade objGrade, WeaponMount objMount, [EnumeratorCancellation] CancellationToken innerToken)
+            {
+                innerToken.ThrowIfCancellationRequested();
+                foreach (VehicleMod objMod in objMount.Mods)
+                {
+                    innerToken.ThrowIfCancellationRequested();
+                    await foreach (ListItem objItem in ProcessCyberwareInVehicleMod(objGrade, objMod, innerToken).ConfigureAwait(false))
+                    {
+                        yield return objItem;
+                    }
+                }
+            }
+
+            async IAsyncEnumerable<ListItem> ProcessCyberwareInVehicleMod(Grade objGrade, VehicleMod objVehicleMod, [EnumeratorCancellation] CancellationToken innerToken)
+            {
+                await foreach (Cyberware objCyberware in objVehicleMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(innerToken), innerToken).ConfigureAwait(false))
+                {
+                    ListItem? objItem = await ProcessCyberware(objCyberware, objGrade, null).ConfigureAwait(false);
+                    if (objItem.HasValue)
+                        yield return objItem.Value;
+                }
+            }
+
+            async Task<ListItem?> ProcessCyberware(Cyberware objLoopCyberware, Grade objGrade, VehicleMod objVehicleMod)
+            {
+                // Make sure this has an eligible mount location and it's not the selected piece modular cyberware
+                if (await objModularCyberware.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token).ConfigureAwait(false)
+                    && objLoopCyberware.Location == objModularCyberware.Location
+                    && (await objLoopCyberware.GetGradeAsync(token).ConfigureAwait(false)).Name ==
+                    objGrade.Name
+                    && objLoopCyberware != objModularCyberware
+                    // Make sure it's not the place where the mount is already occupied (either by us or something else)
+                    && !await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
+                            x => x.PlugsIntoTargetCyberwareAsync(objLoopCyberware, token), token)
+                        .ConfigureAwait(false))
+                {
+                    string strName = objVehicleMod != null
+                        ? await objVehicleMod.Parent.GetCurrentDisplayNameAsync(token)
+                              .ConfigureAwait(false) + strSpace
+                        : string.Empty;
+                    Cyberware objLoopParent = await objLoopCyberware.GetParentAsync(token).ConfigureAwait(false);
+                    if (objLoopParent != null)
+                        strName += strSpace + await objLoopParent.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    else if (objVehicleMod != null)
+                        strName += strSpace + await objVehicleMod.GetCurrentDisplayNameAsync(token)
+                                  .ConfigureAwait(false);
+                    return new ListItem(objLoopCyberware.InternalId, strName);
+                }
+                return null;
             }
         }
 
@@ -23584,10 +23523,17 @@ namespace Chummer
         /// Get all of a Character's CharacterAttributes.
         /// </summary>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<List<CharacterAttrib>> GetAllAttributesAsync(CancellationToken token = default)
+        public async IAsyncEnumerable<CharacterAttrib> GetAllAttributesAsync([EnumeratorCancellation] CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            return (await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAllAttributesAsync(token).ConfigureAwait(false)).ToList();
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (CharacterAttrib objAttribute in await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAllAttributesAsync(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    yield return objAttribute;
+                }
+            }
         }
 
         /// <summary>
@@ -23620,25 +23566,20 @@ namespace Chummer
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task<List<CharacterAttrib>> GetAllAttributesAsync(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
+        public async IAsyncEnumerable<CharacterAttrib> GetAllAttributesAsync(string strAttribute, bool blnExplicit = false, [EnumeratorCancellation] CancellationToken token = default)
         {
-            token.ThrowIfCancellationRequested();
-            AttributeSection objAttributeSection = await GetAttributeSectionAsync(token).ConfigureAwait(false);
-            await using (await objAttributeSection.LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
-                if (strAttribute == "MAGAdept" && (!await GetIsMysticAdeptAsync(token).ConfigureAwait(false)
-                                                   || !await (await GetSettingsAsync(token).ConfigureAwait(false)).GetMysAdeptSecondMAGAttributeAsync(token).ConfigureAwait(false))
+                token.ThrowIfCancellationRequested();
+                if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
                                                && !blnExplicit)
                     strAttribute = "MAG";
-                List<CharacterAttrib> lstReturn = new List<CharacterAttrib>(2);
-                foreach (CharacterAttrib objAttribute in await objAttributeSection.GetAllAttributesAsync(token).ConfigureAwait(false))
+                foreach (CharacterAttrib objAttribute in await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAllAttributesAsync(token))
                 {
                     token.ThrowIfCancellationRequested();
                     if (objAttribute.Abbrev == strAttribute)
-                        lstReturn.Add(objAttribute);
+                        yield return objAttribute;
                 }
-
-                return lstReturn;
             }
         }
 
@@ -23662,10 +23603,17 @@ namespace Chummer
         /// Get all of a Character's CharacterAttributes.
         /// </summary>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<List<CharacterAttrib>> GetAllAttributesForModificationAsync(CancellationToken token = default)
+        public async IAsyncEnumerable<CharacterAttrib> GetAllAttributesForModificationAsync([EnumeratorCancellation] CancellationToken token = default)
         {
-            // Regular GetAllAttributesAsync already works for modifications because it closes the non-upgradeable read lock before returning its list
-            return GetAllAttributesAsync(token);
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (CharacterAttrib objAttribute in await(await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAllAttributesAsync(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    yield return objAttribute;
+                }
+            }
         }
 
         /// <summary>
@@ -23698,10 +23646,21 @@ namespace Chummer
         /// <param name="blnExplicit">Whether to force looking for a specific attribute name.
         /// Mostly expected to be used for gutting Mystic Adept power points.</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task<List<CharacterAttrib>> GetAllAttributesForModificationAsync(string strAttribute, bool blnExplicit = false, CancellationToken token = default)
+        public async IAsyncEnumerable<CharacterAttrib> GetAllAttributesForModificationAsync(string strAttribute, bool blnExplicit = false, [EnumeratorCancellation] CancellationToken token = default)
         {
-            // Regular GetAllAttributesAsync already works for modifications because it closes the non-upgradeable read lock before returning its list
-            return GetAllAttributesAsync(strAttribute, blnExplicit, token);
+            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (strAttribute == "MAGAdept" && (!IsMysticAdept || !Settings.MysAdeptSecondMAGAttribute)
+                                               && !blnExplicit)
+                    strAttribute = "MAG";
+                foreach (CharacterAttrib objAttribute in await (await GetAttributeSectionAsync(token).ConfigureAwait(false)).GetAllAttributesAsync(token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (objAttribute.Abbrev == strAttribute)
+                        yield return objAttribute;
+                }
+            }
         }
 
         /// <summary>
@@ -40682,7 +40641,7 @@ namespace Chummer
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setArmorModBlackMarketMaps.Contains(objMod.Category);
-                                foreach (Gear objGear in await objMod.GearChildren
+                                await foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                              .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40691,7 +40650,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Gear objGear in await objArmor.GearChildren
+                            await foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40700,7 +40659,7 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Cyberware objCyberware in await Cyberware
+                        await foreach (Cyberware objCyberware in Cyberware.AsEnumerableWithSideEffects()
                                      .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40712,7 +40671,7 @@ namespace Chummer
                                         : setCyberwareBlackMarketMaps).Contains(objCyberware.Category), token).ConfigureAwait(false);
                             }
 
-                            foreach (Gear objGear in await objCyberware.GearChildren
+                            await foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40721,7 +40680,7 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Gear objGear in await Gear.GetAllDescendantsAsync(x => x.Children, token)
+                        await foreach (Gear objGear in Gear.AsEnumerableWithSideEffects().GetAllDescendantsAsync(x => x.Children, token)
                                      .ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40733,7 +40692,7 @@ namespace Chummer
                         {
                             objVehicle.DiscountCost = objVehicle.DiscountCost
                                                       && setVehicleBlackMarketMaps.Contains(objVehicle.Category);
-                            foreach (Gear objGear in await objVehicle.GearChildren
+                            await foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40745,7 +40704,7 @@ namespace Chummer
                             {
                                 objMod.DiscountCost = objMod.DiscountCost
                                                       && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                await foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                              x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40757,7 +40716,7 @@ namespace Chummer
                                                 : setCyberwareBlackMarketMaps).Contains(objCyberware.Category), token).ConfigureAwait(false);
                                     }
 
-                                    foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                    await foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                  x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -40767,7 +40726,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Weapon objWeapon in await objVehicle.Weapons
+                            await foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40778,7 +40737,7 @@ namespace Chummer
                                     objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                 && setWeaponBlackMarketMaps
                                                                     .Contains(objWeapon.Category);
-                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                    await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                  x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -40797,7 +40756,7 @@ namespace Chummer
                                 {
                                     objMod.DiscountCost = objMod.DiscountCost
                                                           && setVehicleModBlackMarketMaps.Contains(objMod.Category);
-                                    foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                    await foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                  x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -40809,7 +40768,7 @@ namespace Chummer
                                                     : setCyberwareBlackMarketMaps).Contains(objCyberware.Category);
                                         }
 
-                                        foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                        await foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                      x => x.Children, token).ConfigureAwait(false))
                                         {
                                             token.ThrowIfCancellationRequested();
@@ -40820,7 +40779,7 @@ namespace Chummer
                                     }
                                 }, token).ConfigureAwait(false);
 
-                                foreach (Weapon objWeapon in await objMount.Weapons
+                                await foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                              .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40833,7 +40792,7 @@ namespace Chummer
                                         objAccessory.DiscountCost = objAccessory.DiscountCost
                                                                     && setWeaponBlackMarketMaps
                                                                         .Contains(objWeapon.Category);
-                                        foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                        await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                      x => x.Children, token).ConfigureAwait(false))
                                         {
                                             token.ThrowIfCancellationRequested();
@@ -40846,7 +40805,7 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
-                        foreach (Weapon objWeapon in await Weapons.GetAllDescendantsAsync(x => x.Children, token)
+                        await foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects().GetAllDescendantsAsync(x => x.Children, token)
                                      .ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40858,7 +40817,7 @@ namespace Chummer
                                 objAccessory.DiscountCost = objAccessory.DiscountCost
                                                             && setWeaponBlackMarketMaps
                                                                 .Contains(objWeapon.Category);
-                                foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                              x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40878,7 +40837,7 @@ namespace Chummer
                         await objArmor.ArmorMods.ForEachWithSideEffectsAsync(async objMod =>
                         {
                             objMod.DiscountCost = false;
-                            foreach (Gear objGear in await objMod.GearChildren
+                            await foreach (Gear objGear in objMod.GearChildren.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40886,7 +40845,7 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Gear objGear in await objArmor.GearChildren
+                        await foreach (Gear objGear in objArmor.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40894,12 +40853,12 @@ namespace Chummer
                         }
                     }, token).ConfigureAwait(false);
 
-                    foreach (Cyberware objCyberware in await (await GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token)
+                    await foreach (Cyberware objCyberware in (await GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().GetAllDescendantsAsync(x => x.Children, token)
                                  .ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
                         objCyberware.DiscountCost = false;
-                        foreach (Gear objGear in await objCyberware.GearChildren
+                        await foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40907,7 +40866,7 @@ namespace Chummer
                         }
                     }
 
-                    foreach (Gear objGear in await Gear.GetAllDescendantsAsync(x => x.Children, token)
+                    await foreach (Gear objGear in Gear.AsEnumerableWithSideEffects().GetAllDescendantsAsync(x => x.Children, token)
                                  .ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
@@ -40917,7 +40876,7 @@ namespace Chummer
                     await Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
                     {
                         objVehicle.DiscountCost = false;
-                        foreach (Gear objGear in await objVehicle.GearChildren
+                        await foreach (Gear objGear in objVehicle.GearChildren.AsEnumerableWithSideEffects()
                                      .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40927,12 +40886,12 @@ namespace Chummer
                         await objVehicle.Mods.ForEachWithSideEffectsAsync(async objMod =>
                         {
                             objMod.DiscountCost = false;
-                            foreach (Cyberware objCyberware in await objMod.Cyberware
+                            await foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
                                 objCyberware.DiscountCost = false;
-                                foreach (Gear objGear in await objCyberware.GearChildren.GetAllDescendantsAsync(
+                                await foreach (Gear objGear in objCyberware.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                              x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40941,7 +40900,7 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        foreach (Weapon objWeapon in await objVehicle.Weapons
+                        await foreach (Weapon objWeapon in objVehicle.Weapons.AsEnumerableWithSideEffects()
                                      .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();
@@ -40949,7 +40908,7 @@ namespace Chummer
                             await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                             {
                                 objAccessory.DiscountCost = false;
-                                foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                              x => x.Children, token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
@@ -40964,12 +40923,12 @@ namespace Chummer
                             await objMount.Mods.ForEachWithSideEffectsAsync(async objMod =>
                             {
                                 objMod.DiscountCost = false;
-                                foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                await foreach (Cyberware objCyberware in objMod.Cyberware.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                              x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                 {
                                     token.ThrowIfCancellationRequested();
                                     objCyberware.DiscountCost = false;
-                                    foreach (Gear objGear in await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                    await foreach (Gear objGear in (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                  x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -40978,7 +40937,7 @@ namespace Chummer
                                 }
                             }, token).ConfigureAwait(false);
 
-                            foreach (Weapon objWeapon in await objMount.Weapons
+                            await foreach (Weapon objWeapon in objMount.Weapons.AsEnumerableWithSideEffects()
                                          .GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();
@@ -40986,7 +40945,7 @@ namespace Chummer
                                 await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                                 {
                                     objAccessory.DiscountCost = false;
-                                    foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                                    await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                                  x => x.Children, token).ConfigureAwait(false))
                                     {
                                         token.ThrowIfCancellationRequested();
@@ -40997,7 +40956,7 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
-                    foreach (Weapon objWeapon in await Weapons.GetAllDescendantsAsync(x => x.Children, token)
+                    await foreach (Weapon objWeapon in Weapons.AsEnumerableWithSideEffects().GetAllDescendantsAsync(x => x.Children, token)
                                  .ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
@@ -41005,7 +40964,7 @@ namespace Chummer
                         await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(async objAccessory =>
                         {
                             objAccessory.DiscountCost = false;
-                            foreach (Gear objGear in await objAccessory.GearChildren.GetAllDescendantsAsync(
+                            await foreach (Gear objGear in objAccessory.GearChildren.AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                          x => x.Children, token).ConfigureAwait(false))
                             {
                                 token.ThrowIfCancellationRequested();

@@ -627,9 +627,8 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        private async Task<List<ValueTuple<Skill, bool>>> GetActiveSkillsFromDataAsync(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", CancellationToken token = default)
+        private async IAsyncEnumerable<ValueTuple<Skill, bool>> GetActiveSkillsFromDataAsync(FilterOption eFilterOption, bool blnDeleteSkillsFromBackupIfFound = false, string strName = "", [EnumeratorCancellation] CancellationToken token = default)
         {
-            List<ValueTuple<Skill, bool>> lstReturn;
             XmlDocument xmlSkillsDocument =
                 await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
             token.ThrowIfCancellationRequested();
@@ -643,81 +642,66 @@ namespace Chummer.Backend.Skills
                                         await _objCharacterSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                                         + SkillFilter(eFilterOption, strName) + "]"))
                 {
-                    lstReturn = new List<ValueTuple<Skill, bool>>(xmlSkillList?.Count ?? 0);
                     if (xmlSkillList?.Count > 0)
                     {
-                        try
+                        foreach (XmlNode xmlSkill in xmlSkillList)
                         {
-                            foreach (XmlNode xmlSkill in xmlSkillList)
+                            if (blnDeleteSkillsFromBackupIfFound)
                             {
-                                if (blnDeleteSkillsFromBackupIfFound)
+                                if (!_dicSkillBackups.IsEmpty
+                                    && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                    _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill) && objSkill != null)
                                 {
-                                    if (!_dicSkillBackups.IsEmpty
-                                        && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
-                                        _dicSkillBackups.TryRemove(guiSkillId, out Skill objSkill) && objSkill != null)
-                                    {
-                                        lstReturn.Add(new ValueTuple<Skill, bool>(objSkill, true));
-                                    }
-                                    else
-                                    {
-                                        bool blnIsKnowledgeSkill
-                                            = xmlSkillsDocument
-                                                  .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                      "/chummer/categories/category[. = "
-                                                      + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
-                                                  ?.Value
-                                              != "active";
-                                        lstReturn.Add(new ValueTuple<Skill, bool>(await Skill
-                                            .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
-                                            .ConfigureAwait(false), true));
-                                    }
-                                }
-                                else if (!_dicSkillBackups.IsEmpty
-                                         && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
-                                         _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
-                                {
-                                    lstReturn.Add(new ValueTuple<Skill, bool>(objSkill, false));
+                                    yield return new ValueTuple<Skill, bool>(objSkill, true);
                                 }
                                 else
                                 {
                                     bool blnIsKnowledgeSkill
                                         = xmlSkillsDocument
-                                              .SelectSingleNodeAndCacheExpressionAsNavigator(
-                                                  "/chummer/categories/category[. = "
-                                                  + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
-                                              ?.Value
-                                          != "active";
-                                    lstReturn.Add(new ValueTuple<Skill, bool>(await Skill
+                                                .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                    "/chummer/categories/category[. = "
+                                                    + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
+                                                ?.Value
+                                            != "active";
+                                    yield return new ValueTuple<Skill, bool>(await Skill
                                         .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
-                                        .ConfigureAwait(false), true));
+                                        .ConfigureAwait(false), true);
                                 }
                             }
-                        }
-                        catch
-                        {
-                            foreach (ValueTuple<Skill, bool> tupSkill in lstReturn)
+                            else if (!_dicSkillBackups.IsEmpty
+                                        && xmlSkill.TryGetField("id", Guid.TryParse, out Guid guiSkillId) &&
+                                        _dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) && objSkill != null)
                             {
-                                if (tupSkill.Item2)
-                                    await tupSkill.Item1.RemoveAsync(CancellationToken.None).ConfigureAwait(false);
+                                yield return new ValueTuple<Skill, bool>(objSkill, false);
                             }
-                            throw;
+                            else
+                            {
+                                bool blnIsKnowledgeSkill
+                                    = xmlSkillsDocument
+                                            .SelectSingleNodeAndCacheExpressionAsNavigator(
+                                                "/chummer/categories/category[. = "
+                                                + xmlSkill["category"]?.InnerTextViaPool(token).CleanXPath() + "]/@type", token)
+                                            ?.Value
+                                        != "active";
+                                yield return new ValueTuple<Skill, bool>(await Skill
+                                    .FromDataAsync(xmlSkill, _objCharacter, blnIsKnowledgeSkill, token)
+                                    .ConfigureAwait(false), true);
+                            }
                         }
                     }
                 }
             }
-
-            return lstReturn;
         }
 
         internal void AddSkills(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (LockObject.EnterUpgradeableReadLock(token))
+            List<ValueTuple<Skill, bool>> lstSkillsToAdd = new List<ValueTuple<Skill, bool>>(64);
+            try
             {
-                token.ThrowIfCancellationRequested();
-                List<ValueTuple<Skill, bool>> lstSkillsToAdd = new List<ValueTuple<Skill, bool>>(64);
-                try
+                using (LockObject.EnterUpgradeableReadLock(token))
                 {
+                    token.ThrowIfCancellationRequested();
                     lstSkillsToAdd.AddRange(GetActiveSkillsFromData(eFilterOption, true, strName, token));
                     using (LockObject.EnterWriteLock(token))
                     {
@@ -740,27 +724,28 @@ namespace Chummer.Backend.Skills
                         }
                     }
                 }
-                catch
+            }
+            catch
+            {
+                foreach (ValueTuple<Skill, bool> tupSkill in lstSkillsToAdd)
                 {
-                    foreach (ValueTuple<Skill, bool> tupSkill in lstSkillsToAdd)
-                    {
-                        if (tupSkill.Item2)
-                            tupSkill.Item1.Remove();
-                    }
-                    throw;
+                    if (tupSkill.Item2)
+                        tupSkill.Item1.Remove();
                 }
+                throw;
             }
         }
 
         internal async Task AddSkillsAsync(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
+            List<ValueTuple<Skill, bool>> lstSkillsToAdd = new List<ValueTuple<Skill, bool>>(64);
+            try
             {
-                List<ValueTuple<Skill, bool>> lstSkillsToAdd = await GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token).ConfigureAwait(false);
-                try
+                await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
                 {
                     token.ThrowIfCancellationRequested();
+                    await lstSkillsToAdd.AddRangeAsync(GetActiveSkillsFromDataAsync(eFilterOption, true, strName, token), token).ConfigureAwait(false);
                     await using (await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false))
                     {
                         token.ThrowIfCancellationRequested();
@@ -788,15 +773,15 @@ namespace Chummer.Backend.Skills
                         }
                     }
                 }
-                catch
+            }
+            catch
+            {
+                foreach (ValueTuple<Skill, bool> tupSkill in lstSkillsToAdd)
                 {
-                    foreach (ValueTuple<Skill, bool> tupSkill in lstSkillsToAdd)
-                    {
-                        if (tupSkill.Item2)
-                            await tupSkill.Item1.RemoveAsync(token).ConfigureAwait(false);
-                    }
-                    throw;
+                    if (tupSkill.Item2)
+                        await tupSkill.Item1.RemoveAsync(token).ConfigureAwait(false);
                 }
+                throw;
             }
         }
 
@@ -972,7 +957,9 @@ namespace Chummer.Backend.Skills
             await using (await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(await FetchExistingSkillsByFilterAsync(eSkillsToRemove, strName, token).ConfigureAwait(false));
+                HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(_dicSkills.Count);
+                await foreach (Skill objSkill in FetchExistingSkillsByFilterAsync(eSkillsToRemove, strName, token: token).ConfigureAwait(false))
+                    setSkillsToRemove.Add(objSkill);
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
                 await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
                     async objImprovement =>
@@ -981,7 +968,7 @@ namespace Chummer.Backend.Skills
                             return;
                         FilterOption eFilterOption
                             = Enum.Parse<FilterOption>(objImprovement.ImprovedName);
-                        foreach (Skill objSkill in await FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                        await foreach (Skill objSkill in FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token: token).ConfigureAwait(false))
                         {
                             setSkillsToRemove.Remove(objSkill);
                         }
@@ -1174,14 +1161,23 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        internal async Task<List<Skill>> FetchExistingSkillsByFilterAsync(FilterOption eFilterOption, string strName = "", CancellationToken token = default)
+        internal async IAsyncEnumerable<Skill> FetchExistingSkillsByFilterAsync(FilterOption eFilterOption, string strName = "", bool blnWithSideEffects = false, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
             {
                 token.ThrowIfCancellationRequested();
-                if (_dicSkillBackups.IsEmpty && Skills.Count == 0 && KnowledgeSkills.Count == 0)
-                    return new List<Skill>();
+                if (_dicSkillBackups.IsEmpty && await Skills.GetCountAsync(token).ConfigureAwait(false) == 0 && await KnowledgeSkills.GetCountAsync(token).ConfigureAwait(false) == 0)
+                    yield break;
+                if (blnWithSideEffects)
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                    objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    if (_dicSkillBackups.IsEmpty && await Skills.GetCountAsync(token).ConfigureAwait(false) == 0 && await KnowledgeSkills.GetCountAsync(token).ConfigureAwait(false) == 0)
+                        yield break;
+                }
                 XmlDocument xmlSkillsDocument =
                     await _objCharacter.LoadDataAsync("skills.xml", token: token).ConfigureAwait(false);
                 using (XmlNodeList xmlSkillList = xmlSkillsDocument
@@ -1192,7 +1188,6 @@ namespace Chummer.Backend.Skills
                 {
                     if (xmlSkillList?.Count > 0)
                     {
-                        List<Skill> lstReturn = new List<Skill>(xmlSkillList.Count);
                         foreach (XmlNode xmlSkill in xmlSkillList)
                         {
                             token.ThrowIfCancellationRequested();
@@ -1200,7 +1195,7 @@ namespace Chummer.Backend.Skills
                             {
                                 if (_dicSkillBackups.TryGetValue(guiSkillId, out Skill objSkill) &&
                                     objSkill != null)
-                                    lstReturn.Add(objSkill);
+                                    yield return objSkill;
                                 else
                                 {
                                     string strCategoryCleaned =
@@ -1221,7 +1216,7 @@ namespace Chummer.Backend.Skills
                                                 async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
                                                            guiSkillId, token).ConfigureAwait(false);
                                         if (objSkill != null)
-                                            lstReturn.Add(objSkill);
+                                            yield return objSkill;
                                         else
                                         {
                                             string strBackupName = string.Empty;
@@ -1233,7 +1228,7 @@ namespace Chummer.Backend.Skills
                                                             await x.GetNameAsync(token).ConfigureAwait(false) ==
                                                             strName, token).ConfigureAwait(false);
                                                 if (objSkill != null)
-                                                    lstReturn.Add(objSkill);
+                                                    yield return objSkill;
                                             }
                                         }
                                     }
@@ -1246,7 +1241,7 @@ namespace Chummer.Backend.Skills
                                                 async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
                                                            guiSkillId, token).ConfigureAwait(false);
                                         if (objSkill != null)
-                                            lstReturn.Add(objSkill);
+                                            yield return objSkill;
                                         else
                                         {
                                             string strBackupName = string.Empty;
@@ -1258,19 +1253,20 @@ namespace Chummer.Backend.Skills
                                                             await x.GetNameAsync(token).ConfigureAwait(false) ==
                                                             strName, token).ConfigureAwait(false);
                                                 if (objSkill != null)
-                                                    lstReturn.Add(objSkill);
+                                                    yield return objSkill;
                                             }
                                         }
                                     }
                                 }
                             }
                         }
-
-                        return lstReturn;
                     }
                 }
             }
-            return new List<Skill>();
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
         }
 
         private ReadOnlyDictionary<string, string> _dicKnowledgeSkillCategoriesMap;  //Categories to their attribute

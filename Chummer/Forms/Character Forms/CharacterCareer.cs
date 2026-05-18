@@ -1898,7 +1898,7 @@ namespace Chummer
                                     string strListFriendlyNames;
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdListFriendlyNames))
                                     {
-                                        foreach (IHasInternalId objSource in await CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
+                                        await foreach (IHasInternalId objSource in CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
                                         {
                                             string strToAdd;
                                             if (objSource is IHasCustomName objCustomNameItem)
@@ -3257,7 +3257,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Bioware)
@@ -3330,7 +3330,7 @@ namespace Chummer
                                 .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Cyberware)
@@ -3399,7 +3399,7 @@ namespace Chummer
                                   .ConfigureAwait(false);
                     }
 
-                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
@@ -5001,7 +5001,7 @@ namespace Chummer
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
                                 = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                            await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                          x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
@@ -5093,7 +5093,7 @@ namespace Chummer
                                                     async x => objCyberware.IncludePair.Contains(x.Name)
                                                                && x.Extra == objCyberware.Extra
                                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
-                                                                         .ConfigureAwait(false), token)
+                                                                         .ConfigureAwait(false), token).ToListAsync(token)
                                     .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
@@ -8313,12 +8313,14 @@ namespace Chummer
                             }
                         }
 
-                        foreach (Clip objClip in (await objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false))
-                                 .SelectMany(x => x.Clips))
+                        await foreach (Weapon objLoopWeapon in objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false))
                         {
-                            if (objClip.AmmoGear != null)
+                            foreach (Clip objClip in objLoopWeapon.Clips)
                             {
-                                lstGearToMove.Add(objClip.AmmoGear);
+                                if (objClip.AmmoGear != null)
+                                {
+                                    lstGearToMove.Add(objClip.AmmoGear);
+                                }
                             }
                         }
 
@@ -15934,7 +15936,7 @@ namespace Chummer
 
                 if (await objWeapon.UnderbarrelWeapons.GetCountAsync(GenericToken).ConfigureAwait(false) > 0)
                 {
-                    foreach (Weapon objUnderbarrelWeapon in await objWeapon.UnderbarrelWeapons
+                    await foreach (Weapon objUnderbarrelWeapon in objWeapon.UnderbarrelWeapons.AsEnumerableWithSideEffects()
                                  .GetAllDescendantsAsync(objUnderbarrelWeapon => objUnderbarrelWeapon.Children, GenericToken)
                                  .ConfigureAwait(false))
                     {
@@ -15966,11 +15968,14 @@ namespace Chummer
                     }
                 }
 
-                foreach (Clip objClip in (await objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false)).SelectMany(x => x.Clips))
+                await foreach (Weapon objLoopWeapon in objWeapon.Children.GetAllDescendantsAsync(x => x.Children, GenericToken).ConfigureAwait(false))
                 {
-                    if (objClip.AmmoGear != null)
+                    foreach (Clip objClip in objLoopWeapon.Clips)
                     {
-                        lstGearToMove.Add(objClip.AmmoGear);
+                        if (objClip.AmmoGear != null)
+                        {
+                            lstGearToMove.Add(objClip.AmmoGear);
+                        }
                     }
                 }
 
@@ -19617,7 +19622,7 @@ namespace Chummer
                             string strListFriendlyNames;
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdListFriendlyNames))
                             {
-                                foreach (IHasInternalId objSource in await CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
+                                await foreach (IHasInternalId objSource in CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
                                 {
                                     string strToAdd;
                                     if (objSource is IHasCustomName objCustomNameItem)
@@ -22454,7 +22459,7 @@ namespace Chummer
                                 dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                             string strSelectedLocation =
                                 await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
-                            foreach (Cyberware objLoopCyberware in await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            await foreach (Cyberware objLoopCyberware in (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                              x => x.GetChildrenAsync(token),
                                              async x => string.IsNullOrEmpty(await x
                                                  .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
@@ -22498,7 +22503,7 @@ namespace Chummer
                                         .GetHasModularMountAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setLoopHasModularMount.Add(strLoopHasModularMount);
-                                    foreach (Cyberware objInnerLoopCyberware in await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                    await foreach (Cyberware objInnerLoopCyberware in (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                                  .DeepWhereAsync(
                                                      x => x.GetChildrenAsync(token),
                                                      async x => string.IsNullOrEmpty(

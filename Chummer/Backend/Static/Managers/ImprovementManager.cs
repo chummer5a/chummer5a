@@ -3480,7 +3480,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                                    await foreach (Skill objSkill in objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, true, token).ConfigureAwait(false))
                                     {
                                         await objSkill.SetForceDisabledAsync(false, token).ConfigureAwait(false);
                                     }
@@ -4196,9 +4196,9 @@ namespace Chummer
                                             continue;
                                         eFilterOption
                                             = Enum.Parse<SkillsSection.FilterOption>(objLoopImprovement.ImprovedName);
-                                        setSkillsToKeepEnabled.AddRange(await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objLoopImprovement.Target, token).ConfigureAwait(false));
+                                        await setSkillsToKeepEnabled.AddRangeAsync(objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objLoopImprovement.Target, false, token)).ConfigureAwait(false);
                                     }
-                                    foreach (Skill objSkill in await objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                                    await foreach (Skill objSkill in objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, true, token).ConfigureAwait(false))
                                     {
                                         if (!setSkillsToKeepEnabled.Contains(objSkill))
                                             await objSkill.SetForceDisabledAsync(true, token).ConfigureAwait(false);
@@ -5300,25 +5300,34 @@ namespace Chummer
                         {
                             if (!blnHasDuplicate && !blnReapplyImprovements)
                             {
-                                foreach (Cyberware objCyberware in blnSync
-                                             ? objCharacter.Cyberware.GetAllDescendants(
-                                                 x => x.Children, token)
-                                             : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
-                                                 x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                if (blnSync)
                                 {
-                                    Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
-                                    if (objOldGrade.Adapsin)
+                                    foreach (Cyberware objCyberware in objCharacter.Cyberware.GetAllDescendants(x => x.Children, token))
                                     {
-                                        string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
-                                            .Trim();
-                                        // Determine which GradeList to use for the Cyberware.
-                                        if (blnSync)
+                                        Grade objOldGrade = objCyberware.Grade;
+                                        if (objOldGrade.Adapsin)
                                         {
+                                            string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                                .Trim();
+                                            // Determine which GradeList to use for the Cyberware.
                                             // ReSharper disable once MethodHasAsyncOverload
                                             objCyberware.Grade = objCharacter.GetGradeByName(objCyberware.SourceType, strNewName, true, token);
                                         }
-                                        else
+                                    }
+                                }
+                                else
+                                {
+                                    await foreach (Cyberware objCyberware in (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                                                                        x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                    {
+                                        Grade objOldGrade = await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                                        if (objOldGrade.Adapsin)
+                                        {
+                                            string strNewName = objOldGrade.Name.FastEscapeOnceFromEnd("(Adapsin)")
+                                                .Trim();
+                                            // Determine which GradeList to use for the Cyberware.
                                             await objCyberware.SetGradeAsync(await objCharacter.GetGradeByNameAsync(objCyberware.SourceType, strNewName, true, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                                        }
                                     }
                                 }
                             }
@@ -6289,7 +6298,7 @@ namespace Chummer
             {
                 try
                 {
-                    foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                    await foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                  .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
                                      lstExtraUniqueName: lstExtraUniqueName,
                                      lstExtraTarget: lstExtraTarget, token: token).ConfigureAwait(false))
@@ -6310,7 +6319,7 @@ namespace Chummer
                         foreach (Improvement.ImprovementType eOverrideType in lstExtraImprovementTypes)
                         {
                             token.ThrowIfCancellationRequested();
-                            foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                            await foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                          .GetRelevantPropertyChangersAsync(lstExtraImprovedName: lstExtraImprovedName,
                                              eOverrideType: eOverrideType,
                                              lstExtraUniqueName: lstExtraUniqueName,
@@ -6372,7 +6381,7 @@ namespace Chummer
                     foreach (Improvement objImprovement in lstImprovements.Where(x => x.SetupComplete))
                     {
                         token.ThrowIfCancellationRequested();
-                        foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in await objImprovement
+                        await foreach ((INotifyMultiplePropertiesChangedAsync objToNotify, string strProperty) in objImprovement
                                      .GetRelevantPropertyChangersAsync(token: token).ConfigureAwait(false))
                         {
                             token.ThrowIfCancellationRequested();

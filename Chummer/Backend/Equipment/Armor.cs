@@ -3464,29 +3464,29 @@ namespace Chummer.Backend.Equipment
             if (!WeaponID.IsEmptyGuid())
             {
                 List<Weapon> lstWeapons = await _objCharacter.Weapons
-                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ToListAsync(token).ConfigureAwait(false);
                 await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
                 {
-                    lstWeapons.AddRange(await objVehicle.Weapons
-                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                        .ConfigureAwait(false));
+                    await lstWeapons.AddRangeAsync(objVehicle.Weapons
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                        .ConfigureAwait(false);
                     await objVehicle.Mods.ForEachAsync(async objMod =>
                     {
-                        lstWeapons.AddRange(await objMod.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                            .ConfigureAwait(false));
+                        await lstWeapons.AddRangeAsync(objMod.Weapons
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                            .ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                     {
-                        lstWeapons.AddRange(await objMount.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                            .ConfigureAwait(false));
+                        await lstWeapons.AddRangeAsync(objMount.Weapons
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                            .ConfigureAwait(false);
                         await objMount.Mods.ForEachAsync(async objMod =>
                         {
-                            lstWeapons.AddRange(await objMod.Weapons
-                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                                .ConfigureAwait(false));
+                            await lstWeapons.AddRangeAsync(objMod.Weapons
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                                .ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);

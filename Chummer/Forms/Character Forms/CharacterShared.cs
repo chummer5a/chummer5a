@@ -665,7 +665,7 @@ namespace Chummer
                             using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
                                        out HashSet<string> setHasMounts))
                             {
-                                foreach (Cyberware objLoopCyberware in await objMod.Cyberware.DeepWhereAsync(
+                                await foreach (Cyberware objLoopCyberware in objMod.Cyberware.DeepWhereAsync(
                                              x => x.GetChildrenAsync(token),
                                              async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
                                              token).ConfigureAwait(false))
@@ -737,7 +737,7 @@ namespace Chummer
                                 string strLoopHasModularMount = await objCyberwareParent.GetHasModularMountAsync(token).ConfigureAwait(false);
                                 if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                     setHasMounts.Add(strLoopHasModularMount);
-                                foreach (Cyberware objLoopCyberware in await (await objCyberwareParent.GetChildrenAsync(token).ConfigureAwait(false))
+                                await foreach (Cyberware objLoopCyberware in (await objCyberwareParent.GetChildrenAsync(token).ConfigureAwait(false))
                                              .DeepWhereAsync(
                                                  x => x.GetChildrenAsync(token),
                                                  async x => string.IsNullOrEmpty(await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
@@ -9626,7 +9626,7 @@ namespace Chummer
                                                 await objWriter.WriteStartElementAsync("weapons", token)
                                                     .ConfigureAwait(false);
                                                 // Copy any Weapon that comes with the Gear.
-                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                await foreach (Weapon objCopyWeapon in CharacterObject.Weapons
                                                              .DeepWhereAsync(
                                                                  x => x.Children,
                                                                  x => x.ParentID == objCopyArmor.InternalId, token)
@@ -9689,7 +9689,7 @@ namespace Chummer
                                                 await objWriter.WriteStartElementAsync("weapons", token)
                                                     .ConfigureAwait(false);
                                                 // Copy any Weapon that comes with the Gear.
-                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                await foreach (Weapon objCopyWeapon in CharacterObject.Weapons
                                                              .DeepWhereAsync(
                                                                  x => x.Children,
                                                                  x => x.ParentID == objCopyArmorMod.InternalId, token)
@@ -9752,7 +9752,7 @@ namespace Chummer
                                                 await objWriter.WriteStartElementAsync("weapons", token)
                                                     .ConfigureAwait(false);
                                                 // Copy any Weapon that comes with the Gear.
-                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                await foreach (Weapon objCopyWeapon in CharacterObject.Weapons
                                                             .DeepWhereAsync(
                                                                 x => x.Children,
                                                                 x => x.ParentID == objCopyCyberware.InternalId, token)
@@ -9832,7 +9832,7 @@ namespace Chummer
                                                 await objWriter.WriteStartElementAsync("weapons", token)
                                                     .ConfigureAwait(false);
                                                 // Copy any Weapon that comes with the Gear.
-                                                foreach (Weapon objCopyWeapon in await CharacterObject.Weapons
+                                                await foreach (Weapon objCopyWeapon in CharacterObject.Weapons
                                                             .DeepWhereAsync(
                                                                 x => x.Children,
                                                                 x => x.ParentID == objCopyGear.InternalId, token)
@@ -12308,17 +12308,9 @@ namespace Chummer
             using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(
                        Utils.ListItemListPool, out List<ListItem> lstModularMounts))
             {
-                List<ListItem> lstModularCyberlimbList = await _objCharacter
+                await lstModularMounts.AddRangeAsync(_objCharacter
                     .ConstructModularCyberlimbListAsync(
-                        objModularCyberware, true, token).ConfigureAwait(false);
-                try
-                {
-                    lstModularMounts.AddRange(lstModularCyberlimbList);
-                }
-                finally
-                {
-                    Utils.ListItemListPool.Return(ref lstModularCyberlimbList);
-                }
+                        objModularCyberware, token), token).ConfigureAwait(false);
                 // Check mount status once and cache it for reuse
                 bool blnIsCurrentlyMounted = await objModularCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false);
                 

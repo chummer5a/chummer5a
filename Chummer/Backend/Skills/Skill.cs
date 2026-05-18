@@ -2240,10 +2240,9 @@ namespace Chummer.Backend.Skills
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                int intOtherBonus =
-                    (await RelevantImprovementsAsync(
-                            x => x.ImproveType == Improvement.ImprovementType.Skill, token: token)
-                        .ConfigureAwait(false)).Sum(x => x.Maximum);
+                int intOtherBonus = 0;
+                await foreach (Improvement objImprovement in RelevantImprovementsAsync(x => x.ImproveType == Improvement.ImprovementType.Skill, token: token).ConfigureAwait(false))
+                    intOtherBonus += objImprovement.Maximum;
                 CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 int intBaseMax = IsKnowledgeSkill
                     ? await objSettings.GetMaxKnowledgeSkillRatingAsync(token).ConfigureAwait(false)
@@ -2729,7 +2728,7 @@ namespace Chummer.Backend.Skills
                 List<Improvement> lstImprovements = await RelevantImprovementsAsync(
                     x => x.AddToRating == blnAddToRating,
                     strUseAttribute, blnIncludeConditionals,
-                    token: token).ConfigureAwait(false);
+                    token: token).ToListAsync(token).ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
                 if (blnIncludeConditionals)
                 {
@@ -2893,7 +2892,7 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
+        public async IAsyncEnumerable<Improvement> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, [EnumeratorCancellation] CancellationToken token = default)
         {
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
@@ -2902,23 +2901,24 @@ namespace Chummer.Backend.Skills
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = await GetAttributeAsync(token).ConfigureAwait(false);
                 ThreadSafeObservableCollection<Improvement> lstImprovements = await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false);
-                List<Improvement> lstReturn = new List<Improvement>(await lstImprovements.GetCountAsync(token).ConfigureAwait(false));
-                await lstImprovements.ForEachWithBreakAsync(
-                    async objImprovement =>
+                await foreach (Improvement objImprovement in lstImprovements.SelectAsync(Inner, token: token).ConfigureAwait(false))
+                {
+                    yield return objImprovement;
+                    if (blnExitAfterFirst)
+                        yield break;
+                }
+
+                async Task<Improvement> Inner(Improvement objImprovement)
+                {
+                    if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false && (!blnIncludeConditionals || string.IsNullOrWhiteSpace(objImprovement.Condition)))
                     {
-                        if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false)
-                            return true;
-                        if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition))
-                            return true;
                         switch (objImprovement.ImproveType)
                         {
                             case Improvement.ImprovementType.SwapSkillAttribute:
                             case Improvement.ImprovementType.SwapSkillSpecAttribute:
                                 if (objImprovement.Target == strNameToUse)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2928,9 +2928,7 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.SkillEnableMovement:
                                 if (objImprovement.ImprovedName == strNameToUse)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2940,9 +2938,7 @@ namespace Chummer.Backend.Skills
                                 if (string.IsNullOrEmpty(objImprovement.ImprovedName) ||
                                     objImprovement.ImprovedName == strNameToUse)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2953,9 +2949,7 @@ namespace Chummer.Backend.Skills
                                     !objImprovement.Exclude.Contains(strNameToUse) &&
                                     !objImprovement.Exclude.Contains(SkillCategory))
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2964,9 +2958,7 @@ namespace Chummer.Backend.Skills
                                 if (objImprovement.ImprovedName == SkillCategory &&
                                     !objImprovement.Exclude.Contains(strNameToUse))
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2975,9 +2967,7 @@ namespace Chummer.Backend.Skills
                                 if (objImprovement.ImprovedName == strUseAttribute &&
                                     !objImprovement.Exclude.Contains(strNameToUse))
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2986,9 +2976,7 @@ namespace Chummer.Backend.Skills
                                 if (objImprovement.ImprovedName == await GetAttributeAsync(token).ConfigureAwait(false) &&
                                     !objImprovement.Exclude.Contains(strNameToUse))
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -2996,9 +2984,7 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.BlockSkillCategoryDefault:
                                 if (objImprovement.ImprovedName == SkillCategory)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -3006,9 +2992,7 @@ namespace Chummer.Backend.Skills
                             case Improvement.ImprovementType.BlockSkillGroupDefault:
                                 if (objImprovement.ImprovedName == SkillGroup)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
@@ -3017,18 +3001,14 @@ namespace Chummer.Backend.Skills
                                 if (SkillCategory == "Physical Active" &&
                                     AttributeSection.PhysicalAttributes.Contains(await GetAttributeAsync(token).ConfigureAwait(false)))
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
 
                                 break;
                         }
-
-                        return true;
-                    }, token: token).ConfigureAwait(false);
-
-                return lstReturn;
+                    }
+                    return null;
+                }
             }
         }
 
@@ -4106,18 +4086,13 @@ namespace Chummer.Backend.Skills
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                List<Improvement> lstRelevantImprovements = await RelevantImprovementsAsync(x =>
-                        x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
-                        || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
-                        || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault
-                        || x.ImproveType == Improvement.ImprovementType.AllowSkillDefault,
-                    blnExitAfterFirst: true, token: token).ConfigureAwait(false);
-                if (lstRelevantImprovements.Exists(x =>
-                        x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
-                        || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
-                        || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault))
+                if (await RelevantImprovementsAsync(
+                            x => x.ImproveType == Improvement.ImprovementType.BlockSkillDefault
+                                 || x.ImproveType == Improvement.ImprovementType.BlockSkillCategoryDefault
+                                 || x.ImproveType == Improvement.ImprovementType.BlockSkillGroupDefault,
+                            blnExitAfterFirst: true, token: token).AnyAsync(token).ConfigureAwait(false))
                     return false;
-                if (lstRelevantImprovements.TrueForAll(x => x.ImproveType != Improvement.ImprovementType.AllowSkillDefault))
+                if (!await RelevantImprovementsAsync(x => x.ImproveType == Improvement.ImprovementType.AllowSkillDefault, blnExitAfterFirst: true, token: token).AnyAsync(token).ConfigureAwait(false))
                 {
                     if (!_blnDefault)
                         return false;
@@ -5274,7 +5249,7 @@ namespace Chummer.Backend.Skills
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token)
                     .ConfigureAwait(false);
                 List<Improvement> lstRelevantImprovements =
-                    await RelevantImprovementsAsync(null, abbrev, true, token: token).ConfigureAwait(false);
+                    await RelevantImprovementsAsync(null, abbrev, true, token: token).ToListAsync(token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {

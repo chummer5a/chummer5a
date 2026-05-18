@@ -23,6 +23,7 @@ using System.Diagnostics;
 using System.Drawing;
 using System.Globalization;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
@@ -1114,7 +1115,7 @@ namespace Chummer
                               .Append(await LanguageManager.GetStringAsync("String_SpellExtended", token: token).ConfigureAwait(false), strSpace, "(+2)");
                     }
 
-                    foreach (Improvement objLoopImprovement in await RelevantImprovementsAsync(o =>
+                    await foreach (Improvement objLoopImprovement in RelevantImprovementsAsync(o =>
                                  o.ImproveType == Improvement.ImprovementType.DrainValue
                                  || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                  || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
@@ -1313,9 +1314,13 @@ namespace Chummer
                 if (Damage != "S" && Damage != "P")
                     return await LanguageManager.GetStringAsync("String_None", strLanguage, token: token)
                                                 .ConfigureAwait(false);
-                decimal decBonus = (await RelevantImprovementsAsync(
+                decimal decBonus = 0;
+                await foreach (Improvement objImprovement in RelevantImprovementsAsync(
                                  i => i.ImproveType == Improvement.ImprovementType.SpellDescriptorDamage
-                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage, token: token)).Sum(x => x.Value);
+                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDamage, token: token).ConfigureAwait(false))
+                {
+                    decBonus += objImprovement.Value;
+                }
                 string strReturn = decBonus.StandardRound().ToString(objCultureInfo);
                 switch (Damage.ToUpperInvariant())
                 {
@@ -1517,10 +1522,10 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 string strReturn = DvBase;
                 if (!Limited && !(Extended && _blnCustomExtended) && !BarehandedAdept && !strReturn.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue)
-                    && (await RelevantImprovementsAsync(o =>
+                    && await RelevantImprovementsAsync(o =>
                         o.ImproveType == Improvement.ImprovementType.DrainValue
                         || o.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
-                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true, token).ConfigureAwait(false)).Count == 0)
+                        || o.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, true, token).AnyAsync(token).ConfigureAwait(false))
                     return strReturn;
                 bool blnForce = strReturn.StartsWith('F');
                 string strDv = blnForce ? strReturn.TrimStartOnce("F", true) : strReturn;
@@ -1535,7 +1540,7 @@ namespace Chummer
                                                                   out StringBuilder sbdReturn))
                     {
                         sbdReturn.Append('(', strDv, ')');
-                        foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
+                        await foreach (Improvement objImprovement in RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                      || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
@@ -1568,7 +1573,7 @@ namespace Chummer
                 }
                 else
                 {
-                    foreach (Improvement objImprovement in await RelevantImprovementsAsync(i =>
+                    await foreach (Improvement objImprovement in RelevantImprovementsAsync(i =>
                                      i.ImproveType == Improvement.ImprovementType.DrainValue
                                      || i.ImproveType == Improvement.ImprovementType.SpellCategoryDrain
                                      || i.ImproveType == Improvement.ImprovementType.SpellDescriptorDrain, token: token).ConfigureAwait(false))
@@ -2132,9 +2137,7 @@ namespace Chummer
                     if (objCategoryNode == null)
                         return null;
                     objCategoryNode.TryGetStringFieldQuickly("@useskill", ref strSkillKey);
-                    strSkillKey =
-                        (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, true, token: token).ConfigureAwait(false))
-                            .FirstOrDefault()?.Target ?? strSkillKey;
+                    strSkillKey = (await RelevantImprovementsAsync(o => o.ImproveType == Improvement.ImprovementType.ReplaceSkillSpell, true, token: token).FirstOrDefaultAsync(token))?.Target ?? strSkillKey;
                     if (Alchemical)
                     {
                         objCategoryNode.TryGetStringFieldQuickly("@alchemicalskill", ref strSkillKey);
@@ -2194,10 +2197,14 @@ namespace Chummer
                     : 0;
 
                 // Include any Improvements to the Spell's dicepool.
-                intReturn += (await RelevantImprovementsAsync(x =>
-                        x.ImproveType == Improvement.ImprovementType.SpellCategory
-                        || x.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
-                    .Sum(x => x.Value).StandardRound();
+                decimal decBonus = 0;
+                await foreach (Improvement objImprovement in RelevantImprovementsAsync(
+                                 i => i.ImproveType == Improvement.ImprovementType.SpellCategory
+                                      || i.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
+                {
+                    decBonus += objImprovement.Value;
+                }
+                intReturn += decBonus.StandardRound();
                 return intReturn;
             }
         }
@@ -2288,7 +2295,7 @@ namespace Chummer
                     }
 
                     // Include any Improvements to the Spell Category or Spell Name.
-                    foreach (Improvement objImprovement in await RelevantImprovementsAsync(
+                    await foreach (Improvement objImprovement in RelevantImprovementsAsync(
                                  x => x.ImproveType == Improvement.ImprovementType.SpellCategory
                                       || x.ImproveType == Improvement.ImprovementType.SpellDicePool, token: token).ConfigureAwait(false))
                     {
@@ -2503,27 +2510,32 @@ namespace Chummer
             }
         }
 
-        private async Task<List<Improvement>> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false, CancellationToken token = default)
+        private async IAsyncEnumerable<Improvement> RelevantImprovementsAsync(Func<Improvement, bool> funcWherePredicate = null, bool blnExitAfterFirst = false, [EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             await using (await LockObject.EnterReadLockAsync(token).ConfigureAwait(false))
             {
                 token.ThrowIfCancellationRequested();
-                List<Improvement> lstReturn = new List<Improvement>(await _objCharacter.Improvements.GetCountAsync(token).ConfigureAwait(false));
-                await _objCharacter.Improvements.ForEachWithBreakAsync(async objImprovement =>
+                ThreadSafeObservableCollection<Improvement> lstImprovements = await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false);
+                await foreach (Improvement objImprovement in lstImprovements.SelectAsync(Inner, token: token).ConfigureAwait(false))
                 {
-                    if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) != true)
-                        return true;
+                    yield return objImprovement;
+                    if (blnExitAfterFirst)
+                        yield break;
+                }
+            }
 
+            async Task<Improvement> Inner(Improvement objImprovement)
+            {
+                if (objImprovement.Enabled && funcWherePredicate?.Invoke(objImprovement) != false)
+                {
                     switch (objImprovement.ImproveType)
                     {
                         case Improvement.ImprovementType.SpellDicePool:
                             if (objImprovement.ImprovedName == Name
                                 || objImprovement.ImprovedName == SourceID.ToString())
                             {
-                                lstReturn.Add(objImprovement);
-                                if (blnExitAfterFirst)
-                                    return false;
+                                return objImprovement;
                             }
 
                             break;
@@ -2533,9 +2545,7 @@ namespace Chummer
                                 || objImprovement.ImprovedName == SourceID.ToString()
                                 || string.IsNullOrEmpty(objImprovement.ImprovedName))
                             {
-                                lstReturn.Add(objImprovement);
-                                if (blnExitAfterFirst)
-                                    return false;
+                                return objImprovement;
                             }
 
                             break;
@@ -2553,16 +2563,12 @@ namespace Chummer
                                     Improvement objCompensatedImprovement = await _objCharacter.GetPowerFocusAdjustedImprovementValueAsync(objImprovement, token).ConfigureAwait(false);
                                     if (objCompensatedImprovement != null)
                                     {
-                                        lstReturn.Add(objCompensatedImprovement);
-                                        if (blnExitAfterFirst)
-                                            return false;
+                                        return objCompensatedImprovement;
                                     }
                                 }
                                 else
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
                             }
 
@@ -2572,9 +2578,7 @@ namespace Chummer
                         case Improvement.ImprovementType.SpellCategoryDrain:
                             if (objImprovement.ImprovedName == Category)
                             {
-                                lstReturn.Add(objImprovement);
-                                if (blnExitAfterFirst)
-                                    return false;
+                                return objImprovement;
                             }
 
                             break;
@@ -2604,30 +2608,24 @@ namespace Chummer
 
                                 if (blnAllow)
                                 {
-                                    lstReturn.Add(objImprovement);
-                                    if (blnExitAfterFirst)
-                                        return false;
+                                    return objImprovement;
                                 }
                             }
 
                             break;
 
                         case Improvement.ImprovementType.DrainValue:
-                        {
-                            if (string.IsNullOrEmpty(objImprovement.ImprovedName)
-                                || objImprovement.ImprovedName == Name)
                             {
-                                lstReturn.Add(objImprovement);
-                                if (blnExitAfterFirst)
-                                    return false;
+                                if (string.IsNullOrEmpty(objImprovement.ImprovedName)
+                                    || objImprovement.ImprovedName == Name)
+                                {
+                                    return objImprovement;
+                                }
                             }
-                        }
                             break;
                     }
-
-                    return true;
-                }, token: token).ConfigureAwait(false);
-                return lstReturn;
+                }
+                return null;
             }
         }
 

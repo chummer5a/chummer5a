@@ -1815,7 +1815,7 @@ namespace Chummer
                                     string strListFriendlyNames;
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdListFriendlyNames))
                                     {
-                                        foreach (IHasInternalId objSource in await CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
+                                        await foreach (IHasInternalId objSource in CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
                                         {
                                             string strToAdd;
                                             if (objSource is IHasCustomName objCustomNameItem)
@@ -2555,7 +2555,7 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.AddBiowareEnabled)) && !await CharacterObject.GetAddBiowareEnabledAsync(token).ConfigureAwait(false))
                 {
-                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().DeepWhereAsync(
                                  x => x.GetChildrenAsync(token), async x =>
                                  {
                                      if (x.SourceType != Improvement.ImprovementSource.Bioware)
@@ -2590,7 +2590,7 @@ namespace Chummer
                 if (e.PropertyNames.Contains(nameof(Character.AddCyberwareEnabled)) &&
                     !await CharacterObject.GetAddCyberwareEnabledAsync(token).ConfigureAwait(false))
                 {
-                    foreach (Cyberware objCyberware in await CharacterObject.Cyberware.DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in CharacterObject.Cyberware.AsEnumerableWithSideEffects().DeepWhereAsync(
                                      x => x.GetChildrenAsync(GenericToken), async x =>
                                      {
                                          if (x.SourceType != Improvement.ImprovementSource.Cyberware)
@@ -2627,7 +2627,7 @@ namespace Chummer
 
                 if (e.PropertyNames.Contains(nameof(Character.ExCon)) && await CharacterObject.GetExConAsync(token).ConfigureAwait(false))
                 {
-                    foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                    await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().DeepWhereAsync(
                                      x => x.GetChildrenAsync(token), async x =>
                                      {
                                          Guid guidSourceId = await x.GetSourceIDAsync(token).ConfigureAwait(false);
@@ -4145,7 +4145,7 @@ namespace Chummer
                             // Refresh Cyberware and Bioware.
                             Dictionary<Cyberware, int> dicPairableCyberwares
                                 = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
-                            foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                            await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects().GetAllDescendantsAsync(
                                          x => x.GetChildrenAsync(GenericToken), token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
@@ -4240,7 +4240,7 @@ namespace Chummer
                                                                            .Contains(x.Name)
                                                                && x.Extra == objCyberware.Extra
                                                                && await x.GetIsModularCurrentlyEquippedAsync(token)
-                                                                         .ConfigureAwait(false), token)
+                                                                         .ConfigureAwait(false), token).ToListAsync(token)
                                     .ConfigureAwait(false);
                                 // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                 if (!string.IsNullOrEmpty(objCyberware.Location)
@@ -9897,7 +9897,7 @@ namespace Chummer
                                                         && x.Extra == objCyberware.Extra &&
                                                         await x.GetIsModularCurrentlyEquippedAsync(GenericToken)
                                                             .ConfigureAwait(false),
-                                            GenericToken).ConfigureAwait(false);
+                                            GenericToken).ToListAsync(GenericToken).ConfigureAwait(false);
                                     int intCyberwaresCount = lstPairableCyberwares.Count;
                                     // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
                                     if (!string.IsNullOrEmpty(objCyberware.Location)
@@ -13861,7 +13861,7 @@ namespace Chummer
                             string strListFriendlyNames;
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdListFriendlyNames))
                             {
-                                foreach (IHasInternalId objSource in await CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
+                                await foreach (IHasInternalId objSource in CharacterObject.GetItemsByInternalIdsAsync(lstInternalIdsNeedingReapplyImprovements, true, GenericToken).ConfigureAwait(false))
                                 {
                                     string strToAdd;
                                     if (objSource is IHasCustomName objCustomNameItem)
@@ -16533,11 +16533,12 @@ namespace Chummer
                         await CharacterObject.SetCreatedAsync(true, false, token: token).ConfigureAwait(false);
 
                         // Save all essence modifiers for all Cyberware.
-                        await (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false))
+                        await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AsEnumerableWithSideEffects()
                                 .GetAllDescendantsAsync(x => x.Children, token)
                                 .ConfigureAwait(false))
-                            .ForEachAsync(x => x.SaveNonRetroactiveEssenceModifiersAsync(token), token)
-                            .ConfigureAwait(false);
+                        {
+                            await objCyberware.SaveNonRetroactiveEssenceModifiersAsync(token).ConfigureAwait(false);
+                        }
                         await CharacterObject.Vehicles.ForEachWithSideEffectsAsync(async objVehicle =>
                         {
                             await objVehicle.Mods.SelectMany(objMod => objMod.Cyberware)
@@ -16838,7 +16839,7 @@ namespace Chummer
                                 dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
                             string strSelectedLocation =
                                 await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
-                            foreach (Cyberware objLoopCyberware in await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                            await foreach (Cyberware objLoopCyberware in (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                              x => x.GetChildrenAsync(token),
                                              async x => string.IsNullOrEmpty(await x
                                                  .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
@@ -16881,7 +16882,7 @@ namespace Chummer
                                         .GetHasModularMountAsync(token).ConfigureAwait(false);
                                     if (!string.IsNullOrEmpty(strLoopHasModularMount))
                                         setLoopHasModularMount.Add(strLoopHasModularMount);
-                                    foreach (Cyberware objInnerLoopCyberware in await
+                                    await foreach (Cyberware objInnerLoopCyberware in
                                                  (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                                                  .DeepWhereAsync(
                                                      x => x.GetChildrenAsync(token),
@@ -20170,7 +20171,7 @@ namespace Chummer
                                     .ConfigureAwait(false));
                             }
 
-                            foreach (Gear objGear in await objArmor.GearChildren.DeepWhereAsync(
+                            await foreach (Gear objGear in objArmor.GearChildren.DeepWhereAsync(
                                          x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
                                          token).ConfigureAwait(false))
                             {
@@ -20180,7 +20181,7 @@ namespace Chummer
 
                             await objArmor.ArmorMods.ForEachAsync(async objMod =>
                             {
-                                foreach (Gear objGear in await objMod.GearChildren.DeepWhereAsync(
+                                await foreach (Gear objGear in objMod.GearChildren.DeepWhereAsync(
                                              x => x.Children,
                                              async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
                                                         0,
@@ -20192,8 +20193,8 @@ namespace Chummer
                             }, token).ConfigureAwait(false);
                         }
 
-                        foreach (Weapon objWeapon in
-                                 await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false))
+                        await foreach (Weapon objWeapon in
+                                 (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false))
                                      .DeepWhereAsync(
                                          x => x.Children,
                                          async x =>
@@ -20202,7 +20203,7 @@ namespace Chummer
                         {
                             await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                             {
-                                foreach (Gear objGear in await objAccessory.GearChildren.DeepWhereAsync(
+                                await foreach (Gear objGear in objAccessory.GearChildren.DeepWhereAsync(
                                              x => x.Children,
                                              async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
                                                         0,
@@ -20215,7 +20216,7 @@ namespace Chummer
                         }
 
                         // Gear Capacity.
-                        foreach (Gear objGear in await (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
+                        await foreach (Gear objGear in (await CharacterObject.GetGearAsync(token).ConfigureAwait(false))
                                      .DeepWhereAsync(
                                          x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
                                          token).ConfigureAwait(false))
@@ -20225,7 +20226,7 @@ namespace Chummer
                         }
 
                         // Cyberware Capacity.
-                        foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token)
+                        await foreach (Cyberware objCyberware in (await CharacterObject.GetCyberwareAsync(token)
                                          .ConfigureAwait(false)).GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token)
                                      .ConfigureAwait(false))
                         {
@@ -20235,7 +20236,7 @@ namespace Chummer
                                     .ConfigureAwait(false));
                             }
 
-                            foreach (Gear objGear in await objCyberware.GearChildren.DeepWhereAsync(
+                            await foreach (Gear objGear in objCyberware.GearChildren.DeepWhereAsync(
                                          x => x.Children, async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
                                          token).ConfigureAwait(false))
                             {
@@ -20273,7 +20274,7 @@ namespace Chummer
                                     .ConfigureAwait(false));
                             }
 
-                            foreach (Gear objGear in await objVehicle.GearChildren.DeepWhereAsync(
+                            await foreach (Gear objGear in objVehicle.GearChildren.DeepWhereAsync(
                                          x => x.Children,
                                          async x => await x.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0,
                                          token).ConfigureAwait(false))
@@ -20284,7 +20285,7 @@ namespace Chummer
 
                             await objVehicle.Mods.ForEachAsync(async objMod =>
                             {
-                                foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(
                                              x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                 {
                                     if (await objCyberware.GetCapacityRemainingAsync(token).ConfigureAwait(false) < 0)
@@ -20294,7 +20295,7 @@ namespace Chummer
                                             .ConfigureAwait(false));
                                     }
 
-                                    foreach (Gear objGear in await objCyberware.GearChildren.DeepWhereAsync(
+                                    await foreach (Gear objGear in objCyberware.GearChildren.DeepWhereAsync(
                                                  x => x.Children,
                                                  async x => await x.GetCapacityRemainingAsync(token)
                                                      .ConfigureAwait(false) < 0, token).ConfigureAwait(false))
@@ -20314,15 +20315,15 @@ namespace Chummer
                                         .ConfigureAwait(false));
                                 }
 
-                                foreach (Weapon objWeapon in
-                                         await objMount.Weapons.DeepWhereAsync(
+                                await foreach (Weapon objWeapon in
+                                         objMount.Weapons.DeepWhereAsync(
                                              x => x.Children,
                                              async x => await x.WeaponAccessories.GetCountAsync(token)
                                                  .ConfigureAwait(false) > 0, token).ConfigureAwait(false))
                                 {
                                     await objWeapon.WeaponAccessories.ForEachAsync(async objAccessory =>
                                     {
-                                        foreach (Gear objGear in await objAccessory.GearChildren.DeepWhereAsync(
+                                        await foreach (Gear objGear in objAccessory.GearChildren.DeepWhereAsync(
                                                      x => x.Children,
                                                      async x => await x.GetCapacityRemainingAsync(token)
                                                          .ConfigureAwait(false) < 0, token).ConfigureAwait(false))
@@ -20335,7 +20336,7 @@ namespace Chummer
 
                                 await objMount.Mods.ForEachAsync(async objMod =>
                                 {
-                                    foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(
+                                    await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(
                                                  x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                                     {
                                         if (await objCyberware.GetCapacityRemainingAsync(token).ConfigureAwait(false) <
@@ -20346,7 +20347,7 @@ namespace Chummer
                                                 .ConfigureAwait(false));
                                         }
 
-                                        foreach (Gear objGear in await (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                                        await foreach (Gear objGear in (await objCyberware.GetGearChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
                                                      x => x.Children,
                                                      async x => await x.GetCapacityRemainingAsync(token)
                                                          .ConfigureAwait(false) < 0, token).ConfigureAwait(false))

@@ -280,7 +280,7 @@ namespace Chummer.Backend.Equipment
                     // <children>
                     await using (await objWriter.StartElementAsync("children", token).ConfigureAwait(false))
                     {
-                        foreach (Gear objGear in await objAmmoGear.Children
+                        await foreach (Gear objGear in objAmmoGear.Children
                                                                .DeepWhereAsync(
                                                                    async x => await x.Children.ToListAsync(y => y.Equipped, token).ConfigureAwait(false),
                                                                    x => x.Equipped && (x.WeaponBonus != null

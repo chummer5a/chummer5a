@@ -1189,7 +1189,7 @@ namespace Chummer
             ArgumentNullException.ThrowIfNull(lstCyberware, nameof(lstCyberware));
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                foreach (Cyberware objCyberware in await lstCyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
+                await foreach (Cyberware objCyberware in lstCyberware.DeepWhereAsync(x => x.GetChildrenAsync(token),
                              async x => await (await x.GetGearChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0,
                              token: token).ConfigureAwait(false))
                 {
@@ -1238,7 +1238,7 @@ namespace Chummer
             {
                 if (lstWeapons is IEnumerableWithAsync<Weapon> lstWeaponsAsync)
                 {
-                    foreach (Weapon objWeapon in await lstWeaponsAsync.DeepWhereAsync(x => x.Children,
+                    await foreach (Weapon objWeapon in lstWeaponsAsync.DeepWhereAsync(x => x.Children,
                                  async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) > 0, token: token).ConfigureAwait(false))
                     {
                         WeaponAccessory objReturn =
@@ -1322,7 +1322,7 @@ namespace Chummer
             {
                 Gear objReturn = null;
                 WeaponAccessory objReturnAccessory = null;
-                foreach (Weapon objWeapon in await lstWeapons.DeepWhereAsync(x => x.Children,
+                await foreach (Weapon objWeapon in lstWeapons.DeepWhereAsync(x => x.Children,
                              x => x.WeaponAccessories.AnyAsync(
                                  async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
                              token: token).ConfigureAwait(false))

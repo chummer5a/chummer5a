@@ -1400,7 +1400,7 @@ namespace Chummer.Backend.Equipment
             _lstAmmo.Clear(); // Just in case
             for (int i = 0; i < _intAmmoSlots; ++i)
                 _lstAmmo.Add(new Clip(_objCharacter, null, this, null, 0));
-            foreach (WeaponAccessory adoptable in await GetClipProvidingAccessoriesAsync(token).ConfigureAwait(false))
+            await foreach (WeaponAccessory adoptable in GetClipProvidingAccessoriesAsync(token).ConfigureAwait(false))
                 _lstAmmo.Add(new Clip(_objCharacter, adoptable, this, null, 0));
         }
 
@@ -1668,7 +1668,7 @@ namespace Chummer.Backend.Equipment
                 {
                     List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = blnSync
                         ? GetClipProvidingAccessories(token).ToList()
-                        : await GetClipProvidingAccessoriesAsync(token).ConfigureAwait(false);
+                        : await GetClipProvidingAccessoriesAsync(token).ToListAsync(token).ConfigureAwait(false);
                     int i = 0;
                     foreach (string strOldClipValue in s_OldClipValues)
                     {
@@ -1786,7 +1786,7 @@ namespace Chummer.Backend.Equipment
 
             async Task AddClipNodesAsync(XmlNode clipNode)
             {
-                List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = await GetClipProvidingAccessoriesAsync(token).ConfigureAwait(false);
+                List<WeaponAccessory> lstWeaponAccessoriesWithClipSlots = await GetClipProvidingAccessoriesAsync(token).ToListAsync(token).ConfigureAwait(false);
                 int i = 0;
                 foreach (XmlNode node in clipNode.ChildNodes)
                 {
@@ -2076,7 +2076,7 @@ namespace Chummer.Backend.Equipment
                     .ConfigureAwait(false);
                 if (objGear == null)
                 {
-                    foreach (Cyberware objCyberware in await _objCharacter.Cyberware
+                    await foreach (Cyberware objCyberware in _objCharacter.Cyberware
                                  .DeepWhereAsync(
                                      x => x.Children,
                                      async x => await x.GearChildren
@@ -2093,7 +2093,7 @@ namespace Chummer.Backend.Equipment
 
                     if (objGear == null)
                     {
-                        foreach (Weapon objWeapon in await _objCharacter.Weapons
+                        await foreach (Weapon objWeapon in _objCharacter.Weapons
                                      .DeepWhereAsync(
                                          x => x.Children,
                                          x => x.WeaponAccessories.AnyAsync(
@@ -2167,7 +2167,7 @@ namespace Chummer.Backend.Equipment
                                         return false;
                                     }
 
-                                    foreach (Weapon objWeapon in await objVehicle.Weapons
+                                    await foreach (Weapon objWeapon in objVehicle.Weapons
                                                  .DeepWhereAsync(
                                                      x => x.Children,
                                                      x => x.WeaponAccessories.AnyAsync(
@@ -2204,7 +2204,7 @@ namespace Chummer.Backend.Equipment
                                             0)
                                             return true;
 
-                                        foreach (Cyberware objCyberware in await objVehicleMod.Cyberware
+                                        await foreach (Cyberware objCyberware in objVehicleMod.Cyberware
                                                      .DeepWhereAsync(
                                                          x => x.Children,
                                                          async x => await x.GearChildren
@@ -2220,7 +2220,7 @@ namespace Chummer.Backend.Equipment
                                                 return false;
                                         }
 
-                                        foreach (Weapon objWeapon in await objVehicleMod.Weapons
+                                        await foreach (Weapon objWeapon in objVehicleMod.Weapons
                                                      .DeepWhereAsync(
                                                          x => x.Children,
                                                          x => x.WeaponAccessories.AnyAsync(
@@ -2257,7 +2257,7 @@ namespace Chummer.Backend.Equipment
 
                                     await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
                                     {
-                                        foreach (Weapon objWeapon in await objMount.Weapons
+                                        await foreach (Weapon objWeapon in objMount.Weapons
                                                      .DeepWhereAsync(
                                                          x => x.Children,
                                                          x => x.WeaponAccessories.AnyAsync(
@@ -2296,7 +2296,7 @@ namespace Chummer.Backend.Equipment
                                                 0)
                                                 return true;
 
-                                            foreach (Cyberware objCyberware in await objVehicleMod.Cyberware
+                                            await foreach (Cyberware objCyberware in objVehicleMod.Cyberware
                                                          .DeepWhereAsync(
                                                              x => x.Children,
                                                              async x => await x.GearChildren
@@ -2312,7 +2312,7 @@ namespace Chummer.Backend.Equipment
                                                     return false;
                                             }
 
-                                            foreach (Weapon objWeapon in await objVehicleMod.Weapons
+                                            await foreach (Weapon objWeapon in objVehicleMod.Weapons
                                                          .DeepWhereAsync(
                                                              x => x.Children,
                                                              x => x.WeaponAccessories.AnyAsync(
@@ -4104,7 +4104,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (value)
                     {
-                        foreach (Weapon objChild in await Children.DeepWhereAsync(x => x.Children,
+                        await foreach (Weapon objChild in Children.AsEnumerableWithSideEffects().DeepWhereAsync(x => x.Children,
                                      async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) >
                                                 0, token: token).ConfigureAwait(false))
                         {
@@ -4138,7 +4138,7 @@ namespace Chummer.Backend.Equipment
                     }
                     else
                     {
-                        foreach (Weapon objChild in await Children.DeepWhereAsync(x => x.Children,
+                        await foreach (Weapon objChild in Children.DeepWhereAsync(x => x.Children,
                                      async x => await x.WeaponAccessories.GetCountAsync(token).ConfigureAwait(false) >
                                                 0, token: token).ConfigureAwait(false))
                         {
@@ -4691,49 +4691,96 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
-                                         .ConfigureAwait(false))
+                        if (blnSync)
                         {
-                            if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                                       && objChild.FlechetteWeaponBonus != null)
+                            foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token))
                             {
-                                if (objChild.FlechetteWeaponBonus["damagetype"] != null)
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                           && objChild.FlechetteWeaponBonus != null)
                                 {
-                                    strDamageType = string.Empty;
-                                    strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerTextViaPool(token);
-                                }
+                                    if (objChild.FlechetteWeaponBonus["damagetype"] != null)
+                                    {
+                                        strDamageType = string.Empty;
+                                        strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerTextViaPool(token);
+                                    }
 
-                                // Adjust the Weapon's Damage.
-                                string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
-                                    sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                                strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp))
+                                    // Adjust the Weapon's Damage.
+                                    string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                                        sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                                    strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                    {
+                                        blnDamageReplaced = true;
+                                        strDamage = strTemp;
+                                    }
+                                }
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    blnDamageReplaced = true;
-                                    strDamage = strTemp;
+                                    // Change the Weapon's Damage Type.
+                                    if (objChild.WeaponBonus["damagetype"] != null)
+                                    {
+                                        strDamageType = string.Empty;
+                                        strDamageExtra = objChild.WeaponBonus["damagetype"].InnerTextViaPool(token);
+                                    }
+
+                                    // Adjust the Weapon's Damage.
+                                    string strTemp = objGear.WeaponBonus["damage"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                                        sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                                    strTemp = objGear.WeaponBonus["damagereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                    {
+                                        blnDamageReplaced = true;
+                                        strDamage = strTemp;
+                                    }
                                 }
                             }
-                            else if (objChild.WeaponBonus != null)
+                        }
+                        else
+                        {
+                            await foreach (Gear objChild in objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                                         .ConfigureAwait(false))
                             {
-                                // Change the Weapon's Damage Type.
-                                if (objChild.WeaponBonus["damagetype"] != null)
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                           && objChild.FlechetteWeaponBonus != null)
                                 {
-                                    strDamageType = string.Empty;
-                                    strDamageExtra = objChild.WeaponBonus["damagetype"].InnerTextViaPool(token);
-                                }
+                                    if (objChild.FlechetteWeaponBonus["damagetype"] != null)
+                                    {
+                                        strDamageType = string.Empty;
+                                        strDamageExtra = objChild.FlechetteWeaponBonus["damagetype"].InnerTextViaPool(token);
+                                    }
 
-                                // Adjust the Weapon's Damage.
-                                string strTemp = objGear.WeaponBonus["damage"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
-                                    sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
-                                strTemp = objGear.WeaponBonus["damagereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strTemp))
+                                    // Adjust the Weapon's Damage.
+                                    string strTemp = objGear.FlechetteWeaponBonus["damage"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                                        sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                                    strTemp = objGear.FlechetteWeaponBonus["damagereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                    {
+                                        blnDamageReplaced = true;
+                                        strDamage = strTemp;
+                                    }
+                                }
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    blnDamageReplaced = true;
-                                    strDamage = strTemp;
+                                    // Change the Weapon's Damage Type.
+                                    if (objChild.WeaponBonus["damagetype"] != null)
+                                    {
+                                        strDamageType = string.Empty;
+                                        strDamageExtra = objChild.WeaponBonus["damagetype"].InnerTextViaPool(token);
+                                    }
+
+                                    // Adjust the Weapon's Damage.
+                                    string strTemp = objGear.WeaponBonus["damage"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp) && strTemp != "0" && strTemp != "+0" && strTemp != "-0")
+                                        sbdBonusDamage.Append("+(", strTemp.TrimStart('+'), ')');
+                                    strTemp = objGear.WeaponBonus["damagereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strTemp))
+                                    {
+                                        blnDamageReplaced = true;
+                                        strDamage = strTemp;
+                                    }
                                 }
                             }
                         }
@@ -5820,79 +5867,157 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
-                                         .ConfigureAwait(false))
+                        if (blnSync)
                         {
-                            if (Damage.Contains("(f)") && AmmoCategory != "Gear"
-                                                       && objChild.FlechetteWeaponBonus != null)
+                            foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token))
                             {
-                                string strFireMode = objChild.FlechetteWeaponBonus["firemode"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strFireMode))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                           && objChild.FlechetteWeaponBonus != null)
                                 {
-                                    if (strFireMode.Contains('/'))
+                                    string strFireMode = objChild.FlechetteWeaponBonus["firemode"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        // Move the contents of the array to a list so it's easier to work with.
-                                        foreach (string strMode in strFireMode.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            setNewModes.Add(strMode);
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setNewModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setNewModes.Add(strFireMode);
+                                        }
                                     }
-                                    else
+
+                                    strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        setNewModes.Add(strFireMode);
+                                        setModes.Clear();
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setModes.Add(strFireMode);
+                                        }
                                     }
                                 }
-
-                                strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strFireMode))
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    setModes.Clear();
-                                    if (strFireMode.Contains('/'))
+                                    string strFireMode = objChild.WeaponBonus["firemode"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        // Move the contents of the array to a list so it's easier to work with.
-                                        foreach (string strMode in strFireMode.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            setModes.Add(strMode);
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setNewModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setNewModes.Add(strFireMode);
+                                        }
                                     }
-                                    else
+
+                                    strFireMode = objChild.WeaponBonus["modereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        setModes.Add(strFireMode);
+                                        setModes.Clear();
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setModes.Add(strFireMode);
+                                        }
                                     }
                                 }
                             }
-                            else if (objChild.WeaponBonus != null)
+                        }
+                        else
+                        {
+                            await foreach (Gear objChild in objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                                         .ConfigureAwait(false))
                             {
-                                string strFireMode = objChild.WeaponBonus["firemode"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strFireMode))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear"
+                                                           && objChild.FlechetteWeaponBonus != null)
                                 {
-                                    if (strFireMode.Contains('/'))
+                                    string strFireMode = objChild.FlechetteWeaponBonus["firemode"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        // Move the contents of the array to a list so it's easier to work with.
-                                        foreach (string strMode in strFireMode.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            setNewModes.Add(strMode);
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setNewModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setNewModes.Add(strFireMode);
+                                        }
                                     }
-                                    else
+
+                                    strFireMode = objChild.FlechetteWeaponBonus["modereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        setNewModes.Add(strFireMode);
+                                        setModes.Clear();
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setModes.Add(strFireMode);
+                                        }
                                     }
                                 }
-
-                                strFireMode = objChild.WeaponBonus["modereplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strFireMode))
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    setModes.Clear();
-                                    if (strFireMode.Contains('/'))
+                                    string strFireMode = objChild.WeaponBonus["firemode"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        // Move the contents of the array to a list so it's easier to work with.
-                                        foreach (string strMode in strFireMode.SplitNoAlloc(
-                                                     '/', StringSplitOptions.RemoveEmptyEntries))
-                                            setModes.Add(strMode);
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setNewModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setNewModes.Add(strFireMode);
+                                        }
                                     }
-                                    else
+
+                                    strFireMode = objChild.WeaponBonus["modereplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strFireMode))
                                     {
-                                        setModes.Add(strFireMode);
+                                        setModes.Clear();
+                                        if (strFireMode.Contains('/'))
+                                        {
+                                            // Move the contents of the array to a list so it's easier to work with.
+                                            foreach (string strMode in strFireMode.SplitNoAlloc(
+                                                         '/', StringSplitOptions.RemoveEmptyEntries))
+                                                setModes.Add(strMode);
+                                        }
+                                        else
+                                        {
+                                            setModes.Add(strFireMode);
+                                        }
                                     }
                                 }
                             }
@@ -6631,76 +6756,110 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
-                                         .ConfigureAwait(false))
+                        if (blnSync)
                         {
-                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
-                                objChild.FlechetteWeaponBonus != null)
+                            foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token))
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPReplace))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
+                                    objChild.FlechetteWeaponBonus != null)
                                 {
-                                    strAPReplace = blnSync
-                                        ? strAPReplace
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    strAP = strAPReplace;
+                                    // Change the Weapon's Damage Type.
+                                    string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPReplace))
+                                    {
+                                        strAPReplace = strAPReplace
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        strAP = strAPReplace;
+                                    }
+                                    // Adjust the Weapon's Damage.
+                                    string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                    {
+                                        strAPAdd = strAPAdd
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    }
                                 }
-                                // Adjust the Weapon's Damage.
-                                string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    strAPAdd = blnSync
-                                        ? strAPAdd
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    // Change the Weapon's Damage Type.
+                                    string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPReplace))
+                                    {
+                                        strAPReplace = strAPReplace
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        strAP = strAPReplace;
+                                    }
+                                    // Adjust the Weapon's Damage.
+                                    string strAPAdd = objChild.WeaponBonus["ap"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                    {
+                                        strAPAdd = strAPAdd
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
+                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                                .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo));
+                                        sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    }
                                 }
                             }
-                            else if (objChild.WeaponBonus != null)
+                        }
+                        else
+                        {
+                            await foreach (Gear objChild in objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                                         .ConfigureAwait(false))
                             {
-                                // Change the Weapon's Damage Type.
-                                string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPReplace))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
+                                    objChild.FlechetteWeaponBonus != null)
                                 {
-                                    strAPReplace = blnSync
-                                        ? strAPReplace
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    strAP = strAPReplace;
+                                    // Change the Weapon's Damage Type.
+                                    string strAPReplace = objChild.FlechetteWeaponBonus["apreplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPReplace))
+                                    {
+                                        strAPReplace = await strAPReplace
+                                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        strAP = strAPReplace;
+                                    }
+                                    // Adjust the Weapon's Damage.
+                                    string strAPAdd = objChild.FlechetteWeaponBonus["ap"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                    {
+                                        strAPAdd = await strAPAdd
+                                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    }
                                 }
-                                // Adjust the Weapon's Damage.
-                                string strAPAdd = objChild.WeaponBonus["ap"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                else if (objChild.WeaponBonus != null)
                                 {
-                                    strAPAdd = blnSync
-                                        ? strAPAdd
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("{Rating}", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                                        : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
-                                    sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    // Change the Weapon's Damage Type.
+                                    string strAPReplace = objChild.WeaponBonus["apreplace"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPReplace))
+                                    {
+                                        strAPReplace = await strAPReplace
+                                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        strAP = strAPReplace;
+                                    }
+                                    // Adjust the Weapon's Damage.
+                                    string strAPAdd = objChild.WeaponBonus["ap"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
+                                    {
+                                        strAPAdd = await strAPAdd
+                                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        sbdBonusAP.Append("+(", strAPAdd.TrimStart('+'), ')');
+                                    }
                                 }
                             }
                         }
@@ -7068,52 +7227,86 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in blnSync
-                                     ? objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token)
-                                     : await objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
-                                         .ConfigureAwait(false))
+                        if (blnSync)
                         {
-                            if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
-                                objChild.FlechetteWeaponBonus != null)
+                            foreach (Gear objChild in objGear.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token))
                             {
-                                string strRCBonus = objChild.FlechetteWeaponBonus["rc"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strRCBonus) &&
-                                    int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
+                                    objChild.FlechetteWeaponBonus != null)
                                 {
-                                    intRCBase += intLoopRCBonus;
-                                    intRCFull += intLoopRCBonus;
+                                    string strRCBonus = objChild.FlechetteWeaponBonus["rc"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strRCBonus) &&
+                                        int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                    {
+                                        intRCBase += intLoopRCBonus;
+                                        intRCFull += intLoopRCBonus;
 
-                                    if (blnWithTooltip)
-                                        sbdRCTip.Append(strSpace, '+', strSpace)
-                                            .Append(blnSync
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                ? objChild.DisplayName(objCulture, strLanguage)
-                                                : await objChild
-                                                    .DisplayNameAsync(objCulture, strLanguage, token: token)
-                                                    .ConfigureAwait(false))
-                                            .Append(strSpace)
-                                            .Append('(', strRCBonus.TrimStart('+'), ')');
+                                        if (blnWithTooltip)
+                                            sbdRCTip.Append(strSpace, '+', strSpace)
+                                                .Append(objChild.DisplayName(objCulture, strLanguage))
+                                                .Append(strSpace)
+                                                .Append('(', strRCBonus.TrimStart('+'), ')');
+                                    }
+                                }
+                                else if (objChild.WeaponBonus != null)
+                                {
+                                    string strRCBonus = objChild.WeaponBonus["rc"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strRCBonus) &&
+                                        int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                    {
+                                        intRCBase += intLoopRCBonus;
+                                        intRCFull += intLoopRCBonus;
+
+                                        if (blnWithTooltip)
+                                            sbdRCTip.Append(strSpace, '+', strSpace)
+                                                .Append(objChild.DisplayName(objCulture, strLanguage))
+                                                .Append(strSpace)
+                                                .Append('(', strRCBonus.TrimStart('+'), ')');
+                                    }
                                 }
                             }
-                            else if (objChild.WeaponBonus != null)
+                        }
+                        else
+                        {
+                            await foreach (Gear objChild in objGear.Children.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                                         .ConfigureAwait(false))
                             {
-                                string strRCBonus = objChild.WeaponBonus["rc"]?.InnerTextViaPool(token);
-                                if (!string.IsNullOrEmpty(strRCBonus) &&
-                                    int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                if (Damage.Contains("(f)") && AmmoCategory != "Gear" &&
+                                    objChild.FlechetteWeaponBonus != null)
                                 {
-                                    intRCBase += intLoopRCBonus;
-                                    intRCFull += intLoopRCBonus;
+                                    string strRCBonus = objChild.FlechetteWeaponBonus["rc"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strRCBonus) &&
+                                        int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                    {
+                                        intRCBase += intLoopRCBonus;
+                                        intRCFull += intLoopRCBonus;
 
-                                    if (blnWithTooltip)
-                                        sbdRCTip.Append(strSpace, '+', strSpace)
-                                            .Append(blnSync
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                ? objChild.DisplayName(objCulture, strLanguage)
-                                                : await objChild
-                                                    .DisplayNameAsync(objCulture, strLanguage, token: token)
-                                                    .ConfigureAwait(false))
-                                            .Append(strSpace)
-                                            .Append('(', strRCBonus.TrimStart('+'), ')');
+                                        if (blnWithTooltip)
+                                            sbdRCTip.Append(strSpace, '+', strSpace)
+                                                .Append(await objChild
+                                                        .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                        .ConfigureAwait(false))
+                                                .Append(strSpace)
+                                                .Append('(', strRCBonus.TrimStart('+'), ')');
+                                    }
+                                }
+                                else if (objChild.WeaponBonus != null)
+                                {
+                                    string strRCBonus = objChild.WeaponBonus["rc"]?.InnerTextViaPool(token);
+                                    if (!string.IsNullOrEmpty(strRCBonus) &&
+                                        int.TryParse(strRCBonus, out int intLoopRCBonus))
+                                    {
+                                        intRCBase += intLoopRCBonus;
+                                        intRCFull += intLoopRCBonus;
+
+                                        if (blnWithTooltip)
+                                            sbdRCTip.Append(strSpace, '+', strSpace)
+                                                .Append(await objChild
+                                                        .DisplayNameAsync(objCulture, strLanguage, token: token)
+                                                        .ConfigureAwait(false))
+                                                .Append(strSpace)
+                                                .Append('(', strRCBonus.TrimStart('+'), ')');
+                                    }
                                 }
                             }
                         }
@@ -7843,7 +8036,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in await objGear.Children
+                        await foreach (Gear objChild in objGear.Children
                                         .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
                                         .ConfigureAwait(false))
                         {
@@ -8089,7 +8282,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in await objGear.Children
+                    await foreach (Gear objChild in objGear.Children
                                  .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
                                  .ConfigureAwait(false))
                     {
@@ -8385,7 +8578,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in await objGear.Children
+                    await foreach (Gear objChild in objGear.Children
                                  .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
                                  .ConfigureAwait(false))
                     {
@@ -9501,7 +9694,7 @@ namespace Chummer.Backend.Equipment
                     {
                         decimal decSmartlinkBonus = await ImprovementManager.ValueOfAsync(_objCharacter,
                             Improvement.ImprovementType.Smartlink, token: token).ConfigureAwait(false);
-                        foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
+                        await foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token)
                                      .ConfigureAwait(false))
                         {
                             string strLoopBonus = string.Empty;
@@ -9800,7 +9993,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in await objAmmo.Children
+                        await foreach (Gear objChild in objAmmo.Children
                                      .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token).ConfigureAwait(false))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
@@ -10880,7 +11073,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     // Do the same for any plugins.
-                    foreach (Gear objChild in await objLoadedAmmo.Children
+                    await foreach (Gear objChild in objLoadedAmmo.Children
                                  .DeepWhereAsync(async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false), x => x.Equipped, token: token).ConfigureAwait(false))
                     {
                         if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
@@ -11098,7 +11291,7 @@ namespace Chummer.Backend.Equipment
                         case FiringMode.RemoteOperated:
                             if (ParentVehicle != null)
                             {
-                                foreach (Gear objLoopGear in await ParentVehicle.GearChildren.DeepWhereAsync(
+                                await foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhereAsync(
                                                  async x => await x.Children.ToListAsync(y => y.Equipped, token: token).ConfigureAwait(false),
                                                  x => x.Equipped, token: token)
                                              .ConfigureAwait(false))
@@ -12215,29 +12408,29 @@ namespace Chummer.Backend.Equipment
                                         .ConfigureAwait(false);
 
             List<Weapon> lstWeapons = await _objCharacter.Weapons
-                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ToListAsync(token).ConfigureAwait(false);
             await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
             {
-                lstWeapons.AddRange(await objVehicle.Weapons
-                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                    .ConfigureAwait(false));
+                await lstWeapons.AddRangeAsync(objVehicle.Weapons
+                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                    .ConfigureAwait(false);
                 await objVehicle.Mods.ForEachAsync(async objMod =>
                 {
-                    lstWeapons.AddRange(await objMod.Weapons
-                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                        .ConfigureAwait(false));
+                    await lstWeapons.AddRangeAsync(objMod.Weapons
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                        .ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
 
                 await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                 {
-                    lstWeapons.AddRange(await objMount.Weapons
-                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                        .ConfigureAwait(false));
+                    await lstWeapons.AddRangeAsync(objMount.Weapons
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                        .ConfigureAwait(false);
                     await objMount.Mods.ForEachAsync(async objMod =>
                     {
-                        lstWeapons.AddRange(await objMod.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
-                            .ConfigureAwait(false));
+                        await lstWeapons.AddRangeAsync(objMod.Weapons
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token))
+                            .ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
@@ -13354,19 +13547,21 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        private async Task<List<WeaponAccessory>> GetClipProvidingAccessoriesAsync(CancellationToken token = default)
+        private async IAsyncEnumerable<WeaponAccessory> GetClipProvidingAccessoriesAsync([EnumeratorCancellation] CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            List<WeaponAccessory> lstReturn = new List<WeaponAccessory>(await WeaponAccessories.GetCountAsync(token).ConfigureAwait(false));
-            await WeaponAccessories.ForEachAsync(objAccessory =>
+            await foreach (WeaponAccessory objAccessory in WeaponAccessories.SelectAsync(Inner, token).ConfigureAwait(false))
+            {
+                yield return objAccessory;
+            }
+            async IAsyncEnumerable<WeaponAccessory> Inner(WeaponAccessory objAccessory)
             {
                 for (int i = 0; i < objAccessory.AmmoSlots; i++)
                 {
                     token.ThrowIfCancellationRequested();
-                    lstReturn.Add(objAccessory);
+                    yield return objAccessory;
                 }
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+            }
         }
 
         private void AddAmmoSlots(WeaponAccessory objAccessory)
@@ -13606,7 +13801,7 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null)
                 return objReturn;
 
-            foreach (Weapon objWeapon in await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+            await foreach (Weapon objWeapon in (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
             {
                 if (objWeapon.InternalId == ParentID)
                     return objWeapon;
@@ -13619,7 +13814,7 @@ namespace Chummer.Backend.Equipment
                     return objReturn;
             }
 
-            foreach (Cyberware objCyberware in await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+            await foreach (Cyberware objCyberware in (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
             {
                 if (objCyberware.InternalId == ParentID)
                     return objCyberware;
@@ -13639,7 +13834,7 @@ namespace Chummer.Backend.Equipment
                 objReturn = await objVehicle.GearChildren.DeepFindByIdAsync(ParentID, token: token).ConfigureAwait(false);
                 if (objReturn != null)
                     return false;
-                foreach (Weapon objWeapon in await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                await foreach (Weapon objWeapon in objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                 {
                     if (objWeapon.InternalId == ParentID)
                     {
@@ -13658,7 +13853,7 @@ namespace Chummer.Backend.Equipment
 
                 await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
                 {
-                    foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                    await foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (objWeapon.InternalId == ParentID)
                         {
@@ -13675,7 +13870,7 @@ namespace Chummer.Backend.Equipment
                             return false;
                     }
 
-                    foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                    await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                     {
                         if (objCyberware.InternalId == ParentID)
                         {
@@ -13693,7 +13888,7 @@ namespace Chummer.Backend.Equipment
 
                 await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
                 {
-                    foreach (Weapon objWeapon in await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                    await foreach (Weapon objWeapon in objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                     {
                         if (objWeapon.InternalId == ParentID)
                         {
@@ -13712,7 +13907,7 @@ namespace Chummer.Backend.Equipment
 
                     await objMount.Mods.ForEachWithBreakAsync(async objMod =>
                     {
-                        foreach (Weapon objWeapon in await objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
+                        await foreach (Weapon objWeapon in objMod.Weapons.GetAllDescendantsAsync(x => x.Children, token).ConfigureAwait(false))
                         {
                             if (objWeapon.InternalId == ParentID)
                             {
@@ -13729,7 +13924,7 @@ namespace Chummer.Backend.Equipment
                                 return false;
                         }
 
-                        foreach (Cyberware objCyberware in await objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                        await foreach (Cyberware objCyberware in objMod.Cyberware.GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
                         {
                             if (objCyberware.InternalId == ParentID)
                             {

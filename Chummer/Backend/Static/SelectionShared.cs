@@ -530,31 +530,46 @@ namespace Chummer
 
                                 if (blnCheckCyberwareChildren)
                                 {
-                                    foreach (Cyberware objItem in blnSync
-                                                 ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
-                                                 : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                    if (blnSync)
                                     {
-                                        if (!setNamesIncludedInLimit.Contains(objItem.Name)
-                                            && !setNamesIncludedInLimit.Contains(objItem.InternalId))
-                                            continue;
-                                        if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
-                                            continue;
-                                        if (blnSync)
+                                        foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x => x.Children, token))
                                         {
-                                            if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                                || !objItem.IsModularCurrentlyEquipped)
+                                            if (!setNamesIncludedInLimit.Contains(objItem.Name)
+                                                && !setNamesIncludedInLimit.Contains(objItem.InternalId))
                                                 continue;
+                                            if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                                continue;
+                                            if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                                    || !objItem.IsModularCurrentlyEquipped)
+                                                continue;
+                                            if (strNodeName == objItem.Name || strNodeId == objItem.SourceIDString)
+                                                ++intCount;
+                                            ++intExtendedCount;
+                                            if (!blnShowMessage
+                                                && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                                return false;
                                         }
-                                        else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
-                                                 || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                            continue;
-                                        if (strNodeName == objItem.Name || strNodeId == objItem.SourceIDString)
-                                            ++intCount;
-                                        ++intExtendedCount;
-                                        if (!blnShowMessage
-                                            && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
-                                            return false;
+                                    }
+                                    else
+                                    {
+                                        await foreach (Cyberware objItem in (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                        {
+                                            if (!setNamesIncludedInLimit.Contains(objItem.Name)
+                                                && !setNamesIncludedInLimit.Contains(objItem.InternalId))
+                                                continue;
+                                            if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                                continue;
+                                            if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                                     || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                                continue;
+                                            if (strNodeName == objItem.Name || strNodeId == objItem.SourceIDString)
+                                                ++intCount;
+                                            ++intExtendedCount;
+                                            if (!blnShowMessage
+                                                && (intCount >= intLimit || intExtendedCount >= intExtendedLimit))
+                                                return false;
+                                        }
                                     }
                                 }
                                 else
@@ -580,28 +595,40 @@ namespace Chummer
                         }
                         else if (blnCheckCyberwareChildren)
                         {
-                            foreach (Cyberware objItem in blnSync
-                                         ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
-                                         : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                            if (blnSync)
                             {
-                                if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
-                                    continue;
-                                if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
-                                    continue;
-                                if (blnSync)
+                                foreach (Cyberware objItem in objCharacter.Cyberware.GetAllDescendants(x => x.Children, token))
                                 {
-                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
-                                        || !objItem.IsModularCurrentlyEquipped)
+                                    if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                         continue;
-                                }
-                                else if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
-                                         || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
-                                    continue;
+                                    if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                        continue;
+                                    if (!string.IsNullOrEmpty(objItem.PlugsIntoModularMount)
+                                            || !objItem.IsModularCurrentlyEquipped)
+                                        continue;
 
-                                ++intCount;
-                                if (!blnShowMessage && intCount >= intLimit)
-                                    return false;
+                                    ++intCount;
+                                    if (!blnShowMessage && intCount >= intLimit)
+                                        return false;
+                                }
+                            }
+                            else
+                            {
+                                await foreach (Cyberware objItem in (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                {
+                                    if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
+                                        continue;
+                                    if (!string.IsNullOrEmpty(strLocation) && objItem.Location != strLocation)
+                                        continue;
+                                    if (!string.IsNullOrEmpty(await objItem.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false))
+                                             || !await objItem.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                                        continue;
+
+                                    ++intCount;
+                                    if (!blnShowMessage && intCount >= intLimit)
+                                        return false;
+                                }
                             }
                         }
                         else
@@ -3427,20 +3454,20 @@ namespace Chummer
                     else
                     {
                         List<Weapon> lstWeapons = new List<Weapon>(2 * await (await objCharacter.GetWeaponsAsync(token)).GetCountAsync(token).ConfigureAwait(false));
-                        lstWeapons.AddRange(await (await objCharacter.GetWeaponsAsync(token)
+                        await lstWeapons.AddRangeAsync((await objCharacter.GetWeaponsAsync(token)
                                      .ConfigureAwait(false)).GetAllDescendantsAsync(
-                                     x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
+                                     x => x.UnderbarrelWeapons, token), token).ConfigureAwait(false);
 
                         await (await objCharacter.GetVehiclesAsync(token).ConfigureAwait(false)).ForEachAsync(async objVehicle =>
                         {
-                            lstWeapons.AddRange(await objVehicle.Weapons
-                                            .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token)
-                                            .ConfigureAwait(false));
+                            await lstWeapons.AddRangeAsync(objVehicle.Weapons
+                                            .GetAllDescendantsAsync(x => x.UnderbarrelWeapons, token), token)
+                                            .ConfigureAwait(false);
 
                             await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
                             {
-                                lstWeapons.AddRange(await objMount.Weapons.GetAllDescendantsAsync(
-                                                x => x.UnderbarrelWeapons, token).ConfigureAwait(false));
+                                await lstWeapons.AddRangeAsync(objMount.Weapons.GetAllDescendantsAsync(
+                                                x => x.UnderbarrelWeapons, token), token).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                         foreach (Weapon objWeapon in lstWeapons)

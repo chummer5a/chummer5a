@@ -20,6 +20,7 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Chummer.Annotations;
@@ -9865,6 +9866,482 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T2 objReturn = await funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    T2 objReturn = await funcSelector.Invoke(objItem).ConfigureAwait(false);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, T2> funcSelector, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T2 objReturn = funcSelector.Invoke(objEnumerator.Current);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    T2 objReturn = funcSelector.Invoke(objItem);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectAsync(objEnumerable, funcSelector, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, T2> funcSelector, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectAsync(objEnumerable, funcSelector, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, IAsyncEnumerable<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await foreach (T2 objReturn in funcSelector.Invoke(objEnumerator.Current).ConfigureAwait(false))
+                        {
+                            if (objReturn != null)
+                                yield return objReturn;
+                        }
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await foreach (T2 objReturn in funcSelector.Invoke(objItem).ConfigureAwait(false))
+                    {
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, IEnumerable<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        foreach (T2 objReturn in funcSelector.Invoke(objEnumerator.Current))
+                        {
+                            if (objReturn != null)
+                                yield return objReturn;
+                        }
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    foreach (T2 objReturn in funcSelector.Invoke(objItem))
+                    {
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, IAsyncEnumerable<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectAsync(objEnumerable, funcSelector, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, IEnumerable<T2>> funcSelector, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectAsync(objEnumerable, funcSelector, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="funcBreakIfFalse">Function to check if we should break. This is run before <paramref name="funcSelector"/> is run.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [NotNull] Func<T1, bool> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T1 objItem = objEnumerator.Current;
+                        if (funcBreakIfFalse(objItem))
+                            yield break;
+                        T2 objReturn = await funcSelector.Invoke(objItem).ConfigureAwait(false);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcBreakIfFalse(objItem))
+                        yield break;
+                    T2 objReturn = await funcSelector.Invoke(objItem).ConfigureAwait(false);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, T2> funcSelector, [NotNull] Func<T1, bool> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T1 objItem = objEnumerator.Current;
+                        if (funcBreakIfFalse(objItem))
+                            yield break;
+                        T2 objReturn = funcSelector.Invoke(objItem);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcBreakIfFalse(objItem))
+                        yield break;
+                    T2 objReturn = funcSelector.Invoke(objItem);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [NotNull] Func<T1, bool> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectWithBreakAsync(objEnumerable, funcSelector, funcBreakIfFalse, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, T2> funcSelector, [NotNull] Func<T1, bool> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectWithBreakAsync(objEnumerable, funcSelector, funcBreakIfFalse, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="funcBreakIfFalse">Function to check if we should break. This is run before <paramref name="funcSelector"/> is run.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [NotNull] Func<T1, Task<bool>> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T1 objItem = objEnumerator.Current;
+                        if (await funcBreakIfFalse(objItem).ConfigureAwait(false))
+                            yield break;
+                        T2 objReturn = await funcSelector.Invoke(objItem).ConfigureAwait(false);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcBreakIfFalse(objItem).ConfigureAwait(false))
+                        yield break;
+                    T2 objReturn = await funcSelector.Invoke(objItem).ConfigureAwait(false);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<T1, T2>(this IEnumerable<T1> objEnumerable, [NotNull] Func<T1, T2> funcSelector, [NotNull] Func<T1, Task<bool>> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IEnumerableWithAsync<T1> objEnumerableCast)
+            {
+                IEnumerator<T1> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T1 objItem = objEnumerator.Current;
+                        if (await funcBreakIfFalse(objItem).ConfigureAwait(false))
+                            yield break;
+                        T2 objReturn = funcSelector.Invoke(objItem);
+                        if (objReturn != null)
+                            yield return objReturn;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T1 objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcBreakIfFalse(objItem).ConfigureAwait(false))
+                        yield break;
+                    T2 objReturn = funcSelector.Invoke(objItem);
+                    if (objReturn != null)
+                        yield return objReturn;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, Task<T2>> funcSelector, [NotNull] Func<T1, Task<bool>> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectWithBreakAsync(objEnumerable, funcSelector, funcBreakIfFalse, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
+        /// Perform some function to select all elements from an async-capable enumerable or collection and pass it on, but also checking a different function first to see if we should terminate early.
+        /// </summary>
+        /// <param name="tskEnumerable">Task that returns the enumerable from which to select items to pass on.</param>
+        /// <param name="funcSelector">Function to select what gets passed on to the output.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async IAsyncEnumerable<T2> SelectWithBreakAsync<Tm, T1, T2>(this Task<Tm> tskEnumerable, [NotNull] Func<T1, T2> funcSelector, [NotNull] Func<T1, Task<bool>> funcBreakIfFalse, [EnumeratorCancellation] CancellationToken token = default) where Tm : IEnumerableWithAsync<T1>
+        {
+            Tm objEnumerable = await tskEnumerable.ConfigureAwait(false);
+            await foreach (T2 objItem in SelectWithBreakAsync(objEnumerable, funcSelector, funcBreakIfFalse, token).ConfigureAwait(false))
+                yield return objItem;
+        }
+
+        /// <summary>
         /// Similar to <see cref="Enumerable.Aggregate{TSource}(IEnumerable{TSource}, Func{TSource, TSource, TSource})"/>, but deep searches the list, applying the aggregator to the parents, the parents' children, their children's children, etc.
         /// </summary>
         public static Task<TSource> DeepAggregateAsync<TSource, T2>(this IEnumerable<TSource> objParentList, Func<TSource, T2> funcGetChildrenMethod, Func<TSource, TSource, TSource> funcAggregate, CancellationToken token = default) where T2 : IEnumerableWithAsync<TSource>
@@ -10827,62 +11304,80 @@ namespace Chummer
         /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            foreach (T objLoopChild in objParentList)
             {
-                lstReturn.Add(objLoopChild);
                 token.ThrowIfCancellationRequested();
-                T2 lstChildren = funcGetChildrenMethod(objLoopChild);
+                yield return objLoopChild;
+                token.ThrowIfCancellationRequested();
+                await foreach (T objDescendant in Inner(objLoopChild).ConfigureAwait(false))
+                    yield return objDescendant;
+            }
+            async IAsyncEnumerable<T> Inner(T objChild)
+            {
+                token.ThrowIfCancellationRequested();
+                T2 lstChildren = funcGetChildrenMethod(objChild);
+                token.ThrowIfCancellationRequested();
                 if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
+                {
+                    await foreach (T objDescendant in lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        .ConfigureAwait(false))
+                        yield return objDescendant;
+                }
                 else
-                    lstReturn.AddRange(lstChildren.GetAllDescendants(funcGetChildrenMethod));
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+                {
+                    await foreach (T objDescendant in lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        .ConfigureAwait(false))
+                        yield return objDescendant;
+                }
+            }
         }
 
         /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
             if (objParentList is IEnumerableWithAsync<T> objParentListCast)
             {
-                await objParentListCast.ForEachAsync(async objLoopChild =>
+                await foreach (T objDescendant in objParentListCast.SelectAsync(Inner, token).ConfigureAwait(false))
                 {
-                    lstReturn.Add(objLoopChild);
-                    token.ThrowIfCancellationRequested();
-                    T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                    if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
-                            .ConfigureAwait(false));
-                    else
-                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
-                            .ConfigureAwait(false));
-                }, token).ConfigureAwait(false);
+                    yield return objDescendant;
+                }
             }
             else
             {
                 foreach (T objLoopChild in objParentList)
                 {
                     token.ThrowIfCancellationRequested();
-                    lstReturn.Add(objLoopChild);
+                    yield return objLoopChild;
                     token.ThrowIfCancellationRequested();
-                    T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                    if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
-                            .ConfigureAwait(false));
-                    else
-                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
-                            .ConfigureAwait(false));
+                    await foreach(T objDescendant in Inner(objLoopChild).ConfigureAwait(false))
+                        yield return objDescendant;
                 }
             }
-            return lstReturn;
+            async IAsyncEnumerable<T> Inner(T objChild)
+            {
+                token.ThrowIfCancellationRequested();
+                T2 lstChildren = await funcGetChildrenMethod(objChild).ConfigureAwait(false);
+                token.ThrowIfCancellationRequested();
+                if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
+                {
+                    await foreach (T objDescendant in lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        .ConfigureAwait(false))
+                        yield return objDescendant;
+                }
+                else
+                {
+                    await foreach (T objDescendant in lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        .ConfigureAwait(false))
+                        yield return objDescendant;
+                }
+            }
         }
 
         /// <summary>
@@ -10909,91 +11404,140 @@ namespace Chummer
         /// <summary>
         /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerableWithAsync<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerableWithAsync<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await foreach (T objItem in objParentList.SelectAsync(Inner, token).ConfigureAwait(false))
+            {
+                yield return objItem;
+            }
+            async IAsyncEnumerable<T> Inner(T objLoopChild)
             {
                 if (predicate(objLoopChild))
-                    lstReturn.Add(objLoopChild);
+                    yield return objLoopChild;
                 token.ThrowIfCancellationRequested();
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false));
+                {
+                    await foreach (T objItem in lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+                else if (lstChildren is IAsyncEnumerable<T> lstChildrenCast2)
+                {
+                    await foreach (T objItem in lstChildrenCast2.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
                 else
-                    lstReturn.AddRange(lstChildren.DeepWhere(funcGetChildrenMethod, predicate));
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+                {
+                    foreach (T objItem in lstChildren.DeepWhere(funcGetChildrenMethod, predicate))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        yield return objItem;
+                    }
+                }
+            }
         }
 
         /// <summary>
         /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, bool> predicate, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await foreach (T objItem in objParentList.SelectAsync(Inner, token).ConfigureAwait(false))
+            {
+                yield return objItem;
+            }
+            async IAsyncEnumerable<T> Inner(T objLoopChild)
             {
                 if (predicate(objLoopChild))
-                    lstReturn.Add(objLoopChild);
+                    yield return objLoopChild;
                 token.ThrowIfCancellationRequested();
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
+                {
+                    await foreach (T objItem in lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+                else if (lstChildren is IAsyncEnumerable<T> lstChildrenCast2)
+                {
+                    await foreach (T objItem in lstChildrenCast2.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+                {
+                    await foreach (T objItem in lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+            }
         }
 
         /// <summary>
         /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await foreach (T objItem in objParentList.SelectAsync(Inner, token).ConfigureAwait(false))
+            {
+                yield return objItem;
+            }
+            async IAsyncEnumerable<T> Inner(T objLoopChild)
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
-                    lstReturn.Add(objLoopChild);
+                    yield return objLoopChild;
                 token.ThrowIfCancellationRequested();
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
+                {
+                    await foreach (T objItem in lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+                else if (lstChildren is IAsyncEnumerable<T> lstChildrenCast2)
+                {
+                    await foreach (T objItem in lstChildrenCast2.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+                {
+                    await foreach (T objItem in lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+            }
         }
 
         /// <summary>
         /// Similar to <see cref="Enumerable.Where{TSource}(IEnumerable{TSource}, Func{TSource, bool})"/>, but deep searches the list, applying the predicate to the parents, the parents' children, their children's children, etc.
         /// </summary>
-        public static async Task<List<T>> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        public static async IAsyncEnumerable<T> DeepWhereAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, [EnumeratorCancellation] CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await foreach (T objItem in objParentList.SelectAsync(Inner, token).ConfigureAwait(false))
+            {
+                yield return objItem;
+            }
+            async IAsyncEnumerable<T> Inner(T objLoopChild)
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
-                    lstReturn.Add(objLoopChild);
+                    yield return objLoopChild;
                 token.ThrowIfCancellationRequested();
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                 if (lstChildren is IEnumerableWithAsync<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
+                {
+                    await foreach (T objItem in lstChildrenCast.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+                else if (lstChildren is IAsyncEnumerable<T> lstChildrenCast2)
+                {
+                    await foreach (T objItem in lstChildrenCast2.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
                 else
-                    lstReturn.AddRange(await lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token)
-                        .ConfigureAwait(false));
-            }, token).ConfigureAwait(false);
-            return lstReturn;
+                {
+                    await foreach (T objItem in lstChildren.DeepWhereAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false))
+                        yield return objItem;
+                }
+            }
         }
     }
 }
