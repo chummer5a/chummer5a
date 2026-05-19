@@ -951,7 +951,7 @@ namespace Chummer
                 string strReturn = strKey.Substring(0, intSeparatorIndex);
                 if (strReturn.IsGuid())
                 {
-                    objPreferredVersion = new ValueVersion(strKey.Substring(intSeparatorIndex + 1));
+                    objPreferredVersion = new ValueVersion(strKey.AsSpan(intSeparatorIndex + 1));
                     return strReturn;
                 }
             }

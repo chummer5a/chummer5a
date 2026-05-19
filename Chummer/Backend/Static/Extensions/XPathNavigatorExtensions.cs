@@ -70,6 +70,8 @@ namespace Chummer
 
         public delegate bool TryParseFunction<T>(string input, out T result);
 
+        public delegate bool TryParseFunctionCharSpan<T>(ReadOnlySpan<char> input, out T result);
+
         /// <summary>
         /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version sets the output variable to its
@@ -85,6 +87,35 @@ namespace Chummer
         /// <param name="onError"></param>
         /// <returns></returns>
         public static bool TryGetField<T>(this XPathNavigator node, string field, TryParseFunction<T> parser, out T read, T onError = default)
+        {
+            if (parser != null)
+            {
+                XPathNavigator objField = node?.SelectSingleNode(field);
+                if (objField != null)
+                {
+                    return parser(objField.Value, out read);
+                }
+            }
+
+            read = onError;
+            return false;
+        }
+
+        /// <summary>
+        /// This method is syntactic sugar for attempting to read a data field
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
+        /// initializing variables. It can work on any type, but it requires
+        /// a tryParse style function that is fed the nodes InnerText
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="node"></param>
+        /// <param name="field"></param>
+        /// <param name="parser"></param>
+        /// <param name="read"></param>
+        /// <param name="onError"></param>
+        /// <returns></returns>
+        public static bool TryGetField<T>(this XPathNavigator node, string field, TryParseFunctionCharSpan<T> parser, out T read, T onError = default)
         {
             if (parser != null)
             {

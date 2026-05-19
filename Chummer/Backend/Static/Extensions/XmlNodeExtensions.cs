@@ -39,6 +39,8 @@ namespace Chummer
 
         public delegate bool TryParseFunction<T>(string input, out T result);
 
+        public delegate bool TryParseFunctionCharSpan<T>(ReadOnlySpan<char> input, out T result);
+
         /// <summary>
         /// This method is syntactic sugar for attempting to read a data field
         /// from an XmlNode. This version sets the output variable to its
@@ -138,6 +140,28 @@ namespace Chummer
         /// a tryParse style function that is fed the node's <see cref="XmlNode.InnerText"/>
         /// </summary>
         public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunction<T> parser, out T read, T onError = default)
+        {
+            if (parser != null)
+            {
+                XmlElement xmlField = node?[field];
+                if (xmlField != null)
+                {
+                    return parser(xmlField.InnerTextViaPool(), out read);
+                }
+            }
+
+            read = onError;
+            return false;
+        }
+
+        /// <summary>
+        /// This method is syntactic sugar for attempting to read a data field
+        /// from an XmlNode. This version sets the output variable to its
+        /// default value in case of a failed read and can be used for
+        /// initializing variables. It can work on any type, but it requires
+        /// a tryParse style function that is fed the node's <see cref="XmlNode.InnerText"/>
+        /// </summary>
+        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunctionCharSpan<T> parser, out T read, T onError = default)
         {
             if (parser != null)
             {

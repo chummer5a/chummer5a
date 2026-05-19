@@ -18,15 +18,15 @@
  */
 
 using System;
-using System.Buffers;
+using System.Diagnostics;
+using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
-using System.Text;
 
 namespace Chummer
 {
     /// <summary>Represents a value type of the version number of an assembly, operating system, or the common language runtime. This struct cannot be inherited.</summary>
     [Serializable]
-    public readonly struct ValueVersion : IComparable, IComparable<Version>, IEquatable<Version>, IComparable<ValueVersion>, IEquatable<ValueVersion>
+    public readonly struct ValueVersion : IComparable, IComparable<Version>, IEquatable<Version>, IComparable<ValueVersion>, IEquatable<ValueVersion>, ISpanFormattable, IUtf8SpanFormattable, IUtf8SpanParsable<ValueVersion>
     {
         private readonly int _Major;
         private readonly int _Minor;
@@ -103,6 +103,24 @@ namespace Chummer
         /// <exception cref="T:System.FormatException">At least one component of <paramref name="version" /> does not parse to an integer.</exception>
         /// <exception cref="T:System.OverflowException">At least one component of <paramref name="version" /> represents a number greater than <see cref="F:System.Int32.MaxValue" />.</exception>
         public ValueVersion(string version)
+        {
+            ValueVersion version1 = Parse(version);
+            _Major = version1.Major;
+            _Minor = version1.Minor;
+            _Build = version1.Build;
+            _Revision = version1.Revision;
+        }
+
+        public ValueVersion(ReadOnlySpan<byte> version)
+        {
+            ValueVersion version1 = Parse(version);
+            _Major = version1.Major;
+            _Minor = version1.Minor;
+            _Build = version1.Build;
+            _Revision = version1.Revision;
+        }
+
+        public ValueVersion(ReadOnlySpan<char> version)
         {
             ValueVersion version1 = Parse(version);
             _Major = version1.Major;
@@ -303,12 +321,8 @@ namespace Chummer
         /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
         /// major.minor[.build[.revision]]
         /// For example, if you create a ValueVersion struct using the constructor ValueVersion(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor ValueVersion(1,3,4,2), the returned string is "1.3.4.2".</returns>
-        public override string ToString()
-        {
-            if (_Build == -1)
-                return ToString(2);
-            return _Revision == -1 ? ToString(3) : ToString(4);
-        }
+        public override string ToString() =>
+            ToString(DefaultFormatFieldCount);
 
         /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation. A specified count indicates the number of components to return.</summary>
         /// <param name="fieldCount">The number of components to return. The <paramref name="fieldCount" /> ranges from 0 to 4.</param>
@@ -346,66 +360,173 @@ namespace Chummer
         /// <paramref name="fieldCount" /> is more than the number of components defined in the current ValueVersion struct.</exception>
         public string ToString(int fieldCount)
         {
-            switch (fieldCount)
+            Span<char> dest = stackalloc char[(4 * 10) + 3]; // at most 4 Int32s and 3 periods
+            bool success = TryFormat(dest, fieldCount, out int charsWritten);
+            Debug.Assert(success);
+            return dest.Slice(0, charsWritten).ToString();
+        }
+
+        string IFormattable.ToString(string format, IFormatProvider formatProvider) =>
+            ToString();
+
+        public bool TryFormat(Span<char> destination, out int charsWritten) =>
+            TryFormatCore(destination, DefaultFormatFieldCount, out charsWritten);
+
+        public bool TryFormat(Span<char> destination, int fieldCount, out int charsWritten) =>
+            TryFormatCore(destination, fieldCount, out charsWritten);
+
+        /// <summary>Tries to format this version instance into a span of bytes.</summary>
+        /// <param name="utf8Destination">The span in which to write this instance's value formatted as a span of UTF-8 bytes.</param>
+        /// <param name="bytesWritten">When this method returns, contains the number of bytes that were written in <paramref name="utf8Destination"/>.</param>
+        /// <returns><see langword="true"/> if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+        public bool TryFormat(Span<byte> utf8Destination, out int bytesWritten) =>
+            TryFormatCore(utf8Destination, DefaultFormatFieldCount, out bytesWritten);
+
+        /// <summary>Tries to format this version instance into a span of bytes.</summary>
+        /// <param name="utf8Destination">The span in which to write this instance's value formatted as a span of UTF-8 bytes.</param>
+        /// <param name="fieldCount">The number of components to return. This value ranges from 0 to 4.</param>
+        /// <param name="bytesWritten">When this method returns, contains the number of bytes that were written in <paramref name="utf8Destination"/>.</param>
+        /// <returns><see langword="true"/> if the formatting was successful; otherwise, <see langword="false"/>.</returns>
+        public bool TryFormat(Span<byte> utf8Destination, int fieldCount, out int bytesWritten) =>
+            TryFormatCore(utf8Destination, fieldCount, out bytesWritten);
+
+        private bool TryFormatCore(Span<char> destination, int fieldCount, out int charsWritten)
+        {
+            switch ((uint)fieldCount)
             {
-                case 0:
-                    return string.Empty;
-                case 1:
-                    return _Major.ToString();
-                case 2:
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdReturn))
-                    {
-                        AppendPositiveNumber(_Major, sbdReturn);
-                        sbdReturn.Append('.');
-                        AppendPositiveNumber(_Minor, sbdReturn);
-                        return sbdReturn.ToString();
-                    }
-                default:
-                    ArgumentOutOfRangeException.ThrowIfEqual(_Build, -1, nameof(fieldCount));
-                    if (fieldCount == 3)
-                    {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                        {
-                            AppendPositiveNumber(_Major, sbdReturn);
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(_Minor, sbdReturn);
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(_Build, sbdReturn);
-                            return sbdReturn.ToString();
-                        }
-                    }
-                    ArgumentOutOfRangeException.ThrowIfEqual(_Revision, -1, nameof(fieldCount));
-                    if (fieldCount == 4)
-                    {
-                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                   out StringBuilder sbdReturn))
-                        {
-                            AppendPositiveNumber(_Major, sbdReturn);
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(_Minor, sbdReturn);
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(_Build, sbdReturn);
-                            sbdReturn.Append('.');
-                            AppendPositiveNumber(_Revision, sbdReturn);
-                            return sbdReturn.ToString();
-                        }
-                    }
-                    throw new ArgumentOutOfRangeException(nameof(fieldCount));
+                case > 4:
+                    ThrowArgumentException("4");
+                    break;
+
+                case >= 3 when _Build == -1:
+                    ThrowArgumentException("2");
+                    break;
+
+                case 4 when _Revision == -1:
+                    ThrowArgumentException("3");
+                    break;
+
+                    static void ThrowArgumentException(string failureUpperBound) =>
+                        throw new ArgumentOutOfRangeException(nameof(fieldCount));
             }
 
-            void AppendPositiveNumber(int num, StringBuilder sb)
+            int totalCharsWritten = 0;
+
+            for (int i = 0; i < fieldCount; i++)
             {
-                int index = sb.Length;
-                do
+                if (i != 0)
                 {
-                    num = num.DivRem(10, out int remainder);
-                    sb.Insert(index, (char)(48 + remainder));
+                    if (destination.IsEmpty)
+                    {
+                        charsWritten = 0;
+                        return false;
+                    }
+
+                    destination[0] = '.';
+                    destination = destination.Slice(1);
+                    totalCharsWritten++;
                 }
-                while (num > 0);
+
+                int value = i switch
+                {
+                    0 => _Major,
+                    1 => _Minor,
+                    2 => _Build,
+                    _ => _Revision
+                };
+
+                int valueCharsWritten;
+                bool formatted = ((uint)value).TryFormat(destination, out valueCharsWritten);
+
+                if (!formatted)
+                {
+                    charsWritten = 0;
+                    return false;
+                }
+
+                totalCharsWritten += valueCharsWritten;
+                destination = destination.Slice(valueCharsWritten);
             }
+
+            charsWritten = totalCharsWritten;
+            return true;
         }
+
+        private bool TryFormatCore(Span<byte> destination, int fieldCount, out int charsWritten)
+        {
+            switch ((uint)fieldCount)
+            {
+                case > 4:
+                    ThrowArgumentException("4");
+                    break;
+
+                case >= 3 when _Build == -1:
+                    ThrowArgumentException("2");
+                    break;
+
+                case 4 when _Revision == -1:
+                    ThrowArgumentException("3");
+                    break;
+
+                    static void ThrowArgumentException(string failureUpperBound) =>
+                        throw new ArgumentOutOfRangeException(nameof(fieldCount));
+            }
+
+            int totalCharsWritten = 0;
+
+            for (int i = 0; i < fieldCount; i++)
+            {
+                if (i != 0)
+                {
+                    if (destination.IsEmpty)
+                    {
+                        charsWritten = 0;
+                        return false;
+                    }
+
+                    destination[0] = (byte)'.';
+                    destination = destination.Slice(1);
+                    totalCharsWritten++;
+                }
+
+                int value = i switch
+                {
+                    0 => _Major,
+                    1 => _Minor,
+                    2 => _Build,
+                    _ => _Revision
+                };
+
+                int valueCharsWritten;
+                bool formatted = ((uint)value).TryFormat(destination, out valueCharsWritten, default, CultureInfo.InvariantCulture);
+
+                if (!formatted)
+                {
+                    charsWritten = 0;
+                    return false;
+                }
+
+                totalCharsWritten += valueCharsWritten;
+                destination = destination.Slice(valueCharsWritten);
+            }
+
+            charsWritten = totalCharsWritten;
+            return true;
+        }
+
+        bool ISpanFormattable.TryFormat(Span<char> destination, out int charsWritten, ReadOnlySpan<char> format, IFormatProvider provider) =>
+            // format and provider are ignored.
+            TryFormatCore(destination, DefaultFormatFieldCount, out charsWritten);
+
+        /// <inheritdoc cref="IUtf8SpanFormattable.TryFormat" />
+        bool IUtf8SpanFormattable.TryFormat(Span<byte> utf8Destination, out int bytesWritten, ReadOnlySpan<char> format, IFormatProvider provider) =>
+            // format and provider are ignored.
+            TryFormatCore(utf8Destination, DefaultFormatFieldCount, out bytesWritten);
+
+        private int DefaultFormatFieldCount =>
+            _Build == -1 ? 2 :
+            _Revision == -1 ? 3 :
+            4;
 
         /// <summary>Converts the string representation of a version number to an equivalent ValueVersion struct.</summary>
         /// <param name="input">A string that contains a version number to convert.</param>
@@ -420,90 +541,258 @@ namespace Chummer
         public static ValueVersion Parse(string input)
         {
             ArgumentNullException.ThrowIfNull(input, nameof(input));
-            ValueVersionResult result = new ValueVersionResult();
-            result.Init(nameof(input), true);
-            return TryParseVersion(input, ref result) ? result.m_parsedValueVersion : throw result.GetValueVersionParseException();
+            return ParseVersion(input.AsSpan(), throwOnFailure: true) ?? throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
         }
+
+        public static ValueVersion Parse(ReadOnlySpan<char> input) =>
+            ParseVersion(input, throwOnFailure: true) ?? throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
+
+        /// <inheritdoc cref="IUtf8SpanParsable{TSelf}.Parse(ReadOnlySpan{byte}, IFormatProvider?)"/>
+        static ValueVersion IUtf8SpanParsable<ValueVersion>.Parse(ReadOnlySpan<byte> utf8Text, IFormatProvider provider)
+        {
+            ValueVersion? result = ParseVersion(utf8Text, throwOnFailure: false);
+            // Required to throw FormatException for invalid input according to contract.
+            if (result == null)
+            {
+                throw new ArgumentException("The specified version string does not conform to the required format", nameof(utf8Text));
+            }
+            return result.Value;
+        }
+
+        /// <summary>
+        /// Converts the specified read-only span of UTF-8 characters that represents a version number to an equivalent Version object.
+        /// </summary>
+        /// <param name="utf8Text">A read-only span of UTF-8 characters that contains a version number to convert.</param>
+        /// <returns>An object that is equivalent to the version number specified in the <paramref name="utf8Text" /> parameter.</returns>
+        /// <exception cref="ArgumentException"><paramref name="utf8Text" /> has fewer than two or more than four version components.</exception>
+        /// <exception cref="ArgumentOutOfRangeException">At least one component in <paramref name="utf8Text" /> is less than zero.</exception>
+        /// <exception cref="FormatException">At least one component in <paramref name="utf8Text" /> is not an integer.</exception>
+        /// <exception cref="OverflowException">At least one component in <paramref name="utf8Text" /> represents a number that is greater than <see cref="int.MaxValue"/>.</exception>
+        public static ValueVersion Parse(ReadOnlySpan<byte> utf8Text) =>
+            ParseVersion(utf8Text, throwOnFailure: true) ?? default;
 
         /// <summary>Tries to convert the string representation of a version number to an equivalent ValueVersion struct, and returns a value that indicates whether the conversion succeeded.</summary>
         /// <param name="input">A string that contains a version number to convert.</param>
         /// <param name="result">When this method returns, contains the <see cref="T:System.Version" /> equivalent of the number that is contained in <paramref name="input" />, if the conversion succeeded. If <paramref name="input" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or if the conversion fails, <paramref name="result" /> is <see langword="null" /> when the method returns.</param>
         /// <returns>
         /// <see langword="true" /> if the <paramref name="input" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
-        public static bool TryParse(string input, out ValueVersion result)
+        public static bool TryParse([NotNullWhen(true)] string input, [NotNullWhen(true)] out ValueVersion result)
         {
-            ValueVersionResult result1 = new ValueVersionResult();
-            result1.Init(nameof(input), false);
-            bool version = TryParseVersion(input, ref result1);
-            result = result1.m_parsedValueVersion;
-            return version;
+            if (input != null)
+            {
+                ValueVersion? innerResult = ParseVersion(input.AsSpan(), throwOnFailure: false);
+                if (innerResult is not null)
+                {
+                    result = innerResult.Value;
+                    return true;
+                }
+            }
+            result = default;
+            return false;
         }
 
-        private static bool TryParseVersion(string version, ref ValueVersionResult result)
+        public static bool TryParse(ReadOnlySpan<char> input, [NotNullWhen(true)] out ValueVersion? result)
         {
-            if (version == null)
-            {
-                result.SetFailure(ParseFailureKind.ArgumentNullException);
-                return false;
-            }
-            if (int.TryParse(version, NumberStyles.Integer, CultureInfo.InvariantCulture, out int parsedComponent0) && parsedComponent0 >= 0)
-            {
-                result.m_parsedValueVersion = new ValueVersion(parsedComponent0);
-                return true;
-            }
-            string[] strArray = version.SplitToPooledArray(out int length, '.');
-            try
-            {
-                if (length < 2 || length > 4)
-                {
-                    result.SetFailure(ParseFailureKind.ArgumentException);
-                    return false;
-                }
+            result = ParseVersion(input, throwOnFailure: false);
+            return result is not null;
+        }
 
-                if (!TryParseComponent(strArray[0], nameof(version), ref result, out int parsedComponent1)
-                    || !TryParseComponent(strArray[1], nameof(version), ref result, out int parsedComponent2))
-                {
-                    return false;
-                }
+        private static ValueVersion? ParseVersion(ReadOnlySpan<char> input, bool throwOnFailure)
+        {
+            // Find the separator between major and minor.  It must exist.
+            int majorEnd = input.IndexOf('.');
+            if (majorEnd < 0)
+            {
+                if (throwOnFailure) throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
+                return null;
+            }
 
-                int num = length - 2;
-                if (num > 0)
+            // Find the ends of the optional minor and build portions.
+            // We musn't have any separators after build.
+            int buildEnd = -1;
+            int minorEnd = input.Slice(majorEnd + 1).IndexOf('.');
+            if (minorEnd >= 0)
+            {
+                minorEnd += (majorEnd + 1);
+                buildEnd = input.Slice(minorEnd + 1).IndexOf('.');
+                if (buildEnd >= 0)
                 {
-                    if (!TryParseComponent(strArray[2], "build", ref result, out int parsedComponent3))
-                        return false;
-                    if (num > 1)
+                    buildEnd += (minorEnd + 1);
+                    if (input.Slice(buildEnd + 1).Contains('.'))
                     {
-                        if (!TryParseComponent(strArray[3], "revision", ref result, out int parsedComponent4))
-                            return false;
-                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3, parsedComponent4);
+                        if (throwOnFailure)
+                            throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
+                        return null;
                     }
-                    else
-                        result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2, parsedComponent3);
+                }
+            }
+
+            int minor, build, revision;
+
+            // Parse the major version
+            if (!TryParseComponent(input.Slice(0, majorEnd), nameof(input), throwOnFailure, out int major))
+            {
+                return null;
+            }
+
+            if (minorEnd != -1)
+            {
+                // If there's more than a major and minor, parse the minor, too.
+                if (!TryParseComponent(input.Slice(majorEnd + 1, minorEnd - majorEnd - 1), nameof(input), throwOnFailure, out minor))
+                {
+                    return null;
+                }
+
+                if (buildEnd != -1)
+                {
+                    // major.minor.build.revision
+                    return
+                        TryParseComponent(input.Slice(minorEnd + 1, buildEnd - minorEnd - 1), nameof(build), throwOnFailure, out build) &&
+                        TryParseComponent(input.Slice(buildEnd + 1), nameof(revision), throwOnFailure, out revision) ?
+                            new ValueVersion(major, minor, build, revision) :
+                            null;
                 }
                 else
-                    result.m_parsedValueVersion = new ValueVersion(parsedComponent1, parsedComponent2);
-                return true;
+                {
+                    // major.minor.build
+                    return TryParseComponent(input.Slice(minorEnd + 1), nameof(build), throwOnFailure, out build) ?
+                        new ValueVersion(major, minor, build) :
+                        null;
+                }
             }
-            finally
+            else
             {
-                ArrayPool<string>.Shared.Return(strArray);
+                // major.minor
+                return TryParseComponent(input.Slice(majorEnd + 1), nameof(input), throwOnFailure, out minor) ?
+                    new ValueVersion(major, minor) :
+                    null;
             }
         }
 
-        private static bool TryParseComponent(
-          string component,
-          string componentName,
-          ref ValueVersionResult result,
-          out int parsedComponent)
+        private static ValueVersion? ParseVersion(ReadOnlySpan<byte> input, bool throwOnFailure)
         {
-            if (!int.TryParse(component, NumberStyles.Integer, CultureInfo.InvariantCulture, out parsedComponent))
+            // Find the separator between major and minor.  It must exist.
+            int majorEnd = input.IndexOf((byte)'.');
+            if (majorEnd < 0)
             {
-                result.SetFailure(ParseFailureKind.FormatException, component);
-                return false;
+                if (throwOnFailure)
+                    throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
+                return null;
             }
-            if (parsedComponent >= 0)
+
+            // Find the ends of the optional minor and build portions.
+            // We musn't have any separators after build.
+            int buildEnd = -1;
+            int minorEnd = input.Slice(majorEnd + 1).IndexOf((byte)'.');
+            if (minorEnd >= 0)
+            {
+                minorEnd += (majorEnd + 1);
+                buildEnd = input.Slice(minorEnd + 1).IndexOf((byte)'.');
+                if (buildEnd >= 0)
+                {
+                    buildEnd += (minorEnd + 1);
+                    if (input.Slice(buildEnd + 1).Contains((byte)'.'))
+                    {
+                        if (throwOnFailure)
+                            throw new ArgumentException("The specified version string does not conform to the required format", nameof(input));
+                        return null;
+                    }
+                }
+            }
+
+            int minor, build, revision;
+
+            // Parse the major version
+            if (!TryParseComponent(input.Slice(0, majorEnd), nameof(input), throwOnFailure, out int major))
+            {
+                return null;
+            }
+
+            if (minorEnd != -1)
+            {
+                // If there's more than a major and minor, parse the minor, too.
+                if (!TryParseComponent(input.Slice(majorEnd + 1, minorEnd - majorEnd - 1), nameof(input), throwOnFailure, out minor))
+                {
+                    return null;
+                }
+
+                if (buildEnd != -1)
+                {
+                    // major.minor.build.revision
+                    return
+                        TryParseComponent(input.Slice(minorEnd + 1, buildEnd - minorEnd - 1), nameof(build), throwOnFailure, out build) &&
+                        TryParseComponent(input.Slice(buildEnd + 1), nameof(revision), throwOnFailure, out revision) ?
+                            new ValueVersion(major, minor, build, revision) :
+                            null;
+                }
+                else
+                {
+                    // major.minor.build
+                    return TryParseComponent(input.Slice(minorEnd + 1), nameof(build), throwOnFailure, out build) ?
+                        new ValueVersion(major, minor, build) :
+                        null;
+                }
+            }
+            else
+            {
+                // major.minor
+                return TryParseComponent(input.Slice(majorEnd + 1), nameof(input), throwOnFailure, out minor) ?
+                    new ValueVersion(major, minor) :
+                    null;
+            }
+        }
+
+        private static bool TryParseComponent(ReadOnlySpan<char> component, string componentName, bool throwOnFailure, out int parsedComponent)
+        {
+            if (throwOnFailure)
+            {
+                parsedComponent = int.Parse(component, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);
+                ArgumentOutOfRangeException.ThrowIfNegative(parsedComponent, componentName);
                 return true;
-            result.SetFailure(ParseFailureKind.ArgumentOutOfRangeException, componentName);
+            }
+
+            bool success = int.TryParse(component, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out parsedComponent);
+            return success && parsedComponent >= 0;
+        }
+
+        private static bool TryParseComponent(ReadOnlySpan<byte> component, string componentName, bool throwOnFailure, out int parsedComponent)
+        {
+            if (throwOnFailure)
+            {
+                parsedComponent = int.Parse(component, NumberStyles.Integer, NumberFormatInfo.InvariantInfo);
+                ArgumentOutOfRangeException.ThrowIfNegative(parsedComponent, componentName);
+                return true;
+            }
+
+            bool success = int.TryParse(component, NumberStyles.Integer, NumberFormatInfo.InvariantInfo, out parsedComponent);
+            return success && parsedComponent >= 0;
+        }
+
+        /// <summary>
+        /// Tries to convert the UTF-8 representation of a version number to an equivalent ValueVersion struct, and returns a value that indicates whether the conversion succeeded.
+        /// </summary>
+        /// <param name="utf8Text">The span of UTF-8 characters to parse.</param>
+        /// <param name="result">
+        ///     When this method returns, contains the Version equivalent of the number that is contained in <paramref name="utf8Text" />, if the conversion succeeded.
+        ///     If <paramref name="utf8Text" /> is empty, or if the conversion fails, result is null when the method returns.
+        /// </param>
+        /// <returns>true if the <paramref name="utf8Text" /> parameter was converted successfully; otherwise, false.</returns>
+        public static bool TryParse(ReadOnlySpan<byte> utf8Text, [NotNullWhen(true)] out ValueVersion? result)
+        {
+            result = ParseVersion(utf8Text, throwOnFailure: false);
+            return result is not null;
+        }
+
+        /// <inheritdoc cref="IUtf8SpanParsable{TSelf}.TryParse(ReadOnlySpan{byte}, IFormatProvider?, out TSelf)"/>
+        public static bool TryParse(ReadOnlySpan<byte> utf8Text, IFormatProvider provider, [NotNullWhen(true)] out ValueVersion result)
+        {
+            ValueVersion? innerResult = ParseVersion(utf8Text, throwOnFailure: false);
+            if (innerResult is not null)
+            {
+                result = innerResult.Value;
+                return true;
+            }
+            result = default;
             return false;
         }
 
@@ -673,70 +962,5 @@ namespace Chummer
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is greater than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator >=(ValueVersion v1, ValueVersion v2) => v2 <= v1;
-
-        internal enum ParseFailureKind
-        {
-            ArgumentNullException,
-            ArgumentException,
-            ArgumentOutOfRangeException,
-            FormatException,
-        }
-
-        internal struct ValueVersionResult
-        {
-            internal ValueVersion m_parsedValueVersion;
-            private ParseFailureKind m_failure;
-            private string m_exceptionArgument;
-            private string m_argumentName;
-            private bool m_canThrow;
-
-            internal void Init(string argumentName, bool canThrow)
-            {
-                m_canThrow = canThrow;
-                m_argumentName = argumentName;
-            }
-
-            internal void SetFailure(ParseFailureKind failure)
-            {
-                SetFailure(failure, string.Empty);
-            }
-
-            internal void SetFailure(ParseFailureKind failure, string argument)
-            {
-                m_failure = failure;
-                m_exceptionArgument = argument;
-                if (m_canThrow)
-                    throw GetValueVersionParseException();
-            }
-
-            internal readonly Exception GetValueVersionParseException()
-            {
-                switch (m_failure)
-                {
-                    case ParseFailureKind.ArgumentNullException:
-                        return new ArgumentNullException(m_argumentName);
-                    case ParseFailureKind.ArgumentException:
-                        return new ArgumentException();
-                    case ParseFailureKind.ArgumentOutOfRangeException:
-                        return new ArgumentOutOfRangeException(m_exceptionArgument);
-                    case ParseFailureKind.FormatException:
-                        try
-                        {
-                            _ = int.Parse(m_exceptionArgument, CultureInfo.InvariantCulture);
-                        }
-                        catch (FormatException ex)
-                        {
-                            return ex;
-                        }
-                        catch (OverflowException ex)
-                        {
-                            return ex;
-                        }
-                        return new FormatException();
-                    default:
-                        return new ArgumentException();
-                }
-            }
-        }
     }
 }
