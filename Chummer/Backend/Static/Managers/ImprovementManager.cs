@@ -1410,8 +1410,8 @@ namespace Chummer
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
             strValue = strValue.ProcessFixedValuesString(intRating)
-                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal)
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
@@ -1445,8 +1445,8 @@ namespace Chummer
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
             strValue = strValue.ProcessFixedValuesString(intRating)
-                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal)
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
@@ -1481,8 +1481,8 @@ namespace Chummer
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
             strValue = strValue.ProcessFixedValuesString(intRating)
-                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal)
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = objCharacter.ProcessAttributesInXPath(strValue, token: token);
@@ -1516,8 +1516,8 @@ namespace Chummer
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
             strValue = strValue.ProcessFixedValuesString(intRating)
-                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
-                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
+                .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal)
+                .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo), StringComparison.Ordinal);
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 string strReturn = await objCharacter.ProcessAttributesInXPathAsync(strValue, token: token).ConfigureAwait(false);
@@ -4196,7 +4196,7 @@ namespace Chummer
                                             continue;
                                         eFilterOption
                                             = Enum.Parse<SkillsSection.FilterOption>(objLoopImprovement.ImprovedName);
-                                        await setSkillsToKeepEnabled.AddRangeAsync(objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objLoopImprovement.Target, false, token)).ConfigureAwait(false);
+                                        await setSkillsToKeepEnabled.AddRangeAsync(objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objLoopImprovement.Target, false, token), token).ConfigureAwait(false);
                                     }
                                     await foreach (Skill objSkill in objCharacter.SkillsSection.FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, true, token).ConfigureAwait(false))
                                     {
