@@ -455,7 +455,7 @@
             <power select="Ordinary Rats">Animal Control</power>
             <power>Concealment</power>
             <power select="Toxins">Immunity</power>
-            <power select="Bite: DV (STR+1)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP 0, Reach -1">Natural Weapon</power>
             <power select="Sunlight, Mild">Allergy</power>
          </powers>
          <skills>
@@ -879,7 +879,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -2019,7 +2019,7 @@
             <reach>-1</reach>
          </bonus>
          <powers>
-            <power select="Bite: DV (STR+1)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP 0, Reach -1">Natural Weapon</power>
             <power rating="1">Fragile</power>
          </powers>
          <skills>
@@ -2762,7 +2762,7 @@
             <power rating="8">Armor</power>
             <power>Dual Natured</power>
             <power>Guard</power>
-            <power select="Bite: DV (STR+1)P, AP -2, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -2, Reach -1">Natural Weapon</power>
             <power>Sapience</power>
             <power>Venom</power>
             <power>Uneducated</power>
@@ -2857,7 +2857,7 @@
             <power select="Poison">Immunity</power>
             <power>Infection</power>
             <power>Influence</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -2960,7 +2960,7 @@
             <power select="Poison">Immunity</power>
             <power>Infection</power>
             <power>Influence</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -22106,7 +22106,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -22193,7 +22193,7 @@
             <power select="Sunlight, Mild">Allergy</power>
             <power>Dual Natured</power>
             <power>Mimicry</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Sapience</power>
          </powers>
@@ -22283,7 +22283,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Paralyzing Howl</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -22461,7 +22461,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Magical Guard</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -22547,7 +22547,7 @@
             <power rating="3">Armor</power>
             <power>Magical Guard</power>
             <power select="Corrosive">Secretion/Substance Extrusion</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Sapience</power>
             <power select="Air Pollution, Moderate">Allergy</power>
@@ -22626,7 +22626,7 @@
             <power>Dual Natured</power>
             <power select="Thermographic Vision">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Bite: DV (STR+2)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+2)P, AP 0, Reach -1">Natural Weapon</power>
             <power>Noxious Breath</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
