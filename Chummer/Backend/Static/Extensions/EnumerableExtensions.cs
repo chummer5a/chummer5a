@@ -97,18 +97,118 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
-            unchecked
+            HashCode hashCode = new HashCode();
+            foreach (T item in lstItems)
             {
-                // uint to prevent overflows
-                uint result = 19u;
-                foreach (T item in lstItems)
+                token.ThrowIfCancellationRequested();
+                hashCode.Add(item);
+            }
+            return hashCode.ToHashCode();
+        }
+
+        /// <summary>
+        /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start)
+        /// </summary>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the contents of <paramref name="lstItems"/></returns>
+        public static int GetEnsembleHashCode<T>(this IReadOnlyCollection<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            int intCount = lstItems.Count;
+            if (intCount <= 0)
+                return 0;
+            // Special cases that let us use HashCode.Combine
+            if (intCount <= 8)
+            {
+                using (IEnumerator<T> enumerator = lstItems.GetEnumerator())
                 {
                     token.ThrowIfCancellationRequested();
-                    result = result * 31u + (uint)item.GetHashCode();
+                    if (enumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T item1 = enumerator.Current;
+                        if (intCount > 1 && enumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T item2 = enumerator.Current;
+                            if (intCount > 2 && enumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                T item3 = enumerator.Current;
+                                if (intCount > 3 && enumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    T item4 = enumerator.Current;
+                                    if (intCount > 4 && enumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        T item5 = enumerator.Current;
+                                        if (intCount > 5 && enumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            T item6 = enumerator.Current;
+                                            if (intCount > 6 && enumerator.MoveNext())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                T item7 = enumerator.Current;
+                                                if (intCount > 7 && enumerator.MoveNext())
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    T item8 = enumerator.Current;
+                                                    return HashCode.Combine(item1, item2, item3, item4, item5, item6, item7, item8);
+                                                }
+                                                else
+                                                {
+                                                    return HashCode.Combine(item1, item2, item3, item4, item5, item6, item7);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return HashCode.Combine(item1, item2, item3, item4, item5, item6);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return HashCode.Combine(item1, item2, item3, item4, item5);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return HashCode.Combine(item1, item2, item3, item4);
+                                    }
+                                }
+                                else
+                                {
+                                    return HashCode.Combine(item1, item2, item3);
+                                }
+                            }
+                            else
+                            {
+                                return HashCode.Combine(item1, item2);
+                            }
+                        }
+                        else
+                        {
+                            return HashCode.Combine(item1);
+                        }
+                    }
+                    else
+                    {
+                        return 0;
+                    }
                 }
-
-                return (int)result;
             }
+            HashCode hashCode = new HashCode();
+            foreach (T item in lstItems)
+            {
+                token.ThrowIfCancellationRequested();
+                hashCode.Add(item);
+            }
+            return hashCode.ToHashCode();
         }
 
         /// <summary>
@@ -122,27 +222,99 @@ namespace Chummer
         public static int GetEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstItems == null || intCount <= 0)
+            if (lstItems == null)
                 return 0;
-            unchecked
+            if (intCount == 0)
+                return new HashCode().ToHashCode();
+            // Special cases that let us use HashCode.Combine
+            if (intCount <= 8)
             {
-                // uint to prevent overflows
-                uint result = 19u;
-                foreach (T item in lstItems)
+                using (IEnumerator<T> enumerator = lstItems.GetEnumerator())
                 {
                     token.ThrowIfCancellationRequested();
-                    if (--intCount < 0)
-                        break;
-                    result = result * 31u + (uint)item.GetHashCode();
+                    if (enumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        T item1 = enumerator.Current;
+                        if (intCount > 1 && enumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            T item2 = enumerator.Current;
+                            if (intCount > 2 && enumerator.MoveNext())
+                            {
+                                token.ThrowIfCancellationRequested();
+                                T item3 = enumerator.Current;
+                                if (intCount > 3 && enumerator.MoveNext())
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    T item4 = enumerator.Current;
+                                    if (intCount > 4 && enumerator.MoveNext())
+                                    {
+                                        token.ThrowIfCancellationRequested();
+                                        T item5 = enumerator.Current;
+                                        if (intCount > 5 && enumerator.MoveNext())
+                                        {
+                                            token.ThrowIfCancellationRequested();
+                                            T item6 = enumerator.Current;
+                                            if (intCount > 6 && enumerator.MoveNext())
+                                            {
+                                                token.ThrowIfCancellationRequested();
+                                                T item7 = enumerator.Current;
+                                                if (intCount > 7 && enumerator.MoveNext())
+                                                {
+                                                    token.ThrowIfCancellationRequested();
+                                                    T item8 = enumerator.Current;
+                                                    return HashCode.Combine(item1, item2, item3, item4, item5, item6, item7, item8);
+                                                }
+                                                else
+                                                {
+                                                    return HashCode.Combine(item1, item2, item3, item4, item5, item6, item7);
+                                                }
+                                            }
+                                            else
+                                            {
+                                                return HashCode.Combine(item1, item2, item3, item4, item5, item6);
+                                            }
+                                        }
+                                        else
+                                        {
+                                            return HashCode.Combine(item1, item2, item3, item4, item5);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        return HashCode.Combine(item1, item2, item3, item4);
+                                    }
+                                }
+                                else
+                                {
+                                    return HashCode.Combine(item1, item2, item3);
+                                }
+                            }
+                            else
+                            {
+                                return HashCode.Combine(item1, item2);
+                            }
+                        }
+                        else
+                        {
+                            return HashCode.Combine(item1);
+                        }
+                    }   
                 }
-
-                return (int)result;
             }
+            HashCode hashCode = new HashCode();
+            foreach (T item in lstItems)
+            {
+                token.ThrowIfCancellationRequested();
+                hashCode.Add(item);
+            }
+            return hashCode.ToHashCode();
         }
 
         /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
-        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection if there is more than one item in it!
         /// </summary>
         /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
@@ -153,23 +325,32 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
-            // uint to prevent overflows
-            unchecked
-            {
-                uint result = 0;
-                foreach (T item in lstItems)
-                {
-                    token.ThrowIfCancellationRequested();
-                    result += (uint)item.GetHashCode();
-                }
+            OrderInvariantHashCode hashCode = new OrderInvariantHashCode();
+            hashCode.AddRange(lstItems);
+            return hashCode.ToHashCode();
+        }
 
-                return (int)(19u + result * 31u);
-            }
+        /// <summary>
+        /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection if there is more than one item in it!
+        /// </summary>
+        /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
+        /// <param name="lstItems">The collection containing the contents</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A HashCode that is generated based on the first <paramref name="intCount"/> contents of <paramref name="lstItems"/>.</returns>
+        public static int GetOrderInvariantEnsembleHashCode<T>(this IReadOnlyCollection<T> lstItems, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstItems == null)
+                return 0;
+            OrderInvariantHashCode hashCode = new OrderInvariantHashCode();
+            hashCode.AddRange(lstItems);
+            return hashCode.ToHashCode();
         }
 
         /// <summary>
         /// Get a HashCode representing the contents of an enumerable (instead of just of the pointer to the location where the enumerable would start) in a way where the order of the items is irrelevant
-        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection if there is more than one item in it!
         /// </summary>
         /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
@@ -179,28 +360,19 @@ namespace Chummer
         public static int GetOrderInvariantEnsembleHashCode<T>(this IEnumerable<T> lstItems, int intCount, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (lstItems == null || intCount <= 0)
+            if (lstItems == null)
                 return 0;
-            // uint to prevent overflows
-            unchecked
-            {
-                uint result = 0;
-                foreach (T item in lstItems)
-                {
-                    token.ThrowIfCancellationRequested();
-                    if (--intCount < 0)
-                        break;
-                    result += (uint)item.GetHashCode();
-                }
-
-                return (int)(19u + result * 31u);
-            }
+            if (intCount == 0)
+                return new OrderInvariantHashCode().ToHashCode();
+            OrderInvariantHashCode hashCode = new OrderInvariantHashCode();
+            hashCode.AddRange(lstItems, intCount);
+            return hashCode.ToHashCode();
         }
 
         /// <summary>
         /// Get a HashCode representing the contents of a collection in a way where the order of the items is irrelevant
         /// This is a parallelized version of GetOrderInvariantEnsembleHashCode meant to be used for large collections
-        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection!
+        /// NOTE: GetEnsembleHashCode and GetOrderInvariantEnsembleHashCode will almost never be the same for the same collection if there is more than one item in it!
         /// </summary>
         /// <typeparam name="T">The type for which <see cref="object.GetHashCode"/> will be called</typeparam>
         /// <param name="lstItems">The collection containing the contents</param>
@@ -211,20 +383,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
-            // uint to prevent overflows
-            unchecked
-            {
-                uint result = 0;
-                Parallel.ForEach(lstItems, () => (uint)0, (i, state, local) =>
-                    {
-                        if (token.IsCancellationRequested)
-                            state.Stop();
-                        return state.IsStopped ? local : local + (uint)i.GetHashCode();
-                    },
-                    localResult => InterlockedExtensions.Add(ref result, localResult));
-                token.ThrowIfCancellationRequested();
-                return (int)(19u + result * 31u);
-            }
+            OrderInvariantHashCode hashCode = new OrderInvariantHashCode();
+            hashCode.AddRangeParallel(lstItems, token);
+            token.ThrowIfCancellationRequested();
+            return hashCode.ToHashCode();
         }
 
         /// <summary>

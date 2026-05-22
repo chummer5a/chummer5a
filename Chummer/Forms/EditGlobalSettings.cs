@@ -2062,7 +2062,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml"))
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
                     continue;
                 string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))
@@ -2412,7 +2412,7 @@ namespace Chummer
                         if (string.IsNullOrEmpty(strMatchText))
                             continue;
                         if (dicPatternsToMatch.TryGetValue(strCode, out ValueTuple<string, int> tupMainValue)
-                            && string.Equals(strMatchText, tupMainValue.Item1))
+                            && string.Equals(strMatchText, tupMainValue.Item1, StringComparison.Ordinal))
                             continue;
                         if (!int.TryParse(
                                 objMatch.SelectSingleNodeAndCacheExpression("page")

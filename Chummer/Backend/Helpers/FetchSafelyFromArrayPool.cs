@@ -67,7 +67,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return (_objMyArrayPool, _objMyArrayValue).GetHashCode();
+            return HashCode.Combine(_objMyArrayPool, _objMyArrayValue);
         }
     }
 }

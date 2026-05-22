@@ -798,7 +798,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return (InternalId, Grade, Group, Ordeal, Schooling, Technomancer, Notes).GetHashCode();
+            return HashCode.Combine(InternalId, Grade, Group, Ordeal, Schooling, Technomancer, Notes);
         }
 
         public static bool operator ==(InitiationGrade left, InitiationGrade right)

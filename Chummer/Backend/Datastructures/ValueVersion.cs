@@ -135,7 +135,7 @@ namespace Chummer
         /// <paramref name="version" /> is <see langword="null" />.</exception>
         public ValueVersion(Version version)
         {
-            _Major = version.Major;
+            _Major = version?.Major ?? throw new ArgumentNullException(nameof(version));
             _Minor = version.Minor;
             _Build = version.Build;
             _Revision = version.Revision;

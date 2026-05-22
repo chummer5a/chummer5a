@@ -576,8 +576,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XmlNode objSourceNode)
         {
-            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
-            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            if (objSavedNode?[strFieldName] is XmlElement objElement && !objElement.IsNullOrInnerTextIsEmpty())
             {
                 read = objElement;
                 return true;
@@ -634,8 +633,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static bool TryGetNodeWithSourceFallback(this XmlNode objSavedNode, string strFieldName, ref XmlElement read, XPathNavigator objSourceNavigator)
         {
-            XmlElement objElement = objSavedNode?[strFieldName] as XmlElement;
-            if (objElement != null && !objElement.IsNullOrInnerTextIsEmpty())
+            if (objSavedNode?[strFieldName] is XmlElement objElement && !objElement.IsNullOrInnerTextIsEmpty())
             {
                 read = objElement;
                 return true;

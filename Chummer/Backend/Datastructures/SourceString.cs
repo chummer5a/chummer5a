@@ -158,7 +158,7 @@ namespace Chummer
             CultureInfo = objCultureInfo;
             Page = intPage;
             Code = strBookCodeShort;
-            _intHashCode = (Language, CultureInfo, Code, Page).GetHashCode();
+            _intHashCode = HashCode.Combine(Language, CultureInfo, Code, Page);
             _objTooltipInitializer = new Lazy<string>(() =>
             {
                 (string strSpace, string strPage) = GetSpaceAndPageStrings(strLanguage);

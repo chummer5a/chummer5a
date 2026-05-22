@@ -622,7 +622,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return (_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible).GetHashCode();
+            return HashCode.Combine(_objCharacter, Date, Amount, Reason, Refund, ForceCareerVisible);
         }
 
         public static bool operator ==(ExpenseLogEntry left, ExpenseLogEntry right)

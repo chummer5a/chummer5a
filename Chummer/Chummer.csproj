@@ -25754,7 +25754,7 @@
         )
 </PreBuildEvent>
     <EnableNETAnalyzers>True</EnableNETAnalyzers>
-    <AnalysisLevel>latest-minimum</AnalysisLevel>
+    <AnalysisLevel>latest-recommended</AnalysisLevel>
     <PlatformTarget>AnyCPU</PlatformTarget>
     <NeutralLanguage>en-US</NeutralLanguage>
     <AssemblyVersion>5.226.0.0</AssemblyVersion>

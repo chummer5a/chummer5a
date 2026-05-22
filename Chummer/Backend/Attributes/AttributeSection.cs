@@ -515,13 +515,7 @@ namespace Chummer.Backend.Attributes
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    int hashCode = Abbrev.GetHashCode();
-                    hashCode = (hashCode * 397) ^ PropertyChangedList.GetHashCode();
-                    hashCode = (hashCode * 397) ^ AsyncPropertyChangedList.GetHashCode();
-                    return hashCode;
-                }
+                return HashCode.Combine(Abbrev, PropertyChangedList, AsyncPropertyChangedList);
             }
         }
 

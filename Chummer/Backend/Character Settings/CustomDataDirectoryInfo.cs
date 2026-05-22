@@ -1008,7 +1008,7 @@ namespace Chummer
             int incompatibilityHash = IncompatibilitiesList.GetEnsembleHashCode();
             Guid guid = HasManifest ? Guid : Guid.Empty;
             //Path and Guid should already be enough because they are both unique, but just to be sure.
-            return (Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash).GetHashCode();
+            return HashCode.Combine(Name, guid, DirectoryPath, MyVersion, incompatibilityHash, dependencyHash);
         }
 
         public static bool operator ==(CustomDataDirectoryInfo left, CustomDataDirectoryInfo right)
@@ -1132,14 +1132,7 @@ namespace Chummer
         /// <inheritdoc />
         public override int GetHashCode()
         {
-            unchecked
-            {
-                int hashCode = Name?.GetHashCode() ?? 0;
-                hashCode = (hashCode * 397) ^ UniqueIdentifier.GetHashCode();
-                hashCode = (hashCode * 397) ^ MinimumVersion.GetHashCode();
-                hashCode = (hashCode * 397) ^ MaximumVersion.GetHashCode();
-                return hashCode;
-            }
+            return HashCode.Combine(Name, UniqueIdentifier, MinimumVersion, MaximumVersion);
         }
 
         public static bool operator ==(DirectoryDependency left, DirectoryDependency right)

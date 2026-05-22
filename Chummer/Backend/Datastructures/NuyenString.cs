@@ -117,7 +117,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return (BaseString, Value, UseDecimal).GetHashCode();
+            return HashCode.Combine(BaseString, Value, UseDecimal);
         }
 
         public int CompareTo(object obj)
