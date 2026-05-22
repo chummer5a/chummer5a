@@ -327,8 +327,8 @@ namespace Chummer
         {
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -337,8 +337,8 @@ namespace Chummer
         {
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -350,8 +350,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -363,8 +363,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -376,8 +376,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -391,8 +391,8 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             unchecked
             {
-                InterlockedExtensions.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
-                InterlockedExtensions.Increment(ref _length);
+                Interlocked.Add(ref _innerHash, (uint)(comparer != null ? comparer.GetHashCode(value) : (value?.GetHashCode() ?? 0)));
+                Interlocked.Increment(ref _length);
             }
         }
 
@@ -407,9 +407,9 @@ namespace Chummer
                     unchecked
                     {
                         for (bool blnMoveNext = objEnumerator.MoveNext(); blnMoveNext; blnMoveNext = objEnumerator.MoveNext())
-                            InterlockedExtensions.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
+                            Interlocked.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
                     }
-                    InterlockedExtensions.Add(ref _length, (uint)valuesCollection.Count);
+                    Interlocked.Add(ref _length, (uint)valuesCollection.Count);
                 }
             }
             else
@@ -418,8 +418,8 @@ namespace Chummer
                 {
                     foreach (T value in values)
                     {
-                        InterlockedExtensions.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
-                        InterlockedExtensions.Increment(ref _length);
+                        Interlocked.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
+                        Interlocked.Increment(ref _length);
                     }
                 }
             }
@@ -444,9 +444,9 @@ namespace Chummer
                     unchecked
                     {
                         for (bool blnMoveNext = objEnumerator.MoveNext(); blnMoveNext; blnMoveNext = objEnumerator.MoveNext())
-                            InterlockedExtensions.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
+                            Interlocked.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
                     }
-                    InterlockedExtensions.Add(ref _length, (uint)valuesCollection.Count);
+                    Interlocked.Add(ref _length, (uint)valuesCollection.Count);
                 }
             }
             else
@@ -455,8 +455,8 @@ namespace Chummer
                 {
                     foreach (T value in values)
                     {
-                        InterlockedExtensions.Add(ref _innerHash, (uint)comparer.GetHashCode(value));
-                        InterlockedExtensions.Increment(ref _length);
+                        Interlocked.Add(ref _innerHash, (uint)comparer.GetHashCode(value));
+                        Interlocked.Increment(ref _length);
                     }
                 }
             }
@@ -479,10 +479,10 @@ namespace Chummer
                         {
                             if (++i > count)
                                 break;
-                            InterlockedExtensions.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
+                            Interlocked.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
                         }
                     }
-                    InterlockedExtensions.Add(ref _length, (uint)Math.Min(count, valuesCollection.Count));
+                    Interlocked.Add(ref _length, (uint)Math.Min(count, valuesCollection.Count));
                 }
             }
             else
@@ -493,8 +493,8 @@ namespace Chummer
                     {
                         if (++i > count)
                             break;
-                        InterlockedExtensions.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
-                        InterlockedExtensions.Increment(ref _length);
+                        Interlocked.Add(ref _innerHash, (uint)(value?.GetHashCode() ?? 0));
+                        Interlocked.Increment(ref _length);
                     }
                 }
             }
@@ -521,9 +521,9 @@ namespace Chummer
                     unchecked
                     {
                         for (bool blnMoveNext = objEnumerator.MoveNext(); blnMoveNext; blnMoveNext = objEnumerator.MoveNext())
-                            InterlockedExtensions.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
+                            Interlocked.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
                     }
-                    InterlockedExtensions.Add(ref _length, (uint)Math.Min(count, valuesCollection.Count));
+                    Interlocked.Add(ref _length, (uint)Math.Min(count, valuesCollection.Count));
                 }
             }
             else
@@ -534,8 +534,8 @@ namespace Chummer
                     {
                         if (++i > count)
                             break;
-                        InterlockedExtensions.Add(ref _innerHash, (uint)comparer.GetHashCode(value));
-                        InterlockedExtensions.Increment(ref _length);
+                        Interlocked.Add(ref _innerHash, (uint)comparer.GetHashCode(value));
+                        Interlocked.Increment(ref _length);
                     }
                 }
             }
@@ -552,9 +552,9 @@ namespace Chummer
                 unchecked
                 {
                     for (bool blnMoveNext = objEnumerator.MoveNext(); blnMoveNext; blnMoveNext = objEnumerator.MoveNext())
-                        InterlockedExtensions.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
+                        Interlocked.Add(ref _innerHash, (uint)(objEnumerator.Current?.GetHashCode() ?? 0));
                 }
-                InterlockedExtensions.Add(ref _length, (uint)values.Count);
+                Interlocked.Add(ref _length, (uint)values.Count);
             }
         }
 
@@ -574,9 +574,9 @@ namespace Chummer
                 unchecked
                 {
                     for (bool blnMoveNext = objEnumerator.MoveNext(); blnMoveNext; blnMoveNext = objEnumerator.MoveNext())
-                        InterlockedExtensions.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
+                        Interlocked.Add(ref _innerHash, (uint)comparer.GetHashCode(objEnumerator.Current));
                 }
-                InterlockedExtensions.Add(ref _length, (uint)values.Count);
+                Interlocked.Add(ref _length, (uint)values.Count);
             }
         }
 
@@ -600,12 +600,12 @@ namespace Chummer
             },
             localResult =>
             {
-                InterlockedExtensions.Add(ref result, localResult.Item1);
-                InterlockedExtensions.Add(ref count, localResult.Item2);
+                Interlocked.Add(ref result, localResult.Item1);
+                Interlocked.Add(ref count, localResult.Item2);
             });
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -633,12 +633,12 @@ namespace Chummer
             },
             localResult =>
             {
-                InterlockedExtensions.Add(ref result, localResult.Item1);
-                InterlockedExtensions.Add(ref count, localResult.Item2);
+                Interlocked.Add(ref result, localResult.Item1);
+                Interlocked.Add(ref count, localResult.Item2);
             });
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -659,10 +659,10 @@ namespace Chummer
                     return state.IsStopped ? local : local + (uint)(values.ElementAtBetter(i)?.GetHashCode() ?? 0);
                 }
             },
-            localResult => InterlockedExtensions.Add(ref result, localResult));
+            localResult => Interlocked.Add(ref result, localResult));
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, (uint)count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, (uint)count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -688,10 +688,10 @@ namespace Chummer
                     return state.IsStopped ? local : local + (uint)comparer.GetHashCode(values.ElementAtBetter(i));
                 }
             },
-            localResult => InterlockedExtensions.Add(ref result, localResult));
+            localResult => Interlocked.Add(ref result, localResult));
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, (uint)count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, (uint)count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -767,8 +767,8 @@ namespace Chummer
                     objEnumerator.Dispose();
             }
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, (uint)count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, (uint)count);
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -849,8 +849,8 @@ namespace Chummer
                     objEnumerator.Dispose();
             }
             token.ThrowIfCancellationRequested();
-            InterlockedExtensions.Add(ref _innerHash, result);
-            InterlockedExtensions.Add(ref _length, (uint)count);
+            Interlocked.Add(ref _innerHash, result);
+            Interlocked.Add(ref _length, (uint)count);
         }
 
         /// <summary>
