@@ -1048,7 +1048,7 @@ namespace Chummer
         public override int GetHashCode()
         {
             using (LockObject.EnterReadLock())
-                return (InternalId, Year, Week).GetHashCode();
+                return HashCode.Combine(InternalId, Year, Week);
         }
 
         /// <inheritdoc />

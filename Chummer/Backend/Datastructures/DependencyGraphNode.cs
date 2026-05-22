@@ -197,7 +197,7 @@ namespace Chummer
             if (Root != null)
                 return Equals(MyObject, default(T))
                     ? Root.GetHashCode()
-                    : (Root, MyObject).GetHashCode();
+                    : HashCode.Combine(Root, MyObject);
             return Equals(MyObject, default(T)) ? 0 : MyObject.GetHashCode();
         }
 

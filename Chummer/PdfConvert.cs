@@ -98,7 +98,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public override int GetHashCode()
         {
-            return (OutputFilePath, OutputStream, OutputCallback, OutputCallbackAsync).GetHashCode();
+            return HashCode.Combine(OutputFilePath, OutputStream, OutputCallback, OutputCallbackAsync);
         }
     }
 
@@ -151,7 +151,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public override int GetHashCode()
         {
-            return (WkHtmlToPdfPath, TempFolderPath, Timeout, Debug).GetHashCode();
+            return HashCode.Combine(WkHtmlToPdfPath, TempFolderPath, Timeout, Debug);
         }
 
         public static bool operator ==(PdfConvertEnvironment left, PdfConvertEnvironment right)
