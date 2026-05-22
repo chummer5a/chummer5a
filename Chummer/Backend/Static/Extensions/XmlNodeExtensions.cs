@@ -161,7 +161,7 @@ namespace Chummer
         /// initializing variables. It can work on any type, but it requires
         /// a tryParse style function that is fed the node's <see cref="XmlNode.InnerText"/>
         /// </summary>
-        public static bool TryGetField<T>(this XmlNode node, string field, TryParseFunctionCharSpan<T> parser, out T read, T onError = default)
+        public static bool TryGetFieldSpan<T>(this XmlNode node, string field, TryParseFunctionCharSpan<T> parser, out T read, T onError = default)
         {
             if (parser != null)
             {

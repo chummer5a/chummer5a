@@ -695,7 +695,7 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public async Task AddRangeParallelAsync<T>(IAsyncEnumerable<T> values, CancellationToken token = default)
+        public async Task AddRangeParallelAsync<T>(IEnumerableWithAsync<T> values, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (values == null)
@@ -772,7 +772,7 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public async Task AddRangeParallelAsync<T>(IAsyncEnumerable<T> values, IEqualityComparer<T> comparer, CancellationToken token = default)
+        public async Task AddRangeParallelAsync<T>(IEnumerableWithAsync<T> values, IEqualityComparer<T> comparer, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (values == null)
