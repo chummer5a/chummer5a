@@ -149,6 +149,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -183,6 +184,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -212,6 +214,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
         }
 
@@ -248,6 +251,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -320,6 +324,7 @@ namespace Chummer.Tests
                         {
                             e = e.Demystify();
                             Assert.Fail("Unexpected validation failure: " + e.Message);
+                            throw e;
                         }
 #if MEMORYTESTING
                     }
@@ -380,6 +385,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -428,6 +434,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -491,6 +498,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -620,6 +628,7 @@ namespace Chummer.Tests
                                 Debug.WriteLine(strErrorMessage);
                                 Console.WriteLine(strErrorMessage);
                                 Assert.Fail(strErrorMessage);
+                                throw e;
                             }
                         }
                     }
@@ -646,6 +655,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
+                throw ex;
             }
 #if MEMORYTESTING
             finally
@@ -690,6 +700,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
             catch (Exception e)
             {
@@ -705,6 +716,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
 
             return objCharacter;
@@ -731,6 +743,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
             catch (InvalidOperationException e)
             {
@@ -740,6 +753,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
             catch (Exception e)
             {
@@ -749,6 +763,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
         }
 
@@ -791,6 +806,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
             catch (InvalidOperationException e)
             {
@@ -800,6 +816,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
             catch (Exception e)
             {
@@ -810,6 +827,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
+                throw e;
             }
         }
 
