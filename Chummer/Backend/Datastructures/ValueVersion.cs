@@ -125,7 +125,7 @@ namespace Chummer
         /// <paramref name="version" /> is <see langword="null" />.</exception>
         public ValueVersion(Version version)
         {
-            _Major = version.Major;
+            _Major = version?.Major ?? throw new ArgumentNullException(nameof(version));
             _Minor = version.Minor;
             _Build = version.Build;
             _Revision = version.Revision;
@@ -202,7 +202,7 @@ namespace Chummer
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified ValueVersion struct and returns an indication of their relative values.</summary>
-        /// <param name="value">A ValueVersion struct to compare to the current ValueVersion struct.</param>
+        /// <param name="obj">A ValueVersion struct to compare to the current ValueVersion struct.</param>
         /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
         ///  Return value
         /// 
@@ -210,34 +210,34 @@ namespace Chummer
         /// 
         ///  Less than zero
         /// 
-        ///  The current ValueVersion struct is a version before <paramref name="value" />.
+        ///  The current ValueVersion struct is a version before <paramref name="obj" />.
         /// 
         ///  Zero
         /// 
-        ///  The current ValueVersion struct is the same version as <paramref name="value" />.
+        ///  The current ValueVersion struct is the same version as <paramref name="obj" />.
         /// 
         ///  Greater than zero
         /// 
-        ///  The current ValueVersion struct is a version subsequent to <paramref name="value" />.
+        ///  The current ValueVersion struct is a version subsequent to <paramref name="obj" />.
         /// 
         /// -or-
         /// 
-        /// <paramref name="value" /> is <see langword="null" />.</returns>
-        public int CompareTo(ValueVersion value)
+        /// <paramref name="obj" /> is <see langword="null" />.</returns>
+        public int CompareTo(ValueVersion obj)
         {
-            if (_Major != value.Major)
-                return _Major > value.Major ? 1 : -1;
-            if (_Minor != value.Minor)
-                return _Minor > value.Minor ? 1 : -1;
-            if (_Build != value.Build)
-                return _Build > value.Build ? 1 : -1;
-            if (_Revision == value.Revision)
+            if (_Major != obj.Major)
+                return _Major > obj.Major ? 1 : -1;
+            if (_Minor != obj.Minor)
+                return _Minor > obj.Minor ? 1 : -1;
+            if (_Build != obj.Build)
+                return _Build > obj.Build ? 1 : -1;
+            if (_Revision == obj.Revision)
                 return 0;
-            return _Revision > value.Revision ? 1 : -1;
+            return _Revision > obj.Revision ? 1 : -1;
         }
 
         /// <summary>Compares the current ValueVersion struct to a specified <see cref="T:System.Version" /> object and returns an indication of their relative values.</summary>
-        /// <param name="value">A ValueVersion struct to compare to the current <see cref="T:System.Version" /> object, or <see langword="null" />.</param>
+        /// <param name="obj">A ValueVersion struct to compare to the current <see cref="T:System.Version" /> object, or <see langword="null" />.</param>
         /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
         ///  Return value
         /// 
@@ -245,32 +245,32 @@ namespace Chummer
         /// 
         ///  Less than zero
         /// 
-        ///  The current ValueVersion struct is a version before <paramref name="value" />.
+        ///  The current ValueVersion struct is a version before <paramref name="obj" />.
         /// 
         ///  Zero
         /// 
-        ///  The current ValueVersion struct is the same version as <paramref name="value" />.
+        ///  The current ValueVersion struct is the same version as <paramref name="obj" />.
         /// 
         ///  Greater than zero
         /// 
-        ///  The current ValueVersion struct is a version subsequent to <paramref name="value" />.
+        ///  The current ValueVersion struct is a version subsequent to <paramref name="obj" />.
         /// 
         /// -or-
         /// 
-        /// <paramref name="value" /> is <see langword="null" />.</returns>
-        public int CompareTo(Version value)
+        /// <paramref name="obj" /> is <see langword="null" />.</returns>
+        public int CompareTo(Version obj)
         {
-            if (value == null)
+            if (obj == null)
                 return 1;
-            if (_Major != value.Major)
-                return _Major > value.Major ? 1 : -1;
-            if (_Minor != value.Minor)
-                return _Minor > value.Minor ? 1 : -1;
-            if (_Build != value.Build)
-                return _Build > value.Build ? 1 : -1;
-            if (_Revision == value.Revision)
+            if (_Major != obj.Major)
+                return _Major > obj.Major ? 1 : -1;
+            if (_Minor != obj.Minor)
+                return _Minor > obj.Minor ? 1 : -1;
+            if (_Build != obj.Build)
+                return _Build > obj.Build ? 1 : -1;
+            if (_Revision == obj.Revision)
                 return 0;
-            return _Revision > value.Revision ? 1 : -1;
+            return _Revision > obj.Revision ? 1 : -1;
         }
 
         /// <summary>Returns a value indicating whether the current ValueVersion struct is equal to a specified object.</summary>
@@ -359,7 +359,7 @@ namespace Chummer
                 case 0:
                     return string.Empty;
                 case 1:
-                    return _Major.ToString();
+                    return _Major.ToString(GlobalSettings.InvariantCultureInfo);
                 case 2:
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                out StringBuilder sbdReturn))
@@ -545,7 +545,7 @@ namespace Chummer
         public static bool operator <(Version v1, ValueVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException(nameof(v1));
+                return true;
             return v2.CompareTo(v1) >= 0;
         }
 
@@ -559,7 +559,7 @@ namespace Chummer
         public static bool operator <=(Version v1, ValueVersion v2)
         {
             if (v1 == null)
-                throw new ArgumentNullException(nameof(v1));
+                return true;
             return v2.CompareTo(v1) > 0;
         }
 

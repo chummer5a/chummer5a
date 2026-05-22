@@ -96,8 +96,8 @@ namespace SevenZip.CommandLineParser
                     int switchLen = objLoopForm.IDString.Length;
                     if (switchLen <= maxLen || pos + switchLen > len)
                         continue;
-                    if (string.Compare(objLoopForm.IDString, 0,
-                            srcString, pos, switchLen, true, CultureInfo.InvariantCulture) == 0)
+                    if (string.CompareOrdinal(objLoopForm.IDString, 0,
+                            srcString, pos, switchLen) == 0)
                     {
                         matchedSwitchIndex = switchIndex;
                         maxLen = switchLen;

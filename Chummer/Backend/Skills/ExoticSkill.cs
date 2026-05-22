@@ -58,7 +58,7 @@ namespace Chummer.Backend.Skills
             {
                 token.ThrowIfCancellationRequested();
                 if (node.TryGetStringFieldQuickly("specific", ref _strSpecific)
-                    && _strSpecific.StartsWith("Elektro-") && CharacterObject.LastSavedVersion < new ValueVersion(5, 255, 949))
+                    && _strSpecific.StartsWith("Elektro-", StringComparison.Ordinal) && CharacterObject.LastSavedVersion < new ValueVersion(5, 255, 949))
                 {
                     // Legacy shim
                     switch (_strSpecific)

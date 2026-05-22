@@ -685,13 +685,13 @@ namespace Chummer
 
                         if (string.IsNullOrEmpty(strOverrideFileName))
                         {
-                            if (!_strFileName.Equals(objOther._strFileName))
+                            if (!_strFileName.Equals(objOther._strFileName, StringComparison.Ordinal))
                             {
                                 lstPropertiesToUpdate.Add(nameof(FileName));
                                 _strFileName = objOther._strFileName;
                             }
                         }
-                        else if (!_strFileName.Equals(strOverrideFileName))
+                        else if (!_strFileName.Equals(strOverrideFileName, StringComparison.Ordinal))
                         {
                             lstPropertiesToUpdate.Add(nameof(FileName));
                             _strFileName = strOverrideFileName;
@@ -826,13 +826,13 @@ namespace Chummer
 
                         if (string.IsNullOrEmpty(strOverrideFileName))
                         {
-                            if (!_strFileName.Equals(objOther._strFileName))
+                            if (!_strFileName.Equals(objOther._strFileName, StringComparison.Ordinal))
                             {
                                 lstPropertiesToUpdate.Add(nameof(FileName));
                                 _strFileName = objOther._strFileName;
                             }
                         }
-                        else if (!_strFileName.Equals(strOverrideFileName))
+                        else if (!_strFileName.Equals(strOverrideFileName, StringComparison.Ordinal))
                         {
                             lstPropertiesToUpdate.Add(nameof(FileName));
                             _strFileName = strOverrideFileName;
@@ -996,7 +996,7 @@ namespace Chummer
 
                 token.ThrowIfCancellationRequested();
 
-                if (!_strFileName.Equals(objOther.FileName))
+                if (!_strFileName.Equals(objOther.FileName, StringComparison.Ordinal))
                 {
                     yield return nameof(FileName);
                 }
@@ -1086,7 +1086,7 @@ namespace Chummer
 
                     token.ThrowIfCancellationRequested();
 
-                    if (!_strFileName.Equals(objOther._strFileName))
+                    if (!_strFileName.Equals(objOther._strFileName, StringComparison.Ordinal))
                     {
                         lstReturn.Add(nameof(FileName));
                     }

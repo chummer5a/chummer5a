@@ -130,7 +130,7 @@ namespace Chummer
                     _dicSumtoTenValues.Add(strPriority, 0);
         }
 
-        private async Task<string> GetSelectedPriorityAsync(ComboBox comboBox, CancellationToken token)
+        private static async Task<string> GetSelectedPriorityAsync(ComboBox comboBox, CancellationToken token)
         {
             object objSelected = await comboBox.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false);
             if (objSelected != null)
@@ -1688,16 +1688,16 @@ namespace Chummer
                     // Load the Priority information.
 
                     // Set the character priority selections
-                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
-                    await _objCharacter.SetMetatypePriorityAsync(prioritySelections.Heritage, token)
+                    (string Heritage, string Attributes, string Talent, string Skills, string Resources) = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    await _objCharacter.SetMetatypePriorityAsync(Heritage, token)
                         .ConfigureAwait(false);
-                    await _objCharacter.SetAttributesPriorityAsync(prioritySelections.Attributes, token)
+                    await _objCharacter.SetAttributesPriorityAsync(Attributes, token)
                         .ConfigureAwait(false);
-                    await _objCharacter.SetSpecialPriorityAsync(prioritySelections.Talent, token)
+                    await _objCharacter.SetSpecialPriorityAsync(Talent, token)
                         .ConfigureAwait(false);
-                    await _objCharacter.SetSkillsPriorityAsync(prioritySelections.Skills, token)
+                    await _objCharacter.SetSkillsPriorityAsync(Skills, token)
                         .ConfigureAwait(false);
-                    await _objCharacter.SetResourcesPriorityAsync(prioritySelections.Resources, token)
+                    await _objCharacter.SetResourcesPriorityAsync(Resources, token)
                         .ConfigureAwait(false);
                     await _objCharacter.SetTalentPriorityAsync(
                         await cboTalents.DoThreadSafeFuncAsync(x =>
@@ -2589,12 +2589,12 @@ namespace Chummer
                 using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
                 {
                     token = objJoinedCancellationTokenSource.Token;
-                    var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
-                    intReturn = GetSumToTenValue(prioritySelections.Heritage)
-                                + GetSumToTenValue(prioritySelections.Attributes)
-                                + GetSumToTenValue(prioritySelections.Talent)
-                                + GetSumToTenValue(prioritySelections.Skills)
-                                + GetSumToTenValue(prioritySelections.Resources);
+                    (string Heritage, string Attributes, string Talent, string Skills, string Resources) = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                    intReturn = GetSumToTenValue(Heritage)
+                                + GetSumToTenValue(Attributes)
+                                + GetSumToTenValue(Talent)
+                                + GetSumToTenValue(Skills)
+                                + GetSumToTenValue(Resources);
 
                     string strText = intReturn.ToString(GlobalSettings.CultureInfo) + "/"
                                                                 + (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetSumtoTenAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo);
@@ -2603,12 +2603,12 @@ namespace Chummer
             }
             else
             {
-                var prioritySelections = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
-                intReturn = GetSumToTenValue(prioritySelections.Heritage)
-                            + GetSumToTenValue(prioritySelections.Attributes)
-                            + GetSumToTenValue(prioritySelections.Talent)
-                            + GetSumToTenValue(prioritySelections.Skills)
-                            + GetSumToTenValue(prioritySelections.Resources);
+                (string Heritage, string Attributes, string Talent, string Skills, string Resources) = await GetPrioritySelectionsAsync(token).ConfigureAwait(false);
+                intReturn = GetSumToTenValue(Heritage)
+                            + GetSumToTenValue(Attributes)
+                            + GetSumToTenValue(Talent)
+                            + GetSumToTenValue(Skills)
+                            + GetSumToTenValue(Resources);
             }
             return intReturn;
         }

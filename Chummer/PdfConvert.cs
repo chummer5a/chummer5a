@@ -79,7 +79,7 @@ namespace Codaxy.WkHtmlToPdf
 
         public bool Equals(PdfOutput other)
         {
-            return OutputFilePath.Equals(other.OutputFilePath) && OutputStream.Equals(other.OutputStream) && OutputCallback.Equals(other.OutputCallback) && OutputCallbackAsync.Equals(other.OutputCallbackAsync);
+            return OutputFilePath.Equals(other.OutputFilePath, StringComparison.Ordinal) && OutputStream.Equals(other.OutputStream) && OutputCallback.Equals(other.OutputCallback) && OutputCallbackAsync.Equals(other.OutputCallbackAsync);
         }
 
         public override bool Equals(object obj)
