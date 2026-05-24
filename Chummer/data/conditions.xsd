@@ -72,6 +72,9 @@
             <xs:extension base="xs:string">
               <xs:attribute name="count" type="xs:integer" use="optional" />
               <xs:attribute name="select" type="xs:string" use="optional" />
+              <xs:attribute name="minrating" type="xs:integer" use="optional" />
+              <xs:attribute name="rating" type="xs:integer" use="optional" />
+              <xs:attribute name="maxrating" type="xs:integer" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -82,6 +85,9 @@
             <xs:extension base="xs:string">
               <xs:attribute name="count" type="xs:integer" use="optional" />
               <xs:attribute name="select" type="xs:string" use="optional" />
+              <xs:attribute name="minrating" type="xs:integer" use="optional" />
+              <xs:attribute name="rating" type="xs:integer" use="optional" />
+              <xs:attribute name="maxrating" type="xs:integer" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -101,6 +107,10 @@
             <xs:extension base="xs:string">
               <xs:attribute name="count" type="xs:integer" use="optional" />
               <xs:attribute name="select" type="xs:string" use="optional" />
+              <xs:attribute name="sameparent" type="xs:boolean" use="optional" />
+              <xs:attribute name="minrating" type="xs:integer" use="optional" />
+              <xs:attribute name="rating" type="xs:integer" use="optional" />
+              <xs:attribute name="maxrating" type="xs:integer" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>
@@ -111,6 +121,9 @@
             <xs:extension base="xs:string">
               <xs:attribute name="count" type="xs:integer" use="optional" />
               <xs:attribute name="select" type="xs:string" use="optional" />
+              <xs:attribute name="minrating" type="xs:integer" use="optional" />
+              <xs:attribute name="rating" type="xs:integer" use="optional" />
+              <xs:attribute name="maxrating" type="xs:integer" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>

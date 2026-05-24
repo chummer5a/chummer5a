@@ -1056,12 +1056,11 @@ namespace Chummer
                         CritterPower objCritterPower = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.CritterPowers.FirstOrDefault(
-                                p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase))
+                                p => MatchesNameOrSourceId(p.Name, p.SourceIDString, strNodeInnerText))
                             : await (await objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false))
                                 .FirstOrDefaultAsync(
-                                    p => p.Name == strNodeInnerText || string.Equals(p.SourceIDString, strNodeInnerText,
-                                        StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                    p => MatchesNameOrSourceId(p.Name, p.SourceIDString, strNodeInnerText), token)
+                                .ConfigureAwait(false);
                         if (objCritterPower != null)
                         {
                             if (blnShowMessage)
@@ -1074,553 +1073,78 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("critterpowers.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token)
-                                .ConfigureAwait(false);
-                        XPathNavigator objLoopNode
-                            = objLoopDoc.TryGetNodeByNameOrId("/chummer/powers/power", strNodeInnerText);
-                        string strTranslate =
-                            objLoopNode?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? string.Empty;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopNode?
-                                                                    .SelectSingleNodeAndCacheExpression(
-                                                                        "name", token)?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "Tab_Critter",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "Tab_Critter", token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "critterpowers.xml", "powers/power", "Tab_Critter", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "bioware":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("bioware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/biowares/bioware[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/biowares/bioware[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Label_Bioware",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Label_Bioware",
-                                          token: token).ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText.IsGuid()
-                                          ? objLoopDoc
-                                              .SelectSingleNode(
-                                                  "/chummer/biowares/bioware[id = " + strNodeInnerText.CleanXPath()
-                                                  + "]/name")?.Value ?? strNodeInnerText
-                                          : strNodeInnerText);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   (objCyberware.Name == strNodeInnerText
-                                                                    || objCyberware.SourceIDString
-                                                                    == strNodeInnerText)
-                                                                   && objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Bioware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount))
-                                                           >= intCount, strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           (objCyberware.Name == strNodeInnerText
-                                                            || objCyberware.SourceIDString
-                                                            == strNodeInnerText)
-                                                           && objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Bioware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    (objCyberware.Name == strNodeInnerText
-                                     || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                     == strNodeInnerText)
-                                    && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Bioware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false)
-                            >= intCount, strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                (objCyberware.Name == strNodeInnerText
-                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                 == strNodeInnerText)
-                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Bioware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
+                                "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
+                                token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
+                            "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "cyberware":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/cyberwares/cyberware[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/cyberwares/cyberware[name = "
-                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString("Label_Cyberware", token: token)
-                                      : await LanguageManager.GetStringAsync("Label_Cyberware", token: token)
-                                          .ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText.IsGuid()
-                                          ? objLoopDoc
-                                              .SelectSingleNode(
-                                                  "/chummer/cyberwares/cyberware[id = " + strNodeInnerText.CleanXPath()
-                                                  + "]/name")?.Value ?? strNodeInnerText
-                                          : strNodeInnerText);
-                    }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return new ValueTuple<bool, string>(blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCyberware.Children.Any(
-                                        mod => mod.Name == strNodeInnerText
-                                               || string.Equals(
-                                                   mod.SourceIDString, strNodeInnerText,
-                                                   StringComparison.OrdinalIgnoreCase),
-                                        token)
-                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
-                                        .AnyAsync(async mod => mod.Name == strNodeInnerText
-                                                         || string.Equals(
-                                                             await mod.GetSourceIDStringAsync(token).ConfigureAwait(false),
-                                                             strNodeInnerText,
-                                                             StringComparison
-                                                                 .OrdinalIgnoreCase), token)
-                                        .ConfigureAwait(false)
-                                , strName);
-                        return new ValueTuple<bool, string>(false, strName);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   (objCyberware.Name == strNodeInnerText
-                                                                    || objCyberware.SourceIDString
-                                                                    == strNodeInnerText)
-                                                                   && objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Cyberware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount))
-                                                           >= intCount, strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           (objCyberware.Name == strNodeInnerText
-                                                            || objCyberware.SourceIDString
-                                                            == strNodeInnerText)
-                                                           && objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Cyberware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    (objCyberware.Name == strNodeInnerText
-                                     || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                     == strNodeInnerText)
-                                    && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Cyberware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false)
-                            >= intCount, strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                (objCyberware.Name == strNodeInnerText
-                                 || await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                 == strNodeInnerText)
-                                && await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Cyberware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId,
+                                "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText,
+                                strSpace, blnShowMessage, token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId, "Label_Cyberware",
+                            "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "biowarecategory":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        string strTranslate = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("bioware.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
-                                    .ConfigureAwait(false))
-                            .SelectSingleNode(
-                                "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")
-                            ?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Label_Bioware",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Label_Bioware",
-                                          token: token).ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return new ValueTuple<bool, string>(blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCyberware.Children.Any(
-                                    mod => mod.Category == strNodeInnerText, token)
-                                : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
-                                    .AnyAsync(mod => mod.Category == strNodeInnerText,
-                                        token)
-                                    .ConfigureAwait(false), strName);
-                        return new ValueTuple<bool, string>(false, strName);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                    x => x.Children, objCyberware =>
-                                        objCyberware.Category == strNodeInnerText &&
-                                        objCyberware.SourceType
-                                        == Improvement.ImprovementSource.Bioware
-                                        && string.IsNullOrEmpty(
-                                            objCyberware.PlugsIntoModularMount)) >= intCount,
-                                strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           objCyberware.Category == strNodeInnerText &&
-                                                           objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Bioware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    objCyberware.Category == strNodeInnerText &&
-                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Bioware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false) >= intCount,
-                            strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                objCyberware.Category == strNodeInnerText &&
-                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Bioware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
+                                "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
+                                token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
+                            "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "cyberwarecategory":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        string strTranslate = (blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
-                                .ConfigureAwait(false)).SelectSingleNode(
-                            "/chummer/categories/category[. = " + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Label_Cyberware",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Label_Cyberware",
-                                          token: token).ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        if (objParent is Cyberware objCyberware)
-                            return new ValueTuple<bool, string>(
-                                blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCyberware.Children.Any(mod => mod.Category == strNodeInnerText, token)
-                                    : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
-                                        .AnyAsync(mod => mod.Category == strNodeInnerText, token)
-                                        .ConfigureAwait(false), strName);
-                        return new ValueTuple<bool, string>(false, strName);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                    x => x.Children, objCyberware =>
-                                        objCyberware.Category == strNodeInnerText &&
-                                        objCyberware.SourceType
-                                        == Improvement.ImprovementSource.Cyberware
-                                        && string.IsNullOrEmpty(
-                                            objCyberware.PlugsIntoModularMount)) >= intCount,
-                                strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           objCyberware.Category == strNodeInnerText &&
-                                                           objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Cyberware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    objCyberware.Category == strNodeInnerText &&
-                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Cyberware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false) >= intCount,
-                            strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                objCyberware.Category == strNodeInnerText &&
-                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Cyberware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
+                                "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace,
+                                blnShowMessage, token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
+                            "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "biowarecontains":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        string strTranslate
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("bioware.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("bioware.xml", token: token)
-                                    .ConfigureAwait(false))
-                            .SelectSingleNode(
-                                "/chummer/biowares/bioware[name = "
-                                + strNodeInnerText.CleanXPath() + "]/translate")
-                            ?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Label_Bioware",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Label_Bioware",
-                                          token: token).ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   objCyberware.Name.Contains(strNodeInnerText) &&
-                                                                   objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Bioware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount))
-                                                           >= intCount, strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           objCyberware.Name.Contains(strNodeInnerText) &&
-                                                           objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Bioware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    objCyberware.Name.Contains(strNodeInnerText) &&
-                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Bioware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false)
-                            >= intCount, strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                objCyberware.Name.Contains(strNodeInnerText) &&
-                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Bioware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
+                                "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
+                                token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
+                            "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "cyberwarecontains":
-                {
-                    int intCount
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
-                    if (blnShowMessage)
-                    {
-                        string strTranslate
-                            = (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.LoadDataXPath("cyberware.xml", token: token)
-                                : await objCharacter.LoadDataXPathAsync("cyberware.xml", token: token)
-                                    .ConfigureAwait(false))
-                            .SelectSingleNode(
-                                "/chummer/cyberwares/cyberware[name = "
-                                + strNodeInnerText.CleanXPath() + "]/translate")
-                            ?.Value;
-                        strName = Environment.NewLine + "\t" + (blnSync
-                                      // ReSharper disable once MethodHasAsyncOverload
-                                      ? LanguageManager.GetString(
-                                          "Label_Cyberware",
-                                          token: token)
-                                      : await LanguageManager.GetStringAsync(
-                                          "Label_Cyberware",
-                                          token: token).ConfigureAwait(false))
-                                  + strSpace + (!string.IsNullOrEmpty(strTranslate)
-                                      ? strTranslate
-                                      : strNodeInnerText);
-                    }
-
-                    string strWareNodeSelectAttribute
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value
-                          ?? string.Empty;
-                    if (blnSync)
-                    {
-                        if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                            return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(
-                                                               x => x.Children, objCyberware =>
-                                                                   objCyberware.Name.Contains(strNodeInnerText) &&
-                                                                   objCyberware.SourceType
-                                                                   == Improvement.ImprovementSource.Cyberware
-                                                                   && string.IsNullOrEmpty(
-                                                                       objCyberware.PlugsIntoModularMount))
-                                                           >= intCount, strName);
-                        return new ValueTuple<bool, string>(objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
-                                                           objCyberware.Name.Contains(strNodeInnerText) &&
-                                                           objCyberware.SourceType
-                                                           == Improvement.ImprovementSource.Cyberware
-                                                           && string.IsNullOrEmpty(
-                                                               objCyberware.PlugsIntoModularMount) &&
-                                                           strWareNodeSelectAttribute == objCyberware.Extra)
-                                                       >= intCount, strName);
-                    }
-
-                    if (string.IsNullOrEmpty(strWareNodeSelectAttribute))
-                        return new ValueTuple<bool, string>(
-                            await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                                x => x.GetChildrenAsync(token), async objCyberware =>
-                                    objCyberware.Name.Contains(strNodeInnerText) &&
-                                    await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                    == Improvement.ImprovementSource.Cyberware
-                                    && string.IsNullOrEmpty(
-                                        await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)),
-                                token).ConfigureAwait(false)
-                            >= intCount, strName);
-                    return new ValueTuple<bool, string>(
-                        await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).DeepCountAsync(
-                            x => x.GetChildrenAsync(token), async objCyberware =>
-                                objCyberware.Name.Contains(strNodeInnerText) &&
-                                await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false)
-                                == Improvement.ImprovementSource.Cyberware
-                                && string.IsNullOrEmpty(
-                                    await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)) &&
-                                strWareNodeSelectAttribute == objCyberware.Extra, token).ConfigureAwait(false)
-                        >= intCount, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains,
+                                "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText,
+                                strSpace, blnShowMessage, token), token)
+                        : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains, "Label_Cyberware",
+                            "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText, strSpace, blnShowMessage,
+                            token).ConfigureAwait(false);
                 case "damageresistance":
                 {
                     // Damage Resistance must be a particular value.
@@ -1774,13 +1298,11 @@ namespace Chummer
                     Metamagic objMetamagic = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Metamagics.FirstOrDefault(
-                            x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                     StringComparison.OrdinalIgnoreCase))
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText)
                                  && x.SourceType == Improvement.ImprovementSource.Echo)
                         : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
                             .FirstOrDefaultAsync(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
+                                x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText)
                                      && x.SourceType == Improvement.ImprovementSource.Echo,
                                 token).ConfigureAwait(false);
                     if (objMetamagic != null)
@@ -1794,33 +1316,8 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("echoes.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("echoes.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/echoes/echo[id = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/echoes/echo[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/echoes/echo[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString("String_Echo", token: token)
-                                                          : await LanguageManager
-                                                              .GetStringAsync("String_Echo", token: token)
-                                                              .ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "echoes.xml", "echoes/echo", "String_Echo", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -1850,214 +1347,28 @@ namespace Chummer
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
                 case "gear":
-                {
-                    Gear objGear;
-                    //TODO: Probably a better way to handle minrating/rating/maxrating but eh, YAGNI.
-
-                    XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
-                        if (objExactRatingNode != null)
-                        {
-                            int intRating = objExactRatingNode.ValueAsInt;
-                            objGear = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.Gear.FirstOrDefault(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating == intRating)
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                        async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                       strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
-                                        token)
-                                    .ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            XPathNavigator objMinRatingNode =
-                                xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
-                            XPathNavigator objMaxRatingNode =
-                                xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
-                            if (objMinRatingNode != null || objMaxRatingNode != null)
-                            {
-                                int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
-                                int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
-                                objGear = blnSync
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    ? objCharacter.Gear.FirstOrDefault(
-                                        x =>
-                                        {
-                                            if (x.Name != strNodeInnerText
-                                                && !string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                return false;
-                                            int intMyRating = x.Rating;
-                                            return intMyRating >= intMinRating && intMyRating <= intMaxRating;
-                                        })
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
-                                        async x =>
-                                        {
-                                            if (x.Name != strNodeInnerText
-                                                && !string.Equals(x.SourceIDString, strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                return false;
-                                            int intMyRating = await x.GetRatingAsync(token).ConfigureAwait(false);
-                                            return intMyRating >= intMinRating && intMyRating <= intMaxRating;
-                                        },
-                                        token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            objGear = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.Gear.FirstOrDefault(
-                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                        StringComparison.OrdinalIgnoreCase))
-                                : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
-                                        x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                            strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
-                                    .ConfigureAwait(false);
-                        }
-                    }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        return new ValueTuple<bool, string>(objParent is IHasGear objGearParent && (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objGearParent.GearChildren.Any(
-                                    x => x.Name == strNodeInnerText
-                                         || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase), token)
-                                : await objGearParent.GearChildren.AnyAsync(
-                                    x => x.Name == strNodeInnerText
-                                         || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
-                            strName);
-                    }
-
-                    if (objGear != null)
-                    {
-                        if (blnShowMessage)
-                            strName = blnSync
-                                ? objGear.CurrentDisplayNameShort
-                                : await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
-                        return new ValueTuple<bool, string>(true, strName);
-                    }
-
-                    if (blnShowMessage)
-                    {
-                        // Character needs a specific Martial Art.
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("gear.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("gear.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/gears/gear[id = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/gears/gear[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/gears/gear[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_Gear",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_Gear",
-                                                              token: token).ConfigureAwait(false)) + ")";
-                    }
-
-                    return new ValueTuple<bool, string>(false, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
+                                "gear.xml", "gears/gear", "String_Gear", token), token)
+                        : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
+                            "gear.xml", "gears/gear", "String_Gear", token).ConfigureAwait(false);
                 case "group":
-                {
-                    // Check that clustered options are present (Magical Tradition + Skill 6, for example)
-                    bool blnResult = true;
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdResultName))
-                    {
-                        sbdResultName.AppendLine().Append('\t')
-                            .Append(blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? LanguageManager.GetString(
-                                    "Message_SelectQuality_AllOf",
-                                    token: token)
-                                : await LanguageManager.GetStringAsync(
-                                    "Message_SelectQuality_AllOf",
-                                    token: token).ConfigureAwait(false));
-                        foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
-                        {
-                            (bool blnLoopResult, string strLoopResult) = blnSync
-                                ? Utils.SafelyRunSynchronously(
-                                    () => xmlChildNode.TestNodeRequirementsAsync(
-                                        true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
-                                : await xmlChildNode.TestNodeRequirementsAsync(
-                                        false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token)
-                                    .ConfigureAwait(false);
-                            blnResult = blnResult && blnLoopResult;
-                            if (!blnResult && !blnShowMessage)
-                                break;
-                            if (!blnLoopResult)
-                                sbdResultName.Append(
-                                    strLoopResult.Replace(Environment.NewLine + "\t",
-                                        Environment.NewLine + "\t\t"));
-                        }
-
-                        if (blnShowMessage)
-                            strName = sbdResultName.ToString();
-                    }
-
-                    return new ValueTuple<bool, string>(blnResult, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token), token)
+                        : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
+                            strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token).ConfigureAwait(false);
                 case "grouponeof":
-                {
-                    // Check that one of the clustered options are present
-                    bool blnResult = false;
-                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                               out StringBuilder sbdResultName))
-                    {
-                        sbdResultName.AppendLine().Append('\t')
-                            .Append(blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? LanguageManager.GetString(
-                                    "Message_SelectQuality_OneOf",
-                                    token: token)
-                                : await LanguageManager.GetStringAsync(
-                                    "Message_SelectQuality_OneOf",
-                                    token: token).ConfigureAwait(false));
-                        foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
-                        {
-                            (bool blnLoopResult, string strLoopResult) = blnSync
-                                ? Utils.SafelyRunSynchronously(
-                                    () => xmlChildNode.TestNodeRequirementsAsync(
-                                        true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
-                                : await xmlChildNode.TestNodeRequirementsAsync(
-                                        false, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token)
-                                    .ConfigureAwait(false);
-                            blnResult = blnLoopResult || blnResult;
-                            if (blnResult && !blnShowMessage)
-                                break;
-                            sbdResultName.Append(
-                                strLoopResult.Replace(Environment.NewLine + "\t",
-                                    Environment.NewLine + "\t\t"));
-                        }
-
-                        if (blnShowMessage)
-                            strName = sbdResultName.ToString();
-                    }
-
-                    return new ValueTuple<bool, string>(blnResult, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token), token)
+                        : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
+                            strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token).ConfigureAwait(false);
                 case "initiategrade":
                 {
                     // Character's initiate grade must be higher than or equal to the required value.
@@ -2079,12 +1390,11 @@ namespace Chummer
                     MartialArt objMartialArt = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.MartialArts.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase))
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText))
                         : await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false))
                             .FirstOrDefaultAsync(
-                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     if (objMartialArt != null)
                     {
                         if (blnShowMessage)
@@ -2096,37 +1406,9 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        // Character needs a specific Martial Art.
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/martialarts/martialart[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/martialarts/martialart[name = "
-                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/martialarts/martialart[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_MartialArt",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_MartialArt",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "martialarts.xml", "martialarts/martialart", "String_MartialArt", token)
+                            .ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2138,9 +1420,7 @@ namespace Chummer
                     {
                         objMartialArtTechnique = objCharacter.MartialArts.SelectMany(x => x.Techniques)
                             .FirstOrDefault(
-                                x => x.Name == strNodeInnerText
-                                     || string.Equals(x.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase));
+                                x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText));
                     }
                     else
                     {
@@ -2149,8 +1429,8 @@ namespace Chummer
                             {
                                 MartialArtTechnique objLoopTechnique
                                     = await x.Techniques.FirstOrDefaultAsync(
-                                            y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString,
-                                                strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
+                                            y => MatchesNameOrSourceId(y.Name, y.SourceIDString, strNodeInnerText),
+                                            token)
                                         .ConfigureAwait(false);
                                 if (objLoopTechnique != null)
                                 {
@@ -2173,38 +1453,9 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        // Character needs a specific Martial Arts technique.
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("martialarts.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("martialarts.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/techniques/technique[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/techniques/technique[name = "
-                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/techniques/technique[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "Label_Options_MartialArtTechnique",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "Label_Options_MartialArtTechnique",
-                                                              token: token).ConfigureAwait(false))
-                                                      + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "martialarts.xml", "techniques/technique",
+                            "Label_Options_MartialArtTechnique", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2214,12 +1465,11 @@ namespace Chummer
                     Metamagic objMetamagic = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Metamagics.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase))
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText))
                         : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
                             .FirstOrDefaultAsync(
-                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     if (objMetamagic != null)
                     {
                         if (blnShowMessage)
@@ -2231,36 +1481,9 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/metamagics/metamagic[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/metamagics/metamagic[name = "
-                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/metamagics/metamagic[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_Metamagic",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_Metamagic",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "metamagic.xml", "metamagics/metamagic", "String_Metamagic", token)
+                            .ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -2285,26 +1508,9 @@ namespace Chummer
                                     .ConfigureAwait(false)).SelectSingleNodeAndCacheExpression("/chummer", token);
                         if (blnShowMessage)
                         {
-                            string strTranslateArt
-                                = xmlMetamagicDoc
-                                      ?.SelectSingleNode("arts/art[id = " + strNodeInnerText.CleanXPath() +
-                                                         "]/translate")
-                                      ?.Value
-                                  ?? xmlMetamagicDoc
-                                      ?.SelectSingleNode("arts/art[name = " + strNodeInnerText.CleanXPath()
-                                                                            + "]/translate")?.Value;
-                            strName = Environment.NewLine + "\t"
-                                                          + (!string.IsNullOrEmpty(strTranslateArt)
-                                                              ? strTranslateArt
-                                                              : strNodeInnerText) + strSpace + "("
-                                                          + (blnSync
-                                                              // ReSharper disable once MethodHasAsyncOverload
-                                                              ? LanguageManager.GetString(
-                                                                  "String_Art",
-                                                                  token: token)
-                                                              : await LanguageManager.GetStringAsync(
-                                                                  "String_Art",
-                                                                  token: token).ConfigureAwait(false)) + ")";
+                            strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter,
+                                strNodeInnerText, strSpace, "metamagic.xml", "arts/art", "String_Art", token)
+                                .ConfigureAwait(false);
                         }
 
                         if (xmlMetamagicDoc == null) return new ValueTuple<bool, string>(true, strName);
@@ -2329,11 +1535,10 @@ namespace Chummer
                     Art objArt = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
                         ? objCharacter.Arts.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase))
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText))
                         : await (await objCharacter.GetArtsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     if (objArt != null)
                     {
                         if (blnShowMessage)
@@ -2348,12 +1553,11 @@ namespace Chummer
                     {
                         Metamagic objMetamagic = blnSync
                             ? objCharacter.Metamagics.FirstOrDefault(
-                                x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase))
+                                x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText))
                             : await (await objCharacter.GetMetamagicsAsync(token).ConfigureAwait(false))
                                 .FirstOrDefaultAsync(
-                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                        StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                                    x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                                .ConfigureAwait(false);
                         if (objMetamagic != null)
                         {
                             if (blnShowMessage)
@@ -2366,34 +1570,8 @@ namespace Chummer
 
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(false, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("metamagic.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("metamagic.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/arts/art[id = " + strNodeInnerText.CleanXPath()
-                              + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/arts/art[name = " + strNodeInnerText.CleanXPath()
-                                                                            + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/arts/art[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_Art",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_Art",
-                                                          token: token).ConfigureAwait(false)) + ")";
+                    strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                        strSpace, "metamagic.xml", "arts/art", "String_Art", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(false, strName);
                 }
                 case "magenabled":
@@ -2594,381 +1772,53 @@ namespace Chummer
                                 .ConfigureAwait(false), strName);
                 }
                 case "power":
-                {
-                    // Run through all of the Powers the character has and see if the current required item exists.
-                    Power objPower;
-                    XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
-                    if (objExactRatingNode != null)
-                    {
-                        int intRating = objExactRatingNode.ValueAsInt;
-                        objPower = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.Powers.FirstOrDefault(
-                                x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && x.Rating == intRating)
-                            : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                                    async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                   strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                               && await x.GetRatingAsync(token).ConfigureAwait(false) == intRating,
-                                    token)
-                                .ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        XPathNavigator objMinRatingNode =
-                            xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
-                        XPathNavigator objMaxRatingNode =
-                            xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
-                        if (objMinRatingNode != null || objMaxRatingNode != null)
-                        {
-                            int intMinRating = objMinRatingNode?.ValueAsInt ?? 0;
-                            int intMaxRating = objMaxRatingNode?.ValueAsInt ?? int.MaxValue;
-                            objPower = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.Powers.FirstOrDefault(
-                                    x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && x.Rating >= intMinRating && x.Rating <= intMaxRating)
-                                : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
-                                        async x => (x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                                       strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                                   && await x.GetRatingAsync(token).ConfigureAwait(false) >=
-                                                   intMinRating &&
-                                                   await x.GetRatingAsync(token).ConfigureAwait(false) <= intMaxRating,
-                                        token).ConfigureAwait(false);
-                        }
-                        else
-                        {
-                            objPower = blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objCharacter.Powers.FirstOrDefault(
-                                    x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                        StringComparison.OrdinalIgnoreCase))
-                                : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false))
-                                    .FirstOrDefaultAsync(
-                                        x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString,
-                                            strNodeInnerText, StringComparison.OrdinalIgnoreCase), token)
-                                    .ConfigureAwait(false);
-                        }
-                    }
-
-                    if (objPower != null)
-                    {
-                        if (blnShowMessage)
-                            strName = blnSync
-                                ? objPower.CurrentDisplayName
-                                : await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        return new ValueTuple<bool, string>(true, strName);
-                    }
-
-                    if (blnShowMessage)
-                    {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("powers.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("powers.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " +
-                                                          strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/powers/power[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "Tab_Adept",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "Tab_Adept",
-                                                              token: token).ConfigureAwait(false)) + ")";
-                    }
-
-                    return new ValueTuple<bool, string>(false, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
+                                "powers.xml", "powers/power", "Tab_Adept", token), token)
+                        : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
+                            "powers.xml", "powers/power", "Tab_Adept", token).ConfigureAwait(false);
                 case "program":
                 {
                     bool blnResult = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.AIPrograms.Any(p => p.Name == strNodeInnerText
-                                                           || string.Equals(p.SourceIDString, strNodeInnerText,
-                                                               StringComparison.OrdinalIgnoreCase), token)
-                        : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(p =>
-                                p.Name == strNodeInnerText
-                                || string.Equals(p.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase),
-                            token).ConfigureAwait(false);
+                        ? objCharacter.AIPrograms.Any(
+                            p => MatchesNameOrSourceId(p.Name, p.SourceIDString, strNodeInnerText), token)
+                        : await (await objCharacter.GetAIProgramsAsync(token).ConfigureAwait(false)).AnyAsync(
+                            p => MatchesNameOrSourceId(p.Name, p.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     // Character needs a specific Program.
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnResult, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("programs.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("programs.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/programs/program[id = " + strNodeInnerText.CleanXPath()
-                              + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/programs/program[name = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/programs/program[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_Program",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_Program",
-                                                          token: token).ConfigureAwait(false)) + ")";
+                    strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                        strSpace, "programs.xml", "programs/program", "String_Program", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
                 case "characterquality":
                 case "quality":
-                {
-                    string strExtra
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
-                    Quality objQuality = blnSync
-                        ? !string.IsNullOrEmpty(strExtra)
-                            ? objCharacter.Qualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                     && q.SourceIDString != strIgnoreQuality)
-                            : objCharacter.Qualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality)
-                        : !string.IsNullOrEmpty(strExtra)
-                            ? await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
-                                .FirstOrDefaultAsync(
-                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
-                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                         && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false)
-                            : await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
-                                .FirstOrDefaultAsync(
-                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
-                                             strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                         && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token)
-                                .ConfigureAwait(false);
-                    if (objQuality != null)
-                    {
-                        if (blnShowMessage)
-                            strName = blnSync
-                                ? objQuality.CurrentDisplayName
-                                : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        return new ValueTuple<bool, string>(true, strName);
-                    }
-
-                    if (!blnShowMessage)
-                        return new ValueTuple<bool, string>(false, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("qualities.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("qualities.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/qualities/quality[id = " + strNodeInnerText.CleanXPath()
-                              + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/qualities/quality[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_Quality",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_Quality",
-                                                          token: token).ConfigureAwait(false)) + ")";
-                    return new ValueTuple<bool, string>(false, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                        : await TestInstalledCharacterQualityRequirementCoreAsync(false, xmlNode, objCharacter,
+                            strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                 case "lifestylequality":
-                {
-                    string strExtra
-                        = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value;
-                    LifestyleQuality objQuality = null;
-                    if (blnSync)
-                    {
-                        IEnumerable<LifestyleQuality> lstLifestyleQualities = objParent is Lifestyle objLifestyle
-                            ? objLifestyle.LifestyleQualities
-                            : objCharacter.Lifestyles.SelectMany(x => x.LifestyleQualities);
-                        objQuality = !string.IsNullOrEmpty(strExtra)
-                            ? lstLifestyleQualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                     && q.SourceIDString != strIgnoreQuality)
-                            : lstLifestyleQualities.FirstOrDefault(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality);
-                    }
-                    else if (objParent is Lifestyle objLifestyle)
-                    {
-                        objQuality = !string.IsNullOrEmpty(strExtra)
-                            ? await objLifestyle.LifestyleQualities.FirstOrDefaultAsync(
-                                q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString, strNodeInnerText,
-                                         StringComparison.OrdinalIgnoreCase))
-                                     && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                     && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false)
-                            : await objLifestyle.LifestyleQualities.FirstOrDefaultAsync(
-                                    q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
-                                             strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase))
-                                         && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality, token)
-                                .ConfigureAwait(false);
-                    }
-                    else if (!string.IsNullOrEmpty(strExtra))
-                    {
-                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false))
-                            .ForEachWithBreakAsync(async x =>
-                            {
-                                LifestyleQuality objLoopQuality
-                                    = await x.LifestyleQualities.FirstOrDefaultAsync(
-                                        q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
-                                                 strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                             && q.Extra == strExtra && q.Name != strIgnoreQuality
-                                             && q.SourceIDString != strIgnoreQuality, token).ConfigureAwait(false);
-                                if (objLoopQuality != null)
-                                {
-                                    objQuality = objLoopQuality;
-                                    return false;
-                                }
-
-                                return true;
-                            }, token).ConfigureAwait(false);
-                    }
-                    else
-                    {
-                        await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false))
-                            .ForEachWithBreakAsync(async x =>
-                            {
-                                LifestyleQuality objLoopQuality
-                                    = await x.LifestyleQualities.FirstOrDefaultAsync(
-                                        q => (q.Name == strNodeInnerText || string.Equals(q.SourceIDString,
-                                                 strNodeInnerText, StringComparison.OrdinalIgnoreCase))
-                                             && q.Name != strIgnoreQuality && q.SourceIDString != strIgnoreQuality,
-                                        token).ConfigureAwait(false);
-                                if (objLoopQuality != null)
-                                {
-                                    objQuality = objLoopQuality;
-                                    return false;
-                                }
-
-                                return true;
-                            }, token).ConfigureAwait(false);
-                    }
-
-                    if (objQuality != null)
-                    {
-                        if (blnShowMessage)
-                            strName = blnSync
-                                ? objQuality.CurrentDisplayName
-                                : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-                        return new ValueTuple<bool, string>(true, strName);
-                    }
-
-                    if (!blnShowMessage)
-                        return new ValueTuple<bool, string>(false, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("lifestyles.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/qualities/quality[id = " + strNodeInnerText.CleanXPath()
-                              + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/qualities/quality[name = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/qualities/quality[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_Quality",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_Quality",
-                                                          token: token).ConfigureAwait(false)) + ")";
-                    return new ValueTuple<bool, string>(false, strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                        : await TestInstalledLifestyleQualityRequirementCoreAsync(false, xmlNode, objCharacter,
+                            objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token)
+                            .ConfigureAwait(false);
                 case "lifestyle":
                 {
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("lifestyles.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("lifestyles.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/lifestyles/lifestyle[id = "
-                                                          + strNodeInnerText.CleanXPath()
-                                                          + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/lifestyles/lifestyle[name = "
-                                                    + strNodeInnerText.CleanXPath()
-                                                    + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/lifestyles/lifestyle[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_Lifestyle",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_Lifestyle",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "lifestyles.xml", "lifestyles/lifestyle", "String_Lifestyle", token)
+                            .ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(objParent is Lifestyle objLifestyle
@@ -3468,11 +2318,10 @@ namespace Chummer
                 {
                     Spell objSpell = blnSync
                         ? objCharacter.Spells.FirstOrDefault(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase))
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText))
                         : await (await objCharacter.GetSpellsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            x => x.Name == strNodeInnerText || string.Equals(x.SourceIDString, strNodeInnerText,
-                                StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     if (objSpell != null)
                     {
                         if (blnShowMessage)
@@ -3484,36 +2333,8 @@ namespace Chummer
 
                     if (blnShowMessage)
                     {
-                        // Check for a specific Spell.
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("spells.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("spells.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/spells/spell[id = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/spells/spell[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/spells/spell[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_DescSpell",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_DescSpell",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "spells.xml", "spells/spell", "String_DescSpell", token).ConfigureAwait(false);
                     }
 
                     return new ValueTuple<bool, string>(false, strName);
@@ -3633,83 +2454,30 @@ namespace Chummer
                     // Character needs a specific Tradition.
                     if (blnShowMessage)
                     {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("traditions.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("traditions.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/traditions/tradition[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/traditions/tradition[name = "
-                                                    + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/traditions/tradition[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_Tradition",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_Tradition",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "traditions.xml", "traditions/tradition", "String_Tradition", token)
+                            .ConfigureAwait(false);
                     }
 
                     Backend.Uniques.Tradition objTradition = blnSync
                         ? objCharacter.MagicTradition
                         : await objCharacter.GetMagicTraditionAsync(token).ConfigureAwait(false);
 
-                    return new ValueTuple<bool, string>(objTradition.Name == strNodeInnerText
-                                                   || string.Equals(objTradition.SourceIDString, strNodeInnerText,
-                                                       StringComparison.OrdinalIgnoreCase), strName);
+                    return new ValueTuple<bool, string>(
+                        MatchesNameOrSourceId(objTradition.Name, objTradition.SourceIDString, strNodeInnerText),
+                        strName);
                 }
                 case "traditionspiritform":
                 {
                     // Character needs a specific spirit form provided by their Tradition.
-                    XPathNavigator objLoopDoc;
                     if (blnShowMessage)
                     {
-                        objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("critterpowers.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("critterpowers.xml", token: token)
-                                .ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/powers/power[id = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/powers/power[name = " + strNodeInnerText.CleanXPath()
-                                      + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/powers/power[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_Tradition",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_Tradition",
-                                                              token: token).ConfigureAwait(false)) + ")";
+                        strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                            strSpace, "critterpowers.xml", "powers/power", "String_Tradition", token)
+                            .ConfigureAwait(false);
                     }
+
+                    XPathNavigator objLoopDoc;
 
                     Backend.Uniques.Tradition objTradition = blnSync
                         ? objCharacter.MagicTradition
@@ -3734,90 +2502,32 @@ namespace Chummer
                 {
                     bool blnReturn = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.Weapons.Any(x => x.Name == strNodeInnerText
-                                                        || string.Equals(x.SourceIDString, strNodeInnerText,
-                                                            StringComparison.OrdinalIgnoreCase), token)
+                        ? objCharacter.Weapons.Any(
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
                         : await objCharacter.Weapons.AnyAsync(
-                            x => x.Name == strNodeInnerText
-                                 || string.Equals(x.SourceIDString, strNodeInnerText,
-                                     StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     // Character needs a specific Weapon.
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnReturn, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("weapons.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/weapons/weapon[id = " + strNodeInnerText.CleanXPath()
-                              + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/weapons/weapon[name = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/weapons/weapon[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_Weapon",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_Weapon",
-                                                          token: token).ConfigureAwait(false)) + ")";
+                    strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                        strSpace, "weapons.xml", "weapons/weapon", "String_Weapon", token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
                 case "accessory" when objParent is Weapon objWeapon:
                 {
                         bool blnReturn = blnSync
                         // ReSharper disable once MethodHasAsyncOverload
-                        ? objWeapon.WeaponAccessories.Any(x =>
-                                x.Name == strNodeInnerText
-                                || string.Equals(x.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase),
-                            token)
-                        : await objWeapon.WeaponAccessories.AnyAsync(x =>
-                                x.Name == strNodeInnerText
-                                || string.Equals(x.SourceIDString, strNodeInnerText,
-                                    StringComparison.OrdinalIgnoreCase),
-                            token).ConfigureAwait(false);
+                        ? objWeapon.WeaponAccessories.Any(
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                        : await objWeapon.WeaponAccessories.AnyAsync(
+                            x => MatchesNameOrSourceId(x.Name, x.SourceIDString, strNodeInnerText), token)
+                            .ConfigureAwait(false);
                     if (!blnShowMessage)
                         return new ValueTuple<bool, string>(blnReturn, strName);
-                    XPathNavigator objLoopDoc = blnSync
-                        // ReSharper disable once MethodHasAsyncOverload
-                        ? objCharacter.LoadDataXPath("weapons.xml", token: token)
-                        : await objCharacter.LoadDataXPathAsync("weapons.xml", token: token).ConfigureAwait(false);
-                    string strTranslate
-                        = objLoopDoc.SelectSingleNode("/chummer/accessories/accessory[id = "
-                                                      + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                          ?? objLoopDoc
-                              .SelectSingleNode("/chummer/accessories/accessory[name = " + strNodeInnerText.CleanXPath()
-                                  + "]/translate")?.Value;
-                    strName = Environment.NewLine + "\t"
-                                                  + (!string.IsNullOrEmpty(strTranslate)
-                                                      ? strTranslate
-                                                      : strNodeInnerText.IsGuid()
-                                                          ? objLoopDoc
-                                                                .SelectSingleNode(
-                                                                    "/chummer/accessories/accessory[id = "
-                                                                    + strNodeInnerText.CleanXPath() + "]/name")?.Value
-                                                            ?? strNodeInnerText
-                                                          : strNodeInnerText) + strSpace + "("
-                                                  + (blnSync
-                                                      // ReSharper disable once MethodHasAsyncOverload
-                                                      ? LanguageManager.GetString(
-                                                          "String_WeaponAccessory",
-                                                          token: token)
-                                                      : await LanguageManager.GetStringAsync(
-                                                          "String_WeaponAccessory",
-                                                          token: token).ConfigureAwait(false)) + ")";
+                    strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                        strSpace, "weapons.xml", "accessories/accessory", "String_WeaponAccessory", token)
+                        .ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnReturn, strName);
                 }
                 case "weapondetails" when objParent is Weapon objWeapon:
@@ -3832,69 +2542,14 @@ namespace Chummer
                                     xmlNode, false, token).ConfigureAwait(false), strName);
                 }
                 case "armormod":
-                {
-                    if (blnShowMessage)
-                    {
-                        XPathNavigator objLoopDoc = blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.LoadDataXPath("armor.xml", token: token)
-                            : await objCharacter.LoadDataXPathAsync("armor.xml", token: token).ConfigureAwait(false);
-                        string strTranslate
-                            = objLoopDoc.SelectSingleNode("/chummer/armormods/armormod[id = "
-                                                          + strNodeInnerText.CleanXPath() + "]/translate")?.Value
-                              ?? objLoopDoc
-                                  .SelectSingleNode("/chummer/armormods/armormod[name = " +
-                                                    strNodeInnerText.CleanXPath()
-                                                    + "]/translate")?.Value;
-                        strName = Environment.NewLine + "\t"
-                                                      + (!string.IsNullOrEmpty(strTranslate)
-                                                          ? strTranslate
-                                                          : strNodeInnerText.IsGuid()
-                                                              ? objLoopDoc
-                                                                    .SelectSingleNode(
-                                                                        "/chummer/armormods/armormod[id = "
-                                                                        + strNodeInnerText.CleanXPath() + "]/name")
-                                                                    ?.Value
-                                                                ?? strNodeInnerText
-                                                              : strNodeInnerText) + strSpace + "("
-                                                      + (blnSync
-                                                          // ReSharper disable once MethodHasAsyncOverload
-                                                          ? LanguageManager.GetString(
-                                                              "String_ArmorMod",
-                                                              token: token)
-                                                          : await LanguageManager.GetStringAsync(
-                                                              "String_ArmorMod",
-                                                              token: token).ConfigureAwait(false)) + ")";
-                    }
-
-                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
-                    {
-                        return new ValueTuple<bool, string>(objParent is Armor objArmor && (blnSync
-                                // ReSharper disable once MethodHasAsyncOverload
-                                ? objArmor.ArmorMods.Any(
-                                    x => x.Name == strNodeInnerText
-                                         || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase), token)
-                                : await objArmor.ArmorMods.AnyAsync(
-                                    x => x.Name == strNodeInnerText
-                                         || string.Equals(x.SourceIDString, strNodeInnerText,
-                                             StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false)),
-                            strName);
-                    }
-
-                    return new ValueTuple<bool, string>(
-                        blnSync
-                            // ReSharper disable once MethodHasAsyncOverload
-                            ? objCharacter.Armor.Any(
-                                x => x.ArmorMods.Any(y => y.Name == strNodeInnerText
-                                                          || string.Equals(y.SourceIDString, strNodeInnerText,
-                                                              StringComparison.OrdinalIgnoreCase), token), token)
-                            : await objCharacter.Armor.AnyAsync(
-                                x => x.ArmorMods.AnyAsync(
-                                    y => y.Name == strNodeInnerText || string.Equals(y.SourceIDString, strNodeInnerText,
-                                        StringComparison.OrdinalIgnoreCase), token),
-                                token).ConfigureAwait(false), strName);
-                }
+                    return blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                                InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
+                                "armor.xml", "armormods/armormod", "String_ArmorMod", token), token)
+                        : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
+                            InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
+                            "armor.xml", "armormods/armormod", "String_ArmorMod", token).ConfigureAwait(false);
                 default:
                     Utils.BreakIfDebug();
                     break;
@@ -3903,6 +2558,754 @@ namespace Chummer
             if (blnShowMessage)
                 strName = strNodeInnerText;
             return new ValueTuple<bool, string>(false, strName);
+        }
+
+        /// <summary>
+        /// Parsed <c>rating</c>, <c>minrating</c>, and <c>maxrating</c> attributes from a requirements condition node.
+        /// </summary>
+        private readonly struct RequirementRatingFilter
+        {
+            public RequirementRatingFilter(int? intExactRating, int intMinRating, int intMaxRating, bool blnHasFilter)
+            {
+                ExactRating = intExactRating;
+                MinRating = intMinRating;
+                MaxRating = intMaxRating;
+                HasFilter = blnHasFilter;
+            }
+
+            public int? ExactRating { get; }
+
+            public int MinRating { get; }
+
+            public int MaxRating { get; }
+
+            public bool HasFilter { get; }
+        }
+
+        /// <summary>
+        /// Reads rating-related attributes from a requirements condition node into a <see cref="RequirementRatingFilter"/>.
+        /// </summary>
+        /// <param name="xmlNode">Condition node that may define <c>rating</c>, <c>minrating</c>, and/or <c>maxrating</c>.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A filter describing which installed ratings satisfy the condition.</returns>
+        private static RequirementRatingFilter GetRequirementRatingFilter(XPathNavigator xmlNode, CancellationToken token)
+        {
+            XPathNavigator objExactRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@rating", token);
+            if (objExactRatingNode != null)
+                return new RequirementRatingFilter(objExactRatingNode.ValueAsInt, 0, int.MaxValue, true);
+            XPathNavigator objMinRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@minrating", token);
+            XPathNavigator objMaxRatingNode = xmlNode.SelectSingleNodeAndCacheExpression("@maxrating", token);
+            if (objMinRatingNode != null || objMaxRatingNode != null)
+            {
+                return new RequirementRatingFilter(null, objMinRatingNode?.ValueAsInt ?? 0,
+                    objMaxRatingNode?.ValueAsInt ?? int.MaxValue, true);
+            }
+
+            return default;
+        }
+
+        /// <summary>
+        /// Returns whether an installed item's rating satisfies a <see cref="RequirementRatingFilter"/>.
+        /// </summary>
+        /// <param name="intRating">Rating of the installed item being checked.</param>
+        /// <param name="objFilter">Parsed rating requirements from the condition node.</param>
+        /// <returns><c>true</c> if the rating satisfies the filter (or no rating filter is defined).</returns>
+        private static bool MeetsRequirementRatingFilter(int intRating, RequirementRatingFilter objFilter)
+        {
+            if (!objFilter.HasFilter)
+                return true;
+            if (objFilter.ExactRating.HasValue)
+                return intRating == objFilter.ExactRating.Value;
+            return intRating >= objFilter.MinRating && intRating <= objFilter.MaxRating;
+        }
+
+        /// <summary>
+        /// How an installed cyberware/bioware requirement matches against character items.
+        /// </summary>
+        private enum WareMatchMode
+        {
+            /// <summary>Match by exact name or source id.</summary>
+            ExactNameOrId,
+            /// <summary>Match when the item name contains the condition text.</summary>
+            NameContains,
+            /// <summary>Match by cyberware/bioware category.</summary>
+            Category
+        }
+
+        /// <summary>
+        /// Returns whether an item's name or source id equals the condition text.
+        /// </summary>
+        /// <param name="strItemName">Installed item name.</param>
+        /// <param name="strItemSourceId">Installed item source id.</param>
+        /// <param name="strNodeInnerText">Name or id from the condition node.</param>
+        /// <returns><c>true</c> if the name or source id matches.</returns>
+        private static bool MatchesNameOrSourceId(string strItemName, string strItemSourceId, string strNodeInnerText)
+        {
+            return strItemName == strNodeInnerText
+                   || string.Equals(strItemSourceId, strNodeInnerText, StringComparison.OrdinalIgnoreCase);
+        }
+
+        /// <summary>
+        /// Returns whether an installed item matches a condition's name/id and rating requirements.
+        /// </summary>
+        /// <param name="strItemName">Installed item name.</param>
+        /// <param name="strItemSourceId">Installed item source id.</param>
+        /// <param name="intRating">Installed item rating.</param>
+        /// <param name="strNodeInnerText">Name or id from the condition node.</param>
+        /// <param name="objRatingFilter">Parsed rating requirements from the condition node.</param>
+        /// <returns><c>true</c> if the item satisfies both the identity and rating checks.</returns>
+        private static bool CharacterItemMatchesNameOrIdAndRating(string strItemName, string strItemSourceId,
+            int intRating, string strNodeInnerText, RequirementRatingFilter objRatingFilter)
+        {
+            return MatchesNameOrSourceId(strItemName, strItemSourceId, strNodeInnerText)
+                   && MeetsRequirementRatingFilter(intRating, objRatingFilter);
+        }
+
+        /// <summary>
+        /// Returns whether installed cyberware satisfies a ware requirement condition.
+        /// </summary>
+        /// <param name="objCyberware">Cyberware on the character to test.</param>
+        /// <param name="strNodeInnerText">Name, id, category, or partial name from the condition node.</param>
+        /// <param name="strSelectExtra">Optional <c>select</c> attribute value the item's <see cref="Cyberware.Extra"/> must match.</param>
+        /// <param name="eSourceType">Expected <see cref="Cyberware.SourceType"/> when not checking same-parent children.</param>
+        /// <param name="eMatchMode">How to compare <paramref name="strNodeInnerText"/> against the item.</param>
+        /// <param name="objRatingFilter">Parsed rating requirements from the condition node.</param>
+        /// <param name="blnSameParentChild">If <c>true</c>, only match mode and rating are evaluated (same-parent child check).</param>
+        /// <returns><c>true</c> if the cyberware satisfies the condition.</returns>
+        private static bool InstalledCyberwareMatchesRequirement(Cyberware objCyberware, string strNodeInnerText,
+            string strSelectExtra, Improvement.ImprovementSource eSourceType, WareMatchMode eMatchMode,
+            RequirementRatingFilter objRatingFilter, bool blnSameParentChild)
+        {
+            if (!blnSameParentChild)
+            {
+                if (objCyberware.SourceType != eSourceType)
+                    return false;
+                if (!string.IsNullOrEmpty(objCyberware.PlugsIntoModularMount))
+                    return false;
+                if (!string.IsNullOrEmpty(strSelectExtra) && objCyberware.Extra != strSelectExtra)
+                    return false;
+            }
+
+            if (!MeetsRequirementRatingFilter(objCyberware.Rating, objRatingFilter))
+                return false;
+
+            switch (eMatchMode)
+            {
+                case WareMatchMode.ExactNameOrId:
+                    return MatchesNameOrSourceId(objCyberware.Name, objCyberware.SourceIDString, strNodeInnerText);
+                case WareMatchMode.NameContains:
+                    return objCyberware.Name.Contains(strNodeInnerText);
+                case WareMatchMode.Category:
+                    return objCyberware.Category == strNodeInnerText;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Async version of <see cref="InstalledCyberwareMatchesRequirement"/>.
+        /// </summary>
+        /// <param name="objCyberware">Cyberware on the character to test.</param>
+        /// <param name="strNodeInnerText">Name, id, category, or partial name from the condition node.</param>
+        /// <param name="strSelectExtra">Optional <c>select</c> attribute value the item's <see cref="Cyberware.Extra"/> must match.</param>
+        /// <param name="eSourceType">Expected <see cref="Cyberware.SourceType"/> when not checking same-parent children.</param>
+        /// <param name="eMatchMode">How to compare <paramref name="strNodeInnerText"/> against the item.</param>
+        /// <param name="objRatingFilter">Parsed rating requirements from the condition node.</param>
+        /// <param name="blnSameParentChild">If <c>true</c>, only match mode and rating are evaluated (same-parent child check).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns><c>true</c> if the cyberware satisfies the condition.</returns>
+        private static async Task<bool> InstalledCyberwareMatchesRequirementAsync(Cyberware objCyberware,
+            string strNodeInnerText, string strSelectExtra, Improvement.ImprovementSource eSourceType,
+            WareMatchMode eMatchMode, RequirementRatingFilter objRatingFilter, bool blnSameParentChild,
+            CancellationToken token)
+        {
+            if (!blnSameParentChild)
+            {
+                if (await objCyberware.GetSourceTypeAsync(token).ConfigureAwait(false) != eSourceType)
+                    return false;
+                if (!string.IsNullOrEmpty(await objCyberware.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
+                    return false;
+                if (!string.IsNullOrEmpty(strSelectExtra) && objCyberware.Extra != strSelectExtra)
+                    return false;
+            }
+
+            if (!MeetsRequirementRatingFilter(await objCyberware.GetRatingAsync(token).ConfigureAwait(false),
+                    objRatingFilter))
+                return false;
+
+            switch (eMatchMode)
+            {
+                case WareMatchMode.ExactNameOrId:
+                    return MatchesNameOrSourceId(objCyberware.Name,
+                        await objCyberware.GetSourceIDStringAsync(token).ConfigureAwait(false), strNodeInnerText);
+                case WareMatchMode.NameContains:
+                    return objCyberware.Name.Contains(strNodeInnerText);
+                case WareMatchMode.Category:
+                    return objCyberware.Category == strNodeInnerText;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Builds the restriction message text for an installed cyberware/bioware requirement.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="objCharacter">Character whose data files are used for translation lookup.</param>
+        /// <param name="strNodeInnerText">Name, id, category, or partial name from the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="strLabelKey">LanguageManager key for the ware type label.</param>
+        /// <param name="strDataFile">Data file to load (for example, <c>cyberware.xml</c>).</param>
+        /// <param name="strItemXPathBase">XPath to the item node under <c>/chummer/</c> (for example, <c>cyberwares/cyberware</c>).</param>
+        /// <param name="eMatchMode">How the condition text is resolved for display.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Formatted restriction message text.</returns>
+        private static async Task<string> BuildInstalledWareRequirementRestrictionMessageAsync(bool blnSync,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strLabelKey,
+            string strDataFile, string strItemXPathBase, WareMatchMode eMatchMode, CancellationToken token)
+        {
+            if (blnSync)
+            {
+                return Utils.SafelyRunSynchronously(
+                    () => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token), token);
+            }
+
+            return await BuildInstalledWareRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
+                strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Core implementation for <see cref="BuildInstalledWareRequirementRestrictionMessageAsync"/>.
+        /// </summary>
+        private static async Task<string> BuildInstalledWareRequirementRestrictionMessageCoreAsync(bool blnSync,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strLabelKey,
+            string strDataFile, string strItemXPathBase, WareMatchMode eMatchMode, CancellationToken token)
+        {
+            XPathNavigator objLoopDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? objCharacter.LoadDataXPath(strDataFile, token: token)
+                : await objCharacter.LoadDataXPathAsync(strDataFile, token: token).ConfigureAwait(false);
+            string strTranslate;
+            if (eMatchMode == WareMatchMode.Category)
+            {
+                strTranslate = objLoopDoc
+                    .SelectSingleNode("/chummer/categories/category[. = " + strNodeInnerText.CleanXPath()
+                                      + "]/translate")?.Value;
+            }
+            else if (eMatchMode == WareMatchMode.ExactNameOrId)
+            {
+                strTranslate = objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[id = "
+                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value
+                               ?? objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[name = "
+                                                              + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+            }
+            else
+            {
+                strTranslate = objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[name = "
+                                                           + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+            }
+
+            string strLabel = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString(strLabelKey, token: token)
+                : await LanguageManager.GetStringAsync(strLabelKey, token: token).ConfigureAwait(false);
+            string strDisplay = !string.IsNullOrEmpty(strTranslate)
+                ? strTranslate
+                : eMatchMode == WareMatchMode.ExactNameOrId && strNodeInnerText.IsGuid()
+                    ? objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[id = "
+                                                  + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                      ?? strNodeInnerText
+                    : strNodeInnerText;
+            return Environment.NewLine + "\t" + strLabel + strSpace + strDisplay;
+        }
+
+        /// <summary>
+        /// Builds the restriction message text for a gear, power, armor mod, or similar data-file item requirement.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="objCharacter">Character whose data files are used for translation lookup.</param>
+        /// <param name="strNodeInnerText">Name or id from the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="strDataFile">Data file to load (for example, <c>gear.xml</c>).</param>
+        /// <param name="strItemXPathBase">XPath to the item node under <c>/chummer/</c> (for example, <c>gears/gear</c>).</param>
+        /// <param name="strTypeLabelKey">LanguageManager key appended in parentheses (for example, <c>String_Gear</c>).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Formatted restriction message text.</returns>
+        private static async Task<string> BuildDataItemRequirementRestrictionMessageAsync(bool blnSync,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strDataFile,
+            string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
+        {
+            if (blnSync)
+            {
+                return Utils.SafelyRunSynchronously(
+                    () => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token), token);
+            }
+
+            return await BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
+                strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Core implementation for <see cref="BuildDataItemRequirementRestrictionMessageAsync"/>.
+        /// </summary>
+        private static async Task<string> BuildDataItemRequirementRestrictionMessageCoreAsync(bool blnSync,
+            Character objCharacter, string strNodeInnerText, string strSpace, string strDataFile,
+            string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
+        {
+            XPathNavigator objLoopDoc = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? objCharacter.LoadDataXPath(strDataFile, token: token)
+                : await objCharacter.LoadDataXPathAsync(strDataFile, token: token).ConfigureAwait(false);
+            string strTranslate
+                = objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[id = "
+                                              + strNodeInnerText.CleanXPath() + "]/translate")?.Value
+                  ?? objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[name = "
+                                                 + strNodeInnerText.CleanXPath() + "]/translate")?.Value;
+            string strTypeLabel = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? LanguageManager.GetString(strTypeLabelKey, token: token)
+                : await LanguageManager.GetStringAsync(strTypeLabelKey, token: token).ConfigureAwait(false);
+            return Environment.NewLine + "\t"
+                   + (!string.IsNullOrEmpty(strTranslate)
+                       ? strTranslate
+                       : strNodeInnerText.IsGuid()
+                           ? objLoopDoc.SelectSingleNode("/chummer/" + strItemXPathBase + "[id = "
+                                                         + strNodeInnerText.CleanXPath() + "]/name")?.Value
+                             ?? strNodeInnerText
+                           : strNodeInnerText) + strSpace + "(" + strTypeLabel + ")";
+        }
+
+        /// <summary>
+        /// How grouped requirement nodes aggregate child requirement results.
+        /// </summary>
+        private enum RequirementGroupMode
+        {
+            /// <summary>All child requirements must be met (<c>group</c>).</summary>
+            AllOf,
+            /// <summary>At least one child requirement must be met (<c>grouponeof</c>).</summary>
+            OneOf
+        }
+
+        /// <summary>
+        /// Returns whether an installed quality entry matches a requirement node's name/id, optional <c>extra</c>, and ignore rules.
+        /// </summary>
+        /// <param name="strItemName">Installed quality name.</param>
+        /// <param name="strItemSourceId">Installed quality source id.</param>
+        /// <param name="strItemExtra">Installed quality <c>extra</c> value.</param>
+        /// <param name="strNodeInnerText">Name or id from the condition node.</param>
+        /// <param name="strRequiredExtra">Required <c>extra</c> attribute from the condition node, if any.</param>
+        /// <param name="strIgnoreQuality">Quality name or id to ignore during the search.</param>
+        /// <returns><c>true</c> if the entry satisfies the requirement.</returns>
+        private static bool InstalledQualityEntryMatchesRequirement(string strItemName, string strItemSourceId,
+            string strItemExtra, string strNodeInnerText, string strRequiredExtra, string strIgnoreQuality)
+        {
+            if (!MatchesNameOrSourceId(strItemName, strItemSourceId, strNodeInnerText))
+                return false;
+            if (strItemName == strIgnoreQuality || strItemSourceId == strIgnoreQuality)
+                return false;
+            if (!string.IsNullOrEmpty(strRequiredExtra) && strItemExtra != strRequiredExtra)
+                return false;
+            return true;
+        }
+
+        /// <summary>
+        /// Evaluates <c>group</c> and <c>grouponeof</c> requirement nodes.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="xmlNode">Grouped requirement node whose element children are evaluated.</param>
+        /// <param name="objCharacter">Character against which child requirements are checked.</param>
+        /// <param name="objParent">Parent object passed to child requirement checks.</param>
+        /// <param name="strIgnoreQuality">Quality name or id child checks should ignore.</param>
+        /// <param name="eMode">Whether all or one child requirements must be met.</param>
+        /// <param name="blnShowMessage">Whether to build aggregated restriction message text.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Whether the grouped requirement is met and any restriction message text.</returns>
+        private static async Task<ValueTuple<bool, string>> TestGroupedRequirementsCoreAsync(bool blnSync,
+            XPathNavigator xmlNode, Character objCharacter, object objParent, string strIgnoreQuality,
+            RequirementGroupMode eMode, bool blnShowMessage, CancellationToken token)
+        {
+            bool blnResult = eMode == RequirementGroupMode.AllOf;
+            string strName = string.Empty;
+            string strHeaderKey = eMode == RequirementGroupMode.AllOf
+                ? "Message_SelectQuality_AllOf"
+                : "Message_SelectQuality_OneOf";
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                       out StringBuilder sbdResultName))
+            {
+                sbdResultName.AppendLine().Append('\t')
+                    .Append(blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? LanguageManager.GetString(strHeaderKey, token: token)
+                        : await LanguageManager.GetStringAsync(strHeaderKey, token: token).ConfigureAwait(false));
+                foreach (XPathNavigator xmlChildNode in xmlNode.SelectChildren(XPathNodeType.Element))
+                {
+                    (bool blnLoopResult, string strLoopResult) = blnSync
+                        ? Utils.SafelyRunSynchronously(
+                            () => xmlChildNode.TestNodeRequirementsAsync(true, objCharacter, objParent,
+                                strIgnoreQuality, blnShowMessage, token), token)
+                        : await xmlChildNode.TestNodeRequirementsAsync(false, objCharacter, objParent,
+                            strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
+                    if (eMode == RequirementGroupMode.AllOf)
+                    {
+                        blnResult = blnResult && blnLoopResult;
+                        if (!blnResult && !blnShowMessage)
+                            break;
+                        if (!blnLoopResult)
+                        {
+                            sbdResultName.Append(
+                                strLoopResult.Replace(Environment.NewLine + "\t",
+                                    Environment.NewLine + "\t\t"));
+                        }
+                    }
+                    else
+                    {
+                        blnResult = blnLoopResult || blnResult;
+                        if (blnResult && !blnShowMessage)
+                            break;
+                        sbdResultName.Append(
+                            strLoopResult.Replace(Environment.NewLine + "\t",
+                                Environment.NewLine + "\t\t"));
+                    }
+                }
+
+                if (blnShowMessage)
+                    strName = sbdResultName.ToString();
+            }
+
+            return new ValueTuple<bool, string>(blnResult, strName);
+        }
+
+        /// <summary>
+        /// Evaluates <c>quality</c> and <c>characterquality</c> requirement nodes.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="xmlNode">Requirement condition node to evaluate.</param>
+        /// <param name="objCharacter">Character whose qualities are searched.</param>
+        /// <param name="strNodeInnerText">Inner text of the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="strIgnoreQuality">Quality name or id to ignore during the search.</param>
+        /// <param name="blnShowMessage">Whether to build restriction message text.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Whether the requirement is met and any restriction message text.</returns>
+        private static async Task<ValueTuple<bool, string>> TestInstalledCharacterQualityRequirementCoreAsync(
+            bool blnSync, XPathNavigator xmlNode, Character objCharacter, string strNodeInnerText, string strSpace,
+            string strIgnoreQuality, bool blnShowMessage, CancellationToken token)
+        {
+            string strExtra = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value ?? string.Empty;
+            Quality objQuality = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? objCharacter.Qualities.FirstOrDefault(
+                    q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra, strNodeInnerText,
+                        strExtra, strIgnoreQuality))
+                : await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
+                    q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra, strNodeInnerText,
+                        strExtra, strIgnoreQuality), token).ConfigureAwait(false);
+
+            if (objQuality != null)
+            {
+                string strName = string.Empty;
+                if (blnShowMessage)
+                    strName = blnSync
+                        ? objQuality.CurrentDisplayName
+                        : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                return new ValueTuple<bool, string>(true, strName);
+            }
+
+            if (!blnShowMessage)
+                return new ValueTuple<bool, string>(false, string.Empty);
+            return new ValueTuple<bool, string>(false,
+                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace,
+                    "qualities.xml", "qualities/quality", "String_Quality", token).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Evaluates <c>lifestylequality</c> requirement nodes.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="xmlNode">Requirement condition node to evaluate.</param>
+        /// <param name="objCharacter">Character whose lifestyles are searched when no parent lifestyle is provided.</param>
+        /// <param name="objParent">Parent lifestyle to search, if applicable.</param>
+        /// <param name="strNodeInnerText">Inner text of the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="strIgnoreQuality">Quality name or id to ignore during the search.</param>
+        /// <param name="blnShowMessage">Whether to build restriction message text.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Whether the requirement is met and any restriction message text.</returns>
+        private static async Task<ValueTuple<bool, string>> TestInstalledLifestyleQualityRequirementCoreAsync(
+            bool blnSync, XPathNavigator xmlNode, Character objCharacter, object objParent, string strNodeInnerText,
+            string strSpace, string strIgnoreQuality, bool blnShowMessage, CancellationToken token)
+        {
+            string strExtra = xmlNode.SelectSingleNodeAndCacheExpression("@extra", token)?.Value ?? string.Empty;
+            LifestyleQuality objQuality = null;
+            if (blnSync)
+            {
+                IEnumerable<LifestyleQuality> lstLifestyleQualities = objParent is Lifestyle objLifestyle
+                    ? objLifestyle.LifestyleQualities
+                    : objCharacter.Lifestyles.SelectMany(x => x.LifestyleQualities);
+                objQuality = lstLifestyleQualities.FirstOrDefault(
+                    q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra, strNodeInnerText,
+                        strExtra, strIgnoreQuality));
+            }
+            else if (objParent is Lifestyle objLifestyle)
+            {
+                objQuality = await objLifestyle.LifestyleQualities.FirstOrDefaultAsync(
+                    q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra, strNodeInnerText,
+                        strExtra, strIgnoreQuality), token).ConfigureAwait(false);
+            }
+            else
+            {
+                await (await objCharacter.GetLifestylesAsync(token).ConfigureAwait(false)).ForEachWithBreakAsync(
+                    async x =>
+                    {
+                        LifestyleQuality objLoopQuality = await x.LifestyleQualities.FirstOrDefaultAsync(
+                            q => InstalledQualityEntryMatchesRequirement(q.Name, q.SourceIDString, q.Extra,
+                                strNodeInnerText, strExtra, strIgnoreQuality), token).ConfigureAwait(false);
+                        if (objLoopQuality == null)
+                            return true;
+                        objQuality = objLoopQuality;
+                        return false;
+                    }, token).ConfigureAwait(false);
+            }
+
+            if (objQuality != null)
+            {
+                string strName = string.Empty;
+                if (blnShowMessage)
+                    strName = blnSync
+                        ? objQuality.CurrentDisplayName
+                        : await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                return new ValueTuple<bool, string>(true, strName);
+            }
+
+            if (!blnShowMessage)
+                return new ValueTuple<bool, string>(false, string.Empty);
+            return new ValueTuple<bool, string>(false,
+                await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText, strSpace,
+                    "lifestyles.xml", "qualities/quality", "String_Quality", token).ConfigureAwait(false));
+        }
+
+        /// <summary>
+        /// Installed character item types evaluated by <see cref="TestInstalledDataItemRequirementCoreAsync"/>.
+        /// </summary>
+        private enum InstalledDataItemRequirementKind
+        {
+            /// <summary>Gear on the character or under a gear parent.</summary>
+            Gear,
+            /// <summary>Adept powers on the character.</summary>
+            Power,
+            /// <summary>Armor mods on armor or under an armor parent.</summary>
+            ArmorMod
+        }
+
+        /// <summary>
+        /// Evaluates installed gear, power, or armor mod requirement nodes with optional rating and <c>sameparent</c> checks.
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="xmlNode">Requirement condition node to evaluate.</param>
+        /// <param name="objCharacter">Character whose equipment is searched.</param>
+        /// <param name="objParent">Parent object for <c>sameparent</c> checks.</param>
+        /// <param name="eKind">Which installed item type to evaluate.</param>
+        /// <param name="strNodeInnerText">Inner text of the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="blnShowMessage">Whether to build restriction message text.</param>
+        /// <param name="strDataFile">Data file used when building restriction messages.</param>
+        /// <param name="strItemXPathBase">XPath to the item node under <c>/chummer/</c> for message lookup.</param>
+        /// <param name="strTypeLabelKey">LanguageManager key appended in parentheses on failure messages.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Whether the requirement is met and any restriction message text.</returns>
+        private static async Task<ValueTuple<bool, string>> TestInstalledDataItemRequirementCoreAsync(bool blnSync,
+            XPathNavigator xmlNode, Character objCharacter, object objParent,
+            InstalledDataItemRequirementKind eKind, string strNodeInnerText, string strSpace, bool blnShowMessage,
+            string strDataFile, string strItemXPathBase, string strTypeLabelKey, CancellationToken token)
+        {
+            RequirementRatingFilter objRatingFilter = GetRequirementRatingFilter(xmlNode, token);
+            string strName = string.Empty;
+
+            if (eKind == InstalledDataItemRequirementKind.ArmorMod && blnShowMessage)
+            {
+                strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                    strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+            }
+
+            switch (eKind)
+            {
+                case InstalledDataItemRequirementKind.Gear:
+                {
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        return new ValueTuple<bool, string>(objParent is IHasGear objGearParent && (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objGearParent.GearChildren.Any(
+                                    x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
+                                        strNodeInnerText, objRatingFilter), token)
+                                : await objGearParent.GearChildren.AnyAsync(
+                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), token).ConfigureAwait(false)),
+                            strName);
+                    }
+
+                    Gear objGear = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Gear.FirstOrDefault(
+                            x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
+                                strNodeInnerText, objRatingFilter))
+                        : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
+                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                objRatingFilter), token).ConfigureAwait(false);
+
+                    if (objGear != null)
+                    {
+                        if (blnShowMessage)
+                            strName = blnSync
+                                ? objGear.CurrentDisplayNameShort
+                                : await objGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+                        return new ValueTuple<bool, string>(true, strName);
+                    }
+
+                    break;
+                }
+                case InstalledDataItemRequirementKind.Power:
+                {
+                    Power objPower = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCharacter.Powers.FirstOrDefault(
+                            x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
+                                strNodeInnerText, objRatingFilter))
+                        : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
+                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                objRatingFilter), token).ConfigureAwait(false);
+
+                    if (objPower != null)
+                    {
+                        if (blnShowMessage)
+                            strName = blnSync
+                                ? objPower.CurrentDisplayName
+                                : await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        return new ValueTuple<bool, string>(true, strName);
+                    }
+
+                    break;
+                }
+                case InstalledDataItemRequirementKind.ArmorMod:
+                {
+                    if (xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+                    {
+                        return new ValueTuple<bool, string>(objParent is Armor objArmor && (blnSync
+                                // ReSharper disable once MethodHasAsyncOverload
+                                ? objArmor.ArmorMods.Any(
+                                    x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
+                                        strNodeInnerText, objRatingFilter), token)
+                                : await objArmor.ArmorMods.AnyAsync(
+                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), token).ConfigureAwait(false)),
+                            strName);
+                    }
+
+                    return new ValueTuple<bool, string>(
+                        blnSync
+                            // ReSharper disable once MethodHasAsyncOverload
+                            ? objCharacter.Armor.Any(
+                                x => x.ArmorMods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
+                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), token), token)
+                            : await objCharacter.Armor.AnyAsync(
+                                x => x.ArmorMods.AnyAsync(
+                                    async y => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
+                                        await y.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), token),
+                                token).ConfigureAwait(false), strName);
+                }
+                default:
+                    Utils.BreakIfDebug();
+                    break;
+            }
+
+            if (blnShowMessage)
+            {
+                strName = await BuildDataItemRequirementRestrictionMessageAsync(blnSync, objCharacter, strNodeInnerText,
+                    strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token).ConfigureAwait(false);
+            }
+
+            return new ValueTuple<bool, string>(false, strName);
+        }
+
+        /// <summary>
+        /// Evaluates installed cyberware/bioware requirement nodes (<c>cyberware</c>, <c>bioware</c>, and related contains/category nodes).
+        /// </summary>
+        /// <param name="blnSync">Flag for whether method should always use synchronous code or not.</param>
+        /// <param name="xmlNode">Requirement condition node to evaluate.</param>
+        /// <param name="objCharacter">Character whose cyberware is searched.</param>
+        /// <param name="objParent">Parent object for <c>sameparent</c> checks (expected to be <see cref="Cyberware"/>).</param>
+        /// <param name="eSourceType"><see cref="Improvement.ImprovementSource"/> to match when counting character items.</param>
+        /// <param name="eMatchMode">How to compare the condition text against installed items.</param>
+        /// <param name="strLabelKey">LanguageManager key for restriction message labels.</param>
+        /// <param name="strDataFile">Data file used when building restriction messages.</param>
+        /// <param name="strItemXPathBase">XPath to the item node under <c>/chummer/</c> for message lookup.</param>
+        /// <param name="blnAllowSameParent">Whether <c>sameparent</c> may be evaluated on <paramref name="objParent"/>.</param>
+        /// <param name="strNodeInnerText">Inner text of the condition node.</param>
+        /// <param name="strSpace">Localized space character.</param>
+        /// <param name="blnShowMessage">Whether to build a restriction message when the check fails.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Whether the requirement is met and any restriction message text.</returns>
+        private static async Task<ValueTuple<bool, string>> TestInstalledWareRequirementCoreAsync(bool blnSync,
+            XPathNavigator xmlNode, Character objCharacter, object objParent,
+            Improvement.ImprovementSource eSourceType, WareMatchMode eMatchMode, string strLabelKey,
+            string strDataFile, string strItemXPathBase, bool blnAllowSameParent, string strNodeInnerText,
+            string strSpace, bool blnShowMessage, CancellationToken token)
+        {
+            int intCount = xmlNode.SelectSingleNodeAndCacheExpression("@count", token)?.ValueAsInt ?? 1;
+            RequirementRatingFilter objRatingFilter = GetRequirementRatingFilter(xmlNode, token);
+            string strName = string.Empty;
+            if (blnShowMessage)
+            {
+                strName = await BuildInstalledWareRequirementRestrictionMessageAsync(blnSync, objCharacter,
+                    strNodeInnerText, strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token)
+                    .ConfigureAwait(false);
+            }
+
+            string strWareNodeSelectAttribute
+                = xmlNode.SelectSingleNodeAndCacheExpression("@select", token)?.Value ?? string.Empty;
+
+            if (blnAllowSameParent && xmlNode.GetAttribute("sameparent", string.Empty) == bool.TrueString)
+            {
+                if (objParent is Cyberware objCyberware)
+                {
+                    bool blnResult = blnSync
+                        // ReSharper disable once MethodHasAsyncOverload
+                        ? objCyberware.Children.Any(
+                            mod => InstalledCyberwareMatchesRequirement(mod, strNodeInnerText,
+                                strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true), token)
+                        : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                            .AnyAsync(
+                                mod => InstalledCyberwareMatchesRequirementAsync(mod, strNodeInnerText,
+                                    strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true,
+                                    token), token).ConfigureAwait(false);
+                    return new ValueTuple<bool, string>(blnResult, strName);
+                }
+
+                return new ValueTuple<bool, string>(false, strName);
+            }
+
+            if (blnSync)
+            {
+                int intMatchCount = objCharacter.Cyberware.DeepCount(x => x.Children, objCyberware =>
+                    InstalledCyberwareMatchesRequirement(objCyberware, strNodeInnerText, strWareNodeSelectAttribute,
+                        eSourceType, eMatchMode, objRatingFilter, false));
+                return new ValueTuple<bool, string>(intMatchCount >= intCount, strName);
+            }
+
+            int intAsyncMatchCount = await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                .DeepCountAsync(x => x.GetChildrenAsync(token), async objCyberware =>
+                        await InstalledCyberwareMatchesRequirementAsync(objCyberware, strNodeInnerText,
+                            strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, false, token)
+                            .ConfigureAwait(false),
+                    token).ConfigureAwait(false);
+            return new ValueTuple<bool, string>(intAsyncMatchCount >= intCount, strName);
         }
 
         /// <summary>
