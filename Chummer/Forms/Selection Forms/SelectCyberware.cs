@@ -1949,7 +1949,7 @@ namespace Chummer
                             }
                         }
 
-                        if (!Upgrading && ParentVehicle == null && !await xmlCyberware.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                        if (!Upgrading && ParentVehicle == null && !await xmlCyberware.RequirementsMetAsync(_objCharacter, CyberwareParent, token: token).ConfigureAwait(false))
                             continue;
 
                         if (!blnDoUIUpdate)
@@ -2294,7 +2294,7 @@ namespace Chummer
                     }
                 }
             }
-            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, strLocalName: await LanguageManager.GetStringAsync(WindowMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+            if (!Upgrading && ParentVehicle == null && !await objCyberwareNode.RequirementsMetAsync(_objCharacter, CyberwareParent, strLocalName: await LanguageManager.GetStringAsync(WindowMode == Mode.Cyberware ? "String_SelectPACKSKit_Cyberware" : "String_SelectPACKSKit_Bioware", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 return;
 
             string strForceGrade = objCyberwareNode.SelectSingleNodeAndCacheExpression("forcegrade", token: token)?.Value;
