@@ -379,7 +379,7 @@ namespace Chummer
                 return false;
             for (int i = 0; i < _intSize; ++i)
             {
-                if (!_aobjInternal[i].Equals(other._aobjInternal[i]))
+                if (!_aobjInternal[i].Equals(other._aobjInternal[i], StringComparison.Ordinal))
                     return false;
             }
             return true;

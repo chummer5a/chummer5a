@@ -1373,6 +1373,7 @@
       <xs:element name="defaultValue" type="Layout" minOccurs="0" maxOccurs="1" />
       <xs:element name="includeEmptyValue" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
       <xs:element name="propertyType" type="xs:string" minOccurs="0" maxOccurs="1" default="System.String" />
+      <xs:element name="value" type="Layout" minOccurs="0" maxOccurs="1" />
     </xs:choice>
     <xs:attribute name="name" type="xs:string">
       <xs:annotation>
@@ -1397,6 +1398,11 @@
     <xs:attribute name="propertyType" type="xs:string">
       <xs:annotation>
         <xs:documentation>Type of the property.</xs:documentation>
+      </xs:annotation>
+    </xs:attribute>
+    <xs:attribute name="value" type="SimpleLayoutAttribute">
+      <xs:annotation>
+        <xs:documentation>Layout used for rendering the property value. Alias for P:NLog.Targets.TargetPropertyWithContext.Layout</xs:documentation>
       </xs:annotation>
     </xs:attribute>
   </xs:complexType>

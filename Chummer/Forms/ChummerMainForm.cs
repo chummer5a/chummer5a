@@ -774,7 +774,7 @@ namespace Chummer
                                                              "*.chum5*",
                                                              SearchOption.AllDirectories))
                                             {
-                                                if (!strAutosave.EndsWith(".chum5") && !strAutosave.EndsWith(".chum5lz"))
+                                                if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                                     continue;
                                                 FileInfo objAutosave;
                                                 try
@@ -4393,7 +4393,7 @@ namespace Chummer
                                                  "*.chum5*", SearchOption.AllDirectories))
                                     {
                                         _objGenericToken.ThrowIfCancellationRequested();
-                                        if (!strAutosave.EndsWith(".chum5") && !strAutosave.EndsWith(".chum5lz"))
+                                        if (!strAutosave.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strAutosave.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                                             continue;
                                         FileInfo objAutosave;
                                         try

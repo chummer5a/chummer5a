@@ -58,7 +58,7 @@ namespace Chummer
 
         public override int GetHashCode()
         {
-            return (_objMyPool, _objMyValue).GetHashCode();
+            return HashCode.Combine(_objMyPool, _objMyValue);
         }
 
         public static bool operator ==(FetchSafelyFromObjectPool<T> left, FetchSafelyFromObjectPool<T> right)

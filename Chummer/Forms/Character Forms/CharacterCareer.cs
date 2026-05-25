@@ -208,7 +208,7 @@ namespace Chummer
                 return;
             TreeNode nodSelected = treView.SelectedNode;
             object objTag = nodSelected?.Tag;
-            if (objTag == null || (objTag is string strTag && (string.IsNullOrEmpty(strTag) || strTag.StartsWith("Node_"))))
+            if (objTag == null || (objTag is string strTag && (string.IsNullOrEmpty(strTag) || strTag.StartsWith("Node_", StringComparison.Ordinal))))
                 return;
             int intDragLevel = nodSelected.Level;
             if (treView == treGear)

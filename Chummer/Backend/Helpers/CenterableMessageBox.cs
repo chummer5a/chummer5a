@@ -143,15 +143,7 @@ namespace Chummer
 
             public override int GetHashCode()
             {
-                unchecked
-                {
-                    int hashCode = lResult.GetHashCode();
-                    hashCode = (hashCode * 397) ^ lParam.GetHashCode();
-                    hashCode = (hashCode * 397) ^ wParam.GetHashCode();
-                    hashCode = (hashCode * 397) ^ (int)message;
-                    hashCode = (hashCode * 397) ^ hwnd.GetHashCode();
-                    return hashCode;
-                }
+                return HashCode.Combine(lResult, lParam, wParam, message, hwnd);
             }
 
             public static bool operator ==(CwpRetStruct left, CwpRetStruct right)

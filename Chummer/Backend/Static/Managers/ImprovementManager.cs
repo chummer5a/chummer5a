@@ -79,7 +79,7 @@ namespace Chummer
 
             public override int GetHashCode()
             {
-                return (CharacterObject, ImprovementType, ImprovementName).GetHashCode();
+                return HashCode.Combine(CharacterObject, ImprovementType, ImprovementName);
             }
 
             public override bool Equals(object obj)

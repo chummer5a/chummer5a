@@ -184,7 +184,7 @@ namespace Chummer
 
         private async void DeleteSingleWatchNode(object sender, FileSystemEventArgs e)
         {
-            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+            if (!e.Name.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !e.Name.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 return;
             try
             {
@@ -235,7 +235,7 @@ namespace Chummer
 
         private async void RefreshSingleWatchNode(object sender, FileSystemEventArgs e)
         {
-            if (!e.Name.EndsWith(".chum5") && !e.Name.EndsWith(".chum5lz"))
+            if (!e.Name.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !e.Name.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                 return;
             try
             {
@@ -1325,7 +1325,7 @@ namespace Chummer
                                                                SearchOption.AllDirectories))
                     {
                         token.ThrowIfCancellationRequested();
-                        if (!strFile.EndsWith(".chum5") && !strFile.EndsWith(".chum5lz"))
+                        if (!strFile.EndsWith(".chum5", StringComparison.OrdinalIgnoreCase) && !strFile.EndsWith(".chum5lz", StringComparison.OrdinalIgnoreCase))
                             continue;
                         FileInfo objInfo = new FileInfo(strFile);
                         string strDirectoryFullName = objInfo.Directory?.FullName ?? string.Empty;

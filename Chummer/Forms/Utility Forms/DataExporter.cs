@@ -157,7 +157,7 @@ namespace Chummer
             foreach (string strFilePath in Directory.EnumerateFiles(Utils.GetLanguageFolderPath, "*.xml"))
             {
                 token.ThrowIfCancellationRequested();
-                if (strFilePath.EndsWith("_data.xml"))
+                if (strFilePath.EndsWith("_data.xml", StringComparison.OrdinalIgnoreCase))
                     continue;
                 string strLanguageName = await LanguageManager.GetLanguageNameFromFileNameAsync(strFilePath, token: token).ConfigureAwait(false);
                 if (string.IsNullOrEmpty(strLanguageName))

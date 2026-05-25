@@ -69,19 +69,10 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (lstItems == null)
                 return 0;
-            // uint to prevent overflows
-            unchecked
-            {
-                uint result = 0;
-                Parallel.For(0, lstItems.Count, () => (uint)0, (i, state, local) =>
-                {
-                    if (token.IsCancellationRequested)
-                        state.Stop();
-                    return state.IsStopped ? local : local + (uint)lstItems.ElementAtBetter(i).GetHashCode();
-                }, localResult => InterlockedExtensions.Add(ref result, localResult));
-                token.ThrowIfCancellationRequested();
-                return (int)(19 + result * 31);
-            }
+            OrderInvariantHashCode hashCode = new OrderInvariantHashCode();
+            hashCode.AddRangeParallel(lstItems, token);
+            token.ThrowIfCancellationRequested();
+            return hashCode.ToHashCode();
         }
     }
 }
