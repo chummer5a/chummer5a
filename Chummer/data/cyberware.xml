@@ -2440,6 +2440,13 @@
       <capacity>2</capacity>
       <avail>8</avail>
       <cost>2000</cost>
+      <allowgear>
+        <gearcategory>Custom</gearcategory>
+        <gearcategory>Sensors</gearcategory>
+      </allowgear>
+      <allowsubsystems>
+        <category>Eyeware</category>
+      </allowsubsystems>
       <source>CF</source>
       <page>76</page>
     </cyberware>

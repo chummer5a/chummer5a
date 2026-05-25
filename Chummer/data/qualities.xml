@@ -158,7 +158,7 @@
     </quality>
     <quality>
       <id>db579224-99c7-48e0-84ab-77a987a84f4a</id>
-      <name>Double Jointed</name>
+      <name>Double-Jointed</name>
       <karma>6</karma>
       <category>Positive</category>
       <bonus>
@@ -1280,6 +1280,7 @@
         <notoriety>1</notoriety>
         <surprise>-3</surprise>
       </bonus>
+      <nameonpage>Combat Paralyisis</nameonpage>
       <source>SR5</source>
       <page>80</page>
     </quality>

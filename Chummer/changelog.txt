@@ -5,9 +5,13 @@ Application:
 Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
 - Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
+- Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
+
+Qualities:
+- Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
 
 Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
