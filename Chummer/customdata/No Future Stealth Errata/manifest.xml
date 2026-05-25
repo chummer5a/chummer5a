@@ -17,19 +17,25 @@
     You can obtain the full source code for Chummer5a at
     https://github.com/chummer5a/chummer5a
 -->
-  <manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
-    <guid>90be9581-a053-45ec-b6a8-13b5ae139c09</guid>
-    <version>1</version>
-    <authors>
-      <author>
-        <name>chummer5a</name>
-        <main>true</main>
-      </author>
-    </authors>
-    <descriptions>
-      <description>
-        <text>This ruleset applies unmentioned changes to older books' content added in No Future but never released in official errata for those books.</text>
-        <lang>en-us</lang>
-      </description>
-    </descriptions>
-  </manifest>
+<manifest xmlns="" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.w3.org/2001/XMLSchema ../manifest.xsd">
+  <guid>90be9581-a053-45ec-b6a8-13b5ae139c09</guid>
+  <version>1</version>
+  <authors>
+    <author>
+      <name>chummer5a</name>
+      <main>true</main>
+    </author>
+  </authors>
+  <descriptions>
+    <description>
+      <text>
+        This ruleset applies unmentioned changes to older books' content added in No Future but never released in official errata for those books.
+        - Cybereyes have their maximum rating upgraded to 6
+        - Cyberears have their maximum rating upgraded to 6.
+        - Visual and Audio cyberware enhancements have their maximum rating upgraded to 6.
+        - Visual and Audio cyberware enhancements from 4-6 have a new price formula: Essence 0.2, Capacity [Rating * 2], Availability Rating * 3, Cost Rating x 5,000Â¥
+      </text>
+      <lang>en-us</lang>
+    </description>
+  </descriptions>
+</manifest>
