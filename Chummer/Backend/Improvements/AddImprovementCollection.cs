@@ -3654,11 +3654,7 @@ namespace Chummer
 
                     string strSelected = frmPickWeapon.MyForm.SelectedItem;
 
-                    objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelected);
-                    if (objSelectedWeapon == null)
-                    {
-                        throw new AbortedException();
-                    }
+                    objSelectedWeapon = _objCharacter.Weapons.FirstOrDefault(x => x.InternalId == strSelected) ?? throw new AbortedException();
                 }
 
                 SelectedValue = objSelectedWeapon.Name;

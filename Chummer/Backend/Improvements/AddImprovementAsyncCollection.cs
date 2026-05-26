@@ -3820,11 +3820,8 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
                     string strSelected = await frmPickWeapon.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
 
-                    objSelectedWeapon = await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(x => x.InternalId == strSelected, token).ConfigureAwait(false);
-                    if (objSelectedWeapon == null)
-                    {
-                        throw new AbortedException();
-                    }
+                    objSelectedWeapon = await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(x => x.InternalId == strSelected, token).ConfigureAwait(false)
+                        ?? throw new AbortedException();
                 }
 
                 SelectedValue = objSelectedWeapon.Name;

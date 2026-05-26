@@ -2607,7 +2607,7 @@ namespace Chummer.Backend.Attributes
                             }
 
                             // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
-                            return _strCachedToolTip = StringExtensions.ConcatFast(CurrentDisplayAbbrev, strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
+                            return _strCachedToolTip = CurrentDisplayAbbrev.ConcatFast(strSpace, "(", Value.ToString(GlobalSettings.CultureInfo), ")", sbdModifier.ToString());
                         }
                     }
                 }

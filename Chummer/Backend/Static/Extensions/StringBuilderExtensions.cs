@@ -2039,7 +2039,7 @@ namespace Chummer
             {
                 sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
-                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5));
+                sbdInput.Insert(index, str1.ConcatFast(str2, str3, str4, str5));
             }
             return sbdInput;
         }
@@ -2056,7 +2056,7 @@ namespace Chummer
             {
                 sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
-                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5, str6));
+                sbdInput.Insert(index, str1.ConcatFast(str2, str3, str4, str5, str6));
             }
             return sbdInput;
         }
@@ -2073,7 +2073,7 @@ namespace Chummer
             {
                 sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 // Multiple insert calls can hammer the GC because of MakeRoom calls, so let's concat as much as we can before using Insert
-                sbdInput.Insert(index, StringExtensions.ConcatFast(str1, str2, str3, str4, str5, str6, str7));
+                sbdInput.Insert(index, str1.ConcatFast(str2, str3, str4, str5, str6, str7));
             }
             return sbdInput;
         }

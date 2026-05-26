@@ -12392,9 +12392,7 @@ namespace Chummer.Backend.Equipment
                 if (objInternalClip == null)
                 {
                     await RecreateInternalClipAsync(token).ConfigureAwait(false);
-                    objInternalClip = GetClip(ActiveAmmoSlot);
-                    if (objInternalClip == null)
-                        throw new InvalidOperationException(nameof(objInternalClip));
+                    objInternalClip = GetClip(ActiveAmmoSlot) ?? throw new InvalidOperationException(nameof(objInternalClip));
                 }
 
                 int intCurrentAmmoCount = objInternalClip.Ammo;

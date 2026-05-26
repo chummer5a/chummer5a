@@ -557,7 +557,7 @@ namespace Chummer
                 read = objElement;
                 return true;
             }
-            read = objSourceNode?[strFieldName] as XmlElement;
+            read = objSourceNode?[strFieldName];
             return read != null;
         }
 

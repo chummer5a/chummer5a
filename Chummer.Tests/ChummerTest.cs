@@ -149,7 +149,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -184,7 +184,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -214,7 +214,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
         }
 
@@ -251,7 +251,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -324,7 +324,7 @@ namespace Chummer.Tests
                         {
                             e = e.Demystify();
                             Assert.Fail("Unexpected validation failure: " + e.Message);
-                            throw e;
+                            throw;
                         }
 #if MEMORYTESTING
                     }
@@ -385,7 +385,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -434,7 +434,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -498,7 +498,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -628,7 +628,7 @@ namespace Chummer.Tests
                                 Debug.WriteLine(strErrorMessage);
                                 Console.WriteLine(strErrorMessage);
                                 Assert.Fail(strErrorMessage);
-                                throw e;
+                                throw;
                             }
                         }
                     }
@@ -655,7 +655,7 @@ namespace Chummer.Tests
             {
                 ex = ex.Demystify();
                 Assert.Fail(ex.Message);
-                throw ex;
+                throw;
             }
 #if MEMORYTESTING
             finally
@@ -689,34 +689,30 @@ namespace Chummer.Tests
             catch (AssertFailedException e)
             {
                 e = e.Demystify();
-                if (objCharacter != null)
+                if (objCharacter != null && objExistingCharacter == null)
                 {
-                    if (objExistingCharacter == null)
-                        objCharacter.Dispose();
-                    objCharacter = null;
+                    objCharacter.Dispose();
                 }
                 string strErrorMessage = "Could not load " + objFileInfo.FullName + '!';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
                 e = e.Demystify();
-                if (objCharacter != null)
+                if (objCharacter != null && objExistingCharacter == null)
                 {
-                    if (objExistingCharacter == null)
-                        objCharacter.Dispose();
-                    objCharacter = null;
+                    objCharacter.Dispose();
                 }
                 string strErrorMessage = "Exception while loading " + objFileInfo.FullName + ':';
                 strErrorMessage += Environment.NewLine + e;
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
 
             return objCharacter;
@@ -743,7 +739,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -753,7 +749,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -763,7 +759,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 
@@ -806,7 +802,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (InvalidOperationException e)
             {
@@ -816,7 +812,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
             catch (Exception e)
             {
@@ -827,7 +823,7 @@ namespace Chummer.Tests
                 Debug.WriteLine(strErrorMessage);
                 Console.WriteLine(strErrorMessage);
                 Assert.Fail(strErrorMessage);
-                throw e;
+                throw;
             }
         }
 

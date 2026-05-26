@@ -61,20 +61,28 @@ namespace Chummer.Tests
             OrderInvariantHashCode invariantHashCode = new OrderInvariantHashCode();
             invariantHashCode.Add(dummyData1);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData2);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData3);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData4);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData5);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData6);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData7);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
             invariantHashCode.Add(dummyData8);
             Assert.AreEqual(OrderInvariantHashCode.Combine(dummyData1, dummyData2, dummyData3, dummyData4, dummyData5, dummyData6, dummyData7, dummyData8), invariantHashCode.ToHashCode());
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
         }
 
         [TestMethod]
@@ -84,6 +92,8 @@ namespace Chummer.Tests
             int hashCode1 = OrderInvariantHashCode.Combine(dummyData1, dummyData2);
             int hashCode2 = OrderInvariantHashCode.Combine(dummyData2, dummyData1);
             Assert.AreEqual(hashCode1, hashCode2);
+
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
 
             // Test associative
             OrderInvariantHashCode invariantHashCode1 = new OrderInvariantHashCode();
@@ -97,6 +107,8 @@ namespace Chummer.Tests
             hashCode1 = invariantHashCode1.ToHashCode();
             hashCode2 = invariantHashCode2.ToHashCode();
             Assert.AreEqual(hashCode1, hashCode2);
+
+            TestContext.CancellationToken.ThrowIfCancellationRequested();
 
             // Test associative (parallelized)
             List<string> lstMiddleData = new List<string>
@@ -114,11 +126,13 @@ namespace Chummer.Tests
             invariantHashCode3.Add(dummyData8);
             OrderInvariantHashCode invariantHashCode4 = new OrderInvariantHashCode();
             invariantHashCode4.Add(dummyData8);
-            invariantHashCode4.AddRangeParallel(lstMiddleData);
+            invariantHashCode4.AddRangeParallel(lstMiddleData, TestContext.CancellationToken);
             invariantHashCode4.Add(dummyData1);
             hashCode1 = invariantHashCode3.ToHashCode();
             hashCode2 = invariantHashCode4.ToHashCode();
             Assert.AreEqual(hashCode1, hashCode2);
         }
+
+        public TestContext TestContext { get; set; }
     }
 }
