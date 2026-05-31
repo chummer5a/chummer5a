@@ -18344,7 +18344,6 @@ namespace Chummer
                                 objOldVehicle.GearChildren.Remove(objGear);
 
                             // Add the Gear to the Vehicle and set its Location.
-                            objGear.Parent = objNewVehicle;
                             objNewVehicle.GearChildren.Add(objGear);
                             objLocation?.Children.Add(objGear);
                         }
@@ -18435,7 +18434,6 @@ namespace Chummer
                                 await objOldVehicle.GearChildren.RemoveAsync(objGear, token).ConfigureAwait(false);
 
                             // Add the Gear to the Vehicle and set its Location.
-                            objGear.Parent = objNewVehicle;
                             await objNewVehicle.GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                             if (objLocation != null)
                                 await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
@@ -52621,7 +52619,7 @@ namespace Chummer
                                                                             // ReSharper disable once MethodHasAsyncOverload
                                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                                     xmlArmorModData,
-                                                                                    lstWeapons, token))
+                                                                                    lstWeapons, objArmorMod, token))
                                                                             {
                                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                 objArmorMod.GearChildren.Add(objPlugin);
@@ -52635,7 +52633,7 @@ namespace Chummer
                                                                             if (await objPlugin.ImportHeroLabGearAsync(
                                                                                         xmlPluginToAdd,
                                                                                         xmlArmorModData,
-                                                                                        lstWeapons, token)
+                                                                                        lstWeapons, objArmorMod, token)
                                                                                     .ConfigureAwait(false))
                                                                                 await objArmorMod.GearChildren
                                                                                     .AddAsync(objPlugin, token)
@@ -52736,7 +52734,7 @@ namespace Chummer
                                                                     // ReSharper disable once MethodHasAsyncOverload
                                                                     if (objPlugin.ImportHeroLabGear(xmlArmorModToImport,
                                                                             xmlArmorData,
-                                                                            lstWeapons, token))
+                                                                            lstWeapons, objArmor, token))
                                                                     {
                                                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                         objArmor.GearChildren.Add(objPlugin);
@@ -52747,7 +52745,7 @@ namespace Chummer
                                                                 }
                                                                 else if (await objPlugin.ImportHeroLabGearAsync(xmlArmorModToImport,
                                                                              xmlArmorData,
-                                                                             lstWeapons, token).ConfigureAwait(false))
+                                                                             lstWeapons, objArmor, token).ConfigureAwait(false))
                                                                 {
                                                                     await objArmor.GearChildren
                                                                             .AddAsync(objPlugin, token)
@@ -52824,7 +52822,7 @@ namespace Chummer
                                                                             if (objPlugin.ImportHeroLabGear(xmlPluginToAdd,
                                                                                     // ReSharper disable once MethodHasAsyncOverload
                                                                                     objArmorMod.GetNode(token),
-                                                                                    lstWeapons, token))
+                                                                                    lstWeapons, objArmorMod, token))
                                                                             {
                                                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                                                 objArmorMod.GearChildren.Add(objPlugin);
@@ -52836,7 +52834,7 @@ namespace Chummer
                                                                         else if (await objPlugin.ImportHeroLabGearAsync(xmlPluginToAdd,
                                                                                         await objArmorMod.GetNodeAsync(token)
                                                                                             .ConfigureAwait(false),
-                                                                                        lstWeapons, token).ConfigureAwait(false))
+                                                                                        lstWeapons, objArmorMod, token).ConfigureAwait(false))
                                                                         {
                                                                             await objArmorMod.GearChildren
                                                                                 .AddAsync(objPlugin, token)
@@ -53977,14 +53975,14 @@ namespace Chummer
                                         if (blnSync)
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
-                                            if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token))
+                                            if (objGear.ImportHeroLabGear(xmlGearToImport, null, lstWeapons, token: token))
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstGear.Add(objGear);
                                             else
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 objGear.DeleteGear();
                                         }
-                                        else if (await objGear.ImportHeroLabGearAsync(xmlGearToImport, null, lstWeapons, token).ConfigureAwait(false))
+                                        else if (await objGear.ImportHeroLabGearAsync(xmlGearToImport, null, lstWeapons, token: token).ConfigureAwait(false))
                                         {
                                             await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
                                         }

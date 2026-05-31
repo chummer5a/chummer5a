@@ -8393,7 +8393,6 @@ namespace Chummer
 
                     await objGear.SetQuantityAsync(decMove, GenericToken).ConfigureAwait(false);
                     objGear.Location = null;
-                    await objGear.SetParentAsync(objVehicle, GenericToken).ConfigureAwait(false);
                     await objVehicle.GearChildren.AddAsync(objGear, GenericToken).ConfigureAwait(false);
                 }
                 else
@@ -11669,10 +11668,9 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
-                                objGear.Parent = objSensor;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    false, token: GenericToken).ConfigureAwait(false);
+                                    false, objParent: objSensor, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -14482,7 +14480,7 @@ namespace Chummer
                                     (objSensor.Parent as Gear)?.Equipped
                                     ?? objCyberware != null && await objCyberware
                                         .GetIsModularCurrentlyEquippedAsync(GenericToken).ConfigureAwait(false),
-                                    token: GenericToken).ConfigureAwait(false);
+                                    objParent: objSensor, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -14653,7 +14651,7 @@ namespace Chummer
                                 Gear objGear = new Gear(CharacterObject);
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    false, token: GenericToken).ConfigureAwait(false);
+                                    false, objParent: objSensor, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -14817,10 +14815,9 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
-                                objGear.Parent = objAccessory;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    objAccessory.Equipped, token: GenericToken).ConfigureAwait(false);
+                                    objAccessory.Equipped, objParent: objAccessory, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -14992,11 +14989,10 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
-                                objGear.Parent = objSensor;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
                                     (objSensor.Parent as Gear)?.Equipped ?? objAccessory?.Equipped == true,
-                                    token: GenericToken).ConfigureAwait(false);
+                                    objParent: objSensor, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -15237,7 +15233,7 @@ namespace Chummer
                                 Gear objGear = new Gear(CharacterObject);
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    false, token: GenericToken).ConfigureAwait(false);
+                                    false, objParent: objSensor, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -15409,7 +15405,7 @@ namespace Chummer
                                 Gear objGear = new Gear(CharacterObject);
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    false, token: GenericToken).ConfigureAwait(false);
+                                    false, objParent: objAccessory, token: GenericToken).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -23251,10 +23247,9 @@ namespace Chummer
                         }
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Parent = blnNullParent ? null : objSelectedGear;
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             strForceValue,
-                            objSelectedGear?.Equipped != false, token: token).ConfigureAwait(false);
+                            objSelectedGear?.Equipped != false, objParent: blnNullParent ? null : objSelectedGear, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                         {
@@ -23266,8 +23261,6 @@ namespace Chummer
 
                         await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
 
-                        await objGear.SetParentAsync(blnNullParent ? null : objSelectedGear, token)
-                            .ConfigureAwait(false);
                         //Reduce the Cost for Black Market Pipeline
                         objGear.DiscountCost = frmPickGear.MyForm.BlackMarketDiscount;
 
@@ -23560,21 +23553,15 @@ namespace Chummer
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
                         Gear objGear = new Gear(CharacterObject);
-                        objGear.Parent = objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor;
                         await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                             string.Empty,
                             objSelectedGear?.Equipped ?? objSelectedMod?.Equipped ?? objSelectedArmor.Equipped,
-                            token: token).ConfigureAwait(false);
+                            objParent: objSelectedGear ?? (object)objSelectedMod ?? objSelectedArmor, token: token).ConfigureAwait(false);
 
                         if (objGear.InternalId.IsEmptyGuid())
                             return frmPickGear.MyForm.AddAgain;
 
                         await objGear.SetQuantityAsync(frmPickGear.MyForm.SelectedQty, token).ConfigureAwait(false);
-
-                        if (objSelectedGear != null)
-                        {
-                            await objGear.SetParentAsync(objSelectedGear, token).ConfigureAwait(false);
-                        }
 
                         // Reduce the cost for Do It Yourself components.
                         if (frmPickGear.MyForm.DoItYourself)

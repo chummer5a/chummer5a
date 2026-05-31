@@ -435,13 +435,13 @@ namespace Chummer.Backend.Equipment
                                 {
                                     // ReSharper disable once MethodHasAsyncOverload
                                     objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                        blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                        blnAddChildImprovements, blnChildCreateChildren, objParent: this, token: token);
                                     objGear.Quantity = decGearQty;
                                 }
                                 else
                                 {
                                     await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                            blnAddChildImprovements, blnChildCreateChildren, token: token)
+                                            blnAddChildImprovements, blnChildCreateChildren, objParent: this, token: token)
                                         .ConfigureAwait(false);
                                     await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
                                 }

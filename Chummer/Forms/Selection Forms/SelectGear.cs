@@ -1506,10 +1506,13 @@ namespace Chummer
                         {
                             await sbdValue.CheapReplaceAsync(strExpression, "{Parent Rating}",
                                 async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                            await sbdValue.CheapReplaceAsync(strExpression, "Parent Rating",
+                                async () => (await objCastParent.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         }
                         else
                         {
                             sbdValue.Replace("{Parent Rating}", 0.ToString(GlobalSettings.InvariantCultureInfo));
+                            sbdValue.Replace("Parent Rating", 0.ToString(GlobalSettings.InvariantCultureInfo));
                         }
                         foreach (string strMatrixAttribute in MatrixAttributes.MatrixAttributeStrings)
                         {

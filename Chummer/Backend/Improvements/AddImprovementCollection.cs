@@ -1780,7 +1780,7 @@ namespace Chummer
                 Gear objNewGearToCreate = new Gear(_objCharacter);
                 try
                 {
-                    objNewGearToCreate.Create(xmlGearDataNode, intRating, lstWeapons, ForcedValue);
+                    objNewGearToCreate.Create(xmlGearDataNode, intRating, lstWeapons, ForcedValue, objParent: objParent);
 
                     if (objNewGearToCreate.InternalId.IsEmptyGuid())
                         throw new AbortedException();
@@ -1803,7 +1803,6 @@ namespace Chummer
                     if (objParent != null)
                     {
                         objParent.Children.Add(objNewGearToCreate);
-                        objNewGearToCreate.Parent = objParent;
                     }
                     else
                     {

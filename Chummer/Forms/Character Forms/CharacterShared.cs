@@ -931,7 +931,6 @@ namespace Chummer
 
                     List<Weapon> lstWeapons = new List<Weapon>(1);
                     Gear objNewGear = new Gear(CharacterObject);
-                    objNewGear.Parent = objCyberware;
                     await objNewGear.CreateAsync(
                         objXmlGear,
                         frmPickGear.MyForm.SelectedRating,
@@ -939,6 +938,7 @@ namespace Chummer
                         string.Empty,
                         blnUseModularEquippedState
                             && await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false),
+                        objParent: objCyberware,
                         token: token).ConfigureAwait(false);
 
                     if (objNewGear.InternalId.IsEmptyGuid())
@@ -12421,10 +12421,9 @@ namespace Chummer
                                 List<Weapon> lstWeapons = new List<Weapon>(1);
 
                                 Gear objGear = new Gear(CharacterObject);
-                                objGear.Parent = objSelectedVehicle;
                                 await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
                                     string.Empty,
-                                    false, token: token).ConfigureAwait(false);
+                                    false, objParent: objSelectedVehicle, token: token).ConfigureAwait(false);
 
                                 if (objGear.InternalId.IsEmptyGuid())
                                     continue;
@@ -12520,7 +12519,6 @@ namespace Chummer
                                         await objLocation.Children.AddAsync(objGear, token).ConfigureAwait(false);
                                     await objSelectedVehicle.GearChildren.AddAsync(objGear, token)
                                         .ConfigureAwait(false);
-                                    await objGear.SetParentAsync(objSelectedVehicle, token).ConfigureAwait(false);
 
                                     foreach (Weapon objWeapon in lstWeapons)
                                     {

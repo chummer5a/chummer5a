@@ -123,7 +123,7 @@ namespace Chummer.Backend.Equipment
             _guiID = Guid.NewGuid();
             _objCharacter = objCharacter;
             _lstGear = new TaggedObservableCollection<Gear>(objCharacter.LockObject);
-            _lstGear.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
+            _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
             _lstWeapons = new TaggedObservableCollection<Weapon>(objCharacter.LockObject);
             _lstWeapons.AddTaggedCollectionChanged(this, MatrixAttributeChildrenOnCollectionChanged);
             _lstVehicleMods = new TaggedObservableCollection<VehicleMod>(objCharacter.LockObject);
@@ -199,6 +199,35 @@ namespace Chummer.Backend.Equipment
                         .ConfigureAwait(false);
                 }
             }
+        }
+
+        private async Task GearChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    foreach (Gear objNewItem in e.NewItems)
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
+                    break;
+
+                case NotifyCollectionChangedAction.Remove:
+                    foreach (Gear objOldItem in e.OldItems)
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
+                    break;
+
+                case NotifyCollectionChangedAction.Replace:
+                    foreach (Gear objOldItem in e.OldItems)
+                        await objOldItem.SetParentAsync(null, token).ConfigureAwait(false);
+                    foreach (Gear objNewItem in e.NewItems)
+                        await objNewItem.SetParentAsync(this, token).ConfigureAwait(false);
+                    break;
+            }
+
+            if (!_blnSkipEvents)
+                await this.RefreshMatrixAttributeArrayAsync(_objCharacter, token).ConfigureAwait(false);
         }
 
         private Task MatrixAttributeChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -746,14 +775,10 @@ namespace Chummer.Backend.Equipment
                                     if (blnSync
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             ? objGear.CreateFromNode(objXmlDocument, objXmlVehicleGear, lstWeapons,
-                                                blnCreateImprovements, blnSkipSelectForms)
+                                                blnCreateImprovements, blnSkipSelectForms, this)
                                             : await objGear.CreateFromNodeAsync(objXmlDocument, objXmlVehicleGear,
-                                                lstWeapons, blnCreateImprovements, blnSkipSelectForms, token).ConfigureAwait(false))
+                                                lstWeapons, blnCreateImprovements, blnSkipSelectForms, this, token).ConfigureAwait(false))
                                     {
-                                        if (blnSync)
-                                            objGear.Parent = this;
-                                        else
-                                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                                         objGear.ParentID = InternalId;
                                         if (blnSync)
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
@@ -1329,7 +1354,6 @@ namespace Chummer.Backend.Equipment
                                 objGear.Load(nodChild, blnCopy);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstGear.Add(objGear);
-                                objGear.Parent = this;
                             }
                             catch
                             {
@@ -1348,7 +1372,6 @@ namespace Chummer.Backend.Equipment
                             {
                                 await objGear.LoadAsync(nodChild, blnCopy, token).ConfigureAwait(false);
                                 await _lstGear.AddAsync(objGear, token).ConfigureAwait(false);
-                                await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                             }
                             catch
                             {

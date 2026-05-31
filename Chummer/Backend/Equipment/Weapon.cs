@@ -944,13 +944,13 @@ namespace Chummer.Backend.Equipment
                                         {
                                             // ReSharper disable once MethodHasAsyncOverload
                                             objGear.Create(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                                blnAddChildImprovements, blnChildCreateChildren, token: token);
+                                                blnAddChildImprovements, blnChildCreateChildren, objParent: this, token: token);
                                             objGear.Quantity = decGearQty;
                                         }
                                         else
                                         {
                                             await objGear.CreateAsync(objXmlGear, intGearRating, lstWeapons, strChildForceValue,
-                                                    blnAddChildImprovements, blnChildCreateChildren, token: token)
+                                                    blnAddChildImprovements, blnChildCreateChildren, objParent: this, token: token)
                                                 .ConfigureAwait(false);
                                             await objGear.SetQuantityAsync(decGearQty, token).ConfigureAwait(false);
                                         }
@@ -987,13 +987,11 @@ namespace Chummer.Backend.Equipment
                             objAccessory.IncludedInWeapon = true;
                             if (blnSync)
                             {
-                                objAccessory.Parent = this;
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstAccessories.Add(objAccessory);
                             }
                             else
                             {
-                                await objAccessory.SetParentAsync(this, token).ConfigureAwait(false);
                                 await _lstAccessories.AddAsync(objAccessory, token).ConfigureAwait(false);
                             }
                         }
@@ -13271,7 +13269,7 @@ namespace Chummer.Backend.Equipment
                                                 Gear objPlugin = new Gear(_objCharacter);
                                                 try
                                                 {
-                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData, lstWeapons))
+                                                    if (objPlugin.ImportHeroLabGear(xmlPluginToAdd, xmlWeaponAccessoryData, lstWeapons, objWeaponAccessory))
                                                         objWeaponAccessory.GearChildren.Add(objPlugin);
                                                 }
                                                 catch
@@ -13350,7 +13348,7 @@ namespace Chummer.Backend.Equipment
                                         Gear objPlugin = new Gear(_objCharacter);
                                         try
                                         {
-                                            if (objPlugin.ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode(), lstWeapons))
+                                            if (objPlugin.ImportHeroLabGear(xmlSubPluginToAdd, objWeaponAccessory.GetNode(), lstWeapons, objWeaponAccessory))
                                                 objWeaponAccessory.GearChildren.Add(objPlugin);
                                         }
                                         catch

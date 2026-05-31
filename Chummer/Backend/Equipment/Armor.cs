@@ -741,14 +741,14 @@ namespace Chummer.Backend.Equipment
                         if (blnSync)
                         {
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms))
+                            if (!objGear.CreateFromNode(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms, objParent: this))
                             {
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 objGear.DeleteGear();
                                 continue;
                             }
                         }
-                        else if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms, token: token).ConfigureAwait(false))
+                        else if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlArmorGear, lstChildWeapons, !blnSkipSelectForms, objParent: this, token: token).ConfigureAwait(false))
                         {
                             await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
                             continue;
@@ -757,10 +757,6 @@ namespace Chummer.Backend.Equipment
                         {
                             objWeapon.ParentID = InternalId;
                         }
-                        if (blnSync)
-                            objGear.Parent = this;
-                        else
-                            await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                         objGear.ParentID = InternalId;
                         if (blnSync)
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation

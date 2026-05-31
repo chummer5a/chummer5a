@@ -7,6 +7,9 @@ Cyberware:
 - Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
 - Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
 
+Gear:
+- Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
+
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
 

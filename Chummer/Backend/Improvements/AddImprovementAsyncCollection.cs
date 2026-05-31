@@ -1846,7 +1846,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 Gear objNewGearToCreate = new Gear(_objCharacter);
                 try
                 {
-                    await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, token: token).ConfigureAwait(false);
+                    await objNewGearToCreate.CreateAsync(xmlGearDataNode, intRating, lstWeapons, ForcedValue, objParent: objParent, token: token).ConfigureAwait(false);
 
                     if (objNewGearToCreate.InternalId.IsEmptyGuid())
                         throw new AbortedException();
@@ -1869,7 +1869,6 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     if (objParent != null)
                     {
                         await objParent.Children.AddAsync(objNewGearToCreate, token).ConfigureAwait(false);
-                        await objNewGearToCreate.SetParentAsync(objParent, token).ConfigureAwait(false);
                     }
                     else
                     {

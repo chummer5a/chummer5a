@@ -1951,7 +1951,7 @@ namespace Chummer.Backend.Equipment
                                 try
                                 {
                                     if (!objGear.CreateFromNode(objXmlGearDocument, objXmlVehicleGear, lstChildWeapons,
-                                            blnCreateImprovements))
+                                            blnCreateImprovements, objParent: this))
                                     {
                                         objGear.DeleteGear();
                                         continue;
@@ -1961,7 +1961,6 @@ namespace Chummer.Backend.Equipment
                                         objWeapon.ParentID = InternalId;
                                     }
 
-                                    objGear.Parent = this;
                                     objGear.ParentID = InternalId;
                                     GearChildren.Add(objGear);
                                     lstChildWeapons.AddRange(lstWeapons);
@@ -2105,7 +2104,7 @@ namespace Chummer.Backend.Equipment
                                 {
                                     if (!await objGear.CreateFromNodeAsync(objXmlGearDocument, objXmlVehicleGear,
                                             lstChildWeapons,
-                                            blnCreateImprovements, token: token).ConfigureAwait(false))
+                                            blnCreateImprovements, objParent: this, token: token).ConfigureAwait(false))
                                     {
                                         await objGear.DeleteGearAsync(token: token).ConfigureAwait(false);
                                         continue;
@@ -2115,7 +2114,6 @@ namespace Chummer.Backend.Equipment
                                         objWeapon.ParentID = InternalId;
                                     }
 
-                                    await objGear.SetParentAsync(this, token).ConfigureAwait(false);
                                     objGear.ParentID = InternalId;
                                     await GearChildren.AddAsync(objGear, token).ConfigureAwait(false);
                                     lstChildWeapons.AddRange(lstWeapons);
@@ -12576,9 +12574,8 @@ namespace Chummer.Backend.Equipment
                                 Gear objPluginGear = new Gear(_objCharacter);
                                 try
                                 {
-                                    if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons))
+                                    if (objPluginGear.ImportHeroLabGear(xmlPluginToAdd, this.GetNode(), lstWeapons, this))
                                     {
-                                        objPluginGear.Parent = this;
                                         GearChildren.Add(objPluginGear);
                                     }
                                 }
