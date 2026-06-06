@@ -27460,7 +27460,7 @@
             <power select="Low-Light Vision, Sight, Wide-Band Hearing">Enhanced Senses</power>
             <power rating="10">Hardened Armor</power>
             <power rating="6">Mystic Armor</power>
-            <power select="Bite, Bone Mace: DV 11P, AP -2">Natural Weapon</power>
+            <power select="Bite/Bone Mace: DV 11P, AP -2">Natural Weapon</power>
             <power>Noxious Breath</power>
             <power>Sapience</power>
             <power>Venom</power>
