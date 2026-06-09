@@ -78,7 +78,7 @@ namespace Chummer
         public static void LoadStandard(this XmlDocument xmlDocument, Stream objStream, bool blnSafe = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true))
+            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true, 1024, true))
             {
                 token.ThrowIfCancellationRequested();
                 using (XmlReader objReader = XmlReader.Create(objStreamReader,
@@ -101,7 +101,7 @@ namespace Chummer
         public static async Task LoadStandardAsync(this XmlDocument xmlDocument, Stream objStream, bool blnSafe = true, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true))
+            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true, 1024, true))
             {
                 token.ThrowIfCancellationRequested();
                 using (XmlReader objReader = XmlReader.Create(objStreamReader,
