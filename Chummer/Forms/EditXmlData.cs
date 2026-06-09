@@ -402,7 +402,8 @@ namespace Chummer
                     return;
                 }
 
-                if (string.IsNullOrWhiteSpace(txtAmendmentXml.Text))
+                string strAmendXml = await txtAmendmentXml.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                if (string.IsNullOrWhiteSpace(strAmendXml))
                 {
                     await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("XmlEditor_NoAmendment", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("XmlEditor_NoAmendmentTitle", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Warning, token: token).ConfigureAwait(false);
                     return;
@@ -414,7 +415,7 @@ namespace Chummer
                     // Parse the amendment XML
                     try
                     {
-                        _objAmendmentXmlDocument.LoadXml(txtAmendmentXml.Text);
+                        await _objAmendmentXmlDocument.LoadXmlStandardAsync(strAmendXml, token: token).ConfigureAwait(false);
                     }
                     catch (XmlException ex)
                     {
@@ -423,7 +424,7 @@ namespace Chummer
                     }
 
                     // Create a copy of the base XML to apply amendments to
-                    _objResultXmlDocument.LoadXml(_strBaseXmlContent);
+                    await _objResultXmlDocument.LoadXmlStandardAsync(_strBaseXmlContent, token: token).ConfigureAwait(false);
                     // Apply the amendments using the same logic as XmlManager
                     Exception exFromAmend = await ApplyAmendmentOperationsAsync(_objResultXmlDocument, _objAmendmentXmlDocument, token).ConfigureAwait(false);
                     if (exFromAmend == default)
@@ -565,8 +566,8 @@ namespace Chummer
             try
             {
                 // Parse both XML documents
-                _objDiffBaseXmlDocument.LoadXml(strBaseXml);
-                _objDiffResultXmlDocument.LoadXml(strResultXml);
+                await _objDiffBaseXmlDocument.LoadXmlStandardAsync(strBaseXml, token: token).ConfigureAwait(false);
+                await _objDiffResultXmlDocument.LoadXmlStandardAsync(strResultXml, token: token).ConfigureAwait(false);
 
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdOutput))
                 {
@@ -883,7 +884,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             try
             {
-                _objFormatXmlDocument.LoadXml(strXml);
+                await _objFormatXmlDocument.LoadXmlStandardAsync(strXml, token: token).ConfigureAwait(false);
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdReturn))
                 {
                     token.ThrowIfCancellationRequested();

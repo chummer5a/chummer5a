@@ -5733,8 +5733,10 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     using (new FetchSafelyFromSafeObjectPool<XmlDocument>(Utils.XmlDocumentPool, out XmlDocument objDoc))
                     {
-                        using (XmlReader objXmlReader = XmlReader.Create(objStream, GlobalSettings.SafeXmlReaderSettings))
-                            objDoc.Load(objXmlReader);
+                        if (blnSync)
+                            objDoc.LoadStandard(objStream, token: token);
+                        else
+                            await objDoc.LoadStandardAsync(objStream, token: token).ConfigureAwait(false);
                         using (FileStream objFileStream
                                = new FileStream(strFileName, FileMode.Create, FileAccess.Write, FileShare.None))
                         {
@@ -6468,8 +6470,11 @@ namespace Chummer
                                     // Check for typo in Corrupter quality and correct it
                                     else if (_verSavedVersion < new ValueVersion(5, 188, 34) && objXmlDocument.InnerXmlContentContains("Corruptor", token))
                                     {
-                                        objXmlDocument.InnerXml =
-                                            objXmlDocument.InnerXmlViaPool(token).Replace("Corruptor", "Corrupter");
+                                        string strNewXml = objXmlDocument.InnerXmlViaPool(token).Replace("Corruptor", "Corrupter");
+                                        if (blnSync)
+                                            objXmlDocument.LoadXmlStandard(strNewXml, token: token);
+                                        else
+                                            await objXmlDocument.LoadXmlStandardAsync(strNewXml, token: token).ConfigureAwait(false);
                                         xmlCharacterNavigator =
                                             (blnSync
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation

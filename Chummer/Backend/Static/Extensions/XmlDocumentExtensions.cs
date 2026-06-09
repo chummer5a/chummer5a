@@ -45,16 +45,7 @@ namespace Chummer
             using (FileStream objFileStream = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
                 token.ThrowIfCancellationRequested();
-                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
-                {
-                    token.ThrowIfCancellationRequested();
-                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                               blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        xmlDocument.Load(objReader);
-                    }
-                }
+                xmlDocument.LoadStandard(objFileStream, blnSafe, token);
             }
         }
 
@@ -72,19 +63,55 @@ namespace Chummer
             using (FileStream objFileStream
                    = new FileStream(strFileName, FileMode.Open, FileAccess.Read, FileShare.Read))
             {
+                await xmlDocument.LoadStandardAsync(objFileStream, blnSafe, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for calling <see cref="XmlDocument.Load(Stream)"/> with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="objStream">The stream containing the XML document to load.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadStandard(this XmlDocument xmlDocument, Stream objStream, bool blnSafe = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true))
+            {
                 token.ThrowIfCancellationRequested();
-                using (StreamReader objStreamReader = new StreamReader(objFileStream, Encoding.UTF8, true))
+                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                           blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
                 {
                     token.ThrowIfCancellationRequested();
-                    using (XmlReader objReader = XmlReader.Create(objStreamReader,
-                               blnSafe
-                                   ? GlobalSettings.SafeXmlReaderSettings
-                                   : GlobalSettings.UnSafeXmlReaderSettings))
-                    {
-                        token.ThrowIfCancellationRequested();
-                        // ReSharper disable once AccessToDisposedClosure
-                        await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
-                    }
+                    xmlDocument.Load(objReader);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.Load(string)"/> with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="objStream">The stream containing the XML document to load.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task LoadStandardAsync(this XmlDocument xmlDocument, Stream objStream, bool blnSafe = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (StreamReader objStreamReader = new StreamReader(objStream, Encoding.UTF8, true))
+            {
+                token.ThrowIfCancellationRequested();
+                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                           blnSafe
+                               ? GlobalSettings.SafeXmlReaderSettings
+                               : GlobalSettings.UnSafeXmlReaderSettings))
+                {
+                    token.ThrowIfCancellationRequested();
+                    // ReSharper disable once AccessToDisposedClosure
+                    await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
                 }
             }
         }
@@ -295,6 +322,55 @@ namespace Chummer
 
             if (!blnSuccess)
                 throw new TimeoutException();
+        }
+
+        /// <summary>
+        /// Syntactic sugar for calling <see cref="XmlDocument.LoadXml(string)"/> with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strXml">String containing the XML document to load.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static void LoadXmlStandard(this XmlDocument xmlDocument, string strXml, bool blnSafe = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (StringReader objStreamReader = new StringReader(strXml))
+            {
+                token.ThrowIfCancellationRequested();
+                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                           blnSafe ? GlobalSettings.SafeXmlReaderSettings : GlobalSettings.UnSafeXmlReaderSettings))
+                {
+                    token.ThrowIfCancellationRequested();
+                    xmlDocument.Load(objReader);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Syntactic sugar for asynchronously calling <see cref="XmlDocument.LoadXml(string)"/> with standard encoding and XmlReader settings
+        /// </summary>
+        /// <param name="xmlDocument">The document into which the XML data should be loaded.</param>
+        /// <param name="strXml">String containing the XML document to load.</param>
+        /// <param name="blnSafe">Whether to check characters for validity while loading.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task LoadXmlStandardAsync(this XmlDocument xmlDocument, string strXml, bool blnSafe = true, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (StringReader objStreamReader = new StringReader(strXml))
+            {
+                token.ThrowIfCancellationRequested();
+                using (XmlReader objReader = XmlReader.Create(objStreamReader,
+                           blnSafe
+                               ? GlobalSettings.SafeXmlReaderSettings
+                               : GlobalSettings.UnSafeXmlReaderSettings))
+                {
+                    token.ThrowIfCancellationRequested();
+                    // ReSharper disable once AccessToDisposedClosure
+                    await TaskExtensions.RunWithoutEC(() => xmlDocument.Load(objReader), token).ConfigureAwait(false);
+                }
+            }
         }
 
         /// <summary>

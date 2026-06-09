@@ -1516,22 +1516,24 @@ namespace Chummer
         private static ClipboardContentType _eClipboardContentType;
 
         /// <summary>
-        /// XmlReaderSettings that should be used when reading almost Xml readable.
+        /// XmlReaderSettings that should be used when reading almost all Xml readables without using any reader-internal async calls (other async calls are fine).
         /// </summary>
         public static XmlReaderSettings SafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true };
 
         /// <summary>
-        /// XmlReaderSettings that should only be used if invalid characters are found.
+        /// XmlReaderSettings that should be used when reading almost all Xml readables without using any reader-internal async calls (other async calls are fine).
+        /// Should only be used instead of <see cref="SafeXmlReaderSettings"/> if invalid characters are found.
         /// </summary>
         public static XmlReaderSettings UnSafeXmlReaderSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false };
 
         /// <summary>
-        /// XmlReaderSettings that should be used when reading almost Xml readable.
+        /// XmlReaderSettings that should be used when reading almost all Xml readables with an <see cref="XmlReader"/> whose async methods get called.
         /// </summary>
         public static XmlReaderSettings SafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, Async = true };
 
         /// <summary>
-        /// XmlReaderSettings that should only be used if invalid characters are found.
+        /// XmlReaderSettings that should be used when reading almost all Xml readables with an <see cref="XmlReader"/> whose async methods get called.
+        /// Should only be used instead of <see cref="SafeXmlReaderAsyncSettings"/> if invalid characters are found.
         /// </summary>
         public static XmlReaderSettings UnSafeXmlReaderAsyncSettings { get; } = new XmlReaderSettings { XmlResolver = null, IgnoreComments = true, IgnoreWhitespace = true, CheckCharacters = false, Async = true };
 
