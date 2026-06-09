@@ -128,9 +128,13 @@ namespace Chummer
         public int CompareTo(NuyenString other)
         {
             if (!UseDecimal)
-                return other.UseDecimal
-                    ? 1
-                    : string.Compare(BaseString, other.BaseString, false, _objMyCulture);
+            {
+                if (other.UseDecimal)
+                    return 1;
+                if (_objMyCulture != other._objMyCulture)
+                    return string.CompareOrdinal(_objMyCulture.ToString(), other._objMyCulture.ToString());
+                return string.Compare(BaseString, other.BaseString, false, _objMyCulture);
+            }
             if (other.UseDecimal)
                 return Value.CompareTo(other.Value);
             return -1;

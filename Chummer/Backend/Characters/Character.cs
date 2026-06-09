@@ -45561,7 +45561,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strQualityGroup) || string.IsNullOrEmpty(strInstanceText))
                 return;
                 
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterUpgradeableReadLock())
             {
                 ConcurrentDictionary<int, List<string>> dicLevels = _dicQualityGroupInstances.Value.GetOrAdd(strQualityGroup, 
                     _ => new ConcurrentDictionary<int, List<string>>());
@@ -45569,8 +45569,50 @@ namespace Chummer
                 
                 if (!lstInstances.Contains(strInstanceText))
                 {
-                    lstInstances.Add(strInstanceText);
+                    using (LockObject.EnterWriteLock())
+                    {
+                        if (!lstInstances.Contains(strInstanceText))
+                            lstInstances.Add(strInstanceText);
+                    }
                 }
+            }
+        }
+
+        /// <summary>
+        /// Store an instance of a quality for a specific group and level
+        /// </summary>
+        public async Task StoreQualityInstanceAsync(string strQualityGroup, int intLevel, string strInstanceText, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strQualityGroup) || string.IsNullOrEmpty(strInstanceText))
+                return;
+
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                ConcurrentDictionary<int, List<string>> dicLevels = _dicQualityGroupInstances.Value.GetOrAdd(strQualityGroup,
+                    _ => new ConcurrentDictionary<int, List<string>>());
+                List<string> lstInstances = dicLevels.GetOrAdd(intLevel, _ => new List<string>());
+
+                if (!lstInstances.Contains(strInstanceText))
+                {
+                    IAsyncDisposable objLocker2 = await LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                    try
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!lstInstances.Contains(strInstanceText))
+                            lstInstances.Add(strInstanceText);
+                    }
+                    finally
+                    {
+                        await objLocker2.DisposeAsync().ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -45584,12 +45626,10 @@ namespace Chummer
                 
             using (LockObject.EnterReadLock())
             {
-                if (_dicQualityGroupInstances.Value.TryGetValue(strQualityGroup, out ConcurrentDictionary<int, List<string>> dicLevels))
+                if (_dicQualityGroupInstances.Value.TryGetValue(strQualityGroup, out ConcurrentDictionary<int, List<string>> dicLevels)
+                    && dicLevels.TryGetValue(intLevel, out List<string> lstInstances))
                 {
-                    if (dicLevels.TryGetValue(intLevel, out List<string> lstInstances))
-                    {
-                        return new List<string>(lstInstances);
-                    }
+                    return new List<string>(lstInstances);
                 }
             }
             return new List<string>();
@@ -56060,19 +56100,33 @@ namespace Chummer
                         if (intExistingLevel != intHighestLevel)
                         {
                             // Level change - remove all existing qualities and add the new one
-                            foreach (Quality objQualityToRemove in lstGroupQualities)
+                            if (blnSync)
                             {
-                                token.ThrowIfCancellationRequested();
-                                // Store the instance text before removing
-                                string strExtra = blnSync ? objQualityToRemove.Extra : await objQualityToRemove.GetExtraAsync(token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strExtra))
+                                foreach (Quality objQualityToRemove in lstGroupQualities)
                                 {
-                                    StoreQualityInstance(strGroup, intExistingLevel, strExtra);
-                                }
-                                if (blnSync)
+                                    token.ThrowIfCancellationRequested();
+                                    // Store the instance text before removing
+                                    string strExtra = objQualityToRemove.Extra;
+                                    if (!string.IsNullOrEmpty(strExtra))
+                                    {
+                                        StoreQualityInstance(strGroup, intExistingLevel, strExtra);
+                                    }
                                     objQualityToRemove.DeleteQuality(token: token);
-                                else
+                                }
+                            }
+                            else
+                            {
+                                foreach (Quality objQualityToRemove in lstGroupQualities)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    // Store the instance text before removing
+                                    string strExtra = await objQualityToRemove.GetExtraAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strExtra))
+                                    {
+                                        await StoreQualityInstanceAsync(strGroup, intExistingLevel, strExtra, token).ConfigureAwait(false);
+                                    }
                                     await objQualityToRemove.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                                }
                             }
 
                             // Clear stored text for this group since we're changing levels
@@ -56081,19 +56135,19 @@ namespace Chummer
                         else if (lstGroupQualities.Count > 1)
                         {
                             // Same level but multiple instances - need to resolve conflicts
-                            // Store all existing instances
-                            foreach (Quality objExistingQuality in lstGroupQualities)
-                            {
-                                string strExtra = blnSync ? objExistingQuality.Extra : await objExistingQuality.GetExtraAsync(token).ConfigureAwait(false);
-                                if (!string.IsNullOrEmpty(strExtra))
-                                {
-                                    StoreQualityInstance(strGroup, intExistingLevel, strExtra);
-                                }
-                            }
-
-                            // Remove all existing qualities
+                            
                             if (blnSync)
                             {
+                                // Store all existing instances
+                                foreach (Quality objExistingQuality in lstGroupQualities)
+                                {
+                                    string strExtra = objExistingQuality.Extra;
+                                    if (!string.IsNullOrEmpty(strExtra))
+                                    {
+                                        StoreQualityInstance(strGroup, intExistingLevel, strExtra);
+                                    }
+                                }
+                                // Remove all existing qualities
                                 foreach (Quality objQualityToRemove in lstGroupQualities)
                                 {
                                     objQualityToRemove.DeleteQuality(token: token);
@@ -56101,6 +56155,16 @@ namespace Chummer
                             }
                             else
                             {
+                                // Store all existing instances
+                                foreach (Quality objExistingQuality in lstGroupQualities)
+                                {
+                                    string strExtra = await objExistingQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strExtra))
+                                    {
+                                        await StoreQualityInstanceAsync(strGroup, intExistingLevel, strExtra, token).ConfigureAwait(false);
+                                    }
+                                }
+                                // Remove all existing qualities
                                 foreach (Quality objQualityToRemove in lstGroupQualities)
                                 {
                                     await objQualityToRemove.DeleteQualityAsync(token: token).ConfigureAwait(false);

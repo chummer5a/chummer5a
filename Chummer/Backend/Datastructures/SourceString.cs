@@ -53,7 +53,7 @@ namespace Chummer
 
         public static SourceString GetSourceString(string strSourceString, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
         {
-            return GetSourceString(strSourceString, strLanguage, objCultureInfo, objCharacter.Settings);
+            return GetSourceString(strSourceString, strLanguage, objCultureInfo, objCharacter?.Settings);
         }
 
         public static SourceString GetSourceString(string strSourceString, string strLanguage = "",
@@ -75,7 +75,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSourceString, strLanguage, objCultureInfo, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSourceString, string strLanguage = "",
@@ -97,7 +97,7 @@ namespace Chummer
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
         {
-            return GetSourceString(strSource, strPage, strLanguage, objCultureInfo, objCharacter.Settings);
+            return GetSourceString(strSource, strPage, strLanguage, objCultureInfo, objCharacter?.Settings);
         }
 
         public static SourceString GetSourceString(string strSource, string strPage, string strLanguage = "",
@@ -109,7 +109,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSource, strPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSource, strPage, strLanguage, objCultureInfo, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
         }
 
         public static Task<SourceString> GetSourceStringAsync(string strSource, string strPage, string strLanguage = "",
@@ -121,7 +121,7 @@ namespace Chummer
 
         public static SourceString GetSourceString(string strSource, int intPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter)
         {
-            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter.Settings);
+            return GetSourceString(strSource, intPage, strLanguage, objCultureInfo, objCharacter?.Settings);
         }
 
         public static SourceString GetSourceString(string strSource, int intPage, string strLanguage = "",
@@ -136,7 +136,7 @@ namespace Chummer
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage, CultureInfo objCultureInfo, Character objCharacter, CancellationToken token = default)
         {
-            return await GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, await objCharacter.GetSettingsAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+            return await GetSourceStringAsync(strSource, intPage, strLanguage, objCultureInfo, objCharacter != null ? await objCharacter.GetSettingsAsync(token).ConfigureAwait(false) : null, token).ConfigureAwait(false);
         }
 
         public static async Task<SourceString> GetSourceStringAsync(string strSource, int intPage, string strLanguage = "",
@@ -237,10 +237,14 @@ namespace Chummer
 
         public int CompareTo(SourceString other)
         {
-            int intCompareResult = string.Compare(Language, other.Language, false, GlobalSettings.CultureInfo);
+            if (CultureInfo != other.CultureInfo)
+            {
+                return string.CompareOrdinal(CultureInfo.ToString(), other.CultureInfo.ToString());
+            }
+            int intCompareResult = string.Compare(Language, other.Language, false, CultureInfo);
             if (intCompareResult == 0)
             {
-                intCompareResult = string.Compare(Code, other.Code, false, GlobalSettings.CultureInfo);
+                intCompareResult = string.Compare(Code, other.Code, false, CultureInfo);
                 if (intCompareResult == 0)
                 {
                     return Page.CompareTo(other.Page);

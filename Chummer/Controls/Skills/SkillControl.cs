@@ -778,7 +778,7 @@ namespace Chummer.UI.Skills
                 }
 
                 // Has to be here instead of done through data bindings because of weird potential memory leak via ComboBox subscription
-                if ((blnAll || e.PropertyNames.Contains(nameof(Skill.CanHaveSpecs))))
+                if (blnAll || e.PropertyNames.Contains(nameof(Skill.CanHaveSpecs)))
                 {
                     bool blnCanHaveSpecs = await _objSkill.GetCanHaveSpecsAsync(token).ConfigureAwait(false);
                     if (await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))

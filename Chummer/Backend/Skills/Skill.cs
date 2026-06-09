@@ -1698,11 +1698,11 @@ namespace Chummer.Backend.Skills
                     if (SkillGroupObject == null || await SkillGroupObject.GetBaseAsync(token).ConfigureAwait(false) <= 0)
                         return true;
                     CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
-                    return (await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)
+                    return await objSettings.GetUsePointsOnBrokenGroupsAsync(token).ConfigureAwait(false)
                                && (!await objSettings.GetStrictSkillGroupsInCreateModeAsync(token)
                                        .ConfigureAwait(false)
                                    || await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
-                                   || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)));
+                                   || await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false));
                 }
                 return false;
             }

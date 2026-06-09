@@ -519,19 +519,19 @@ namespace Chummer
                             {
                                 --_intWeek;
                                 if (blnOldIsLeapYear != _blnIsLeapYear)
-                                    this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear), nameof(IsLeapYear), nameof(Week));
+                                    await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLongYear), nameof(IsLeapYear), nameof(Week)).ConfigureAwait(false);
                                 else
-                                    this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear), nameof(Week));
+                                    await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLongYear), nameof(Week)).ConfigureAwait(false);
                             }
                             else if (blnOldIsLeapYear != _blnIsLeapYear)
-                                this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear), nameof(IsLeapYear));
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLongYear), nameof(IsLeapYear)).ConfigureAwait(false);
                             else
-                                this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLongYear));
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLongYear)).ConfigureAwait(false);
                         }
                         else if (blnOldIsLeapYear != _blnIsLeapYear)
-                            this.OnMultiplePropertyChanged(nameof(Year), nameof(IsLeapYear));
+                            await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLeapYear)).ConfigureAwait(false);
                         else
-                            OnPropertyChanged();
+                            await OnPropertyChangedAsync(nameof(Year), token).ConfigureAwait(false);
                     }
                 }
                 finally
@@ -758,7 +758,7 @@ namespace Chummer
                                     await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLongYear)).ConfigureAwait(false);
                             }
                             else if (blnOldIsLeapYear != _blnIsLeapYear)
-                                await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLeapYear));
+                                await this.OnMultiplePropertyChangedAsync(token, nameof(Year), nameof(IsLeapYear)).ConfigureAwait(false);
                             else
                                 await OnPropertyChangedAsync(nameof(Year), token).ConfigureAwait(false);
                         }
@@ -1017,6 +1017,8 @@ namespace Chummer
 
         public int CompareTo(CalendarWeek other)
         {
+            if (other == null)
+                return -1;
             using (LockObject.EnterReadLock())
             using (other.LockObject.EnterReadLock())
             {
