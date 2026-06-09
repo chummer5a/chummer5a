@@ -38,7 +38,7 @@ namespace Chummer
         /// <param name="minor">The minor version number.</param>
         /// <param name="build">The build number.</param>
         /// <param name="revision">The revision number.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// <exception cref="System.ArgumentOutOfRangeException">
         /// <paramref name="major" />, <paramref name="minor" />, <paramref name="build" />, or <paramref name="revision" /> is less than zero.</exception>
         public ValueVersion(int major, int minor, int build, int revision)
         {
@@ -60,7 +60,7 @@ namespace Chummer
         /// <param name="major">The major version number.</param>
         /// <param name="minor">The minor version number.</param>
         /// <param name="build">The build number.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// <exception cref="System.ArgumentOutOfRangeException">
         /// <paramref name="major" />, <paramref name="minor" />, or <paramref name="build" /> is less than zero.</exception>
         public ValueVersion(int major, int minor, int build)
         {
@@ -79,7 +79,7 @@ namespace Chummer
         /// <summary>Initializes a new ValueVersion struct using the specified major and minor values.</summary>
         /// <param name="major">The major version number.</param>
         /// <param name="minor">The minor version number.</param>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">
+        /// <exception cref="System.ArgumentOutOfRangeException">
         /// <paramref name="major" /> or <paramref name="minor" /> is less than zero.</exception>
         public ValueVersion(int major, int minor)
         {
@@ -103,13 +103,13 @@ namespace Chummer
 
         /// <summary>Initializes a new ValueVersion struct using the specified string.</summary>
         /// <param name="version">A string containing the major, minor, build, and revision numbers, where each number is delimited with a period character ('.').</param>
-        /// <exception cref="T:System.ArgumentException">
+        /// <exception cref="System.ArgumentException">
         /// <paramref name="version" /> has fewer than two components or more than four components.</exception>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="version" /> is <see langword="null" />.</exception>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">A major, minor, build, or revision component is less than zero.</exception>
-        /// <exception cref="T:System.FormatException">At least one component of <paramref name="version" /> does not parse to an integer.</exception>
-        /// <exception cref="T:System.OverflowException">At least one component of <paramref name="version" /> represents a number greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">A major, minor, build, or revision component is less than zero.</exception>
+        /// <exception cref="System.FormatException">At least one component of <paramref name="version" /> does not parse to an integer.</exception>
+        /// <exception cref="System.OverflowException">At least one component of <paramref name="version" /> represents a number greater than <see cref="int.MaxValue" />.</exception>
         public ValueVersion(string version)
         {
             ValueVersion version1 = Parse(version);
@@ -121,7 +121,7 @@ namespace Chummer
 
         /// <summary>Initializes a new ValueVersion struct using the specified Version as a reference.</summary>
         /// <param name="version">A Version object from which to copy major, minor, build, and revision values.</param>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="version" /> is <see langword="null" />.</exception>
         public ValueVersion(Version version)
         {
@@ -155,8 +155,8 @@ namespace Chummer
         /// <returns>A 16-bit signed integer.</returns>
         public short MinorRevision => (short)(_Revision & ushort.MaxValue);
 
-        /// <summary>Returns a new <see cref="T:System.Version" /> object identical to the current ValueVersion struct.</summary>
-        /// <returns>A new <see cref="T:System.Version" /> object whose values are identical to the current ValueVersion struct's.</returns>
+        /// <summary>Returns a new <see cref="Version" /> object identical to the current ValueVersion struct.</summary>
+        /// <returns>A new <see cref="Version" /> object whose values are identical to the current ValueVersion struct's.</returns>
         public Version AsVersion()
         {
             if (Build >= 0)
@@ -188,8 +188,8 @@ namespace Chummer
         /// -or-
         /// 
         /// <paramref name="obj" /> is <see langword="null" />.</returns>
-        /// <exception cref="T:System.ArgumentException">
-        /// <paramref name="obj" /> is not of type <see cref="T:System.Version" />.</exception>
+        /// <exception cref="System.ArgumentException">
+        /// <paramref name="obj" /> is not of type <see cref="Version" />.</exception>
         public int CompareTo(object obj)
         {
             if (obj == null)
@@ -236,8 +236,8 @@ namespace Chummer
             return _Revision > obj.Revision ? 1 : -1;
         }
 
-        /// <summary>Compares the current ValueVersion struct to a specified <see cref="T:System.Version" /> object and returns an indication of their relative values.</summary>
-        /// <param name="obj">A ValueVersion struct to compare to the current <see cref="T:System.Version" /> object, or <see langword="null" />.</param>
+        /// <summary>Compares the current ValueVersion struct to a specified <see cref="Version" /> object and returns an indication of their relative values.</summary>
+        /// <param name="obj">A ValueVersion struct to compare to the current <see cref="Version" /> object, or <see langword="null" />.</param>
         /// <returns>A signed integer that indicates the relative values of the two objects, as shown in the following table.
         ///  Return value
         /// 
@@ -276,7 +276,7 @@ namespace Chummer
         /// <summary>Returns a value indicating whether the current ValueVersion struct is equal to a specified object.</summary>
         /// <param name="obj">An object to compare with the current ValueVersion struct, or <see langword="null" />.</param>
         /// <returns>
-        /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="T:System.Version" /> object, and every component of the current ValueVersion struct matches the corresponding component of <paramref name="obj" />; otherwise, <see langword="false" />.</returns>
+        /// <see langword="true" /> if <paramref name="obj" /> is a <see cref="Version" /> object, and every component of the current ValueVersion struct matches the corresponding component of <paramref name="obj" />; otherwise, <see langword="false" />.</returns>
         public override bool Equals(object obj)
         {
             return Equals(obj as Version);
@@ -291,8 +291,8 @@ namespace Chummer
             return _Major == obj.Major && _Minor == obj.Minor && _Build == obj.Build && _Revision == obj.Revision;
         }
 
-        /// <summary>Returns a value indicating whether the current ValueVersion struct and a specified <see cref="T:System.Version" /> object represent the same value.</summary>
-        /// <param name="obj">A <see cref="T:System.Version" /> object to compare to the current ValueVersion struct, or <see langword="null" />.</param>
+        /// <summary>Returns a value indicating whether the current ValueVersion struct and a specified <see cref="Version" /> object represent the same value.</summary>
+        /// <param name="obj">A <see cref="Version" /> object to compare to the current ValueVersion struct, or <see langword="null" />.</param>
         /// <returns>
         /// <see langword="true" /> if every component of the current ValueVersion struct matches the corresponding component of the <paramref name="obj" /> parameter; otherwise, <see langword="false" />.</returns>
         public bool Equals(Version obj)
@@ -307,8 +307,8 @@ namespace Chummer
             return (_Major & 0xF) << 28 | (_Minor & 0xFF) << 20 | (_Build & 0xFF) << 12 | _Revision & 0xFFF;
         }
 
-        /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation.</summary>
-        /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
+        /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="System.String" /> representation.</summary>
+        /// <returns>The <see cref="System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, as depicted in the following format. Each component is separated by a period character ('.'). Square brackets ('[' and ']') indicate a component that will not appear in the return value if the component is not defined:
         /// major.minor[.build[.revision]]
         /// For example, if you create a ValueVersion struct using the constructor ValueVersion(1,1), the returned string is "1.1". If you create a ValueVersion struct using the constructor ValueVersion(1,3,4,2), the returned string is "1.3.4.2".</returns>
         public override string ToString()
@@ -318,9 +318,9 @@ namespace Chummer
             return _Revision == -1 ? ToString(3) : ToString(4);
         }
 
-        /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="T:System.String" /> representation. A specified count indicates the number of components to return.</summary>
+        /// <summary>Converts the value of the current ValueVersion struct to its equivalent <see cref="System.String" /> representation. A specified count indicates the number of components to return.</summary>
         /// <param name="fieldCount">The number of components to return. The <paramref name="fieldCount" /> ranges from 0 to 4.</param>
-        /// <returns>The <see cref="T:System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, each separated by a period character ('.'). The <paramref name="fieldCount" /> parameter determines how many components are returned.
+        /// <returns>The <see cref="System.String" /> representation of the values of the major, minor, build, and revision components of the current ValueVersion struct, each separated by a period character ('.'). The <paramref name="fieldCount" /> parameter determines how many components are returned.
         ///  fieldCount
         /// 
         ///  Return Value
@@ -348,7 +348,7 @@ namespace Chummer
         /// 
         /// 
         /// For example, if you create ValueVersion struct using the constructor ValueVersion(1,3,5), ToString(2) returns "1.3" and ToString(4) throws an exception.</returns>
-        /// <exception cref="T:System.ArgumentException">
+        /// <exception cref="System.ArgumentException">
         ///         <paramref name="fieldCount" /> is less than 0, or more than 4.
         /// -or-
         /// <paramref name="fieldCount" /> is more than the number of components defined in the current ValueVersion struct.</exception>
@@ -420,13 +420,13 @@ namespace Chummer
         /// <summary>Converts the string representation of a version number to an equivalent ValueVersion struct.</summary>
         /// <param name="input">A string that contains a version number to convert.</param>
         /// <returns>An object that is equivalent to the version number specified in the <paramref name="input" /> parameter.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="input" /> is <see langword="null" />.</exception>
-        /// <exception cref="T:System.ArgumentException">
+        /// <exception cref="System.ArgumentException">
         /// <paramref name="input" /> has fewer than two or more than four version components.</exception>
-        /// <exception cref="T:System.ArgumentOutOfRangeException">At least one component in <paramref name="input" /> is less than zero.</exception>
-        /// <exception cref="T:System.FormatException">At least one component in <paramref name="input" /> is not an integer.</exception>
-        /// <exception cref="T:System.OverflowException">At least one component in <paramref name="input" /> represents a number that is greater than <see cref="F:System.Int32.MaxValue" />.</exception>
+        /// <exception cref="System.ArgumentOutOfRangeException">At least one component in <paramref name="input" /> is less than zero.</exception>
+        /// <exception cref="System.FormatException">At least one component in <paramref name="input" /> is not an integer.</exception>
+        /// <exception cref="System.OverflowException">At least one component in <paramref name="input" /> represents a number that is greater than <see cref="int.MaxValue" />.</exception>
         public static ValueVersion Parse(string input)
         {
             if (input == null)
@@ -438,7 +438,7 @@ namespace Chummer
 
         /// <summary>Tries to convert the string representation of a version number to an equivalent ValueVersion struct, and returns a value that indicates whether the conversion succeeded.</summary>
         /// <param name="input">A string that contains a version number to convert.</param>
-        /// <param name="result">When this method returns, contains the <see cref="T:System.Version" /> equivalent of the number that is contained in <paramref name="input" />, if the conversion succeeded. If <paramref name="input" /> is <see langword="null" />, <see cref="F:System.String.Empty" />, or if the conversion fails, <paramref name="result" /> is <see langword="null" /> when the method returns.</param>
+        /// <param name="result">When this method returns, contains the <see cref="Version" /> equivalent of the number that is contained in <paramref name="input" />, if the conversion succeeded. If <paramref name="input" /> is <see langword="null" />, <see cref="string.Empty" />, or if the conversion fails, <paramref name="result" /> is <see langword="null" /> when the method returns.</param>
         /// <returns>
         /// <see langword="true" /> if the <paramref name="input" /> parameter was converted successfully; otherwise, <see langword="false" />.</returns>
         public static bool TryParse(string input, out ValueVersion result)
@@ -518,8 +518,8 @@ namespace Chummer
             return false;
         }
 
-        /// <summary>Determines whether a specified <see cref="T:System.Version" /> object and ValueVersion struct are equal.</summary>
-        /// <param name="v1">The <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether a specified <see cref="Version" /> object and ValueVersion struct are equal.</summary>
+        /// <param name="v1">The <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> equals <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
@@ -528,19 +528,19 @@ namespace Chummer
             return v1 != null && v2.Equals(v1);
         }
 
-        /// <summary>Determines whether a specified <see cref="T:System.Version" /> object and ValueVersion struct are not equal.</summary>
-        /// <param name="v1">The <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether a specified <see cref="Version" /> object and ValueVersion struct are not equal.</summary>
+        /// <param name="v1">The <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> does not equal <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator !=(Version v1, ValueVersion v2) => !(v1 == v2);
 
-        /// <summary>Determines whether the first specified <see cref="T:System.Version" /> object is less than the second specified ValueVersion struct.</summary>
-        /// <param name="v1">The <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether the first specified <see cref="Version" /> object is less than the second specified ValueVersion struct.</summary>
+        /// <param name="v1">The <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <(Version v1, ValueVersion v2)
         {
@@ -549,12 +549,12 @@ namespace Chummer
             return v2.CompareTo(v1) >= 0;
         }
 
-        /// <summary>Determines whether the first specified <see cref="T:System.Version" /> object is less than or equal to the second ValueVersion struct.</summary>
-        /// <param name="v1">The <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether the first specified <see cref="Version" /> object is less than or equal to the second ValueVersion struct.</summary>
+        /// <param name="v1">The <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <=(Version v1, ValueVersion v2)
         {
@@ -563,23 +563,23 @@ namespace Chummer
             return v2.CompareTo(v1) > 0;
         }
 
-        /// <summary>Determines whether the first specified <see cref="T:System.Version" /> object is greater than the second specified ValueVersion struct.</summary>
-        /// <param name="v1">The <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether the first specified <see cref="Version" /> object is greater than the second specified ValueVersion struct.</summary>
+        /// <param name="v1">The <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is greater than <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator >(Version v1, ValueVersion v2) => v2 < v1;
 
-        /// <summary>Determines whether the first specified <see cref="T:System.Version" /> object is greater than or equal to the second specified ValueVersion struct.</summary>
-        /// <param name="v1">The first <see cref="T:System.Version" /> object.</param>
+        /// <summary>Determines whether the first specified <see cref="Version" /> object is greater than or equal to the second specified ValueVersion struct.</summary>
+        /// <param name="v1">The first <see cref="Version" /> object.</param>
         /// <param name="v2">The ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is greater than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator >=(Version v1, ValueVersion v2) => v2 <= v1;
 
-        /// <summary>Determines whether a specified ValueVersion struct and <see cref="T:System.Version" /> object are equal.</summary>
+        /// <summary>Determines whether a specified ValueVersion struct and <see cref="Version" /> object are equal.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> equals <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator ==(ValueVersion v1, Version v2)
@@ -587,47 +587,47 @@ namespace Chummer
             return v1.Equals(v2);
         }
 
-        /// <summary>Determines whether a specified ValueVersion struct and <see cref="T:System.Version" /> object are not equal.</summary>
+        /// <summary>Determines whether a specified ValueVersion struct and <see cref="Version" /> object are not equal.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> does not equal <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator !=(ValueVersion v1, Version v2) => !(v1 == v2);
 
-        /// <summary>Determines whether the first specified ValueVersion struct is less than the second specified <see cref="T:System.Version" /> object.</summary>
+        /// <summary>Determines whether the first specified ValueVersion struct is less than the second specified <see cref="Version" /> object.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <(ValueVersion v1, Version v2)
         {
             return v1.CompareTo(v2) < 0;
         }
 
-        /// <summary>Determines whether the first specified ValueVersion struct is less than or equal to the second <see cref="T:System.Version" /> object.</summary>
+        /// <summary>Determines whether the first specified ValueVersion struct is less than or equal to the second <see cref="Version" /> object.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <=(ValueVersion v1, Version v2)
         {
             return v1.CompareTo(v2) <= 0;
         }
 
-        /// <summary>Determines whether the first specified ValueVersion struct is greater than the second specified <see cref="T:System.Version" /> object.</summary>
+        /// <summary>Determines whether the first specified ValueVersion struct is greater than the second specified <see cref="Version" /> object.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is greater than <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator >(ValueVersion v1, Version v2) => v2 < v1;
 
-        /// <summary>Determines whether the first specified ValueVersion struct is greater than or equal to the second specified <see cref="T:System.Version" /> object.</summary>
+        /// <summary>Determines whether the first specified ValueVersion struct is greater than or equal to the second specified <see cref="Version" /> object.</summary>
         /// <param name="v1">The ValueVersion struct.</param>
-        /// <param name="v2">The <see cref="T:System.Version" /> object.</param>
+        /// <param name="v2">The <see cref="Version" /> object.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is greater than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
         public static bool operator >=(ValueVersion v1, Version v2) => v2 <= v1;
@@ -654,7 +654,7 @@ namespace Chummer
         /// <param name="v2">The second ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <(ValueVersion v1, ValueVersion v2)
         {
@@ -666,7 +666,7 @@ namespace Chummer
         /// <param name="v2">The second ValueVersion struct.</param>
         /// <returns>
         /// <see langword="true" /> if <paramref name="v1" /> is less than or equal to <paramref name="v2" />; otherwise, <see langword="false" />.</returns>
-        /// <exception cref="T:System.ArgumentNullException">
+        /// <exception cref="System.ArgumentNullException">
         /// <paramref name="v1" /> is <see langword="null" />.</exception>
         public static bool operator <=(ValueVersion v1, ValueVersion v2)
         {
