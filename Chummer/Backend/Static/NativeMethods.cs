@@ -18,6 +18,7 @@
  */
 
 using System;
+using System.Buffers;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
@@ -119,7 +120,7 @@ namespace Chummer
 
         [DllImport("winspool.drv", CharSet = CharSet.Unicode, SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
-        internal static extern bool GetDefaultPrinter(StringBuilder sbdBuffer, ref int ptrBuffer);
+        internal static extern unsafe bool GetDefaultPrinter([Out] char* pchrBuffer, ref int pintLength);
 
         [DllImport("user32.dll", SetLastError = true)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
@@ -174,7 +175,7 @@ namespace Chummer
         /// it depends on the message sent.</returns>
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
-        internal static extern IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, StringBuilder lParam);
+        internal static extern unsafe IntPtr SendMessage(IntPtr hWnd, int msg, IntPtr wParam, [In] char* lParam);
 
         /// <summary>
         /// Sends the specified message to a window or windows.
@@ -269,7 +270,7 @@ namespace Chummer
 
         [DllImport("user32.dll", CharSet = CharSet.Unicode)]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
-        internal static extern int GetWindowText(IntPtr hWnd, StringBuilder text, int maxLength);
+        internal static extern unsafe int GetWindowText(IntPtr hWnd, [Out] char* text, int maxLength);
 
         [DllImport("user32.dll")]
         [DefaultDllImportSearchPaths(DllImportSearchPath.SafeDirectories)]
@@ -488,21 +489,32 @@ namespace Chummer
 
         internal static string GetDefaultPrinter()
         {
-            int ptrBuffer = 0;
-            if (GetDefaultPrinter(null, ref ptrBuffer))
+            int intLength = Utils.MaxStackLimit16BitTypes;
+            unsafe
             {
-                return null;
+                // Immediately attempt to get via stackalloc, because the P/Invoke method call can be expensive depending on things like network status
+                char* pchrReturn = stackalloc char[intLength];
+                if (GetDefaultPrinter(pchrReturn, ref intLength))
+                    return new string(pchrReturn, 0, intLength);
             }
             int intLastWin32Error = Marshal.GetLastWin32Error();
             if (intLastWin32Error == 122) // ERROR_INSUFFICIENT_BUFFER
             {
-                using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
-                                                              out StringBuilder sbdBuffer))
+                char[] achrReturn = ArrayPool<char>.Shared.Rent(intLength);
+                try
                 {
-                    if (GetDefaultPrinter(sbdBuffer, ref ptrBuffer))
+                    unsafe
                     {
-                        return sbdBuffer.ToString();
+                        fixed (char* pchrReturn = &achrReturn[0])
+                        {
+                            if (GetDefaultPrinter(pchrReturn, ref intLength))
+                                return new string(pchrReturn, 0, intLength);
+                        }
                     }
+                }
+                finally
+                {
+                    ArrayPool<char>.Shared.Return(achrReturn);
                 }
 
                 intLastWin32Error = Marshal.GetLastWin32Error();
