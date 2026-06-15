@@ -455,7 +455,7 @@
             <power select="Ordinary Rats">Animal Control</power>
             <power>Concealment</power>
             <power select="Toxins">Immunity</power>
-            <power select="Bite: DV (STR+1)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP 0, Reach -1">Natural Weapon</power>
             <power select="Sunlight, Mild">Allergy</power>
          </powers>
          <skills>
@@ -879,7 +879,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -2019,7 +2019,7 @@
             <reach>-1</reach>
          </bonus>
          <powers>
-            <power select="Bite: DV (STR+1)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP 0, Reach -1">Natural Weapon</power>
             <power rating="1">Fragile</power>
          </powers>
          <skills>
@@ -2762,7 +2762,7 @@
             <power rating="8">Armor</power>
             <power>Dual Natured</power>
             <power>Guard</power>
-            <power select="Bite: DV (STR+1)P, AP -2, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -2, Reach -1">Natural Weapon</power>
             <power>Sapience</power>
             <power>Venom</power>
             <power>Uneducated</power>
@@ -2857,7 +2857,7 @@
             <power select="Poison">Immunity</power>
             <power>Infection</power>
             <power>Influence</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -2960,7 +2960,7 @@
             <power select="Poison">Immunity</power>
             <power>Infection</power>
             <power>Influence</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -4097,7 +4097,7 @@
             <power select="Touch">Enhanced Senses</power>
             <power select="360-Degree Vision">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Tongue: DV 3S, 0">Natural Weapon</power>
+            <power select="Tongue: DV 3S, AP 0">Natural Weapon</power>
             <power select="Bite: DV 12P, AP -2">Natural Weapon</power>
             <power select="Hearing">Reduced Senses</power>
             <power select="Smell">Reduced Senses</power>
@@ -6194,7 +6194,7 @@
             <power>Concealment</power>
             <power select="Low-Light Vision">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Claws: DV 2P, AP -">Natural Weapon</power>
+            <power select="Claws: DV 2P, AP 0">Natural Weapon</power>
             <power>Venom</power>
             <power select="Sunlight, Mild">Allergy</power>
          </powers>
@@ -6476,7 +6476,7 @@
             </enabletab>
          </bonus>
          <powers>
-            <power select="Claw/Bite: DV 3P, AP -">Natural Weapon</power>
+            <power select="Claw/Bite: DV 3P, AP 0">Natural Weapon</power>
             <power select="Smell">Enhanced Senses</power>
             <power select="Echolocation">Enhanced Senses</power>
             <power rating="6">Armor</power>
@@ -6807,7 +6807,7 @@
             <power rating="8">Armor</power>
             <power select="Hearing, Smell, Motion Detection, Thermosense">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Bite: (STR+4)P, AP -6">Natural Weapon</power>
+            <power select="Bite: DV 8P, AP -6">Natural Weapon</power>
             <power select="Spit">Secretion/Substance Extrusion</power>
             <power select="Spit">Venom</power>
             <power select="Vector: Contact, Injection, Speed: Instant, Penetration: -6, Power: 12, Effect: Agony, Nausea, Disorientation, Physical Damage">Vulnerability</power>
@@ -6881,7 +6881,7 @@
             <power>Animal Control</power>
             <power rating="4">Armor</power>
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
-            <power select="Claws/Bite: (STR+2)P">Natural Weapon</power>
+            <power select="Claws/Bite: DV 4P, AP 0">Natural Weapon</power>
             <power select="Spit">Secretion/Substance Extrusion</power>
             <power select="Vector: Injection, Speed: 1 Combat Turn, Penetration: 0, Power: 6, Effect: Malaise, Physical Damage">Venom</power>
             <power select="Sunlight, Mild">Allergy</power>
@@ -6965,7 +6965,7 @@
             <power rating="8">Armor</power>
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
             <power select="Pathogens, Radiation, Toxins">Immunity</power>
-            <power select="Claws: (STR+2)P, AP -2">Natural Weapon</power>
+            <power select="Claws: DV 10P, AP -2">Natural Weapon</power>
             <power rating="3">Toughness</power>
          </powers>
          <skills>
@@ -7039,7 +7039,7 @@
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
             <power select="Pathogens">Immunity</power>
             <power>Mutagen</power>
-            <power select="Claws: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
@@ -7115,7 +7115,7 @@
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
             <power select="Pathogens">Immunity</power>
             <power>Mutagen</power>
-            <power select="Claws: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power select="Radiation">Dietary Requirement</power>
          </powers>
@@ -7199,7 +7199,7 @@
             <power select="Thermographic Vision, Wide-Band Hearing">Enhanced Senses</power>
             <power>Fear</power>
             <power select="Self">Movement</power>
-            <power select="Claws: (STR+2)P, AP -4">Natural Weapon</power>
+            <power select="Claws: DV 16P, AP -4">Natural Weapon</power>
             <power>Paralyzing Howl</power>
             <power rating="3">Toughness</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -7348,7 +7348,7 @@
             <power>Binding</power>
             <power select="Hearing, Low-Light Vision, Smell">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Claws/Bite: (STR+2)P, AP -2">Natural Weapon</power>
+            <power select="Claws/Bite: DV 10P, AP -2">Natural Weapon</power>
             <power select="Silk">Secretion/Substance Extrusion</power>
             <power>Wall Walking</power>
          </powers>
@@ -7422,7 +7422,7 @@
             <power select="Smell">Enhanced Senses</power>
             <power select="Essence">Energy Drain</power>
             <power select="Toxins">Immunity</power>
-            <power select="Claws/Bite: (STR)S">Natural Weapon</power>
+            <power select="Claws/Bite: DV 1S, AP 0">Natural Weapon</power>
             <power select="Salt, Severe">Allergy</power>
             <power rating="8">Fragile</power>
             <power select="Sight">Reduced Senses</power>
@@ -7497,7 +7497,7 @@
             <power select="Magic">Energy Drain</power>
             <power select="Motion Detection, Smell, Thermographic Vision">Enhanced Senses</power>
             <power>Fear</power>
-            <power select="Stinger: (STR)S, Special">Natural Weapon</power>
+            <power select="Stinger: DV 1S, AP 0, Special">Natural Weapon</power>
             <power select="Vector: Injection, Speed: 1 minute, Penetration: -4, Power: 10, Effect: Agony, Arcane Inhibitor, Disorientation, Stun Damage">Venom</power>
             <power rating="8">Fragile</power>
          </powers>
@@ -7756,7 +7756,7 @@
                <optionalpower>Concealment</optionalpower>
                <optionalpower>Confusion</optionalpower>
                <optionalpower>Guard</optionalpower>
-               <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+               <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                <optionalpower>Noxious Breath</optionalpower>
                <optionalpower>Search</optionalpower>
                <optionalpower>Venom</optionalpower>
@@ -8214,7 +8214,7 @@
                <optionalpower>Animal Control</optionalpower>
                <optionalpower>Concealment</optionalpower>
                <optionalpower>Elemental Attack</optionalpower>
-               <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+               <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                <optionalpower>Psychokinesis</optionalpower>
                <optionalpower>Combat Skill</optionalpower>
             </optionalpowers>
@@ -8687,7 +8687,7 @@
          <powers>
             <power>Astral Form</power>
             <power>Engulf</power>
-            <power select="DV {STR}P, AP -1">Natural Weapon</power>
+            <power select="DV (STR)P, AP -1">Natural Weapon</power>
             <power select="Bones">Possession</power>
             <power>Sapience</power>
          </powers>
@@ -10655,7 +10655,7 @@
             <power>Astral Form</power>
             <power select="LOS">Binding</power>
             <power>Fear</power>
-            <power>Natural Weapon</power>
+            <power select="DV (Force+2)P, AP -1">Natural Weapon</power>
             <power>Reinforcement</power>
             <power>Sapience</power>
          </powers>
@@ -12968,7 +12968,7 @@
          <optionalpowers>
             <optionalpower>Confusion</optionalpower>
             <optionalpower>Guard</optionalpower>
-            <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+            <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
             <optionalpower>Noxious Breath</optionalpower>
          </optionalpowers>
          <skills>
@@ -13064,7 +13064,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13160,7 +13160,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13256,7 +13256,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13352,7 +13352,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13449,7 +13449,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13545,7 +13545,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13642,7 +13642,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13740,7 +13740,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13837,7 +13837,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -13933,7 +13933,7 @@
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Essence Drain</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                   <optionalpower>Pestilence</optionalpower>
                </optionalpowers>
@@ -14032,7 +14032,7 @@
                <optionalpowers>
                   <optionalpower>Confusion</optionalpower>
                   <optionalpower>Guard</optionalpower>
-                  <optionalpower select="DV ForceP, AP 0">Natural Weapon</optionalpower>
+                  <optionalpower select="DV (Force)P, AP 0">Natural Weapon</optionalpower>
                   <optionalpower>Noxious Breath</optionalpower>
                </optionalpowers>
                <skills>
@@ -19215,7 +19215,7 @@
             <power>Engulf</power>
             <power>Fear</power>
             <power>Materialization</power>
-            <power select="Thorns (Force + 2)P, AP -">Natural Weapon</power>
+            <power select="Thorns: DV (Force+2)P, AP 0">Natural Weapon</power>
             <power>Possession</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -19301,7 +19301,7 @@
             <power>Aura Masking</power>
             <power>Banishing Resistance</power>
             <power>Guard</power>
-            <power select="Fist(DV F+2 AP -)">Natural Weapon</power>
+            <power select="Fist: DV (Force+2)S, AP 0">Natural Weapon</power>
             <power>Realistic Form</power>
             <power>Sapience</power>
          </powers>
@@ -20004,8 +20004,8 @@
             <power select="Normal Weapons">Immunity</power>
             <power>Influence</power>
             <power>Materialization</power>
-            <power select="Claws (DV (F+2)P AP -F)">Natural Weapon</power>
-            <power select="Wings (DV (F+6)S AP -Force, Knockdown)">Natural Weapon</power>
+            <power select="Claws: DV (Force+2)P, AP -Force">Natural Weapon</power>
+            <power select="Wings: DV (Force+6)S, AP -Force, Knockdown">Natural Weapon</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
          </powers>
@@ -20449,7 +20449,7 @@
             <power>Fear</power>
             <power>Guard</power>
             <power>Materialization</power>
-            <power select="Claw (DV (F-2)P AP+2)">Natural Weapon</power>
+            <power select="Claw: DV (Force-2)P, AP +2">Natural Weapon</power>
             <power>Sapience</power>
          </powers>
          <bonus>
@@ -20623,7 +20623,7 @@
             <power select="F">Hardened Mystic Armor</power>
             <power>Influence</power>
             <power>Materialization</power>
-            <power select="Fist: (DV (F-1)S AP -Force)">Natural Weapon</power>
+            <power select="Fist: DV (Force-1)S, AP -Force">Natural Weapon</power>
             <power>Psychokinesis</power>
             <power>Sapience</power>
             <power>Search</power>
@@ -20701,7 +20701,7 @@
             <power>Banishing Resistance</power>
             <power select="Normal Weapons">Immunity</power>
             <power>Materialization</power>
-            <power select="Tentacle (DV (F+6)P AP -F)">Natural Weapon</power>
+            <power select="Tentacle: DV (Force+6)P, AP -Force">Natural Weapon</power>
             <power>Paralyzing Touch</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -20930,7 +20930,7 @@
             <power>Fear</power>
             <power select="Normal Weapons">Immunity</power>
             <power>Materialization</power>
-            <power select="Claws/Bite (DV (Force+2)PAP -">Natural Weapon</power>
+            <power select="Claws/Bite: DV (Force+2)P, AP 0">Natural Weapon</power>
             <power>Possession</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -22106,7 +22106,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: DV (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -22193,8 +22193,8 @@
             <power select="Sunlight, Mild">Allergy</power>
             <power>Dual Natured</power>
             <power>Mimicry</power>
-            <power select="Bite: (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
-            <power select="Claw: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Sapience</power>
          </powers>
          <skills>
@@ -22283,7 +22283,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Mist Form</power>
-            <power select="Bite: (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Paralyzing Howl</power>
             <power>Regeneration</power>
             <power>Sapience</power>
@@ -22375,7 +22375,7 @@
             <power rating="2">Armor</power>
             <power select="Pathogens">Immunity</power>
             <power select="Toxins">Immunity</power>
-            <power select="Claw/Bite: 5P, AP -1">Natural Weapon</power>
+            <power select="Claw/Bite: DV 5P, AP -1">Natural Weapon</power>
             <power select="Eucalyptus">Dietary Requirement</power>
          </powers>
          <skills>
@@ -22461,8 +22461,8 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Magical Guard</power>
-            <power select="Bite: (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
-            <power select="Claw: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claw: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Moderate">Allergy</power>
@@ -22547,8 +22547,8 @@
             <power rating="3">Armor</power>
             <power>Magical Guard</power>
             <power select="Corrosive">Secretion/Substance Extrusion</power>
-            <power select="Bite: (STR+1)P, AP -1, -1 Reach">Natural Weapon</power>
-            <power select="Claws: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Sapience</power>
             <power select="Air Pollution, Moderate">Allergy</power>
             <power select="Sunlight, Moderate">Allergy</power>
@@ -22626,7 +22626,7 @@
             <power>Dual Natured</power>
             <power select="Thermographic Vision">Enhanced Senses</power>
             <power select="Toxins">Immunity</power>
-            <power select="Bite: DV (STR+2)P, AP 0, -1 Reach">Natural Weapon</power>
+            <power select="Bite: DV (STR+2)P, AP 0, Reach -1">Natural Weapon</power>
             <power>Noxious Breath</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
@@ -22720,8 +22720,8 @@
             <power select="Fire">Immunity</power>
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
-            <power select="Bite: (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
-            <power select="Claws: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Moderate">Allergy</power>
@@ -22801,8 +22801,8 @@
             <power select="Low-Light Vision">Enhanced Senses</power>
             <power select="Smell">Enhanced Senses</power>
             <power select="Thermographic Vision">Enhanced Senses</power>
-            <power select="Bite: (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
-            <power select="Claws: (STR+1)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+1)P, AP -1">Natural Weapon</power>
             <power>Paralyzing Touch</power>
             <power>Sapience</power>
             <power select="Sunlight, Moderate">Allergy</power>
@@ -22887,8 +22887,8 @@
             <power select="Low-Light Vision">Enhanced Senses</power>
             <power select="Thermographic Vision">Enhanced Senses</power>
             <power>Movement</power>
-            <power select="Bite: (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
-            <power select="Claws: (STR+3)P, AP -3">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+3)P, AP -3">Natural Weapon</power>
             <power>Sapience</power>
             <power select="Silver, Moderate">Allergy</power>
             <power select="Sunlight, Moderate">Allergy</power>
@@ -22974,8 +22974,8 @@
             <power select="Low-Light Vision">Enhanced Senses</power>
             <power select="Thermographic Vision">Enhanced Senses</power>
             <power select="Smell">Enhanced Senses</power>
-            <power select="Bite: (STR+2)P, AP -2, Reach -1">Natural Weapon</power>
-            <power select="Claws: (STR+3)P, AP -2">Natural Weapon</power>
+            <power select="Bite: DV (STR+2)P, AP -2, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+3)P, AP -2">Natural Weapon</power>
             <power>Sapience</power>
             <power select="Aconite, Moderate">Allergy</power>
             <power select="Sunlight, Severe">Allergy</power>
@@ -23072,8 +23072,8 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Magical Guard</power>
-            <power select="Bite: (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
-            <power select="Claws: (STR+2)P, AP -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Claws: DV (STR+2)P, AP -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Wood, Severe">Allergy</power>
@@ -23175,7 +23175,7 @@
             <power select="Toxins">Immunity</power>
             <power>Infection</power>
             <power>Influence</power>
-            <power select="Bite: (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
+            <power select="Bite: DV (STR+1)P, AP -1, Reach -1">Natural Weapon</power>
             <power>Regeneration</power>
             <power>Sapience</power>
             <power select="Sunlight, Extreme">Allergy</power>
@@ -26117,7 +26117,7 @@
             </enabletab>
          </bonus>
          <powers>
-            <power select="Bite: DV (STR)+P, AP 0">Natural Weapon</power>
+            <power select="Bite: DV (STR)P, AP 0">Natural Weapon</power>
             <power>Resonance Feed</power>
             <power>Tunnel</power>
             <power>AR-Parallelism</power>
@@ -27460,7 +27460,7 @@
             <power select="Low-Light Vision, Sight, Wide-Band Hearing">Enhanced Senses</power>
             <power rating="10">Hardened Armor</power>
             <power rating="6">Mystic Armor</power>
-            <power select="Bite, Bone Mace: DV 11P, AP -2">Natural Weapon</power>
+            <power select="Bite/Bone Mace: DV 11P, AP -2">Natural Weapon</power>
             <power>Noxious Breath</power>
             <power>Sapience</power>
             <power>Venom</power>
@@ -27916,7 +27916,7 @@
             <power rating="4">Armor</power>
             <power>Essence Drain</power>
             <power select="Pathogens, Toxins">Immunity</power>
-            <power select="Claws/Bite: DV 6P, AP –1, Reach –1">Natural Weapon</power>
+            <power select="Claws/Bite: DV 6P, AP -1, Reach -1">Natural Weapon</power>
             <power>Paralyzing Touch</power>
          </powers>
          <skills>
@@ -27985,7 +27985,7 @@
          <powers>
             <power select="Thermal">Enhanced Senses</power>
             <power rating="2">Armor</power>
-            <power select="Bite: DV 6P, AP –">Natural Weapon</power>
+            <power select="Bite: DV 6P, AP 0">Natural Weapon</power>
             <power select="Horns: DV 6P, AP 1, Reach 1">Natural Weapon</power>
          </powers>
          <skills>
@@ -28058,8 +28058,8 @@
             <power rating="6">Armor</power>
             <power>Dual Natured</power>
             <power select="Levitate">Innate Spell</power>
-            <power select="Sting: DV 2P, AP –">Natural Weapon</power>
-            <power select="Bite: DV 4P, AP -">Natural Weapon</power>
+            <power select="Sting: DV 2P, AP 0">Natural Weapon</power>
+            <power select="Bite: DV 4P, AP 0">Natural Weapon</power>
             <power>Shadow Cloak</power>
             <power>Silence</power>
             <power select="Vector: Injection, Speed 1 Combat Turn, Power: 6, Effect: Physical Damage">Venom</power>
@@ -28136,7 +28136,7 @@
          <powers>
             <power rating="6">Armor</power>
              <power select="Low-Light Vision, Hearing">Enhanced Senses</power>
-             <power select="Horns: DV 9P, AP –4">Natural Weapon</power>
+             <power select="Horns: DV 9P, AP -4">Natural Weapon</power>
              <power rating="4">Toughness</power>
          </powers>
        <qualities>
@@ -28213,7 +28213,7 @@
          <powers>
              <power select="Low-Light Vision, Hearing">Enhanced Senses</power>
              <power>Movement</power>
-             <power select="Bite: DV 3P, AP –1">Natural Weapon</power>
+             <power select="Bite: DV 3P, AP -1">Natural Weapon</power>
              <power rating="4">Fragile</power>
          </powers>
        <qualities>
@@ -28290,7 +28290,7 @@
          <powers>
              <power>Deathlock</power>
              <power select="Low-Light Vision, Hearing">Enhanced Senses</power>
-             <power select="Claws/Teeth: DV 8P, AP –6">Natural Weapon</power>
+             <power select="Claws/Teeth: DV 8P, AP -6">Natural Weapon</power>
              <power>Pounce</power>
              <power rating="4">Toughness</power>
          </powers>
@@ -28372,8 +28372,8 @@
              <power rating="6">Armor</power>
              <power>Deathlock</power>
              <power select="Low-Light Vision, Smell">Enhanced Senses</power>
-             <power select="Bite: DV 6P, AP –">Natural Weapon</power>
-             <power select="Spines: DV 8P, AP –8">Natural Weapon</power>
+             <power select="Bite: DV 6P, AP 0">Natural Weapon</power>
+             <power select="Spines: DV 8P, AP -8">Natural Weapon</power>
              <power rating="4">Toughness</power>
          </powers>
          <skills>
@@ -28447,7 +28447,7 @@
              <power rating="9">Armor</power>
              <power select="Thermographic Vision, Natural Sonar">Enhanced Senses</power>
              <power>Fear</power>
-             <power select="Bite/Claw: DV 10P, AP –2">Natural Weapon</power>
+             <power select="Bite/Claw: DV 10P, AP -2">Natural Weapon</power>
              <power rating="2">Toughness</power>
              <power select="Vector: Injection, Speed: 1 Combat Turn, Penetration: 0, Power: 4, Effect: Physical Damage, Paralysis">Venom</power>
              <power>Wall Walking</power>             
