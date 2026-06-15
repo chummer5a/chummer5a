@@ -207,6 +207,12 @@ Checks for the presence of one or more bioware items with a name that exactly ma
 
 **select** If specified, checks the 'Extra' value of the Bioware for a specified string; bioware without a matching name and Extra will not count towards the total.
 
+**minrating** The bioware must have a rating that meets or exceeds this value.
+
+**rating** The bioware must have a rating that exactly matches this value.
+
+**maxrating** The bioware must have a rating that is less than or equal to this value.
+
 #### Elements
 None.
 
@@ -229,6 +235,12 @@ Checks for the presence of one or more bioware items on the current character th
 **count** If specified, checks that the character meets or exceeds the total number of bioware items with this name.
 
 **select** If specified, checks the 'Extra' value of the Bioware for a specified string; bioware without a matching name and Extra will not count towards the total.
+
+**minrating** The bioware must have a rating that meets or exceeds this value.
+
+**rating** The bioware must have a rating that exactly matches this value.
+
+**maxrating** The bioware must have a rating that is less than or equal to this value.
 
 #### Elements
 None.
@@ -253,6 +265,14 @@ Checks for the presence of one or more cyberware items with a name that exactly 
 
 **select** If specified, checks the 'Extra' value of the cyberware for a specified string; cyberware without a matching name and Extra will not count towards the total.
 
+**sameparent** Boolean. If present, requires that the cyberware be attached to the same parent cyberware as the intended parent. If specified and there is no parent will return false.
+
+**minrating** The cyberware must have a rating that meets or exceeds this value.
+
+**rating** The cyberware must have a rating that exactly matches this value.
+
+**maxrating** The cyberware must have a rating that is less than or equal to this value.
+
 #### Elements
 None.
 
@@ -266,6 +286,16 @@ None.
 <cyberware count="2" select="Foot">Striking Callus</cyberware>
 ```
 
+Forbid an accessory if a sibling on the same parent has Hydraulic Jacks at rating 3 or higher:
+
+```XML
+<forbidden>
+  <oneof>
+    <cyberware sameparent="True" minrating="3">Hydraulic Jacks</cyberware>
+  </oneof>
+</forbidden>
+```
+
 ### cyberwarecontains
 
 Checks for the presence of one or more cyberware items on the current character that have a partial match for the provided name.
@@ -275,6 +305,12 @@ Checks for the presence of one or more cyberware items on the current character 
 **count** If specified, checks that the character meets or exceeds the total number of cyberware items with this name.
 
 **select** If specified, checks the 'Extra' value of the cyberware for a specified string; cyberware without a matching name and Extra will not count towards the total.
+
+**minrating** The cyberware must have a rating that meets or exceeds this value.
+
+**rating** The cyberware must have a rating that exactly matches this value.
+
+**maxrating** The cyberware must have a rating that is less than or equal to this value.
 
 #### Elements
 None.
