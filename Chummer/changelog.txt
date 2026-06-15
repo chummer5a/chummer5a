@@ -7,6 +7,7 @@ Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
 - Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
 - Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).
+- Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).
 - Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
 
 Gear:
