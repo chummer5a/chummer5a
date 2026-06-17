@@ -2,6 +2,7 @@ Future Build 227
 Application:
 - Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
 - Refactored requirement and forbidden node evaluation in SelectionShared to consolidate duplicated logic for installed gear, powers, armor mods, cyberware/bioware, qualities, grouped requirements, and restriction message text.
+- Updated 'Stealth Errata' customdata documents to advise what was altered, courtesy of Mesothelioma.
 
 Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
@@ -9,6 +10,7 @@ Cyberware:
 - Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).
 - Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).
 - Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
+- Partial fix for Evo Better Than Human cybersuite not correctly counting number of limbs for Redliner by explicting defining the number of limbs it provides in the cyberware entry. Existing characters with this cyberware will need to remove and re-add it to have Redliner behave correctly, or modify the underlying cyberware entry in their chum5 file to include the new limbslotcount value.
 
 Gear:
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.

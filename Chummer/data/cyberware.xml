@@ -6511,6 +6511,7 @@
       <source>LCD</source>
       <page>206</page>
       <limbslot>all</limbslot>
+      <limbslotcount>4</limbslotcount>
       <blocksmounts>ankle,knee,wrist,elbow,hip,shoulder</blocksmounts>
       <subsystems>
         <cyberware>
