@@ -1356,7 +1356,8 @@ namespace Chummer
                                     strDisplayName += $"{strUsingVersion}(≥{objPreferredVersion})";
                                 }
 
-                                objNode.Text = strDisplayName;
+                                objNode.Text = CustomDataDirectoryUpdater.AppendUpdateIndicatorToDisplayName(
+                                    strDisplayName, objInfo);
                                 if (objNode.Checked)
                                 {
                                     // check dependencies and exclusivities only if they could exist at all instead of calling and running into empty an foreach.
@@ -1380,6 +1381,10 @@ namespace Chummer
                                             = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
                                                 missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                         objNode.ForeColor = objErrorColor;
+                                    }
+                                    else if (CustomDataDirectoryUpdater.GetCachedAvailability(objInfo).IsUpdateAvailable)
+                                    {
+                                        objNode.ForeColor = ColorManager.Highlight;
                                     }
                                 }
                             }
@@ -1470,7 +1475,10 @@ namespace Chummer
                                 if (objInfoRebuild != null)
                                 {
                                     objNode.Tag = objInfoRebuild;
-                                    objNode.Text = await objInfoRebuild.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    string strRebuildDisplayName
+                                        = await objInfoRebuild.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                                    objNode.Text = CustomDataDirectoryUpdater.AppendUpdateIndicatorToDisplayName(
+                                        strRebuildDisplayName, objInfoRebuild);
                                     if (objNode.Checked)
                                     {
                                         string missingDirectories = string.Empty;
@@ -1493,6 +1501,11 @@ namespace Chummer
                                                 = await CustomDataDirectoryInfo.BuildIncompatibilityDependencyStringAsync(
                                                     missingDirectories, prohibitedDirectories, token: token).ConfigureAwait(false);
                                             objNode.ForeColor = objErrorColor;
+                                        }
+                                        else if (CustomDataDirectoryUpdater.GetCachedAvailability(objInfoRebuild)
+                                                     .IsUpdateAvailable)
+                                        {
+                                            objNode.ForeColor = ColorManager.Highlight;
                                         }
                                     }
                                 }
@@ -1602,6 +1615,8 @@ namespace Chummer
                                         string strUsingVersion = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
                                         strText += $"{strUsingVersion}(≥{objPreferredVersion})";
                                     }
+
+                                    strText = CustomDataDirectoryUpdater.AppendUpdateIndicatorToDisplayName(strText, objInfo);
                                     
                                     await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
@@ -1639,19 +1654,27 @@ namespace Chummer
                                         }
                                         else
                                         {
+                                            Color objForeColor = CustomDataDirectoryUpdater.GetCachedAvailability(objInfo)
+                                                                     .IsUpdateAvailable
+                                                ? ColorManager.Highlight
+                                                : objWindowTextColor;
                                             await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                             {
                                                 objNode.ToolTipText = string.Empty;
-                                                objNode.ForeColor = objWindowTextColor;
+                                                objNode.ForeColor = objForeColor;
                                             }, token: token).ConfigureAwait(false);
                                         }
                                     }
                                     else
                                     {
+                                        Color objForeColor = CustomDataDirectoryUpdater.GetCachedAvailability(objInfo)
+                                                                 .IsUpdateAvailable
+                                            ? ColorManager.Highlight
+                                            : objWindowTextColor;
                                         await treCustomDataDirectories.DoThreadSafeAsync(() =>
                                         {
                                             objNode.ToolTipText = string.Empty;
-                                            objNode.ForeColor = objWindowTextColor;
+                                            objNode.ForeColor = objForeColor;
                                         }, token: token).ConfigureAwait(false);
                                     }
                                     
@@ -1695,6 +1718,24 @@ namespace Chummer
             {
                 await treCustomDataDirectories.DoThreadSafeAsync(x => x.EndUpdate(), token).ConfigureAwait(false);
             }
+
+            await UpdateCustomDataTabTitleAsync(token).ConfigureAwait(false);
+        }
+
+        private async Task UpdateCustomDataTabTitleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strTabText = await LanguageManager.GetStringAsync("Tab_Options_CustomData", token: token)
+                                                      .ConfigureAwait(false);
+            if (GlobalSettings.CustomDataDirectoryInfos.Any(x =>
+                    CustomDataDirectoryUpdater.GetCachedAvailability(x).IsUpdateAvailable))
+            {
+                strTabText += await LanguageManager
+                                   .GetStringAsync("String_CustomData_UpdatesAvailableMenuSuffix", token: token)
+                                   .ConfigureAwait(false);
+            }
+
+            await tabCustomData.DoThreadSafeAsync(x => x.Text = strTabText, token).ConfigureAwait(false);
         }
 
         /// <summary>

@@ -727,6 +727,7 @@ namespace Chummer
                             // If Automatic Updates are enabled, check for updates immediately.
                             StartAutoUpdateChecker(_objGenericToken);
 #endif
+                            StartCustomDataUpdateChecker(_objGenericToken);
 
                             GlobalSettings.MruChanged += PopulateMruToolstripMenu;
 
@@ -1213,6 +1214,10 @@ namespace Chummer
         private MasterIndex _frmMasterIndex;
         private CharacterRoster _frmCharacterRoster;
 
+        private Task _tskCustomDataUpdateCheck;
+
+        private CancellationTokenSource _objCustomDataUpdateCheckerCancellationTokenSource;
+
 #if !DEBUG
         private Uri UpdateLocation { get; } = new Uri(GlobalSettings.PreferNightlyBuilds
             ? "https://api.github.com/repos/chummer5a/chummer5a/releases"
@@ -1348,7 +1353,120 @@ namespace Chummer
                 objSource?.Dispose();
             }
         }
+#endif
 
+        /// <summary>
+        /// Updates the main window title and Global Settings menu text to reflect application and custom data updates.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public async Task RefreshMainFormTitleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+            string strTitle = Application.ProductName + strSpace + "-" + strSpace
+                + await LanguageManager.GetStringAsync("String_Version", token: token).ConfigureAwait(false) + strSpace
+#if DEBUG
+                + _strCurrentVersion + " DEBUG BUILD";
+#else
+                + _strCurrentVersion;
+#endif
+#if !DEBUG
+            if (Utils.GitUpdateAvailable > 0)
+            {
+                strTitle += strSpace + "-" + strSpace
+                    + string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager.GetStringAsync("String_Update_Available", token: token)
+                                             .ConfigureAwait(false),
+                        Utils.CachedGitVersion);
+            }
+#endif
+            if (CustomDataDirectoryUpdater.HasAnyUpdatesAvailable())
+            {
+                strTitle += await LanguageManager
+                                 .GetStringAsync("String_CustomData_UpdatesAvailableTitleSuffix", token: token)
+                                 .ConfigureAwait(false);
+            }
+
+            await this.DoThreadSafeAsync(x => x.Text = strTitle, token).ConfigureAwait(false);
+
+            string strMenuText = await LanguageManager.GetStringAsync("Menu_Main_Options", token: token)
+                                                     .ConfigureAwait(false);
+            if (CustomDataDirectoryUpdater.HasAnyUpdatesAvailable())
+            {
+                strMenuText += await LanguageManager
+                                    .GetStringAsync("String_CustomData_UpdatesAvailableMenuSuffix", token: token)
+                                    .ConfigureAwait(false);
+            }
+
+            await this.DoThreadSafeAsync(() => mnuGlobalSettings.Text = strMenuText, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Starts a background task that periodically checks custom data directories for remote updates.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private void StartCustomDataUpdateChecker(CancellationToken token = default)
+        {
+            CancellationTokenSource objSource = null;
+            if (token != _objGenericToken)
+            {
+                objSource = CancellationTokenSource.CreateLinkedTokenSource(token, _objGenericToken);
+                token = objSource.Token;
+            }
+
+            try
+            {
+                CancellationTokenSource objNewSource = new CancellationTokenSource();
+                CancellationToken objNewToken = objNewSource.Token;
+                CancellationTokenSource objTemp
+                    = Interlocked.Exchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, objNewSource);
+                if (objTemp?.IsCancellationRequested == false)
+                {
+                    try
+                    {
+                        objTemp.Cancel(false);
+                    }
+                    finally
+                    {
+                        objTemp.Dispose();
+                    }
+                }
+
+                Task tskNew = Task.Run(async () =>
+                {
+                    while (true)
+                    {
+                        objNewToken.ThrowIfCancellationRequested();
+                        await CustomDataDirectoryUpdater
+                              .CheckAllUpdateAvailabilitiesAsync(GlobalSettings.CustomDataDirectoryInfos, objNewToken)
+                              .ConfigureAwait(false);
+                        objNewToken.ThrowIfCancellationRequested();
+                        if (!IsDisposed && _intFormClosing == 0)
+                            await RefreshMainFormTitleAsync(objNewToken).ConfigureAwait(false);
+                        await Task.Delay(TimeSpan.FromHours(1), objNewToken).ConfigureAwait(false);
+                    }
+                    // ReSharper disable once FunctionNeverReturns
+                }, objNewToken);
+                if (Interlocked.CompareExchange(ref _tskCustomDataUpdateCheck, tskNew, null) != null)
+                {
+                    Interlocked.CompareExchange(ref _objCustomDataUpdateCheckerCancellationTokenSource, null, objNewSource);
+                    try
+                    {
+                        objNewSource.Cancel(false);
+                    }
+                    finally
+                    {
+                        objNewSource.Dispose();
+                    }
+                }
+            }
+            finally
+            {
+                objSource?.Dispose();
+            }
+        }
+
+#if !DEBUG
         private void StartAutoUpdateChecker(CancellationToken token = default)
         {
             CancellationTokenSource objSource = null;
@@ -1416,16 +1534,7 @@ namespace Chummer
                         objNewToken.ThrowIfCancellationRequested();
                         if (Utils.GitUpdateAvailable > 0)
                         {
-                            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: objNewToken);
-                            string strNewText = Application.ProductName + strSpace + "-" + strSpace +
-                                                await LanguageManager.GetStringAsync(
-                                                    "String_Version", token: objNewToken)
-                                                + strSpace + _strCurrentVersion + strSpace + "-" + strSpace
-                                                + string.Format(GlobalSettings.CultureInfo,
-                                                                await LanguageManager.GetStringAsync(
-                                                                    "String_Update_Available", token: objNewToken),
-                                                                Utils.CachedGitVersion);
-                            await this.DoThreadSafeAsync(x => x.Text = strNewText, objNewToken);
+                            await RefreshMainFormTitleAsync(objNewToken).ConfigureAwait(false);
                             if (GlobalSettings.AutomaticUpdate && _frmUpdate == null)
                             {
                                 ChummerUpdater frmUpdater = await this.DoThreadSafeFuncAsync(() => new ChummerUpdater(), objNewToken);
@@ -1547,6 +1656,7 @@ namespace Chummer
                            = await ThreadSafeForm<EditGlobalSettings>.GetAsync(
                                () => new EditGlobalSettings(), _objGenericToken).ConfigureAwait(false))
                         await frmOptions.ShowDialogSafeAsync(this, _objGenericToken).ConfigureAwait(false);
+                    await RefreshMainFormTitleAsync(_objGenericToken).ConfigureAwait(false);
                 }
                 finally
                 {

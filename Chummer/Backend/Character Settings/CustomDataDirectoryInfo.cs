@@ -38,6 +38,7 @@ namespace Chummer
     {
         private ValueVersion _objMyVersion = new ValueVersion(1);
         private Guid _guid = Guid.NewGuid();
+        private string _strUpdateLocation = string.Empty;
 
         public Exception XmlException { get; private set; }
 
@@ -92,6 +93,7 @@ namespace Chummer
                     if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
                         _objMyVersion = new ValueVersion(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
+                    xmlNode.TryGetStringFieldQuickly("updatelocation", ref _strUpdateLocation);
 
                     ConstructorGetManifestDescriptions(xmlNode, token);
                     ConstructorGetManifestAuthors(xmlNode, token);
@@ -126,6 +128,7 @@ namespace Chummer
                     if (!xmlNode.TryGetField("version", ValueVersion.TryParse, out _objMyVersion))
                         _objMyVersion = new ValueVersion(1, 0);
                     xmlNode.TryGetGuidFieldQuickly("guid", ref _guid);
+                    xmlNode.TryGetStringFieldQuickly("updatelocation", ref _strUpdateLocation);
 
                     ConstructorGetManifestDescriptions(xmlNode, token);
                     ConstructorGetManifestAuthors(xmlNode, token);
@@ -704,6 +707,16 @@ namespace Chummer
         /// The version of the custom data directory
         /// </summary>
         public ValueVersion MyVersion => _objMyVersion;
+
+        /// <summary>
+        /// Optional URL pointing to a repository release location for remote updates.
+        /// </summary>
+        public string UpdateLocation => _strUpdateLocation;
+
+        /// <summary>
+        /// Whether this custom data directory has a remote update location defined in its manifest.
+        /// </summary>
+        public bool HasUpdateLocation => !string.IsNullOrEmpty(_strUpdateLocation);
 
         // /// <summary>
         // /// The Sha512 Hash of all non manifest.xml files in the directory

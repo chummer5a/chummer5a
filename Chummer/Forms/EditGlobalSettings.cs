@@ -126,6 +126,8 @@ namespace Chummer
                     await PromptPdfLocation().ConfigureAwait(false);
                 _strSelectCodeOnRefresh = string.Empty;
             }
+
+            _ = RefreshCustomDataUpdateAvailabilityAsync();
         }
 
         #endregion Form Events
@@ -893,6 +895,119 @@ namespace Chummer
             }
         }
 
+        private async void cmdUpdateCustomDataDirectory_Click(object sender, EventArgs e)
+        {
+            if (await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex).ConfigureAwait(false) == -1)
+                return;
+            ListItem objSelected = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => (ListItem)x.SelectedItem)
+                                                                 .ConfigureAwait(false);
+            CustomDataDirectoryInfo objInfoToUpdate
+                = await ReloadCustomDataDirectoryInfoInSetAsync((CustomDataDirectoryInfo)objSelected.Value)
+                      .ConfigureAwait(false);
+            if (!objInfoToUpdate.HasManifest)
+                return;
+
+            objInfoToUpdate = await EnsureCustomDataUpdateLocationAsync(objInfoToUpdate).ConfigureAwait(false);
+            if (objInfoToUpdate == null || !objInfoToUpdate.HasUpdateLocation)
+                return;
+
+            CursorWait objCursorWait = await CursorWait.NewAsync(this).ConfigureAwait(false);
+            try
+            {
+                CustomDataDirectoryUpdater.RemoteReleaseInfo objRemoteRelease;
+                try
+                {
+                    objRemoteRelease = await CustomDataDirectoryUpdater
+                                             .GetRemoteReleaseInfoAsync(objInfoToUpdate.UpdateLocation)
+                                             .ConfigureAwait(false);
+                }
+                catch (Exception ex) when (!(ex is OperationCanceledException))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objInfoToUpdate.Name, ex.Message),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                    return;
+                }
+
+                ValueVersion objLocalVersion
+                    = CustomDataDirectoryUpdater.GetEffectiveLocalVersion(objInfoToUpdate);
+                if (objRemoteRelease.Version <= objLocalVersion)
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_CustomDataDirectory_AlreadyUpToDate", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objInfoToUpdate.Name, objLocalVersion),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_AlreadyUpToDate", _strSelectedLanguage)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                    return;
+                }
+
+                if (await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_CustomDataDirectory_UpdateAvailable", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objInfoToUpdate.Name, objRemoteRelease.Version, objLocalVersion),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateAvailable", _strSelectedLanguage)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.YesNo, MessageBoxIcon.Question).ConfigureAwait(false) != DialogResult.Yes)
+                    return;
+
+                string strError = await CustomDataDirectoryUpdater
+                                        .ApplyUpdateAsync(objInfoToUpdate, objRemoteRelease)
+                                        .ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strError))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
+                                .ConfigureAwait(false),
+                            objInfoToUpdate.Name, strError),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateFailed", _strSelectedLanguage)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error).ConfigureAwait(false);
+                    return;
+                }
+
+                CustomDataDirectoryInfo objUpdatedInfo
+                    = await ReloadCustomDataDirectoryInfoInSetAsync(objInfoToUpdate).ConfigureAwait(false);
+                await CustomDataDirectoryUpdater.CheckUpdateAvailabilityAsync(objUpdatedInfo).ConfigureAwait(false);
+                await PopulateCustomDataDirectoryListBoxAsync().ConfigureAwait(false);
+                await UpdateCustomDataDirectoryInfoPanelAsync(objUpdatedInfo).ConfigureAwait(false);
+                await UpdateCustomDataTabTitleAsync().ConfigureAwait(false);
+                await Program.ShowScrollableMessageBoxAsync(this,
+                    string.Format(_objSelectedCultureInfo,
+                        await LanguageManager
+                            .GetStringAsync("Message_CustomDataDirectory_UpdateSuccess", _strSelectedLanguage)
+                            .ConfigureAwait(false),
+                        objUpdatedInfo.Name, objRemoteRelease.Version),
+                    await LanguageManager
+                        .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateSuccess", _strSelectedLanguage)
+                        .ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information).ConfigureAwait(false);
+                if (Program.MainForm is ChummerMainForm frmMain && !frmMain.IsDisposed)
+                    await frmMain.RefreshMainFormTitleAsync().ConfigureAwait(false);
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         private void cmdCancel_Click(object sender, EventArgs e)
         {
             DialogResult = DialogResult.Cancel;
@@ -1039,34 +1154,69 @@ namespace Chummer
             if (_intSkipRefresh > 0)
                 return;
             ListItem objSelectedItem = await lsbCustomDataDirectories
-                                             .DoThreadSafeFuncAsync(x => (ListItem) x.SelectedItem)
+                                             .DoThreadSafeFuncAsync(x => (ListItem)x.SelectedItem)
                                              .ConfigureAwait(false);
-            CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo) objSelectedItem.Value;
+            CustomDataDirectoryInfo objSelected = (CustomDataDirectoryInfo)objSelectedItem.Value;
+            await UpdateCustomDataDirectoryInfoPanelAsync(objSelected).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Populates the detail panel for the selected custom data directory, including update availability indicators.
+        /// </summary>
+        /// <param name="objSelected">Custom data directory to display, or null to hide the detail panel.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task UpdateCustomDataDirectoryInfoPanelAsync(CustomDataDirectoryInfo objSelected,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
             if (objSelected == null)
             {
-                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = false).ConfigureAwait(false);
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
+                await cmdUpdateCustomDataDirectory.DoThreadSafeAsync(x => x.Enabled = false, token)
+                                                  .ConfigureAwait(false);
                 return;
             }
 
-            await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout()).ConfigureAwait(false);
+            await cmdUpdateCustomDataDirectory.DoThreadSafeAsync(x => x.Enabled = objSelected.HasManifest, token)
+                                              .ConfigureAwait(false);
+
+            bool blnUpdateAvailable
+                = CustomDataDirectoryUpdater.GetCachedAvailability(objSelected).IsUpdateAvailable;
+            await cmdUpdateCustomDataDirectory.DoThreadSafeAsync(x =>
+            {
+                x.Font = new Font(x.Font,
+                    blnUpdateAvailable ? FontStyle.Bold : FontStyle.Regular);
+            }, token).ConfigureAwait(false);
+
+            await gpbDirectoryInfo.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
             try
             {
                 string strDescription = _strSelectedLanguage == GlobalSettings.Language
-                    ? await objSelected.GetCurrentDisplayDescriptionAsync().ConfigureAwait(false)
-                    : await objSelected.DisplayDescriptionAsync(_strSelectedLanguage).ConfigureAwait(false);
-                await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);
-                await lblDirectoryVersion.DoThreadSafeAsync(x => x.Text = objSelected.MyVersion.ToString())
-                                         .ConfigureAwait(false);
+                    ? await objSelected.GetCurrentDisplayDescriptionAsync(token).ConfigureAwait(false)
+                    : await objSelected.DisplayDescriptionAsync(_strSelectedLanguage, token).ConfigureAwait(false);
+                await txtDirectoryDescription.DoThreadSafeAsync(x => x.Text = strDescription, token)
+                                             .ConfigureAwait(false);
+                string strVersionText = CustomDataDirectoryUpdater.GetVersionDisplayText(objSelected,
+                    _strSelectedLanguage);
+                await lblDirectoryVersion.DoThreadSafeAsync(x =>
+                {
+                    x.Text = strVersionText;
+                    x.ForeColor = blnUpdateAvailable
+                        ? ColorManager.Highlight
+                        : ColorManager.WindowText;
+                }, token).ConfigureAwait(false);
                 string strAuthors = ReferenceEquals(_objSelectedCultureInfo, GlobalSettings.CultureInfo) && _strSelectedLanguage == GlobalSettings.Language
-                    ? await objSelected.GetCurrentDisplayAuthorsAsync().ConfigureAwait(false)
-                    : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage).ConfigureAwait(false);
-                await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors).ConfigureAwait(false);
-                await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name).ConfigureAwait(false);
+                    ? await objSelected.GetCurrentDisplayAuthorsAsync(token).ConfigureAwait(false)
+                    : await objSelected.DisplayAuthorsAsync(_objSelectedCultureInfo, _strSelectedLanguage, token)
+                                      .ConfigureAwait(false);
+                await lblDirectoryAuthors.DoThreadSafeAsync(x => x.Text = strAuthors, token).ConfigureAwait(false);
+                await lblDirectoryName.DoThreadSafeAsync(x => x.Text = objSelected.Name, token).ConfigureAwait(false);
                 string strText = objSelected.DirectoryPath.Replace(Utils.GetStartupPath,
                                                                    await LanguageManager
-                                                                         .GetStringAsync("String_Chummer5a", _strSelectedLanguage)
+                                                                         .GetStringAsync("String_Chummer5a", _strSelectedLanguage,
+                                                                             token: token)
                                                                          .ConfigureAwait(false));
-                await lblDirectoryPath.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
+                await lblDirectoryPath.DoThreadSafeAsync(x => x.Text = strText, token).ConfigureAwait(false);
 
                 if (objSelected.DependenciesList.Count > 0)
                 {
@@ -1075,14 +1225,13 @@ namespace Chummer
                     {
                         foreach (DirectoryDependency dependency in objSelected.DependenciesList)
                             sbdDependencies.AppendLine(dependency.CurrentDisplayName);
-                        await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString())
+                        await lblDependencies.DoThreadSafeAsync(x => x.Text = sbdDependencies.ToString(), token)
                                              .ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    //Make sure all old information is discarded
-                    await lblDependencies.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                    await lblDependencies.DoThreadSafeAsync(x => x.Text = string.Empty, token).ConfigureAwait(false);
                 }
 
                 if (objSelected.IncompatibilitiesList.Count > 0)
@@ -1091,25 +1240,22 @@ namespace Chummer
                                                                   out StringBuilder sbdIncompatibilities))
                     {
                         foreach (DirectoryDependency exclusivity in objSelected.IncompatibilitiesList)
-                        {
                             sbdIncompatibilities.AppendLine(exclusivity.CurrentDisplayName);
-                        }
-
-                        await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString())
+                        await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = sbdIncompatibilities.ToString(), token)
                                                   .ConfigureAwait(false);
                     }
                 }
                 else
                 {
-                    //Make sure all old information is discarded
-                    await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = string.Empty).ConfigureAwait(false);
+                    await lblIncompatibilities.DoThreadSafeAsync(x => x.Text = string.Empty, token)
+                                              .ConfigureAwait(false);
                 }
 
-                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = true).ConfigureAwait(false);
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.Visible = true, token).ConfigureAwait(false);
             }
             finally
             {
-                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.ResumeLayout()).ConfigureAwait(false);
+                await gpbDirectoryInfo.DoThreadSafeAsync(x => x.ResumeLayout(), token).ConfigureAwait(false);
             }
         }
 
@@ -1312,7 +1458,7 @@ namespace Chummer
             }, token).ConfigureAwait(false);
 
             await PopulatePdfParameters(token).ConfigureAwait(false);
-            PopulateCustomDataDirectoryListBox();
+            await PopulateCustomDataDirectoryListBoxAsync(token).ConfigureAwait(false);
             await PopulateApplicationInsightsOptions(token).ConfigureAwait(false);
             await PopulateColorModes(token).ConfigureAwait(false);
             await PopulateDpiScalingMethods(token).ConfigureAwait(false);
@@ -1413,12 +1559,15 @@ namespace Chummer
         private void PopulateCustomDataDirectoryListBox()
         {
             ListItem objOldSelected;
+            string strOldSelectedPath = string.Empty;
             Interlocked.Increment(ref _intSkipRefresh);
             try
             {
                 objOldSelected = lsbCustomDataDirectories.SelectedIndex != -1
                     ? (ListItem)lsbCustomDataDirectories.SelectedItem
                     : ListItem.Blank;
+                if (objOldSelected.Value is CustomDataDirectoryInfo objOldSelectedInfo)
+                    strOldSelectedPath = objOldSelectedInfo.DirectoryPath;
                 lsbCustomDataDirectories.BeginUpdate();
                 try
                 {
@@ -1427,29 +1576,42 @@ namespace Chummer
                         lsbCustomDataDirectories.Items.Clear();
                         foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos)
                         {
-                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            ListItem objItem = new ListItem(objCustomDataDirectory,
+                                CustomDataDirectoryUpdater.GetListDisplayName(objCustomDataDirectory,
+                                    _strSelectedLanguage));
                             lsbCustomDataDirectories.Items.Add(objItem);
                         }
                     }
                     else
                     {
-                        HashSet<CustomDataDirectoryInfo> setListedInfos = new HashSet<CustomDataDirectoryInfo>();
+                        HashSet<string> setListedPaths = new HashSet<string>(StringComparer.OrdinalIgnoreCase);
                         for (int iI = lsbCustomDataDirectories.Items.Count - 1; iI >= 0; --iI)
                         {
                             ListItem objExistingItem = (ListItem)lsbCustomDataDirectories.Items[iI];
                             CustomDataDirectoryInfo objExistingInfo
                                 = (CustomDataDirectoryInfo)objExistingItem.Value;
-                            if (!_setCustomDataDirectoryInfos.Contains(objExistingInfo))
+                            CustomDataDirectoryInfo objCurrentInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x =>
+                                x.DirectoryPath.Equals(objExistingInfo.DirectoryPath,
+                                    StringComparison.OrdinalIgnoreCase));
+                            if (objCurrentInfo == null)
+                            {
                                 lsbCustomDataDirectories.Items.RemoveAt(iI);
-                            else
-                                setListedInfos.Add(objExistingInfo);
+                                continue;
+                            }
+
+                            setListedPaths.Add(objCurrentInfo.DirectoryPath);
+                            string strNewName = CustomDataDirectoryUpdater.GetListDisplayName(objCurrentInfo,
+                                _strSelectedLanguage);
+                            if (objExistingItem.Name != strNewName || !ReferenceEquals(objExistingInfo, objCurrentInfo))
+                                lsbCustomDataDirectories.Items[iI] = new ListItem(objCurrentInfo, strNewName);
                         }
 
                         foreach (CustomDataDirectoryInfo objCustomDataDirectory in _setCustomDataDirectoryInfos
-                                     .Where(
-                                         y => !setListedInfos.Contains(y)))
+                                     .Where(y => !setListedPaths.Contains(y.DirectoryPath)))
                         {
-                            ListItem objItem = new ListItem(objCustomDataDirectory, objCustomDataDirectory.Name);
+                            ListItem objItem = new ListItem(objCustomDataDirectory,
+                                CustomDataDirectoryUpdater.GetListDisplayName(objCustomDataDirectory,
+                                    _strSelectedLanguage));
                             lsbCustomDataDirectories.Items.Add(objItem);
                         }
                     }
@@ -1470,7 +1632,178 @@ namespace Chummer
                 Interlocked.Decrement(ref _intSkipRefresh);
             }
 
+            if (!string.IsNullOrEmpty(strOldSelectedPath))
+            {
+                for (int i = 0; i < lsbCustomDataDirectories.Items.Count; ++i)
+                {
+                    if (((CustomDataDirectoryInfo)((ListItem)lsbCustomDataDirectories.Items[i]).Value).DirectoryPath
+                        .Equals(strOldSelectedPath, StringComparison.OrdinalIgnoreCase))
+                    {
+                        lsbCustomDataDirectories.SelectedIndex = i;
+                        return;
+                    }
+                }
+            }
+
             lsbCustomDataDirectories.SelectedItem = objOldSelected;
+        }
+
+        private Task PopulateCustomDataDirectoryListBoxAsync(CancellationToken token = default)
+            => this.DoThreadSafeAsync(PopulateCustomDataDirectoryListBox, token);
+
+        /// <summary>
+        /// Reloads custom data directories from disk, checks for remote updates, and refreshes related UI elements.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task RefreshCustomDataUpdateAvailabilityAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await ReloadAllCustomDataDirectoryInfosFromDiskAsync(token).ConfigureAwait(false);
+            await CustomDataDirectoryUpdater
+                  .CheckAllUpdateAvailabilitiesAsync(_setCustomDataDirectoryInfos, token).ConfigureAwait(false);
+            if (IsDisposed)
+                return;
+            await PopulateCustomDataDirectoryListBoxAsync(token).ConfigureAwait(false);
+            await RefreshSelectedCustomDataDirectoryPanelAsync(token).ConfigureAwait(false);
+            await UpdateCustomDataTabTitleAsync(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Reloads every custom data directory in the settings form from its on-disk manifest.xml.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task ReloadAllCustomDataDirectoryInfosFromDiskAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            List<CustomDataDirectoryInfo> lstOldInfos = _setCustomDataDirectoryInfos.ToList();
+            _setCustomDataDirectoryInfos.Clear();
+            foreach (CustomDataDirectoryInfo objInfo in lstOldInfos)
+            {
+                _setCustomDataDirectoryInfos.Add(
+                    await CustomDataDirectoryInfo.CreateAsync(objInfo.Name, objInfo.DirectoryPath, token)
+                                                 .ConfigureAwait(false));
+            }
+        }
+
+        /// <summary>
+        /// Reloads a single custom data directory from disk and replaces the stale entry in the form's collection.
+        /// </summary>
+        /// <param name="objInfo">Stale custom data directory entry to replace.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The reloaded custom data directory info.</returns>
+        private async Task<CustomDataDirectoryInfo> ReloadCustomDataDirectoryInfoInSetAsync(
+            CustomDataDirectoryInfo objInfo, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CustomDataDirectoryInfo objFreshInfo
+                = await CustomDataDirectoryInfo.CreateAsync(objInfo.Name, objInfo.DirectoryPath, token)
+                                               .ConfigureAwait(false);
+            _setCustomDataDirectoryInfos.Remove(objInfo);
+            _setCustomDataDirectoryInfos.Add(objFreshInfo);
+            return objFreshInfo;
+        }
+
+        /// <summary>
+        /// Ensures a custom data directory has an update location, prompting the user to enter one if needed.
+        /// </summary>
+        /// <param name="objInfo">Custom data directory that should have an update location.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The updated custom data directory info, or null if the user cancelled or entered an invalid URL.</returns>
+        private async Task<CustomDataDirectoryInfo> EnsureCustomDataUpdateLocationAsync(
+            CustomDataDirectoryInfo objInfo, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objInfo.HasUpdateLocation)
+                return objInfo;
+
+            string strDescription = await LanguageManager
+                                          .GetStringAsync("Message_CustomDataDirectory_PromptUpdateLocation",
+                                              _strSelectedLanguage, token: token).ConfigureAwait(false);
+            using (ThreadSafeForm<SelectText> frmPromptUpdateLocation = await ThreadSafeForm<SelectText>.GetAsync(
+                       () => new SelectText
+                       {
+                           Description = strDescription
+                       }, token).ConfigureAwait(false))
+            {
+                if (await frmPromptUpdateLocation.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                    != DialogResult.OK)
+                    return null;
+
+                string strUpdateLocation = frmPromptUpdateLocation.MyForm.SelectedValue?.Trim();
+                if (string.IsNullOrEmpty(strUpdateLocation)
+                    || !CustomDataDirectoryUpdater.IsSupportedUpdateLocation(strUpdateLocation))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        await LanguageManager
+                            .GetStringAsync("Message_CustomDataDirectory_InvalidUpdateLocation", _strSelectedLanguage,
+                                token: token).ConfigureAwait(false),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_InvalidUpdateLocation",
+                                _strSelectedLanguage, token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                    return null;
+                }
+
+                if (!CustomDataDirectoryUpdater.TrySetUpdateLocationInManifest(objInfo.DirectoryPath,
+                        strUpdateLocation, out string strError))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(this,
+                        string.Format(_objSelectedCultureInfo,
+                            await LanguageManager
+                                .GetStringAsync("Message_CustomDataDirectory_UpdateFailed", _strSelectedLanguage,
+                                    token: token).ConfigureAwait(false),
+                            objInfo.Name, strError),
+                        await LanguageManager
+                            .GetStringAsync("MessageTitle_CustomDataDirectory_UpdateFailed", _strSelectedLanguage,
+                                token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                    return null;
+                }
+
+                return await ReloadCustomDataDirectoryInfoInSetAsync(objInfo, token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Refreshes the detail panel for the currently selected custom data directory after a background reload.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task RefreshSelectedCustomDataDirectoryPanelAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x => x.SelectedIndex, token)
+                                              .ConfigureAwait(false) < 0)
+                return;
+            string strSelectedPath = await lsbCustomDataDirectories.DoThreadSafeFuncAsync(x =>
+            {
+                ListItem objItem = (ListItem)x.SelectedItem;
+                return ((CustomDataDirectoryInfo)objItem.Value).DirectoryPath;
+            }, token).ConfigureAwait(false);
+            CustomDataDirectoryInfo objFreshInfo = _setCustomDataDirectoryInfos.FirstOrDefault(x =>
+                x.DirectoryPath.Equals(strSelectedPath, StringComparison.OrdinalIgnoreCase));
+            if (objFreshInfo != null)
+                await UpdateCustomDataDirectoryInfoPanelAsync(objFreshInfo, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Updates the Custom Data Directories tab title to indicate when updates are available.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        private async Task UpdateCustomDataTabTitleAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strTabText = await LanguageManager
+                                      .GetStringAsync("Tab_Options_CustomDataDirectories", _strSelectedLanguage,
+                                          token: token).ConfigureAwait(false);
+            if (_setCustomDataDirectoryInfos.Any(x =>
+                    CustomDataDirectoryUpdater.GetCachedAvailability(x).IsUpdateAvailable))
+            {
+                strTabText += await LanguageManager
+                                   .GetStringAsync("String_CustomData_UpdatesAvailableMenuSuffix", _strSelectedLanguage,
+                                       token: token).ConfigureAwait(false);
+            }
+
+            await tabCustomDataDirectories.DoThreadSafeAsync(x => x.Text = strTabText, token).ConfigureAwait(false);
         }
 
         /// <summary>

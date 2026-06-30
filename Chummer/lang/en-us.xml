@@ -10332,6 +10332,78 @@
       <text>Remove Directory</text>
     </string>
     <string>
+      <key>Button_UpdateCustomDataDirectory</key>
+      <text>Update from Repository</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_UpdateAvailable</key>
+      <text>A newer version ({1}) of {0} is available. You currently have version {2}.\n\nDownload and install the update?</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDataDirectory_UpdateAvailable</key>
+      <text>Custom Data Update Available</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_AlreadyUpToDate</key>
+      <text>{0} is already up to date (version {1}).</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDataDirectory_AlreadyUpToDate</key>
+      <text>Custom Data Up to Date</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_UpdateSuccess</key>
+      <text>{0} was updated to version {1}.\n\nRestart Chummer for changes to take effect.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDataDirectory_UpdateSuccess</key>
+      <text>Custom Data Updated</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_UpdateFailed</key>
+      <text>Failed to update {0}:\n{1}</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDataDirectory_UpdateFailed</key>
+      <text>Custom Data Update Failed</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_UpdateGuidMismatch</key>
+      <text>The downloaded package does not match this custom data directory (GUID mismatch). Update aborted.</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_UpdateManifestMissing</key>
+      <text>The downloaded package does not contain a manifest.xml file. Update aborted.</text>
+    </string>
+    <string>
+      <key>String_CustomData_UpdateAvailableInList</key>
+      <text>{0} (update available: {1})</text>
+    </string>
+    <string>
+      <key>String_CustomData_RemoteVersionAvailable</key>
+      <text>{0} ({1} available)</text>
+    </string>
+    <string>
+      <key>String_CustomData_UpdatesAvailableTitleSuffix</key>
+      <text> - Custom Data Update(s) Available</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_PromptUpdateLocation</key>
+      <text>Enter the GitHub releases URL for this custom data pack (for example, https://github.com/user/repo/releases):</text>
+    </string>
+    <string>
+      <key>MessageTitle_CustomDataDirectory_InvalidUpdateLocation</key>
+      <text>Invalid Update Location</text>
+    </string>
+    <string>
+      <key>Message_CustomDataDirectory_InvalidUpdateLocation</key>
+      <text>Only GitHub releases URLs are supported (for example, https://github.com/user/repo/releases).</text>
+    </string>
+    <string>
+      <key>String_CustomData_UpdatesAvailableMenuSuffix</key>
+      <text> *</text>
+    </string>
+    <string>
       <key>Button_IncreaseCustomDirectoryLoadOrder</key>
       <text>Increase Load Order</text>
     </string>

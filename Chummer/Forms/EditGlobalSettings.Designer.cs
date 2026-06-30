@@ -172,6 +172,7 @@ namespace Chummer
             this.cmdAddCustomDirectory = new System.Windows.Forms.Button();
             this.cmdRemoveCustomDirectory = new System.Windows.Forms.Button();
             this.cmdRenameCustomDataDirectory = new System.Windows.Forms.Button();
+            this.cmdUpdateCustomDataDirectory = new System.Windows.Forms.Button();
             this.tabGitHubIssues = new System.Windows.Forms.TabPage();
             this.cmdUploadPastebin = new System.Windows.Forms.Button();
             this.tabPlugins = new System.Windows.Forms.TabPage();
@@ -2195,13 +2196,15 @@ namespace Chummer
             // 
             this.tlpOptionalRulesButtons.AutoSize = true;
             this.tlpOptionalRulesButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpOptionalRulesButtons.ColumnCount = 3;
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
-            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpOptionalRulesButtons.ColumnCount = 4;
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
+            this.tlpOptionalRulesButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 25F));
             this.tlpOptionalRulesButtons.Controls.Add(this.cmdAddCustomDirectory, 0, 0);
-            this.tlpOptionalRulesButtons.Controls.Add(this.cmdRemoveCustomDirectory, 2, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdRemoveCustomDirectory, 3, 0);
             this.tlpOptionalRulesButtons.Controls.Add(this.cmdRenameCustomDataDirectory, 1, 0);
+            this.tlpOptionalRulesButtons.Controls.Add(this.cmdUpdateCustomDataDirectory, 2, 0);
             this.tlpOptionalRulesButtons.Location = new System.Drawing.Point(0, 555);
             this.tlpOptionalRulesButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpOptionalRulesButtons.Name = "tlpOptionalRulesButtons";
@@ -2254,6 +2257,22 @@ namespace Chummer
             this.cmdRenameCustomDataDirectory.Text = "Rename Entry";
             this.cmdRenameCustomDataDirectory.UseVisualStyleBackColor = true;
             this.cmdRenameCustomDataDirectory.Click += new System.EventHandler(this.cmdRenameCustomDataDirectory_Click);
+            // 
+            // cmdUpdateCustomDataDirectory
+            // 
+            this.cmdUpdateCustomDataDirectory.AutoSize = true;
+            this.cmdUpdateCustomDataDirectory.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdUpdateCustomDataDirectory.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.cmdUpdateCustomDataDirectory.Enabled = false;
+            this.cmdUpdateCustomDataDirectory.Location = new System.Drawing.Point(165, 3);
+            this.cmdUpdateCustomDataDirectory.MinimumSize = new System.Drawing.Size(80, 0);
+            this.cmdUpdateCustomDataDirectory.Name = "cmdUpdateCustomDataDirectory";
+            this.cmdUpdateCustomDataDirectory.Size = new System.Drawing.Size(75, 23);
+            this.cmdUpdateCustomDataDirectory.TabIndex = 43;
+            this.cmdUpdateCustomDataDirectory.Tag = "Button_UpdateCustomDataDirectory";
+            this.cmdUpdateCustomDataDirectory.Text = "Update from Repository";
+            this.cmdUpdateCustomDataDirectory.UseVisualStyleBackColor = true;
+            this.cmdUpdateCustomDataDirectory.Click += new System.EventHandler(this.cmdUpdateCustomDataDirectory_Click);
             // 
             // tabGitHubIssues
             // 
@@ -2577,6 +2596,7 @@ namespace Chummer
         private System.Windows.Forms.Label lblCustomDataDirectoriesLabel;
         private System.Windows.Forms.Button cmdAddCustomDirectory;
         private System.Windows.Forms.Button cmdRenameCustomDataDirectory;
+        private System.Windows.Forms.Button cmdUpdateCustomDataDirectory;
         private System.Windows.Forms.Button cmdRemoveCustomDirectory;
         private System.Windows.Forms.TabPage tabGitHubIssues;
         private System.Windows.Forms.Button cmdUploadPastebin;

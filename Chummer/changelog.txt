@@ -2,6 +2,11 @@ Future Build 227
 Application:
 - Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
 - Refactored requirement and forbidden node evaluation in SelectionShared to consolidate duplicated logic for installed gear, powers, armor mods, cyberware/bioware, qualities, grouped requirements, and restriction message text.
+- Custom data directories can now be updated from a GitHub releases URL declared in the optional `<updatelocation>` element of manifest.xml. Use the new Update from Repository button in Global Settings to download the latest release, verify that its GUID matches the installed directory, and replace the directory contents.
+- If a custom data directory has no `<updatelocation>` entry, Update from Repository will prompt for a GitHub releases URL and save it to the local manifest.xml for future update checks.
+- Custom data update availability is compared against GitHub release tags. If a pack's manifest version does not track its release tag, Chummer stores the last successfully installed release version separately so update notifications remain accurate after updating.
+- Custom data directories with updates available are indicated in the Global Settings list and version label, the Custom Data Directories tab title, the Character Settings custom data tree, and the main program window title. Update availability is also checked in the background once an hour.
+- After updating a custom data directory from a repository, an `<updatelocation>` entry shipped in the release manifest takes precedence. A locally saved `<updatelocation>` is only preserved when the downloaded manifest does not include one.
 
 Cyberware:
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
@@ -26,6 +31,24 @@ Weapons:
 
 Changed/New Strings:
 - String_GroupContactAbbrev
+- Button_UpdateCustomDataDirectory
+- Message_CustomDataDirectory_UpdateAvailable
+- MessageTitle_CustomDataDirectory_UpdateAvailable
+- Message_CustomDataDirectory_AlreadyUpToDate
+- MessageTitle_CustomDataDirectory_AlreadyUpToDate
+- Message_CustomDataDirectory_UpdateSuccess
+- MessageTitle_CustomDataDirectory_UpdateSuccess
+- Message_CustomDataDirectory_UpdateFailed
+- MessageTitle_CustomDataDirectory_UpdateFailed
+- Message_CustomDataDirectory_UpdateGuidMismatch
+- Message_CustomDataDirectory_UpdateManifestMissing
+- Message_CustomDataDirectory_PromptUpdateLocation
+- MessageTitle_CustomDataDirectory_InvalidUpdateLocation
+- Message_CustomDataDirectory_InvalidUpdateLocation
+- String_CustomData_UpdateAvailableInList
+- String_CustomData_RemoteVersionAvailable
+- String_CustomData_UpdatesAvailableTitleSuffix
+- String_CustomData_UpdatesAvailableMenuSuffix
 
 Build 226
 Application Changes:
