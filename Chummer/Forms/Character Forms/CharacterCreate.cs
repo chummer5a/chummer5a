@@ -22000,7 +22000,7 @@ namespace Chummer
                                         await objMod.CreateAsync(objXmlModNode, intRating, lstWeapons, token: token)
                                             .ConfigureAwait(false);
 
-                                        foreach (XmlNode objXmlGear in objXmlArmor.SelectNodes("gears/gear"))
+                                        foreach (XmlNode objXmlGear in objXmlMod.SelectNodes("gears/gear"))
                                             await AddPACKSGearAsync(objXmlGearDocument, objXmlGear, objMod, blnCreateChildren,
                                                 token).ConfigureAwait(false);
 
@@ -23220,12 +23220,12 @@ namespace Chummer
                 string strCategory = objXmlGear["category"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strCategory))
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
-                        "/chummer/gears/gear", strName.CleanXPath(),
+                        "/chummer/gears/gear", strName,
                         await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false)
                             + " and category = " + strCategory.CleanXPath());
                 else
                     objXmlGearNode = objXmlGearDocument.TryGetNodeByNameOrId(
-                        "/chummer/gears/gear", strName.CleanXPath(),
+                        "/chummer/gears/gear", strName,
                         await CharacterObjectSettings.BookXPathAsync(token: token).ConfigureAwait(false));
             }
 

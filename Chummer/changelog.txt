@@ -20,6 +20,7 @@ Gear:
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
+- Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
 
 Qualities:
 - Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
