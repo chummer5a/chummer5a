@@ -2515,6 +2515,11 @@ namespace Chummer.Backend.Equipment
         public Character CharacterObject => _objCharacter;
 
         /// <summary>
+        /// Magic string for the Custom Item gear object. Used to control the SelectGear dialog to limit the list to only that object when purchasing more in career mode.
+        /// </summary>
+        private static readonly Guid s_guiCustomItemSourceId = new Guid("0025f1c7-45a4-4ec5-a692-e18aab2f97a9");
+
+        /// <summary>
         /// Guid of the object from the data. You probably want to use SourceIDString instead.
         /// </summary>
         public Guid SourceID
@@ -2522,6 +2527,11 @@ namespace Chummer.Backend.Equipment
             get => _guiSourceID;
             set => _guiSourceID = value;
         }
+
+        /// <summary>
+        /// Whether this gear was created from the Custom Item catalog entry.
+        /// </summary>
+        public bool IsCustomItem => _guiSourceID == s_guiCustomItemSourceId;
 
         /// <summary>
         /// String-formatted Guid of the <inheritdoc cref="SourceID"/> from the data files.

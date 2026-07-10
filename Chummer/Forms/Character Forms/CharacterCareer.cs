@@ -23221,7 +23221,10 @@ namespace Chummer
                             }
                         }
 
-                        frmPickGear.MyForm.DefaultSearchText = strForceItemValue;
+                        if (objStackGear != null && objStackGear.IsCustomItem)
+                            frmPickGear.MyForm.RepurchaseGear = objStackGear;
+                        else
+                            frmPickGear.MyForm.DefaultSearchText = strForceItemValue;
                         frmPickGear.MyForm.ForceItemAmmoForWeaponType = objAmmoForWeapon?.WeaponType ?? string.Empty;
 
                         // Make sure the dialogue window was not canceled.
@@ -23239,17 +23242,24 @@ namespace Chummer
                         // Create the new piece of Gear.
                         List<Weapon> lstWeapons = new List<Weapon>(1);
 
-                        string strForceValue = objStackGear?.Extra ?? strForceItemValue;
-                        if (string.IsNullOrEmpty(strForceValue) && objAmmoForWeapon != null)
-                        {
-                            //If the amount of an ammunition was increased, force the correct weapon category.
-                            strForceValue = objAmmoForWeapon.AmmoCategory;
-                        }
-
                         Gear objGear = new Gear(CharacterObject);
-                        await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
-                            strForceValue,
-                            objSelectedGear?.Equipped != false, objParent: blnNullParent ? null : objSelectedGear, token: token).ConfigureAwait(false);
+                        if (objStackGear != null && objStackGear.IsCustomItem)
+                        {
+                            await objGear.CopyAsync(objStackGear, token).ConfigureAwait(false);
+                        }
+                        else
+                        {
+                            string strForceValue = objStackGear?.Extra ?? strForceItemValue;
+                            if (string.IsNullOrEmpty(strForceValue) && objAmmoForWeapon != null)
+                            {
+                                //If the amount of an ammunition was increased, force the correct weapon category.
+                                strForceValue = objAmmoForWeapon.AmmoCategory;
+                            }
+
+                            await objGear.CreateAsync(objXmlGear, frmPickGear.MyForm.SelectedRating, lstWeapons,
+                                strForceValue,
+                                objSelectedGear?.Equipped != false, objParent: blnNullParent ? null : objSelectedGear, token: token).ConfigureAwait(false);
+                        }
 
                         if (objGear.InternalId.IsEmptyGuid())
                         {

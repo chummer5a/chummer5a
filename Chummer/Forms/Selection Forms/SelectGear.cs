@@ -53,6 +53,7 @@ namespace Chummer
         private bool _blnShowPositiveCapacityOnly;
         private bool _blnShowNegativeCapacityOnly;
         private bool _blnBlackMarketDiscount;
+        private Gear _objRepurchaseGear;
         private CapacityStyle _eCapacityStyle = CapacityStyle.Standard;
 
         private readonly XPathNavigator _xmlBaseGearDataNode;
@@ -147,6 +148,12 @@ namespace Chummer
                         x.Visible = false;
                         x.Checked = false;
                     }, _objGenericToken).ConfigureAwait(false);
+                }
+
+                if (_objRepurchaseGear != null)
+                {
+                    await SetupRepurchaseModeAsync(_objGenericToken).ConfigureAwait(false);
+                    return;
                 }
 
                 XPathNodeIterator objXmlCategoryList;
@@ -810,6 +817,15 @@ namespace Chummer
         public string DefaultSearchText { get; set; }
 
         /// <summary>
+        /// When set, the form purchases additional copies of this existing gear instance instead of selecting from the gear catalog.
+        /// </summary>
+        public Gear RepurchaseGear
+        {
+            get => _objRepurchaseGear;
+            set => _objRepurchaseGear = value;
+        }
+
+        /// <summary>
         /// What weapon type is our gear allowed to have
         /// </summary>
         public string ForceItemAmmoForWeaponType { get; set; }
@@ -837,6 +853,12 @@ namespace Chummer
                 if (_intLoading > 0)
                 {
                     await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    return;
+                }
+
+                if (_objRepurchaseGear != null)
+                {
+                    await UpdateRepurchaseGearInfo(token).ConfigureAwait(false);
                     return;
                 }
 
@@ -1173,6 +1195,157 @@ namespace Chummer
             }
         }
 
+        private async Task SetupRepurchaseModeAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Gear objRepurchaseGear = _objRepurchaseGear;
+            if (objRepurchaseGear == null)
+                return;
+
+            await tlpLeft.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+            await gpbCostFilter.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+            await chkShowOnlyAffordItems.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+            await chkDoItYourself.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+
+            string strDisplayName = await objRepurchaseGear.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(x => x.Text = strDisplayName, token: token).ConfigureAwait(false);
+
+            await nudGearQty.DoThreadSafeAsync(x =>
+            {
+                x.Enabled = true;
+                x.Minimum = 1;
+                x.Maximum = 1000000000;
+                x.Value = 1;
+                x.Increment = 1;
+                x.DecimalPlaces = 0;
+                x.Visible = true;
+            }, token: token).ConfigureAwait(false);
+            await lblGearQtyLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+            await chkStack.DoThreadSafeAsync(x =>
+            {
+                x.Visible = true;
+                x.Checked = true;
+            }, token: token).ConfigureAwait(false);
+
+            Interlocked.Decrement(ref _intLoading);
+            await UpdateRepurchaseGearInfo(token).ConfigureAwait(false);
+        }
+
+        private async Task UpdateRepurchaseGearInfo(CancellationToken token = default)
+        {
+            CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
+            CancellationToken objNewToken = objNewCancellationTokenSource.Token;
+            CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objUpdateGearInfoCancellationTokenSource, objNewCancellationTokenSource);
+            if (objOldCancellationTokenSource?.IsCancellationRequested == false)
+            {
+                objOldCancellationTokenSource.Cancel(false);
+                objOldCancellationTokenSource.Dispose();
+            }
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
+            {
+                token = objJoinedCancellationTokenSource.Token;
+                Gear objRepurchaseGear = _objRepurchaseGear;
+                if (objRepurchaseGear == null)
+                {
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+                    return;
+                }
+
+                await this.DoThreadSafeAsync(x => x.SuspendLayout(), token: token).ConfigureAwait(false);
+                try
+                {
+                    decimal decQuantityMultiplier = await nudGearQty.DoThreadSafeFuncAsync(x => x.Value / x.Increment, token: token).ConfigureAwait(false);
+                    decimal decCostMultiplier = _intCostMultiplier;
+                    decCostMultiplier *= 1 + await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false) / 100.0m;
+                    bool blnCanBlackMarketDiscount = _setBlackMarketMaps.Contains(objRepurchaseGear.Category);
+                    if (blnCanBlackMarketDiscount
+                        && await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                        decCostMultiplier *= 0.9m;
+
+                    await lblRatingLabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                    await lblRatingNALabel.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                    await nudRating.DoThreadSafeAsync(x =>
+                    {
+                        x.Minimum = 0;
+                        x.Maximum = 0;
+                        x.Enabled = false;
+                        x.Visible = false;
+                    }, token: token).ConfigureAwait(false);
+                    await lblGearDeviceRatingLabel.DoThreadSafeAsync(x => x.Visible = false, token: token).ConfigureAwait(false);
+
+                    string strSource = objRepurchaseGear.Source;
+                    if (string.IsNullOrEmpty(strSource))
+                        strSource = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    string strPage = objRepurchaseGear.Page;
+                    if (string.IsNullOrEmpty(strPage))
+                        strPage = await LanguageManager.GetStringAsync("String_Unknown", token: token).ConfigureAwait(false);
+                    SourceString objSource = await SourceString.GetSourceStringAsync(
+                        strSource, strPage, GlobalSettings.Language,
+                        GlobalSettings.CultureInfo, _objCharacter, token: token).ConfigureAwait(false);
+                    await objSource.SetControlAsync(lblSource, this, token: token).ConfigureAwait(false);
+                    await lblSourceLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(objSource.ToString()), token: token).ConfigureAwait(false);
+
+                    string strAvail = await objRepurchaseGear.GetDisplayTotalAvailAsync(token).ConfigureAwait(false);
+                    await lblAvail.DoThreadSafeAsync(x => x.Text = strAvail, token: token).ConfigureAwait(false);
+                    await lblAvailLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strAvail), token: token).ConfigureAwait(false);
+
+                    await chkBlackMarketDiscount.DoThreadSafeAsync(x =>
+                    {
+                        x.Enabled = blnCanBlackMarketDiscount;
+                        if (!x.Checked)
+                            x.Checked = GlobalSettings.AssumeBlackMarket && blnCanBlackMarketDiscount;
+                        else if (!blnCanBlackMarketDiscount)
+                            x.Checked = false;
+                    }, token: token).ConfigureAwait(false);
+
+                    decimal decItemCost = 0.0m;
+                    if (await chkFreeItem.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false))
+                    {
+                        string strCost = 0.0m.ToString(await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false), GlobalSettings.CultureInfo)
+                                          + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                    }
+                    else
+                    {
+                        decimal decExistingQty = objRepurchaseGear.Quantity;
+                        decimal decUnitCost = decExistingQty > 0
+                            ? await objRepurchaseGear.GetTotalCostAsync(token).ConfigureAwait(false) / decExistingQty
+                            : await objRepurchaseGear.GetOwnCostPreMultipliersAsync(token).ConfigureAwait(false);
+                        decItemCost = decUnitCost * decCostMultiplier;
+                        string strCost = (decItemCost * decQuantityMultiplier).ToString(
+                                             await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetNuyenFormatAsync(token).ConfigureAwait(false),
+                                             GlobalSettings.CultureInfo)
+                                         + await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
+                        await lblCost.DoThreadSafeAsync(x => x.Text = strCost, token: token).ConfigureAwait(false);
+                    }
+
+                    bool blnShowCost = !string.IsNullOrEmpty(await lblCost.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCostLabel.DoThreadSafeAsync(x => x.Visible = blnShowCost, token: token).ConfigureAwait(false);
+
+                    string strTest = await _objCharacter.AvailTestAsync(decItemCost, strAvail, token).ConfigureAwait(false);
+                    await lblTest.DoThreadSafeAsync(x => x.Text = strTest, token: token).ConfigureAwait(false);
+                    await lblTestLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strTest), token: token).ConfigureAwait(false);
+
+                    string strCapacity = objRepurchaseGear.Capacity;
+                    if (_eCapacityStyle == CapacityStyle.Zero)
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = "[" + 0.ToString(GlobalSettings.CultureInfo) + "]", token: token).ConfigureAwait(false);
+                    else if (!string.IsNullOrEmpty(strCapacity))
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = strCapacity, token: token).ConfigureAwait(false);
+                    else
+                        await lblCapacity.DoThreadSafeAsync(x => x.Text = 0.ToString(GlobalSettings.CultureInfo), token: token).ConfigureAwait(false);
+
+                    bool blnShowCapacity = !string.IsNullOrEmpty(await lblCapacity.DoThreadSafeFuncAsync(x => x.Text, token: token).ConfigureAwait(false));
+                    await lblCapacityLabel.DoThreadSafeAsync(x => x.Visible = blnShowCapacity, token: token).ConfigureAwait(false);
+
+                    await tlpRight.DoThreadSafeAsync(x => x.Visible = true, token: token).ConfigureAwait(false);
+                }
+                finally
+                {
+                    await this.DoThreadSafeAsync(x => x.ResumeLayout(), token: token).ConfigureAwait(false);
+                }
+            }
+        }
+
         private Task<bool> AnyItemInList(string strCategory = "", CancellationToken token = default)
         {
             return RefreshList(strCategory, false, token);
@@ -1455,6 +1628,22 @@ namespace Chummer
         /// </summary>
         private void AcceptForm()
         {
+            if (_objRepurchaseGear != null)
+            {
+                _strSelectedGear = _objRepurchaseGear.SourceIDString;
+                _blnBlackMarketDiscount = chkBlackMarketDiscount.Checked;
+                _intSelectedRating = 0;
+                _decSelectedQty = nudGearQty.Value;
+                _decMarkup = nudMarkup.Value;
+                _blnFreeCost = chkFreeItem.Checked;
+                _blnDoItYourself = false;
+                _blnStack = chkStack.Checked;
+
+                DialogResult = DialogResult.OK;
+                Close();
+                return;
+            }
+
             string strSelectedId = lstGear.SelectedValue?.ToString();
             if (!string.IsNullOrEmpty(strSelectedId))
             {
