@@ -4591,6 +4591,7 @@
           <xs:element name="maxRecursionLimit" type="xs:integer" minOccurs="0" maxOccurs="1" default="1" />
           <xs:element name="renderEmptyObject" type="xs:boolean" minOccurs="0" maxOccurs="1" default="true" />
           <xs:element name="suppressSpaces" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
+          <xs:element name="includeActivityIds" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="includeScopes" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
           <xs:element name="state" minOccurs="0" maxOccurs="unbounded" type="NLog.Layouts.JsonAttribute" />
           <xs:element name="timestampFormat" type="xs:string" minOccurs="0" maxOccurs="1" default="o" />
@@ -4643,6 +4644,11 @@
         <xs:attribute name="suppressSpaces" type="xs:boolean">
           <xs:annotation>
             <xs:documentation>Option to suppress the extra spaces in the output json.</xs:documentation>
+          </xs:annotation>
+        </xs:attribute>
+        <xs:attribute name="includeActivityIds" type="xs:boolean">
+          <xs:annotation>
+            <xs:documentation>Whether to include "TraceId" + "SpanId" + "ParentId" from P:System.Diagnostics.Activity.Current</xs:documentation>
           </xs:annotation>
         </xs:attribute>
         <xs:attribute name="includeScopes" type="xs:boolean">
