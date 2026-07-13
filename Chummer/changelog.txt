@@ -1,14 +1,18 @@
 Future Build 227
 Application:
 - Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
+- Moved weapon-mount and custom cyber implant base-weapon attachment logic into CharacterShared to reduce duplication between Create and Career modes.
 - Refactored requirement and forbidden node evaluation in SelectionShared to consolidate duplicated logic for installed gear, powers, armor mods, cyberware/bioware, qualities, grouped requirements, and restriction message text.
 - Custom data directories can now be updated from a GitHub releases URL declared in the optional `<updatelocation>` element of manifest.xml. Use the new Update from Repository button in Global Settings to download the latest release, verify that its GUID matches the installed directory, and replace the directory contents.
 - If a custom data directory has no `<updatelocation>` entry, Update from Repository will prompt for a GitHub releases URL and save it to the local manifest.xml for future update checks.
 - Custom data update availability is compared against GitHub release tags. If a pack's manifest version does not track its release tag, Chummer stores the last successfully installed release version separately so update notifications remain accurate after updating.
 - Custom data directories with updates available are indicated in the Global Settings list and version label, the Custom Data Directories tab title, the Character Settings custom data tree, and the main program window title. Update availability is also checked in the background once an hour.
 - After updating a custom data directory from a repository, an `<updatelocation>` entry shipped in the release manifest takes precedence. A locally saved `<updatelocation>` is only preserved when the downloaded manifest does not include one.
+- Updated wiki documentation for cyberware.xml and vehicles.xml with previously undocumented fields, including custom implant weapon selection, weapon mounts, bundled subsystems, and modular cyberlimbs.
 
 Cyberware:
+- Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
+- Added `weaponcategories` and `weaponfilter` XML support to cyberware entries for custom implant weapons.
 - Fixed wirelesspairbonus mode="replace" handling for wireless pair stacking overriding the base bonus, and added a compatibility shim for older saves that did not correctly load the `wirelesspairinclude` element. Updated wiki docs to describe behaviour properly.
 - Fixed upgrading cyberware that's a child of other cyberware not working correctly due to missing parent check in career mode.
 - Added rating, minrating, and maxrating attribute support to cyberware, bioware, cyberwarecontains, biowarecontains, cyberwarecategory, and biowarecategory nodes when checking installed ware on a character (for example, forbidding an option unless Hydraulic Jacks rating 3+ is already on the same parent limb).

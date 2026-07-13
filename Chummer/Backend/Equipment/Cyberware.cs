@@ -75,6 +75,8 @@ namespace Chummer.Backend.Equipment
         private string _strMaxRating = string.Empty;
         private string _strRatingLabel = "String_Rating";
         private string _strAllowSubsystems = string.Empty;
+        private string _strAllowedWeaponCategories = string.Empty;
+        private string _strWeaponFilter = string.Empty;
         private bool _blnSuite;
         private bool _blnStolen;
         private string _strLocation = string.Empty;
@@ -918,6 +920,8 @@ namespace Chummer.Backend.Equipment
                     objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
                     objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
                     objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
+                    objXmlCyberware.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
+                    objXmlCyberware.TryGetStringFieldQuickly("weaponfilter", ref _strWeaponFilter);
 
                     _eImprovementSource = objSource;
                     _objCachedMyXmlNode = null;
@@ -2563,6 +2567,12 @@ namespace Chummer.Backend.Equipment
                         objNode.TryGetBoolFieldQuickly("prototypetranshuman", ref _blnPrototypeTranshuman);
 
                     XmlNode objSourceNode = blnSync ? objMyNode?.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false);
+                    if (objSourceNode != null)
+                    {
+                        objSourceNode.TryGetStringFieldQuickly("weaponcategories", ref _strAllowedWeaponCategories);
+                        objSourceNode.TryGetStringFieldQuickly("weaponfilter", ref _strWeaponFilter);
+                    }
+
                     objNode.TryGetNodeWithSourceFallback("bonus", ref _nodBonus, objSourceNode);
                     objNode.TryGetNodeWithSourceFallback("pairbonus", ref _nodPairBonus, objSourceNode);
                     XmlElement xmlPairIncludeNode = objNode["pairinclude"];
@@ -6654,6 +6664,52 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterUpgradeableReadLock())
                     _strAllowSubsystems = value;
+            }
+        }
+
+        /// <summary>
+        /// Limits the weapon selection form to specified categories for custom cyber implant weapons.
+        /// </summary>
+        public string AllowedWeaponCategories
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strAllowedWeaponCategories;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strAllowedWeaponCategories = value;
+            }
+        }
+
+        /// <summary>
+        /// XPath filter expression for additional weapon filtering when specifying a custom cyber implant weapon.
+        /// </summary>
+        public string WeaponFilter
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strWeaponFilter;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _strWeaponFilter = value;
+            }
+        }
+
+        /// <summary>
+        /// Whether this cyberware supports specifying a catalog weapon as its base model.
+        /// </summary>
+        public bool CanSpecifyBaseWeapon
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return !string.IsNullOrEmpty(_strAllowedWeaponCategories);
             }
         }
 

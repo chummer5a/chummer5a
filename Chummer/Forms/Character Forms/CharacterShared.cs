@@ -374,6 +374,272 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Prompts the user to specify a base weapon when a newly-added custom cyber implant weapon does not yet have one.
+        /// </summary>
+        /// <param name="objCyberware">Cyberware that may require a base weapon specification.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task PromptAttachBaseWeaponToCyberwareIfNeededAsync(Cyberware objCyberware,
+                                                                             CancellationToken token = default)
+        {
+            if (objCyberware == null || objCyberware.InternalId.IsEmptyGuid() || !objCyberware.CanSpecifyBaseWeapon
+                || !objCyberware.WeaponID.IsEmptyGuid())
+            {
+                return;
+            }
+
+            await AttachBaseWeaponToCyberwareAsync(objCyberware, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Runs the weapon selection and attachment flow for a vehicle weapon mount.
+        /// </summary>
+        /// <param name="objWeaponMount">Weapon mount that will receive the selected weapon.</param>
+        /// <param name="objMod">Optional vehicle mod hosting the weapon mount.</param>
+        /// <param name="blnChargeCost">Whether to apply cost checks and deduct/log nuyen.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AddWeaponToWeaponMountAsync(WeaponMount objWeaponMount,
+                                                                 VehicleMod objMod,
+                                                                 bool blnChargeCost,
+                                                                 CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                           () => new SelectWeapon(CharacterObject)
+                           {
+                               LimitToCategories = objMod == null
+                                   ? objWeaponMount.AllowedWeaponCategories
+                                   : objMod.WeaponMountCategories,
+                               WeaponFilter = objMod == null
+                                   ? objWeaponMount.WeaponFilter
+                                   : string.Empty
+                           }, token).ConfigureAwait(false))
+                {
+                    if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return false;
+
+                    XmlDocument objXmlDocument
+                        = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
+                    XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                        frmPickWeapon.MyForm.SelectedWeapon);
+
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Weapon objWeapon = new Weapon(CharacterObject);
+                    try
+                    {
+                        if (objMod != null)
+                            await objWeapon.SetParentVehicleModAsync(objMod, token).ConfigureAwait(false);
+                        else
+                            await objWeapon.SetParentMountAsync(objWeaponMount, token).ConfigureAwait(false);
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
+
+                        if (blnChargeCost && !frmPickWeapon.MyForm.FreeCost)
+                        {
+                            decimal decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
+                            if (frmPickWeapon.MyForm.Markup != 0)
+                                decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
+
+                            char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                return frmPickWeapon.MyForm.AddAgain;
+                            }
+
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpensePurchaseVehicleWeapon", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen,
+                                DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddVehicleWeapon, objWeapon.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        if (objMod != null)
+                            await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                        else
+                            await objWeaponMount.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                        {
+                            if (objMod != null)
+                                await objMod.Weapons.AddAsync(objLoopWeapon, token).ConfigureAwait(false);
+                            else
+                                await objWeaponMount.Weapons.AddAsync(objLoopWeapon, token).ConfigureAwait(false);
+                        }
+
+                        return frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
+                    }
+                    catch
+                    {
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Runs the weapon selection and attachment flow for a custom cyber implant weapon.
+        /// </summary>
+        /// <param name="objCyberware">Custom cyber implant weapon that will receive the selected base weapon.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<bool> AttachBaseWeaponToCyberwareAsync(Cyberware objCyberware,
+                                                                     CancellationToken token = default)
+        {
+            if (objCyberware == null || !objCyberware.CanSpecifyBaseWeapon)
+                return false;
+
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
+                           () => new SelectWeapon(CharacterObject)
+                           {
+                               LimitToCategories = objCyberware.AllowedWeaponCategories,
+                               WeaponFilter = objCyberware.WeaponFilter
+                           }, token).ConfigureAwait(false))
+                {
+                    if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return false;
+
+                    XmlDocument objXmlDocument
+                        = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
+                    XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
+                        frmPickWeapon.MyForm.SelectedWeapon);
+                    if (objXmlWeapon == null)
+                        return frmPickWeapon.MyForm.AddAgain;
+
+                    List<Weapon> lstWeapons = new List<Weapon>(1);
+                    Weapon objWeapon = new Weapon(CharacterObject);
+                    try
+                    {
+                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
+                        objWeapon.DiscountCost = frmPickWeapon.MyForm.BlackMarketDiscount;
+                        if (frmPickWeapon.MyForm.FreeCost)
+                            objWeapon.Cost = "0";
+
+                        bool blnCareerMode = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                        bool blnChargeCost = blnCareerMode && !frmPickWeapon.MyForm.FreeCost;
+                        decimal decCost = 0;
+                        if (blnChargeCost)
+                        {
+                            decCost = await objWeapon.GetTotalCostAsync(token).ConfigureAwait(false);
+                            if (frmPickWeapon.MyForm.Markup != 0)
+                                decCost *= 1 + frmPickWeapon.MyForm.Markup / 100.0m;
+
+                            char chrAvail = (await objWeapon.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token).ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                foreach (Weapon objLoopWeapon in lstWeapons)
+                                    await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                return frmPickWeapon.MyForm.AddAgain;
+                            }
+                        }
+
+                        if (!objCyberware.WeaponID.IsEmptyGuid())
+                        {
+                            Weapon objOldWeapon = await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false))
+                                .DeepFindByIdAsync(objCyberware.WeaponID, token).ConfigureAwait(false);
+                            if (objOldWeapon != null)
+                                await objOldWeapon.DeleteWeaponAsync(token: token).ConfigureAwait(false);
+                        }
+
+                        objWeapon.Cyberware = true;
+                        objWeapon.ParentID = objCyberware.InternalId;
+                        objCyberware.WeaponID = objWeapon.InternalId;
+                        objCyberware.Extra = await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+
+                        await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false))
+                            .AddAsync(objWeapon, token).ConfigureAwait(false);
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                        {
+                            objLoopWeapon.Cyberware = true;
+                            objLoopWeapon.ParentID = objCyberware.InternalId;
+                            await (await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false))
+                                .AddAsync(objLoopWeapon, token).ConfigureAwait(false);
+                        }
+
+                        if (blnChargeCost)
+                        {
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                await LanguageManager.GetStringAsync("String_ExpensePurchaseWeapon", token: token).ConfigureAwait(false)
+                                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                                + await objWeapon.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen,
+                                DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(NuyenExpenseType.AddWeapon, objWeapon.InternalId);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        return false;
+                    }
+                    catch
+                    {
+                        foreach (Weapon objLoopWeapon in lstWeapons)
+                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        throw;
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Runs the vehicle-mod selection and attachment flow for a vehicle with configurable purchase and
         /// capacity-enforcement behavior.
         /// </summary>
@@ -821,6 +1087,10 @@ namespace Chummer
                                     token).ConfigureAwait(false))
                             {
                                 await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                            }
+                            else
+                            {
+                                await PromptAttachBaseWeaponToCyberwareIfNeededAsync(objCyberware, token).ConfigureAwait(false);
                             }
                         }
                         catch

@@ -3394,7 +3394,11 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Is this weapon cyberware?
         /// </summary>
-        public bool Cyberware => _blnCyberware;
+        public bool Cyberware
+        {
+            get => _blnCyberware;
+            set => _blnCyberware = value;
+        }
 
         /// <summary>
         /// Reach.
@@ -6364,10 +6368,13 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
-                if (Cyberware || Category == "Gear")
+                // Gear weapons are paid through the parent item. Cyberware weapons with no cost are generic implant placeholders.
+                if (Category == "Gear")
                     return 0;
                 decimal decReturn = ProcessRatingStringAsDec(Cost, () => Rating);
+
+                if (Cyberware && decReturn == 0)
+                    return 0;
 
                 if (DiscountCost)
                     decReturn *= 0.9m;
@@ -6398,10 +6405,13 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetOwnCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // If this is a Cyberware or Gear Weapon, remove the Weapon Cost from this since it has already been paid for through the parent item (but is needed to calculate Mod price).
-            if (Cyberware || Category == "Gear")
+            // Gear weapons are paid through the parent item. Cyberware weapons with no cost are generic implant placeholders.
+            if (Category == "Gear")
                 return 0;
             decimal decReturn = (await ProcessRatingStringAsDecAsync(Cost, () => GetRatingAsync(token), token: token).ConfigureAwait(false)).Item1;
+
+            if (Cyberware && decReturn == 0)
+                return 0;
 
             if (DiscountCost)
                 decReturn *= 0.9m;

@@ -4982,6 +4982,8 @@
       <cost>20000</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Grenade Launchers</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -4997,6 +4999,8 @@
       <cost>3800</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Heavy Pistols,Exotic Ranged Weapons</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -5012,6 +5016,8 @@
       <cost>1800</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Holdouts</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -5027,6 +5033,8 @@
       <cost>3500</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Light Pistols,Tasers</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -5042,6 +5050,8 @@
       <cost>3000</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Machine Pistols</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -5077,6 +5087,8 @@
       <cost>7000</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Shotguns</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>
@@ -5255,6 +5267,8 @@
       <cost>4000</cost>
       <source>CF</source>
       <page>90</page>
+      <weaponcategories>Submachine Guns</weaponcategories>
+      <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
       <allowsubsystems>
         <category>Cyber Implant Weapon Accessory</category>
       </allowsubsystems>

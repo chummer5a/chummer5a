@@ -28,9 +28,13 @@ cyberware.xml (and custom_cyberware.xml, see [Custom Data Files](Custom-Data-Fil
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
+**devicerating** (optional): default matrix device rating for cyberware created at this Grade.
+
+**bonus** (optional): a bonus node applied to all cyberware created at this Grade. See [Improvement Manager](Improvement-Manager) for more information.
+
 ## <a id="categories"></a>Categories Node
 
-**category** (required): the name of the Cyberware Category. This list populates the Category list found in the Select Cyberware window. Categories are used to group Cyberware into groups such as _Headware_, _Eyeware_, and _Cyberlimb_.
+**category** (required): the name of the Cyberware Category. This list populates the Category list found in the Select Cyberware window. Categories are used to group Cyberware into groups such as _Headware_, _Eyeware_, and _Cyberlimb_. The optional `blackmarket` attribute groups the category for black-market pipelines (for example `blackmarket="Cyberware"`).
 
 ## <a id="cyberware"></a>Cyberware Node
 
@@ -54,13 +58,86 @@ cyberware.xml (and custom_cyberware.xml, see [Custom Data Files](Custom-Data-Fil
 
 **avail** (required): the Availability for this piece of Cyberware. May contain the `Rating` keyword if Ratings are enabled. May contain mathematical formula such as `(Rating * 3)F`. avail can start with _+_ to indicate that it increases the base Cyberware's Availability instead. avail starting with _+_ can also include R or F to change its Availability. For example `+3R` would add 3 to the parent item's Availability and make it Restricted if it was not already. This will not downgrade an item from Forbidden to Restricted - this highest restriction is always kept. May used `FixedValues` if necessary. See [Using Fixed Values](#fixedvalues "Using Fixed Values") for more information.
 
-**addweapon** (optional): when this piece of Cyberware is added, Chummer looks for a Weapon in [weapons.xml](Weapons "weapons.xml") and adds it to the character. The value must match the name of a Weapon exactly. This is used to add Cyberweapons to a character.
+**addweapon** (optional): when this piece of Cyberware is added, Chummer looks for a Weapon in [weapons.xml](Weapons "weapons.xml") and adds it to the character. The value must match the weapon's name or id. This is used to add Cyberweapons to a character.
+
+**weaponcategories** (optional): comma-separated list of weapon Categories from [weapons.xml](Weapons "weapons.xml") that may be chosen as the base model for this piece of Cyberware. When present, Chummer prompts the user to select a catalog weapon after the Cyberware is added. This is used for _Custom_ cyber implant weapons (Cybergun Modification, _Chrome Flesh_) where the implant conversion cost is separate from the base weapon's cost. The selected weapon's name is stored on the Cyberware's `extra` field. If omitted, no base-weapon selection is offered.
+
+**weaponfilter** (optional): XPath predicate appended when filtering weapons during base-weapon selection. Uses the same syntax as [vehicle weapon mounts](Vehicles "vehicles.xml"). Common value: `not(cyberware) and not(hide)` to exclude built-in cyberweapons and hidden catalog entries. Only meaningful when `weaponcategories` is also specified.
+
+#### Example (Custom cyber implant weapon)
+
+```xml
+<cyberware>
+  <name>Custom Heavy Pistol</name>
+  <category>Cyber Implant Weapon</category>
+  <cost>3800</cost>
+  <!-- conversion surcharge; base weapon cost is charged separately -->
+  <weaponcategories>Heavy Pistols,Exotic Ranged Weapons</weaponcategories>
+  <weaponfilter>not(cyberware) and not(hide)</weaponfilter>
+</cyberware>
+```
 
 **cost** (required): the Cost for this piece of Cyberware. May contain the `Rating` keyword if Ratings are enabled. May contain mathematical formula such as `Rating * 3000`. May contain a variable value such as `Variable(20-100)` or `Variable(10000+)` to give the item a variable cost if it does not use Ratings. May used `FixedValues` if necessary. See [Using Fixed Values](#fixedvalues "Using Fixed Values") for more information.
 
 **allowgear** (optional): This is used to allow Gear to be attached to a piece of Cyberware. See [**Allowgear** Node](#allowgear "Allowgear Node") for more information. 
 
 **bonus** (optional): a bonus node that describes any bonuses this entry grants. Values may contain the `Rating` keyword if Ratings are enabled. See [Improvement Manager](Improvement-Manager) for more information.
+
+**limit** (optional): maximum number of copies of this cyberware a character may have. `False` means unlimited. May use limb placeholders such as `{arm}` or `{leg}` to limit per matching cyberlimb.
+
+**requireparent** (optional): empty element indicating this cyberware may only be selected as a plugin, not as top-level cyberware.
+
+**hide** (optional): empty element that hides this entry from selection lists when the active sourcebook filter excludes hidden items.
+
+**ignoresourcedisabled** (optional): when present, this entry remains selectable even if its sourcebook is disabled in the active settings.
+
+**selectside** (optional): empty element that prompts the user to choose Left or Right when adding paired cyberlimbs or similar items.
+
+**bannedgrades** (optional): child node listing `<grade>` entries that may not be used with this cyberware.
+
+**limbslotcount** (optional): number of limb slots consumed (`all` or a numeric value). Used by modular cyberlimb rules.
+
+**mountsto** (optional): modular mount point this item plugs into (for example `wrist`, `ankle`, `shoulder`).
+
+**modularmount** (optional): modular mount point this item provides on a cyberlimb.
+
+**blocksmounts** (optional): comma-separated list of mount points blocked on the same cyberlimb side when this item is installed.
+
+**inheritattributes** (optional): when `True`, a cyberlimb inherits parent Strength/Agility caps from its modular connector.
+
+**addtoparentess** (optional): when `True`, this plugin's Essence counts toward its parent's Essence instead of the character's total.
+
+**addtoparentcapacity** (optional): when `True`, this plugin's Capacity counts toward its parent's Capacity instead of consuming parent Capacity normally.
+
+**devicerating** (optional): matrix device rating. May use `{Rating}` when the item has Ratings.
+
+**programs** (optional): program capacity or limit string for matrix devices.
+
+**ratinglabel** (optional): string-table key used for a custom rating prompt label.
+
+**attributearray** (optional): comma-separated Attack, Sleaze, Data Processing, and Firewall values for matrix devices. Individual `attack`, `sleaze`, `dataprocessing`, and `firewall` elements may be used instead.
+
+**modattributearray** / **modattack** / **modsleaze** / **moddataprocessing** / **modfirewall** (optional): matrix attribute modifiers.
+
+**matrixcmbonus** (optional): matrix condition monitor bonus.
+
+**canformpersona** (optional): whether the device can form a persona.
+
+**notes** / **altnotes** / **notesColor** (optional): default notes text and highlight color added when the item is created.
+
+**weight** (optional): encumbrance/weight string stored on the item.
+
+**addvehicle** (optional): when present, Chummer looks up a Vehicle or Drone in [vehicles.xml](Vehicles "vehicles.xml") by name and adds it to the character when this cyberware is installed.
+
+**addparentweaponaccessory** (optional): when this plugin is installed, Chummer adds the named weapon accessory to the parent's cyberweapon.
+
+**gears** (optional): bundled default gear added when this cyberware is created. See [**Gears** Node](#gears "Gears Node") for more information.
+
+**allowsubsystems** (optional): extra cyberware plugin Categories allowed on this item. See [**Allowsubsystems** Node](#allowsubsystems "Allowsubsystems Node") for more information.
+
+**subsystems** (optional): bundled child cyberware or bioware added automatically when this item is created. See [**Bundled Subsystems** Node](#bundled_subsystems "Bundled Subsystems Node") for more information.
+
+**chargenonly** / **careeronly** / **onlyprioritygiven** / **chargenlimit** / **limitwithinclusions** / **includeinlimit** (optional): creation and limit rules evaluated through the shared requirements system. See [Conditions](Conditions) for more information.
 
 ## Pair Bonuses
 
@@ -148,8 +225,6 @@ Cyberware can optionally grant bonuses that only apply (or apply differently) wh
 
 **forcegrade** (optional): forces the Cyberware to be added using the Grade specified. This must match one of the Grades specified in the [**Grades** Node](#grade "Grades Node").
 
-**subsystems** (optional): By default, Cyberware may only have plugins from their own Category. This is used to specify additional Categories of Cyberware that can be added to this piece of Cyberware. See [**Subsystems** Node](#subsystems "Subsystems Node") for more information.
-
 **source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 
 **page** (required): the page number this item can be found on in the Sourcebook.
@@ -160,6 +235,21 @@ Cyberware can optionally grant bonuses that only apply (or apply differently) wh
        <oneof />
     </required>
 **oneof** (required): all of the requirements listed in this node must be met in order for the Cyberware to be selected. See [**Oneof** Node](#requiredspecific "Oneof Node") for more information.
+
+**parentdetails** (optional): requirements based on the parent cyberware when selecting this item as a plugin. Supports `OR`, `AND`, `name`, `category`, and `NONE` children with optional `operation` attributes such as `contains`. See [Conditions](Conditions) for the full filter-operation syntax.
+
+#### Example (cyberarm accessory)
+
+```xml
+<required>
+  <parentdetails>
+    <OR>
+      <name operation="contains">Full Arm</name>
+      <name operation="contains">Lower Arm</name>
+    </OR>
+  </parentdetails>
+</required>
+```
 
 ## <a id="requiredspecific"></a>Oneof Nodes
     <oneof>
@@ -178,6 +268,8 @@ Cyberware can optionally grant bonuses that only apply (or apply differently) wh
     </forbidden>
 **oneof** (required): None of the restrictions listed in this node must be met in order for the Cyberware to be selected. See [**Oneof** Node](#forbiddenspecific "Oneof Node") for more information.
 
+**parentdetails** (optional): parent-plugin restrictions using the same syntax as `required/parentdetails`.
+
 ## <a id="forbiddenspecific"></a>Oneof Nodes
     <oneof>
        <quality />
@@ -188,13 +280,32 @@ Cyberware can optionally grant bonuses that only apply (or apply differently) wh
 **cyberware** (optional): the name of another Cyberware that cannot be present to select this Cyberware. This node may appear multiple times. 
 
 **metatype** (optional): the name of a Metatype that cannot be present to select this Cyberware. This node may appear multiple times. See [Metatypes](Metatypes) for more information.
-## <a id="subsystems"></a>Subsystems Node
 
-**subsystem** (required): specifies an additional Category of Cyberware that may be included as a plugin for the current piece of Cyberware. This must match one of the Categories defined in the [**Categories** Node](#categories "Categories Node"). This may appear multiple times to allow multiple Categories of Cyberware to be added.
+**cyberwarecontains** (optional): forbids selection when a parent or related cyberware name contains the specified text.
+
+## <a id="allowsubsystems"></a>Allowsubsystems Node
+
+By default, cyberware plugins must share the parent's Category. `allowsubsystems` specifies additional Categories that may also be installed.
+
+**category** (required): an allowed plugin Category. This may appear multiple times.
+
+## <a id="bundled_subsystems"></a>Bundled Subsystems Node
+
+`subsystems` on a catalog entry defines child items automatically installed when the parent cyberware is added. This is different from `allowsubsystems`, which only widens what the user may add later.
+
+**cyberware** (optional): bundled child cyberware. Child nodes may include `name`, `rating`, and `forced`.
+
+**bioware** (optional): bundled child bioware resolved from [bioware.xml](Bioware "bioware.xml").
+
+## <a id="gears"></a>Gears Node
+
+**usegear** (optional): default gear added with the cyberware. Child nodes include `name` and optionally `category`, `rating`, or `select`.
 
 ## <a id="allowgear"></a>Allowgear Node
 
 **gearcategory** (required): specifies a Category of Gear that may be attached as a plugin for the current piece of Cyberware. This must match one of the Categories defined in the [gear.xml](Gear "gear.xml") data file. This may appear multiple times to allow multiple Categories of Gear to be added.
+
+**gearname** (optional): restricts allowed gear to specific gear names instead of (or in addition to) whole categories.
 
 ## <a id="suite"></a>Suite Node
 

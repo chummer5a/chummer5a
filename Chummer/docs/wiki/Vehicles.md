@@ -12,13 +12,19 @@ vehicles.xml (and custom_vehicles.xml, see [Custom Data Files](Custom-Data-Files
 
 [**mods**](#mods "mods") nodes describe Vehicle Modifications.
 
+[**weaponmountcategories**](#weaponmountcategories "weaponmountcategories") describes weapon-mount option categories.
+
+[**weaponmounts**](#weaponmounts "weaponmounts") nodes describe weapon-mount catalog options.
+
+[**weaponmountmods**](#weaponmountmods "weaponmountmods") nodes describe modifications that attach to weapon mounts.
+
 ## <a id="categories"></a>Categories Node
 
-**category** (required): the name of the Vehicle Category. This list populates the Category list found in the Select Vehicle window. Categories are used to group Vehicles into groups such as _Groundcraft_, _Aircraft_, and _Drones_.
+**category** (required): the name of the Vehicle Category. This list populates the Category list found in the Select Vehicle window. Categories are used to group Vehicles into groups such as _Groundcraft_, _Aircraft_, and _Drones_. The optional `blackmarket` attribute groups the category for black-market pipelines (for example `blackmarket="Vehicles"`).
 
 ## <a id="modcategories"></a>Mod Categories Node
 
-**category** (required): the name of the Vehicle Modification Category. This list populates the Category list found in the Select Vehicle Modification window.
+**category** (required): the name of the Vehicle Modification Category. This list populates the Category list found in the Select Vehicle Modification window. Supports the same optional `blackmarket` attribute as vehicle categories.
 
 ## <a id="vehicles"></a>Vehicle Node
 
@@ -32,11 +38,11 @@ vehicles.xml (and custom_vehicles.xml, see [Custom Data Files](Custom-Data-Files
 
 **page** (required): the page number this item can be found on in the Sourcebook.
 
-**handling** (required): the Vehicle's Handling attribute.
+**handling** (required): the Vehicle's Handling attribute. May use on-road/off-road slash notation (for example `4/3`).
 
-**speed** (required): the Vehicle's Speed attribute.
+**speed** (required): the Vehicle's Speed attribute. May use on-road/off-road slash notation.
 
-**accel** (required): the Vehicle's Acceleration attribute.
+**accel** (required): the Vehicle's Acceleration attribute. May use on-road/off-road slash notation.
 
 **body** (required): the Vehicle's Body attribute.
 
@@ -49,6 +55,8 @@ vehicles.xml (and custom_vehicles.xml, see [Custom Data Files](Custom-Data-Files
 **avail** (required): the Availability of the Vehicle.
 
 **cost** (required): the Cost of the Vehicle.
+
+Bundled default content (`gears`, `mods`, `weapons`, `weaponmounts`) and additional optional fields are documented in [**Bundled Vehicle Content**](#vehicle_bundled "Bundled Vehicle Content") and [**Additional Vehicle Fields**](#vehicle_fields "Additional Vehicle Fields").
 
 ## <a id="mods"></a>Vehicle Modification Node
 
@@ -83,4 +91,136 @@ vehicles.xml (and custom_vehicles.xml, see [Custom Data Files](Custom-Data-Files
 **required** (optional): defines requirements that must be met for this Vehicle Modification to be available. See [required nodes](Custom-Data-Files#required-nodes "Custom Data Files").
 
 **optionaldrone** (optional): if present, indicates this Vehicle Modification is optional for drones.
+
+**bonus** (optional): a bonus node applied when the mod is installed. See [Improvement Manager](Improvement-Manager) for more information.
+
+**wirelessbonus** (optional): like `bonus`, but only applies when the mod's wireless bonus is active.
+
+**forbidden** (optional): exclusion rules for this mod. Commonly uses `forbidden/vehicledetails`. See [Conditions](Conditions) for more information.
+
+**hide** (optional): empty element that hides this mod from filtered selection lists.
+
+**ignoresourcedisabled** (optional): when present, this mod remains selectable even if its sourcebook is disabled.
+
+**limit** (optional): limit category name used for per-character mod limits.
+
+**minrating** (optional): minimum selectable rating when the mod has Ratings.
+
+**ratinglabel** (optional): string-table key for a custom rating prompt label.
+
+**ammobonus** / **ammobonuspercent** / **ammoreplace** (optional): ammo capacity modifiers applied by the mod.
+
+**weaponmountcategories** (optional): comma-separated weapon Categories allowed when this mod acts as a weapon mount.
+
+## <a id="weaponmountcategories"></a>Weapon Mount Categories Node
+
+**category** (required): weapon-mount option category name (for example _Size_, _Flexibility_, _Control_, _Visibility_). Used by the weapon mount selection UI.
+
+## <a id="weaponmounts"></a>Weapon Mount Node
+
+Catalog entries under `weaponmounts/weaponmount` describe weapon-mount options. A complete mount is assembled from one entry in each relevant category (Size, Flexibility, Control, Visibility).
+
+**id** (required): GUID.
+
+**name** (required): option name (for example `Standard`, `Heavy`, `Manual`).
+
+**category** (required): one of the categories listed in [**Weapon Mount Categories**](#weaponmountcategories "Weapon Mount Categories Node").
+
+**source** / **page** (required): book reference.
+
+**avail** / **cost** (required): availability and cost for this option.
+
+**slots** (required): weapon-mount modification slot capacity provided by this option.
+
+**weaponcategories** (optional): comma-separated weapon Categories that may be mounted using this option combination.
+
+**weaponcapacity** (optional): maximum number of weapons allowed on the mount.
+
+**weaponfilter** (optional): XPath predicate appended when filtering weapons during weapon selection. Example: `not(cyberware) and not(hide)`.
+
+**required** / **forbidden** (optional): option compatibility rules. Commonly use `weaponmountdetails` and/or `vehicledetails` children. See [Conditions](Conditions).
+
+**optionaldrone** (optional): drone-only weapon-mount option.
+
+**hide** / **ignoresourcedisabled** (optional): selection visibility controls.
+
+## <a id="weaponmountmods"></a>Weapon Mount Modification Node
+
+`weaponmountmods/mod` entries use the same general field set as vehicle mods (id, name, category, source, page, avail, cost, rating, slots, bonus, required, forbidden, ammo fields, and so on). These mods attach to weapon mounts rather than directly to the vehicle.
+
+## <a id="vehicle_bundled"></a>Bundled Vehicle Content
+
+Vehicles may include default installed content.
+
+### Gears
+
+**gears/gear** (optional): default gear installed with the vehicle. Each entry may include `name`, `rating`, and `maxrating`.
+
+### Mods
+
+**mods/name** (optional): shorthand included mod reference. Attributes: `rating`, `select`, `cost`.
+
+**mods/mod** (optional): included mod with optional `rating`, `subsystems/cyberware` children, and other nested content.
+
+**mods/addslots** (optional): bonus general mod slots included with the vehicle.
+
+### Weapons
+
+**weapons/weapon/name** (optional): default weapon installed with the vehicle. Chummer resolves the weapon from [weapons.xml](Weapons "weapons.xml") and places it on an available mount.
+
+### Weapon Mounts
+
+**weaponmounts/weaponmount** (optional): pre-installed weapon mount. Child elements select catalog options by category:
+
+| Element | Looks up category |
+|---------|-------------------|
+| `size` | Size |
+| `flexibility` | Flexibility |
+| `control` | Control |
+| `visibility` | Visibility |
+
+Optional children:
+
+- **allowedweapons**: restricts which weapon names may be mounted
+- **location**: mount location label stored on the character
+- **mods/mod**: pre-installed weapon-mount mods from `weaponmountmods`
+
+#### Example (pre-installed mount)
+
+```xml
+<weaponmounts>
+  <weaponmount>
+    <control>Manual</control>
+    <flexibility>Fixed</flexibility>
+    <size>Standard</size>
+    <visibility>External</visibility>
+  </weaponmount>
+</weaponmounts>
+```
+
+## <a id="vehicle_fields"></a>Additional Vehicle Fields
+
+The following optional fields are supported on `vehicles/vehicle` entries in addition to the core attributes listed above.
+
+**seats** (optional): passenger/seat count.
+
+**modslots** (optional): drone general mod-slot pool. Defaults to `body` when omitted on drones.
+
+**bodymodslots** / **powertrainmodslots** / **protectionmodslots** / **weaponmodslots** / **electromagneticmodslots** / **cosmeticmodslots** (optional): bonus mod slots for a specific mod Category.
+
+**handling** / **speed** / **accel** (optional slash form): on-road/off-road values may be written as `4/3`.
+
+**devicerating** (optional): matrix device rating for RCC-style vehicles.
+
+**attributearray** (optional): comma-separated Attack, Sleaze, Data Processing, and Firewall values. Individual matrix attribute elements may be used instead.
+
+**modattributearray** / **modattack** / **modsleaze** / **moddataprocessing** / **modfirewall** (optional): matrix attribute modifiers.
+
+**programs** (optional): program limit for matrix devices.
+
+**notes** / **altnotes** / **notesColor** (optional): default notes text and highlight color.
+
+**hide** / **ignoresourcedisabled** (optional): selection visibility controls.
+
+**cost** (required): supports `Variable(min-max)` and other standard Chummer cost formulas in addition to fixed values.
 

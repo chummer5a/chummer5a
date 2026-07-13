@@ -7514,81 +7514,13 @@ namespace Chummer
                 bool blnAddAgain;
                 do
                 {
-                    blnAddAgain = await AddWeaponToWeaponMount(objWeaponMount, objMod, GenericToken)
+                    blnAddAgain = await AddWeaponToWeaponMountAsync(objWeaponMount, objMod, false, GenericToken)
                         .ConfigureAwait(false);
                 } while (blnAddAgain);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
-            }
-        }
-
-        private async Task<bool> AddWeaponToWeaponMount(WeaponMount objWeaponMount, VehicleMod objMod, CancellationToken token = default)
-        {
-            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
-            try
-            {
-                token.ThrowIfCancellationRequested();
-                using (ThreadSafeForm<SelectWeapon> frmPickWeapon = await ThreadSafeForm<SelectWeapon>.GetAsync(
-                           () => new SelectWeapon(CharacterObject)
-                           {
-                               LimitToCategories = objMod == null
-                                   ? objWeaponMount.AllowedWeaponCategories
-                                   : objMod.WeaponMountCategories,
-                               WeaponFilter = objMod == null
-                                   ? objWeaponMount.WeaponFilter
-                                   : string.Empty
-                           }, token).ConfigureAwait(false))
-                {
-                    if (await frmPickWeapon.ShowDialogSafeAsync(this, token).ConfigureAwait(false) ==
-                        DialogResult.Cancel)
-                        return false;
-
-                    // Open the Weapons XML file and locate the selected piece.
-                    XmlDocument objXmlDocument
-                        = await CharacterObject.LoadDataAsync("weapons.xml", token: token).ConfigureAwait(false);
-
-                    XmlNode objXmlWeapon = objXmlDocument.TryGetNodeByNameOrId("/chummer/weapons/weapon",
-                        frmPickWeapon.MyForm.SelectedWeapon);
-
-                    List<Weapon> lstWeapons = new List<Weapon>(1);
-                    Weapon objWeapon = new Weapon(CharacterObject);
-                    try
-                    {
-                        if (objMod != null)
-                            await objWeapon.SetParentVehicleModAsync(objMod, GenericToken).ConfigureAwait(false);
-                        else
-                            await objWeapon.SetParentMountAsync(objWeaponMount, GenericToken).ConfigureAwait(false);
-                        await objWeapon.CreateAsync(objXmlWeapon, lstWeapons, token: token).ConfigureAwait(false);
-
-                        if (objMod != null)
-                            await objMod.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                        else
-                            await objWeaponMount.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-
-                        foreach (Weapon objLoopWeapon in lstWeapons)
-                        {
-                            if (objMod != null)
-                                await objMod.Weapons.AddAsync(objLoopWeapon, token).ConfigureAwait(false);
-                            else
-                                await objWeaponMount.Weapons.AddAsync(objLoopWeapon, token).ConfigureAwait(false);
-                        }
-
-                        return frmPickWeapon.MyForm.AddAgain && (objMod != null || !objWeaponMount.IsWeaponsFull);
-                    }
-                    catch
-                    {
-                        foreach (Weapon objLoopWeapon in lstWeapons)
-                            await objLoopWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                        await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
-                        throw;
-                    }
-                }
-            }
-            finally
-            {
-                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -17406,6 +17338,8 @@ namespace Chummer
                                     frmPickCyberware.MyForm.BlackMarketDiscount,
                                     objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
                                 await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                            else
+                                await PromptAttachBaseWeaponToCyberwareIfNeededAsync(objCyberware, token).ConfigureAwait(false);
 
                             return frmPickCyberware.MyForm.AddAgain;
                         }
