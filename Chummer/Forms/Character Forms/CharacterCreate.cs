@@ -3704,6 +3704,10 @@ namespace Chummer
 
                         try
                         {
+                            Dictionary<string, string> dicAddSpiritForcedBySource
+                                = await ImprovementManager.SnapshotAddSpiritForcedValuesBySourceAsync(
+                                    CharacterObject, token).ConfigureAwait(false);
+
                             // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
                             if (lstInternalIdFilter == null)
                                 await ImprovementManager.RemoveImprovementsAsync(
@@ -3777,6 +3781,10 @@ namespace Chummer
                                 if (objNode != null)
                                 {
                                     string strSelected = objQuality.Extra;
+                                    if (string.IsNullOrEmpty(strSelected)
+                                        && dicAddSpiritForcedBySource.TryGetValue(objQuality.InternalId,
+                                            out string strSpiritForced))
+                                        strSelected = strSpiritForced;
 
                                     objQuality.Bonus = objNode["bonus"];
                                     if (objQuality.Bonus != null)

@@ -15039,6 +15039,10 @@
       <doublecareer>False</doublecareer>
       <bonus>
         <skilldisable>Spellcasting</skilldisable>
+        <!-- One extra summonable spirit type per two full Summoning ranks (FA p.36) -->
+        <addspirit skill="Summoning" ratingdivisor="2">
+          <addtoselected>False</addtoselected>
+        </addspirit>
       </bonus>
       <required>
         <allof>

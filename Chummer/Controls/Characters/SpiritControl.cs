@@ -478,7 +478,8 @@ namespace Chummer
         public async Task RebuildSpiritListOnTraditionChange(object sender, PropertyChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (e?.PropertyName == nameof(Character.MagicTradition))
+            if (e?.PropertyName == nameof(Character.MagicTradition)
+                || e?.PropertyName == nameof(Character.SpiritTypeListChanged))
                 await RebuildSpiritList(
                         await _objSpirit.CharacterObject.GetMagicTraditionAsync(token).ConfigureAwait(false), token)
                     .ConfigureAwait(false);

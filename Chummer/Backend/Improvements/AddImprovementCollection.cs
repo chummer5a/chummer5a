@@ -58,6 +58,28 @@ namespace Chummer
         public string SelectedValue { get; set; }
         public string SelectedTarget { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Comma-separated ForcedValue entries peeled one at a time by multi-select bonuses (e.g. addspirit).
+        /// </summary>
+        private Queue<string> _queuePendingForcedValues;
+
+        private string TakeNextForcedValue()
+        {
+            if (_queuePendingForcedValues == null)
+            {
+                _queuePendingForcedValues = new Queue<string>();
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    foreach (string strPart in ForcedValue.Split(new[] { ", " }, StringSplitOptions.None))
+                    {
+                        if (!string.IsNullOrEmpty(strPart))
+                            _queuePendingForcedValues.Enqueue(strPart);
+                    }
+                }
+            }
+            return _queuePendingForcedValues.Count > 0 ? _queuePendingForcedValues.Dequeue() : string.Empty;
+        }
+
         private readonly Improvement.ImprovementSource _objImprovementSource;
         private readonly string _strUnique;
         private readonly string _strFriendlyName;
@@ -6068,6 +6090,8 @@ namespace Chummer
 
         /// <summary>
         /// Improvement type that adds to the available spirit types a character can summon.
+        /// Optional attributes: skill (skill name) and ratingdivisor (integer, default 1) —
+        /// prompts once per (skill TotalBaseRating / ratingdivisor) full increments (e.g. Dedicated Conjurer).
         /// </summary>
         /// <param name="bonusNode"></param>
         public void addspirit(XmlNode bonusNode)
@@ -6081,7 +6105,32 @@ namespace Chummer
             {
                 blnAddToSelected = Convert.ToBoolean(strAddToSelected, GlobalSettings.InvariantCultureInfo);
             }
-            AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, blnAddToSelected, "Spirits");
+            int intSelections = 1;
+            string strSkill = bonusNode.Attributes?["skill"]?.InnerTextViaPool();
+            if (!string.IsNullOrEmpty(strSkill))
+            {
+                int intDivisor = GetSpiritOrSpriteRatingDivisor(bonusNode);
+                CreateImprovement(strSkill, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.AddSpiritSkill, _strUnique, intRating: intDivisor);
+                int intSkillRating = _objCharacter.SkillsSection.GetActiveSkill(strSkill)?.TotalBaseRating ?? 0;
+                intSelections = intSkillRating / intDivisor;
+            }
+            for (int i = 0; i < intSelections; ++i)
+            {
+                AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, blnAddToSelected, "Spirits");
+            }
+        }
+
+        private static int GetSpiritOrSpriteRatingDivisor(XmlNode bonusNode)
+        {
+            string strDivisor = bonusNode.Attributes?["ratingdivisor"]?.InnerTextViaPool();
+            if (!string.IsNullOrEmpty(strDivisor)
+                && int.TryParse(strDivisor, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intParsedDivisor)
+                && intParsedDivisor > 0)
+            {
+                return intParsedDivisor;
+            }
+            return 1;
         }
 
         /// <summary>
@@ -6147,7 +6196,12 @@ namespace Chummer
                     using (ThreadSafeForm<SelectItem> frmSelect = ThreadSafeForm<SelectItem>.Get(() => new SelectItem()))
                     {
                         frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
-                        frmSelect.MyForm.ForceItem(ForcedValue);
+                        frmSelect.MyForm.ForceItem(TakeNextForcedValue());
+                        frmSelect.MyForm.Description = !string.IsNullOrEmpty(_strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("String_Improvement_SelectSpiritType"),
+                                _strFriendlyName)
+                            : LanguageManager.GetString("String_Improvement_SelectSpiritTypeGeneric");
                         if (frmSelect.ShowDialogSafe(_objCharacter) == DialogResult.Cancel)
                         {
                             throw new AbortedException();

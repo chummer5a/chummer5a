@@ -29,6 +29,11 @@ PACKs:
 
 Qualities:
 - Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
+- Dedicated Conjurer now prompts for extra summonable spirit types based on Summoning rating (one type per two full ranks, FA p.36). Raising Summoning later prompts for newly earned picks. Existing characers with this quality will need to use the Reapply Improvements menu to add the new improvement type. Closes #4712.
+
+Magic:
+- Watchers and Homunculi no longer count toward the bound spirit (Charisma) limit shared with tradition spirits. Bound spirit dropdowns refresh when AddSpirit improvements change. Closes #4476.
+- Extended the `addspirit` improvement with optional `skill` and `ratingdivisor` attributes for skill-linked spirit type picks (used by Dedicated Conjurer) and clearer selection prompts that indicate why the user is being prompted to select a spirit type.
 
 Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
@@ -36,6 +41,8 @@ Weapons:
 - Fixed underbarrel weapons being blocked from being added to weapons.
 
 Changed/New Strings:
+- String_Improvement_SelectSpiritType
+- String_Improvement_SelectSpiritTypeGeneric
 - String_GroupContactAbbrev
 - Button_UpdateCustomDataDirectory
 - Message_CustomDataDirectory_UpdateAvailable

@@ -32,6 +32,13 @@ Contents
 -   [Limitations](#Limitations_2)
 -   [Example](#Example_2)
 
+[addspirit](#addspirit)
+
+-   [Attributes](#Attributes_addspirit)
+-   [Elements](#Elements_addspirit)
+-   [Limitations](#Limitations_addspirit)
+-   [Example](#Example_addspirit)
+
 [addspell](#addspell)
 
 -   [Attributes](#Attributes_2)
@@ -771,6 +778,60 @@ The following example adds the Magic Special Attribute to a character with a min
     <aug>6</aug>
     <val>1</val>
   </addattribute>
+</bonus>
+```
+
+### addspirit
+
+Grants the character access to one or more additional spirit types they can summon (shown in spirit type dropdowns alongside their tradition's spirits). Each use typically opens a selection dialog. When selection(s) succeed, matching `AddSpirit` improvements are created.
+
+Also used by ritual spell bonuses (e.g. Watcher, Homunculus) and qualities such as Chain Breaker and Dedicated Conjurer.
+
+##### Attributes
+
+**skill** (optional): Name of an active skill. When set, Chummer grants one spirit type pick for every `ratingdivisor` full ranks in that skill (using `TotalBaseRating`). An `AddSpiritSkill` tracker improvement is also created so that raising the skill later prompts for newly earned picks.
+
+**ratingdivisor** (optional): Number of full skill ranks required per pick when `skill` is set. Defaults to `1`. Dedicated Conjurer uses `2` (one extra type per two Summoning ranks).
+
+##### Elements
+
+**spirit** (optional): Restricts the selectable list to these spirit names (from traditions.xml and/or critter category Spirits). May appear multiple times. If omitted, the character may choose from the general spirit list.
+
+**addtoselected** (optional): When `False`, the chosen spirit name(s) are not written into the improvement source's Extra/selected text (for example, so a quality does not display as "Dedicated Conjurer (Spirit of Fire)"). Defaults to `True`. Reapply Improvements still restores prior picks from existing `AddSpirit` improvements when Extra is empty.
+
+##### Limitations
+
+Without `skill`, each `<addspirit />` node grants a single pick (use multiple nodes for multiple fixed picks). With `skill`, the number of picks is based on the skill rating at creation and increases when the skill rises.
+
+##### Example
+
+Chain Breaker grants two unrestricted extra spirit types:
+
+```XML
+<bonus>
+  <addspirit />
+  <addspirit />
+</bonus>
+```
+
+Dedicated Conjurer grants one extra spirit type per two full Summoning ranks, without storing the choice on the quality Extra:
+
+```XML
+<bonus>
+  <skilldisable>Spellcasting</skilldisable>
+  <addspirit skill="Summoning" ratingdivisor="2">
+    <addtoselected>False</addtoselected>
+  </addspirit>
+</bonus>
+```
+
+Spirit Expansion: Shedim grants a fixed spirit type:
+
+```XML
+<bonus>
+  <addspirit>
+    <spirit>Shedim</spirit>
+  </addspirit>
 </bonus>
 ```
 

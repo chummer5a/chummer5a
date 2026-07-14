@@ -8954,6 +8954,14 @@
       <text>Select an Item</text>
     </string>
     <string>
+      <key>String_Improvement_SelectSpiritType</key>
+      <text>Please select an additional spirit type from {0}.</text>
+    </string>
+    <string>
+      <key>String_Improvement_SelectSpiritTypeGeneric</key>
+      <text>Please select an additional spirit type.</text>
+    </string>
+    <string>
       <key>String_SelectItemFocus</key>
       <text>Select a Focus to add to the Stacked Focus. Click Cancel if you are done adding Foci to the Stacked Focus.</text>
     </string>

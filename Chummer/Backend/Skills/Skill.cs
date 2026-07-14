@@ -7285,6 +7285,7 @@ namespace Chummer.Backend.Skills
         {
             if (IsLoading)
                 return;
+            bool blnRefreshAddSpiritSkillSelections = false;
             using (LockObject.EnterUpgradeableReadLock())
             {
                 HashSet<string> setNamesOfChangedProperties = null;
@@ -7431,6 +7432,9 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
                         RecacheAttribute();
 
+                    if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                        blnRefreshAddSpiritSkillSelections = true;
+
                     if (setNamesOfChangedProperties.Contains(nameof(Enabled))
                         && CharacterObjectSettings.CompensateSkillGroupKarmaDifference && SkillGroupObject != null)
                     {
@@ -7448,6 +7452,14 @@ namespace Chummer.Backend.Skills
                         Utils.StringHashSetPool.Return(ref setNamesOfChangedProperties);
                 }
             }
+
+            if (blnRefreshAddSpiritSkillSelections)
+            {
+                // Dedicated Conjurer et al.: prompt for newly earned spirit types when Summoning (etc.) rises.
+                // Run outside LockObject so SelectItem / CreateImprovement cannot deadlock.
+                Utils.SafelyRunSynchronously(
+                    () => ImprovementManager.RefreshAddSpiritSkillSelectionsAsync(CharacterObject, this));
+            }
         }
 
         public async Task OnMultiplePropertiesChangedAsync(IReadOnlyCollection<string> lstPropertyNames,
@@ -7456,6 +7468,7 @@ namespace Chummer.Backend.Skills
             token.ThrowIfCancellationRequested();
             if (IsLoading)
                 return;
+            bool blnRefreshAddSpiritSkillSelections = false;
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -7610,6 +7623,9 @@ namespace Chummer.Backend.Skills
                     if (setNamesOfChangedProperties.Contains(nameof(DefaultAttribute)))
                         await RecacheAttributeAsync(token).ConfigureAwait(false);
 
+                    if (setNamesOfChangedProperties.Contains(nameof(TotalBaseRating)))
+                        blnRefreshAddSpiritSkillSelections = true;
+
                     if (setNamesOfChangedProperties.Contains(nameof(Enabled)) && CharacterObject != null &&
                         SkillGroupObject != null)
                     {
@@ -7631,6 +7647,14 @@ namespace Chummer.Backend.Skills
             finally
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            if (blnRefreshAddSpiritSkillSelections)
+            {
+                // Dedicated Conjurer et al.: prompt for newly earned spirit types when Summoning (etc.) rises.
+                // Run outside LockObject so SelectItem / CreateImprovement cannot deadlock.
+                await ImprovementManager.RefreshAddSpiritSkillSelectionsAsync(CharacterObject, this, token)
+                    .ConfigureAwait(false);
             }
         }
 

@@ -6461,6 +6461,146 @@ namespace Chummer
             }
         }
 
+        private static readonly ConcurrentDictionary<Character, byte> s_dicRefreshingAddSpiritSkills
+            = new ConcurrentDictionary<Character, byte>();
+
+        /// <summary>
+        /// When a skill linked by AddSpiritSkill increases, prompt for any newly earned spirit type picks.
+        /// </summary>
+        /// <param name="objCharacter">Character that owns the skill.</param>
+        /// <param name="objSkill">Skill whose rating changed.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task RefreshAddSpiritSkillSelectionsAsync(Character objCharacter, Skill objSkill,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objCharacter == null || objSkill == null || Utils.IsUnitTest)
+                return;
+            if (objCharacter.IsLoading || objSkill.IsLoading)
+                return;
+            if (!s_dicRefreshingAddSpiritSkills.TryAdd(objCharacter, 0))
+                return;
+            try
+            {
+                string strSkillName = await objSkill.GetNameAsync(token).ConfigureAwait(false);
+                List<Improvement> lstTrackers = await (await objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                    .ToListAsync(
+                        x => x.ImproveType == Improvement.ImprovementType.AddSpiritSkill
+                             && x.ImprovedName == strSkillName,
+                        token).ConfigureAwait(false);
+                if (lstTrackers.Count == 0)
+                    return;
+
+                int intSkillRating = await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false);
+                foreach (Improvement objTracker in lstTrackers)
+                {
+                    token.ThrowIfCancellationRequested();
+                    int intDivisor = Math.Max(1, objTracker.Rating);
+                    int intEntitlement = intSkillRating / intDivisor;
+                    List<Improvement> lstExisting = await (await objCharacter.GetImprovementsAsync(token).ConfigureAwait(false))
+                        .ToListAsync(
+                            x => x.ImproveType == Improvement.ImprovementType.AddSpirit
+                                 && x.SourceName == objTracker.SourceName,
+                            token).ConfigureAwait(false);
+                    int intNeed = intEntitlement - lstExisting.Count;
+                    if (intNeed <= 0)
+                        continue;
+
+                    string strFriendlyName = string.Empty;
+                    Quality objQuality = await (await objCharacter.GetQualitiesAsync(token).ConfigureAwait(false))
+                        .FirstOrDefaultAsync(x => x.InternalId == objTracker.SourceName, token).ConfigureAwait(false);
+                    if (objQuality != null)
+                        strFriendlyName = await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+
+                    for (int i = 0; i < intNeed; ++i)
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strSelected = await PromptSelectSpiritTypeAsync(objCharacter, strFriendlyName, token)
+                            .ConfigureAwait(false);
+                        if (string.IsNullOrEmpty(strSelected))
+                            break; // User cancelled; keep any picks already granted this session.
+                        await CreateImprovementAsync(
+                            objCharacter, strSelected, objTracker.ImproveSource, objTracker.SourceName,
+                            Improvement.ImprovementType.AddSpirit, objTracker.UniqueName, token: token).ConfigureAwait(false);
+                    }
+                }
+            }
+            finally
+            {
+                s_dicRefreshingAddSpiritSkills.TryRemove(objCharacter, out _);
+            }
+        }
+
+        /// <summary>
+        /// Collect AddSpirit ImprovedNames keyed by SourceName so reapply can restore picks without Quality.Extra.
+        /// </summary>
+        public static async Task<Dictionary<string, string>> SnapshotAddSpiritForcedValuesBySourceAsync(
+            Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            Dictionary<string, string> dicReturn = new Dictionary<string, string>();
+            if (objCharacter == null)
+                return dicReturn;
+            Dictionary<string, List<string>> dicNames = new Dictionary<string, List<string>>();
+            await (await objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(objImprovement =>
+            {
+                if (objImprovement.ImproveType != Improvement.ImprovementType.AddSpirit
+                    || string.IsNullOrEmpty(objImprovement.ImprovedName)
+                    || string.IsNullOrEmpty(objImprovement.SourceName))
+                    return;
+                if (!dicNames.TryGetValue(objImprovement.SourceName, out List<string> lstNames))
+                {
+                    lstNames = new List<string>();
+                    dicNames.Add(objImprovement.SourceName, lstNames);
+                }
+                lstNames.Add(objImprovement.ImprovedName);
+            }, token).ConfigureAwait(false);
+            foreach (KeyValuePair<string, List<string>> kvp in dicNames)
+                dicReturn[kvp.Key] = string.Join(", ", kvp.Value);
+            return dicReturn;
+        }
+
+        private static async Task<string> PromptSelectSpiritTypeAsync(Character objCharacter, string strFriendlyName,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (new FetchSafelyFromSafeObjectPool<List<ListItem>>(Utils.ListItemListPool, out List<ListItem> lstSpirits))
+            {
+                foreach (XPathNavigator xmlSpirit in (await objCharacter.LoadDataXPathAsync("traditions.xml", token: token).ConfigureAwait(false))
+                             .SelectAndCacheExpression("/chummer/spirits/spirit", token))
+                {
+                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    lstSpirits.Add(new ListItem(strSpiritName,
+                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strSpiritName));
+                }
+
+                foreach (XPathNavigator xmlSpirit in (await objCharacter.LoadDataXPathAsync("critters.xml", token: token).ConfigureAwait(false))
+                             .Select("/chummer/critters/critter[category = " + "Spirits".CleanXPath() + "]"))
+                {
+                    string strSpiritName = xmlSpirit.SelectSingleNodeAndCacheExpression("name", token)?.Value;
+                    lstSpirits.Add(new ListItem(strSpiritName,
+                        xmlSpirit.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? strSpiritName));
+                }
+
+                using (ThreadSafeForm<SelectItem> frmSelect =
+                       await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
+                {
+                    frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
+                    string strDescription = !string.IsNullOrEmpty(strFriendlyName)
+                        ? string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritType", token: token)
+                                .ConfigureAwait(false),
+                            strFriendlyName)
+                        : await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritTypeGeneric", token: token)
+                            .ConfigureAwait(false);
+                    await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
+                    if (await frmSelect.ShowDialogSafeAsync(objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return string.Empty;
+                    return await frmSelect.MyForm.DoThreadSafeFuncAsync(x => x.SelectedItem, token).ConfigureAwait(false);
+                }
+            }
+        }
+
         #endregion Improvement System
     }
 }

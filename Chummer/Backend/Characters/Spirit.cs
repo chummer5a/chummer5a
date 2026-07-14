@@ -240,6 +240,7 @@ namespace Chummer
                 string strTemp = string.Empty;
                 if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
                     _eEntityType = ConvertToSpiritType(strTemp);
+                RefreshIgnoreBoundSpiritLimitFromData(token);
                 objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
                 objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
                 objNode.TryGetInt32FieldQuickly("force", ref _intForce);
@@ -285,6 +286,7 @@ namespace Chummer
                 string strTemp = string.Empty;
                 if (objNode.TryGetStringFieldQuickly("type", ref strTemp))
                     _eEntityType = ConvertToSpiritType(strTemp);
+                await RefreshIgnoreBoundSpiritLimitFromDataAsync(token).ConfigureAwait(false);
                 objNode.TryGetStringFieldQuickly("crittername", ref _strCritterName);
                 objNode.TryGetInt32FieldQuickly("services", ref _intServicesOwed);
                 objNode.TryGetInt32FieldQuickly("force", ref _intForce);
@@ -848,6 +850,72 @@ namespace Chummer
         public Character CharacterObject { get; }
 
         /// <summary>
+        /// From spirit data (<c>ignoreboundspiritlimit</c>); Watchers and Homunculi set this.
+        /// </summary>
+        private bool _blnIgnoreBoundSpiritLimit;
+
+        /// <summary>
+        /// Whether this spirit counts against the magician's bound-spirit (Charisma) limit.
+        /// </summary>
+        public bool CountsAgainstBoundSpiritLimit
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return !_blnIgnoreBoundSpiritLimit;
+            }
+        }
+
+        /// <summary>
+        /// Whether this spirit counts against the magician's bound-spirit (Charisma) limit.
+        /// </summary>
+        public async Task<bool> GetCountsAgainstBoundSpiritLimitAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return !_blnIgnoreBoundSpiritLimit;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private void RefreshIgnoreBoundSpiritLimitFromData(CancellationToken token = default)
+        {
+            // Avoid GetNode() here: callers often already hold LockObject write lock.
+            bool blnIgnore = false;
+            if (!string.IsNullOrEmpty(_strName))
+            {
+                XPathNavigator objNode = CharacterObject
+                    .LoadDataXPath(_eEntityType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+            }
+            _blnIgnoreBoundSpiritLimit = blnIgnore;
+        }
+
+        private async Task RefreshIgnoreBoundSpiritLimitFromDataAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Avoid GetNodeAsync() here: callers often already hold LockObject write lock.
+            bool blnIgnore = false;
+            if (!string.IsNullOrEmpty(_strName))
+            {
+                SpiritType eType = _eEntityType;
+                XPathNavigator objNode = (await CharacterObject
+                        .LoadDataXPathAsync(eType == SpiritType.Spirit ? "traditions.xml" : "streams.xml", token: token)
+                        .ConfigureAwait(false))
+                    .TryGetNodeByNameOrId("/chummer/spirits/spirit", _strName);
+                objNode?.TryGetBoolFieldQuickly("ignoreboundspiritlimit", ref blnIgnore);
+            }
+            _blnIgnoreBoundSpiritLimit = blnIgnore;
+        }
+
+        /// <summary>
         /// Name of the Spirit's Metatype.
         /// </summary>
         public string Name
@@ -869,6 +937,7 @@ namespace Chummer
                             return;
                         _objCachedMyXmlNode = null;
                         _objCachedMyXPathNode = null;
+                        RefreshIgnoreBoundSpiritLimitFromData();
                         OnPropertyChanged();
                     }
                 }
@@ -912,6 +981,7 @@ namespace Chummer
                         return;
                     _objCachedMyXmlNode = null;
                     _objCachedMyXPathNode = null;
+                    await RefreshIgnoreBoundSpiritLimitFromDataAsync(token).ConfigureAwait(false);
                     await OnPropertyChangedAsync(nameof(Name), token).ConfigureAwait(false);
                 }
                 finally
@@ -1326,6 +1396,25 @@ namespace Chummer
                 {
                     if (_blnBound == value)
                         return;
+                    if (value && !CharacterObject.IgnoreRules && EntityType == SpiritType.Spirit
+                        && CountsAgainstBoundSpiritLimit && !Fettered
+                        && CharacterObject.Spirits.Count(x =>
+                                                            !ReferenceEquals(x, this) && x.EntityType == SpiritType.Spirit
+                                                            && x.Bound && !x.Fettered
+                                                            && x.CountsAgainstBoundSpiritLimit)
+                        >= CharacterObject.BoundSpiritLimit)
+                    {
+                        string strExpression = CharacterObject.ProcessAttributesInXPathForTooltip(
+                            CharacterObject.Settings.BoundSpiritExpression);
+                        Program.ShowScrollableMessageBox(
+                            string.Format(GlobalSettings.CultureInfo,
+                                LanguageManager.GetString("Message_BoundSpiritLimit"),
+                                strExpression,
+                                CharacterObject.BoundSpiritLimit),
+                            LanguageManager.GetString("MessageTitle_BoundSpiritLimit"),
+                            MessageBoxButtons.OK, MessageBoxIcon.Information);
+                        return;
+                    }
                     if (CharacterObject.Created && !value && ServicesOwed > 0 && !Fettered
                         && CharacterObject.Spirits.Any(x =>
                                                            !ReferenceEquals(x, this) && x.EntityType == EntityType
@@ -1394,6 +1483,29 @@ namespace Chummer
                 if (_blnBound == value)
                     return;
                 SpiritType eType = await GetEntityTypeAsync(token).ConfigureAwait(false);
+                if (value && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
+                    && eType == SpiritType.Spirit
+                    && await GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false)
+                    && !await GetFetteredAsync(token).ConfigureAwait(false)
+                    && await CharacterObject.Spirits.CountAsync(async x =>
+                                                                   !ReferenceEquals(x, this)
+                                                                   && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == SpiritType.Spirit
+                                                                   && await x.GetBoundAsync(token).ConfigureAwait(false)
+                                                                   && !await x.GetFetteredAsync(token).ConfigureAwait(false)
+                                                                   && await x.GetCountsAgainstBoundSpiritLimitAsync(token).ConfigureAwait(false), token).ConfigureAwait(false)
+                    >= await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false))
+                {
+                    string strExpression = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
+                        await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetBoundSpiritExpressionAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                    await Program.ShowScrollableMessageBoxAsync(
+                        string.Format(GlobalSettings.CultureInfo,
+                            await LanguageManager.GetStringAsync("Message_BoundSpiritLimit", token: token).ConfigureAwait(false),
+                            strExpression,
+                            await CharacterObject.GetBoundSpiritLimitAsync(token).ConfigureAwait(false)),
+                        await LanguageManager.GetStringAsync("MessageTitle_BoundSpiritLimit", token: token).ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                    return;
+                }
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !value && await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && !await GetFetteredAsync(token).ConfigureAwait(false)
                     && await CharacterObject.Spirits.AnyAsync(async x =>
                         !ReferenceEquals(x, this)
@@ -2484,6 +2596,9 @@ namespace Chummer
 
         private static readonly PropertyDependencyGraph<Spirit> s_SpiritDependencyGraph =
             new PropertyDependencyGraph<Spirit>(
+                new DependencyGraphNode<string, Spirit>(nameof(CountsAgainstBoundSpiritLimit),
+                    new DependencyGraphNode<string, Spirit>(nameof(Name))
+                ),
                 new DependencyGraphNode<string, Spirit>(nameof(NoLinkedCharacter),
                     new DependencyGraphNode<string, Spirit>(nameof(LinkedCharacter))
                 ),

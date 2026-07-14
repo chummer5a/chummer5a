@@ -58,6 +58,7 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom-Data-F
        <powers></powers>
        <optionalpowers></optionalpowers>
        <weaknesses></weaknesses>
+       <ignoreboundspiritlimit></ignoreboundspiritlimit>
        <source></source>
        <page></page>
     </spirit>
@@ -91,6 +92,8 @@ traditions.xml (and custom_traditions.xml, see [Custom Data Files](Custom-Data-F
 **optionalpowers** (optional): the list of additional Critter Powers that this Spirit can choose to gain. See [**Powers and Optionalpowers** Nodes](#powers "Powers and Optionalpowers Nodes") for more information.
 
 **weaknesses** (optional): the list of additional Critter Weaknesses that this Spirit receives automatically. See [**Weaknesses** Node](#Weaknesses "Weaknesses Nodes") for more information.
+
+**ignoreboundspiritlimit** (optional): When `True`, this spirit type does not count toward the magician's maximum number of bound spirits (normally Charisma). Used for ritual minions such as Watcher and Homunculus variants so they do not share the bound-spirit cap with tradition spirits. Defaults to omitted/`False`.
 
 **source** (required): the code for the Sourcebook that this entry comes from. See [books.xml](Books "books.xml").
 

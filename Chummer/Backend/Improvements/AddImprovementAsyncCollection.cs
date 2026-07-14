@@ -58,6 +58,28 @@ namespace Chummer
         public string SelectedValue { get; set; }
         public string SelectedTarget { get; set; } = string.Empty;
 
+        /// <summary>
+        /// Comma-separated ForcedValue entries peeled one at a time by multi-select bonuses (e.g. addspirit).
+        /// </summary>
+        private Queue<string> _queuePendingForcedValues;
+
+        private string TakeNextForcedValue()
+        {
+            if (_queuePendingForcedValues == null)
+            {
+                _queuePendingForcedValues = new Queue<string>();
+                if (!string.IsNullOrEmpty(ForcedValue))
+                {
+                    foreach (string strPart in ForcedValue.Split(new[] { ", " }, StringSplitOptions.None))
+                    {
+                        if (!string.IsNullOrEmpty(strPart))
+                            _queuePendingForcedValues.Enqueue(strPart);
+                    }
+                }
+            }
+            return _queuePendingForcedValues.Count > 0 ? _queuePendingForcedValues.Dequeue() : string.Empty;
+        }
+
         private readonly Improvement.ImprovementSource _objImprovementSource;
         private readonly string _strUnique;
         private readonly string _strFriendlyName;
@@ -6378,13 +6400,14 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
         /// <summary>
         /// Improvement type that adds to the available spirit types a character can summon.
+        /// Optional attributes: skill (skill name) and ratingdivisor (integer, default 1) —
+        /// prompts once per (skill TotalBaseRating / ratingdivisor) full increments (e.g. Dedicated Conjurer).
         /// </summary>
-        public Task addspirit(XmlNode bonusNode, CancellationToken token = default)
+        public async Task addspirit(XmlNode bonusNode, CancellationToken token = default)
         {
-            if (token.IsCancellationRequested)
-                return Task.FromCanceled(token);
+            token.ThrowIfCancellationRequested();
             if (bonusNode == null)
-                return Task.FromException(new ArgumentNullException(nameof(bonusNode)));
+                throw new ArgumentNullException(nameof(bonusNode));
             XmlNodeList xmlAllowedSpirits = bonusNode.SelectNodes("spirit");
             bool blnAddToSelected = true;
             string strAddToSelected = bonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("addtoselected", token)?.Value;
@@ -6392,7 +6415,36 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 blnAddToSelected = Convert.ToBoolean(strAddToSelected, GlobalSettings.InvariantCultureInfo);
             }
-            return AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, blnAddToSelected, "Spirits", token);
+            int intSelections = 1;
+            string strSkill = bonusNode.Attributes?["skill"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strSkill))
+            {
+                int intDivisor = GetSpiritOrSpriteRatingDivisor(bonusNode, token);
+                await CreateImprovementAsync(strSkill, _objImprovementSource, SourceName,
+                    Improvement.ImprovementType.AddSpiritSkill, _strUnique, intRating: intDivisor, token: token).ConfigureAwait(false);
+                Skill objSkill = await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false))
+                    .GetActiveSkillAsync(strSkill, token).ConfigureAwait(false);
+                int intSkillRating = objSkill != null
+                    ? await objSkill.GetTotalBaseRatingAsync(token).ConfigureAwait(false)
+                    : 0;
+                intSelections = intSkillRating / intDivisor;
+            }
+            for (int i = 0; i < intSelections; ++i)
+            {
+                await AddSpiritOrSprite("traditions.xml", xmlAllowedSpirits, Improvement.ImprovementType.AddSpirit, blnAddToSelected, "Spirits", token).ConfigureAwait(false);
+            }
+        }
+
+        private static int GetSpiritOrSpriteRatingDivisor(XmlNode bonusNode, CancellationToken token = default)
+        {
+            string strDivisor = bonusNode.Attributes?["ratingdivisor"]?.InnerTextViaPool(token);
+            if (!string.IsNullOrEmpty(strDivisor)
+                && int.TryParse(strDivisor, NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intParsedDivisor)
+                && intParsedDivisor > 0)
+            {
+                return intParsedDivisor;
+            }
+            return 1;
         }
 
         /// <summary>
@@ -6460,7 +6512,13 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     using (ThreadSafeForm<SelectItem> frmSelect = await ThreadSafeForm<SelectItem>.GetAsync(() => new SelectItem(), token).ConfigureAwait(false))
                     {
                         frmSelect.MyForm.SetGeneralItemsMode(lstSpirits);
-                        frmSelect.MyForm.ForceItem(ForcedValue);
+                        frmSelect.MyForm.ForceItem(TakeNextForcedValue());
+                        string strDescription = !string.IsNullOrEmpty(_strFriendlyName)
+                            ? string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritType", token: token).ConfigureAwait(false),
+                                _strFriendlyName)
+                            : await LanguageManager.GetStringAsync("String_Improvement_SelectSpiritTypeGeneric", token: token).ConfigureAwait(false);
+                        await frmSelect.MyForm.DoThreadSafeAsync(x => x.Description = strDescription, token).ConfigureAwait(false);
                         if (await frmSelect.ShowDialogSafeAsync(_objCharacter, token).ConfigureAwait(false) == DialogResult.Cancel)
                         {
                             throw new AbortedException();

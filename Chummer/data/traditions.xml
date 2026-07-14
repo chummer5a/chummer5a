@@ -1589,6 +1589,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1626,6 +1627,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1663,6 +1665,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1700,6 +1703,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1737,6 +1741,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1774,6 +1779,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1809,6 +1815,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1846,6 +1853,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1883,6 +1891,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
@@ -1918,6 +1927,7 @@
           <name>critter</name>
         </enabletab>
       </bonus>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SR5</source>
       <page>298</page>
     </spirit>
