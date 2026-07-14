@@ -6447,16 +6447,24 @@ namespace Chummer
 
                 case QualitySource.Improvement:
                 case QualitySource.QualityLevelImprovement:
-                    await Program.ShowScrollableMessageBoxAsync(
-                        this,
-                        string.Format(GlobalSettings.CultureInfo,
-                            await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token)
-                                .ConfigureAwait(false),
-                            await objSelectedQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
-                                .ConfigureAwait(false)),
-                        await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
-                            .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
-                    return false;
+                    // Orphaned improvement qualities (e.g. from deleted custom drugs after a guid-load bug) can be removed.
+                    // Only prevent this if there still improvements that refer to the quality. 
+                    if (await CharacterObject.Improvements.AnyAsync(
+                            x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                 && x.ImprovedName == objSelectedQuality.InternalId, token).ConfigureAwait(false))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            this,
+                            string.Format(GlobalSettings.CultureInfo,
+                                await LanguageManager.GetStringAsync("Message_ImprovementQuality", token: token)
+                                    .ConfigureAwait(false),
+                                await objSelectedQuality.DisplaySourceNameAsync(GlobalSettings.Language, token)
+                                    .ConfigureAwait(false)),
+                            await LanguageManager.GetStringAsync("MessageTitle_MetavariantQuality", token: token)
+                                .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                        return false;
+                    }
+                    break;
             }
 
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);

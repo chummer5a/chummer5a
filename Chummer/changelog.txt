@@ -22,6 +22,7 @@ Cyberware:
 Gear:
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
+- Fixed custom drugs losing their InternalId on character load, which left drug-granted qualities behind after the drugs were deleted. Orphaned improvement qualities can now be removed when their linking SpecificQuality improvement is gone. Closes #4181.
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.

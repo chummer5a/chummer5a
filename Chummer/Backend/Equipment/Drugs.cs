@@ -137,6 +137,8 @@ namespace Chummer.Backend.Equipment
         private async Task LoadCoreAsync(bool blnSync, XmlNode objXmlData, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (!objXmlData.TryGetField("guid", Guid.TryParse, out _guiID))
+                _guiID = Guid.NewGuid();
             objXmlData.TryGetStringFieldQuickly("name", ref _strName);
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
@@ -1906,7 +1908,7 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
             _objCharacter.Drugs.Remove(this);
-            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+            RemoveDrugImprovementsAndQualities();
 
             Dispose();
 
@@ -1925,13 +1927,96 @@ namespace Chummer.Backend.Equipment
             }
 
             await _objCharacter.Drugs.RemoveAsync(this, token).ConfigureAwait(false);
-            await ImprovementManager
-                .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug, InternalId, token)
-                .ConfigureAwait(false);
+            await RemoveDrugImprovementsAndQualitiesAsync(token).ConfigureAwait(false);
 
             await DisposeAsync().ConfigureAwait(false);
 
             return true;
+        }
+
+        /// <summary>
+        /// Removes Drug-sourced improvements and any leftover qualities granted by this drug.
+        /// </summary>
+        private void RemoveDrugImprovementsAndQualities()
+        {
+            ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
+            // Fallback for character files loaded before Drug.guid was restored on Load (mismatched SourceName).
+            List<Improvement> lstByGroup = _objCharacter.Improvements
+                .Where(x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == Name)
+                .ToList();
+            if (lstByGroup.Count > 0)
+                ImprovementManager.RemoveImprovements(_objCharacter, lstByGroup);
+            RemoveOrphanedDrugQualities();
+            if (_objCharacter.ImprovementGroups.Contains(Name))
+                _objCharacter.ImprovementGroups.Remove(Name);
+        }
+
+        /// <summary>
+        /// Removes Drug-sourced improvements and any leftover qualities granted by this drug.
+        /// </summary>
+        private async Task RemoveDrugImprovementsAndQualitiesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            await ImprovementManager
+                .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug, InternalId, token)
+                .ConfigureAwait(false);
+            // Fallback for character files loaded before Drug.guid was restored on Load (mismatched SourceName).
+            List<Improvement> lstByGroup = await _objCharacter.Improvements.ToListAsync(
+                x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == Name,
+                token: token).ConfigureAwait(false);
+            if (lstByGroup.Count > 0)
+                await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstByGroup, token: token)
+                    .ConfigureAwait(false);
+            await RemoveOrphanedDrugQualitiesAsync(token).ConfigureAwait(false);
+            ThreadSafeObservableCollection<string> lstGroups =
+                await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false);
+            if (await lstGroups.ContainsAsync(Name, token).ConfigureAwait(false))
+                await lstGroups.RemoveAsync(Name, token).ConfigureAwait(false);
+        }
+
+        private void RemoveOrphanedDrugQualities()
+        {
+            string strDrugName = Name;
+            for (int i = _objCharacter.Qualities.Count - 1; i >= 0; --i)
+            {
+                if (i >= _objCharacter.Qualities.Count)
+                    continue;
+                Quality objQuality = _objCharacter.Qualities[i];
+                if (objQuality.OriginSource != QualitySource.Improvement
+                    || !string.Equals(objQuality.SourceName, strDrugName, StringComparison.Ordinal))
+                    continue;
+                // Skip if another SpecificQuality improvement still references this quality (shared source name).
+                if (_objCharacter.Improvements.Any(x =>
+                        x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                        && x.ImprovedName == objQuality.InternalId))
+                    continue;
+                objQuality.DeleteQuality();
+            }
+        }
+
+        private async Task RemoveOrphanedDrugQualitiesAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strDrugName = Name;
+            ThreadSafeObservableCollection<Quality> lstQualities =
+                await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false);
+            for (int i = await lstQualities.GetCountAsync(token).ConfigureAwait(false) - 1; i >= 0; --i)
+            {
+                if (i >= await lstQualities.GetCountAsync(token).ConfigureAwait(false))
+                    continue;
+                Quality objQuality = await lstQualities.GetValueAtAsync(i, token).ConfigureAwait(false);
+                if (await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.Improvement
+                    || !string.Equals(await objQuality.GetSourceNameAsync(token).ConfigureAwait(false), strDrugName,
+                        StringComparison.Ordinal))
+                    continue;
+                string strQualityId = objQuality.InternalId;
+                if (await _objCharacter.Improvements.AnyAsync(x =>
+                            x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                            && x.ImprovedName == strQualityId, token)
+                        .ConfigureAwait(false))
+                    continue;
+                await objQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+            }
         }
 
         #endregion Methods
