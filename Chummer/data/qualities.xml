@@ -2774,12 +2774,12 @@
           <name>Academic</name>
           <val>-1</val>
           <min>3</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </skillcategorykarmacost>
         <skillcategorykarmacostmultiplier>
           <name>Academic</name>
           <val>50</val>
-          <condition>create</condition>
+          <condition>/character/created = false</condition>
         </skillcategorykarmacostmultiplier>
         <skillcategorypointcostmultiplier>
           <name>Academic</name>
@@ -2788,7 +2788,7 @@
         <skillcategoryspecializationkarmacostmultiplier>
           <name>Academic</name>
           <val>50</val>
-          <condition>create</condition>
+          <condition>/character/created = false</condition>
         </skillcategoryspecializationkarmacostmultiplier>
       </bonus>
       <source>RF</source>
@@ -3013,31 +3013,31 @@
           <name />
           <val>-1</val>
           <max>5</max>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </activeskillkarmacost>
         <activeskillkarmacost>
           <name />
           <val>2</val>
           <min>6</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </activeskillkarmacost>
         <knowledgeskillkarmacostmin>
           <name />
           <val>1</val>
           <max>5</max>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </knowledgeskillkarmacostmin>
         <knowledgeskillkarmacost>
           <name />
           <val>-1</val>
           <max>5</max>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </knowledgeskillkarmacost>
         <knowledgeskillkarmacost>
           <name />
           <val>2</val>
           <min>6</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </knowledgeskillkarmacost>
       </bonus>
       <source>RF</source>
@@ -3070,7 +3070,7 @@
           <name>Language</name>
           <val>-1</val>
           <min>3</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </skillcategorykarmacost>
         <skillcategorypointcostmultiplier>
           <name>Language</name>
@@ -3312,7 +3312,7 @@
           <name>Street</name>
           <val>-1</val>
           <min>3</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </skillcategorykarmacost>
         <skillcategorypointcostmultiplier>
           <name>Street</name>
@@ -3434,7 +3434,7 @@
           <name>Professional</name>
           <val>-1</val>
           <min>3</min>
-          <condition>career</condition>
+          <condition>/character/created</condition>
         </skillcategorykarmacost>
         <skillcategorypointcostmultiplier>
           <name>Professional</name>

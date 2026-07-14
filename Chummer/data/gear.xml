@@ -10279,6 +10279,7 @@
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10339,6 +10340,7 @@
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10399,6 +10401,7 @@
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10459,6 +10462,7 @@
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10519,6 +10523,7 @@
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10900,6 +10905,7 @@
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -10980,6 +10986,7 @@
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11060,6 +11067,7 @@
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11140,6 +11148,7 @@
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11547,6 +11556,7 @@
         <spellcategory>
           <name>Detection</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11627,6 +11637,7 @@
         <spellcategory>
           <name>Health</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11707,6 +11718,7 @@
         <spellcategory>
           <name>Illusion</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11787,6 +11799,7 @@
         <spellcategory>
           <name>Manipulation</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
