@@ -3051,6 +3051,7 @@ namespace Chummer
 
         /// <summary>
         /// Version of <see cref="StringExtensions.Split(string, char, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Used ideally whenever you'd use Split but wouldn't store the array for further processing (very common for foreach loops, e.g.)
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -3082,6 +3083,7 @@ namespace Chummer
 
         /// <summary>
         /// Version of <see cref="StringExtensions.Split(string, char, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Used ideally whenever you'd use Split but wouldn't store the array for further processing (very common for foreach loops, e.g.)
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="chrSplit">Character to use for splitting.</param>
@@ -3118,6 +3120,7 @@ namespace Chummer
 
         /// <summary>
         /// Version of <see cref="StringExtensions.Split(string, string, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Used ideally whenever you'd use Split but wouldn't store the array for further processing (very common for foreach loops, e.g.).
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -3157,6 +3160,7 @@ namespace Chummer
 
         /// <summary>
         /// Version of <see cref="StringExtensions.Split(string, string, int, StringSplitOptions)"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Used ideally whenever you'd use Split but wouldn't store the array for further processing (very common for foreach loops, e.g.)
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="strSplit">String to use for splitting.</param>
@@ -3201,6 +3205,7 @@ namespace Chummer
 
         /// <summary>
         /// Version of <see cref="string.Split(char[])"/> that avoids allocations where possible, thus making it lighter on memory (and also on CPU because allocations take time) than all versions of <see cref="string.Split"/>.
+        /// Used ideally whenever you'd use Split but wouldn't store the array for further processing (very common for foreach loops, e.g.)
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>

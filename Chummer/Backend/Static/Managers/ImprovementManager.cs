@@ -6607,17 +6607,14 @@ namespace Chummer
 
         #region Condition Evaluation
 
-        private static readonly string[] AndSeparators = { " and " };
-        private static readonly string[] OrSeparators = { " or " };
-
         // /type/property [op value], including "contains"
         private static readonly Regex XPathConditionRegex = new Regex(
-            @"^/(\w+)/(\w+)(?:\s*(!=|>=|<=|=|>|<|contains)\s*(.+))?$",
+            @"^/(\w+)/(\w+)(?:\s*(!=|>=|<=|=|==|>|<|contains)\s*(.+))?$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         // @property [op value]
         private static readonly Regex AtPropertyConditionRegex = new Regex(
-            @"^@(\w+)(?:\s*(!=|>=|<=|=|>|<|contains)\s*(.+))?$",
+            @"^@(\w+)(?:\s*(!=|>=|<=|=|==|>|<|contains)\s*(.+))?$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         /// <summary>
@@ -6630,23 +6627,16 @@ namespace Chummer
         /// <returns>True if the condition is met, false otherwise.</returns>
         public static async Task<bool> EvaluateConditionAsync(string condition, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(condition) || targetObject == null)
                 return true;
 
-            token.ThrowIfCancellationRequested();
-
             try
             {
-                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(")"))
-                {
-                    string innerCondition = condition.Substring(4, condition.Length - 5);
-                    return !await EvaluateConditionAsync(innerCondition.Trim(), targetObject, token).ConfigureAwait(false);
-                }
-
+                // TODO: Handle parantheses to allow people to properly set orders of operations, these are currently completely ignored by the resolver
                 if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] parts = condition.Split(AndSeparators, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string part in parts)
+                    foreach (string part in condition.SplitNoAlloc(" and ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
                         if (!await EvaluateConditionAsync(part.Trim(), targetObject, token).ConfigureAwait(false))
                             return false;
@@ -6656,13 +6646,19 @@ namespace Chummer
 
                 if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] parts = condition.Split(OrSeparators, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string part in parts)
+                    foreach (string part in condition.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
                         if (await EvaluateConditionAsync(part.Trim(), targetObject, token).ConfigureAwait(false))
                             return true;
                     }
                     return false;
+                }
+
+                // Do this check after the previous ones in case we have a compound condition like "not(x) or y" or "y and not(z)"
+                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(')'))
+                {
+                    string innerCondition = condition.Substring(4, condition.Length - 5);
+                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
                 }
 
                 bool? leaf = await EvaluateConditionLeafAsync(condition, targetObject, token).ConfigureAwait(false);
@@ -6688,16 +6684,10 @@ namespace Chummer
 
             try
             {
-                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(")"))
-                {
-                    string innerCondition = condition.Substring(4, condition.Length - 5);
-                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
-                }
-
+                // TODO: Handle parantheses to allow people to properly set orders of operations, these are currently completely ignored by the resolver
                 if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] parts = condition.Split(AndSeparators, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string part in parts)
+                    foreach (string part in condition.SplitNoAlloc(" and ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
                         if (!EvaluateCondition(part.Trim(), targetObject))
                             return false;
@@ -6707,13 +6697,19 @@ namespace Chummer
 
                 if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
                 {
-                    string[] parts = condition.Split(OrSeparators, StringSplitOptions.RemoveEmptyEntries);
-                    foreach (string part in parts)
+                    foreach (string part in condition.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
                         if (EvaluateCondition(part.Trim(), targetObject))
                             return true;
                     }
                     return false;
+                }
+
+                // Do this check after the previous ones in case we have a compound condition like "not(x) or y" or "y and not(z)"
+                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(')'))
+                {
+                    string innerCondition = condition.Substring(4, condition.Length - 5);
+                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
                 }
 
                 bool? leaf = EvaluateConditionLeaf(condition, targetObject);
@@ -7086,13 +7082,21 @@ namespace Chummer
                     case "EQUALS":
                     case "EQ":
                     default:
-                        return Equals(propertyValue, convertedExpectedValue);
+                        {
+                            if (propertyValue is string strPropertyValue && convertedExpectedValue is string strConvertedExpectedValue)
+                                return string.Equals(strPropertyValue, strConvertedExpectedValue, StringComparison.Ordinal);
+                            return Equals(propertyValue, convertedExpectedValue);
+                        }
                     case "!=":
                     case "/=":
                     case "<>":
                     case "NOTEQUALS":
                     case "NE":
-                        return !Equals(propertyValue, convertedExpectedValue);
+                        {
+                            if (propertyValue is string strPropertyValue && convertedExpectedValue is string strConvertedExpectedValue)
+                                return !string.Equals(strPropertyValue, strConvertedExpectedValue, StringComparison.Ordinal);
+                            return !Equals(propertyValue, convertedExpectedValue);
+                        }
                     case ">":
                     case "GT":
                     case "GREATERTHAN":
@@ -7112,7 +7116,7 @@ namespace Chummer
                     case "LESSTHANOREQUALS":
                         return CompareValues(propertyValue, convertedExpectedValue) <= 0;
                     case "CONTAINS":
-                        return propertyValue.ToString().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+                        return propertyValue.ToString().Contains(expectedValue, StringComparison.Ordinal);
                 }
             }
             catch
@@ -7140,15 +7144,35 @@ namespace Chummer
             if (targetType == typeof(string))
                 return value;
             if (targetType == typeof(bool))
-                return bool.Parse(value);
+            {
+                if (bool.TryParse(value, out bool blnReturn))
+                    return blnReturn;
+                return false;
+            }
             if (targetType == typeof(int))
-                return int.Parse(value);
+            {
+                if (int.TryParse(value, out int intReturn))
+                    return intReturn;
+                return 0;
+            }
             if (targetType == typeof(decimal))
-                return decimal.Parse(value);
+            {
+                if (decimal.TryParse(value, out decimal decReturn))
+                    return decReturn;
+                return 0m;
+            }
             if (targetType == typeof(double))
-                return double.Parse(value);
+            {
+                if (double.TryParse(value, out double dblReturn))
+                    return dblReturn;
+                return 0d;
+            }
             if (targetType == typeof(float))
-                return float.Parse(value);
+            {
+                if (float.TryParse(value, out float fltReturn))
+                    return fltReturn;
+                return 0f;
+            }
 
             try
             {
@@ -7169,6 +7193,7 @@ namespace Chummer
         /// <returns>True if the improvement should be applied, false otherwise.</returns>
         public static async Task<bool> EvaluateImprovementConditionAsync(Improvement improvement, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
                 return true;
 
