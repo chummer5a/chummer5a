@@ -6705,7 +6705,7 @@ namespace Chummer
 
             string objectType = match.Groups[1].Value.ToLowerInvariant();
             string propertyName = match.Groups[2].Value.Trim();
-            string operator = match.Groups[3].Success ? match.Groups[3].Value.Trim() : "=";
+            string strOperator = match.Groups[3].Success ? match.Groups[3].Value.Trim() : "=";
             string expectedValue = match.Groups[4].Success ? match.Groups[4].Value.Trim().Trim('"', '\'') : null;
 
             // Check if the target object matches the expected type
@@ -6724,7 +6724,7 @@ namespace Chummer
             }
 
             // Compare with expected value using the specified operator
-            return EvaluateComparison(propertyValue, expectedValue, operator);
+            return EvaluateComparison(propertyValue, expectedValue, strOperator);
         }
 
         /// <summary>
@@ -6767,24 +6767,23 @@ namespace Chummer
             // Handle career/create conditions for Character objects
             if (targetObject is Character objCharacter)
             {
-                if (condition == "career")
-                    return objCharacter.Created;
-                if (condition == "create")
-                    return !objCharacter.Created;
+                if (string.Equals(condition, "career", StringComparison.OrdinalIgnoreCase))
+                    return await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                if (string.Equals(condition, "create", StringComparison.OrdinalIgnoreCase))
+                    return !await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
             }
 
             // Handle skill specialization conditions
             if (targetObject is Skill objSkill)
             {
-                if (objSkill.HasSpecialization(condition))
+                if (await objSkill.HasSpecializationAsync(condition, token).ConfigureAwait(false))
                     return true;
             }
-
-            if (targetObject is SkillGroup objSkillGroup)
+            else if (targetObject is SkillGroup objSkillGroup)
             {
                 foreach (Skill objSkillInGroup in objSkillGroup.SkillList)
                 {
-                    if (objSkillInGroup.HasSpecialization(condition))
+                    if (await objSkillInGroup.HasSpecializationAsync(condition, token).ConfigureAwait(false))
                         return true;
                 }
             }
@@ -6800,7 +6799,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
 
             // Handle @property syntax
-            if (condition.StartsWith("@"))
+            if (condition.StartsWith('@'))
             {
                 string propertyName = condition.Substring(1);
                 object propertyValue = await GetPropertyValueAsync(targetObject, propertyName, token).ConfigureAwait(false);
@@ -6808,7 +6807,7 @@ namespace Chummer
             }
 
             // Handle comparison operators: =, !=, >, <, >=, <=, contains
-            if (condition.Contains("=") || condition.Contains("!=") || condition.Contains(">") || condition.Contains("<") || condition.Contains("contains"))
+            if (condition.Contains('=') || condition.Contains('>') || condition.Contains('<') || condition.Contains("contains"))
             {
                 // Try different comparison operators
                 string[] operators = { "!=", ">=", "<=", "=", ">", "<", "contains" };
@@ -6839,30 +6838,46 @@ namespace Chummer
         /// <summary>
         /// Evaluates a comparison between a property value and an expected value.
         /// </summary>
-        private static bool EvaluateComparison(object propertyValue, string expectedValue, string operator)
+        private static bool EvaluateComparison(object propertyValue, string expectedValue, string strOperator)
         {
             try
             {
                 object convertedExpectedValue = ConvertValue(expectedValue, propertyValue.GetType());
                 
-                switch (operator)
+                switch (strOperator.ToUpperInvariant())
                 {
                     case "=":
-                        return Equals(propertyValue, convertedExpectedValue);
-                    case "!=":
-                        return !Equals(propertyValue, convertedExpectedValue);
-                    case ">":
-                        return CompareValues(propertyValue, convertedExpectedValue) > 0;
-                    case "<":
-                        return CompareValues(propertyValue, convertedExpectedValue) < 0;
-                    case ">=":
-                        return CompareValues(propertyValue, convertedExpectedValue) >= 0;
-                    case "<=":
-                        return CompareValues(propertyValue, convertedExpectedValue) <= 0;
-                    case "contains":
-                        return propertyValue.ToString().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
+                    case "==":
+                    case "EQUALS":
+                    case "EQ":
                     default:
                         return Equals(propertyValue, convertedExpectedValue);
+                    case "!=":
+                    case "/=":
+                    case "<>":
+                    case "NOTEQUALS":
+                    case "NE":
+                        return !Equals(propertyValue, convertedExpectedValue);
+                    case ">":
+                    case "GT":
+                    case "GREATERTHAN":
+                        return CompareValues(propertyValue, convertedExpectedValue) > 0;
+                    case "<":
+                    case "LT":
+                    case "LESSTHAN":
+                        return CompareValues(propertyValue, convertedExpectedValue) < 0;
+                    case ">=":
+                    case "GTE":
+                    case "GREATERTHANEQUALS":
+                    case "GREATERTHANOREQUALS":
+                        return CompareValues(propertyValue, convertedExpectedValue) >= 0;
+                    case "<=":
+                    case "LTE":
+                    case "LESSTHANEQUALS":
+                    case "LESSTHANOREQUALS":
+                        return CompareValues(propertyValue, convertedExpectedValue) <= 0;
+                    case "CONTAINS":
+                        return propertyValue.ToString().Contains(expectedValue, StringComparison.OrdinalIgnoreCase);
                 }
             }
             catch
@@ -6951,7 +6966,7 @@ namespace Chummer
                 if (method != null && method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
                 {
                     // Try to invoke with cancellation token if the method accepts it
-                    object[] parameters = method.GetParameters().Length > 0 ? new object[] { token } : new object[0];
+                    object[] parameters = method.GetParameters().Length > 0 ? new object[] { token } : Array.Empty<object>();
                     var task = method.Invoke(targetObject, parameters) as Task;
                     if (task != null)
                     {
