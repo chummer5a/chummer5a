@@ -25,7 +25,6 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
-using System.Reflection;
 using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
@@ -6611,21 +6610,24 @@ namespace Chummer
         private static readonly string[] AndSeparators = { " and " };
         private static readonly string[] OrSeparators = { " or " };
 
+        // /type/property [op value], including "contains"
+        private static readonly Regex XPathConditionRegex = new Regex(
+            @"^/(\w+)/(\w+)(?:\s*(!=|>=|<=|=|>|<|contains)\s*(.+))?$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        // @property [op value]
+        private static readonly Regex AtPropertyConditionRegex = new Regex(
+            @"^@(\w+)(?:\s*(!=|>=|<=|=|>|<|contains)\s*(.+))?$",
+            RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
         /// <summary>
-        /// Evaluates a condition string against a target object using reflection.
-        /// Supports various condition types:
-        /// - XPath-like syntax: /character/created, /spell/alchemical, /skill/name
-        /// - Property checks: @property = value
-        /// - Negation: not(condition)
-        /// - Multiple conditions: condition1 and condition2
-        /// - Range checks: @property > value, @property < value
-        /// - String contains: @property contains value
-        /// - Legacy conditions: career, create, specialization names
+        /// Evaluates a condition string against a target object using a typed allowlist of known predicates.
+        /// Supports XPath-like syntax (/character/created), @property checks, not/and/or, and legacy career/create/spec conditions.
         /// </summary>
-        /// <param name="condition">The condition string to evaluate</param>
-        /// <param name="targetObject">The object to evaluate the condition against</param>
-        /// <param name="token">Cancellation token</param>
-        /// <returns>True if the condition is met, false otherwise</returns>
+        /// <param name="condition">The condition string to evaluate.</param>
+        /// <param name="targetObject">The object to evaluate the condition against.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>True if the condition is met, false otherwise.</returns>
         public static async Task<bool> EvaluateConditionAsync(string condition, object targetObject, CancellationToken token = default)
         {
             if (string.IsNullOrEmpty(condition) || targetObject == null)
@@ -6635,28 +6637,12 @@ namespace Chummer
 
             try
             {
-                // Handle XPath-like syntax first (e.g., /character/created, /spell/alchemical)
-                bool? xpathResult = await EvaluateXPathConditionAsync(condition, targetObject, token).ConfigureAwait(false);
-                if (xpathResult.HasValue)
-                {
-                    return xpathResult.Value;
-                }
-
-                // Handle legacy conditions
-                bool? legacyResult = await EvaluateLegacyConditionAsync(condition, targetObject, token).ConfigureAwait(false);
-                if (legacyResult.HasValue)
-                {
-                    return legacyResult.Value;
-                }
-
-                // Handle simple negation
                 if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(")"))
                 {
                     string innerCondition = condition.Substring(4, condition.Length - 5);
-                    return !await EvaluateConditionAsync(innerCondition, targetObject, token).ConfigureAwait(false);
+                    return !await EvaluateConditionAsync(innerCondition.Trim(), targetObject, token).ConfigureAwait(false);
                 }
 
-                // Handle AND conditions
                 if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
                 {
                     string[] parts = condition.Split(AndSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -6668,7 +6654,6 @@ namespace Chummer
                     return true;
                 }
 
-                // Handle OR conditions
                 if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
                 {
                     string[] parts = condition.Split(OrSeparators, StringSplitOptions.RemoveEmptyEntries);
@@ -6680,91 +6665,356 @@ namespace Chummer
                     return false;
                 }
 
-                // Handle property comparisons
-                return await EvaluatePropertyConditionAsync(condition, targetObject, token).ConfigureAwait(false);
+                bool? leaf = await EvaluateConditionLeafAsync(condition, targetObject, token).ConfigureAwait(false);
+                return leaf ?? true;
             }
             catch (Exception)
             {
                 Utils.BreakIfDebug();
-                return true; // Default to allowing the improvement if condition evaluation fails
+                return true;
             }
         }
 
         /// <summary>
-        /// Evaluates XPath-like syntax conditions (e.g., /character/created, /spell/alchemical).
-        /// Returns null if the condition is not an XPath condition.
+        /// Synchronous condition evaluation using the same typed allowlist as the async path.
         /// </summary>
-        private static async Task<bool?> EvaluateXPathConditionAsync(string condition, object targetObject, CancellationToken token = default)
+        /// <param name="condition">The condition string to evaluate.</param>
+        /// <param name="targetObject">The object to evaluate the condition against.</param>
+        /// <returns>True if the condition is met, false otherwise.</returns>
+        public static bool EvaluateCondition(string condition, object targetObject)
+        {
+            if (string.IsNullOrEmpty(condition) || targetObject == null)
+                return true;
+
+            try
+            {
+                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(")"))
+                {
+                    string innerCondition = condition.Substring(4, condition.Length - 5);
+                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
+                }
+
+                if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
+                {
+                    string[] parts = condition.Split(AndSeparators, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string part in parts)
+                    {
+                        if (!EvaluateCondition(part.Trim(), targetObject))
+                            return false;
+                    }
+                    return true;
+                }
+
+                if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
+                {
+                    string[] parts = condition.Split(OrSeparators, StringSplitOptions.RemoveEmptyEntries);
+                    foreach (string part in parts)
+                    {
+                        if (EvaluateCondition(part.Trim(), targetObject))
+                            return true;
+                    }
+                    return false;
+                }
+
+                bool? leaf = EvaluateConditionLeaf(condition, targetObject);
+                return leaf ?? true;
+            }
+            catch (Exception)
+            {
+                Utils.BreakIfDebug();
+                return true;
+            }
+        }
+
+        private static async Task<bool?> EvaluateConditionLeafAsync(string condition, object targetObject, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
 
-            // Match XPath-like syntax: /objectType/property or /objectType/property operator value
-            var match = Regex.Match(condition, @"^/(\w+)/([^=!<>]+)(?:\s*([=!<>]+)\s*(.+))?$");
-            if (!match.Success)
-                return null;
-
-            string objectType = match.Groups[1].Value.ToLowerInvariant();
-            string propertyName = match.Groups[2].Value.Trim();
-            string strOperator = match.Groups[3].Success ? match.Groups[3].Value.Trim() : "=";
-            string expectedValue = match.Groups[4].Success ? match.Groups[4].Value.Trim().Trim('"', '\'') : null;
-
-            // Check if the target object matches the expected type
-            if (!IsObjectTypeMatch(targetObject, objectType))
-                return null;
-
-            // Get the property value
-            object propertyValue = await GetPropertyValueAsync(targetObject, propertyName, token).ConfigureAwait(false);
-            if (propertyValue == null)
-                return false;
-
-            // If no expected value, return boolean conversion of property
-            if (string.IsNullOrEmpty(expectedValue))
+            Match xpathMatch = XPathConditionRegex.Match(condition);
+            if (xpathMatch.Success)
             {
-                return Convert.ToBoolean(propertyValue);
+                string objectType = xpathMatch.Groups[1].Value;
+                string propertyName = xpathMatch.Groups[2].Value;
+                string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
+                string expectedValue = xpathMatch.Groups[4].Success
+                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    : null;
+
+                (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
+                if (!found)
+                    return false;
+                return ApplyConditionValue(value, strOperator, expectedValue);
             }
 
-            // Compare with expected value using the specified operator
+            Match atMatch = AtPropertyConditionRegex.Match(condition);
+            if (atMatch.Success)
+            {
+                string objectType = GetConditionObjectType(targetObject);
+                if (objectType == null)
+                    return false;
+
+                string propertyName = atMatch.Groups[1].Value;
+                string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
+                string expectedValue = atMatch.Groups[3].Success
+                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    : null;
+
+                (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
+                if (!found)
+                    return false;
+                return ApplyConditionValue(value, strOperator, expectedValue);
+            }
+
+            return await EvaluateLegacyConditionAsync(condition, targetObject, token).ConfigureAwait(false);
+        }
+
+        private static bool? EvaluateConditionLeaf(string condition, object targetObject)
+        {
+            Match xpathMatch = XPathConditionRegex.Match(condition);
+            if (xpathMatch.Success)
+            {
+                string objectType = xpathMatch.Groups[1].Value;
+                string propertyName = xpathMatch.Groups[2].Value;
+                string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
+                string expectedValue = xpathMatch.Groups[4].Success
+                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    : null;
+
+                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value))
+                    return false;
+                return ApplyConditionValue(value, strOperator, expectedValue);
+            }
+
+            Match atMatch = AtPropertyConditionRegex.Match(condition);
+            if (atMatch.Success)
+            {
+                string objectType = GetConditionObjectType(targetObject);
+                if (objectType == null)
+                    return false;
+
+                string propertyName = atMatch.Groups[1].Value;
+                string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
+                string expectedValue = atMatch.Groups[3].Success
+                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    : null;
+
+                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value))
+                    return false;
+                return ApplyConditionValue(value, strOperator, expectedValue);
+            }
+
+            return EvaluateLegacyCondition(condition, targetObject);
+        }
+
+        private static bool ApplyConditionValue(object propertyValue, string strOperator, string expectedValue)
+        {
+            if (string.IsNullOrEmpty(strOperator) || expectedValue == null)
+                return Convert.ToBoolean(propertyValue);
+
             return EvaluateComparison(propertyValue, expectedValue, strOperator);
         }
 
         /// <summary>
-        /// Checks if the target object matches the expected object type.
+        /// Maps a target instance to its condition object-type key, or null if unsupported.
         /// </summary>
-        private static bool IsObjectTypeMatch(object targetObject, string objectType)
+        private static string GetConditionObjectType(object targetObject)
         {
-            switch (objectType)
+            switch (targetObject)
             {
-                case "character":
-                    return targetObject is Character;
-                case "spell":
-                    return targetObject is Spell;
-                case "skill":
-                    return targetObject is Skill;
-                case "skillgroup":
-                    return targetObject is SkillGroup;
-                case "gear":
-                    return targetObject is Gear;
-                case "weapon":
-                    return targetObject is Weapon;
-                case "armor":
-                    return targetObject is Armor;
-                case "cyberware":
-                case "bioware":
-                    return targetObject is Cyberware;
+                case Character _:
+                    return "character";
+                case Spell _:
+                    return "spell";
+                case Skill _:
+                    return "skill";
+                case SkillGroup _:
+                    return "skillgroup";
                 default:
-                    return false;
+                    return null;
             }
         }
 
         /// <summary>
-        /// Evaluates legacy conditions that don't use the new reflection syntax.
+        /// Typed allowlist: resolve a known condition property without reflection.
+        /// </summary>
+        private static bool TryGetConditionValue(object targetObject, string objectType, string propertyName, out object value)
+        {
+            value = null;
+            if (targetObject == null || string.IsNullOrEmpty(objectType) || string.IsNullOrEmpty(propertyName))
+                return false;
+
+            string typeKey = objectType.ToLowerInvariant();
+            string propKey = propertyName.ToLowerInvariant();
+
+            switch (typeKey)
+            {
+                case "character" when targetObject is Character objCharacter:
+                    switch (propKey)
+                    {
+                        case "created":
+                            value = objCharacter.Created;
+                            return true;
+                        case "name":
+                            value = objCharacter.Name;
+                            return true;
+                        case "metatype":
+                            value = objCharacter.Metatype;
+                            return true;
+                        case "metavariant":
+                            value = objCharacter.Metavariant;
+                            return true;
+                    }
+                    break;
+
+                case "spell" when targetObject is Spell objSpell:
+                    switch (propKey)
+                    {
+                        case "alchemical":
+                            value = objSpell.Alchemical;
+                            return true;
+                        case "name":
+                            value = objSpell.Name;
+                            return true;
+                        case "category":
+                            value = objSpell.Category;
+                            return true;
+                        case "type":
+                            value = objSpell.Type;
+                            return true;
+                        case "range":
+                            value = objSpell.Range;
+                            return true;
+                        case "extended":
+                            value = objSpell.Extended;
+                            return true;
+                        case "limited":
+                            value = objSpell.Limited;
+                            return true;
+                    }
+                    break;
+
+                case "skill" when targetObject is Skill objSkill:
+                    switch (propKey)
+                    {
+                        case "name":
+                            value = objSkill.Name;
+                            return true;
+                        case "category":
+                        case "skillcategory":
+                            value = objSkill.SkillCategory;
+                            return true;
+                        case "attribute":
+                            value = objSkill.Attribute;
+                            return true;
+                        case "rating":
+                            value = objSkill.Rating;
+                            return true;
+                    }
+                    break;
+
+                case "skillgroup" when targetObject is SkillGroup objSkillGroup:
+                    switch (propKey)
+                    {
+                        case "name":
+                            value = objSkillGroup.Name;
+                            return true;
+                        case "rating":
+                            value = objSkillGroup.Rating;
+                            return true;
+                    }
+                    break;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Async typed allowlist. Prefers typed GetXxxAsync helpers where they exist.
+        /// </summary>
+        private static async Task<(bool Found, object Value)> TryGetConditionValueAsync(
+            object targetObject, string objectType, string propertyName, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+
+            if (targetObject == null || string.IsNullOrEmpty(objectType) || string.IsNullOrEmpty(propertyName))
+                return (false, null);
+
+            string typeKey = objectType.ToLowerInvariant();
+            string propKey = propertyName.ToLowerInvariant();
+
+            switch (typeKey)
+            {
+                case "character" when targetObject is Character objCharacter:
+                    switch (propKey)
+                    {
+                        case "created":
+                            return (true, await objCharacter.GetCreatedAsync(token).ConfigureAwait(false));
+                        case "name":
+                            return (true, await objCharacter.GetNameAsync(token).ConfigureAwait(false));
+                        case "metatype":
+                            return (true, await objCharacter.GetMetatypeAsync(token).ConfigureAwait(false));
+                        case "metavariant":
+                            return (true, await objCharacter.GetMetavariantAsync(token).ConfigureAwait(false));
+                    }
+                    break;
+
+                case "spell" when targetObject is Spell objSpell:
+                    switch (propKey)
+                    {
+                        case "alchemical":
+                            return (true, objSpell.Alchemical);
+                        case "name":
+                            return (true, await objSpell.GetNameAsync(token).ConfigureAwait(false));
+                        case "category":
+                            return (true, objSpell.Category);
+                        case "type":
+                            return (true, objSpell.Type);
+                        case "range":
+                            return (true, objSpell.Range);
+                        case "extended":
+                            return (true, objSpell.Extended);
+                        case "limited":
+                            return (true, objSpell.Limited);
+                    }
+                    break;
+
+                case "skill" when targetObject is Skill objSkill:
+                    switch (propKey)
+                    {
+                        case "name":
+                            return (true, await objSkill.GetNameAsync(token).ConfigureAwait(false));
+                        case "category":
+                        case "skillcategory":
+                            return (true, objSkill.SkillCategory);
+                        case "attribute":
+                            return (true, await objSkill.GetAttributeAsync(token).ConfigureAwait(false));
+                        case "rating":
+                            return (true, await objSkill.GetRatingAsync(token).ConfigureAwait(false));
+                    }
+                    break;
+
+                case "skillgroup" when targetObject is SkillGroup objSkillGroup:
+                    switch (propKey)
+                    {
+                        case "name":
+                            return (true, await objSkillGroup.GetNameAsync(token).ConfigureAwait(false));
+                        case "rating":
+                            return (true, await objSkillGroup.GetRatingAsync(token).ConfigureAwait(false));
+                    }
+                    break;
+            }
+
+            return (false, null);
+        }
+
+        /// <summary>
+        /// Evaluates legacy conditions that do not use XPath/@ syntax.
         /// Returns null if the condition is not a legacy condition.
         /// </summary>
         private static async Task<bool?> EvaluateLegacyConditionAsync(string condition, object targetObject, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
 
-            // Handle career/create conditions for Character objects
             if (targetObject is Character objCharacter)
             {
                 if (string.Equals(condition, "career", StringComparison.OrdinalIgnoreCase))
@@ -6773,7 +7023,6 @@ namespace Chummer
                     return !await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
             }
 
-            // Handle skill specialization conditions
             if (targetObject is Skill objSkill)
             {
                 if (await objSkill.HasSpecializationAsync(condition, token).ConfigureAwait(false))
@@ -6788,51 +7037,37 @@ namespace Chummer
                 }
             }
 
-            return null; // Not a legacy condition
+            return null;
         }
 
         /// <summary>
-        /// Evaluates property-based conditions using reflection.
+        /// Synchronous legacy condition evaluation.
         /// </summary>
-        private static async Task<bool> EvaluatePropertyConditionAsync(string condition, object targetObject, CancellationToken token = default)
+        private static bool? EvaluateLegacyCondition(string condition, object targetObject)
         {
-            token.ThrowIfCancellationRequested();
-
-            // Handle @property syntax
-            if (condition.StartsWith('@'))
+            if (targetObject is Character objCharacter)
             {
-                string propertyName = condition.Substring(1);
-                object propertyValue = await GetPropertyValueAsync(targetObject, propertyName, token).ConfigureAwait(false);
-                return propertyValue != null && Convert.ToBoolean(propertyValue);
+                if (string.Equals(condition, "career", StringComparison.OrdinalIgnoreCase))
+                    return objCharacter.Created;
+                if (string.Equals(condition, "create", StringComparison.OrdinalIgnoreCase))
+                    return !objCharacter.Created;
             }
 
-            // Handle comparison operators: =, !=, >, <, >=, <=, contains
-            if (condition.Contains('=') || condition.Contains('>') || condition.Contains('<') || condition.Contains("contains"))
+            if (targetObject is Skill objSkill)
             {
-                // Try different comparison operators
-                string[] operators = { "!=", ">=", "<=", "=", ">", "<", "contains" };
-                foreach (string op in operators)
+                if (objSkill.HasSpecialization(condition))
+                    return true;
+            }
+            else if (targetObject is SkillGroup objSkillGroup)
+            {
+                foreach (Skill objSkillInGroup in objSkillGroup.SkillList)
                 {
-                    if (condition.Contains(op))
-                    {
-                        string[] parts = condition.Split(new[] { op }, 2, StringSplitOptions.None);
-                        if (parts.Length == 2)
-                        {
-                            string propertyName = parts[0].Trim().TrimStart('@');
-                            string expectedValue = parts[1].Trim().Trim('"', '\'');
-                            
-                            object propertyValue = await GetPropertyValueAsync(targetObject, propertyName, token).ConfigureAwait(false);
-                            if (propertyValue != null)
-                            {
-                                return EvaluateComparison(propertyValue, expectedValue, op);
-                            }
-                        }
-                        break;
-                    }
+                    if (objSkillInGroup.HasSpecialization(condition))
+                        return true;
                 }
             }
 
-            return true; // Default to allowing the improvement
+            return null;
         }
 
         /// <summary>
@@ -6843,7 +7078,7 @@ namespace Chummer
             try
             {
                 object convertedExpectedValue = ConvertValue(expectedValue, propertyValue.GetType());
-                
+
                 switch (strOperator.ToUpperInvariant())
                 {
                     case "=":
@@ -6882,7 +7117,6 @@ namespace Chummer
             }
             catch
             {
-                // If comparison fails, default to false
                 return false;
             }
         }
@@ -6893,113 +7127,9 @@ namespace Chummer
         private static int CompareValues(object value1, object value2)
         {
             if (value1 is IComparable comparable1 && value2 is IComparable comparable2)
-            {
                 return comparable1.CompareTo(comparable2);
-            }
-            
-            // Fallback to string comparison
+
             return string.Compare(value1.ToString(), value2.ToString(), StringComparison.Ordinal);
-        }
-
-        /// <summary>
-        /// Gets a property value from an object using reflection.
-        /// Handles both regular properties and async methods (GetXxxAsync).
-        /// </summary>
-        private static async Task<object> GetPropertyValueAsync(object targetObject, string propertyName, CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-
-            Type objectType = targetObject.GetType();
-            
-            // First try to find a regular property
-            PropertyInfo property = objectType.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            if (property != null)
-            {
-                // Handle async properties (Task<T> types) - rare but possible
-                if (property.PropertyType.IsGenericType && property.PropertyType.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    var getMethod = property.GetGetMethod();
-                    if (getMethod != null)
-                    {
-                        var task = getMethod.Invoke(targetObject, null) as Task;
-                        if (task != null)
-                        {
-                            await task.ConfigureAwait(false);
-                            return GetTaskResult(task);
-                        }
-                    }
-                }
-
-                // Handle regular properties
-                return property.GetValue(targetObject);
-            }
-
-            // Try to find an async method (GetXxxAsync pattern)
-            string asyncMethodName = "Get" + propertyName + "Async";
-            MethodInfo asyncMethod = objectType.GetMethod(asyncMethodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-            if (asyncMethod != null)
-            {
-                // Check if the method returns a Task<T>
-                if (asyncMethod.ReturnType.IsGenericType && asyncMethod.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    // Invoke the async method
-                    var task = asyncMethod.Invoke(targetObject, new object[] { token }) as Task;
-                    if (task != null)
-                    {
-                        await task.ConfigureAwait(false);
-                        return GetTaskResult(task);
-                    }
-                }
-            }
-
-            // Try alternative async method patterns
-            string[] alternativePatterns = {
-                "Get" + propertyName + "Async",
-                propertyName + "Async",
-                "Is" + propertyName + "Async",
-                "Has" + propertyName + "Async"
-            };
-
-            foreach (string methodName in alternativePatterns)
-            {
-                MethodInfo method = objectType.GetMethod(methodName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                if (method != null && method.ReturnType.IsGenericType && method.ReturnType.GetGenericTypeDefinition() == typeof(Task<>))
-                {
-                    // Try to invoke with cancellation token if the method accepts it
-                    object[] parameters = method.GetParameters().Length > 0 ? new object[] { token } : Array.Empty<object>();
-                    var task = method.Invoke(targetObject, parameters) as Task;
-                    if (task != null)
-                    {
-                        await task.ConfigureAwait(false);
-                        return GetTaskResult(task);
-                    }
-                }
-            }
-
-            return null; // Property/method not found
-        }
-
-        /// <summary>
-        /// Gets the result from a completed Task.
-        /// </summary>
-        private static object GetTaskResult(Task task)
-        {
-            if (task is Task<string> stringTask)
-                return stringTask.Result;
-            if (task is Task<bool> boolTask)
-                return boolTask.Result;
-            if (task is Task<int> intTask)
-                return intTask.Result;
-            if (task is Task<decimal> decimalTask)
-                return decimalTask.Result;
-            if (task is Task<double> doubleTask)
-                return doubleTask.Result;
-            if (task is Task<float> floatTask)
-                return floatTask.Result;
-            
-            // Use reflection to get the Result property for other Task<T> types
-            var resultProperty = task.GetType().GetProperty("Result");
-            return resultProperty?.GetValue(task);
         }
 
         /// <summary>
@@ -7019,27 +7149,24 @@ namespace Chummer
                 return double.Parse(value);
             if (targetType == typeof(float))
                 return float.Parse(value);
-            
-            // Try to convert using the type's converter
+
             try
             {
                 return Convert.ChangeType(value, targetType);
             }
             catch
             {
-                return value; // Fallback to string
+                return value;
             }
         }
 
         /// <summary>
-        /// Generic method to evaluate improvement conditions for any improvement type.
-        /// This is the main entry point for all improvement condition evaluation.
-        /// Supports XPath-like syntax: /character/created, /spell/alchemical, /skill/name
+        /// Evaluates an improvement's Condition against a target object (async).
         /// </summary>
-        /// <param name="improvement">The improvement to evaluate</param>
-        /// <param name="targetObject">The target object to evaluate against</param>
-        /// <param name="token">Cancellation token</param>
-        /// <returns>True if the improvement should be applied, false otherwise</returns>
+        /// <param name="improvement">The improvement to evaluate.</param>
+        /// <param name="targetObject">The target object to evaluate against.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>True if the improvement should be applied, false otherwise.</returns>
         public static async Task<bool> EvaluateImprovementConditionAsync(Improvement improvement, object targetObject, CancellationToken token = default)
         {
             if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
@@ -7049,95 +7176,20 @@ namespace Chummer
         }
 
         /// <summary>
-        /// Synchronous version of the generic improvement condition evaluator.
-        /// Handles legacy conditions and simple XPath conditions synchronously.
+        /// Evaluates an improvement's Condition against a target object (sync).
         /// </summary>
-        /// <param name="improvement">The improvement to evaluate</param>
-        /// <param name="targetObject">The target object to evaluate against</param>
-        /// <returns>True if the improvement should be applied, false otherwise</returns>
+        /// <param name="improvement">The improvement to evaluate.</param>
+        /// <param name="targetObject">The target object to evaluate against.</param>
+        /// <returns>True if the improvement should be applied, false otherwise.</returns>
         public static bool EvaluateImprovementCondition(Improvement improvement, object targetObject)
         {
             if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
                 return true;
 
-            // Handle legacy conditions synchronously
-            if (targetObject is Character objCharacter)
-            {
-                if (improvement.Condition == "career")
-                    return objCharacter.Created;
-                if (improvement.Condition == "create")
-                    return !objCharacter.Created;
-            }
-
-            if (targetObject is Skill objSkill)
-            {
-                if (objSkill.HasSpecialization(improvement.Condition))
-                    return true;
-            }
-
-            if (targetObject is SkillGroup objSkillGroup)
-            {
-                foreach (Skill objSkillInGroup in objSkillGroup.SkillList)
-                {
-                    if (objSkillInGroup.HasSpecialization(improvement.Condition))
-                        return true;
-                }
-            }
-
-            if (targetObject is Spell objSpell)
-            {
-                if (improvement.Condition == "not(@alchemical)" && objSpell.Alchemical)
-                    return false;
-                if (improvement.Condition == "not(/spell/alchemical)" && objSpell.Alchemical)
-                    return false;
-            }
-
-            // Handle simple XPath conditions synchronously
-            if (improvement.Condition.StartsWith("/"))
-            {
-                var match = Regex.Match(improvement.Condition, @"^/(\w+)/([^=]+)(?:\s*=\s*(.+))?$");
-                if (match.Success)
-                {
-                    string objectType = match.Groups[1].Value.ToLowerInvariant();
-                    string propertyName = match.Groups[2].Value.Trim();
-                    string expectedValue = match.Groups[3].Success ? match.Groups[3].Value.Trim().Trim('"', '\'') : null;
-
-                    if (IsObjectTypeMatch(targetObject, objectType))
-                    {
-                        try
-                        {
-                            Type objectTypeClass = targetObject.GetType();
-                            PropertyInfo property = objectTypeClass.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.IgnoreCase);
-                            
-                            if (property != null)
-                            {
-                                object propertyValue = property.GetValue(targetObject);
-                                if (propertyValue != null)
-                                {
-                                    if (string.IsNullOrEmpty(expectedValue))
-                                    {
-                                        return Convert.ToBoolean(propertyValue);
-                                    }
-                                    else
-                                    {
-                                        object convertedExpectedValue = ConvertValue(expectedValue, propertyValue.GetType());
-                                        return Equals(propertyValue, convertedExpectedValue);
-                                    }
-                                }
-                            }
-                        }
-                        catch
-                        {
-                            // If reflection fails, default to true for backward compatibility
-                        }
-                    }
-                }
-            }
-
-            // For complex conditions, default to true to maintain backward compatibility
-            return true;
+            return EvaluateCondition(improvement.Condition, targetObject);
         }
 
         #endregion Condition Evaluation
+
     }
 }
