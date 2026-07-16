@@ -30,8 +30,7 @@ namespace Chummer.Tests
         [TestMethod]
         public void TraditionsXml_WatcherAndHomunculus_IgnoreBoundSpiritLimit()
         {
-            string strPath = Path.GetFullPath(Path.Combine(
-                AppDomain.CurrentDomain.BaseDirectory, "..", "..", "..", "..", "Chummer", "data", "traditions.xml"));
+            string strPath = Path.Combine(Utils.GetDataFolderPath, "traditions.xml");
             Assert.IsTrue(File.Exists(strPath), "traditions.xml not found at " + strPath);
 
             XPathDocument objDoc = new XPathDocument(strPath);
