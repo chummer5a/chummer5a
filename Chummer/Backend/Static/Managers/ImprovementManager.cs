@@ -6609,13 +6609,17 @@ namespace Chummer
 
         // /type/property [op value], including "contains"
         private static readonly Regex XPathConditionRegex = new Regex(
-            @"^/(\w+)/(\w+)(?:\s*(!=|>=|<=|=|==|>|<|contains)\s*(.+))?$",
+            @"^/(\w+)/(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
 
         // @property [op value]
         private static readonly Regex AtPropertyConditionRegex = new Regex(
-            @"^@(\w+)(?:\s*(!=|>=|<=|=|==|>|<|contains)\s*(.+))?$",
+            @"^@(\w+)(?:\s*(!=|!&eq;|&ne;|>=|&gte;|&gt;&eq;|<=|&lte;|&lt;&eq;|=|&eq;|>|&gt;|<|&lt;|contains)\s*(.+))?$",
             RegexOptions.IgnoreCase | RegexOptions.CultureInvariant | RegexOptions.Compiled);
+
+        // Both of the above need to contain those ampersand semicolon forms so that we can read those in through XML safely (XML needs to have characters like < and > escaped)
+
+        private static readonly char[] s_achrParentheses = new[] { '(', ')' };
 
         /// <summary>
         /// Evaluates a condition string against a target object using a typed allowlist of known predicates.
@@ -6633,8 +6637,79 @@ namespace Chummer
 
             try
             {
-                // TODO: Handle parantheses to allow people to properly set orders of operations, these are currently completely ignored by the resolver
-                if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
+                int intConditionLength = condition.Length;
+                // This part handles "not()" operations as well as general-purpose parentheses stuff
+                int intCloseParenthesesIndex = 0;
+                int intOpenParenthesesIndex = condition.IndexOf('(');
+                while (intOpenParenthesesIndex >= 0)
+                {
+                    int intParenthesesLevel = 1;
+                    intCloseParenthesesIndex = intOpenParenthesesIndex + 1;
+                    for (; intCloseParenthesesIndex >= 0 && intCloseParenthesesIndex < intConditionLength; intCloseParenthesesIndex = condition.IndexOfAny(s_achrParentheses, intCloseParenthesesIndex + 1))
+                    {
+                        if (condition[intCloseParenthesesIndex] == '(')
+                            ++intParenthesesLevel;
+                        else
+                        {
+                            --intParenthesesLevel;
+                            if (intParenthesesLevel == 0)
+                                break;
+                        }
+                    }
+                    if (intParenthesesLevel > 0) // Faulty syntax, just break and ignore the parentheses altogether
+                    {
+                        Utils.BreakIfDebug();
+                        break;
+                    }
+                    bool blnInnerResult = await EvaluateConditionAsync(condition.Substring(intOpenParenthesesIndex, intCloseParenthesesIndex - intOpenParenthesesIndex).Trim(), targetObject, token).ConfigureAwait(false);
+                    if (intOpenParenthesesIndex >= 3 && string.Equals(condition.Substring(intOpenParenthesesIndex - 3, 3), "not", StringComparison.OrdinalIgnoreCase))
+                        blnInnerResult = !blnInnerResult;
+
+                    if (intCloseParenthesesIndex + 5 < intConditionLength)
+                    {
+                        string strCut = condition.Substring(intCloseParenthesesIndex + 1, 5);
+                        if (string.Equals(strCut, " and ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!blnInnerResult)
+                                return false;
+                        }
+                        else if (strCut.StartsWith(" or ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (blnInnerResult)
+                                return true;
+                        }
+#if DEBUG
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                            return blnInnerResult;
+                        }
+#else
+                        else
+                            return blnInnerResult;
+#endif
+                    }
+                    else if (intCloseParenthesesIndex + 4 < intConditionLength && string.Equals(condition.Substring(intCloseParenthesesIndex + 1, 4), " or ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (blnInnerResult)
+                            return true;
+                    }
+#if DEBUG
+                    else if (intCloseParenthesesIndex + 1 < intConditionLength)
+                    {
+                        // If we are here, we somehow have ended our parentheses without a subsequent logical operator, but still some string left to process
+                        // That's not good, something's malformed. Check to see what's wrong.
+                        Utils.BreakIfDebug();
+                        return blnInnerResult;
+                    }
+#endif
+                    else
+                        return blnInnerResult;
+
+                    intOpenParenthesesIndex = condition.IndexOf('(', intCloseParenthesesIndex + 1);
+                }
+                
+                if (condition.Contains(" and ", intCloseParenthesesIndex, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (string part in condition.SplitNoAlloc(" and ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
@@ -6644,7 +6719,7 @@ namespace Chummer
                     return true;
                 }
 
-                if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
+                if (condition.Contains(" or ", intCloseParenthesesIndex, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (string part in condition.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
@@ -6652,13 +6727,6 @@ namespace Chummer
                             return true;
                     }
                     return false;
-                }
-
-                // Do this check after the previous ones in case we have a compound condition like "not(x) or y" or "y and not(z)"
-                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(')'))
-                {
-                    string innerCondition = condition.Substring(4, condition.Length - 5);
-                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
                 }
 
                 bool? leaf = await EvaluateConditionLeafAsync(condition, targetObject, token).ConfigureAwait(false);
@@ -6684,8 +6752,79 @@ namespace Chummer
 
             try
             {
-                // TODO: Handle parantheses to allow people to properly set orders of operations, these are currently completely ignored by the resolver
-                if (condition.Contains(" and ", StringComparison.OrdinalIgnoreCase))
+                int intConditionLength = condition.Length;
+                // This part handles "not()" operations as well as general-purpose parentheses stuff
+                int intCloseParenthesesIndex = 0;
+                int intOpenParenthesesIndex = condition.IndexOf('(');
+                while (intOpenParenthesesIndex >= 0)
+                {
+                    int intParenthesesLevel = 1;
+                    intCloseParenthesesIndex = intOpenParenthesesIndex + 1;
+                    for (; intCloseParenthesesIndex >= 0 && intCloseParenthesesIndex < intConditionLength; intCloseParenthesesIndex = condition.IndexOfAny(s_achrParentheses, intCloseParenthesesIndex + 1))
+                    {
+                        if (condition[intCloseParenthesesIndex] == '(')
+                            ++intParenthesesLevel;
+                        else
+                        {
+                            --intParenthesesLevel;
+                            if (intParenthesesLevel == 0)
+                                break;
+                        }
+                    }
+                    if (intParenthesesLevel > 0) // Faulty syntax, just break and ignore the parentheses altogether
+                    {
+                        Utils.BreakIfDebug();
+                        break;
+                    }
+                    bool blnInnerResult = EvaluateCondition(condition.Substring(intOpenParenthesesIndex, intCloseParenthesesIndex - intOpenParenthesesIndex).Trim(), targetObject);
+                    if (intOpenParenthesesIndex >= 3 && string.Equals(condition.Substring(intOpenParenthesesIndex - 3, 3), "not", StringComparison.OrdinalIgnoreCase))
+                        blnInnerResult = !blnInnerResult;
+
+                    if (intCloseParenthesesIndex + 5 < intConditionLength)
+                    {
+                        string strCut = condition.Substring(intCloseParenthesesIndex + 1, 5);
+                        if (string.Equals(strCut, " and ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (!blnInnerResult)
+                                return false;
+                        }
+                        else if (strCut.StartsWith(" or ", StringComparison.OrdinalIgnoreCase))
+                        {
+                            if (blnInnerResult)
+                                return true;
+                        }
+#if DEBUG
+                        else
+                        {
+                            Utils.BreakIfDebug();
+                            return blnInnerResult;
+                        }
+#else
+                        else
+                            return blnInnerResult;
+#endif
+                    }
+                    else if (intCloseParenthesesIndex + 4 < intConditionLength && string.Equals(condition.Substring(intCloseParenthesesIndex + 1, 4), " or ", StringComparison.OrdinalIgnoreCase))
+                    {
+                        if (blnInnerResult)
+                            return true;
+                    }
+#if DEBUG
+                    else if (intCloseParenthesesIndex + 1 < intConditionLength)
+                    {
+                        // If we are here, we somehow have ended our parentheses without a subsequent logical operator, but still some string left to process
+                        // That's not good, something's malformed. Check to see what's wrong.
+                        Utils.BreakIfDebug();
+                        return blnInnerResult;
+                    }
+#endif
+                    else
+                        return blnInnerResult;
+
+                    intOpenParenthesesIndex = condition.IndexOf('(', intCloseParenthesesIndex + 1);
+                }
+
+                if (condition.Contains(" and ", intCloseParenthesesIndex, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (string part in condition.SplitNoAlloc(" and ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
@@ -6695,7 +6834,7 @@ namespace Chummer
                     return true;
                 }
 
-                if (condition.Contains(" or ", StringComparison.OrdinalIgnoreCase))
+                if (condition.Contains(" or ", intCloseParenthesesIndex, StringComparison.OrdinalIgnoreCase))
                 {
                     foreach (string part in condition.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
@@ -6703,13 +6842,6 @@ namespace Chummer
                             return true;
                     }
                     return false;
-                }
-
-                // Do this check after the previous ones in case we have a compound condition like "not(x) or y" or "y and not(z)"
-                if (condition.StartsWith("not(", StringComparison.OrdinalIgnoreCase) && condition.EndsWith(')'))
-                {
-                    string innerCondition = condition.Substring(4, condition.Length - 5);
-                    return !EvaluateCondition(innerCondition.Trim(), targetObject);
                 }
 
                 bool? leaf = EvaluateConditionLeaf(condition, targetObject);
@@ -7075,12 +7207,12 @@ namespace Chummer
             {
                 object convertedExpectedValue = ConvertValue(expectedValue, propertyValue.GetType());
 
+                // We need to check for ampersand semicolon forms so that we can safely read conditions in through XML (XML needs to have characters like < and > escaped)
                 switch (strOperator.ToUpperInvariant())
                 {
                     case "=":
                     case "==":
-                    case "EQUALS":
-                    case "EQ":
+                    case "&EQ;":
                     default:
                         {
                             if (propertyValue is string strPropertyValue && convertedExpectedValue is string strConvertedExpectedValue)
@@ -7088,32 +7220,26 @@ namespace Chummer
                             return Equals(propertyValue, convertedExpectedValue);
                         }
                     case "!=":
-                    case "/=":
-                    case "<>":
-                    case "NOTEQUALS":
-                    case "NE":
+                    case "!&EQ;":
+                    case "&NE;":
                         {
                             if (propertyValue is string strPropertyValue && convertedExpectedValue is string strConvertedExpectedValue)
                                 return !string.Equals(strPropertyValue, strConvertedExpectedValue, StringComparison.Ordinal);
                             return !Equals(propertyValue, convertedExpectedValue);
                         }
                     case ">":
-                    case "GT":
-                    case "GREATERTHAN":
+                    case "&GT;":
                         return CompareValues(propertyValue, convertedExpectedValue) > 0;
                     case "<":
-                    case "LT":
-                    case "LESSTHAN":
+                    case "&LT;":
                         return CompareValues(propertyValue, convertedExpectedValue) < 0;
                     case ">=":
-                    case "GTE":
-                    case "GREATERTHANEQUALS":
-                    case "GREATERTHANOREQUALS":
+                    case "&GTE;":
+                    case "&GT;&EQ;":
                         return CompareValues(propertyValue, convertedExpectedValue) >= 0;
                     case "<=":
-                    case "LTE":
-                    case "LESSTHANEQUALS":
-                    case "LESSTHANOREQUALS":
+                    case "&LTE;":
+                    case "&LT;&EQ;":
                         return CompareValues(propertyValue, convertedExpectedValue) <= 0;
                     case "CONTAINS":
                         return propertyValue.ToString().Contains(expectedValue, StringComparison.Ordinal);
