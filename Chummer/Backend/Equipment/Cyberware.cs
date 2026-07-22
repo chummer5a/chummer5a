@@ -5063,6 +5063,177 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// Re-reads bonus XML and recreates improvements for this cyberware and its nested gear.
+        /// When equipped with a pair bonus, records this instance in <paramref name="dicPairableCyberwares"/> for a later pair pass.
+        /// </summary>
+        /// <param name="treCyberware">Cyberware tree used to refresh node text.</param>
+        /// <param name="sbdOutdatedItems">Collector for items whose data nodes are missing.</param>
+        /// <param name="lstInternalIdFilter">Optional internal IDs to limit reapplication; null means all.</param>
+        /// <param name="dicPairableCyberwares">Pair-bonus accumulator; ignored when null.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task ReaddImprovements(TreeView treCyberware, StringBuilder sbdOutdatedItems,
+                                            IReadOnlyCollection<string> lstInternalIdFilter,
+                                            IDictionary<Cyberware, int> dicPairableCyberwares = null,
+                                            CancellationToken token = default)
+        {
+            if (lstInternalIdFilter?.Contains(InternalId) != false)
+            {
+                XmlNode objNode = await this.GetNodeAsync(token: token).ConfigureAwait(false);
+                if (objNode != null)
+                {
+                    Bonus = objNode["bonus"];
+                    WirelessBonus = objNode["wirelessbonus"];
+                    PairBonus = objNode["pairbonus"];
+                    if (!string.IsNullOrEmpty(Forced) && Forced != "Right" && Forced != "Left")
+                        ImprovementManager.SetForcedValue(Forced, _objCharacter);
+                    else if (Bonus != null && !string.IsNullOrEmpty(Extra))
+                        ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                    if (Bonus != null)
+                    {
+                        await ImprovementManager.CreateImprovementsAsync(
+                            _objCharacter, SourceType, InternalId, Bonus,
+                            await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(Extra))
+                            Extra = strSelectedValue;
+                    }
+
+                    if (!await GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                        await ChangeModularEquipAsync(false, token: token).ConfigureAwait(false);
+                    else
+                    {
+                        await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                        if (PairBonus != null && dicPairableCyberwares != null)
+                        {
+                            Cyberware objMatchingCyberware = dicPairableCyberwares.Keys.FirstOrDefault(
+                                x => IncludePair.Contains(x.Name) && x.Extra == Extra);
+                            if (objMatchingCyberware != null)
+                                ++dicPairableCyberwares[objMatchingCyberware];
+                            else
+                                dicPairableCyberwares.Add(this, 1);
+                        }
+                    }
+
+                    Guid guidSourceId = await GetSourceIDAsync(token).ConfigureAwait(false);
+                    TreeNode objWareNode = guidSourceId == EssenceHoleGUID || guidSourceId == EssenceAntiHoleGUID
+                        ? await treCyberware.DoThreadSafeFuncAsync(
+                                x => x.FindNode(guidSourceId.ToString("D", GlobalSettings.InvariantCultureInfo)), token)
+                            .ConfigureAwait(false)
+                        : await treCyberware.DoThreadSafeFuncAsync(x => x.FindNode(InternalId), token)
+                            .ConfigureAwait(false);
+                    if (objWareNode != null)
+                    {
+                        string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                        await treCyberware.DoThreadSafeAsync(() => objWareNode.Text = strText, token)
+                                          .ConfigureAwait(false);
+                    }
+                }
+                else
+                {
+                    sbdOutdatedItems?.AppendLine(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                }
+            }
+
+            await GearChildren.ForEachWithSideEffectsAsync(
+                objGear => objGear.ReaddImprovements(treCyberware, sbdOutdatedItems, lstInternalIdFilter, token: token),
+                token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Creates pair bonuses for cyberware previously recorded by <see cref="ReaddImprovements"/>.
+        /// </summary>
+        /// <param name="objCharacter">Character that owns the cyberware.</param>
+        /// <param name="dicPairableCyberwares">Pair groups collected during reapplication.</param>
+        /// <param name="treCyberware">Cyberware tree used to refresh node text.</param>
+        /// <param name="token">Cancellation token.</param>
+        public static async Task ReaddPairBonusesAsync(Character objCharacter,
+                                                       IDictionary<Cyberware, int> dicPairableCyberwares,
+                                                       TreeView treCyberware,
+                                                       CancellationToken token = default)
+        {
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (dicPairableCyberwares == null || dicPairableCyberwares.Count == 0)
+                return;
+
+            foreach (KeyValuePair<Cyberware, int> objItem in dicPairableCyberwares)
+            {
+                Cyberware objCyberware = objItem.Key;
+                int intCyberwaresCount = objItem.Value;
+                List<Cyberware> lstPairableCyberwares = await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
+                    .DeepWhereAsync(x => x.GetChildrenAsync(token),
+                                    async x => objCyberware.IncludePair.Contains(x.Name)
+                                               && x.Extra == objCyberware.Extra
+                                               && await x.GetIsModularCurrentlyEquippedAsync(token)
+                                                         .ConfigureAwait(false), token)
+                    .ConfigureAwait(false);
+                // Need to use slightly different logic if this cyberware has a location (Left or Right) and only pairs with itself because Lefts can only be paired with Rights and Rights only with Lefts
+                if (!string.IsNullOrEmpty(objCyberware.Location)
+                    && objCyberware.IncludePair.All(x => x == objCyberware.Name))
+                {
+                    int intMatchLocationCount = 0;
+                    int intNotMatchLocationCount = 0;
+                    foreach (Cyberware objPairableCyberware in lstPairableCyberwares)
+                    {
+                        if (objPairableCyberware.Location != objCyberware.Location)
+                            ++intNotMatchLocationCount;
+                        else
+                            ++intMatchLocationCount;
+                    }
+
+                    // Set the count to the total number of cyberwares in matching pairs, which would mean 2x the number of whichever location contains the fewest members (since every single one of theirs would have a pair)
+                    intCyberwaresCount = Math.Min(intNotMatchLocationCount, intMatchLocationCount) * 2;
+                }
+
+                if (intCyberwaresCount <= 0)
+                    continue;
+                foreach (Cyberware objLoopCyberware in lstPairableCyberwares)
+                {
+                    if ((intCyberwaresCount & 1) == 0)
+                    {
+                        if (!string.IsNullOrEmpty(objCyberware.Forced)
+                            && objCyberware.Forced != "Right"
+                            && objCyberware.Forced != "Left")
+                            ImprovementManager.SetForcedValue(objCyberware.Forced, objCharacter);
+                        else if (objCyberware.Bonus != null && !string.IsNullOrEmpty(objCyberware.Extra))
+                            ImprovementManager.SetForcedValue(objCyberware.Extra, objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(
+                            objCharacter, objLoopCyberware.SourceType,
+                            objLoopCyberware.InternalId + "Pair",
+                            objLoopCyberware.PairBonus,
+                            await objLoopCyberware.GetRatingAsync(token).ConfigureAwait(false),
+                            await objLoopCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue) && string.IsNullOrEmpty(objCyberware.Extra))
+                            objCyberware.Extra = strSelectedValue;
+                        TreeNode objNode = await objLoopCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == EssenceHoleGUID
+                                           || await objCyberware.GetSourceIDAsync(token).ConfigureAwait(false) == EssenceAntiHoleGUID
+                            ? await treCyberware.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(objCyberware.SourceIDString), token)
+                                .ConfigureAwait(false)
+                            : await treCyberware.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(objLoopCyberware.InternalId), token)
+                                .ConfigureAwait(false);
+                        if (objNode != null)
+                        {
+                            string strName = await objLoopCyberware.GetCurrentDisplayNameAsync(token)
+                                                                   .ConfigureAwait(false);
+                            await treCyberware.DoThreadSafeAsync(() => objNode.Text = strName, token)
+                                              .ConfigureAwait(false);
+                        }
+                    }
+
+                    --intCyberwaresCount;
+                    if (intCyberwaresCount <= 0)
+                        break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Used by our sorting algorithm to remember which order the user moves things to
         /// </summary>
         public int SortOrder
@@ -5695,6 +5866,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                                     ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+                                else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                    ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
 
                                 if (Bonus != null)
                                 {
@@ -5894,6 +6067,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 if (!string.IsNullOrEmpty(_strForced) && _strForced != "Left" && _strForced != "Right")
                                     ImprovementManager.SetForcedValue(_strForced, _objCharacter);
+                                else if (Bonus != null && !string.IsNullOrEmpty(_strExtra))
+                                    ImprovementManager.SetForcedValue(_strExtra, _objCharacter);
 
                                 if (Bonus != null)
                                 {

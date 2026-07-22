@@ -1168,14 +1168,8 @@ namespace Chummer.UI.Powers
                                     {
                                         switch (ParentForm)
                                         {
-                                            case CharacterCreate frmCreate:
-                                                await frmCreate.ReapplySpecificImprovements(p.InternalId,
-                                                        await p.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
-                                                        t)
-                                                    .ConfigureAwait(false);
-                                                break;
-                                            case CharacterCareer frmCareer:
-                                                await frmCareer.ReapplySpecificImprovements(p.InternalId,
+                                            case CharacterShared frmShared:
+                                                await frmShared.ReapplySpecificImprovements(p.InternalId,
                                                         await p.GetCurrentDisplayNameAsync(t).ConfigureAwait(false),
                                                         t)
                                                     .ConfigureAwait(false);

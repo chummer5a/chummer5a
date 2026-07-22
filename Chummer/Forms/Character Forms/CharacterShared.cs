@@ -24,6 +24,7 @@ using System.ComponentModel;
 using System.Diagnostics;
 using System.Drawing;
 using System.Drawing.Imaging;
+using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Text;
@@ -49,7 +50,7 @@ namespace Chummer
     /// Contains functionality shared between frmCreate and frmCareer
     /// </summary>
     [DesignerCategory("")]
-    public class CharacterShared : Form, IHasCharacterObjects
+    public abstract class CharacterShared : Form, IHasCharacterObjects
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -59,6 +60,7 @@ namespace Chummer
         private int _intRefreshingCount;
         private int _intLoadingCount = 1;
         private int _intUpdatingCount;
+        private bool _blnReapplyImprovements;
         private FileSystemWatcher _objCharacterFileWatcher;
         protected readonly SaveFileDialog dlgSaveFile;
 
@@ -1315,6 +1317,21 @@ namespace Chummer
         protected virtual void LiveUpdateFromCharacterFile(object sender, FileSystemEventArgs e)
         {
         }
+
+        /// <summary>
+        /// True while improvements are being wiped and rebuilt; form property handlers should no-op.
+        /// </summary>
+        protected bool IsReapplyingImprovements => _blnReapplyImprovements;
+
+        /// <summary>
+        /// Handles character property changes that require form-specific UI updates.
+        /// Career and Create override this; suppressed while reapplying improvements.
+        /// </summary>
+        /// <param name="sender">Event source.</param>
+        /// <param name="e">Changed property names.</param>
+        /// <param name="token">Cancellation token.</param>
+        protected abstract Task OnCharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e,
+                                                            CancellationToken token = default);
 
         private async Task CharacterPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
@@ -13077,5 +13094,1393 @@ namespace Chummer
         }
 
         #endregion Cyberware Tab Shared Methods
+
+        #region Reapply Improvements
+
+        private static bool IsReapplicableImprovementSource(Improvement.ImprovementSource eSource)
+        {
+            switch (eSource)
+            {
+                case Improvement.ImprovementSource.AIProgram:
+                case Improvement.ImprovementSource.Armor:
+                case Improvement.ImprovementSource.ArmorMod:
+                case Improvement.ImprovementSource.Bioware:
+                case Improvement.ImprovementSource.ComplexForm:
+                case Improvement.ImprovementSource.CritterPower:
+                case Improvement.ImprovementSource.Cyberware:
+                case Improvement.ImprovementSource.Echo:
+                case Improvement.ImprovementSource.Gear:
+                case Improvement.ImprovementSource.MartialArt:
+                case Improvement.ImprovementSource.MartialArtTechnique:
+                case Improvement.ImprovementSource.Metamagic:
+                case Improvement.ImprovementSource.Power:
+                case Improvement.ImprovementSource.Quality:
+                case Improvement.ImprovementSource.Spell:
+                case Improvement.ImprovementSource.StackedFocus:
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        /// <summary>
+        /// Creates improvements from a bonus node and, when a selection was made, applies Extra and refreshes a tree node.
+        /// </summary>
+        /// <param name="eSource">Improvement source type.</param>
+        /// <param name="strSourceName">Internal ID (or other source name) for the improvements.</param>
+        /// <param name="nodBonus">Bonus XML node; no-op when null.</param>
+        /// <param name="intRating">Rating passed to improvement creation.</param>
+        /// <param name="strForcedValue">Value forced for improvement selection prompts.</param>
+        /// <param name="strFriendlyName">Display name used when creating improvements.</param>
+        /// <param name="funcApplySelectedExtra">
+        /// Applies the selected Extra value; ignored when null.
+        /// </param>
+        /// <param name="treView">Tree to refresh; ignored when null.</param>
+        /// <param name="funcFindNode">Finds the tree node to update; ignored when null.</param>
+        /// <param name="funcGetDisplayNameAsync">Gets the node text after Extra changes; ignored when null.</param>
+        /// <param name="token">Cancellation token.</param>
+        private async Task CreateImprovementsAndApplySelectedExtraAsync(
+            Improvement.ImprovementSource eSource,
+            string strSourceName,
+            XmlNode nodBonus,
+            int intRating,
+            string strForcedValue,
+            string strFriendlyName,
+            Func<string, CancellationToken, Task> funcApplySelectedExtra,
+            TreeView treView,
+            Func<TreeView, TreeNode> funcFindNode,
+            Func<CancellationToken, Task<string>> funcGetDisplayNameAsync,
+            CancellationToken token = default)
+        {
+            if (nodBonus == null)
+                return;
+            ImprovementManager.SetForcedValue(strForcedValue, CharacterObject);
+            await ImprovementManager.CreateImprovementsAsync(
+                CharacterObject, eSource, strSourceName, nodBonus, intRating, strFriendlyName,
+                token: token).ConfigureAwait(false);
+            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+            if (string.IsNullOrEmpty(strSelectedValue))
+                return;
+            if (funcApplySelectedExtra != null)
+                await funcApplySelectedExtra(strSelectedValue, token).ConfigureAwait(false);
+            if (treView == null || funcFindNode == null || funcGetDisplayNameAsync == null)
+                return;
+            string strName = await funcGetDisplayNameAsync(token).ConfigureAwait(false);
+            await treView.DoThreadSafeAsync(x =>
+            {
+                TreeNode objNode = funcFindNode(x);
+                if (objNode != null)
+                    objNode.Text = strName;
+            }, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Re-applies improvements for character items from data files.
+        /// When <paramref name="lstInternalIdFilter"/> is null, all applicable sources are rebuilt;
+        /// otherwise only the listed internal IDs are rebuilt.
+        /// Tree views are updated in place when Extra/name values change.
+        /// </summary>
+        /// <param name="treQualities">Qualities tree.</param>
+        /// <param name="treSpells">Spells tree.</param>
+        /// <param name="treComplexForms">Complex forms tree.</param>
+        /// <param name="treAIPrograms">AI programs tree.</param>
+        /// <param name="treCritterPowers">Critter powers tree.</param>
+        /// <param name="treCyberware">Cyberware tree.</param>
+        /// <param name="treArmor">Armor tree.</param>
+        /// <param name="treGear">Gear tree.</param>
+        /// <param name="treWeapons">Weapons tree.</param>
+        /// <param name="lstInternalIdFilter">Optional internal IDs to limit reapplication; null means all.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <summary>
+        /// Confirms with the user, then re-applies improvements for a single character item.
+        /// </summary>
+        /// <param name="strSelectedId">Internal ID of the item to reapply improvements for.</param>
+        /// <param name="strSelectedName">Display name of the item, used in the confirmation prompt.</param>
+        /// <param name="token">Cancellation token.</param>
+        internal async Task ReapplySpecificImprovements(string strSelectedId, string strSelectedName,
+                                                         CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strSelectedId))
+                return;
+            string strName = !string.IsNullOrEmpty(strSelectedName)
+                ? strSelectedName
+                : await LanguageManager.GetStringAsync("String_SelectedItem", token: token).ConfigureAwait(false);
+            // This only re-applies the Improvements for everything the character has. If a match is not found in the data files, the current Improvement information is left as-is.
+            // Verify that the user wants to go through with it.
+            if (await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    string.Format(GlobalSettings.CultureInfo,
+                        await LanguageManager
+                            .GetStringAsync("Message_ConfirmReapplySpecificImprovements", token: token)
+                            .ConfigureAwait(false), strName),
+                    await LanguageManager
+                        .GetStringAsync("MessageTitle_ConfirmReapplySpecificImprovements", token: token)
+                        .ConfigureAwait(false),
+                    MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: token).ConfigureAwait(false) == DialogResult.No)
+                return;
+            using (TemporaryStringArray eParam = strSelectedId.YieldAsPooled())
+                await DoReapplyImprovementsAsync(eParam, token: token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Re-applies improvements for character items using the tree views owned by the concrete form.
+        /// </summary>
+        /// <param name="lstInternalIdFilter">Optional internal IDs to limit reapplication; null means all.</param>
+        /// <param name="token">Cancellation token.</param>
+        protected abstract Task DoReapplyImprovementsAsync(
+            IReadOnlyCollection<string> lstInternalIdFilter = null,
+            CancellationToken token = default);
+
+        protected async Task DoReapplyImprovements(TreeView treQualities, TreeView treSpells,
+                                                   TreeView treComplexForms, TreeView treAIPrograms,
+                                                   TreeView treCritterPowers, TreeView treCyberware,
+                                                   TreeView treArmor, TreeView treGear, TreeView treWeapons,
+                                                   IReadOnlyCollection<string> lstInternalIdFilter = null,
+                                                   CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                IAsyncDisposable objLocker
+                    = await CharacterObject.LockObject.EnterWriteLockAsync(token).ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                                                  out StringBuilder sbdOutdatedItems))
+                    {
+                        // Record the status of any flags that normally trigger character events.
+                        bool blnMAGEnabled = await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false);
+                        bool blnRESEnabled = await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false);
+                        bool blnDEPEnabled = await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false);
+                        // Career (Created) restores EssenceAtSpecialStart when MAG/RES/DEP flags change during reapply
+                        bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                        decimal decEssenceAtSpecialStart = blnCreated
+                            ? await CharacterObject.GetEssenceAtSpecialStartAsync(token).ConfigureAwait(false)
+                            : 0;
+
+                        bool blnOldReapplyImprovements = _blnReapplyImprovements;
+                        _blnReapplyImprovements = true;
+
+                        try
+                        {
+                            Dictionary<string, string> dicAddSpiritForcedBySource
+                                = await ImprovementManager.SnapshotAddSpiritForcedValuesBySourceAsync(
+                                    CharacterObject, token).ConfigureAwait(false);
+
+                            // Wipe all improvements that we will reapply, this is mainly to eliminate orphaned improvements caused by certain bugs and also for a performance increase
+                            await ImprovementManager.RemoveImprovementsAsync(
+                                CharacterObject,
+                                await (await CharacterObject.GetImprovementsAsync(token).ConfigureAwait(false))
+                                      .ToListAsync(
+                                          x => IsReapplicableImprovementSource(x.ImproveSource)
+                                               && (lstInternalIdFilter == null
+                                                   || lstInternalIdFilter.Contains(x.SourceName)),
+                                          token).ConfigureAwait(false),
+                                true, token: token).ConfigureAwait(false);
+
+                            // Refresh Qualities.
+                            // We cannot use foreach because qualities can add more qualities
+                            for (int j = 0; j < await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false); j++)
+                            {
+                                Quality objQuality = await CharacterObject.Qualities.GetValueAtAsync(j, token).ConfigureAwait(false);
+                                QualitySource eOriginSource = await objQuality.GetOriginSourceAsync(token).ConfigureAwait(false);
+                                if (eOriginSource == QualitySource.Improvement
+                                    || eOriginSource == QualitySource.QualityLevelImprovement
+                                    || eOriginSource == QualitySource.MetatypeRemovedAtChargen)
+                                    continue;
+                                // We're only re-apply improvements a list of items, not all of them
+                                if (lstInternalIdFilter?.Contains(objQuality.InternalId) == false)
+                                    continue;
+
+                                XmlNode objNode = await objQuality.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    string strSelected = objQuality.Extra;
+                                    if (string.IsNullOrEmpty(strSelected)
+                                        && dicAddSpiritForcedBySource.TryGetValue(objQuality.InternalId,
+                                            out string strSpiritForced))
+                                        strSelected = strSpiritForced;
+                                    objQuality.Bonus = objNode["bonus"];
+                                    if (objQuality.Bonus != null)
+                                    {
+                                        await CreateImprovementsAndApplySelectedExtraAsync(
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            objQuality.Bonus, 1, strSelected,
+                                            await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            (strSelectedValue, t) => objQuality.SetExtraAsync(strSelectedValue, t),
+                                            treQualities, x => x.FindNodeByTag(objQuality),
+                                            objQuality.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                    }
+
+                                    objQuality.FirstLevelBonus = objNode["firstlevelbonus"];
+                                    if (objQuality.FirstLevelBonus?.HasChildNodes == true)
+                                    {
+                                        string strCheckExtra = await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                                        string strCheckSourceName = await objQuality.GetSourceNameAsync(token).ConfigureAwait(false);
+                                        bool blnDoFirstLevel = true;
+                                        for (int k = 0; k < await CharacterObject.Qualities.GetCountAsync(token).ConfigureAwait(false); ++k)
+                                        {
+                                            Quality objCheckQuality = await CharacterObject.Qualities.GetValueAtAsync(k, token).ConfigureAwait(false);
+                                            if (j != k
+                                                && objCheckQuality.SourceID == objQuality.SourceID
+                                                && await objCheckQuality.GetExtraAsync(token).ConfigureAwait(false) == strCheckExtra
+                                                && await objCheckQuality.GetSourceNameAsync(token).ConfigureAwait(false) == strCheckSourceName
+                                                && (k < j
+                                                    || await objCheckQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.Improvement
+                                                    || await objCheckQuality.GetOriginSourceAsync(token).ConfigureAwait(false) == QualitySource.QualityLevelImprovement
+                                                    || lstInternalIdFilter?.Contains(objCheckQuality.InternalId)
+                                                    == false))
+                                            {
+                                                blnDoFirstLevel = false;
+                                                break;
+                                            }
+                                        }
+
+                                        if (blnDoFirstLevel)
+                                        {
+                                            await CreateImprovementsAndApplySelectedExtraAsync(
+                                                Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                                objQuality.FirstLevelBonus, 1, strSelected,
+                                                await objQuality.GetCurrentDisplayNameShortAsync(token)
+                                                               .ConfigureAwait(false),
+                                                (strSelectedValue, t) => objQuality.SetExtraAsync(strSelectedValue, t),
+                                                treQualities, x => x.FindNodeByTag(objQuality),
+                                                objQuality.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                        }
+                                    }
+
+                                    objQuality.NaturalWeaponsNode = objNode["naturalweapons"];
+                                    if (objQuality.NaturalWeaponsNode != null)
+                                    {
+                                        await CreateImprovementsAndApplySelectedExtraAsync(
+                                            Improvement.ImprovementSource.Quality, objQuality.InternalId,
+                                            objQuality.NaturalWeaponsNode, 1, strSelected,
+                                            await objQuality.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            (strSelectedValue, t) => objQuality.SetExtraAsync(strSelectedValue, t),
+                                            treQualities, x => x.FindNodeByTag(objQuality),
+                                            objQuality.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objQuality.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }
+
+                            // Refresh Martial Art Techniques.
+                            await CharacterObject.MartialArts.ForEachWithSideEffectsAsync(async objMartialArt =>
+                            {
+                                XmlNode objMartialArtNode
+                                    = await objMartialArt.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objMartialArtNode != null)
+                                {
+                                    // We're only re-apply improvements a list of items, not all of them
+                                    if (lstInternalIdFilter?.Contains(objMartialArt.InternalId) != false
+                                        && objMartialArtNode["bonus"] != null)
+                                    {
+                                        await ImprovementManager.CreateImprovementsAsync(
+                                            CharacterObject, Improvement.ImprovementSource.MartialArt,
+                                            objMartialArt.InternalId, objMartialArtNode["bonus"], 1,
+                                            await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objMartialArt.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+
+                                await objMartialArt.Techniques.ForEachWithSideEffectsAsync(async objTechnique =>
+                                {
+                                    if (lstInternalIdFilter?.Contains(objTechnique.InternalId) == false)
+                                        return;
+                                    XmlNode objNode = await objTechnique.GetNodeAsync(token).ConfigureAwait(false);
+                                    if (objNode != null)
+                                    {
+                                        if (objNode["bonus"] != null)
+                                            await ImprovementManager.CreateImprovementsAsync(
+                                                CharacterObject, Improvement.ImprovementSource.MartialArtTechnique,
+                                                objTechnique.InternalId, objNode["bonus"], 1,
+                                                await objTechnique.GetCurrentDisplayNameAsync(token)
+                                                                  .ConfigureAwait(false),
+                                                token: token).ConfigureAwait(false);
+                                    }
+                                    else
+                                    {
+                                        sbdOutdatedItems.AppendLine(
+                                            await objTechnique.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Spells.
+                            await CharacterObject.Spells.ForEachWithSideEffectsAsync(async objSpell =>
+                            {
+                                if (lstInternalIdFilter?.Contains(objSpell.InternalId) == false)
+                                    return;
+                                XmlNode objNode = await objSpell.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    await CreateImprovementsAndApplySelectedExtraAsync(
+                                        Improvement.ImprovementSource.Spell, objSpell.InternalId, objNode["bonus"], 1,
+                                        objSpell.Extra,
+                                        await objSpell.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        (strSelectedValue, t) =>
+                                        {
+                                            objSpell.Extra = strSelectedValue;
+                                            return Task.CompletedTask;
+                                        },
+                                        treSpells, x => x.FindNode(objSpell.InternalId),
+                                        objSpell.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objSpell.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Adept Powers.
+                            await CharacterObject.Powers.ForEachWithSideEffectsAsync(async objPower =>
+                            {
+                                if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
+                                    return;
+                                XmlNode objNode = await objPower.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    objPower.Bonus = objNode["bonus"];
+                                    if (objPower.Bonus != null)
+                                    {
+                                        await CreateImprovementsAndApplySelectedExtraAsync(
+                                            Improvement.ImprovementSource.Power, objPower.InternalId, objPower.Bonus,
+                                            await objPower.GetTotalRatingAsync(token).ConfigureAwait(false),
+                                            objPower.Extra,
+                                            await objPower.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                            null, null, null, null, token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Complex Forms.
+                            await CharacterObject.ComplexForms.ForEachWithSideEffectsAsync(async objComplexForm =>
+                            {
+                                if (lstInternalIdFilter?.Contains(objComplexForm.InternalId) == false)
+                                    return;
+                                XmlNode objNode = await objComplexForm.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    await CreateImprovementsAndApplySelectedExtraAsync(
+                                        Improvement.ImprovementSource.ComplexForm, objComplexForm.InternalId,
+                                        objNode["bonus"], 1, objComplexForm.Extra,
+                                        await objComplexForm.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        (strSelectedValue, t) =>
+                                        {
+                                            objComplexForm.Extra = strSelectedValue;
+                                            return Task.CompletedTask;
+                                        },
+                                        treComplexForms, x => x.FindNode(objComplexForm.InternalId),
+                                        objComplexForm.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objComplexForm.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh AI Programs and Advanced Programs
+                            await CharacterObject.AIPrograms.ForEachWithSideEffectsAsync(async objProgram =>
+                            {
+                                if (lstInternalIdFilter?.Contains(objProgram.InternalId) == false)
+                                    return;
+                                XmlNode objNode = await objProgram.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    await CreateImprovementsAndApplySelectedExtraAsync(
+                                        Improvement.ImprovementSource.AIProgram, objProgram.InternalId,
+                                        objNode["bonus"], 1, objProgram.Extra,
+                                        await objProgram.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                                        (strSelectedValue, t) =>
+                                        {
+                                            objProgram.Extra = strSelectedValue;
+                                            return Task.CompletedTask;
+                                        },
+                                        treAIPrograms, x => x.FindNode(objProgram.InternalId),
+                                        objProgram.GetCurrentDisplayNameShortAsync, token).ConfigureAwait(false);
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objProgram.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Critter Powers.
+                            await CharacterObject.CritterPowers.ForEachWithSideEffectsAsync(async objPower =>
+                            {
+                                if (lstInternalIdFilter?.Contains(objPower.InternalId) == false)
+                                    return;
+                                XmlNode objNode = await objPower.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    objPower.Bonus = objNode["bonus"];
+                                    if (objPower.Bonus != null)
+                                    {
+                                        string strSelected = objPower.Extra;
+                                        if (!int.TryParse(strSelected, out int intRating))
+                                        {
+                                            intRating = 1;
+                                            await CreateImprovementsAndApplySelectedExtraAsync(
+                                                Improvement.ImprovementSource.CritterPower, objPower.InternalId,
+                                                objPower.Bonus, intRating, strSelected,
+                                                await objPower.GetCurrentDisplayNameShortAsync(token)
+                                                              .ConfigureAwait(false),
+                                                (strSelectedValue, t) =>
+                                                {
+                                                    objPower.Extra = strSelectedValue;
+                                                    return Task.CompletedTask;
+                                                },
+                                                treCritterPowers, x => x.FindNode(objPower.InternalId),
+                                                objPower.GetCurrentDisplayNameAsync, token).ConfigureAwait(false);
+                                        }
+                                        else
+                                        {
+                                            await ImprovementManager.CreateImprovementsAsync(
+                                                CharacterObject, Improvement.ImprovementSource.CritterPower,
+                                                objPower.InternalId, objPower.Bonus, intRating,
+                                                await objPower.GetCurrentDisplayNameShortAsync(token)
+                                                              .ConfigureAwait(false),
+                                                token: token).ConfigureAwait(false);
+                                            string strSelectedValue = ImprovementManager.GetSelectedValue(CharacterObject);
+                                            if (!string.IsNullOrEmpty(strSelectedValue))
+                                            {
+                                                objPower.Extra = strSelectedValue;
+                                                string strName = await objPower.GetCurrentDisplayNameAsync(token)
+                                                                               .ConfigureAwait(false);
+                                                await treCritterPowers.DoThreadSafeAsync(x =>
+                                                {
+                                                    TreeNode objPowerNode = x.FindNode(objPower.InternalId);
+                                                    if (objPowerNode != null)
+                                                        objPowerNode.Text = strName;
+                                                }, token).ConfigureAwait(false);
+                                            }
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objPower.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Metamagics and Echoes.
+                            // We cannot use foreach because metamagics/echoes can add more metamagics/echoes
+                            // ReSharper disable once ForCanBeConvertedToForeach
+                            for (int j = 0; j < await CharacterObject.Metamagics.GetCountAsync(token).ConfigureAwait(false); j++)
+                            {
+                                Metamagic objMetamagic = await CharacterObject.Metamagics.GetValueAtAsync(j, token).ConfigureAwait(false);
+                                if (objMetamagic.Grade < 0)
+                                    continue;
+                                // We're only re-apply improvements a list of items, not all of them
+                                if (lstInternalIdFilter?.Contains(objMetamagic.InternalId) == false)
+                                    continue;
+                                XmlNode objNode = await objMetamagic.GetNodeAsync(token).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    objMetamagic.Bonus = objNode["bonus"];
+                                    if (objMetamagic.Bonus != null)
+                                    {
+                                        await ImprovementManager.CreateImprovementsAsync(
+                                            CharacterObject, objMetamagic.SourceType, objMetamagic.InternalId,
+                                            objMetamagic.Bonus, 1,
+                                            await objMetamagic.GetCurrentDisplayNameShortAsync(token)
+                                                              .ConfigureAwait(false),
+                                            token: token).ConfigureAwait(false);
+                                    }
+                                }
+                                else
+                                {
+                                    sbdOutdatedItems.AppendLine(
+                                        await objMetamagic.GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                                }
+                            }
+
+                            // Refresh Cyberware and Bioware.
+                            Dictionary<Cyberware, int> dicPairableCyberwares
+                                = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
+                            foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
+                                         x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                            {
+                                await objCyberware.ReaddImprovements(
+                                    treCyberware, sbdOutdatedItems, lstInternalIdFilter, dicPairableCyberwares,
+                                    token).ConfigureAwait(false);
+                            }
+
+                            await Cyberware.ReaddPairBonusesAsync(CharacterObject, dicPairableCyberwares, treCyberware,
+                                                                  token).ConfigureAwait(false);
+
+                            // Refresh Armors.
+                            await CharacterObject.Armor.ForEachWithSideEffectsAsync(
+                                objArmor => objArmor.ReaddImprovements(
+                                    treArmor, sbdOutdatedItems, lstInternalIdFilter, token),
+                                token).ConfigureAwait(false);
+
+                            // Refresh Gear.
+                            await CharacterObject.Gear.ForEachWithSideEffectsAsync(async objGear =>
+                            {
+                                await objGear
+                                      .ReaddImprovements(treGear, sbdOutdatedItems, lstInternalIdFilter, token: token)
+                                      .ConfigureAwait(false);
+                                await objGear.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+
+                            // Refresh Weapons Gear
+                            await CharacterObject.Weapons.ForEachWithSideEffectsAsync(async objWeapon =>
+                            {
+                                await objWeapon.WeaponAccessories.ForEachWithSideEffectsAsync(
+                                                   objAccessory => objAccessory.GearChildren.ForEachWithSideEffectsAsync(objGear =>
+                                                       objGear
+                                                           .ReaddImprovements(
+                                                               treWeapons, sbdOutdatedItems, lstInternalIdFilter,
+                                                               token: token), token), token)
+                                               .ConfigureAwait(false);
+
+                                await objWeapon.RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
+                        }
+                        finally
+                        {
+                            _blnReapplyImprovements = blnOldReapplyImprovements;
+                        }
+
+                        // If the status of any Character Event flags has changed, manually trigger those events.
+                        List<string> lstTemp = new List<string>(3);
+                        if (blnMAGEnabled != await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                            lstTemp.Add(nameof(Character.MAGEnabled));
+                        if (blnRESEnabled != await CharacterObject.GetRESEnabledAsync(token).ConfigureAwait(false))
+                            lstTemp.Add(nameof(Character.RESEnabled));
+                        if (blnDEPEnabled != await CharacterObject.GetDEPEnabledAsync(token).ConfigureAwait(false))
+                            lstTemp.Add(nameof(Character.DEPEnabled));
+                        if (lstTemp.Count > 0)
+                        {
+                            if (blnCreated)
+                            {
+                                await CharacterObject.SetEssenceAtSpecialStartAsync(decEssenceAtSpecialStart, token)
+                                    .ConfigureAwait(false);
+                            }
+                            await OnCharacterPropertyChanged(this, new MultiplePropertiesChangedEventArgs(lstTemp),
+                                token).ConfigureAwait(false);
+                        }
+
+                        // Immediately await character update because it re-applies essence loss improvements
+                        try
+                        {
+                            await RequestAndProcessCharacterUpdate(token).ConfigureAwait(false);
+                        }
+                        catch (OperationCanceledException)
+                        {
+                            return;
+                        }
+
+                        if (sbdOutdatedItems.Length > 0 && !Utils.IsUnitTest)
+                        {
+                            await Program.ShowScrollableMessageBoxAsync(
+                                this, await LanguageManager.GetStringAsync(
+                                              "Message_ReapplyImprovementsFoundOutdatedItems_Top",
+                                              token: token)
+                                          .ConfigureAwait(false) +
+                                      sbdOutdatedItems.Append(
+                                      await LanguageManager.GetStringAsync(
+                                              "Message_ReapplyImprovementsFoundOutdatedItems_Bottom",
+                                              token: token)
+                                          .ConfigureAwait(false)).ToString(),
+                                await LanguageManager
+                                    .GetStringAsync("MessageTitle_ConfirmReapplyImprovements", token: token)
+                                    .ConfigureAwait(false),
+                                MessageBoxButtons.OK,
+                                MessageBoxIcon.Error, token: token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+
+            await SetDirty(true, token).ConfigureAwait(false);
+        }
+
+        #endregion Reapply Improvements
+
+        #region Cyberware
+
+        /// <summary>
+        /// Select a piece of Cyberware or Bioware to be added to the character.
+        /// </summary>
+        /// <param name="objSelectedCyberware">Cyberware to which the new piece should be added as a subsystem; null to add it directly to the character.</param>
+        /// <param name="objSource">Whether Cyberware or Bioware is being added.</param>
+        /// <param name="token">Cancellation token.</param>
+        /// <returns>True if the user wants to add another piece of Cyberware/Bioware afterwards; otherwise false.</returns>
+        protected async Task<bool> PickCyberware(Cyberware objSelectedCyberware,
+                                                    Improvement.ImprovementSource objSource,
+                                                    CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+            try
+            {
+                IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token)
+                    .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    using (ThreadSafeForm<SelectCyberware> frmPickCyberware
+                           = await ThreadSafeForm<SelectCyberware>.GetAsync(
+                                   () => new SelectCyberware(CharacterObject, objSource,
+                                       objSelectedCyberware), token)
+                               .ConfigureAwait(false))
+                    {
+                        List<Improvement> lstUsedImprovements;
+                        decimal decMultiplier = 1.0m;
+                        switch (objSource)
+                        {
+                            // Apply the character's Cyberware Essence cost multiplier if applicable.
+                            case Improvement.ImprovementSource.Cyberware:
+                            {
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject, Improvement.ImprovementType.CyberwareEssCost,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.CyberwareTotalEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject, Improvement.ImprovementType.CyberwareEssCostNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType.CyberwareTotalEssMultiplierNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                }
+
+                                break;
+                            }
+                            // Apply the character's Bioware Essence cost multiplier if applicable.
+                            case Improvement.ImprovementSource.Bioware:
+                            {
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject, Improvement.ImprovementType.BiowareEssCost,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BiowareTotalEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BiowareEssCostNonRetroactive,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1 - objImprovement.Value / 100;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterESSMultiplier = decMultiplier;
+                                }
+
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                        CharacterObject,
+                                        Improvement.ImprovementType.BiowareTotalEssMultiplierNonRetroactive,
+                                        token: token).ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier *= objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.CharacterTotalESSMultiplier *= decMultiplier;
+                                }
+
+                                // Apply the character's Basic Bioware Essence cost multiplier if applicable.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.BasicBiowareEssCost, token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.BasicBiowareESSMultiplier = decMultiplier;
+                                }
+
+                                // Genetech Cost multiplier.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.GenetechCostMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.GenetechCostMultiplier = decMultiplier;
+                                }
+
+                                // Apply the character's Genetech Essence cost multiplier if applicable.
+                                lstUsedImprovements
+                                    = await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                                            CharacterObject,
+                                            Improvement.ImprovementType.GenetechEssMultiplier,
+                                            token: token)
+                                        .ConfigureAwait(false);
+                                if (lstUsedImprovements.Count != 0)
+                                {
+                                    decMultiplier = 1.0m;
+                                    foreach (Improvement objImprovement in lstUsedImprovements)
+                                    {
+                                        decMultiplier -= 1.0m - objImprovement.Value / 100.0m;
+                                    }
+
+                                    frmPickCyberware.MyForm.GenetechEssMultiplier = decMultiplier;
+                                }
+
+                                break;
+                            }
+                        }
+
+                        Dictionary<string, int> dicDisallowedMounts = new Dictionary<string, int>(6);
+                        Dictionary<string, int> dicHasMounts = new Dictionary<string, int>(6);
+                        if (objSelectedCyberware != null)
+                        {
+                            frmPickCyberware.MyForm.ForcedGrade =
+                                await objSelectedCyberware.GetGradeAsync(token).ConfigureAwait(false);
+                            frmPickCyberware.MyForm.LockGrade();
+                            frmPickCyberware.MyForm.Subsystems = objSelectedCyberware.AllowedSubsystems;
+                            // If the Cyberware has a Capacity with no brackets (meaning it grants Capacity), show only Subsystems (those that consume Capacity).
+                            if (!objSelectedCyberware.Capacity.Contains('[') ||
+                                objSelectedCyberware.Capacity.Contains("/["))
+                            {
+                                await frmPickCyberware.MyForm.SetMaximumCapacityAsync(await objSelectedCyberware
+                                    .GetCapacityRemainingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+
+                                // Do not allow the user to add a new piece of Cyberware if its Capacity has been reached.
+                                if (await CharacterObjectSettings.GetEnforceCapacityAsync(token)
+                                        .ConfigureAwait(false) &&
+                                    frmPickCyberware.MyForm.MaximumCapacity < 0)
+                                {
+                                    await Program.ShowScrollableMessageBoxAsync(
+                                        this,
+                                        await LanguageManager.GetStringAsync("Message_CapacityReached", token: token)
+                                            .ConfigureAwait(false),
+                                        await LanguageManager
+                                            .GetStringAsync("MessageTitle_CapacityReached", token: token)
+                                            .ConfigureAwait(false), MessageBoxButtons.OK,
+                                        MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                    return false;
+                                }
+                            }
+
+                            string strLoopHasModularMount = await objSelectedCyberware.GetHasModularMountAsync(token)
+                                .ConfigureAwait(false);
+                            if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                && !dicHasMounts.ContainsKey(strLoopHasModularMount))
+                                dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
+                            string strSelectedLocation =
+                                await objSelectedCyberware.GetLocationAsync(token).ConfigureAwait(false);
+                            foreach (Cyberware objLoopCyberware in await (await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)).DeepWhereAsync(
+                                             x => x.GetChildrenAsync(token),
+                                             async x => string.IsNullOrEmpty(await x
+                                                 .GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)), token)
+                                         .ConfigureAwait(false))
+                            {
+                                string strLoopLocation =
+                                    await objLoopCyberware.GetLocationAsync(token).ConfigureAwait(false);
+                                foreach (string strLoop in objLoopCyberware.BlocksMounts.SplitNoAlloc(
+                                             ',', StringSplitOptions.RemoveEmptyEntries))
+                                {
+                                    string strKey = strLoop;
+                                    if (strSelectedLocation != strLoopLocation)
+                                        strKey += strLoopLocation;
+                                    if (!dicDisallowedMounts.ContainsKey(strKey))
+                                        dicDisallowedMounts.Add(strKey, int.MaxValue);
+                                }
+
+                                strLoopHasModularMount = strSelectedLocation != strLoopLocation
+                                    ? await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false) +
+                                      strLoopLocation
+                                    : await objLoopCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                if (!string.IsNullOrEmpty(strLoopHasModularMount)
+                                    && !dicHasMounts.ContainsKey(strLoopHasModularMount))
+                                    dicHasMounts.Add(strLoopHasModularMount, int.MaxValue);
+                            }
+                        }
+                        else
+                        {
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setLoopDisallowedMounts))
+                            using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool,
+                                       out HashSet<string> setLoopHasModularMount))
+                            {
+                                await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).ForEachAsync(async objLoopCyberware =>
+                                {
+                                    setLoopDisallowedMounts.Clear();
+                                    setLoopDisallowedMounts.AddRange(
+                                        (await objLoopCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(',',
+                                            StringSplitOptions.RemoveEmptyEntries));
+                                    setLoopHasModularMount.Clear();
+                                    string strLoopHasModularMount = await objLoopCyberware
+                                        .GetHasModularMountAsync(token).ConfigureAwait(false);
+                                    if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                        setLoopHasModularMount.Add(strLoopHasModularMount);
+                                    foreach (Cyberware objInnerLoopCyberware in await (await objLoopCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                                 .DeepWhereAsync(
+                                                     x => x.GetChildrenAsync(token),
+                                                     async x => string.IsNullOrEmpty(
+                                                         await x.GetPlugsIntoModularMountAsync(token)
+                                                             .ConfigureAwait(false)),
+                                                     token).ConfigureAwait(false))
+                                    {
+                                        foreach (string strLoop in (await objInnerLoopCyberware
+                                                     .GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(
+                                                     ',', StringSplitOptions.RemoveEmptyEntries))
+                                            setLoopDisallowedMounts.Add(strLoop);
+                                        strLoopHasModularMount = await objInnerLoopCyberware
+                                            .GetHasModularMountAsync(token).ConfigureAwait(false);
+                                        if (!string.IsNullOrEmpty(strLoopHasModularMount))
+                                            setLoopHasModularMount.Add(strLoopHasModularMount);
+                                    }
+
+                                    foreach (string strLoop in setLoopDisallowedMounts)
+                                    {
+                                        string strKey = strLoop + objLoopCyberware.Location;
+                                        if (!dicDisallowedMounts.ContainsKey(strKey))
+                                            dicDisallowedMounts.Add(strKey,
+                                                await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                    .ConfigureAwait(false));
+                                        else
+                                            dicDisallowedMounts[strKey] += await objLoopCyberware
+                                                .GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                    }
+
+                                    foreach (string strLoop in setLoopHasModularMount)
+                                    {
+                                        string strKey = strLoop + objLoopCyberware.Location;
+                                        if (!dicHasMounts.ContainsKey(strKey))
+                                            dicHasMounts.Add(strKey,
+                                                await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                    .ConfigureAwait(false));
+                                        else
+                                            dicHasMounts[strKey] += await objLoopCyberware.GetLimbSlotCountAsync(token)
+                                                .ConfigureAwait(false);
+                                    }
+                                }, token).ConfigureAwait(false);
+                            }
+                        }
+
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdDisallowedMounts))
+                        {
+                            foreach (KeyValuePair<string, int> kvpLoop in dicDisallowedMounts)
+                            {
+                                string strKey = kvpLoop.Key;
+                                if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                                    continue;
+                                int intValue = kvpLoop.Value;
+                                if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                                {
+                                    strKey = strKey.TrimEndOnce("Left", true);
+                                    intValue = dicDisallowedMounts.TryGetValue(strKey + "Right",
+                                        out int intExistingValue)
+                                        ? 2 * Math.Min(intValue, intExistingValue)
+                                        : 0;
+                                    if (dicDisallowedMounts.TryGetValue(strKey, out intExistingValue))
+                                        intValue += intExistingValue;
+                                }
+
+                                if (intValue >= await CharacterObject
+                                        .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
+                                        .ConfigureAwait(false))
+                                    sbdDisallowedMounts.Append(strKey, ',');
+                            }
+
+                            // Remove trailing ","
+                            if (sbdDisallowedMounts.Length > 0)
+                                --sbdDisallowedMounts.Length;
+                            frmPickCyberware.MyForm.DisallowedMounts = sbdDisallowedMounts.ToString();
+                        }
+
+                        using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
+                                   out StringBuilder sbdHasMounts))
+                        {
+                            foreach (KeyValuePair<string, int> kvpLoop in dicHasMounts)
+                            {
+                                string strKey = kvpLoop.Key;
+                                if (strKey.EndsWith("Right", StringComparison.Ordinal))
+                                    continue;
+                                int intValue = kvpLoop.Value;
+                                if (strKey.EndsWith("Left", StringComparison.Ordinal))
+                                {
+                                    strKey = strKey.TrimEndOnce("Left", true);
+                                    intValue = dicHasMounts.TryGetValue(strKey + "Right", out int intExistingValue)
+                                        ? 2 * Math.Min(intValue, intExistingValue)
+                                        : 0;
+                                    if (dicHasMounts.TryGetValue(strKey, out intExistingValue))
+                                        intValue += intExistingValue;
+                                }
+
+                                if (intValue >= await CharacterObject
+                                        .LimbCountAsync(Cyberware.MountToLimbType(strKey), token: token)
+                                        .ConfigureAwait(false))
+                                    sbdHasMounts.Append(strKey, ',');
+                            }
+
+                            // Remove trailing ","
+                            if (sbdHasMounts.Length > 0)
+                                --sbdHasMounts.Length;
+                            frmPickCyberware.MyForm.HasModularMounts = sbdHasMounts.ToString();
+                        }
+
+                        // Make sure the dialogue window was not canceled.
+                        if (await frmPickCyberware.ShowDialogSafeAsync(this, token: token).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            return false;
+
+                        // Open the Cyberware XML file and locate the selected piece.
+                        XmlNode objXmlCyberware = objSource == Improvement.ImprovementSource.Bioware
+                            ? (await CharacterObject.LoadDataAsync("bioware.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId("/chummer/biowares/bioware",
+                                frmPickCyberware.MyForm.SelectedCyberware)
+                            : (await CharacterObject.LoadDataAsync("cyberware.xml", token: token).ConfigureAwait(false))
+                            .TryGetNodeByNameOrId("/chummer/cyberwares/cyberware",
+                                frmPickCyberware.MyForm.SelectedCyberware);
+
+                        Cyberware objCyberware = new Cyberware(CharacterObject);
+                        try
+                        {
+                            await objCyberware
+                                   .SetPrototypeTranshumanAsync(frmPickCyberware.MyForm.PrototypeTranshuman, token)
+                                   .ConfigureAwait(false);
+                            if (await CharacterObjectSettings.GetAllowCyberwareESSDiscountsAsync(token).ConfigureAwait(false))
+                                await objCyberware.SetESSDiscountAsync(frmPickCyberware.MyForm.SelectedESSDiscount, token).ConfigureAwait(false);
+                            await objCyberware.SetParentAsync(objSelectedCyberware, token).ConfigureAwait(false);
+                            if (!await objCyberware.Purchase(objXmlCyberware, objSource,
+                                    frmPickCyberware.MyForm.SelectedGrade,
+                                    frmPickCyberware.MyForm.SelectedRating, null,
+                                    objSelectedCyberware != null
+                                        ? await objSelectedCyberware.GetChildrenAsync(token).ConfigureAwait(false)
+                                        : await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false),
+                                    await CharacterObject.GetVehiclesAsync(token).ConfigureAwait(false),
+                                    await CharacterObject.GetWeaponsAsync(token).ConfigureAwait(false),
+                                    frmPickCyberware.MyForm.Markup,
+                                    frmPickCyberware.MyForm.FreeCost,
+                                    frmPickCyberware.MyForm.BlackMarketDiscount,
+                                    objParent: objSelectedCyberware, token: token).ConfigureAwait(false))
+                                await objCyberware.DeleteCyberwareAsync(token: token).ConfigureAwait(false);
+                            else
+                                await PromptAttachBaseWeaponToCyberwareIfNeededAsync(objCyberware, token).ConfigureAwait(false);
+
+                            return frmPickCyberware.MyForm.AddAgain;
+                        }
+                        catch
+                        {
+                            await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                            throw;
+                        }
+                    }
+                }
+                finally
+                {
+                    await objLocker.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Create Cyberware from a Cyberware Suite.
+        /// </summary>
+        /// <param name="xmlSuiteNode">XmlNode for the cyberware suite to add.</param>
+        /// <param name="xmlCyberwareNode">XmlNode for the Cyberware to add.</param>
+        /// <param name="objGrade">CyberwareGrade to add the item as.</param>
+        /// <param name="intRating">Rating of the Cyberware.</param>
+        /// <param name="eSource">Source representing whether the suite is cyberware or bioware.</param>
+        /// <param name="token">CancellationToken to listen to.</param>
+        protected async Task<Cyberware> CreateSuiteCyberware(XmlNode xmlSuiteNode, XmlNode xmlCyberwareNode, Grade objGrade,
+                                               int intRating, Improvement.ImprovementSource eSource,
+                                               CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker =
+                await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                string strForced =
+                        xmlSuiteNode.SelectSingleNodeAndCacheExpressionAsNavigator("name/@select", token)?.Value ??
+                        string.Empty;
+                // Create the Cyberware object.
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                List<Vehicle> lstVehicles = new List<Vehicle>(1);
+                Cyberware objCyberware = new Cyberware(CharacterObject);
+                try
+                {
+                    await objCyberware.CreateAsync(xmlCyberwareNode, objGrade, eSource, intRating, lstWeapons, lstVehicles,
+                        true, true,
+                        strForced, token: token).ConfigureAwait(false);
+                    objCyberware.Suite = true;
+
+                    foreach (Weapon objWeapon in lstWeapons)
+                    {
+                        await CharacterObject.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
+
+                    foreach (Vehicle objVehicle in lstVehicles)
+                    {
+                        await CharacterObject.Vehicles.AddAsync(objVehicle, token).ConfigureAwait(false);
+                    }
+
+                    string strType = eSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+                    string strXPathPrefix = strType + "s/" + strType;
+                    using (XmlNodeList xmlChildrenList = xmlSuiteNode.SelectNodes(strXPathPrefix))
+                    {
+                        if (xmlChildrenList?.Count > 0)
+                        {
+                            XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", token: token)
+                                .ConfigureAwait(false);
+                            foreach (XmlNode objXmlChild in xmlChildrenList)
+                            {
+                                string strChildName = objXmlChild["name"]?.InnerTextViaPool(token);
+                                if (string.IsNullOrEmpty(strChildName))
+                                    continue;
+                                XmlNode objXmlChildCyberware
+                                    = objXmlDocument.TryGetNodeByNameOrId("/chummer/" + strXPathPrefix, strChildName);
+                                int.TryParse(objXmlChild["rating"]?.InnerTextViaPool(token), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intChildRating);
+
+                                await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).AddAsync(await CreateSuiteCyberware(objXmlChild,
+                                    objXmlChildCyberware, objGrade,
+                                    intChildRating, eSource, token).ConfigureAwait(false), token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+
+                    return objCyberware;
+                }
+                catch
+                {
+                    if (lstWeapons.Count > 0)
+                    {
+                        foreach (Weapon objWeapon in lstWeapons)
+                        {
+                            await objWeapon.DeleteWeaponAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
+
+                    if (lstVehicles.Count > 0)
+                    {
+                        foreach (Vehicle objVehicle in lstVehicles)
+                        {
+                            await objVehicle.DeleteVehicleAsync(token: CancellationToken.None).ConfigureAwait(false);
+                        }
+                    }
+
+                    await objCyberware.DeleteCyberwareAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Prompts the user to select a Cyberware Suite and adds all of its component Cyberware/Bioware to the character.
+        /// Once the character has been Created, this also charges the suite's Nuyen cost and logs the expense; while
+        /// building a character in Create mode, the suite is added at no charge.
+        /// </summary>
+        /// <param name="objSource">Whether the suite being added is Cyberware or Bioware.</param>
+        /// <param name="token">Cancellation token.</param>
+        protected async Task AddCyberwareSuite(Improvement.ImprovementSource objSource,
+                                                  CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectCyberwareSuite> frmPickCyberwareSuite
+                       = await ThreadSafeForm<SelectCyberwareSuite>
+                           .GetAsync(() => new SelectCyberwareSuite(CharacterObject, objSource), token)
+                           .ConfigureAwait(false))
+                {
+                    if (await frmPickCyberwareSuite.ShowDialogSafeAsync(this, token).ConfigureAwait(false)
+                        == DialogResult.Cancel)
+                        return;
+
+                    decimal decCost = frmPickCyberwareSuite.MyForm.TotalCost;
+                    bool blnCreated = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+                    if (blnCreated && decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                                this,
+                                await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                                    .ConfigureAwait(false),
+                                await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                                    .ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information,
+                                token: token)
+                            .ConfigureAwait(false);
+                        return;
+                    }
+
+                    string strType = objSource == Improvement.ImprovementSource.Cyberware ? "cyberware" : "bioware";
+                    XmlDocument objXmlDocument = await CharacterObject.LoadDataAsync(strType + ".xml", token: token)
+                        .ConfigureAwait(false);
+
+                    XmlNode xmlSuite = objXmlDocument.TryGetNodeByNameOrId("/chummer/suites/suite",
+                        frmPickCyberwareSuite.MyForm.SelectedSuite);
+                    if (xmlSuite == null)
+                        return;
+
+                    if (blnCreated)
+                    {
+                        // Create the Expense Log Entry. Only charged once the character has been Created; Create mode adds suites for free.
+                        ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                        objExpense.Create(decCost * -1,
+                            await LanguageManager
+                                .GetStringAsync("String_ExpensePurchaseCyberwareSuite", token: token)
+                                .ConfigureAwait(false)
+                            + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                .ConfigureAwait(false) + xmlSuite["name"]?.InnerTextViaPool(token),
+                            ExpenseType.Nuyen, DateTime.Now);
+                        await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                            .ConfigureAwait(false);
+                        await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+                    }
+
+                    Grade objGrade
+                        = await Grade
+                            .ConvertToCyberwareGradeAsync(xmlSuite["grade"]?.InnerTextViaPool(token), objSource, CharacterObject,
+                                token).ConfigureAwait(false);
+
+                    // Run through each of the items in the Suite and add them to the character.
+                    using (XmlNodeList xmlItemList = xmlSuite.SelectNodes(strType + "s/" + strType))
+                    {
+                        if (xmlItemList?.Count > 0)
+                        {
+                            foreach (XmlNode xmlItem in xmlItemList)
+                            {
+                                string strItemName = xmlItem["name"]?.InnerTextViaPool(token);
+                                if (string.IsNullOrEmpty(strItemName))
+                                    continue;
+                                XmlNode objXmlCyberware = objXmlDocument.TryGetNodeByNameOrId(
+                                    "/chummer/" + strType + "s/" + strType, strItemName);
+                                int.TryParse(xmlItem["rating"]?.InnerTextViaPool(token), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
+
+                                Cyberware objCyberware
+                                    = await CreateSuiteCyberware(xmlItem, objXmlCyberware, objGrade, intRating,
+                                        objSource, token).ConfigureAwait(false);
+                                await CharacterObject.Cyberware.AddAsync(objCyberware, token).ConfigureAwait(false);
+                            }
+                        }
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        #endregion Cyberware
+
+        /// <summary>
+        /// Update the karma cost tooltip for Initiation/Submersion.
+        /// </summary>
+        /// <param name="cmdAddMetamagic">Button used to add a Metamagic/Echo; its tooltip is updated with the karma cost.</param>
+        /// <param name="chkInitiationGroup">Checkbox indicating whether the Initiation/Submersion is done as part of a group.</param>
+        /// <param name="chkInitiationOrdeal">Checkbox indicating whether the Initiation/Submersion is done as an Ordeal.</param>
+        /// <param name="chkInitiationSchooling">Checkbox indicating whether the Initiation/Submersion is done via Schooling.</param>
+        /// <param name="token">Cancellation token.</param>
+        protected async Task UpdateInitiationCost(SplitButton cmdAddMetamagic, ColorableCheckBox chkInitiationGroup,
+                                                    ColorableCheckBox chkInitiationOrdeal,
+                                                    ColorableCheckBox chkInitiationSchooling,
+                                                    CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strInitTip;
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                IAsyncDisposable objLocker2 = await CharacterObjectSettings.LockObject.EnterReadLockAsync(token)
+                .ConfigureAwait(false);
+                try
+                {
+                    token.ThrowIfCancellationRequested();
+                    decimal decMultiplier = 1.0m;
+                    int intAmount;
+                    if (await CharacterObject.GetMAGEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationGroupPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationOrdealPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaMAGInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetInitiateGradeAsync(token).ConfigureAwait(false);
+                        intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                     * decMultiplier).StandardRound();
+                        token.ThrowIfCancellationRequested();
+                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager
+                                                         .GetStringAsync("Tip_ImproveInitiateGrade", token: token)
+                                                         .ConfigureAwait(false),
+                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                    }
+                    else
+                    {
+                        if (await chkInitiationGroup.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationGroupPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationOrdeal.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationOrdealPercentAsync(token).ConfigureAwait(false);
+                        if (await chkInitiationSchooling.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false))
+                            decMultiplier -= await CharacterObjectSettings.GetKarmaRESInitiationSchoolingPercentAsync(token).ConfigureAwait(false);
+                        int intGrade = await CharacterObject.GetSubmersionGradeAsync(token).ConfigureAwait(false);
+                        intAmount = ((await CharacterObjectSettings.GetKarmaInitiationFlatAsync(token).ConfigureAwait(false)
+                                      + (intGrade + 1) * await CharacterObjectSettings.GetKarmaInitiationAsync(token).ConfigureAwait(false))
+                                     * decMultiplier).StandardRound();
+                        token.ThrowIfCancellationRequested();
+                        strInitTip = string.Format(GlobalSettings.CultureInfo,
+                                                   await LanguageManager
+                                                         .GetStringAsync("Tip_ImproveSubmersionGrade", token: token)
+                                                         .ConfigureAwait(false),
+                                                   (intGrade + 1).ToString(GlobalSettings.CultureInfo),
+                                                   intAmount.ToString(GlobalSettings.CultureInfo));
+                    }
+                }
+                finally
+                {
+                    await objLocker2.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            token.ThrowIfCancellationRequested();
+            await cmdAddMetamagic.SetToolTipTextAsync(strInitTip, token).ConfigureAwait(false);
+        }
     }
 }

@@ -6176,9 +6176,76 @@ namespace Chummer.Backend.Equipment
         #region UI Methods
 
         /// <summary>
-        /// Collection of TreeNodes to update when a relevant property is changed
+        /// Collection of TreeNodes to update when a relevant property is changed.
+        /// Access only under <see cref="_objLinkedTreeNodesLock"/>.
         /// </summary>
         public HashSet<TreeNode> LinkedTreeNodes { get; } = new HashSet<TreeNode>();
+
+        private readonly object _objLinkedTreeNodesLock = new object();
+
+        private static void PruneDetachedLinkedTreeNodes(HashSet<TreeNode> setNodes)
+        {
+            List<TreeNode> lstOrphans = null;
+            foreach (TreeNode nodLoop in setNodes)
+            {
+                if (nodLoop.TreeView != null)
+                    continue;
+                if (lstOrphans == null)
+                    lstOrphans = new List<TreeNode>();
+                lstOrphans.Add(nodLoop);
+            }
+
+            if (lstOrphans == null)
+                return;
+            foreach (TreeNode nodLoop in lstOrphans)
+                setNodes.Remove(nodLoop);
+        }
+
+        private void RefreshLinkedTreeNodeTexts(string strText)
+        {
+            TreeNode[] aobjNodes;
+            lock (_objLinkedTreeNodesLock)
+            {
+                PruneDetachedLinkedTreeNodes(LinkedTreeNodes);
+                if (LinkedTreeNodes.Count == 0)
+                    return;
+                aobjNodes = LinkedTreeNodes.ToArray();
+            }
+
+            // TreeNode.Text must be set on the UI thread (same pattern as PropertyChanged raises above).
+            Utils.RunOnMainThread(() =>
+            {
+                foreach (TreeNode nodLoop in aobjNodes)
+                {
+                    if (nodLoop.TreeView != null)
+                        nodLoop.Text = strText;
+                }
+            });
+        }
+
+        private async Task RefreshLinkedTreeNodeTextsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            TreeNode[] aobjNodes;
+            lock (_objLinkedTreeNodesLock)
+            {
+                PruneDetachedLinkedTreeNodes(LinkedTreeNodes);
+                if (LinkedTreeNodes.Count == 0)
+                    return;
+                aobjNodes = LinkedTreeNodes.ToArray();
+            }
+
+            string strText = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+            // One marshal to the UI thread for all nodes (avoid N× DoThreadSafeAsync hops).
+            await Utils.RunOnMainThreadAsync(() =>
+            {
+                foreach (TreeNode nodLoop in aobjNodes)
+                {
+                    if (nodLoop.TreeView != null)
+                        nodLoop.Text = strText;
+                }
+            }, token).ConfigureAwait(false);
+        }
 
         /// <summary>
         /// Build up the Tree for the current piece of Gear and all of its children.
@@ -6202,6 +6269,9 @@ namespace Chummer.Backend.Equipment
                 ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
                 ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
+
+            lock (_objLinkedTreeNodesLock)
+                LinkedTreeNodes.Add(objNode);
 
             await BuildChildrenGearTree(objNode, cmsGear, cmsCustomGear, token).ConfigureAwait(false);
 
@@ -7284,6 +7354,9 @@ namespace Chummer.Backend.Equipment
                     });
                 }
 
+                if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                    RefreshLinkedTreeNodeTexts(CurrentDisplayName);
+
                 if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
                                   && (!string.IsNullOrEmpty(Weight)
                                       || Children.DeepAny(x => x.Children.Where(y => y.Equipped), x => x.Equipped && !string.IsNullOrEmpty(x.Weight))))
@@ -7394,6 +7467,9 @@ namespace Chummer.Backend.Equipment
                         }
                     }, token).ConfigureAwait(false);
                 }
+
+                if (setNamesOfChangedProperties.Contains(nameof(CurrentDisplayName)))
+                    await RefreshLinkedTreeNodeTextsAsync(token).ConfigureAwait(false);
 
                 if (Equipped && ((setNamesOfChangedProperties.Contains(nameof(TotalWeight))
                                   && (!string.IsNullOrEmpty(Weight)

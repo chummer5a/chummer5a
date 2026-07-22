@@ -3615,6 +3615,60 @@ namespace Chummer.Backend.Equipment
             await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Re-reads bonus XML and recreates improvements for this armor, its mods, and nested gear.
+        /// </summary>
+        /// <param name="treArmor">Armor tree used to refresh node text when Extra changes.</param>
+        /// <param name="sbdOutdatedItems">Collector for items whose data nodes are missing.</param>
+        /// <param name="lstInternalIdFilter">Optional internal IDs to limit reapplication; null means all.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task ReaddImprovements(TreeView treArmor, StringBuilder sbdOutdatedItems,
+                                            IReadOnlyCollection<string> lstInternalIdFilter,
+                                            CancellationToken token = default)
+        {
+            if (lstInternalIdFilter?.Contains(InternalId) != false)
+            {
+                XmlNode objNode = await this.GetNodeAsync(token: token).ConfigureAwait(false);
+                if (objNode != null)
+                {
+                    Bonus = objNode["bonus"];
+                    if (Bonus != null && Equipped)
+                    {
+                        ImprovementManager.SetForcedValue(Extra, _objCharacter);
+                        await ImprovementManager.CreateImprovementsAsync(
+                            _objCharacter, Improvement.ImprovementSource.Armor, InternalId, Bonus,
+                            await GetRatingAsync(token).ConfigureAwait(false),
+                            await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                            token: token).ConfigureAwait(false);
+                        string strSelectedValue = ImprovementManager.GetSelectedValue(_objCharacter);
+                        if (!string.IsNullOrEmpty(strSelectedValue))
+                        {
+                            Extra = strSelectedValue;
+                            string strName = await GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                            await treArmor.DoThreadSafeAsync(x =>
+                            {
+                                TreeNode objArmorNode = x.FindNode(InternalId);
+                                if (objArmorNode != null)
+                                    objArmorNode.Text = strName;
+                            }, token).ConfigureAwait(false);
+                        }
+                    }
+                }
+                else
+                {
+                    sbdOutdatedItems?.AppendLine(await GetCurrentDisplayNameAsync(token).ConfigureAwait(false));
+                }
+            }
+
+            await ArmorMods.ForEachWithSideEffectsAsync(
+                objMod => objMod.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token),
+                token).ConfigureAwait(false);
+            await GearChildren.ForEachWithSideEffectsAsync(
+                objGear => objGear.ReaddImprovements(treArmor, sbdOutdatedItems, lstInternalIdFilter, token: token),
+                token).ConfigureAwait(false);
+            await RefreshWirelessBonusesAsync(token).ConfigureAwait(false);
+        }
+
         #region UI Methods
 
         /// <summary>
