@@ -4576,10 +4576,8 @@ namespace Chummer.Backend.Equipment
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
                             token: token);
                     }
-
-                    // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                    string strUseSkill = Skill?.DictionaryKey ?? string.Empty;
-                    if (strUseSkill == "Unarmed Combat"
+                    // Add UnarmedDV to other Unarmed Combat weapons only when the optional rule is enabled.
+                    else if (Skill?.DictionaryKey == "Unarmed Combat"
                              && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
                     {
                         decImprove += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.UnarmedDV,
@@ -4605,18 +4603,20 @@ namespace Chummer.Backend.Equipment
                             .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
                             .ConfigureAwait(false);
                     }
-
-                    // This should also add any UnarmedDV bonus to Unarmed physical weapons if the option is enabled.
-                    Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
-                    string strUseSkill = objSkill != null
-                        ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
-                        : string.Empty;
-                    if (strUseSkill == "Unarmed Combat"
-                             && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                    // Add UnarmedDV to other Unarmed Combat weapons only when the optional rule is enabled.
+                    else
                     {
-                        decImprove += await ImprovementManager
-                            .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
-                            .ConfigureAwait(false);
+                        Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
+                        string strUseSkill = objSkill != null
+                            ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
+                            : string.Empty;
+                        if (strUseSkill == "Unarmed Combat"
+                            && _objCharacter.Settings.UnarmedImprovementsApplyToWeapons)
+                        {
+                            decImprove += await ImprovementManager
+                                .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedDV, token: token)
+                                .ConfigureAwait(false);
+                        }
                     }
                 }
 
@@ -7484,13 +7484,21 @@ namespace Chummer.Backend.Equipment
                     strImprovedName: strCategory, token: token).ConfigureAwait(false);
             }
 
-            if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
+            // Unarmed Attack always gets UnarmedReach; other unarmed weapons only when the optional rule is on
+            // (matches TotalReach: Name == "Unarmed Attack" || skill && UnarmedImprovementsApplyToWeapons)
+            if (Name == "Unarmed Attack")
+            {
+                decReach += await ImprovementManager
+                    .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token)
+                    .ConfigureAwait(false);
+            }
+            else if (await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetUnarmedImprovementsApplyToWeaponsAsync(token).ConfigureAwait(false))
             {
                 Skill objSkill = await GetSkillAsync(token).ConfigureAwait(false);
                 string strSkillDictionaryKey = objSkill != null
                     ? await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false)
                     : string.Empty;
-                if (Name == "Unarmed Attack" || strSkillDictionaryKey == "Unarmed Combat")
+                if (strSkillDictionaryKey == "Unarmed Combat")
                 {
                     decReach += await ImprovementManager
                         .ValueOfAsync(_objCharacter, Improvement.ImprovementType.UnarmedReach, token: token)

@@ -40,6 +40,7 @@ Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 
 - Implemented a cap on the range modifier for weapons to prevent modifiers from reducing the range modifier above +0.
 - Fixed underbarrel weapons being blocked from being added to weapons.
+- Fixed some issues with Reach and Damage calculations for the Unarmed Attack weapon not including unarmedreach or unarmeddv improvements unless the optional rule for weapons that use Unarmed Combat was enabled.
 
 Changed/New Strings:
 - String_Improvement_SelectSpiritType
