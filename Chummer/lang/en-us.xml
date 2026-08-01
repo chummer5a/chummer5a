@@ -2064,7 +2064,7 @@
     </string>
     <string>
       <key>Tab_Karma</key>
-      <text>Karma &amp;&amp; Nuyen</text>
+      <text>Karma, Nuyen &amp;&amp; Reputation</text>
     </string>
     <string>
       <key>Tab_Improvements</key>
@@ -4752,6 +4752,130 @@
       <key>Tip_BurnStreetCred</key>
       <text>Burn 2 points of Street Cred to reduce Notoriety by 1.</text>
     </string>
+    <string>
+      <key>Tip_SpendReputation</key>
+      <text>Spend Street Cred and/or Karma on reputation services (contacts, lifestyle, factions, and more).</text>
+    </string>
+    <string>
+      <key>Tip_ReputationGained</key>
+      <text>Record a gain to this reputation score (amount and reason).</text>
+    </string>
+    <string>
+      <key>Tip_ReputationSpent</key>
+      <text>Record a loss to this reputation score (amount and reason).</text>
+    </string>
+    <string>
+      <key>Label_Expense_StreetCredAmount</key>
+      <text>Street Cred Amount:</text>
+    </string>
+    <string>
+      <key>Label_Expense_NotorietyAmount</key>
+      <text>Notoriety Amount:</text>
+    </string>
+    <string>
+      <key>Label_Expense_PublicAwarenessAmount</key>
+      <text>Public Awareness Amount:</text>
+    </string>
+    <string>
+      <key>Label_Expense_AstralReputationAmount</key>
+      <text>Astral Reputation Amount:</text>
+    </string>
+    <string>
+      <key>Label_Expense_WildReputationAmount</key>
+      <text>Wild Reputation Amount:</text>
+    </string>
+    <string>
+      <key>Title_Expense_StreetCred</key>
+      <text>Street Cred Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_StreetCredGained</key>
+      <text>Street Cred Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_StreetCredSpent</key>
+      <text>Street Cred Spent</text>
+    </string>
+    <string>
+      <key>Title_Expense_Notoriety</key>
+      <text>Notoriety Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_NotorietyGained</key>
+      <text>Notoriety Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_NotorietySpent</key>
+      <text>Notoriety Spent</text>
+    </string>
+    <string>
+      <key>Title_Expense_PublicAwareness</key>
+      <text>Public Awareness Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_PublicAwarenessGained</key>
+      <text>Public Awareness Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_PublicAwarenessSpent</key>
+      <text>Public Awareness Spent</text>
+    </string>
+    <string>
+      <key>Title_Expense_AstralReputation</key>
+      <text>Astral Reputation Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_AstralReputationGained</key>
+      <text>Astral Reputation Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_AstralReputationSpent</key>
+      <text>Astral Reputation Spent</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildReputation</key>
+      <text>Wild Reputation Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildReputationGained</key>
+      <text>Wild Reputation Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildReputationSpent</key>
+      <text>Wild Reputation Spent</text>
+    </string>
+    <string>
+      <key>Label_Expense_SpiritIndexAmount</key>
+      <text>Spirit Index Amount:</text>
+    </string>
+    <string>
+      <key>Label_Expense_WildIndexAmount</key>
+      <text>Wild Index Amount:</text>
+    </string>
+    <string>
+      <key>Title_Expense_SpiritIndex</key>
+      <text>Spirit Index Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_SpiritIndexGained</key>
+      <text>Spirit Index Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_SpiritIndexSpent</key>
+      <text>Spirit Index Spent</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildIndex</key>
+      <text>Wild Index Expense</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildIndexGained</key>
+      <text>Wild Index Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_WildIndexSpent</key>
+      <text>Wild Index Spent</text>
+    </string>
     <!-- End Region -->
     <!-- Region Skills Tab -->
     <string>
@@ -5842,6 +5966,30 @@
       <text>Astral Reputation:</text>
     </string>
     <string>
+      <key>Label_SpiritIndex</key>
+      <text>Spirit Index:</text>
+    </string>
+    <string>
+      <key>Label_WildIndex</key>
+      <text>Wild Index:</text>
+    </string>
+    <string>
+      <key>String_SpiritIndex</key>
+      <text>Spirit Index</text>
+    </string>
+    <string>
+      <key>String_WildIndex</key>
+      <text>Wild Index</text>
+    </string>
+    <string>
+      <key>Tip_SpiritIndex</key>
+      <text>Spirit Index (SG 206). Every 25 points add 1 to Astral Reputation.</text>
+    </string>
+    <string>
+      <key>Tip_WildIndex</key>
+      <text>Wild Index (FA 176). Every 25 points add 1 to Wild Reputation.</text>
+    </string>
+    <string>
       <key>Label_WildReputation</key>
       <text>Wild Reputation:</text>
     </string>
@@ -5878,6 +6026,94 @@
       <text>Burn Street Cred</text>
     </string>
     <string>
+      <key>String_ExpenseBurnStreetCred</key>
+      <text>Burned Street Cred (Notoriety)</text>
+    </string>
+    <string>
+      <key>Title_SelectReputationSpend</key>
+      <text>Spend Street Cred / Karma</text>
+    </string>
+    <string>
+      <key>MessageTitle_ReputationSpend</key>
+      <text>Reputation Spend</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_Invalid</key>
+      <text>The selected reputation spend could not be applied.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_CareerOnly</key>
+      <text>Reputation spends can only be applied in Career mode.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_NotEnoughStreetCred</key>
+      <text>You do not have enough Street Cred for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_NotEnoughKarma</key>
+      <text>You do not have enough Karma for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_InsufficientCost</key>
+      <text>The Street Cred and Karma entered do not cover the required cost.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_SelectContact</key>
+      <text>Select a contact for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_SelectLifestyle</key>
+      <text>Select a lifestyle for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_SelectFaction</key>
+      <text>Enter a faction name for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_MaxLoyalty</key>
+      <text>This spend cannot raise Loyalty above the allowed maximum.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_MinLoyalty</key>
+      <text>The contact's Loyalty is too low for this spend.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_ConnectionOnce</key>
+      <text>Connection for this contact has already been raised this way.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_MaxFaction</key>
+      <text>This spend cannot raise Faction Reputation above the allowed maximum.</text>
+    </string>
+    <string>
+      <key>Message_ReputationSpend_InvalidDiscount</key>
+      <text>Enter a lifestyle discount greater than zero.</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_CostNewRating</key>
+      <text>Cost equals the new rating (Karma and/or Street Cred)</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_CostPerNuyen</key>
+      <text>1 Karma or Street Cred per {0}¥ reduced</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_CostMixed</key>
+      <text>{0} Karma and/or Street Cred</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_DelayMonths</key>
+      <text>{0} month delay</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_Faction</key>
+      <text>Faction</text>
+    </string>
+    <string>
+      <key>String_ReputationSpend_Discount</key>
+      <text>Discount ¥</text>
+    </string>
+    <string>
       <key>Message_KarmaNuyenExchange</key>
       <text>Nuyen can only be exchanged in multiples of {0}.</text>
     </string>
@@ -5894,8 +6130,16 @@
       <text>Street Cred</text>
     </string>
     <string>
+      <key>String_PublicAwareness</key>
+      <text>Public Awareness</text>
+    </string>
+    <string>
       <key>String_BurntStreetCred</key>
       <text>Burnt Street Cred</text>
+    </string>
+    <string>
+      <key>String_SpentStreetCred</key>
+      <text>Spent Street Cred</text>
     </string>
     <string>
       <key>String_Notoriety</key>
@@ -5938,6 +6182,10 @@
     <string>
       <key>Checkbox_ShowFreeEntries</key>
       <text>Show Free Entries</text>
+    </string>
+    <string>
+      <key>Checkbox_ExpenseMostRecentAtTop</key>
+      <text>Most recent entries at top</text>
     </string>
     <string>
       <key>Checkbox_ShowChart</key>
@@ -7241,8 +7489,44 @@
       <text>Karmic Change</text>
     </string>
     <string>
+      <key>Title_Expense_KarmaGained</key>
+      <text>Karma Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_KarmaSpent</key>
+      <text>Karma Spent</text>
+    </string>
+    <string>
       <key>Title_Expense_Nuyen</key>
       <text>Nuyen Change</text>
+    </string>
+    <string>
+      <key>Title_Expense_NuyenGained</key>
+      <text>Nuyen Gained</text>
+    </string>
+    <string>
+      <key>Title_Expense_NuyenSpent</key>
+      <text>Nuyen Spent</text>
+    </string>
+    <string>
+      <key>String_ExpenseType</key>
+      <text>Type</text>
+    </string>
+    <string>
+      <key>String_ExpenseFilter_All</key>
+      <text>All Types</text>
+    </string>
+    <string>
+      <key>String_ExpenseType_Karma</key>
+      <text>Karma</text>
+    </string>
+    <string>
+      <key>String_ExpenseType_Nuyen</key>
+      <text>Nuyen</text>
+    </string>
+    <string>
+      <key>String_ExpenseType_Reputation</key>
+      <text>Reputation</text>
     </string>
     <string>
       <key>Label_Expense_KarmaAmount</key>
@@ -8053,6 +8337,10 @@
     <string>
       <key>Checkbox_Options_DatesIncludeTime</key>
       <text>Expense dates should include time</text>
+    </string>
+    <string>
+      <key>Label_Options_ExpenseInGameDateOffsetYears</key>
+      <text>Expense in-game date offset (years from system clock):</text>
     </string>
     <string>
       <key>Checkbox_Options_MultiplyRestrictedCost</key>

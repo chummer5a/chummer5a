@@ -375,6 +375,8 @@ namespace Chummer
             Availability,
             SkillEnableMovement, // Enables skills that require fly/swim movement even without that movement type
             CyberlimbAttributeBonus, // Cyberlimb attribute bonus for strength or agility (similar to redliner but without cyberlimb dependency)
+            FactionReputation, // Faction reputation score bought via Street Cred/Karma spends
+            ContactConnectionBoughtWithReputation, // Marks a contact whose Connection was raised via reputation spend (once per contact)
             NumImprovementTypes // 🡐 This one should always be the last defined enum
         }
 
@@ -421,6 +423,7 @@ namespace Chummer
             CyberadeptDaemon,
             BurnedEdge,
             Encumbrance,
+            ReputationSpend,
             NumImprovementSources // 🡐 This one should always be the last defined enum
         }
 

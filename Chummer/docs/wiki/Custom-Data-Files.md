@@ -211,3 +211,65 @@ The following example requires another custom data with the `guid a8d6147d-68e9-
 #### Incompatibilities
 
 Incompatibilities are analogous to dependencies and work with the same syntax. Rather than requiring certain datasets to be enabled for the given dataset to work though, incompatibilities signal that the given custom dataset will not work (properly) if any of the specified custom datasets are enabled.
+
+## Reputation Spends
+
+Street Cred and Karma reputation spends are defined in `reputationspends.xml`. Custom data authors can extend them with `custom_reputationspends.xml`, `override_reputationspends.xml`, or `amend_reputationspends.xml`.
+
+Each spend entry supports:
+
+- `cost` with `streetcred`, `karma`, `points` (mixed Karma/Street Cred pool), `usenewrating`, `allowmixed`, and/or `nuyenperpoint`
+- `rules` with `maxrating`, `minloyalty`, `delaymonths`, `delayusesnewrating`, and `oncepertarget`
+- `targets/target` of `none`, `contact`, `lifestyle`, or `faction`
+- `effects/action` with a `type` attribute such as `ReduceNotoriety`, `ManualSubtractStreetCred`, `IncreaseContactLoyalty`, `IncreaseContactConnection`, `IncreaseFactionReputation`, or `ReduceLifestyleCost`. Omit `action` (or use `type="Custom"`) for bonus-only spends.
+- optional `effects/bonus` nodes using the normal improvement bonus schema (same as qualities/gear). Applied via ImprovementManager when the spend is purchased; removed on undo.
+
+Example (typed action):
+
+```xml
+<reputationspend>
+  <id>11111111-2222-3333-4444-555555555555</id>
+  <name>Campaign Favor</name>
+  <category>Street Cred</category>
+  <cost>
+    <streetcred>3</streetcred>
+  </cost>
+  <targets>
+    <target>none</target>
+  </targets>
+  <effects>
+    <action type="ManualSubtractStreetCred" amount="3" />
+  </effects>
+  <notes>Home campaign favor cost.</notes>
+  <source>Custom</source>
+  <page>1</page>
+</reputationspend>
+```
+
+Example (bonus-only Custom spend):
+
+```xml
+<reputationspend>
+  <id>aaaaaaaa-bbbb-cccc-dddd-eeeeeeeeeeee</id>
+  <name>Local Fixer Favor</name>
+  <category>Street Cred</category>
+  <cost>
+    <streetcred>2</streetcred>
+  </cost>
+  <targets>
+    <target>none</target>
+  </targets>
+  <effects>
+    <action type="Custom" />
+    <bonus>
+      <specificskill>
+        <name>Negotiation</name>
+        <bonus>1</bonus>
+      </specificskill>
+    </bonus>
+  </effects>
+  <notes>Example customdata spend that grants a temporary skill bonus via ImprovementManager.</notes>
+  <source>Custom</source>
+  <page>1</page>
+</reputationspend>
+```

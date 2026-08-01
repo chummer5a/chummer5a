@@ -9,6 +9,15 @@ Application:
 - Custom data directories with updates available are indicated in the Global Settings list and version label, the Custom Data Directories tab title, the Character Settings custom data tree, and the main program window title. Update availability is also checked in the background once an hour.
 - After updating a custom data directory from a repository, an `<updatelocation>` entry shipped in the release manifest takes precedence. A locally saved `<updatelocation>` is only preserved when the downloaded manifest does not include one.
 - Updated wiki documentation for cyberware.xml and vehicles.xml with previously undocumented fields, including custom implant weapon selection, weapon mounts, bundled subsystems, and modular cyberlimbs.
+- Career expense dialogs now use Gained/Spent titles (Karma, Nuyen, and reputation tracks) so plus/minus entry is unambiguous.
+- The Karma & Nuyen tab is now a three-pane journal (Karma | Nuyen | Reputation) with shared search, signed/tinted amounts, collapsible day headers, and no balance charts. Day collapse state is shared across the three lists. A checkbox (default on) puts the most recent entries at the top of each list.
+- Added a Global Settings option for an expense in-game date offset (years from the system clock). New manual expenses default to the last expense date when present, otherwise system time plus that offset. Closes #5205.
+
+Reputation:
+- Career Character Info reputation tracks (Street Cred, Notoriety, Public Awareness, Astral/Wild Reputation) now use +/- expense entry instead of NumericUpDowns, matching Karma/Nuyen. Fixes #3648 and #5241.
+- Added Spirit Index and Wild Index tracks (Street Grimoire / Forbidden Arcana) that contribute to Astral Reputation and Wild Reputation totals (Index/25). Closes #5240.
+- Burn Street Cred and catalogued Street Cred spends are logged as Reputation expenses with undo support. Manual Street Cred adjustments are tracked separately from spent Street Cred.
+- Added a customdata-driven reputation spend framework (`reputationspends.xml`, extensible via `custom_` / `override_` / `amend_reputationspends.xml`) with a Select Reputation Spend dialog for Street Cred/Karma spends (reduce Notoriety, contact loyalty/connection, lifestyle cost, faction reputation, and arbitrary Street Cred spends). Optional `effects/bonus` nodes use the normal ImprovementManager bonus schema and are applied/removed with the spend.
 
 Cyberware:
 - Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
@@ -64,6 +73,30 @@ Changed/New Strings:
 - String_CustomData_RemoteVersionAvailable
 - String_CustomData_UpdatesAvailableTitleSuffix
 - String_CustomData_UpdatesAvailableMenuSuffix
+- Title_Expense_KarmaGained
+- Title_Expense_KarmaSpent
+- Title_Expense_NuyenGained
+- Title_Expense_NuyenSpent
+- Title_Expense_StreetCredGained / Spent (and other reputation track Gained/Spent titles)
+- Title_Expense_SpiritIndex / WildIndex (and Gained/Spent variants)
+- Label_SpiritIndex
+- Label_WildIndex
+- String_SpiritIndex
+- String_WildIndex
+- Tip_SpiritIndex
+- Tip_WildIndex
+- Label_Expense_SpiritIndexAmount
+- Label_Expense_WildIndexAmount
+- Title_SelectReputationSpend
+- MessageTitle_ReputationSpend
+- Message_ReputationSpend_* (validation messages)
+- String_ReputationSpend_*
+- String_ExpenseType
+- String_ExpenseFilter_All
+- String_ExpenseType_Karma
+- String_ExpenseType_Nuyen
+- String_ExpenseType_Reputation
+- Label_Options_ExpenseInGameDateOffsetYears
 
 Build 226
 Application Changes:

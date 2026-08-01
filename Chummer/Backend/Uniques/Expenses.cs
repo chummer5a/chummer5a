@@ -29,7 +29,8 @@ namespace Chummer
     public enum ExpenseType
     {
         Karma = 0,
-        Nuyen = 1
+        Nuyen = 1,
+        Reputation = 2
     }
 
     public enum KarmaExpenseType
@@ -90,6 +91,158 @@ namespace Chummer
     }
 
     /// <summary>
+    /// Types of reputation-related expenses (Street Cred, Notoriety, etc.).
+    /// </summary>
+    public enum ReputationExpenseType
+    {
+        /// <summary>
+        /// Generic or customdata-driven Street Cred spend.
+        /// </summary>
+        CustomSpend = 0,
+
+        /// <summary>
+        /// Manual Street Cred reduction (GM or arbitrary loss).
+        /// </summary>
+        ManualSubtractStreetCred,
+
+        /// <summary>
+        /// Manual Street Cred award.
+        /// </summary>
+        ManualAddStreetCred,
+
+        /// <summary>
+        /// Manual Notoriety award.
+        /// </summary>
+        ManualAddNotoriety,
+
+        /// <summary>
+        /// Manual Notoriety reduction.
+        /// </summary>
+        ManualSubtractNotoriety,
+
+        /// <summary>
+        /// Manual Public Awareness award.
+        /// </summary>
+        ManualAddPublicAwareness,
+
+        /// <summary>
+        /// Manual Public Awareness reduction.
+        /// </summary>
+        ManualSubtractPublicAwareness,
+
+        /// <summary>
+        /// Manual Astral Reputation award.
+        /// </summary>
+        ManualAddAstralReputation,
+
+        /// <summary>
+        /// Manual Astral Reputation reduction.
+        /// </summary>
+        ManualSubtractAstralReputation,
+
+        /// <summary>
+        /// Manual Wild Reputation award.
+        /// </summary>
+        ManualAddWildReputation,
+
+        /// <summary>
+        /// Manual Wild Reputation reduction.
+        /// </summary>
+        ManualSubtractWildReputation,
+
+        /// <summary>
+        /// Manual Spirit Index award.
+        /// </summary>
+        ManualAddSpiritIndex,
+
+        /// <summary>
+        /// Manual Spirit Index reduction.
+        /// </summary>
+        ManualSubtractSpiritIndex,
+
+        /// <summary>
+        /// Manual Wild Index award.
+        /// </summary>
+        ManualAddWildIndex,
+
+        /// <summary>
+        /// Manual Wild Index reduction.
+        /// </summary>
+        ManualSubtractWildIndex,
+
+        /// <summary>
+        /// Burn Street Cred to reduce Notoriety.
+        /// </summary>
+        ReduceNotoriety,
+
+        /// <summary>
+        /// Increase a contact's Loyalty via Street Cred and/or Karma.
+        /// </summary>
+        IncreaseContactLoyalty,
+
+        /// <summary>
+        /// Increase a contact's Connection via Street Cred and/or Karma.
+        /// </summary>
+        IncreaseContactConnection,
+
+        /// <summary>
+        /// Increase faction reputation via Street Cred and/or Karma.
+        /// </summary>
+        IncreaseFactionReputation,
+
+        /// <summary>
+        /// Reduce lifestyle payment cost via Street Cred and/or Karma.
+        /// </summary>
+        ReduceLifestyleCost,
+
+        /// <summary>
+        /// Call in a favor by sacrificing Street Cred and/or Karma.
+        /// </summary>
+        CallInFavor
+    }
+
+    /// <summary>
+    /// Reputation track adjusted via the career expense dialog.
+    /// </summary>
+    public enum ReputationTrack
+    {
+        /// <summary>
+        /// Street Cred.
+        /// </summary>
+        StreetCred = 0,
+
+        /// <summary>
+        /// Notoriety.
+        /// </summary>
+        Notoriety,
+
+        /// <summary>
+        /// Public Awareness.
+        /// </summary>
+        PublicAwareness,
+
+        /// <summary>
+        /// Astral Reputation.
+        /// </summary>
+        AstralReputation,
+
+        /// <summary>
+        /// Wild Reputation.
+        /// </summary>
+        WildReputation,
+
+        /// <summary>
+        /// Spirit Index (contributes to Astral Reputation at 25:1).
+        /// </summary>
+        SpiritIndex,
+
+        /// <summary>
+        /// Wild Index (contributes to Wild Reputation at 25:1).
+        /// </summary>
+        WildIndex
+    }
+
+    /// <summary>
     /// Undo information for an Expense Log Entry.
     /// </summary>
     [DebuggerDisplay("{ObjectId}: {Qty.ToString()}, {Extra}")]
@@ -117,6 +270,17 @@ namespace Chummer
         public static NuyenExpenseType ConvertToNuyenExpenseType(string strValue)
         {
             return Enum.TryParse(strValue, out NuyenExpenseType result) ? result : NuyenExpenseType.ManualAdd;
+        }
+
+        /// <summary>
+        /// Convert a string to a ReputationExpenseType.
+        /// </summary>
+        /// <param name="strValue">String value to convert.</param>
+        public static ReputationExpenseType ConvertToReputationExpenseType(string strValue)
+        {
+            return Enum.TryParse(strValue, out ReputationExpenseType result)
+                ? result
+                : ReputationExpenseType.CustomSpend;
         }
 
         #endregion Helper Methods
@@ -152,6 +316,24 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Create the ExpenseUndo Entry for a reputation spend.
+        /// </summary>
+        /// <param name="objExpenseType">Reputation expense type.</param>
+        /// <param name="strObjectId">Object identifier (spend id, contact id, etc.).</param>
+        /// <param name="decQty">Street Cred amount spent.</param>
+        /// <param name="strExtra">Extra undo metadata.</param>
+        public ExpenseUndo CreateReputation(ReputationExpenseType objExpenseType, string strObjectId,
+                                            decimal decQty = 0, string strExtra = "")
+        {
+            ReputationType = objExpenseType;
+            _strObjectId = strObjectId;
+            _decQty = decQty;
+            _strExtra = strExtra ?? string.Empty;
+
+            return this;
+        }
+
+        /// <summary>
         /// Save the object's XML to the XmlWriter.
         /// </summary>
         /// <param name="objWriter">XmlTextWriter to write with.</param>
@@ -162,6 +344,7 @@ namespace Chummer
             objWriter.WriteStartElement("undo");
             objWriter.WriteElementString("karmatype", KarmaType.ToString());
             objWriter.WriteElementString("nuyentype", NuyenType.ToString());
+            objWriter.WriteElementString("reputationtype", ReputationType.ToString());
             objWriter.WriteElementString("objectid", _strObjectId);
             objWriter.WriteElementString("qty", _decQty.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("extra", _strExtra);
@@ -180,6 +363,8 @@ namespace Chummer
                 KarmaType = ConvertToKarmaExpenseType(objNode["karmatype"].InnerTextViaPool());
             if (objNode["nuyentype"] != null)
                 NuyenType = ConvertToNuyenExpenseType(objNode["nuyentype"].InnerTextViaPool());
+            if (objNode["reputationtype"] != null)
+                ReputationType = ConvertToReputationExpenseType(objNode["reputationtype"].InnerTextViaPool());
             objNode.TryGetStringFieldQuickly("objectid", ref _strObjectId);
             objNode.TryGetDecFieldQuickly("qty", ref _decQty);
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
@@ -198,6 +383,11 @@ namespace Chummer
         /// Nuyen Expense Type.
         /// </summary>
         public NuyenExpenseType NuyenType { get; set; }
+
+        /// <summary>
+        /// Reputation Expense Type.
+        /// </summary>
+        public ReputationExpenseType ReputationType { get; set; }
 
         /// <summary>
         /// Object InternalId.
@@ -258,6 +448,9 @@ namespace Chummer
             {
                 case "NUYEN":
                     return ExpenseType.Nuyen;
+
+                case "REPUTATION":
+                    return ExpenseType.Reputation;
 
                 default:
                     return ExpenseType.Karma;
@@ -455,9 +648,18 @@ namespace Chummer
         /// </summary>
         public string DisplayReason(string strLanguage)
         {
+            string strReason = Reason;
+            if (Type == ExpenseType.Reputation)
+            {
+                strReason = LanguageManager.GetString(GetReputationTrackStringKey(Undo), strLanguage)
+                            + LanguageManager.GetString("String_Space", strLanguage)
+                            + "—"
+                            + LanguageManager.GetString("String_Space", strLanguage)
+                            + strReason;
+            }
             if (Refund)
-                return Reason + LanguageManager.GetString("String_Space", strLanguage) + "(" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ")";
-            return Reason;
+                return strReason + LanguageManager.GetString("String_Space", strLanguage) + "(" + LanguageManager.GetString("String_Expense_Refund", strLanguage) + ")";
+            return strReason;
         }
 
         /// <summary>
@@ -465,9 +667,81 @@ namespace Chummer
         /// </summary>
         public async Task<string> DisplayReasonAsync(string strLanguage, CancellationToken token = default)
         {
+            string strReason = Reason;
+            if (Type == ExpenseType.Reputation)
+            {
+                strReason = await LanguageManager.GetStringAsync(GetReputationTrackStringKey(Undo), strLanguage, token: token).ConfigureAwait(false)
+                            + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                            + "—"
+                            + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false)
+                            + strReason;
+            }
             if (Refund)
-                return Reason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ")";
-            return Reason;
+                return strReason + await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await LanguageManager.GetStringAsync("String_Expense_Refund", strLanguage, token: token).ConfigureAwait(false) + ")";
+            return strReason;
+        }
+
+        /// <summary>
+        /// Language key for the reputation track shown in expense reasons.
+        /// </summary>
+        /// <param name="objUndo">Undo metadata for the expense.</param>
+        /// <returns>Language manager key.</returns>
+        public static string GetReputationTrackStringKey(ExpenseUndo objUndo)
+        {
+            if (objUndo != null && Enum.TryParse(objUndo.ObjectId, out ReputationTrack eTrack))
+                return GetReputationTrackStringKey(eTrack);
+            if (objUndo == null)
+                return "String_StreetCred";
+            switch (objUndo.ReputationType)
+            {
+                case ReputationExpenseType.ManualAddNotoriety:
+                case ReputationExpenseType.ManualSubtractNotoriety:
+                case ReputationExpenseType.ReduceNotoriety:
+                    return "String_Notoriety";
+                case ReputationExpenseType.ManualAddPublicAwareness:
+                case ReputationExpenseType.ManualSubtractPublicAwareness:
+                    return "String_PublicAwareness";
+                case ReputationExpenseType.ManualAddAstralReputation:
+                case ReputationExpenseType.ManualSubtractAstralReputation:
+                    return "String_AstralReputation";
+                case ReputationExpenseType.ManualAddWildReputation:
+                case ReputationExpenseType.ManualSubtractWildReputation:
+                    return "String_WildReputation";
+                case ReputationExpenseType.ManualAddSpiritIndex:
+                case ReputationExpenseType.ManualSubtractSpiritIndex:
+                    return "String_SpiritIndex";
+                case ReputationExpenseType.ManualAddWildIndex:
+                case ReputationExpenseType.ManualSubtractWildIndex:
+                    return "String_WildIndex";
+                default:
+                    return "String_StreetCred";
+            }
+        }
+
+        /// <summary>
+        /// Language key for a reputation track name.
+        /// </summary>
+        /// <param name="eTrack">Track.</param>
+        /// <returns>Language manager key.</returns>
+        public static string GetReputationTrackStringKey(ReputationTrack eTrack)
+        {
+            switch (eTrack)
+            {
+                case ReputationTrack.Notoriety:
+                    return "String_Notoriety";
+                case ReputationTrack.PublicAwareness:
+                    return "String_PublicAwareness";
+                case ReputationTrack.AstralReputation:
+                    return "String_AstralReputation";
+                case ReputationTrack.WildReputation:
+                    return "String_WildReputation";
+                case ReputationTrack.SpiritIndex:
+                    return "String_SpiritIndex";
+                case ReputationTrack.WildIndex:
+                    return "String_WildIndex";
+                default:
+                    return "String_StreetCred";
+            }
         }
 
         /// <summary>

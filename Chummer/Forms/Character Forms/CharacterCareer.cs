@@ -38,7 +38,6 @@ using Chummer.Backend.Enums;
 using Chummer.Backend.Equipment;
 using Chummer.Backend.Skills;
 using Chummer.Backend.Uniques;
-using LiveCharts.Defaults;
 using NLog;
 
 namespace Chummer
@@ -521,46 +520,8 @@ namespace Chummer
                                             .DoThreadSafeAsync(x => x.Text = strNumMugshots, GenericToken)
                                             .ConfigureAwait(false);
 
-                                        await nudStreetCred.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
-                                            (x, y) => x.ValueAsInt = y,
-                                            CharacterObject,
-                                            nameof(Character.StreetCred),
-                                            (x, y) => x.ValueChanged += y,
-                                            x => x.GetStreetCredAsync(GenericToken),
-                                            (x, y) => x.SetStreetCredAsync(y, GenericToken), 250, GenericToken,
-                                            GenericToken).ConfigureAwait(false);
-                                        await nudNotoriety.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
-                                            (x, y) => x.ValueAsInt = y,
-                                            CharacterObject,
-                                            nameof(Character.Notoriety),
-                                            (x, y) => x.ValueChanged += y,
-                                            x => x.GetNotorietyAsync(GenericToken),
-                                            (x, y) => x.SetNotorietyAsync(y, GenericToken), 250, GenericToken,
-                                            GenericToken).ConfigureAwait(false);
-                                        await nudPublicAware.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
-                                            (x, y) => x.ValueAsInt = y,
-                                            CharacterObject,
-                                            nameof(Character.PublicAwareness),
-                                            (x, y) => x.ValueChanged += y,
-                                            x => x.GetPublicAwarenessAsync(GenericToken),
-                                            (x, y) => x.SetPublicAwarenessAsync(y, GenericToken), 250, GenericToken,
-                                            GenericToken).ConfigureAwait(false);
-                                        await nudAstralReputation.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
-                                            (x, y) => x.ValueAsInt = y,
-                                            CharacterObject,
-                                            nameof(Character.AstralReputation),
-                                            (x, y) => x.ValueChanged += y,
-                                            x => x.GetAstralReputationAsync(GenericToken),
-                                            (x, y) => x.SetAstralReputationAsync(y, GenericToken), 250, GenericToken,
-                                            GenericToken).ConfigureAwait(false);
-                                        await nudWildReputation.RegisterAsyncDataBindingWithDelayAsync(x => x.ValueAsInt,
-                                            (x, y) => x.ValueAsInt = y,
-                                            CharacterObject,
-                                            nameof(Character.WildReputation),
-                                            (x, y) => x.ValueChanged += y,
-                                            x => x.GetWildReputationAsync(GenericToken),
-                                            (x, y) => x.SetWildReputationAsync(y, GenericToken), 250, GenericToken,
-                                            GenericToken).ConfigureAwait(false);
+                                        await SetupReputationAdjustmentControlsAsync(GenericToken).ConfigureAwait(false);
+                                        await SetupSplitExpenseTrackerAsync(GenericToken).ConfigureAwait(false);
                                         await cmdAddMetamagic.RegisterOneWayAsyncDataBindingAsync(
                                                 (x, y) => x.Enabled = y, CharacterObject,
                                                 nameof(Character.AddInitiationsAllowed),
@@ -608,19 +569,39 @@ namespace Chummer
                                     {
                                         await lblWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
                                             .ConfigureAwait(false);
-                                        await nudWildReputation.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
-                                            .ConfigureAwait(false);
                                         await lblWildReputationTotal.DoThreadSafeAsync(
                                             x => x.Visible = false, GenericToken).ConfigureAwait(false);
+                                        if (_flpWildReputationAdjust != null)
+                                            await _flpWildReputationAdjust.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                .ConfigureAwait(false);
+                                        if (_lblWildIndex != null)
+                                            await _lblWildIndex.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                .ConfigureAwait(false);
+                                        if (_lblWildIndexTotal != null)
+                                            await _lblWildIndexTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                .ConfigureAwait(false);
+                                        if (_flpWildIndexAdjust != null)
+                                            await _flpWildIndexAdjust.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                .ConfigureAwait(false);
                                         if (!await CharacterObjectSettings.BookEnabledAsync("SG", GenericToken)
                                                 .ConfigureAwait(false))
                                         {
                                             await lblAstralReputation.DoThreadSafeAsync(
                                                 x => x.Visible = false, GenericToken).ConfigureAwait(false);
-                                            await nudAstralReputation.DoThreadSafeAsync(
-                                                x => x.Visible = false, GenericToken).ConfigureAwait(false);
                                             await lblAstralReputationTotal.DoThreadSafeAsync(
                                                 x => x.Visible = false, GenericToken).ConfigureAwait(false);
+                                            if (_flpAstralReputationAdjust != null)
+                                                await _flpAstralReputationAdjust.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                    .ConfigureAwait(false);
+                                            if (_lblSpiritIndex != null)
+                                                await _lblSpiritIndex.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                    .ConfigureAwait(false);
+                                            if (_lblSpiritIndexTotal != null)
+                                                await _lblSpiritIndexTotal.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                    .ConfigureAwait(false);
+                                            if (_flpSpiritIndexAdjust != null)
+                                                await _flpSpiritIndexAdjust.DoThreadSafeAsync(x => x.Visible = false, GenericToken)
+                                                    .ConfigureAwait(false);
                                         }
                                     }
 
@@ -3656,8 +3637,15 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(() =>
                                 {
                                     lblWildReputation.Visible = false;
-                                    nudWildReputation.Visible = false;
                                     lblWildReputationTotal.Visible = false;
+                                    if (_flpWildReputationAdjust != null)
+                                        _flpWildReputationAdjust.Visible = false;
+                                    if (_lblWildIndex != null)
+                                        _lblWildIndex.Visible = false;
+                                    if (_lblWildIndexTotal != null)
+                                        _lblWildIndexTotal.Visible = false;
+                                    if (_flpWildIndexAdjust != null)
+                                        _flpWildIndexAdjust.Visible = false;
                                 }, token).ConfigureAwait(false);
                                 if (!await CharacterObjectSettings.BookEnabledAsync("SG", token)
                                         .ConfigureAwait(false))
@@ -3665,8 +3653,15 @@ namespace Chummer
                                     await this.DoThreadSafeAsync(() =>
                                     {
                                         lblAstralReputation.Visible = false;
-                                        nudAstralReputation.Visible = false;
                                         lblAstralReputationTotal.Visible = false;
+                                        if (_flpAstralReputationAdjust != null)
+                                            _flpAstralReputationAdjust.Visible = false;
+                                        if (_lblSpiritIndex != null)
+                                            _lblSpiritIndex.Visible = false;
+                                        if (_lblSpiritIndexTotal != null)
+                                            _lblSpiritIndexTotal.Visible = false;
+                                        if (_flpSpiritIndexAdjust != null)
+                                            _flpSpiritIndexAdjust.Visible = false;
                                     }, token).ConfigureAwait(false);
                                 }
                                 else
@@ -3674,8 +3669,15 @@ namespace Chummer
                                     await this.DoThreadSafeAsync(() =>
                                     {
                                         lblAstralReputation.Visible = true;
-                                        nudAstralReputation.Visible = true;
                                         lblAstralReputationTotal.Visible = true;
+                                        if (_flpAstralReputationAdjust != null)
+                                            _flpAstralReputationAdjust.Visible = true;
+                                        if (_lblSpiritIndex != null)
+                                            _lblSpiritIndex.Visible = true;
+                                        if (_lblSpiritIndexTotal != null)
+                                            _lblSpiritIndexTotal.Visible = true;
+                                        if (_flpSpiritIndexAdjust != null)
+                                            _flpSpiritIndexAdjust.Visible = true;
                                     }, token).ConfigureAwait(false);
                                 }
                             }
@@ -3684,11 +3686,25 @@ namespace Chummer
                                 await this.DoThreadSafeAsync(() =>
                                 {
                                     lblWildReputation.Visible = true;
-                                    nudWildReputation.Visible = true;
                                     lblWildReputationTotal.Visible = true;
                                     lblAstralReputation.Visible = true;
-                                    nudAstralReputation.Visible = true;
                                     lblAstralReputationTotal.Visible = true;
+                                    if (_flpWildReputationAdjust != null)
+                                        _flpWildReputationAdjust.Visible = true;
+                                    if (_flpAstralReputationAdjust != null)
+                                        _flpAstralReputationAdjust.Visible = true;
+                                    if (_lblWildIndex != null)
+                                        _lblWildIndex.Visible = true;
+                                    if (_lblWildIndexTotal != null)
+                                        _lblWildIndexTotal.Visible = true;
+                                    if (_flpWildIndexAdjust != null)
+                                        _flpWildIndexAdjust.Visible = true;
+                                    if (_lblSpiritIndex != null)
+                                        _lblSpiritIndex.Visible = true;
+                                    if (_lblSpiritIndexTotal != null)
+                                        _lblSpiritIndexTotal.Visible = true;
+                                    if (_flpSpiritIndexAdjust != null)
+                                        _flpSpiritIndexAdjust.Visible = true;
                                 }, token).ConfigureAwait(false);
                             }
 
@@ -5591,6 +5607,7 @@ namespace Chummer
                                 await objMerge.SetNameAsync(await objVessel.GetNameAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetStreetCredAsync(await objVessel.GetStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetBurntStreetCredAsync(await objVessel.GetBurntStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
+                                await objMerge.SetSpentStreetCredAsync(await objVessel.GetSpentStreetCredAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetNotorietyAsync(await objVessel.GetNotorietyAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 await objMerge.SetPublicAwarenessAsync(await objVessel.GetPublicAwarenessAsync(GenericToken).ConfigureAwait(false), GenericToken).ConfigureAwait(false);
                                 ThreadSafeList<Image> lstMergeMugshots = await objMerge.GetMugshotsAsync(GenericToken).ConfigureAwait(false);
@@ -7564,6 +7581,27 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Sets the expense dialog date to the latest existing expense date, or the configured in-game default.
+        /// </summary>
+        private async Task ApplyDefaultExpenseDateAsync(CreateExpense frmExpense, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            DateTime datDefault = GlobalSettings.GetDefaultExpenseDate();
+            ExpenseLogEntry objLast = null;
+            DateTime datMax = DateTime.MinValue;
+            await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(objEntry =>
+            {
+                if (objEntry.Date < datMax)
+                    return;
+                datMax = objEntry.Date;
+                objLast = objEntry;
+            }, token).ConfigureAwait(false);
+            if (objLast != null)
+                datDefault = objLast.Date;
+            frmExpense.SelectedDate = datDefault;
+        }
+
         private async void cmdKarmaGained_Click(object sender, EventArgs e)
         {
             try
@@ -7587,6 +7625,9 @@ namespace Chummer
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
+                            await frmNewExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Karma, true, GenericToken)
+                                .ConfigureAwait(false);
+                            await ApplyDefaultExpenseDateAsync(frmNewExpense.MyForm, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -7668,6 +7709,9 @@ namespace Chummer
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
+                            await frmNewExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Karma, false, GenericToken)
+                                .ConfigureAwait(false);
+                            await ApplyDefaultExpenseDateAsync(frmNewExpense.MyForm, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -7764,7 +7808,9 @@ namespace Chummer
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
-                            await frmNewExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
+                            await frmNewExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Nuyen, true, GenericToken)
+                                .ConfigureAwait(false);
+                            await ApplyDefaultExpenseDateAsync(frmNewExpense.MyForm, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -7844,7 +7890,9 @@ namespace Chummer
                                            KarmaNuyenExchangeString = strText
                                        }, GenericToken).ConfigureAwait(false))
                         {
-                            await frmNewExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
+                            await frmNewExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Nuyen, false, GenericToken)
+                                .ConfigureAwait(false);
+                            await ApplyDefaultExpenseDateAsync(frmNewExpense.MyForm, GenericToken).ConfigureAwait(false);
                             if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
                                 == DialogResult.Cancel)
                                 return;
@@ -10052,6 +10100,296 @@ namespace Chummer
                     return;
 
                 await CharacterObject.ModifyBurntStreetCredAsync(2, GenericToken).ConfigureAwait(false);
+                ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                objExpense.Create(-2,
+                    await LanguageManager.GetStringAsync("String_ExpenseBurnStreetCred", token: GenericToken)
+                        .ConfigureAwait(false),
+                    ExpenseType.Reputation, DateTime.Now);
+                objExpense.Undo = new ExpenseUndo().CreateReputation(ReputationExpenseType.ReduceNotoriety,
+                    string.Empty, 2, "burnt");
+                await (await CharacterObject.GetExpenseEntriesAsync(GenericToken).ConfigureAwait(false))
+                      .AddWithSortAsync(objExpense, token: GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void cmdSpendReputation_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                using (ThreadSafeForm<SelectReputationSpend> frmSpend =
+                       await ThreadSafeForm<SelectReputationSpend>.GetAsync(
+                           () => new SelectReputationSpend(CharacterObject), GenericToken).ConfigureAwait(false))
+                {
+                    if (await frmSpend.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                        != DialogResult.OK)
+                        return;
+
+                    if (!await CharacterObject.ApplyReputationSpendAsync(frmSpend.MyForm.Application, GenericToken)
+                                              .ConfigureAwait(false))
+                    {
+                        await Program.ShowScrollableMessageBoxAsync(
+                            this,
+                            await LanguageManager.GetStringAsync("Message_ReputationSpend_Invalid",
+                                token: GenericToken).ConfigureAwait(false),
+                            await LanguageManager.GetStringAsync("MessageTitle_ReputationSpend",
+                                token: GenericToken).ConfigureAwait(false),
+                            MessageBoxButtons.OK, MessageBoxIcon.Error, token: GenericToken).ConfigureAwait(false);
+                    }
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private FlowLayoutPanel _flpStreetCredAdjust;
+        private FlowLayoutPanel _flpNotorietyAdjust;
+        private FlowLayoutPanel _flpPublicAwareAdjust;
+        private FlowLayoutPanel _flpAstralReputationAdjust;
+        private FlowLayoutPanel _flpWildReputationAdjust;
+        private FlowLayoutPanel _flpSpiritIndexAdjust;
+        private FlowLayoutPanel _flpWildIndexAdjust;
+        private LabelWithToolTip _lblSpiritIndex;
+        private LabelWithToolTip _lblSpiritIndexTotal;
+        private LabelWithToolTip _lblWildIndex;
+        private LabelWithToolTip _lblWildIndexTotal;
+
+        private async Task SetupReputationAdjustmentControlsAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            // Replace reputation spinners with +/- that open CreateExpense (Karma/Nuyen pattern).
+            if (_flpStreetCredAdjust != null)
+                return;
+
+            _flpStreetCredAdjust = await ReplaceReputationSpinnerAsync(
+                nudStreetCred, ReputationTrack.StreetCred, 10, 3, token).ConfigureAwait(false);
+            _flpNotorietyAdjust = await ReplaceReputationSpinnerAsync(
+                nudNotoriety, ReputationTrack.Notoriety, 10, 4, token).ConfigureAwait(false);
+            _flpPublicAwareAdjust = await ReplaceReputationSpinnerAsync(
+                nudPublicAware, ReputationTrack.PublicAwareness, 10, 5, token).ConfigureAwait(false);
+            _flpAstralReputationAdjust = await ReplaceReputationSpinnerAsync(
+                nudAstralReputation, ReputationTrack.AstralReputation, 10, 6, token).ConfigureAwait(false);
+            _flpWildReputationAdjust = await ReplaceReputationSpinnerAsync(
+                nudWildReputation, ReputationTrack.WildReputation, 10, 7, token).ConfigureAwait(false);
+            await SetupIndexReputationRowsAsync(token).ConfigureAwait(false);
+        }
+
+        private async Task SetupIndexReputationRowsAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strSpiritLabel = await LanguageManager.GetStringAsync("Label_SpiritIndex", token: token)
+                                                         .ConfigureAwait(false);
+            string strWildLabel = await LanguageManager.GetStringAsync("Label_WildIndex", token: token)
+                                                       .ConfigureAwait(false);
+            await this.DoThreadSafeAsync(() =>
+            {
+                // Insert row styles at the same index as the new controls so Absolute/Percent
+                // styles stay paired with mugshot rows (otherwise picMugshot loses its % height).
+                const int intInsertAt = 8;
+                const int intRowsToInsert = 2;
+                for (int i = 0; i < intRowsToInsert; ++i)
+                    tlpCharacterInfo.RowStyles.Insert(intInsertAt, new RowStyle());
+                tlpCharacterInfo.RowCount += intRowsToInsert;
+                while (tlpCharacterInfo.RowStyles.Count < tlpCharacterInfo.RowCount)
+                    tlpCharacterInfo.RowStyles.Add(new RowStyle());
+                foreach (Control objControl in tlpCharacterInfo.Controls)
+                {
+                    int intRow = tlpCharacterInfo.GetRow(objControl);
+                    if (intRow >= intInsertAt)
+                        tlpCharacterInfo.SetRow(objControl, intRow + intRowsToInsert);
+                }
+
+                int intNotesSpan = tlpCharacterInfo.GetRowSpan(tabLongTexts);
+                tlpCharacterInfo.SetRowSpan(tabLongTexts, intNotesSpan + intRowsToInsert);
+
+                _lblSpiritIndex = CreateReputationRowLabel("lblSpiritIndex", strSpiritLabel);
+                _lblSpiritIndexTotal = CreateReputationTotalLabel("lblSpiritIndexTotal");
+                _flpSpiritIndexAdjust = CreateReputationAdjustFlow(
+                    ReputationTrack.SpiritIndex, 10, intInsertAt);
+                tlpCharacterInfo.Controls.Add(_lblSpiritIndex, 8, intInsertAt);
+                tlpCharacterInfo.SetColumnSpan(_lblSpiritIndex, 2);
+                tlpCharacterInfo.Controls.Add(_lblSpiritIndexTotal, 11, intInsertAt);
+
+                _lblWildIndex = CreateReputationRowLabel("lblWildIndex", strWildLabel);
+                _lblWildIndexTotal = CreateReputationTotalLabel("lblWildIndexTotal");
+                _flpWildIndexAdjust = CreateReputationAdjustFlow(
+                    ReputationTrack.WildIndex, 10, intInsertAt + 1);
+                tlpCharacterInfo.Controls.Add(_lblWildIndex, 8, intInsertAt + 1);
+                tlpCharacterInfo.SetColumnSpan(_lblWildIndex, 2);
+                tlpCharacterInfo.Controls.Add(_lblWildIndexTotal, 11, intInsertAt + 1);
+
+                // Runtime controls miss the form-level theme pass from the constructor.
+                _lblSpiritIndex.UpdateLightDarkMode();
+                _lblSpiritIndexTotal.UpdateLightDarkMode();
+                _flpSpiritIndexAdjust.UpdateLightDarkMode();
+                _lblWildIndex.UpdateLightDarkMode();
+                _lblWildIndexTotal.UpdateLightDarkMode();
+                _flpWildIndexAdjust.UpdateLightDarkMode();
+            }, token).ConfigureAwait(false);
+
+            await _lblSpiritIndexTotal.RegisterOneWayAsyncDataBindingAsync(
+                    (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                    nameof(Character.SpiritIndex),
+                    x => x.GetSpiritIndexAsync(GenericToken), GenericToken)
+                .ConfigureAwait(false);
+            await _lblWildIndexTotal.RegisterOneWayAsyncDataBindingAsync(
+                    (x, y) => x.Text = y.ToString(GlobalSettings.CultureInfo), CharacterObject,
+                    nameof(Character.WildIndex),
+                    x => x.GetWildIndexAsync(GenericToken), GenericToken)
+                .ConfigureAwait(false);
+        }
+
+        private static LabelWithToolTip CreateReputationRowLabel(string strName, string strText)
+        {
+            return new LabelWithToolTip
+            {
+                Name = strName,
+                Anchor = AnchorStyles.Right,
+                AutoSize = true,
+                Margin = new Padding(3, 6, 3, 6),
+                Text = strText,
+                TextAlign = ContentAlignment.MiddleRight
+            };
+        }
+
+        private static LabelWithToolTip CreateReputationTotalLabel(string strName)
+        {
+            return new LabelWithToolTip
+            {
+                Name = strName,
+                Anchor = AnchorStyles.Left,
+                AutoSize = true,
+                Margin = new Padding(3, 6, 3, 6),
+                Text = "[0]",
+                TextAlign = ContentAlignment.MiddleLeft
+            };
+        }
+
+        private FlowLayoutPanel CreateReputationAdjustFlow(ReputationTrack eTrack, int intColumn, int intRow)
+        {
+            FlowLayoutPanel flp = new FlowLayoutPanel
+            {
+                Name = "flp" + eTrack + "Adjust",
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                WrapContents = false,
+                Anchor = AnchorStyles.Left,
+                Margin = new Padding(0)
+            };
+            ButtonWithToolTip cmdGain = CreateReputationAdjustButton("cmd" + eTrack + "Gained", true);
+            ButtonWithToolTip cmdLose = CreateReputationAdjustButton("cmd" + eTrack + "Spent", false);
+            cmdGain.Click += (s, e) => _ = AdjustReputationTrackAsync(eTrack, true);
+            cmdLose.Click += (s, e) => _ = AdjustReputationTrackAsync(eTrack, false);
+            flp.Controls.Add(cmdGain);
+            flp.Controls.Add(cmdLose);
+            tlpCharacterInfo.Controls.Add(flp, intColumn, intRow);
+            flp.UpdateLightDarkMode();
+            return flp;
+        }
+
+        private async Task<FlowLayoutPanel> ReplaceReputationSpinnerAsync(NumericUpDownEx nudSpinner,
+            ReputationTrack eTrack, int intColumn, int intRow, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            FlowLayoutPanel flp = null;
+            await this.DoThreadSafeAsync(() =>
+            {
+                // Free the table cell; spinner is no longer used (Karma/Nuyen-style +/- instead).
+                tlpCharacterInfo.Controls.Remove(nudSpinner);
+                nudSpinner.Dispose();
+                flp = new FlowLayoutPanel
+                {
+                    Name = "flp" + eTrack + "Adjust",
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    WrapContents = false,
+                    Anchor = AnchorStyles.Left,
+                    Margin = new Padding(0)
+                };
+                ButtonWithToolTip cmdGain = CreateReputationAdjustButton("cmd" + eTrack + "Gained", true);
+                ButtonWithToolTip cmdLose = CreateReputationAdjustButton("cmd" + eTrack + "Spent", false);
+                cmdGain.Click += (s, e) => _ = AdjustReputationTrackAsync(eTrack, true);
+                cmdLose.Click += (s, e) => _ = AdjustReputationTrackAsync(eTrack, false);
+                flp.Controls.Add(cmdGain);
+                flp.Controls.Add(cmdLose);
+                tlpCharacterInfo.Controls.Add(flp, intColumn, intRow);
+                flp.UpdateLightDarkMode();
+            }, token).ConfigureAwait(false);
+            return flp;
+        }
+
+        private static ButtonWithToolTip CreateReputationAdjustButton(string strName, bool blnGain)
+        {
+            return new ButtonWithToolTip
+            {
+                Name = strName,
+                AutoSize = true,
+                AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                MinimumSize = new Size(24, 24),
+                Padding = new Padding(1),
+                Image = blnGain
+                    ? Properties.Resources.add_16
+                    : Properties.Resources.delete_16,
+                ImageDpi96 = blnGain
+                    ? Properties.Resources.add_16
+                    : Properties.Resources.delete_16,
+                ImageDpi120 = blnGain
+                    ? Properties.Resources.add_20
+                    : Properties.Resources.delete_20,
+                ImageDpi144 = blnGain
+                    ? Properties.Resources.add_24
+                    : Properties.Resources.delete_24,
+                ImageDpi192 = blnGain
+                    ? Properties.Resources.add_32
+                    : Properties.Resources.delete_32,
+                ImageDpi288 = blnGain
+                    ? Properties.Resources.add_48
+                    : Properties.Resources.delete_48,
+                ImageDpi384 = blnGain
+                    ? Properties.Resources.add_64
+                    : Properties.Resources.delete_64,
+                UseVisualStyleBackColor = true
+            };
+        }
+
+        private async Task AdjustReputationTrackAsync(ReputationTrack eTrack, bool blnGain)
+        {
+            try
+            {
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    using (ThreadSafeForm<CreateExpense> frmNewExpense = await ThreadSafeForm<CreateExpense>
+                               .GetAsync(() => new CreateExpense(CharacterObjectSettings), GenericToken)
+                               .ConfigureAwait(false))
+                    {
+                        await frmNewExpense.MyForm.SetReputationModeAsync(eTrack, blnGain, GenericToken)
+                            .ConfigureAwait(false);
+                        await ApplyDefaultExpenseDateAsync(frmNewExpense.MyForm, GenericToken).ConfigureAwait(false);
+                        if (await frmNewExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
+                            == DialogResult.Cancel)
+                            return;
+
+                        int intAmount = frmNewExpense.MyForm.Amount.ToInt32();
+                        if (intAmount <= 0)
+                            return;
+                        if (!blnGain)
+                            intAmount = -intAmount;
+
+                        await CharacterObject.ApplyManualReputationAdjustmentAsync(
+                            eTrack, intAmount, frmNewExpense.MyForm.Reason, frmNewExpense.MyForm.SelectedDate,
+                            GenericToken).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
             }
             catch (OperationCanceledException)
             {
@@ -12555,15 +12893,21 @@ namespace Chummer
                     = await lstKarma.DoThreadSafeFuncAsync(
                                         x => x.SelectedItems.Count > 0 ? lstKarma.SelectedItems[0] : null, GenericToken)
                                     .ConfigureAwait(false);
+                if (objItem == null && _lstReputation != null)
+                {
+                    objItem = await _lstReputation.DoThreadSafeFuncAsync(
+                                        x => x.SelectedItems.Count > 0 ? x.SelectedItems[0] : null, GenericToken)
+                                    .ConfigureAwait(false);
+                }
 
                 if (objItem == null)
                 {
                     return;
                 }
 
-                // Find the selected Karma Expense.
+                // Find the selected Karma/Reputation Expense.
                 ExpenseLogEntry objExpense
-                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
+                    = GetExpenseFromListItem(objItem);
 
                 if (objExpense?.Undo == null)
                 {
@@ -12608,6 +12952,12 @@ namespace Chummer
                              await LanguageManager.GetStringAsync("MessageTitle_UndoExpense", token: GenericToken).ConfigureAwait(false),
                              MessageBoxButtons.YesNo, MessageBoxIcon.Question, token: GenericToken).ConfigureAwait(false) == DialogResult.No)
                     return;
+
+                if (objExpense.Type == ExpenseType.Reputation)
+                {
+                    await CharacterObject.UndoReputationSpendAsync(objExpense, GenericToken).ConfigureAwait(false);
+                    return;
+                }
 
                 switch (objExpense.Undo.KarmaType)
                 {
@@ -13159,7 +13509,7 @@ namespace Chummer
 
                 // Find the selected Nuyen Expense.
                 ExpenseLogEntry objExpense
-                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry;
+                    = GetExpenseFromListItem(objItem);
 
                 if (objExpense?.Undo == null)
                 {
@@ -18501,6 +18851,441 @@ namespace Chummer
 
         #region Additional Karma and Nuyen Tab Control Events
 
+        private TextBox _txtExpenseSearch;
+        private int _intExpenseSearchGeneration;
+        private bool _blnSplitExpenseTrackerReady;
+        private bool _blnExpenseMostRecentAtTop = true;
+        private Font _fntExpenseDayHeader;
+        private readonly HashSet<DateTime> _setCollapsedExpenseDays = new HashSet<DateTime>();
+        private TableLayoutPanel _tlpExpenseTriptych;
+        private SplitContainer _splitExpenseOuter;
+        private ColorableCheckBox _chkExpenseMostRecentAtTop;
+        private TableLayoutPanel _tlpReputation;
+        private ListView _lstReputation;
+        private Button _cmdReputationEdit;
+        private ColorableCheckBox _chkShowFreeReputation;
+        private ListViewColumnSorter _lvwReputationColumnSorter;
+        private DebuggableSemaphoreSlim _objReputationListSemaphore = new DebuggableSemaphoreSlim();
+
+        /// <summary>
+        /// Marker stored on day-header rows in the expense lists (collapsible grouping).
+        /// </summary>
+        private sealed class ExpenseDayHeader
+        {
+            public ExpenseDayHeader(DateTime datDay)
+            {
+                Day = datDay.Date;
+            }
+
+            public DateTime Day { get; }
+        }
+
+        private static ExpenseLogEntry GetExpenseFromListItem(ListViewItem objItem)
+        {
+            return (objItem as ListViewItemWithValue)?.Value as ExpenseLogEntry;
+        }
+
+        private async Task SetupSplitExpenseTrackerAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_blnSplitExpenseTrackerReady)
+                return;
+
+            string strSearch = await LanguageManager.GetStringAsync("String_Search", token: token)
+                                                    .ConfigureAwait(false);
+            string strEdit = await LanguageManager.GetStringAsync("Button_EditExpense", token: token)
+                                                  .ConfigureAwait(false);
+            string strFree = await LanguageManager.GetStringAsync("Checkbox_ShowFreeEntries", token: token)
+                                                  .ConfigureAwait(false);
+            string strMostRecentAtTop = await LanguageManager
+                .GetStringAsync("Checkbox_ExpenseMostRecentAtTop", token: token).ConfigureAwait(false);
+            string strDate = await LanguageManager.GetStringAsync("String_Date", token: token)
+                                                  .ConfigureAwait(false);
+            string strAmount = await LanguageManager.GetStringAsync("String_Amount", token: token)
+                                                    .ConfigureAwait(false);
+            string strReason = await LanguageManager.GetStringAsync("String_Reason", token: token)
+                                                    .ConfigureAwait(false);
+            string strReputation = await LanguageManager.GetStringAsync("String_ExpenseType_Reputation", token: token)
+                                                        .ConfigureAwait(false);
+            string strTab = await LanguageManager.GetStringAsync("Tab_Karma", token: token)
+                                                 .ConfigureAwait(false);
+
+            await this.DoThreadSafeAsync(() =>
+            {
+                // Charts unused — reclaim the space for three journals.
+                chtKarma.Visible = false;
+                chtNuyen.Visible = false;
+                chkShowKarmaChart.Visible = false;
+                chkShowNuyenChart.Visible = false;
+                tlpKarma.Controls.Remove(chtKarma);
+                tlpKarma.Controls.Remove(chkShowKarmaChart);
+                tlpNuyen.Controls.Remove(chtNuyen);
+                tlpNuyen.Controls.Remove(chkShowNuyenChart);
+
+                lstKarma.ShowGroups = false;
+                lstNuyen.ShowGroups = false;
+                lstKarma.GridLines = false;
+                lstNuyen.GridLines = false;
+                // Date | Amount | Reason only — expense object lives on ListViewItem.Value.
+                while (lstKarma.Columns.Count > 3)
+                    lstKarma.Columns.RemoveAt(lstKarma.Columns.Count - 1);
+                while (lstNuyen.Columns.Count > 3)
+                    lstNuyen.Columns.RemoveAt(lstNuyen.Columns.Count - 1);
+                // Day headers own ordering; column Sort() would scramble them.
+                lstKarma.ListViewItemSorter = null;
+                lstNuyen.ListViewItemSorter = null;
+                if (_fntExpenseDayHeader == null)
+                    _fntExpenseDayHeader = new Font(lstKarma.Font, FontStyle.Bold);
+                if (lstKarma.Columns.Count > 1)
+                    lstKarma.Columns[1].Width = Math.Max(lstKarma.Columns[1].Width, 90);
+                if (lstNuyen.Columns.Count > 1)
+                    lstNuyen.Columns[1].Width = Math.Max(lstNuyen.Columns[1].Width, 90);
+                lstKarma.MouseClick += ExpenseList_DayHeaderMouseClick;
+                lstNuyen.MouseClick += ExpenseList_DayHeaderMouseClick;
+
+                // Reputation pane (runtime — match Karma/Nuyen toolbar + theme).
+                _cmdReputationEdit = new Button
+                {
+                    Name = "cmdReputationEdit",
+                    Text = strEdit,
+                    Tag = "Button_EditExpense",
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    Dock = DockStyle.Fill,
+                    MinimumSize = new Size(80, 0),
+                    Font = cmdKarmaEdit.Font,
+                    UseVisualStyleBackColor = true
+                };
+                _cmdReputationEdit.Click += lstReputation_DoubleClick;
+
+                _chkShowFreeReputation = new ColorableCheckBox
+                {
+                    Name = "chkShowFreeReputation",
+                    Text = strFree,
+                    Tag = "Checkbox_ShowFreeEntries",
+                    AutoSize = true,
+                    Dock = DockStyle.Fill,
+                    Font = chkShowFreeKarma.Font
+                };
+                _chkShowFreeReputation.CheckedChanged += chkShowFreeReputation_CheckedChanged;
+
+                _lstReputation = new ListView
+                {
+                    Name = "lstReputation",
+                    Dock = DockStyle.Fill,
+                    FullRowSelect = true,
+                    GridLines = false,
+                    HideSelection = false,
+                    MultiSelect = false,
+                    View = View.Details,
+                    ShowGroups = false,
+                    Font = lstKarma.Font,
+                    UseCompatibleStateImageBehavior = false,
+                    ContextMenuStrip = cmsUndoKarmaExpense
+                };
+                _lstReputation.Columns.Add(new ColumnHeader
+                {
+                    Name = "colReputationDate",
+                    Text = strDate,
+                    Tag = "String_Date",
+                    Width = 130
+                });
+                _lstReputation.Columns.Add(new ColumnHeader
+                {
+                    Name = "colReputationAmount",
+                    Text = strAmount,
+                    Tag = "String_Amount",
+                    Width = 90
+                });
+                _lstReputation.Columns.Add(new ColumnHeader
+                {
+                    Name = "colReputationReason",
+                    Text = strReason,
+                    Tag = "String_Reason",
+                    Width = 208
+                });
+                _lvwReputationColumnSorter = new ListViewColumnSorter
+                {
+                    SortColumn = 0,
+                    Order = SortOrder.Descending
+                };
+                _lstReputation.ListViewItemSorter = null;
+                _lstReputation.ColumnClick += lstReputation_ColumnClick;
+                _lstReputation.DoubleClick += lstReputation_DoubleClick;
+                _lstReputation.MouseClick += ExpenseList_DayHeaderMouseClick;
+
+                _tlpReputation = new TableLayoutPanel
+                {
+                    Name = "tlpReputation",
+                    Dock = DockStyle.Fill,
+                    ColumnCount = 3,
+                    RowCount = 2,
+                    Margin = Padding.Empty
+                };
+                _tlpReputation.ColumnStyles.Add(new ColumnStyle());
+                _tlpReputation.ColumnStyles.Add(new ColumnStyle());
+                _tlpReputation.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+                _tlpReputation.RowStyles.Add(new RowStyle());
+                _tlpReputation.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+                // Match Karma/Nuyen: action button first (no orphan header that skips theming).
+                _tlpReputation.Controls.Add(_cmdReputationEdit, 0, 0);
+                _tlpReputation.Controls.Add(_chkShowFreeReputation, 1, 0);
+                _tlpReputation.Controls.Add(_lstReputation, 0, 1);
+                _tlpReputation.SetColumnSpan(_lstReputation, 3);
+
+                // Shared search row + three equal columns.
+                Label lblExpenseSearch = new Label
+                {
+                    Name = "lblExpenseSearch",
+                    Text = strSearch,
+                    Tag = "String_Search",
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Left,
+                    TextAlign = ContentAlignment.MiddleLeft
+                };
+                _txtExpenseSearch = new TextBox
+                {
+                    Name = "txtExpenseSearch",
+                    Dock = DockStyle.Fill,
+                    MinimumSize = new Size(160, 0)
+                };
+                _txtExpenseSearch.TextChanged += txtExpenseSearch_TextChanged;
+
+                _chkExpenseMostRecentAtTop = new ColorableCheckBox
+                {
+                    Name = "chkExpenseMostRecentAtTop",
+                    Text = strMostRecentAtTop,
+                    Tag = "Checkbox_ExpenseMostRecentAtTop",
+                    AutoSize = true,
+                    Checked = true,
+                    Anchor = AnchorStyles.Left,
+                    Margin = new Padding(9, 3, 3, 3)
+                };
+                _chkExpenseMostRecentAtTop.CheckedChanged += chkExpenseMostRecentAtTop_CheckedChanged;
+
+                TableLayoutPanel tlpSearch = new TableLayoutPanel
+                {
+                    Name = "tlpExpenseSearch",
+                    Dock = DockStyle.Fill,
+                    ColumnCount = 3,
+                    RowCount = 1,
+                    AutoSize = true,
+                    Margin = Padding.Empty
+                };
+                tlpSearch.ColumnStyles.Add(new ColumnStyle());
+                tlpSearch.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+                tlpSearch.ColumnStyles.Add(new ColumnStyle());
+                tlpSearch.Controls.Add(lblExpenseSearch, 0, 0);
+                tlpSearch.Controls.Add(_txtExpenseSearch, 1, 0);
+                tlpSearch.Controls.Add(_chkExpenseMostRecentAtTop, 2, 0);
+
+                // Nested splitters so Karma | Nuyen | Reputation all share the same drag handles.
+                // Keep karma/nuyen in the designer SplitContainer; add an outer one for Reputation.
+                if (tlpKarma.Parent != splitKarmaNuyen.Panel1)
+                {
+                    tlpKarma.Parent?.Controls.Remove(tlpKarma);
+                    splitKarmaNuyen.Panel1.Controls.Add(tlpKarma);
+                }
+
+                if (tlpNuyen.Parent != splitKarmaNuyen.Panel2)
+                {
+                    tlpNuyen.Parent?.Controls.Remove(tlpNuyen);
+                    splitKarmaNuyen.Panel2.Controls.Add(tlpNuyen);
+                }
+
+                splitKarmaNuyen.Panel2Collapsed = false;
+                splitKarmaNuyen.Visible = true;
+                splitKarmaNuyen.Dock = DockStyle.Fill;
+                // Chart row is gone — drop the empty third row so the list fills the pane.
+                if (tlpKarma.RowCount > 2)
+                    tlpKarma.RowCount = 2;
+                if (tlpNuyen.RowCount > 2)
+                    tlpNuyen.RowCount = 2;
+
+                _splitExpenseOuter = new SplitContainer
+                {
+                    Name = "splitExpenseOuter",
+                    Dock = DockStyle.Fill,
+                    Orientation = Orientation.Vertical,
+                    Panel1MinSize = 120,
+                    Panel2MinSize = 120
+                };
+                if (splitKarmaNuyen.Parent != null)
+                    splitKarmaNuyen.Parent.Controls.Remove(splitKarmaNuyen);
+                _splitExpenseOuter.Panel1.Controls.Add(splitKarmaNuyen);
+                _splitExpenseOuter.Panel2.Controls.Add(_tlpReputation);
+                _splitExpenseOuter.Panel1.Resize += (s, e) => ResizeExpenseReasonColumns();
+                _splitExpenseOuter.Panel2.Resize += (s, e) => ResizeExpenseReasonColumns();
+                splitKarmaNuyen.Panel1.Resize -= splitKarmaNuyen_Panel1_Resize;
+                splitKarmaNuyen.Panel2.Resize -= splitKarmaNuyen_Panel2_Resize;
+                splitKarmaNuyen.Panel1.Resize += (s, e) => ResizeExpenseReasonColumns();
+                splitKarmaNuyen.Panel2.Resize += (s, e) => ResizeExpenseReasonColumns();
+                ApplyExpenseSplitterColors();
+
+                _tlpExpenseTriptych = new TableLayoutPanel
+                {
+                    Name = "tlpExpenseTriptych",
+                    Dock = DockStyle.Fill,
+                    ColumnCount = 1,
+                    RowCount = 2,
+                    Margin = Padding.Empty
+                };
+                _tlpExpenseTriptych.ColumnStyles.Add(new ColumnStyle(SizeType.Percent, 100F));
+                _tlpExpenseTriptych.RowStyles.Add(new RowStyle());
+                _tlpExpenseTriptych.RowStyles.Add(new RowStyle(SizeType.Percent, 100F));
+                _tlpExpenseTriptych.Controls.Add(tlpSearch, 0, 0);
+                _tlpExpenseTriptych.Controls.Add(_splitExpenseOuter, 0, 1);
+                if (tabKarma.Controls.Contains(splitKarmaNuyen))
+                    tabKarma.Controls.Remove(splitKarmaNuyen);
+                tabKarma.Controls.Add(_tlpExpenseTriptych);
+
+                // Approximate equal thirds once laid out.
+                void ApplyThirds(object s, EventArgs e)
+                {
+                    _splitExpenseOuter.SizeChanged -= ApplyThirds;
+                    int intWidth = _splitExpenseOuter.Width;
+                    if (intWidth < 360)
+                        return;
+                    int intThird = Math.Max(120, intWidth / 3);
+                    try
+                    {
+                        _splitExpenseOuter.SplitterDistance = Math.Min(intWidth - _splitExpenseOuter.Panel2MinSize, intThird * 2);
+                        splitKarmaNuyen.SplitterDistance = Math.Min(splitKarmaNuyen.Width - splitKarmaNuyen.Panel2MinSize, intThird);
+                    }
+                    catch (InvalidOperationException)
+                    {
+                        // SplitterDistance can throw before the control has a real size.
+                    }
+
+                    ResizeExpenseReasonColumns();
+                }
+
+                _splitExpenseOuter.SizeChanged += ApplyThirds;
+
+                // Optional header cues on each pane via AccessibleName / list tooltip.
+                lstKarma.AccessibleName = "Karma";
+                lstNuyen.AccessibleName = "Nuyen";
+                _lstReputation.AccessibleName = strReputation;
+
+                if (!string.IsNullOrEmpty(strTab))
+                    tabKarma.Text = strTab;
+
+                // Constructor themes the form before these controls exist.
+                _tlpExpenseTriptych.UpdateLightDarkMode();
+                // Theme pass paints SplitContainer with SplitterColor (inactive-caption blue);
+                // force panel fills back to Control so Reputation isn't sitting on blue.
+                ApplyExpenseSplitterColors();
+
+                _blnSplitExpenseTrackerReady = true;
+            }, token).ConfigureAwait(false);
+        }
+
+        private void ApplyExpenseSplitterColors()
+        {
+            Color clrPanel = ColorManager.Control;
+            Color clrSplitter = ColorManager.SplitterColor;
+            if (splitKarmaNuyen != null)
+            {
+                splitKarmaNuyen.BackColor = clrSplitter;
+                splitKarmaNuyen.Panel1.BackColor = clrPanel;
+                splitKarmaNuyen.Panel2.BackColor = clrPanel;
+            }
+
+            if (_splitExpenseOuter != null)
+            {
+                _splitExpenseOuter.BackColor = clrSplitter;
+                _splitExpenseOuter.Panel1.BackColor = clrPanel;
+                _splitExpenseOuter.Panel2.BackColor = clrPanel;
+            }
+
+            if (_tlpReputation != null)
+                _tlpReputation.BackColor = clrPanel;
+            if (tlpKarma != null)
+                tlpKarma.BackColor = clrPanel;
+            if (tlpNuyen != null)
+                tlpNuyen.BackColor = clrPanel;
+        }
+
+        private async void txtExpenseSearch_TextChanged(object sender, EventArgs e)
+        {
+            int intGeneration = Interlocked.Increment(ref _intExpenseSearchGeneration);
+            try
+            {
+                await Task.Delay(250, GenericToken).ConfigureAwait(false);
+                if (intGeneration != _intExpenseSearchGeneration)
+                    return;
+                await RepopulateKarmaExpenseList(GenericToken).ConfigureAwait(false);
+                await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
+                await RepopulateReputationExpenseList(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private string GetExpenseSearchText()
+        {
+            return _txtExpenseSearch?.Text?.Trim() ?? string.Empty;
+        }
+
+        private void lstReputation_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ToggleExpenseDaySortOrder();
+            // Checkbox CheckedChanged already refreshes; only refresh if the checkbox isn't wired yet.
+            if (_chkExpenseMostRecentAtTop == null)
+                _ = RefreshAllExpenseDayListsAsync();
+        }
+
+        private async void ExpenseList_DayHeaderMouseClick(object sender, MouseEventArgs e)
+        {
+            if (e.Button != MouseButtons.Left || !(sender is ListView lst))
+                return;
+            ListViewItem objHit = lst.GetItemAt(e.X, e.Y);
+            if (!(objHit is ListViewItemWithValue objItem) || !(objItem.Value is ExpenseDayHeader objHeader))
+                return;
+
+            if (!_setCollapsedExpenseDays.Remove(objHeader.Day))
+                _setCollapsedExpenseDays.Add(objHeader.Day);
+
+            try
+            {
+                await RefreshAllExpenseDayListsAsync().ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private void ToggleExpenseDaySortOrder()
+        {
+            if (_chkExpenseMostRecentAtTop != null)
+                _chkExpenseMostRecentAtTop.Checked = !_chkExpenseMostRecentAtTop.Checked;
+            else
+                _blnExpenseMostRecentAtTop = !_blnExpenseMostRecentAtTop;
+        }
+
+        private async void chkExpenseMostRecentAtTop_CheckedChanged(object sender, EventArgs e)
+        {
+            _blnExpenseMostRecentAtTop = _chkExpenseMostRecentAtTop?.Checked ?? true;
+            await RefreshAllExpenseDayListsAsync().ConfigureAwait(false);
+        }
+
+        private async Task RefreshAllExpenseDayListsAsync()
+        {
+            try
+            {
+                await RepopulateKarmaExpenseList(GenericToken).ConfigureAwait(false);
+                await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
+                await RepopulateReputationExpenseList(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void lstKarma_DoubleClick(object sender, EventArgs e)
         {
             try
@@ -18515,9 +19300,9 @@ namespace Chummer
                 }
 
                 // Find the selected Karma Expense.
-                ExpenseLogEntry objExpense
-                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
-                      ?? new ExpenseLogEntry(CharacterObject);
+                ExpenseLogEntry objExpense = GetExpenseFromListItem(objItem);
+                if (objExpense == null)
+                    return;
 
                 // If this is a manual entry, let the player modify the amount.
                 int intOldAmount = objExpense.Amount.ToInt32();
@@ -18538,6 +19323,8 @@ namespace Chummer
                                IsInEditMode = true
                            }, GenericToken).ConfigureAwait(false))
                 {
+                    await frmEditExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Karma, objExpense.Amount >= 0, GenericToken)
+                        .ConfigureAwait(false);
                     frmEditExpense.MyForm.LockFields(blnAllowEdit);
 
                     if (await frmEditExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
@@ -18575,6 +19362,118 @@ namespace Chummer
             }
         }
 
+        private async Task EditReputationExpenseAsync(ExpenseLogEntry objExpense, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            ReputationTrack eTrack = ReputationTrack.StreetCred;
+            if (objExpense.Undo != null
+                && Enum.TryParse(objExpense.Undo.ObjectId, out ReputationTrack eParsed))
+            {
+                eTrack = eParsed;
+            }
+
+            bool blnGain = objExpense.Amount >= 0;
+            bool blnManual = objExpense.Undo != null
+                             && string.Equals(objExpense.Undo.Extra, "manual", StringComparison.OrdinalIgnoreCase);
+            int intOldAmount = objExpense.Amount.ToInt32();
+
+            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                       () => new CreateExpense(CharacterObjectSettings)
+                       {
+                           Reason = objExpense.Reason,
+                           Amount = Math.Abs(objExpense.Amount),
+                           SelectedDate = objExpense.Date,
+                           IsInEditMode = true
+                       }, token).ConfigureAwait(false))
+            {
+                await frmEditExpense.MyForm.SetReputationModeAsync(eTrack, blnGain, token).ConfigureAwait(false);
+                frmEditExpense.MyForm.LockFields(blnManual);
+
+                if (await frmEditExpense.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                    return;
+
+                int intNewAmount = frmEditExpense.MyForm.Amount.ToInt32();
+                if (!blnGain)
+                    intNewAmount = -intNewAmount;
+
+                if (blnManual && intOldAmount != intNewAmount)
+                {
+                    int intDelta = intNewAmount - intOldAmount;
+                    switch (eTrack)
+                    {
+                        case ReputationTrack.Notoriety:
+                            await CharacterObject.SetNotorietyAsync(
+                                await CharacterObject.GetNotorietyAsync(token).ConfigureAwait(false) + intDelta, token)
+                                .ConfigureAwait(false);
+                            break;
+                        case ReputationTrack.PublicAwareness:
+                            await CharacterObject.SetPublicAwarenessAsync(
+                                await CharacterObject.GetPublicAwarenessAsync(token).ConfigureAwait(false) + intDelta,
+                                token).ConfigureAwait(false);
+                            break;
+                        case ReputationTrack.AstralReputation:
+                            await CharacterObject.SetAstralReputationAsync(
+                                await CharacterObject.GetAstralReputationAsync(token).ConfigureAwait(false) + intDelta,
+                                token).ConfigureAwait(false);
+                            break;
+                        case ReputationTrack.WildReputation:
+                            await CharacterObject.SetWildReputationAsync(
+                                await CharacterObject.GetWildReputationAsync(token).ConfigureAwait(false) + intDelta,
+                                token).ConfigureAwait(false);
+                            break;
+                        case ReputationTrack.SpiritIndex:
+                            await CharacterObject.SetSpiritIndexAsync(
+                                await CharacterObject.GetSpiritIndexAsync(token).ConfigureAwait(false) + intDelta, token)
+                                .ConfigureAwait(false);
+                            break;
+                        case ReputationTrack.WildIndex:
+                            await CharacterObject.SetWildIndexAsync(
+                                await CharacterObject.GetWildIndexAsync(token).ConfigureAwait(false) + intDelta, token)
+                                .ConfigureAwait(false);
+                            break;
+                        default:
+                            await CharacterObject.SetStreetCredAsync(
+                                await CharacterObject.GetStreetCredAsync(token).ConfigureAwait(false) + intDelta, token)
+                                .ConfigureAwait(false);
+                            break;
+                    }
+
+                    await objExpense.SetAmountAsync(intNewAmount, token).ConfigureAwait(false);
+                    if (objExpense.Undo != null)
+                        objExpense.Undo.Qty = Math.Abs(intNewAmount);
+                }
+
+                objExpense.Reason = frmEditExpense.MyForm.Reason;
+                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
+            }
+
+            await RepopulateReputationExpenseList(token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+        }
+
+        private async void lstReputation_DoubleClick(object sender, EventArgs e)
+        {
+            try
+            {
+                if (_lstReputation == null)
+                    return;
+                ListViewItem objItem
+                    = await _lstReputation.DoThreadSafeFuncAsync(
+                                        x => x.SelectedItems.Count > 0 ? x.SelectedItems[0] : null, GenericToken)
+                                    .ConfigureAwait(false);
+                if (objItem == null)
+                    return;
+                ExpenseLogEntry objExpense = GetExpenseFromListItem(objItem);
+                if (objExpense == null)
+                    return;
+                await EditReputationExpenseAsync(objExpense, GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void lstNuyen_DoubleClick(object sender, EventArgs e)
         {
             try
@@ -18584,64 +19483,11 @@ namespace Chummer
                                         x => x.SelectedItems.Count > 0 ? lstNuyen.SelectedItems[0] : null, GenericToken)
                                     .ConfigureAwait(false);
                 if (objItem == null)
-                {
                     return;
-                }
-
-                // Find the selected Nuyen Expense.
-                ExpenseLogEntry objExpense
-                    = (objItem.SubItems[3] as ListViewItemWithValue.ListViewSubItemWithValue)?.Value as ExpenseLogEntry
-                      ?? new ExpenseLogEntry(CharacterObject);
-
-                // If this is a manual entry, let the player modify the amount.
-                decimal decOldAmount = objExpense.Amount;
-                bool blnAllowEdit = objExpense.Undo != null
-                                    && (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd ||
-                                        objExpense.Undo.NuyenType ==
-                                        NuyenExpenseType.ManualSubtract);
-
-                bool blnDoRepopulateList;
-                using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
-                           () => new CreateExpense(CharacterObjectSettings)
-                           {
-                               Reason = objExpense.Reason,
-                               Amount = objExpense.Amount,
-                               Refund = objExpense.Refund,
-                               SelectedDate = objExpense.Date,
-                               ForceCareerVisible = objExpense.ForceCareerVisible,
-                               IsInEditMode = true
-                           }, GenericToken).ConfigureAwait(false))
-                {
-                    await frmEditExpense.MyForm.SetModeAsync(ExpenseType.Nuyen, GenericToken).ConfigureAwait(false);
-                    frmEditExpense.MyForm.LockFields(blnAllowEdit);
-
-                    if (await frmEditExpense.ShowDialogSafeAsync(this, GenericToken).ConfigureAwait(false)
-                        == DialogResult.Cancel)
-                        return;
-
-                    // If this is a manual entry, update the character's Karma total.
-                    decimal decNewAmount = frmEditExpense.MyForm.Amount;
-                    if (blnAllowEdit && decOldAmount != decNewAmount)
-                    {
-                        await objExpense.SetAmountAsync(decNewAmount, GenericToken).ConfigureAwait(false);
-                        await CharacterObject.ModifyNuyenAsync(decNewAmount - decOldAmount, GenericToken).ConfigureAwait(false);
-                        blnDoRepopulateList = true;
-                    }
-                    else
-                        blnDoRepopulateList = decNewAmount != 0
-                                              || await chkShowFreeNuyen
-                                                       .DoThreadSafeFuncAsync(x => x.Checked, GenericToken)
-                                                       .ConfigureAwait(false);
-
-                    // Rename the Expense.
-                    objExpense.Reason = frmEditExpense.MyForm.Reason;
-                    objExpense.Date = frmEditExpense.MyForm.SelectedDate;
-                }
-
-                if (blnDoRepopulateList)
-                    await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
-
-                await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
+                ExpenseLogEntry objExpense = GetExpenseFromListItem(objItem);
+                if (objExpense == null)
+                    return;
+                await EditNuyenExpenseAsync(objExpense, GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -18649,38 +19495,59 @@ namespace Chummer
             }
         }
 
-        private void lstKarma_ColumnClick(object sender, ColumnClickEventArgs e)
+        private async Task EditNuyenExpenseAsync(ExpenseLogEntry objExpense, CancellationToken token)
         {
-            if (e.Column == _lvwKarmaColumnSorter.SortColumn)
+            token.ThrowIfCancellationRequested();
+            decimal decOldAmount = objExpense.Amount;
+            bool blnAllowEdit = objExpense.Undo != null
+                                && (objExpense.Undo.NuyenType == NuyenExpenseType.ManualAdd ||
+                                    objExpense.Undo.NuyenType == NuyenExpenseType.ManualSubtract);
+
+            using (ThreadSafeForm<CreateExpense> frmEditExpense = await ThreadSafeForm<CreateExpense>.GetAsync(
+                       () => new CreateExpense(CharacterObjectSettings)
+                       {
+                           Reason = objExpense.Reason,
+                           Amount = objExpense.Amount,
+                           Refund = objExpense.Refund,
+                           SelectedDate = objExpense.Date,
+                           ForceCareerVisible = objExpense.ForceCareerVisible,
+                           IsInEditMode = true
+                       }, token).ConfigureAwait(false))
             {
-                _lvwKarmaColumnSorter.Order = _lvwKarmaColumnSorter.Order == SortOrder.Ascending
-                    ? SortOrder.Descending
-                    : SortOrder.Ascending;
-            }
-            else
-            {
-                _lvwKarmaColumnSorter.SortColumn = e.Column;
-                _lvwKarmaColumnSorter.Order = SortOrder.Ascending;
+                await frmEditExpense.MyForm.SetKarmaNuyenModeAsync(ExpenseType.Nuyen, objExpense.Amount >= 0, token)
+                    .ConfigureAwait(false);
+                frmEditExpense.MyForm.LockFields(blnAllowEdit);
+
+                if (await frmEditExpense.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                    return;
+
+                decimal decNewAmount = frmEditExpense.MyForm.Amount;
+                if (blnAllowEdit && decOldAmount != decNewAmount)
+                {
+                    await objExpense.SetAmountAsync(decNewAmount, token).ConfigureAwait(false);
+                    await CharacterObject.ModifyNuyenAsync(decNewAmount - decOldAmount, token).ConfigureAwait(false);
+                }
+
+                objExpense.Reason = frmEditExpense.MyForm.Reason;
+                objExpense.Date = frmEditExpense.MyForm.SelectedDate;
             }
 
-            lstKarma.Sort();
+            await RepopulateNuyenExpenseList(token).ConfigureAwait(false);
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+        }
+
+        private void lstKarma_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            ToggleExpenseDaySortOrder();
+            if (_chkExpenseMostRecentAtTop == null)
+                _ = RefreshAllExpenseDayListsAsync();
         }
 
         private void lstNuyen_ColumnClick(object sender, ColumnClickEventArgs e)
         {
-            if (e.Column == _lvwNuyenColumnSorter.SortColumn)
-            {
-                _lvwNuyenColumnSorter.Order = _lvwNuyenColumnSorter.Order == SortOrder.Ascending
-                    ? SortOrder.Descending
-                    : SortOrder.Ascending;
-            }
-            else
-            {
-                _lvwNuyenColumnSorter.SortColumn = e.Column;
-                _lvwNuyenColumnSorter.Order = SortOrder.Ascending;
-            }
-
-            lstNuyen.Sort();
+            ToggleExpenseDaySortOrder();
+            if (_chkExpenseMostRecentAtTop == null)
+                _ = RefreshAllExpenseDayListsAsync();
         }
 
         #endregion Additional Karma and Nuyen Tab Control Events
@@ -18954,18 +19821,26 @@ namespace Chummer
 
         private void splitKarmaNuyen_Panel1_Resize(object sender, EventArgs e)
         {
-            if (lstKarma.Columns.Count >= 2 && lstKarma.Width > 409)
-            {
-                lstKarma.Columns[2].Width = lstKarma.Width - 195;
-            }
+            // Legacy splitter retained in Designer; triptych resize handled below.
+            ResizeExpenseReasonColumns();
         }
 
         private void splitKarmaNuyen_Panel2_Resize(object sender, EventArgs e)
         {
-            if (lstNuyen.Columns.Count >= 2 && lstNuyen.Width > 409)
-            {
-                lstNuyen.Columns[2].Width = lstNuyen.Width - 195;
-            }
+            ResizeExpenseReasonColumns();
+        }
+
+        private void ResizeExpenseReasonColumns()
+        {
+            // Date + Amount fixed; Reason fills the rest (no hidden 4th column).
+            const int intFixedWidth = 230; // date (~140) + amount (~90)
+            if (lstKarma.Columns.Count >= 3 && lstKarma.Width > intFixedWidth + 80)
+                lstKarma.Columns[2].Width = Math.Max(80, lstKarma.ClientSize.Width - intFixedWidth);
+            if (lstNuyen.Columns.Count >= 3 && lstNuyen.Width > intFixedWidth + 80)
+                lstNuyen.Columns[2].Width = Math.Max(80, lstNuyen.ClientSize.Width - intFixedWidth);
+            if (_lstReputation != null && _lstReputation.Columns.Count >= 3
+                                       && _lstReputation.Width > intFixedWidth + 80)
+                _lstReputation.Columns[2].Width = Math.Max(80, _lstReputation.ClientSize.Width - intFixedWidth);
         }
 
         #endregion Splitter Resize Events
@@ -25448,136 +26323,49 @@ namespace Chummer
         {
             bool blnDoRepopulateKarmaExpenseList = false;
             bool blnDoRepopulateNuyenExpenseList = false;
+            bool blnDoRepopulateReputationExpenseList = false;
             if (e == null || e.Action == NotifyCollectionChangedAction.Reset)
             {
                 blnDoRepopulateKarmaExpenseList = true;
                 blnDoRepopulateNuyenExpenseList = true;
+                blnDoRepopulateReputationExpenseList = true;
             }
             else
             {
                 switch (e.Action)
                 {
-                    // TODO: Find a way to add, remove, or replace a single item at a time instead of needing to redraw the entire list
                     case NotifyCollectionChangedAction.Add:
-                        foreach (ExpenseLogEntry objEntry in e.NewItems)
-                        {
-                            switch (objEntry.Type)
-                            {
-                                case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeKarma
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
-                                    break;
-
-                                case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeNuyen
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
-                                    break;
-                            }
-
-                            if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
-                                break;
-                        }
-
-                        break;
-
                     case NotifyCollectionChangedAction.Remove:
-                        foreach (ExpenseLogEntry objEntry in e.OldItems)
-                        {
-                            switch (objEntry.Type)
-                            {
-                                case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeKarma
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
-                                    break;
-
-                                case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeNuyen
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
-                                    break;
-                            }
-
-                            if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
-                                break;
-                        }
-
-                        break;
-
                     case NotifyCollectionChangedAction.Replace:
-                        foreach (ExpenseLogEntry objEntry in e.OldItems)
+                    {
+                        IEnumerable<object> lstEntries = e.Action == NotifyCollectionChangedAction.Remove
+                            ? e.OldItems.Cast<object>()
+                            : e.NewItems.Cast<object>();
+                        if (e.Action == NotifyCollectionChangedAction.Replace && e.OldItems != null)
+                            lstEntries = e.OldItems.Cast<object>().Concat(e.NewItems.Cast<object>());
+
+                        foreach (ExpenseLogEntry objEntry in lstEntries.OfType<ExpenseLogEntry>())
                         {
                             switch (objEntry.Type)
                             {
                                 case ExpenseType.Karma:
-                                    blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeKarma
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
+                                    blnDoRepopulateKarmaExpenseList = true;
                                     break;
-
                                 case ExpenseType.Nuyen:
-                                    blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList
-                                                                      || objEntry.Amount != 0
-                                                                      || await chkShowFreeNuyen
-                                                                               .DoThreadSafeFuncAsync(
-                                                                                   x => x.Checked, token: token)
-                                                                               .ConfigureAwait(false);
+                                    blnDoRepopulateNuyenExpenseList = true;
+                                    break;
+                                case ExpenseType.Reputation:
+                                    blnDoRepopulateReputationExpenseList = true;
                                     break;
                             }
 
-                            if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
+                            if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList
+                                && blnDoRepopulateReputationExpenseList)
                                 break;
                         }
 
-                        if (!blnDoRepopulateKarmaExpenseList || !blnDoRepopulateNuyenExpenseList)
-                        {
-                            foreach (ExpenseLogEntry objEntry in e.NewItems)
-                            {
-                                switch (objEntry.Type)
-                                {
-                                    case ExpenseType.Karma:
-                                        blnDoRepopulateKarmaExpenseList = blnDoRepopulateKarmaExpenseList
-                                                                          || objEntry.Amount != 0
-                                                                          || await chkShowFreeKarma
-                                                                              .DoThreadSafeFuncAsync(
-                                                                                  x => x.Checked, token: token)
-                                                                              .ConfigureAwait(false);
-                                        break;
-
-                                    case ExpenseType.Nuyen:
-                                        blnDoRepopulateNuyenExpenseList = blnDoRepopulateNuyenExpenseList
-                                                                          || objEntry.Amount != 0
-                                                                          || await chkShowFreeNuyen
-                                                                              .DoThreadSafeFuncAsync(
-                                                                                  x => x.Checked, token: token)
-                                                                              .ConfigureAwait(false);
-                                        break;
-                                }
-
-                                if (blnDoRepopulateKarmaExpenseList && blnDoRepopulateNuyenExpenseList)
-                                    break;
-                            }
-                        }
-
                         break;
-
+                    }
                     case NotifyCollectionChangedAction.Move:
                         return;
                 }
@@ -25587,133 +26375,19 @@ namespace Chummer
                 await RepopulateKarmaExpenseList(token).ConfigureAwait(false);
             if (blnDoRepopulateNuyenExpenseList)
                 await RepopulateNuyenExpenseList(token).ConfigureAwait(false);
+            if (blnDoRepopulateReputationExpenseList)
+                await RepopulateReputationExpenseList(token).ConfigureAwait(false);
         }
 
         private async void chkShowFreeKarma_CheckedChanged(object sender, EventArgs e)
         {
             try
             {
-                if (await CharacterObject.ExpenseEntries
-                                         .AnyAsync(x => x.Type == ExpenseType.Karma && x.Amount == 0, GenericToken)
-                                         .ConfigureAwait(false))
-                {
-                    await RepopulateKarmaExpenseList(GenericToken).ConfigureAwait(false);
-                }
+                await RepopulateKarmaExpenseList(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
                 //swallow this
-            }
-        }
-
-        private async Task RepopulateKarmaExpenseList(CancellationToken token = default)
-        {
-            token.ThrowIfCancellationRequested();
-            CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
-            try
-            {
-                DebuggableSemaphoreSlim objSemaphore = _objKarmaChartSemaphore; // for thread safety
-                if (objSemaphore?.IsDisposed == false)
-                    await objSemaphore.WaitAsync(token).ConfigureAwait(false);
-                try
-                {
-                    await lstKarma.DoThreadSafeAsync(x =>
-                    {
-                        x.Items.Clear();
-                        x.ContextMenuStrip = null;
-                    }, token).ConfigureAwait(false);
-                    await chtKarma.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                    try
-                    {
-                        chtKarma.ExpenseValues.Clear();
-                        decimal decKarmaValue = 0;
-                        bool blnShowFreeKarma = await chkShowFreeKarma.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                                      .ConfigureAwait(false);
-                        //Find the last karma/nuyen entry as well in case a chart only contains one point
-                        DateTime KarmaLast = DateTime.MinValue;
-                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async objExpense =>
-                        {
-                            if (objExpense.Type != ExpenseType.Karma || (objExpense.Amount == 0 && !blnShowFreeKarma))
-                                return;
-                            ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
-                                new ListViewItemWithValue.ListViewSubItemWithValue
-                                {
-                                    Value = objExpense.Amount,
-                                    Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
-                                };
-                            ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
-                                new ListViewItemWithValue.ListViewSubItemWithValue
-                                {
-                                    Value = objExpense.Reason,
-                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
-                                                           .ConfigureAwait(false)
-                                };
-                            ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                                new ListViewItemWithValue.ListViewSubItemWithValue
-                                {
-                                    Value = objExpense,
-                                    Text = objExpense.InternalId
-                                };
-
-                            ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                                    objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                                                 ? GlobalSettings.CustomDateFormat
-                                                                   + " " + GlobalSettings.CustomTimeFormat
-                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
-                                                                                 .ShortDatePattern
-                                                                   + " " + GlobalSettings.CultureInfo.DateTimeFormat
-                                                                       .ShortTimePattern,
-                                                             GlobalSettings.CultureInfo)
-                            );
-                            objItem.SubItems.Add(objAmountItem);
-                            objItem.SubItems.Add(objReasonItem);
-                            objItem.SubItems.Add(objInternalIdItem);
-
-                            await lstKarma.DoThreadSafeAsync(x =>
-                            {
-                                x.Items.Add(objItem);
-                                if (objExpense.Undo != null)
-                                    x.ContextMenuStrip = cmsUndoKarmaExpense;
-                            }, token).ConfigureAwait(false);
-                            if (objExpense.Amount == 0)
-                                return;
-                            // ReSharper disable once AccessToModifiedClosure
-                            if (objExpense.Date > KarmaLast)
-                                KarmaLast = objExpense.Date;
-                            decKarmaValue += objExpense.Amount;
-                            chtKarma.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decKarmaValue)));
-                        }, GenericToken).ConfigureAwait(false);
-
-                        if (KarmaLast == DateTime.MinValue)
-                        {
-                            string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
-                            KarmaLast = File.Exists(strFileName)
-                                ? File.GetCreationTime(strFileName)
-                                : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
-                        }
-                        if (chtKarma.ExpenseValues.Count < 2)
-                        {
-                            if (chtKarma.ExpenseValues.Count < 1)
-                                chtKarma.ExpenseValues.Add(new DateTimePoint(KarmaLast, decimal.ToDouble(decKarmaValue)));
-                            chtKarma.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decKarmaValue)));
-                        }
-
-                        await chtKarma.NormalizeYAxis(token).ConfigureAwait(false);
-                    }
-                    finally
-                    {
-                        await chtKarma.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
-                    }
-                }
-                finally
-                {
-                    if (objSemaphore?.IsDisposed == false)
-                        objSemaphore.Release();
-                }
-            }
-            finally
-            {
-                await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -25721,12 +26395,7 @@ namespace Chummer
         {
             try
             {
-                if (await CharacterObject.ExpenseEntries
-                                         .AnyAsync(x => x.Type == ExpenseType.Nuyen && x.Amount == 0, GenericToken)
-                                         .ConfigureAwait(false))
-                {
-                    await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
-                }
+                await RepopulateNuyenExpenseList(GenericToken).ConfigureAwait(false);
             }
             catch (OperationCanceledException)
             {
@@ -25734,104 +26403,187 @@ namespace Chummer
             }
         }
 
-        private async Task RepopulateNuyenExpenseList(CancellationToken token = default)
+        private async void chkShowFreeReputation_CheckedChanged(object sender, EventArgs e)
+        {
+            try
+            {
+                await RepopulateReputationExpenseList(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private Task RepopulateKarmaExpenseList(CancellationToken token = default)
+        {
+            return RepopulateTypedExpenseListAsync(
+                lstKarma, ExpenseType.Karma, chkShowFreeKarma, _objKarmaChartSemaphore, token);
+        }
+
+        private Task RepopulateNuyenExpenseList(CancellationToken token = default)
+        {
+            return RepopulateTypedExpenseListAsync(
+                lstNuyen, ExpenseType.Nuyen, chkShowFreeNuyen, _objNuyenChartSemaphore, token);
+        }
+
+        private Task RepopulateReputationExpenseList(CancellationToken token = default)
+        {
+            if (_lstReputation == null)
+                return Task.CompletedTask;
+            return RepopulateTypedExpenseListAsync(
+                _lstReputation, ExpenseType.Reputation, _chkShowFreeReputation, _objReputationListSemaphore, token);
+        }
+
+        private async Task RepopulateTypedExpenseListAsync(
+            ListView lstTarget,
+            ExpenseType eType,
+            ColorableCheckBox chkShowFree,
+            DebuggableSemaphoreSlim objSemaphore,
+            CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            if (lstTarget == null)
+                return;
+
             CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
             try
             {
-                DebuggableSemaphoreSlim objSemaphore = _objNuyenChartSemaphore; // for thread safety
                 if (objSemaphore?.IsDisposed == false)
                     await objSemaphore.WaitAsync(token).ConfigureAwait(false);
                 try
                 {
-                    await lstNuyen.DoThreadSafeAsync(x =>
-                    {
-                        x.Items.Clear();
-                        x.ContextMenuStrip = null;
-                    }, token).ConfigureAwait(false);
-                    await chtNuyen.DoThreadSafeAsync(x => x.SuspendLayout(), token).ConfigureAwait(false);
-                    try
-                    {
-                        chtNuyen.ExpenseValues.Clear();
-                        decimal decNuyenValue = 0;
-                        bool blnShowFreeNuyen = await chkShowFreeNuyen.DoThreadSafeFuncAsync(x => x.Checked, token)
-                                                                      .ConfigureAwait(false);
-                        //Find the last karma/nuyen entry as well in case a chart only contains one point
-                        DateTime NuyenLast = DateTime.MinValue;
-                        await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(async objExpense =>
+                    string strSearch = string.Empty;
+                    await this.DoThreadSafeAsync(() => strSearch = GetExpenseSearchText(), token)
+                              .ConfigureAwait(false);
+                    string strNuyenFormat = await CharacterObjectSettings.GetNuyenFormatAsync(token).ConfigureAwait(false);
+                    string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token)
+                                                                .ConfigureAwait(false);
+                    string strDateFormat = GlobalSettings.CustomDateTimeFormats
+                        ? GlobalSettings.CustomDateFormat
+                        : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern;
+                    string strDateTimeFormat = GlobalSettings.CustomDateTimeFormats
+                        ? GlobalSettings.CustomDateFormat + " " + GlobalSettings.CustomTimeFormat
+                        : GlobalSettings.CultureInfo.DateTimeFormat.ShortDatePattern
+                          + " " + GlobalSettings.CultureInfo.DateTimeFormat.ShortTimePattern;
+                    Color clrGain = ColorManager.GenerateCurrentModeColor(Color.ForestGreen);
+                    Color clrSpend = ColorManager.GenerateCurrentModeColor(Color.Firebrick);
+                    // Themed header colors — system ListView groups use an unreadable dark blue on dark UI.
+                    Color clrHeaderBack = ColorManager.ControlDarker;
+                    Color clrHeaderFore = ColorManager.ControlText;
+                    bool blnShowFree = chkShowFree != null
+                        && await chkShowFree.DoThreadSafeFuncAsync(x => x.Checked, token).ConfigureAwait(false);
+
+                    List<(DateTime Day, ListViewItemWithValue Item)> lstRows
+                        = new List<(DateTime, ListViewItemWithValue)>();
+
+                    await (await CharacterObject.GetExpenseEntriesAsync(token).ConfigureAwait(false)).ForEachAsync(
+                        async objExpense =>
                         {
-                            if (objExpense.Type != ExpenseType.Nuyen || (objExpense.Amount == 0 && !blnShowFreeNuyen))
+                            if (objExpense.Type != eType || (objExpense.Amount == 0 && !blnShowFree))
                                 return;
+
+                            string strAmountMagnitude = eType == ExpenseType.Nuyen
+                                ? objExpense.Amount.ToString(strNuyenFormat, GlobalSettings.CultureInfo) + strNuyenSymbol
+                                : objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo);
+
+                            string strAmountText = objExpense.Amount > 0
+                                                   && !strAmountMagnitude.StartsWith("+", StringComparison.Ordinal)
+                                ? "+" + strAmountMagnitude
+                                : strAmountMagnitude;
+
+                            string strReason = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
+                                                               .ConfigureAwait(false);
+                            string strDateText = objExpense.Date.ToString(strDateTimeFormat, GlobalSettings.CultureInfo);
+
+                            if (!string.IsNullOrEmpty(strSearch))
+                            {
+                                string strHaystack = strDateText + " " + strAmountText + " " + strReason;
+                                if (strHaystack.IndexOf(strSearch, StringComparison.OrdinalIgnoreCase) < 0)
+                                    return;
+                            }
+
                             ListViewItemWithValue.ListViewSubItemWithValue objAmountItem =
                                 new ListViewItemWithValue.ListViewSubItemWithValue
                                 {
                                     Value = objExpense.Amount,
-                                    Text = objExpense.Amount.ToString("#,0.##", GlobalSettings.CultureInfo)
+                                    Text = strAmountText,
+                                    ForeColor = objExpense.Amount > 0
+                                        ? clrGain
+                                        : objExpense.Amount < 0
+                                            ? clrSpend
+                                            : ColorManager.WindowText
                                 };
                             ListViewItemWithValue.ListViewSubItemWithValue objReasonItem =
                                 new ListViewItemWithValue.ListViewSubItemWithValue
                                 {
                                     Value = objExpense.Reason,
-                                    Text = await objExpense.DisplayReasonAsync(GlobalSettings.Language, token)
-                                                           .ConfigureAwait(false)
-                                };
-                            ListViewItemWithValue.ListViewSubItemWithValue objInternalIdItem =
-                                new ListViewItemWithValue.ListViewSubItemWithValue
-                                {
-                                    Value = objExpense,
-                                    Text = objExpense.InternalId
+                                    Text = strReason
                                 };
 
-                            ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense.Date,
-                                    objExpense.Date.ToString(GlobalSettings.CustomDateTimeFormats
-                                                                 ? GlobalSettings.CustomDateFormat
-                                                                   + " " + GlobalSettings.CustomTimeFormat
-                                                                 : GlobalSettings.CultureInfo.DateTimeFormat
-                                                                                 .ShortDatePattern
-                                                                   + " " + GlobalSettings.CultureInfo.DateTimeFormat
-                                                                       .ShortTimePattern,
-                                                             GlobalSettings.CultureInfo)
-                            );
+                            ListViewItemWithValue objItem = new ListViewItemWithValue(objExpense, strDateText)
+                            {
+                                UseItemStyleForSubItems = false
+                            };
                             objItem.SubItems.Add(objAmountItem);
                             objItem.SubItems.Add(objReasonItem);
-                            objItem.SubItems.Add(objInternalIdItem);
+                            lstRows.Add((objExpense.Date.Date, objItem));
+                        }, token).ConfigureAwait(false);
 
-                            await lstNuyen.DoThreadSafeAsync(x =>
-                            {
-                                x.Items.Add(objItem);
-                                if (objExpense.Undo != null)
-                                    x.ContextMenuStrip = cmsUndoNuyenExpense;
-                            }, token).ConfigureAwait(false);
-                            if (objExpense.Amount == 0)
-                                return;
-                            // ReSharper disable once AccessToModifiedClosure
-                            if (objExpense.Date > NuyenLast)
-                                NuyenLast = objExpense.Date;
-                            decNuyenValue += objExpense.Amount;
-                            chtNuyen.ExpenseValues.Add(new DateTimePoint(objExpense.Date, decimal.ToDouble(decNuyenValue)));
-                        }, GenericToken).ConfigureAwait(false);
+                    List<ListViewItemWithValue> lstItems = new List<ListViewItemWithValue>();
+                    IEnumerable<IGrouping<DateTime, (DateTime Day, ListViewItemWithValue Item)>> lstDays
+                        = _blnExpenseMostRecentAtTop
+                            ? lstRows.GroupBy(x => x.Day).OrderByDescending(x => x.Key)
+                            : lstRows.GroupBy(x => x.Day).OrderBy(x => x.Key);
 
-                        if (NuyenLast == DateTime.MinValue)
-                        {
-                            string strFileName = await CharacterObject.GetFileNameAsync(token).ConfigureAwait(false);
-                            NuyenLast = File.Exists(strFileName)
-                                ? File.GetCreationTime(strFileName)
-                                : new DateTime(DateTime.Now.Ticks - 1000, DateTimeKind.Local);
-                        }
-                        if (chtNuyen.ExpenseValues.Count < 2)
-                        {
-                            if (chtNuyen.ExpenseValues.Count < 1)
-                                chtNuyen.ExpenseValues.Add(new DateTimePoint(NuyenLast, decimal.ToDouble(decNuyenValue)));
-                            chtNuyen.ExpenseValues.Add(new DateTimePoint(DateTime.Now, decimal.ToDouble(decNuyenValue)));
-                        }
-
-                        await chtNuyen.NormalizeYAxis(token).ConfigureAwait(false);
-                    }
-                    finally
+                    foreach (IGrouping<DateTime, (DateTime Day, ListViewItemWithValue Item)> grpDay in lstDays)
                     {
-                        await chtNuyen.DoThreadSafeAsync(x => x.ResumeLayout(), GenericToken).ConfigureAwait(false);
+                        DateTime datDay = grpDay.Key;
+                        bool blnCollapsed = _setCollapsedExpenseDays.Contains(datDay);
+                        int intCount = grpDay.Count();
+                        string strGlyph = blnCollapsed ? "▶ " : "▼ ";
+                        string strHeader = strGlyph + datDay.ToString(strDateFormat, GlobalSettings.CultureInfo)
+                                           + " (" + intCount.ToString(GlobalSettings.CultureInfo) + ")";
+
+                        ListViewItemWithValue objHeader = new ListViewItemWithValue(new ExpenseDayHeader(datDay), strHeader)
+                        {
+                            UseItemStyleForSubItems = true,
+                            BackColor = clrHeaderBack,
+                            ForeColor = clrHeaderFore,
+                            Font = _fntExpenseDayHeader ?? lstTarget.Font
+                        };
+                        objHeader.SubItems.Add(string.Empty);
+                        objHeader.SubItems.Add(string.Empty);
+                        lstItems.Add(objHeader);
+
+                        if (blnCollapsed)
+                            continue;
+
+                        IEnumerable<(DateTime Day, ListViewItemWithValue Item)> lstDayRows = _blnExpenseMostRecentAtTop
+                            ? grpDay.OrderByDescending(x => (x.Item.Value as ExpenseLogEntry)?.Date ?? datDay)
+                            : grpDay.OrderBy(x => (x.Item.Value as ExpenseLogEntry)?.Date ?? datDay);
+                        foreach ((DateTime _, ListViewItemWithValue objItem) in lstDayRows)
+                            lstItems.Add(objItem);
                     }
+
+                    ContextMenuStrip cmsUndo = eType == ExpenseType.Nuyen ? cmsUndoNuyenExpense : cmsUndoKarmaExpense;
+                    await lstTarget.DoThreadSafeAsync(x =>
+                    {
+                        x.BeginUpdate();
+                        try
+                        {
+                            x.Items.Clear();
+                            x.Groups.Clear();
+                            x.ShowGroups = false;
+                            x.ContextMenuStrip = cmsUndo;
+                            foreach (ListViewItemWithValue objItem in lstItems)
+                                x.Items.Add(objItem);
+                        }
+                        finally
+                        {
+                            x.EndUpdate();
+                        }
+                    }, token).ConfigureAwait(false);
                 }
                 finally
                 {
@@ -26100,6 +26852,16 @@ namespace Chummer
                   .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_Notoriety", token: token).ConfigureAwait(false), token)
                   .ConfigureAwait(false);
+            if (_lblSpiritIndex != null)
+                await _lblSpiritIndex
+                      .SetToolTipTextAsync(
+                          await LanguageManager.GetStringAsync("Tip_SpiritIndex", token: token).ConfigureAwait(false),
+                          token).ConfigureAwait(false);
+            if (_lblWildIndex != null)
+                await _lblWildIndex
+                      .SetToolTipTextAsync(
+                          await LanguageManager.GetStringAsync("Tip_WildIndex", token: token).ConfigureAwait(false),
+                          token).ConfigureAwait(false);
             if (await CharacterObjectSettings.GetUseCalculatedPublicAwarenessAsync(token).ConfigureAwait(false))
                 await lblPublicAware
                       .SetToolTipTextAsync(
@@ -26109,6 +26871,43 @@ namespace Chummer
                   .SetToolTipTextAsync(
                       await LanguageManager.GetStringAsync("Tip_BurnStreetCred", token: token).ConfigureAwait(false),
                       token).ConfigureAwait(false);
+            await cmdSpendReputation
+                  .SetToolTipTextAsync(
+                      await LanguageManager.GetStringAsync("Tip_SpendReputation", token: token).ConfigureAwait(false),
+                      token).ConfigureAwait(false);
+            string strGainTip = await LanguageManager.GetStringAsync("Tip_ReputationGained", token: token)
+                                                     .ConfigureAwait(false);
+            string strSpentTip = await LanguageManager.GetStringAsync("Tip_ReputationSpent", token: token)
+                                                      .ConfigureAwait(false);
+            await SetReputationAdjustButtonTipsAsync(strGainTip, strSpentTip, token).ConfigureAwait(false);
+        }
+
+        private async Task SetReputationAdjustButtonTipsAsync(string strGainTip, string strSpentTip,
+            CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (FlowLayoutPanel flp in new[]
+                     {
+                         _flpStreetCredAdjust, _flpNotorietyAdjust, _flpPublicAwareAdjust,
+                         _flpAstralReputationAdjust, _flpWildReputationAdjust,
+                         _flpSpiritIndexAdjust, _flpWildIndexAdjust
+                     })
+            {
+                if (flp == null)
+                    continue;
+                await flp.DoThreadSafeAsync(panel =>
+                {
+                    foreach (Control objControl in panel.Controls)
+                    {
+                        if (!(objControl is ButtonWithToolTip cmdButton))
+                            continue;
+                        if (cmdButton.Name.EndsWith("Gained", StringComparison.Ordinal))
+                            cmdButton.ToolTipText = strGainTip;
+                        else if (cmdButton.Name.EndsWith("Spent", StringComparison.Ordinal))
+                            cmdButton.ToolTipText = strSpentTip;
+                    }
+                }, token).ConfigureAwait(false);
+            }
         }
 
         /// <summary>

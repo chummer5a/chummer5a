@@ -132,6 +132,7 @@ namespace Chummer
             this.lblStreetCred = new Chummer.LabelWithToolTip();
             this.lblNotoriety = new Chummer.LabelWithToolTip();
             this.cmdBurnStreetCred = new Chummer.ButtonWithToolTip();
+            this.cmdSpendReputation = new Chummer.ButtonWithToolTip();
             this.cmdVehicleGearReduceQty = new Chummer.ButtonWithToolTip();
             this.cmdVehicleMoveToInventory = new Chummer.ButtonWithToolTip();
             this.chkVehicleWeaponAccessoryInstalled = new Chummer.ColorableCheckBox();
@@ -2350,6 +2351,27 @@ namespace Chummer
             this.cmdBurnStreetCred.ToolTipText = "";
             this.cmdBurnStreetCred.UseVisualStyleBackColor = true;
             this.cmdBurnStreetCred.Click += new System.EventHandler(this.cmdBurnStreetCred_Click);
+            // 
+            // cmdSpendReputation
+            // 
+            this.cmdSpendReputation.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.cmdSpendReputation.AutoSize = true;
+            this.cmdSpendReputation.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.cmdSpendReputation.Image = global::Chummer.Properties.Resources.award_star_add_16;
+            this.cmdSpendReputation.ImageDpi120 = global::Chummer.Properties.Resources.award_star_add_20;
+            this.cmdSpendReputation.ImageDpi144 = global::Chummer.Properties.Resources.award_star_add_24;
+            this.cmdSpendReputation.ImageDpi192 = global::Chummer.Properties.Resources.award_star_add_32;
+            this.cmdSpendReputation.ImageDpi288 = global::Chummer.Properties.Resources.award_star_add_48;
+            this.cmdSpendReputation.ImageDpi384 = global::Chummer.Properties.Resources.award_star_add_64;
+            this.cmdSpendReputation.ImageDpi96 = global::Chummer.Properties.Resources.award_star_add_16;
+            this.cmdSpendReputation.Location = new System.Drawing.Point(58, 3);
+            this.cmdSpendReputation.Name = "cmdSpendReputation";
+            this.cmdSpendReputation.Padding = new System.Windows.Forms.Padding(1);
+            this.cmdSpendReputation.Size = new System.Drawing.Size(24, 24);
+            this.cmdSpendReputation.TabIndex = 83;
+            this.cmdSpendReputation.ToolTipText = "";
+            this.cmdSpendReputation.UseVisualStyleBackColor = true;
+            this.cmdSpendReputation.Click += new System.EventHandler(this.cmdSpendReputation_Click);
             // 
             // cmdVehicleGearReduceQty
             // 
@@ -20316,10 +20338,10 @@ namespace Chummer
             0,
             0});
             this.nudPublicAware.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
-            0,
-            0});
+            -2147483648});
             this.nudPublicAware.Name = "nudPublicAware";
             this.nudPublicAware.Size = new System.Drawing.Size(68, 20);
             this.nudPublicAware.TabIndex = 76;
@@ -20383,10 +20405,10 @@ namespace Chummer
             0,
             0});
             this.nudNotoriety.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
-            0,
-            0});
+            -2147483648});
             this.nudNotoriety.Name = "nudNotoriety";
             this.nudNotoriety.Size = new System.Drawing.Size(68, 20);
             this.nudNotoriety.TabIndex = 74;
@@ -20464,10 +20486,10 @@ namespace Chummer
             0,
             0});
             this.nudStreetCred.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
-            0,
-            0});
+            -2147483648});
             this.nudStreetCred.Name = "nudStreetCred";
             this.nudStreetCred.Size = new System.Drawing.Size(68, 20);
             this.nudStreetCred.TabIndex = 72;
@@ -20635,6 +20657,7 @@ namespace Chummer
             this.flpStreetCredTotal.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpStreetCredTotal.Controls.Add(this.lblStreetCredTotal);
             this.flpStreetCredTotal.Controls.Add(this.cmdBurnStreetCred);
+            this.flpStreetCredTotal.Controls.Add(this.cmdSpendReputation);
             this.flpStreetCredTotal.Location = new System.Drawing.Point(894, 79);
             this.flpStreetCredTotal.Margin = new System.Windows.Forms.Padding(0);
             this.flpStreetCredTotal.Name = "flpStreetCredTotal";
@@ -20692,10 +20715,10 @@ namespace Chummer
             0,
             0});
             this.nudAstralReputation.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
-            0,
-            0});
+            -2147483648});
             this.nudAstralReputation.Name = "nudAstralReputation";
             this.nudAstralReputation.Size = new System.Drawing.Size(68, 20);
             this.nudAstralReputation.TabIndex = 106;
@@ -20711,10 +20734,10 @@ namespace Chummer
             0,
             0});
             this.nudWildReputation.Minimum = new decimal(new int[] {
+            100,
             0,
             0,
-            0,
-            0});
+            -2147483648});
             this.nudWildReputation.Name = "nudWildReputation";
             this.nudWildReputation.Size = new System.Drawing.Size(68, 20);
             this.nudWildReputation.TabIndex = 107;
@@ -23710,6 +23733,7 @@ namespace Chummer
         private SplitButton cmdDeleteVehicle;
         private System.Windows.Forms.TabPage tabCharacterInfo;
         private ButtonWithToolTip cmdBurnStreetCred;
+        private ButtonWithToolTip cmdSpendReputation;
         private LabelWithToolTip lblPublicAwareTotal;
         private LabelWithToolTip lblNotorietyTotal;
         private LabelWithToolTip lblStreetCredTotal;

@@ -253,6 +253,7 @@ namespace Chummer
         private static bool _blnDatesIncludeTime = true;
         private static bool _blnPrintToFileFirst;
         private static int _intEmulatedBrowserVersion = 11;
+        private static int _intExpenseInGameDateOffsetYears;
         private static bool _lifeModuleEnabled;
         private static bool _blnPreferNightlyUpdates = !Utils.IsMilestoneVersion;
         private static bool _blnLiveUpdateCleanCharacterFiles;
@@ -571,6 +572,7 @@ namespace Chummer
             // Which version of the Internet Explorer's rendering engine will be emulated for rendering the character view.
             LoadInt32FromRegistry(ref _intEmulatedBrowserVersion, "emulatedbrowserversion");
             Utils.SetupWebBrowserRegistryKeys(_intEmulatedBrowserVersion);
+            LoadInt32FromRegistry(ref _intExpenseInGameDateOffsetYears, "expenseingamedateoffsetyears");
 
             // Default character sheet.
             LoadStringFromRegistry(ref _strDefaultCharacterSheet, "defaultsheet");
@@ -918,6 +920,8 @@ namespace Chummer
                 objRegistry.SetValue("insertpdfnotesifavailable", InsertPdfNotesIfAvailable.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("emulatedbrowserversion",
                                      EmulatedBrowserVersion.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("expenseingamedateoffsetyears",
+                                     ExpenseInGameDateOffsetYears.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pdfapppath", PdfAppPath);
                 objRegistry.SetValue("pdfparameters", PdfParameters);
                 objRegistry.SetValue("lifemodule", LifeModuleEnabled.ToString(InvariantCultureInfo));
@@ -1349,6 +1353,23 @@ namespace Chummer
                 if (Interlocked.Exchange(ref _intEmulatedBrowserVersion, value) != value)
                     Utils.SetupWebBrowserRegistryKeys(value);
             }
+        }
+
+        /// <summary>
+        /// Years added to the system clock when defaulting expense (and similar) in-game dates (#5205).
+        /// </summary>
+        public static int ExpenseInGameDateOffsetYears
+        {
+            get => _intExpenseInGameDateOffsetYears;
+            set => Interlocked.Exchange(ref _intExpenseInGameDateOffsetYears, value);
+        }
+
+        /// <summary>
+        /// Default in-game date for a new expense entry (system time plus configured year offset).
+        /// </summary>
+        public static DateTime GetDefaultExpenseDate()
+        {
+            return DateTime.Now.AddYears(ExpenseInGameDateOffsetYears);
         }
 
         /// <summary>

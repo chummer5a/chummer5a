@@ -31,6 +31,7 @@ namespace Chummer
         private readonly CharacterSettings _objCharacterSettings;
         private bool _blnForceCareerVisible;
         private bool _blnRefund;
+        private bool _blnIsGain = true;
         private string _strReason;
         private decimal _decAmount;
         private DateTime _datSelectedDate;
@@ -62,7 +63,7 @@ namespace Chummer
                     : objDateTimeInfo.LongDatePattern;
             }
 
-            datDate.Value = DateTime.Now;
+            datDate.Value = GlobalSettings.GetDefaultExpenseDate();
         }
 
         private async void cmdOK_Click(object sender, EventArgs e)
@@ -164,7 +165,21 @@ namespace Chummer
         }
 
         /// <summary>
-        /// The Expense's mode (either Karma or Nuyen).
+        /// Whether this dialog records a gain (true) or spend (false). Affects the window title.
+        /// </summary>
+        public bool IsGain
+        {
+            get => _blnIsGain;
+            set => _blnIsGain = value;
+        }
+
+        /// <summary>
+        /// Reputation track being adjusted when Mode is Reputation.
+        /// </summary>
+        public ReputationTrack ReputationTrack { get; set; }
+
+        /// <summary>
+        /// The Expense's mode (Karma, Nuyen, or Reputation).
         /// </summary>
         public ExpenseType Mode
         {
@@ -175,17 +190,30 @@ namespace Chummer
                 if (value == ExpenseType.Nuyen)
                 {
                     lblKarma.Text = LanguageManager.GetString("Label_Expense_NuyenAmount");
-                    Text = LanguageManager.GetString("Title_Expense_Nuyen");
+                    Text = LanguageManager.GetString(GetKarmaNuyenTitleKey(ExpenseType.Nuyen, _blnIsGain));
                     chkRefund.Text = LanguageManager.GetString("Checkbox_Expense_RefundNuyen");
                     nudPercent.Visible = true;
                     lblPercent.Visible = true;
+                    chkRefund.Visible = true;
+                    chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+                }
+                else if (value == ExpenseType.Reputation)
+                {
+                    ApplyReputationModeLabels();
+                    nudPercent.Visible = false;
+                    lblPercent.Visible = false;
+                    chkRefund.Visible = false;
+                    chkKarmaNuyenExchange.Visible = false;
+                    chkForceCareerVisible.Visible = false;
                 }
                 else
                 {
                     lblKarma.Text = LanguageManager.GetString("Label_Expense_KarmaAmount");
-                    Text = LanguageManager.GetString("Title_Expense_Karma");
+                    Text = LanguageManager.GetString(GetKarmaNuyenTitleKey(ExpenseType.Karma, _blnIsGain));
                     nudPercent.Visible = false;
                     lblPercent.Visible = false;
+                    chkRefund.Visible = true;
+                    chkKarmaNuyenExchange.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
                 }
             }
         }
@@ -193,34 +221,159 @@ namespace Chummer
         public async Task SetModeAsync(ExpenseType value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (InterlockedExtensions.Exchange(ref _eMode, value) == value)
-                return;
+            bool blnSameMode = InterlockedExtensions.Exchange(ref _eMode, value) == value;
             string strAmountText;
             string strText;
             string strRefundText;
             bool blnPercentVisible;
+            bool blnRefundVisible;
+            bool blnExchangeVisible;
             if (value == ExpenseType.Nuyen)
             {
                 strAmountText = await LanguageManager.GetStringAsync("Label_Expense_NuyenAmount", token: token).ConfigureAwait(false);
-                strText = await LanguageManager.GetStringAsync("Title_Expense_Nuyen", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync(GetKarmaNuyenTitleKey(ExpenseType.Nuyen, _blnIsGain), token: token).ConfigureAwait(false);
                 strRefundText = await LanguageManager.GetStringAsync("Checkbox_Expense_RefundNuyen", token: token).ConfigureAwait(false);
                 blnPercentVisible = true;
+                blnRefundVisible = true;
+                blnExchangeVisible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+            }
+            else if (value == ExpenseType.Reputation)
+            {
+                strAmountText = await GetReputationAmountLabelAsync(token).ConfigureAwait(false);
+                strText = await GetReputationTitleAsync(token).ConfigureAwait(false);
+                strRefundText = string.Empty;
+                blnPercentVisible = false;
+                blnRefundVisible = false;
+                blnExchangeVisible = false;
             }
             else
             {
                 strAmountText = await LanguageManager.GetStringAsync("Label_Expense_KarmaAmount", token: token).ConfigureAwait(false);
-                strText = await LanguageManager.GetStringAsync("Title_Expense_Karma", token: token).ConfigureAwait(false);
+                strText = await LanguageManager.GetStringAsync(GetKarmaNuyenTitleKey(ExpenseType.Karma, _blnIsGain), token: token).ConfigureAwait(false);
                 strRefundText = string.Empty;
                 blnPercentVisible = false;
+                blnRefundVisible = true;
+                blnExchangeVisible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             }
             await this.DoThreadSafeAsync(() =>
             {
-                lblKarma.Text = strAmountText;
                 Text = strText;
+                if (blnSameMode)
+                    return;
+                lblKarma.Text = strAmountText;
                 chkRefund.Text = strRefundText;
                 nudPercent.Visible = blnPercentVisible;
                 lblPercent.Visible = blnPercentVisible;
+                chkRefund.Visible = blnRefundVisible;
+                chkKarmaNuyenExchange.Visible = blnExchangeVisible;
+                chkForceCareerVisible.Visible = blnExchangeVisible;
             }, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Configure the form for Karma or Nuyen gain/spend.
+        /// </summary>
+        /// <param name="eType">Karma or Nuyen.</param>
+        /// <param name="blnGain">True for gained, false for spent.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task SetKarmaNuyenModeAsync(ExpenseType eType, bool blnGain, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            _blnIsGain = blnGain;
+            await SetModeAsync(eType, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Configure the form for a reputation track gain or loss.
+        /// </summary>
+        /// <param name="eTrack">Reputation track to adjust.</param>
+        /// <param name="blnGain">True for gained, false for spent.</param>
+        /// <param name="token">Cancellation token.</param>
+        public async Task SetReputationModeAsync(ReputationTrack eTrack, bool blnGain = true,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            ReputationTrack = eTrack;
+            _blnIsGain = blnGain;
+            await SetModeAsync(ExpenseType.Reputation, token).ConfigureAwait(false);
+        }
+
+        private void ApplyReputationModeLabels()
+        {
+            lblKarma.Text = GetReputationAmountLabel();
+            Text = GetReputationTitle();
+        }
+
+        private string GetReputationAmountLabel()
+        {
+            return LanguageManager.GetString(GetReputationAmountLabelKey(ReputationTrack));
+        }
+
+        private async Task<string> GetReputationAmountLabelAsync(CancellationToken token)
+        {
+            return await LanguageManager.GetStringAsync(GetReputationAmountLabelKey(ReputationTrack), token: token)
+                                        .ConfigureAwait(false);
+        }
+
+        private string GetReputationTitle()
+        {
+            return LanguageManager.GetString(GetReputationTitleKey(ReputationTrack, _blnIsGain));
+        }
+
+        private async Task<string> GetReputationTitleAsync(CancellationToken token)
+        {
+            return await LanguageManager.GetStringAsync(GetReputationTitleKey(ReputationTrack, _blnIsGain), token: token)
+                                        .ConfigureAwait(false);
+        }
+
+        private static string GetKarmaNuyenTitleKey(ExpenseType eType, bool blnGain)
+        {
+            if (eType == ExpenseType.Nuyen)
+                return blnGain ? "Title_Expense_NuyenGained" : "Title_Expense_NuyenSpent";
+            return blnGain ? "Title_Expense_KarmaGained" : "Title_Expense_KarmaSpent";
+        }
+
+        private static string GetReputationAmountLabelKey(ReputationTrack eTrack)
+        {
+            switch (eTrack)
+            {
+                case ReputationTrack.Notoriety:
+                    return "Label_Expense_NotorietyAmount";
+                case ReputationTrack.PublicAwareness:
+                    return "Label_Expense_PublicAwarenessAmount";
+                case ReputationTrack.AstralReputation:
+                    return "Label_Expense_AstralReputationAmount";
+                case ReputationTrack.WildReputation:
+                    return "Label_Expense_WildReputationAmount";
+                case ReputationTrack.SpiritIndex:
+                    return "Label_Expense_SpiritIndexAmount";
+                case ReputationTrack.WildIndex:
+                    return "Label_Expense_WildIndexAmount";
+                default:
+                    return "Label_Expense_StreetCredAmount";
+            }
+        }
+
+        private static string GetReputationTitleKey(ReputationTrack eTrack, bool blnGain)
+        {
+            string strSuffix = blnGain ? "Gained" : "Spent";
+            switch (eTrack)
+            {
+                case ReputationTrack.Notoriety:
+                    return "Title_Expense_Notoriety" + strSuffix;
+                case ReputationTrack.PublicAwareness:
+                    return "Title_Expense_PublicAwareness" + strSuffix;
+                case ReputationTrack.AstralReputation:
+                    return "Title_Expense_AstralReputation" + strSuffix;
+                case ReputationTrack.WildReputation:
+                    return "Title_Expense_WildReputation" + strSuffix;
+                case ReputationTrack.SpiritIndex:
+                    return "Title_Expense_SpiritIndex" + strSuffix;
+                case ReputationTrack.WildIndex:
+                    return "Title_Expense_WildIndex" + strSuffix;
+                default:
+                    return "Title_Expense_StreetCred" + strSuffix;
+            }
         }
 
         public bool KarmaNuyenExchange { get; set; }
@@ -279,12 +432,18 @@ namespace Chummer
                 string strText = await LanguageManager.GetStringAsync("String_ExpenseDefault").ConfigureAwait(false);
                 await txtDescription.DoThreadSafeAsync(x => x.Text = strText).ConfigureAwait(false);
             }
+            bool blnShowExchange = _eMode != ExpenseType.Reputation
+                                   && !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
             await chkKarmaNuyenExchange.DoThreadSafeAsync(x =>
             {
-                x.Visible = !string.IsNullOrWhiteSpace(KarmaNuyenExchangeString);
+                x.Visible = blnShowExchange;
                 x.Text = KarmaNuyenExchangeString;
             }).ConfigureAwait(false);
-            await chkForceCareerVisible.DoThreadSafeAsync(x => x.Enabled = chkKarmaNuyenExchange.Checked).ConfigureAwait(false);
+            await chkForceCareerVisible.DoThreadSafeAsync(x =>
+            {
+                x.Visible = blnShowExchange;
+                x.Enabled = chkKarmaNuyenExchange.Checked;
+            }).ConfigureAwait(false);
         }
     }
 }

@@ -58,7 +58,7 @@ namespace Chummer
     /// Class that holds all of the information that makes up a complete Character.
     /// </summary>
     [DebuggerDisplay("{CharacterName} ({FileName})")]
-    public sealed class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
+    public sealed partial class Character : INotifyMultiplePropertiesChangedAsync, IHasMugshots, IHasName, IHasSource, IHasXmlDataNode, IHasLockObject, IHasCharacterObject
     {
         private static readonly TelemetryClient TelemetryClient = new TelemetryClient();
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
@@ -74,6 +74,7 @@ namespace Chummer
         private int _intNotoriety;
         private int _intPublicAwareness;
         private int _intBurntStreetCred;
+        private int _intSpentStreetCred;
         private decimal _decNuyen;
         private decimal _decStartingNuyen;
         private decimal _decEssenceAtSpecialStart = decimal.MinValue;
@@ -186,8 +187,9 @@ namespace Chummer
 
         // Spirit Reputation
         private int _intBaseAstralReputation;
-
+        private int _intSpiritIndex;
         private int _intBaseWildReputation;
+        private int _intWildIndex;
 
         // Priority Selections.
         private string _strPriorityMetatype = "A";
@@ -4589,14 +4591,24 @@ namespace Chummer
                             objWriter.WriteElementString("burntstreetcred",
                                 _intBurntStreetCred.ToString(
                                     GlobalSettings.InvariantCultureInfo));
+                            // <spentstreetcred />
+                            objWriter.WriteElementString("spentstreetcred",
+                                _intSpentStreetCred.ToString(
+                                    GlobalSettings.InvariantCultureInfo));
                             // <baseastralreputation />
                             objWriter.WriteElementString("baseastralreputation",
                                 _intBaseAstralReputation.ToString(
                                     GlobalSettings.InvariantCultureInfo));
+                            // <spiritindex />
+                            objWriter.WriteElementString("spiritindex",
+                                _intSpiritIndex.ToString(GlobalSettings.InvariantCultureInfo));
                             // <basewildreputation />
                             objWriter.WriteElementString("basewildreputation",
                                 _intBaseWildReputation.ToString(
                                     GlobalSettings.InvariantCultureInfo));
+                            // <wildindex />
+                            objWriter.WriteElementString("wildindex",
+                                _intWildIndex.ToString(GlobalSettings.InvariantCultureInfo));
                             // <created />
                             objWriter.WriteElementString("created",
                                 _blnCreated.ToString(GlobalSettings.InvariantCultureInfo));
@@ -5276,15 +5288,28 @@ namespace Chummer
                                 _intBurntStreetCred.ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
+                            // <spentstreetcred />
+                            await objWriter.WriteElementStringAsync("spentstreetcred",
+                                _intSpentStreetCred.ToString(
+                                    GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <baseastralreputation />
                             await objWriter.WriteElementStringAsync("baseastralreputation",
                                 _intBaseAstralReputation.ToString(
                                     GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
+                            // <spiritindex />
+                            await objWriter.WriteElementStringAsync("spiritindex",
+                                _intSpiritIndex.ToString(GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
                             // <basewildreputation />
                             await objWriter.WriteElementStringAsync("basewildreputation",
                                 _intBaseWildReputation.ToString(
                                     GlobalSettings.InvariantCultureInfo),
+                                token: token).ConfigureAwait(false);
+                            // <wildindex />
+                            await objWriter.WriteElementStringAsync("wildindex",
+                                _intWildIndex.ToString(GlobalSettings.InvariantCultureInfo),
                                 token: token).ConfigureAwait(false);
                             // <created />
                             await objWriter.WriteElementStringAsync("created",
@@ -7455,10 +7480,14 @@ namespace Chummer
                                                                               ref _intPublicAwareness);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("burntstreetcred",
                                                                               ref _intBurntStreetCred);
+                                xmlCharacterNavigator.TryGetInt32FieldQuickly("spentstreetcred",
+                                                                              ref _intSpentStreetCred);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("baseastralreputation",
                                                                               ref _intBaseAstralReputation);
+                                xmlCharacterNavigator.TryGetInt32FieldQuickly("spiritindex", ref _intSpiritIndex);
                                 xmlCharacterNavigator.TryGetInt32FieldQuickly("basewildreputation",
                                                                               ref _intBaseWildReputation);
+                                xmlCharacterNavigator.TryGetInt32FieldQuickly("wildindex", ref _intWildIndex);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("nuyen", ref _decNuyen);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("startingnuyen", ref _decStartingNuyen);
                                 xmlCharacterNavigator.TryGetDecFieldQuickly("nuyenbp", ref _decNuyenBP);
@@ -11717,6 +11746,10 @@ namespace Chummer
                     await objWriter
                         .WriteElementStringAsync("burntstreetcred", BurntStreetCred.ToString(objCulture),
                             token: token).ConfigureAwait(false);
+                    // <spentstreetcred />
+                    await objWriter
+                        .WriteElementStringAsync("spentstreetcred", SpentStreetCred.ToString(objCulture),
+                            token: token).ConfigureAwait(false);
                     // <notoriety />
                     await objWriter.WriteElementStringAsync("notoriety", Notoriety.ToString(objCulture), token: token)
                         .ConfigureAwait(false);
@@ -11744,6 +11777,10 @@ namespace Chummer
                     await objWriter
                         .WriteElementStringAsync("astralreputation", AstralReputation.ToString(objCulture),
                             token: token).ConfigureAwait(false);
+                    // <spiritindex />
+                    await objWriter
+                        .WriteElementStringAsync("spiritindex", SpiritIndex.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
                     // <totalastralreputation />
                     await objWriter.WriteElementStringAsync("totalastralreputation",
                             TotalAstralReputation.ToString(objCulture), token: token)
@@ -11751,6 +11788,10 @@ namespace Chummer
                     // <wildreputation />
                     await objWriter
                         .WriteElementStringAsync("wildreputation", WildReputation.ToString(objCulture), token: token)
+                        .ConfigureAwait(false);
+                    // <wildindex />
+                    await objWriter
+                        .WriteElementStringAsync("wildindex", WildIndex.ToString(objCulture), token: token)
                         .ConfigureAwait(false);
                     // <totalwildreputation />
                     await objWriter.WriteElementStringAsync("totalwildreputation",
@@ -21941,6 +21982,86 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Street Cred permanently spent on reputation services (contacts, lifestyle, factions, etc.).
+        /// Unlike burnt Street Cred, this does not reduce Notoriety.
+        /// </summary>
+        public int SpentStreetCred
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intSpentStreetCred;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intSpentStreetCred, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Street Cred permanently spent on reputation services.
+        /// </summary>
+        public async Task<int> GetSpentStreetCredAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSpentStreetCred;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Street Cred permanently spent on reputation services.
+        /// </summary>
+        public async Task SetSpentStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSpentStreetCred, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpentStreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Adjust Street Cred permanently spent on reputation services.
+        /// </summary>
+        public async Task ModifySpentStreetCredAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (value == 0)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                Interlocked.Add(ref _intSpentStreetCred, value);
+                await OnPropertyChangedAsync(nameof(SpentStreetCred), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Notoriety.
         /// </summary>
         [HubTag]
@@ -22203,6 +22324,14 @@ namespace Chummer
                     {
                         sbdReturn.Append(AstralReputation.ToString(GlobalSettings.CultureInfo));
 
+                        int intFromSpiritIndex = SpiritIndex / 25;
+                        if (intFromSpiritIndex != 0)
+                        {
+                            sbdReturn.Append(strSpace, '+').Append(strSpace)
+                                .Append(LanguageManager.GetString("String_SpiritIndex"), strSpace)
+                                .Append('(', intFromSpiritIndex.ToString(GlobalSettings.CultureInfo), ')');
+                        }
+
                         foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
                                      this, Improvement.ImprovementType.AstralReputation))
                         {
@@ -22235,6 +22364,15 @@ namespace Chummer
                         (await GetAstralReputationAsync(token).ConfigureAwait(false)).ToString(GlobalSettings
                             .CultureInfo));
 
+                    int intFromSpiritIndex = await GetSpiritIndexAsync(token).ConfigureAwait(false) / 25;
+                    if (intFromSpiritIndex != 0)
+                    {
+                        sbdReturn.Append(strSpace, '+').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_SpiritIndex", token: token)
+                                        .ConfigureAwait(false), strSpace)
+                            .Append('(', intFromSpiritIndex.ToString(GlobalSettings.CultureInfo), ')');
+                    }
+
                     foreach (Improvement objImprovement in await ImprovementManager
                                  .GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.AstralReputation, token: token)
@@ -22264,7 +22402,7 @@ namespace Chummer
                 using (LockObject.EnterReadLock())
                     return Math.Max(
                         0,
-                        AstralReputation + ImprovementManager
+                        AstralReputation + SpiritIndex / 25 + ImprovementManager
                                            .ValueOf(this, Improvement.ImprovementType.AstralReputation)
                                            .StandardRound());
             }
@@ -22282,7 +22420,8 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 return Math.Max(
                     0,
-                    await GetAstralReputationAsync(token).ConfigureAwait(false) +
+                    await GetAstralReputationAsync(token).ConfigureAwait(false)
+                    + await GetSpiritIndexAsync(token).ConfigureAwait(false) / 25 +
                     (await ImprovementManager
                         .ValueOfAsync(this, Improvement.ImprovementType.AstralReputation, token: token)
                         .ConfigureAwait(false)).StandardRound());
@@ -22352,6 +22491,64 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Spirit Index (SG 206). Every 25 points contribute 1 Astral Reputation.
+        /// </summary>
+        public int SpiritIndex
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intSpiritIndex;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intSpiritIndex, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Spirit Index (SG 206). Every 25 points contribute 1 Astral Reputation.
+        /// </summary>
+        public async Task<int> GetSpiritIndexAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intSpiritIndex;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Spirit Index (SG 206). Every 25 points contribute 1 Astral Reputation.
+        /// </summary>
+        public async Task SetSpiritIndexAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intSpiritIndex, value) != value)
+                    await OnPropertyChangedAsync(nameof(SpiritIndex), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// Tooltip to use for Wild Reputation total.
         /// </summary>
         public string WildReputationTooltip
@@ -22365,6 +22562,14 @@ namespace Chummer
                     using (LockObject.EnterReadLock())
                     {
                         sbdReturn.Append(WildReputation.ToString(GlobalSettings.CultureInfo));
+
+                        int intFromWildIndex = WildIndex / 25;
+                        if (intFromWildIndex != 0)
+                        {
+                            sbdReturn.Append(strSpace, '+').Append(strSpace)
+                                .Append(LanguageManager.GetString("String_WildIndex"), strSpace)
+                                .Append('(', intFromWildIndex.ToString(GlobalSettings.CultureInfo), ')');
+                        }
 
                         foreach (Improvement objImprovement in ImprovementManager.GetCachedImprovementListForValueOf(
                                      this, Improvement.ImprovementType.AstralReputationWild))
@@ -22396,6 +22601,15 @@ namespace Chummer
                     sbdReturn.Append((await GetWildReputationAsync(token).ConfigureAwait(false))
                         .ToString(GlobalSettings.CultureInfo));
 
+                    int intFromWildIndex = await GetWildIndexAsync(token).ConfigureAwait(false) / 25;
+                    if (intFromWildIndex != 0)
+                    {
+                        sbdReturn.Append(strSpace, '+').Append(strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_WildIndex", token: token)
+                                        .ConfigureAwait(false), strSpace)
+                            .Append('(', intFromWildIndex.ToString(GlobalSettings.CultureInfo), ')');
+                    }
+
                     foreach (Improvement objImprovement in await ImprovementManager
                                  .GetCachedImprovementListForValueOfAsync(this,
                                      Improvement.ImprovementType.AstralReputationWild, token: token)
@@ -22423,7 +22637,7 @@ namespace Chummer
             {
                 using (LockObject.EnterReadLock())
                     return Math.Max(0,
-                                    WildReputation
+                                    WildReputation + WildIndex / 25
                                     + ImprovementManager.ValueOf(this, Improvement.ImprovementType.AstralReputationWild)
                                                         .StandardRound());
             }
@@ -22440,7 +22654,8 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 return Math.Max(0,
-                    await GetWildReputationAsync(token).ConfigureAwait(false) + (await ImprovementManager
+                    await GetWildReputationAsync(token).ConfigureAwait(false)
+                    + await GetWildIndexAsync(token).ConfigureAwait(false) / 25 + (await ImprovementManager
                         .ValueOfAsync(this, Improvement.ImprovementType.AstralReputationWild, token: token)
                         .ConfigureAwait(false)).StandardRound());
             }
@@ -22501,6 +22716,64 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (Interlocked.Exchange(ref _intBaseWildReputation, value) != value)
                     await OnPropertyChangedAsync(nameof(WildReputation), token).ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Wild Index (FA 176). Every 25 points contribute 1 Wild Reputation.
+        /// </summary>
+        public int WildIndex
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _intWildIndex;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (Interlocked.Exchange(ref _intWildIndex, value) == value)
+                        return;
+                    OnPropertyChanged();
+                }
+            }
+        }
+
+        /// <summary>
+        /// Wild Index (FA 176). Every 25 points contribute 1 Wild Reputation.
+        /// </summary>
+        public async Task<int> GetWildIndexAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _intWildIndex;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Wild Index (FA 176). Every 25 points contribute 1 Wild Reputation.
+        /// </summary>
+        public async Task SetWildIndexAsync(int value, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (Interlocked.Exchange(ref _intWildIndex, value) != value)
+                    await OnPropertyChangedAsync(nameof(WildIndex), token).ConfigureAwait(false);
             }
             finally
             {
@@ -31709,6 +31982,8 @@ namespace Chummer
 
                     // Deduct burnt Street Cred.
                     intReturn -= BurntStreetCred;
+                    // Deduct Street Cred spent on reputation services (does not affect Notoriety).
+                    intReturn -= SpentStreetCred;
 
                     return intReturn;
                 }
@@ -31733,6 +32008,8 @@ namespace Chummer
 
                 // Deduct burnt Street Cred.
                 intReturn -= await GetBurntStreetCredAsync(token).ConfigureAwait(false);
+                // Deduct Street Cred spent on reputation services (does not affect Notoriety).
+                intReturn -= await GetSpentStreetCredAsync(token).ConfigureAwait(false);
 
                 return intReturn;
             }
@@ -31879,6 +32156,12 @@ namespace Chummer
                             sbdReturn.Append(strSpace, '-', strSpace)
                                      .Append(LanguageManager.GetString("String_BurntStreetCred"), strSpace)
                                      .Append('(', intBurnedStreetCred.ToString(GlobalSettings.CultureInfo), ')');
+
+                        int intSpentStreetCred = SpentStreetCred;
+                        if (intSpentStreetCred != 0)
+                            sbdReturn.Append(strSpace, '-', strSpace)
+                                     .Append(LanguageManager.GetString("String_SpentStreetCred"), strSpace)
+                                     .Append('(', intSpentStreetCred.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     return sbdReturn.ToString();
@@ -31925,6 +32208,13 @@ namespace Chummer
                             .Append(await LanguageManager.GetStringAsync("String_BurntStreetCred", token: token)
                                 .ConfigureAwait(false)).Append(strSpace, '(')
                             .Append(intBurnedStreetCred.ToString(GlobalSettings.CultureInfo), ')');
+
+                    int intSpentStreetCred = await GetSpentStreetCredAsync(token).ConfigureAwait(false);
+                    if (intSpentStreetCred != 0)
+                        sbdReturn.Append(strSpace, '-', strSpace)
+                            .Append(await LanguageManager.GetStringAsync("String_SpentStreetCred", token: token)
+                                .ConfigureAwait(false)).Append(strSpace, '(')
+                            .Append(intSpentStreetCred.ToString(GlobalSettings.CultureInfo), ')');
                 }
                 finally
                 {
@@ -50276,7 +50566,8 @@ namespace Chummer
                             new DependencyGraphNode<string, Character>(nameof(StreetCred)),
                             new DependencyGraphNode<string, Character>(nameof(CalculatedStreetCred),
                                 new DependencyGraphNode<string, Character>(nameof(CareerKarma)),
-                                new DependencyGraphNode<string, Character>(nameof(BurntStreetCred))
+                                new DependencyGraphNode<string, Character>(nameof(BurntStreetCred)),
+                                new DependencyGraphNode<string, Character>(nameof(SpentStreetCred))
                             )
                         )
                     ),
@@ -50444,12 +50735,14 @@ namespace Chummer
                     ),
                     new DependencyGraphNode<string, Character>(nameof(AstralReputationTooltip),
                         new DependencyGraphNode<string, Character>(nameof(TotalAstralReputation),
-                            new DependencyGraphNode<string, Character>(nameof(AstralReputation))
+                            new DependencyGraphNode<string, Character>(nameof(AstralReputation)),
+                            new DependencyGraphNode<string, Character>(nameof(SpiritIndex))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(WildReputationTooltip),
                         new DependencyGraphNode<string, Character>(nameof(TotalWildReputation),
-                            new DependencyGraphNode<string, Character>(nameof(WildReputation))
+                            new DependencyGraphNode<string, Character>(nameof(WildReputation)),
+                            new DependencyGraphNode<string, Character>(nameof(WildIndex))
                         )
                     ),
                     new DependencyGraphNode<string, Character>(nameof(EdgeRemainingString),

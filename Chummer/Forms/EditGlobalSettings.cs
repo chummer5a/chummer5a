@@ -45,6 +45,8 @@ namespace Chummer
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
 
+        private NumericUpDownEx _nudExpenseInGameDateOffsetYears;
+
         // List of custom data directories possible to be added to a character
         private readonly HashSet<CustomDataDirectoryInfo> _setCustomDataDirectoryInfos;
 
@@ -1809,8 +1811,76 @@ namespace Chummer
         /// <summary>
         /// Set the values for all of the controls based on the Options for the selected Setting.
         /// </summary>
+        private async Task EnsureExpenseDateOffsetControlAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_nudExpenseInGameDateOffsetYears != null)
+                return;
+            string strLabel = await LanguageManager
+                .GetStringAsync("Label_Options_ExpenseInGameDateOffsetYears", token: token).ConfigureAwait(false);
+            await this.DoThreadSafeAsync(() =>
+            {
+                if (_nudExpenseInGameDateOffsetYears != null)
+                    return;
+
+                // Own row under "Dates include time" — sitting in the adjacent cell was clipped
+                // by that checkbox's column span and the Default Character Setting controls.
+                TableLayoutPanelCellPosition objDatesPos = tlpGlobalOptions.GetPositionFromControl(chkDatesIncludeTime);
+                int intInsertAt = objDatesPos.Row >= 0 ? objDatesPos.Row + 1 : tlpGlobalOptions.RowCount;
+                tlpGlobalOptions.RowStyles.Insert(intInsertAt, new RowStyle());
+                tlpGlobalOptions.RowCount += 1;
+                foreach (Control objControl in tlpGlobalOptions.Controls)
+                {
+                    int intRow = tlpGlobalOptions.GetRow(objControl);
+                    if (intRow >= intInsertAt)
+                        tlpGlobalOptions.SetRow(objControl, intRow + 1);
+                }
+
+                Label lbl = new Label
+                {
+                    AutoSize = true,
+                    Anchor = AnchorStyles.Left,
+                    Text = strLabel,
+                    Tag = "Label_Options_ExpenseInGameDateOffsetYears",
+                    TextAlign = ContentAlignment.MiddleLeft,
+                    Margin = new Padding(3, 6, 3, 6)
+                };
+                _nudExpenseInGameDateOffsetYears = new NumericUpDownEx
+                {
+                    Minimum = -100,
+                    Maximum = 200,
+                    Value = GlobalSettings.ExpenseInGameDateOffsetYears,
+                    MinimumSize = new Size(80, 0),
+                    Width = 80,
+                    Anchor = AnchorStyles.Left,
+                    Margin = new Padding(3, 3, 3, 3)
+                };
+                _nudExpenseInGameDateOffsetYears.ValueChanged += OptionsChanged;
+
+                TableLayoutPanel tlpOffset = new TableLayoutPanel
+                {
+                    Name = "tlpExpenseInGameDateOffset",
+                    AutoSize = true,
+                    AutoSizeMode = AutoSizeMode.GrowAndShrink,
+                    ColumnCount = 2,
+                    RowCount = 1,
+                    Dock = DockStyle.Fill,
+                    Margin = new Padding(0)
+                };
+                tlpOffset.ColumnStyles.Add(new ColumnStyle());
+                tlpOffset.ColumnStyles.Add(new ColumnStyle());
+                tlpOffset.Controls.Add(lbl, 0, 0);
+                tlpOffset.Controls.Add(_nudExpenseInGameDateOffsetYears, 1, 0);
+
+                tlpGlobalOptions.Controls.Add(tlpOffset, 0, intInsertAt);
+                tlpGlobalOptions.SetColumnSpan(tlpOffset, 2);
+                tlpOffset.UpdateLightDarkMode();
+            }, token).ConfigureAwait(false);
+        }
+
         private async Task PopulateOptions(CancellationToken token = default)
         {
+            await EnsureExpenseDateOffsetControlAsync(token).ConfigureAwait(false);
             await RefreshGlobalSourcebookInfosListView(token).ConfigureAwait(false);
             PopulateCustomDataDirectoryListBox();
 
@@ -1839,6 +1909,12 @@ namespace Chummer
                                      .ConfigureAwait(false);
             await chkDatesIncludeTime.DoThreadSafeAsync(x => x.Checked = GlobalSettings.DatesIncludeTime, token)
                                      .ConfigureAwait(false);
+            if (_nudExpenseInGameDateOffsetYears != null)
+            {
+                await _nudExpenseInGameDateOffsetYears
+                      .DoThreadSafeAsync(x => x.Value = GlobalSettings.ExpenseInGameDateOffsetYears, token)
+                      .ConfigureAwait(false);
+            }
             await chkPrintToFileFirst.DoThreadSafeAsync(x => x.Checked = GlobalSettings.PrintToFileFirst, token)
                                      .ConfigureAwait(false);
             await chkPrintExpenses.DoThreadSafeAsync(x => x.Checked = GlobalSettings.PrintExpenses, token)
@@ -1965,6 +2041,12 @@ namespace Chummer
                   ?? GlobalSettings.DefaultCharacterSheetDefaultValue;
             GlobalSettings.DatesIncludeTime = await chkDatesIncludeTime.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                        .ConfigureAwait(false);
+            if (_nudExpenseInGameDateOffsetYears != null)
+            {
+                GlobalSettings.ExpenseInGameDateOffsetYears = decimal.ToInt32(
+                    await _nudExpenseInGameDateOffsetYears.DoThreadSafeFuncAsync(x => x.Value, token)
+                                                          .ConfigureAwait(false));
+            }
             GlobalSettings.PrintToFileFirst = await chkPrintToFileFirst.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                        .ConfigureAwait(false);
             GlobalSettings.PrintExpenses

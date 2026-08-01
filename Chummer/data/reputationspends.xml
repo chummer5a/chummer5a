@@ -1,0 +1,147 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--This file is part of Chummer5a.
+
+  Chummer5a is free software: you can redistribute it and/or modify
+  it under the terms of the GNU General Public License as published by
+  the Free Software Foundation, either version 3 of the License, or
+  (at your option) any later version.
+
+  Chummer5a is distributed in the hope that it will be useful,
+  but WITHOUT ANY WARRANTY; without even the implied warranty of
+  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+  GNU General Public License for more details.
+
+  You should have received a copy of the GNU General Public License
+  along with Chummer5a.  If not, see <http://www.gnu.org/licenses/>.
+
+  You can obtain the full source code for Chummer5a at
+  https://github.com/chummer5a/chummer5a
+-->
+<chummer>
+  <categories>
+    <category>Street Cred</category>
+    <category>Contacts</category>
+    <category>Lifestyle</category>
+    <category>Faction</category>
+  </categories>
+  <reputationspends>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567001</id>
+      <name>Reduce Notoriety</name>
+      <category>Street Cred</category>
+      <cost>
+        <streetcred>2</streetcred>
+      </cost>
+      <targets>
+        <target>none</target>
+      </targets>
+      <effects>
+        <action type="ReduceNotoriety" amount="1" />
+      </effects>
+      <notes>Permanently sacrifice 2 Street Cred to reduce Notoriety by 1.</notes>
+      <source>SR5</source>
+      <page>372</page>
+    </reputationspend>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567002</id>
+      <name>Spend Street Cred</name>
+      <category>Street Cred</category>
+      <cost>
+        <streetcred>1</streetcred>
+      </cost>
+      <targets>
+        <target>none</target>
+      </targets>
+      <effects>
+        <action type="ManualSubtractStreetCred" amount="1" />
+      </effects>
+      <notes>Permanently spend 1 Street Cred for an arbitrary expense approved by the gamemaster.</notes>
+      <source>SR5</source>
+      <page>368</page>
+    </reputationspend>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567003</id>
+      <name>Increase Contact Loyalty</name>
+      <category>Contacts</category>
+      <cost>
+        <usenewrating />
+        <allowmixed />
+      </cost>
+      <rules>
+        <maxrating>4</maxrating>
+        <delayusesnewrating />
+      </rules>
+      <targets>
+        <target>contact</target>
+      </targets>
+      <effects>
+        <action type="IncreaseContactLoyalty" amount="1" />
+      </effects>
+      <notes>Sacrifice Karma and/or Street Cred equal to the new Loyalty rating (max 4). Delay months equal the new rating.</notes>
+      <source>RF</source>
+      <page>147</page>
+    </reputationspend>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567004</id>
+      <name>Increase Contact Connection</name>
+      <category>Contacts</category>
+      <cost>
+        <points>10</points>
+        <allowmixed />
+      </cost>
+      <rules>
+        <minloyalty>3</minloyalty>
+        <oncepertarget />
+      </rules>
+      <targets>
+        <target>contact</target>
+      </targets>
+      <effects>
+        <action type="IncreaseContactConnection" amount="1" />
+      </effects>
+      <notes>Sacrifice 10 Karma and/or Street Cred to raise Connection by 1. Requires Loyalty 3+. Once per contact.</notes>
+      <source>RF</source>
+      <page>147</page>
+    </reputationspend>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567005</id>
+      <name>Reduce Lifestyle Cost</name>
+      <category>Lifestyle</category>
+      <cost>
+        <nuyenperpoint>1000</nuyenperpoint>
+        <allowmixed />
+      </cost>
+      <targets>
+        <target>lifestyle</target>
+      </targets>
+      <effects>
+        <action type="ReduceLifestyleCost" amount="1" />
+      </effects>
+      <notes>Sacrifice 1 Karma or Street Cred per 1,000¥ of lifestyle cost reduction. Lasts while the lifestyle is maintained.</notes>
+      <source>RF</source>
+      <page>147</page>
+    </reputationspend>
+    <reputationspend>
+      <id>a1b2c3d4-e5f6-7890-abcd-ef1234567006</id>
+      <name>Increase Faction Reputation</name>
+      <category>Faction</category>
+      <cost>
+        <usenewrating />
+        <allowmixed />
+      </cost>
+      <rules>
+        <maxrating>3</maxrating>
+        <delayusesnewrating />
+      </rules>
+      <targets>
+        <target>faction</target>
+      </targets>
+      <effects>
+        <action type="IncreaseFactionReputation" amount="1" />
+      </effects>
+      <notes>Sacrifice Karma and/or Street Cred equal to the new Faction Reputation Score (max 3). Delay months equal the new score.</notes>
+      <source>RF</source>
+      <page>147</page>
+    </reputationspend>
+  </reputationspends>
+</chummer>
