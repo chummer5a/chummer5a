@@ -10534,7 +10534,7 @@ namespace Chummer
                             // Need to load these after everything else so that we can properly link them up during loading
                             using (Timekeeper.StartSyncron("load_char_sustainedobjects", loadActivity))
                             {
-                                objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects");
+                                objXmlNodeList = objXmlCharacter.SelectNodes("sustainedobjects/sustainedobject");
                                 foreach (XmlNode objXmlSustained in objXmlNodeList)
                                 {
                                     SustainedObject objSustained = new SustainedObject(this, objXmlSustained);
