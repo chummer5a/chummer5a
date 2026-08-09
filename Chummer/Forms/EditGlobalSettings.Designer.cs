@@ -110,6 +110,9 @@ namespace Chummer
             this.chkPrintNotes = new Chummer.ColorableCheckBox();
             this.chkHideMasterIndex = new Chummer.ColorableCheckBox();
             this.chkSearchInCategoryOnly = new Chummer.ColorableCheckBox();
+            this.chkGroupVehicleModsByCategory = new Chummer.ColorableCheckBox();
+            this.chkAlphabetizeTreeNodesOnInsert = new Chummer.ColorableCheckBox();
+            this.chkNestWeaponMountsUnderWeaponsCategory = new Chummer.ColorableCheckBox();
             this.flpEnablePlugins = new System.Windows.Forms.FlowLayoutPanel();
             this.chkEnablePlugins = new Chummer.ColorableCheckBox();
             this.cmdPluginsHelp = new System.Windows.Forms.Button();
@@ -499,6 +502,9 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkPrintNotes, 0, 9);
             this.tlpGlobalOptions.Controls.Add(this.chkHideMasterIndex, 2, 6);
             this.tlpGlobalOptions.Controls.Add(this.chkSearchInCategoryOnly, 2, 1);
+            this.tlpGlobalOptions.Controls.Add(this.chkGroupVehicleModsByCategory, 0, 19);
+            this.tlpGlobalOptions.Controls.Add(this.chkAlphabetizeTreeNodesOnInsert, 2, 19);
+            this.tlpGlobalOptions.Controls.Add(this.chkNestWeaponMountsUnderWeaponsCategory, 0, 20);
             this.tlpGlobalOptions.Controls.Add(this.flpEnablePlugins, 2, 17);
             this.tlpGlobalOptions.Controls.Add(this.chkLifeModule, 2, 16);
             this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 2, 12);
@@ -531,7 +537,7 @@ namespace Chummer
             this.tlpGlobalOptions.Margin = new System.Windows.Forms.Padding(0);
             this.tlpGlobalOptions.Name = "tlpGlobalOptions";
             this.tlpGlobalOptions.Padding = new System.Windows.Forms.Padding(0, 0, 10, 0);
-            this.tlpGlobalOptions.RowCount = 20;
+            this.tlpGlobalOptions.RowCount = 21;
             this.tlpGlobal.SetRowSpan(this.tlpGlobalOptions, 3);
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
@@ -552,8 +558,9 @@ namespace Chummer
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tlpGlobalOptions.Size = new System.Drawing.Size(850, 584);
+            this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpGlobalOptions.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpGlobalOptions.Size = new System.Drawing.Size(850, 610);
             this.tlpGlobalOptions.TabIndex = 67;
             // 
             // lblHasNotesColor
@@ -1347,6 +1354,59 @@ namespace Chummer
             this.chkSearchInCategoryOnly.Text = "Searching in selection forms is restricted to the current Category";
             this.chkSearchInCategoryOnly.UseVisualStyleBackColor = true;
             this.chkSearchInCategoryOnly.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkGroupVehicleModsByCategory
+            // 
+            this.chkGroupVehicleModsByCategory.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkGroupVehicleModsByCategory.AutoSize = true;
+            this.chkGroupVehicleModsByCategory.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkGroupVehicleModsByCategory.Checked = true;
+            this.chkGroupVehicleModsByCategory.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkGroupVehicleModsByCategory, 2);
+            this.chkGroupVehicleModsByCategory.DefaultColorScheme = true;
+            this.chkGroupVehicleModsByCategory.Location = new System.Drawing.Point(3, 584);
+            this.chkGroupVehicleModsByCategory.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkGroupVehicleModsByCategory.Name = "chkGroupVehicleModsByCategory";
+            this.chkGroupVehicleModsByCategory.Size = new System.Drawing.Size(280, 17);
+            this.chkGroupVehicleModsByCategory.TabIndex = 68;
+            this.chkGroupVehicleModsByCategory.Tag = "Checkbox_Options_GroupVehicleModsByCategory";
+            this.chkGroupVehicleModsByCategory.Text = "Group vehicle mods by category in the Vehicles tree";
+            this.chkGroupVehicleModsByCategory.UseVisualStyleBackColor = true;
+            this.chkGroupVehicleModsByCategory.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkAlphabetizeTreeNodesOnInsert
+            // 
+            this.chkAlphabetizeTreeNodesOnInsert.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkAlphabetizeTreeNodesOnInsert.AutoSize = true;
+            this.chkAlphabetizeTreeNodesOnInsert.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkAlphabetizeTreeNodesOnInsert, 2);
+            this.chkAlphabetizeTreeNodesOnInsert.DefaultColorScheme = true;
+            this.chkAlphabetizeTreeNodesOnInsert.Location = new System.Drawing.Point(413, 584);
+            this.chkAlphabetizeTreeNodesOnInsert.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkAlphabetizeTreeNodesOnInsert.Name = "chkAlphabetizeTreeNodesOnInsert";
+            this.chkAlphabetizeTreeNodesOnInsert.Size = new System.Drawing.Size(325, 17);
+            this.chkAlphabetizeTreeNodesOnInsert.TabIndex = 69;
+            this.chkAlphabetizeTreeNodesOnInsert.Tag = "Checkbox_Options_AlphabetizeTreeNodesOnInsert";
+            this.chkAlphabetizeTreeNodesOnInsert.Text = "Insert new items alphabetically in character trees";
+            this.chkAlphabetizeTreeNodesOnInsert.UseVisualStyleBackColor = true;
+            this.chkAlphabetizeTreeNodesOnInsert.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            // 
+            // chkNestWeaponMountsUnderWeaponsCategory
+            // 
+            this.chkNestWeaponMountsUnderWeaponsCategory.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkNestWeaponMountsUnderWeaponsCategory.AutoSize = true;
+            this.chkNestWeaponMountsUnderWeaponsCategory.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkNestWeaponMountsUnderWeaponsCategory, 2);
+            this.chkNestWeaponMountsUnderWeaponsCategory.DefaultColorScheme = true;
+            this.chkNestWeaponMountsUnderWeaponsCategory.Location = new System.Drawing.Point(3, 609);
+            this.chkNestWeaponMountsUnderWeaponsCategory.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkNestWeaponMountsUnderWeaponsCategory.Name = "chkNestWeaponMountsUnderWeaponsCategory";
+            this.chkNestWeaponMountsUnderWeaponsCategory.Size = new System.Drawing.Size(350, 17);
+            this.chkNestWeaponMountsUnderWeaponsCategory.TabIndex = 70;
+            this.chkNestWeaponMountsUnderWeaponsCategory.Tag = "Checkbox_Options_NestWeaponMountsUnderWeaponsCategory";
+            this.chkNestWeaponMountsUnderWeaponsCategory.Text = "Place weapon mounts under the Weapons vehicle mod category";
+            this.chkNestWeaponMountsUnderWeaponsCategory.UseVisualStyleBackColor = true;
+            this.chkNestWeaponMountsUnderWeaponsCategory.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // flpEnablePlugins
             // 
@@ -2550,6 +2610,9 @@ namespace Chummer
         private System.Windows.Forms.TextBox txtTimeFormat;
         private System.Windows.Forms.TextBox txtTimeFormatView;
         private ColorableCheckBox chkSearchInCategoryOnly;
+        private ColorableCheckBox chkGroupVehicleModsByCategory;
+        private ColorableCheckBox chkAlphabetizeTreeNodesOnInsert;
+        private ColorableCheckBox chkNestWeaponMountsUnderWeaponsCategory;
         private ColorableCheckBox chkAllowEasterEggs;
         private Chummer.ElasticComboBox cboDefaultCharacterSetting;
         private NumericUpDownEx nudBrowserVersion;

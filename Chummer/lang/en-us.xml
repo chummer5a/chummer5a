@@ -5738,6 +5738,10 @@
       <text>Weapon Mounts</text>
     </string>
     <string>
+      <key>String_VehicleModCategory_General</key>
+      <text>General</text>
+    </string>
+    <string>
       <key>Label_FiringMode</key>
       <text>Firing Mode:</text>
     </string>
@@ -8261,6 +8265,18 @@
     <string>
       <key>Checkbox_Options_SearchInCategoryOnly</key>
       <text>Searching in selection forms is restricted to the current Category</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_GroupVehicleModsByCategory</key>
+      <text>Group vehicle mods by category in the Vehicles tree</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_AlphabetizeTreeNodesOnInsert</key>
+      <text>Insert new items alphabetically in character trees</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_NestWeaponMountsUnderWeaponsCategory</key>
+      <text>Place weapon mounts under the Weapons vehicle mod category</text>
     </string>
     <string>
       <key>Checkbox_Options_AllowTechnomancerSchooling</key>

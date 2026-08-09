@@ -1887,6 +1887,17 @@ namespace Chummer
                                         .ConfigureAwait(false);
             await chkSearchInCategoryOnly.DoThreadSafeAsync(x => x.Checked = GlobalSettings.SearchInCategoryOnly, token)
                                          .ConfigureAwait(false);
+            await chkGroupVehicleModsByCategory
+                  .DoThreadSafeAsync(x => x.Checked = GlobalSettings.GroupVehicleModsByCategory, token)
+                  .ConfigureAwait(false);
+            await chkAlphabetizeTreeNodesOnInsert
+                  .DoThreadSafeAsync(x => x.Checked = GlobalSettings.AlphabetizeTreeNodesOnInsert, token)
+                  .ConfigureAwait(false);
+            await chkNestWeaponMountsUnderWeaponsCategory.DoThreadSafeAsync(x =>
+            {
+                x.Checked = GlobalSettings.NestWeaponMountsUnderWeaponsCategory;
+                x.Enabled = GlobalSettings.GroupVehicleModsByCategory;
+            }, token).ConfigureAwait(false);
             await chkAllowSkillDiceRolling
                   .DoThreadSafeAsync(x => x.Checked = GlobalSettings.AllowSkillDiceRolling, token)
                   .ConfigureAwait(false);
@@ -2016,6 +2027,15 @@ namespace Chummer
             GlobalSettings.SearchInCategoryOnly = await chkSearchInCategoryOnly
                                                         .DoThreadSafeFuncAsync(x => x.Checked, token)
                                                         .ConfigureAwait(false);
+            GlobalSettings.GroupVehicleModsByCategory = await chkGroupVehicleModsByCategory
+                                                              .DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                              .ConfigureAwait(false);
+            GlobalSettings.AlphabetizeTreeNodesOnInsert = await chkAlphabetizeTreeNodesOnInsert
+                                                                .DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                                .ConfigureAwait(false);
+            GlobalSettings.NestWeaponMountsUnderWeaponsCategory
+                = await chkNestWeaponMountsUnderWeaponsCategory.DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                               .ConfigureAwait(false);
             GlobalSettings.AllowSkillDiceRolling = await chkAllowSkillDiceRolling
                                                          .DoThreadSafeFuncAsync(x => x.Checked, token)
                                                          .ConfigureAwait(false);
@@ -2699,6 +2719,13 @@ namespace Chummer
             if (_intLoading == 0)
             {
                 _blnDirty = true;
+            }
+
+            if (ReferenceEquals(sender, chkGroupVehicleModsByCategory))
+            {
+                chkNestWeaponMountsUnderWeaponsCategory.Enabled = chkGroupVehicleModsByCategory.Checked;
+                if (!chkGroupVehicleModsByCategory.Checked)
+                    chkNestWeaponMountsUnderWeaponsCategory.Checked = false;
             }
         }
 

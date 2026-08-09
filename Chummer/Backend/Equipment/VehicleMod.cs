@@ -788,7 +788,7 @@ namespace Chummer.Backend.Equipment
 
             return _objCharacter.LoadDataXPath("vehicles.xml", strLanguage)
                                 .SelectSingleNodeAndCacheExpression(
-                                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value
+                                    "/chummer/modcategories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value
                    ?? Category;
         }
 
@@ -803,7 +803,7 @@ namespace Chummer.Backend.Equipment
             return (await _objCharacter.LoadDataXPathAsync("vehicles.xml", strLanguage, token: token)
                     .ConfigureAwait(false))
                 .SelectSingleNodeAndCacheExpression(
-                    "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate",
+                    "/chummer/modcategories/category[. = " + Category.CleanXPath() + "]/@translate",
                     token: token)?.Value ?? Category;
         }
 
@@ -2595,6 +2595,196 @@ namespace Chummer.Backend.Equipment
         }
 
         #region UI Methods
+
+        /// <summary>
+        /// Tag prefix used for synthetic tree nodes that group vehicle mods by category.
+        /// </summary>
+        public const string CategoryGroupTagPrefix = "VehicleModCategory|";
+
+        /// <summary>
+        /// English category key used for general / uncategorized vehicle mods (data category "All").
+        /// </summary>
+        public const string GeneralCategoryKey = "All";
+
+        /// <summary>
+        /// English category key for weapons vehicle mods (and optional weapon-mount nesting).
+        /// </summary>
+        public const string WeaponsCategoryKey = "Weapons";
+
+        /// <summary>
+        /// Whether weapon mounts should nest under the Weapons category group.
+        /// </summary>
+        public static bool ShouldNestWeaponMountsUnderWeaponsCategory =>
+            GlobalSettings.NestWeaponMountsUnderWeaponsCategory && GlobalSettings.GroupVehicleModsByCategory;
+
+        /// <summary>
+        /// Preferred display order for vehicle mod category groups, matching vehicles.xml modcategories then General.
+        /// </summary>
+        private static readonly string[] s_CategoryGroupOrder =
+        {
+            "Body",
+            "Cosmetic",
+            "Electromagnetic",
+            "Model-Specific",
+            "Powertrain",
+            "Protection",
+            "Weapons",
+            GeneralCategoryKey
+        };
+
+        /// <summary>
+        /// Gets the stable category key used for tree grouping.
+        /// Empty categories and the data category "All" share the General group.
+        /// </summary>
+        /// <param name="strCategory">English category name from the mod.</param>
+        /// <returns>Category key used in group tags.</returns>
+        public static string GetCategoryGroupKey(string strCategory)
+        {
+            if (string.IsNullOrEmpty(strCategory)
+                || strCategory.Equals(GeneralCategoryKey, StringComparison.OrdinalIgnoreCase))
+                return GeneralCategoryKey;
+            return strCategory;
+        }
+
+        /// <summary>
+        /// Gets the tree node Tag used for a vehicle mod category group.
+        /// </summary>
+        /// <param name="strCategory">English category name.</param>
+        /// <returns>Stable tag string for the category group node.</returns>
+        public static string GetCategoryGroupTag(string strCategory) =>
+            CategoryGroupTagPrefix + GetCategoryGroupKey(strCategory);
+
+        /// <summary>
+        /// Determines whether a tree node Tag represents a vehicle mod category group.
+        /// </summary>
+        /// <param name="objTag">Tree node Tag to check.</param>
+        /// <returns><c>true</c> if the tag is a category group tag; otherwise <c>false</c>.</returns>
+        public static bool IsCategoryGroupTag(object objTag) =>
+            objTag is string strTag && strTag.StartsWith(CategoryGroupTagPrefix, StringComparison.Ordinal);
+
+        /// <summary>
+        /// Gets the display name for a vehicle mod category group node.
+        /// </summary>
+        /// <param name="strCategory">English category name.</param>
+        /// <param name="objCharacter">Character used to load translated category names.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>Localized group header text.</returns>
+        public static async Task<string> GetCategoryGroupDisplayNameAsync(
+            string strCategory, Character objCharacter, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strKey = GetCategoryGroupKey(strCategory);
+            if (strKey.Equals(GeneralCategoryKey, StringComparison.OrdinalIgnoreCase))
+            {
+                return await LanguageManager.GetStringAsync("String_VehicleModCategory_General", token: token)
+                    .ConfigureAwait(false);
+            }
+
+            if (GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
+                || objCharacter == null)
+                return strKey;
+
+            return (await objCharacter.LoadDataXPathAsync("vehicles.xml", GlobalSettings.Language, token: token)
+                    .ConfigureAwait(false))
+                .SelectSingleNodeAndCacheExpression(
+                    "/chummer/modcategories/category[. = " + strKey.CleanXPath() + "]/@translate",
+                    token: token)?.Value ?? strKey;
+        }
+
+        /// <summary>
+        /// Gets the sort rank for a category group key (lower sorts earlier).
+        /// </summary>
+        /// <param name="strCategoryKey">Category group key.</param>
+        /// <returns>Sort rank.</returns>
+        public static int GetCategoryGroupSortOrder(string strCategoryKey)
+        {
+            string strKey = GetCategoryGroupKey(strCategoryKey);
+            int intIndex = Array.FindIndex(
+                s_CategoryGroupOrder,
+                x => x.Equals(strKey, StringComparison.OrdinalIgnoreCase));
+            return intIndex >= 0 ? intIndex : s_CategoryGroupOrder.Length;
+        }
+
+        /// <summary>
+        /// Creates a synthetic tree node that groups vehicle mods of this mod's category.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>A tree node whose Tag is the category group key.</returns>
+        public async Task<TreeNode> CreateCategoryGroupTreeNode(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return new TreeNode
+            {
+                Tag = GetCategoryGroupTag(Category),
+                Text = await GetCategoryGroupDisplayNameAsync(Category, _objCharacter, token).ConfigureAwait(false)
+            };
+        }
+
+        /// <summary>
+        /// Adds vehicle mod tree nodes to a parent collection, optionally grouping by category.
+        /// </summary>
+        /// <param name="lstMods">Mods to add.</param>
+        /// <param name="lstChildNodes">Parent node collection to populate.</param>
+        /// <param name="cmsVehicleMod">ContextMenuStrip for Vehicle Mods.</param>
+        /// <param name="cmsCyberware">ContextMenuStrip for Cyberware.</param>
+        /// <param name="cmsCyberwareGear">ContextMenuStrip for Gear in Cyberware.</param>
+        /// <param name="cmsVehicleWeapon">ContextMenuStrip for Vehicle Weapons.</param>
+        /// <param name="cmsVehicleWeaponAccessory">ContextMenuStrip for Vehicle Weapon Accessories.</param>
+        /// <param name="cmsVehicleWeaponAccessoryGear">ContextMenuStrip for Gear in Vehicle Weapon Accessories.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task AddModsToTreeNodeCollection(
+            TaggedObservableCollection<VehicleMod> lstMods,
+            TreeNodeCollection lstChildNodes,
+            ContextMenuStrip cmsVehicleMod,
+            ContextMenuStrip cmsCyberware,
+            ContextMenuStrip cmsCyberwareGear,
+            ContextMenuStrip cmsVehicleWeapon,
+            ContextMenuStrip cmsVehicleWeaponAccessory,
+            ContextMenuStrip cmsVehicleWeaponAccessoryGear,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (lstMods == null || lstChildNodes == null)
+                return;
+
+            if (!GlobalSettings.GroupVehicleModsByCategory)
+            {
+                await lstMods.ForEachAsync(async objMod =>
+                {
+                    TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear,
+                        cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                    if (objLoopNode != null)
+                        lstChildNodes.Add(objLoopNode);
+                }, token).ConfigureAwait(false);
+                return;
+            }
+
+            Dictionary<string, TreeNode> dicCategories = new Dictionary<string, TreeNode>(StringComparer.OrdinalIgnoreCase);
+            await lstMods.ForEachAsync(async objMod =>
+            {
+                TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear,
+                    cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                if (objLoopNode == null)
+                    return;
+
+                string strCategoryKey = GetCategoryGroupKey(objMod.Category);
+                if (!dicCategories.TryGetValue(strCategoryKey, out TreeNode nodCategory))
+                {
+                    nodCategory = await objMod.CreateCategoryGroupTreeNode(token).ConfigureAwait(false);
+                    dicCategories.Add(strCategoryKey, nodCategory);
+                }
+
+                nodCategory.Nodes.Add(objLoopNode);
+                nodCategory.Expand();
+            }, token).ConfigureAwait(false);
+
+            foreach (string strCategoryKey in dicCategories.Keys
+                         .OrderBy(GetCategoryGroupSortOrder)
+                         .ThenBy(x => x, StringComparer.OrdinalIgnoreCase))
+            {
+                lstChildNodes.Add(dicCategories[strCategoryKey]);
+            }
+        }
 
         /// <summary>
         /// Add a piece of Armor to the Armor TreeView.

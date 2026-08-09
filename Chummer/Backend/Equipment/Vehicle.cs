@@ -5319,13 +5319,8 @@ namespace Chummer.Backend.Equipment
                             .ConfigureAwait(false)), token).ConfigureAwait(false);
 
             // VehicleMods.
-            await Mods.ForEachAsync(async objMod =>
-            {
-                TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicle, cmsCyberware, cmsCyberwareGear,
-                    cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
-                if (objLoopNode != null)
-                    lstChildNodes.Add(objLoopNode);
-            }, token).ConfigureAwait(false);
+            await VehicleMod.AddModsToTreeNodeCollection(Mods, lstChildNodes, cmsVehicle, cmsCyberware, cmsCyberwareGear,
+                cmsVehicleWeapon, cmsWeaponAccessory, cmsWeaponAccessoryGear, token).ConfigureAwait(false);
             if (await WeaponMounts.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
                 TreeNode nodMountsNode = new TreeNode
@@ -5347,7 +5342,59 @@ namespace Chummer.Backend.Equipment
                 }, token).ConfigureAwait(false);
 
                 if (nodMountsNode.Nodes.Count > 0)
-                    lstChildNodes.Add(nodMountsNode);
+                {
+                    if (VehicleMod.ShouldNestWeaponMountsUnderWeaponsCategory)
+                    {
+                        TreeNode nodWeaponsCategory = null;
+                        foreach (TreeNode objChild in lstChildNodes)
+                        {
+                            if (objChild.Tag is string strTag
+                                && strTag == VehicleMod.GetCategoryGroupTag(VehicleMod.WeaponsCategoryKey))
+                            {
+                                nodWeaponsCategory = objChild;
+                                break;
+                            }
+                        }
+
+                        if (nodWeaponsCategory == null)
+                        {
+                            nodWeaponsCategory = new TreeNode
+                            {
+                                Tag = VehicleMod.GetCategoryGroupTag(VehicleMod.WeaponsCategoryKey),
+                                Text = await VehicleMod.GetCategoryGroupDisplayNameAsync(
+                                    VehicleMod.WeaponsCategoryKey, _objCharacter, token).ConfigureAwait(false)
+                            };
+                            // Insert Weapons category in preferred order among existing category groups
+                            int intInsert = lstChildNodes.Count;
+                            for (int i = 0; i < lstChildNodes.Count; ++i)
+                            {
+                                if (!VehicleMod.IsCategoryGroupTag(lstChildNodes[i].Tag))
+                                {
+                                    intInsert = i;
+                                    break;
+                                }
+
+                                string strExistingKey = ((string)lstChildNodes[i].Tag)
+                                    .Substring(VehicleMod.CategoryGroupTagPrefix.Length);
+                                if (VehicleMod.GetCategoryGroupSortOrder(strExistingKey)
+                                    > VehicleMod.GetCategoryGroupSortOrder(VehicleMod.WeaponsCategoryKey))
+                                {
+                                    intInsert = i;
+                                    break;
+                                }
+                            }
+
+                            lstChildNodes.Insert(intInsert, nodWeaponsCategory);
+                        }
+
+                        nodWeaponsCategory.Nodes.Add(nodMountsNode);
+                        nodWeaponsCategory.Expand();
+                    }
+                    else
+                    {
+                        lstChildNodes.Add(nodMountsNode);
+                    }
+                }
             }
             // Vehicle Weapons (not attached to a mount).
             await Weapons.ForEachAsync(async objWeapon =>

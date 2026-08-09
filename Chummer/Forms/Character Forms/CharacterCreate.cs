@@ -17966,7 +17966,9 @@ namespace Chummer
                     TreeNode objSelectedNode = await treVehicles.DoThreadSafeFuncAsync(x => x.SelectedNode, token)
                                                                 .ConfigureAwait(false);
                     object objSelectedNodeTag = objSelectedNode?.Tag;
-                    if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || objSelectedNodeTag is Location)
+                    if (objSelectedNodeTag == null || objSelectedNode.Level <= 0 || objSelectedNodeTag is Location
+                        || objSelectedNodeTag.ToString() == "String_WeaponMounts"
+                        || VehicleMod.IsCategoryGroupTag(objSelectedNodeTag))
                     {
                         await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await gpbVehiclesVehicle.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);

@@ -276,6 +276,9 @@ namespace Chummer
         private static bool _blnAllowHoverIncrement;
         private static bool _blnSwitchTabsOnHoverScroll;
         private static bool _blnSearchInCategoryOnly = true;
+        private static bool _blnGroupVehicleModsByCategory = true;
+        private static bool _blnAlphabetizeTreeNodesOnInsert;
+        private static bool _blnNestWeaponMountsUnderWeaponsCategory;
         private static bool _blnAllowSkillDiceRolling;
         private static bool _blnPrintExpenses;
         private static bool _blnPrintFreeExpenses = true;
@@ -591,6 +594,9 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnAllowHoverIncrement, "allowhoverincrement");
             LoadBoolFromRegistry(ref _blnSwitchTabsOnHoverScroll, "switchtabsonhoverscroll");
             LoadBoolFromRegistry(ref _blnSearchInCategoryOnly, "searchincategoryonly");
+            LoadBoolFromRegistry(ref _blnGroupVehicleModsByCategory, "groupvehiclemodsbycategory");
+            LoadBoolFromRegistry(ref _blnAlphabetizeTreeNodesOnInsert, "alphabetizetreenodesoninsert");
+            LoadBoolFromRegistry(ref _blnNestWeaponMountsUnderWeaponsCategory, "nestweaponmountsunderweaponscategory");
             // Whether dice rolling is allowed for Skills.
             LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
@@ -933,6 +939,9 @@ namespace Chummer
                 objRegistry.SetValue("allowhoverincrement", AllowHoverIncrement.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("switchtabsonhoverscroll", SwitchTabsOnHoverScroll.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("searchincategoryonly", SearchInCategoryOnly.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("groupvehiclemodsbycategory", GroupVehicleModsByCategory.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("alphabetizetreenodesoninsert", AlphabetizeTreeNodesOnInsert.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("nestweaponmountsunderweaponscategory", NestWeaponMountsUnderWeaponsCategory.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
@@ -1148,6 +1157,35 @@ namespace Chummer
         {
             get => _blnSearchInCategoryOnly;
             set => _blnSearchInCategoryOnly = value;
+        }
+
+        /// <summary>
+        /// Whether vehicle mods are grouped under category nodes in the Vehicles tree.
+        /// </summary>
+        public static bool GroupVehicleModsByCategory
+        {
+            get => _blnGroupVehicleModsByCategory;
+            set => _blnGroupVehicleModsByCategory = value;
+        }
+
+        /// <summary>
+        /// Whether newly inserted character-sheet tree nodes are placed alphabetically among their siblings.
+        /// User drag-sort (<see cref="ICanSort.SortOrder"/>) still wins when sort orders differ.
+        /// </summary>
+        public static bool AlphabetizeTreeNodesOnInsert
+        {
+            get => _blnAlphabetizeTreeNodesOnInsert;
+            set => _blnAlphabetizeTreeNodesOnInsert = value;
+        }
+
+        /// <summary>
+        /// Whether vehicle weapon mounts are nested under the Weapons vehicle-mod category group.
+        /// Only applies when <see cref="GroupVehicleModsByCategory"/> is enabled.
+        /// </summary>
+        public static bool NestWeaponMountsUnderWeaponsCategory
+        {
+            get => _blnNestWeaponMountsUnderWeaponsCategory;
+            set => _blnNestWeaponMountsUnderWeaponsCategory = value;
         }
 
         public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement

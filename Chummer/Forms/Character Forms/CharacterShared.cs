@@ -4689,10 +4689,7 @@ namespace Chummer
                     {
                         if (nodParent == null)
                             return;
-                        if (intIndex >= 0)
-                            nodParent.Nodes.Insert(intIndex, objNode);
-                        else
-                            nodParent.Nodes.Add(objNode);
+                        nodParent.Nodes.AddOrInsert(objNode, intIndex);
                         nodParent.Expand();
                         if (blnSingleAdd)
                             x.SelectedNode = objNode;
@@ -5197,10 +5194,7 @@ namespace Chummer
                         {
                             if (nodParent == null)
                                 return;
-                            if (intIndex >= 0)
-                                nodParent.Nodes.Insert(intIndex, objNode);
-                            else
-                                nodParent.Nodes.Add(objNode);
+                            nodParent.Nodes.AddOrInsert(objNode, intIndex);
                             nodParent.Expand();
                             if (blnSingleAdd)
                                 x.SelectedNode = objNode;
@@ -5659,10 +5653,7 @@ namespace Chummer
                         {
                             if (nodParent == null)
                                 return;
-                            if (intIndex >= 0)
-                                nodParent.Nodes.Insert(intIndex, objNode);
-                            else
-                                nodParent.Nodes.Add(objNode);
+                            nodParent.Nodes.AddOrInsert(objNode, intIndex);
                             nodParent.Expand();
                             if (blnSingleAdd)
                                 x.SelectedNode = objNode;
@@ -7512,10 +7503,7 @@ namespace Chummer
 
                         await treVehicles.DoThreadSafeAsync(x =>
                         {
-                            if (intIndex >= 0)
-                                nodParent.Nodes.Insert(intIndex, objNode);
-                            else
-                                nodParent.Nodes.Add(objNode);
+                            nodParent.Nodes.AddOrInsert(objNode, intIndex);
                             nodParent.Expand();
                             if (blnSingleAdd)
                                 x.SelectedNode = objNode;

@@ -23906,7 +23906,8 @@ namespace Chummer
                                                                 .ConfigureAwait(false);
                     object objSelectedNodeTag = objSelectedNode?.Tag;
                     if (objSelectedNodeTag == null || objSelectedNode.Level <= 0
-                                                   || objSelectedNodeTag.ToString() == "String_WeaponMounts")
+                                                   || objSelectedNodeTag.ToString() == "String_WeaponMounts"
+                                                   || VehicleMod.IsCategoryGroupTag(objSelectedNodeTag))
                     {
                         await panVehicleCM.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);
                         await gpbVehiclesCommon.DoThreadSafeAsync(x => x.Visible = false, token).ConfigureAwait(false);

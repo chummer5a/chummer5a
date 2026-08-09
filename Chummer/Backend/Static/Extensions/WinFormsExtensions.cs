@@ -30,6 +30,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using Chummer.Annotations;
+using Chummer.Backend.Equipment;
 using NLog;
 using Timer = System.Windows.Forms.Timer;
 
@@ -2429,6 +2430,102 @@ namespace Chummer
         #region TreeView Extensions
 
         /// <summary>
+        /// Adds a node to a collection, optionally inserting alphabetically when
+        /// <see cref="GlobalSettings.AlphabetizeTreeNodesOnInsert"/> is enabled.
+        /// </summary>
+        /// <param name="lstNodes">Parent node collection.</param>
+        /// <param name="objNode">Node to add.</param>
+        /// <param name="intIndex">Preferred index when alphabetical insert is off or skipped.</param>
+        /// <param name="blnSkipAlphabetize">
+        /// When <c>true</c>, always uses <paramref name="intIndex"/> / append (e.g. Move / drag-sort).
+        /// </param>
+        public static void AddOrInsert(this TreeNodeCollection lstNodes, TreeNode objNode, int intIndex = -1,
+                                       bool blnSkipAlphabetize = false)
+        {
+            if (lstNodes == null || objNode == null)
+                return;
+
+            if (!blnSkipAlphabetize && GlobalSettings.AlphabetizeTreeNodesOnInsert)
+            {
+                InsertAlphabetically(lstNodes, objNode);
+                return;
+            }
+
+            if (intIndex >= 0 && intIndex <= lstNodes.Count)
+                lstNodes.Insert(intIndex, objNode);
+            else
+                lstNodes.Add(objNode);
+        }
+
+        /// <summary>
+        /// Inserts a node alphabetically among compatible siblings, keeping Locations last and
+        /// structural headers (string / category-group tags) before sortable equipment.
+        /// </summary>
+        /// <param name="lstNodes">Parent node collection.</param>
+        /// <param name="objNode">Node to insert.</param>
+        public static void InsertAlphabetically(this TreeNodeCollection lstNodes, TreeNode objNode)
+        {
+            if (lstNodes == null || objNode == null)
+                return;
+
+            object objTag = objNode.Tag;
+            bool blnIsLocation = objTag is Location;
+            bool blnIsSortableEquipment = objTag is ICanSort && !blnIsLocation;
+
+            int intInsertAt = lstNodes.Count;
+            for (int i = 0; i < lstNodes.Count; ++i)
+            {
+                TreeNode objSibling = lstNodes[i];
+                object objSiblingTag = objSibling.Tag;
+
+                if (blnIsSortableEquipment)
+                {
+                    if (objSiblingTag is Location)
+                    {
+                        intInsertAt = i;
+                        break;
+                    }
+
+                    // Stay after structural headers (category groups, Weapon Mounts folder, etc.)
+                    if (!(objSiblingTag is ICanSort) || objSiblingTag is Location)
+                        continue;
+
+                    if (CompareTreeNodes.CompareText(objSibling, objNode) >= 0)
+                    {
+                        intInsertAt = i;
+                        break;
+                    }
+                }
+                else if (blnIsLocation)
+                {
+                    if (!(objSiblingTag is Location))
+                        continue;
+                    if (CompareTreeNodes.CompareText(objSibling, objNode) >= 0)
+                    {
+                        intInsertAt = i;
+                        break;
+                    }
+                }
+                else
+                {
+                    if (objSiblingTag is ICanSort)
+                    {
+                        intInsertAt = i;
+                        break;
+                    }
+
+                    if (CompareTreeNodes.CompareText(objSibling, objNode) >= 0)
+                    {
+                        intInsertAt = i;
+                        break;
+                    }
+                }
+            }
+
+            lstNodes.Insert(intInsertAt, objNode);
+        }
+
+        /// <summary>
         /// Sort the contents of a TreeView alphabetically within each group Node.
         /// </summary>
         /// <param name="treView">TreeView to sort.</param>
@@ -2556,13 +2653,39 @@ namespace Chummer
         {
             public int Compare(object x, object y)
             {
-                // Sort any non-sortables first
-                object objLeft = (x as TreeNode)?.Tag;
+                TreeNode nodLeft = x as TreeNode;
+                TreeNode nodRight = y as TreeNode;
+                object objLeft = nodLeft?.Tag;
                 if (objLeft == null)
-                    return (y as TreeNode)?.Tag == null ? 0 : -1;
-                object objRight = (y as TreeNode)?.Tag;
+                    return nodRight?.Tag == null ? 0 : -1;
+                object objRight = nodRight?.Tag;
                 if (objRight == null)
                     return 1;
+
+                // Structural: vehicle mod category groups keep a fixed relative order
+                bool blnLeftCategory = VehicleMod.IsCategoryGroupTag(objLeft);
+                bool blnRightCategory = VehicleMod.IsCategoryGroupTag(objRight);
+                if (blnLeftCategory || blnRightCategory)
+                {
+                    if (blnLeftCategory && blnRightCategory)
+                    {
+                        string strLeftKey = ((string)objLeft).Substring(VehicleMod.CategoryGroupTagPrefix.Length);
+                        string strRightKey = ((string)objRight).Substring(VehicleMod.CategoryGroupTagPrefix.Length);
+                        int intCategoryCompare = VehicleMod.GetCategoryGroupSortOrder(strLeftKey)
+                            .CompareTo(VehicleMod.GetCategoryGroupSortOrder(strRightKey));
+                        if (intCategoryCompare != 0)
+                            return intCategoryCompare;
+                        return GlobalSettings.AlphabetizeTreeNodesOnInsert
+                            ? CompareTreeNodes.CompareText(nodLeft, nodRight)
+                            : 0;
+                    }
+
+                    // Category groups sit with other non-ICanSort headers, before equipment
+                    if (blnLeftCategory)
+                        return objRight is ICanSort ? -1 : CompareStructuralHeaders(objLeft, objRight, nodLeft, nodRight);
+                    return objLeft is ICanSort ? 1 : CompareStructuralHeaders(objLeft, objRight, nodLeft, nodRight);
+                }
+
                 // Sort by SortOrder, but always put Locations after all non-Locations
                 if (objLeft is ICanSort objLeftCanSort)
                 {
@@ -2570,15 +2693,45 @@ namespace Chummer
                         return 1;
                     if (objLeft is Location)
                     {
-                        return objRight is Location
-                            ? objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder)
-                            : 1;
+                        if (!(objRight is Location))
+                            return 1;
+                        int intLocationCompare = objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder);
+                        if (intLocationCompare != 0)
+                            return intLocationCompare;
+                        return GlobalSettings.AlphabetizeTreeNodesOnInsert
+                            ? CompareTreeNodes.CompareText(nodLeft, nodRight)
+                            : 0;
                     }
-                    return objRight is Location
-                        ? -1
-                        : objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder);
+
+                    if (objRight is Location)
+                        return -1;
+
+                    int intSortCompare = objLeftCanSort.SortOrder.CompareTo(objRightCanSort.SortOrder);
+                    if (intSortCompare != 0)
+                        return intSortCompare;
+                    return GlobalSettings.AlphabetizeTreeNodesOnInsert
+                        ? CompareTreeNodes.CompareText(nodLeft, nodRight)
+                        : 0;
                 }
-                return objRight is ICanSort ? -1 : 0;
+
+                if (objRight is ICanSort)
+                    return -1;
+
+                return CompareStructuralHeaders(objLeft, objRight, nodLeft, nodRight);
+            }
+
+            private static int CompareStructuralHeaders(object objLeft, object objRight, TreeNode nodLeft,
+                                                        TreeNode nodRight)
+            {
+                // Weapon Mounts folder after category groups, before other odds and ends when nested setting is off
+                bool blnLeftMounts = objLeft is string strLeft && strLeft == "String_WeaponMounts";
+                bool blnRightMounts = objRight is string strRight && strRight == "String_WeaponMounts";
+                if (blnLeftMounts != blnRightMounts)
+                    return blnLeftMounts ? 1 : -1;
+
+                return GlobalSettings.AlphabetizeTreeNodesOnInsert
+                    ? CompareTreeNodes.CompareText(nodLeft, nodRight)
+                    : 0;
             }
         }
 

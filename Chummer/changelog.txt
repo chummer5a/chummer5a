@@ -10,6 +10,12 @@ Application:
 - After updating a custom data directory from a repository, an `<updatelocation>` entry shipped in the release manifest takes precedence. A locally saved `<updatelocation>` is only preserved when the downloaded manifest does not include one.
 - Updated wiki documentation for cyberware.xml and vehicles.xml with previously undocumented fields, including custom implant weapon selection, weapon mounts, bundled subsystems, and modular cyberlimbs.
 - Fixed sustained spells/complex forms not being retained between save and load. Closes #4748
+- Added a global option to insert new character-tree items alphabetically among their siblings. Manual drag-sort / SortOrder still takes precedence when items have been reordered.
+
+Vehicles:
+- Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
+- Optional Global Options setting to nest the Weapon Mounts folder under the Weapons vehicle-mod category when category grouping is enabled.
+- Fixed vehicle mod category display names looking up the wrong vehicles.xml path (`categories` instead of `modcategories`).
 
 Cyberware:
 - Custom cyber implant weapons (Custom Heavy Pistol, Custom Grenade Launcher, etc.) now prompt the user to select a base weapon from the weapons catalog instead of failing when attempting to add gear. Conversion cost and base weapon cost are charged separately in Career mode; both count toward create-mode nuyen. Closes #727.
@@ -65,6 +71,10 @@ Changed/New Strings:
 - String_CustomData_RemoteVersionAvailable
 - String_CustomData_UpdatesAvailableTitleSuffix
 - String_CustomData_UpdatesAvailableMenuSuffix
+- Checkbox_Options_GroupVehicleModsByCategory
+- Checkbox_Options_AlphabetizeTreeNodesOnInsert
+- Checkbox_Options_NestWeaponMountsUnderWeaponsCategory
+- String_VehicleModCategory_General
 
 Build 226
 Application Changes:
