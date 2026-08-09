@@ -1236,8 +1236,12 @@ namespace Chummer.UI.Skills
                 Interlocked.Increment(ref _intUpdatingSpec);
                 try
                 {
-                    string strSpec = await cboSpec.DoThreadSafeFuncAsync(x => x.Text, token: _objMyToken)
-                                                  .ConfigureAwait(false);
+                    string strSpec = await cboSpec.DoThreadSafeFuncAsync(x =>
+                    {
+                        if (x.SelectedIndex >= 0 && x.SelectedValue != null)
+                            return x.SelectedValue.ToString();
+                        return x.Text;
+                    }, token: _objMyToken).ConfigureAwait(false);
                     await _objSkill.SetTopMostDisplaySpecializationAsync(strSpec, _objMyToken).ConfigureAwait(false);
                 }
                 finally

@@ -340,8 +340,7 @@ namespace Chummer.Backend.Skills
                                 {
                                     CancellationToken objToken = objNewSource.Token;
                                     Task<string> tskNewTask
-                                        = _objCharacter.ReverseTranslateExtraAsync(
-                                                _strName, GlobalSettings.Language, "skills.xml", objToken);
+                                        = ReverseTranslateNameAsync(_strName, objToken);
                                     Task<string> tskOld
                                         = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                     if (tskOld != null)
@@ -394,9 +393,8 @@ namespace Chummer.Backend.Skills
                             objOldSource.Dispose();
                         }
 
-                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader, _objCharacter.ReverseTranslateExtraAsync(
-                                                                           value, GlobalSettings.Language, "skills.xml",
-                                                                           objToken));
+                        Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader,
+                            ReverseTranslateNameAsync(value, objToken));
                         if (tskOld != null)
                             _strName = Utils.SafelyRunSynchronously(() => tskOld);
                         Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
@@ -434,8 +432,7 @@ namespace Chummer.Backend.Skills
                             {
                                 CancellationToken objToken = objNewSource.Token;
                                 Task<string> tskNewTask
-                                    = _objCharacter.ReverseTranslateExtraAsync(
-                                            _strName, GlobalSettings.Language, "skills.xml", objToken);
+                                    = ReverseTranslateNameAsync(_strName, objToken);
                                 Task<string> tskOld
                                     = Interlocked.CompareExchange(ref _tskNameLoader, tskNewTask, null);
                                 if (tskOld != null)
@@ -504,9 +501,7 @@ namespace Chummer.Backend.Skills
                         objOldSource.Dispose();
                     }
                     Task<string> tskOld = Interlocked.Exchange(ref _tskNameLoader,
-                        _objCharacter.ReverseTranslateExtraAsync(
-                            value, GlobalSettings.Language, "skills.xml",
-                            objToken));
+                        ReverseTranslateNameAsync(value, objToken));
                     if (tskOld != null)
                         await tskOld.ConfigureAwait(false);
                     Interlocked.CompareExchange(ref _intNameLoaded, 1, 0);
@@ -522,6 +517,43 @@ namespace Chummer.Backend.Skills
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Reverse-translate a specialization name, preferring matches against the parent skill's
+        /// specialization list so collisions like German "Wahrnehmung" (Perception skill vs Detection
+        /// specialization) resolve to the specialization rather than the skill name. Fixes #4739.
+        /// </summary>
+        private async Task<string> ReverseTranslateNameAsync(string strName, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (string.IsNullOrEmpty(strName)
+                || GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
+            {
+                return strName;
+            }
+
+            Skill objParent = _objParent;
+            if (objParent != null)
+            {
+                XPathNavigator objSkillNode = await objParent
+                    .GetNodeXPathAsync(GlobalSettings.Language, token: token).ConfigureAwait(false);
+                if (objSkillNode != null)
+                {
+                    string strCleanName = strName.CleanXPath();
+                    // Match translated display text first (the collision case), then English value.
+                    XPathNavigator objSpecNode
+                        = objSkillNode.SelectSingleNode("specs/spec[@translate = " + strCleanName + "]")
+                          ?? objSkillNode.SelectSingleNode("specs/spec[. = " + strCleanName + "]");
+                    string strEnglish = objSpecNode?.Value;
+                    if (!string.IsNullOrEmpty(strEnglish))
+                        return strEnglish;
+                }
+            }
+
+            return await _objCharacter
+                .ReverseTranslateExtraAsync(strName, GlobalSettings.Language, "skills.xml", token)
+                .ConfigureAwait(false);
         }
 
         /// <summary>
