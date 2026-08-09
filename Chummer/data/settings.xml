@@ -3855,6 +3855,11 @@
           <order>3</order>
           <enabled>True</enabled>
         </customdatadirectoryname>
+        <customdatadirectoryname>
+          <directoryname>Sum-to-Ten Improved</directoryname>
+          <order>4</order>
+          <enabled>True</enabled>
+        </customdatadirectoryname>
       </customdatadirectorynames>
       <buildmethod>SumtoTen</buildmethod>
       <buildpoints>25</buildpoints>
