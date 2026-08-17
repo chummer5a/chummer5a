@@ -3535,7 +3535,7 @@ namespace Chummer
 
             async Task AddToTree(CritterPower objPower, bool blnSingleAdd = true)
             {
-                TreeNode objNode = await objPower.CreateTreeNode(cmsCritterPowers, token).ConfigureAwait(false);
+                TreeNode objNode = await objPower.CreateTreeNode(cmsCritterPowers, treCritterPowers, token).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode;
@@ -3873,15 +3873,22 @@ namespace Chummer
                 if (!(sender is Quality objQuality))
                     return;
                 if (e2.PropertyNames.Contains(nameof(Quality.Suppressed))
-                    || e2.PropertyNames.Contains(nameof(Quality.Notes)))
+                    || e2.PropertyNames.Contains(nameof(Quality.Active))
+                    || e2.PropertyNames.Contains(nameof(Quality.Notes))
+                    || e2.PropertyNames.Contains(nameof(Quality.CurrentDisplayName)))
                 {
                     TreeNode objNode = treQualities.FindNodeByTag(objQuality);
                     if (objNode == null)
                         return;
-                    if (e2.PropertyNames.Contains(nameof(Quality.Suppressed)))
-                        objNode.NodeFont = await objQuality.GetSuppressedAsync(innerToken).ConfigureAwait(false)
-                            ? fntStrikeout
-                            : fntNormal;
+                    if (e2.PropertyNames.Contains(nameof(Quality.Suppressed))
+                        || e2.PropertyNames.Contains(nameof(Quality.Active)))
+                    {
+                        bool blnStrike = await objQuality.GetSuppressedAsync(innerToken).ConfigureAwait(false)
+                                         || !await objQuality.GetActiveAsync(innerToken).ConfigureAwait(false);
+                        objNode.NodeFont = blnStrike ? fntStrikeout : fntNormal;
+                    }
+                    if (e2.PropertyNames.Contains(nameof(Quality.CurrentDisplayName)))
+                        objNode.Text = await objQuality.GetCurrentDisplayNameAsync(innerToken).ConfigureAwait(false);
                     if (e2.PropertyNames.Contains(nameof(Quality.Notes)))
                         objNode.ToolTipText =
                             (await objQuality.GetNotesAsync(innerToken).ConfigureAwait(false)).WordWrap();

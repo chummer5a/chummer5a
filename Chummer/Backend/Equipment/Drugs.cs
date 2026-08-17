@@ -1801,7 +1801,7 @@ namespace Chummer.Backend.Equipment
                             {
                                 await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement,
                                     lstWeapons,
-                                    strForceValue, Name, token).ConfigureAwait(false);
+                                    strForceValue, Name, token: token).ConfigureAwait(false);
 
                                 if (blnDoesNotContributeToBP)
                                 {

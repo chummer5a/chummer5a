@@ -987,8 +987,16 @@ namespace Chummer
                     {
                         if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
                             return;
-                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition) && objImprovement.Condition != strConditionToAcceptForUnconditional)
-                            return;
+                        string strImprovementCondition = objImprovement.Condition;
+                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(strImprovementCondition)
+                            && strImprovementCondition != strConditionToAcceptForUnconditional)
+                        {
+                            // Character-scoped XPath conditions (e.g. /character/metahumanform) are cache-safe like career/create.
+                            // Skill/spell/free-text conditions stay excluded from ValueOf.
+                            if (strImprovementCondition.IndexOf("/character/", StringComparison.OrdinalIgnoreCase) < 0
+                                || !EvaluateCondition(strImprovementCondition, objCharacter))
+                                return;
+                        }
                         // Matrix initiative boosting gear does not help Living Personas
                         if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
                              || eImprovementType == Improvement.ImprovementType.MatrixInitiative
@@ -6991,6 +6999,10 @@ namespace Chummer
                         case "metavariant":
                             value = objCharacter.Metavariant;
                             return true;
+                        case "metahumanform":
+                            // Shapeshifter AttributeCategory.Shapeshifter = metahuman form
+                            value = objCharacter.MetahumanForm;
+                            return true;
                     }
                     break;
 
@@ -7083,6 +7095,8 @@ namespace Chummer
                             return (true, await objCharacter.GetMetatypeAsync(token).ConfigureAwait(false));
                         case "metavariant":
                             return (true, await objCharacter.GetMetavariantAsync(token).ConfigureAwait(false));
+                        case "metahumanform":
+                            return (true, await objCharacter.GetMetahumanFormAsync(token).ConfigureAwait(false));
                     }
                     break;
 

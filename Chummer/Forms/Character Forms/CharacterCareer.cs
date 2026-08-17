@@ -5888,7 +5888,7 @@ namespace Chummer
                                                                     ?? string.Empty;
                                                 int.TryParse(objXmlPower.Attributes?["rating"]?.InnerTextViaPool(GenericToken), NumberStyles.Integer, GlobalSettings.InvariantCultureInfo, out int intRating);
 
-                                                await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, GenericToken).ConfigureAwait(false);
+                                                await objPower.CreateAsync(objXmlCritterPower, intRating, strSelect, token: GenericToken).ConfigureAwait(false);
 
                                                 await objMerge.CritterPowers.AddAsync(objPower, GenericToken)
                                                                 .ConfigureAwait(false);
@@ -27912,6 +27912,9 @@ namespace Chummer
                             await cboAttributeCategory
                                 .DoThreadSafeFuncAsync(x => x.SelectedValue.ToString(), GenericToken)
                                 .ConfigureAwait(false)), GenericToken).ConfigureAwait(false);
+                    // Critter powers have no property-change wiring; rebuild so form-gated entries strike out
+                    await RefreshCritterPowers(treCritterPowers, cmsCritterPowers, token: GenericToken)
+                        .ConfigureAwait(false);
                 }
                 finally
                 {

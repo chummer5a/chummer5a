@@ -41,6 +41,7 @@ Allowlisted, typed condition predicates for improvements. Custom data can use th
 | `name` | string |
 | `metatype` | string |
 | `metavariant` | string |
+| `metahumanform` | bool (shapeshifter currently in metahuman form) |
 
 ### Spell (`/spell/...`)
 
@@ -101,3 +102,13 @@ See `ComparisonOperators.md` for examples.
   <condition>/character/created</condition>
 </skillcategorykarmacost>
 ```
+
+Shapeshifter form-only qualities/powers in `metatypes.xml` use a `condition` attribute on the grant:
+
+```xml
+<quality condition="/character/metahumanform">Neoteny</quality>
+<quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
+<quality condition="not(/character/metahumanform)">Goring Horns</quality>
+```
+
+`select` remains for real forced values only. The grant `condition` is stamped onto the quality/power improvements at create time so ValueOf respects the active form.

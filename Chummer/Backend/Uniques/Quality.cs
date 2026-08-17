@@ -92,6 +92,7 @@ namespace Chummer
         private string _strName = string.Empty;
         private bool _blnMetagenic;
         private string _strExtra = string.Empty;
+        private string _strGrantCondition = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private bool _blnMutant;
@@ -216,10 +217,11 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
         /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
+        /// <param name="strCondition">Optional Improvement condition (e.g. form gating from metatype data).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
+        public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", string strCondition = "", CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token), token);
+            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, strCondition, token), token);
         }
 
         /// <summary>
@@ -230,14 +232,15 @@ namespace Chummer
         /// <param name="lstWeapons">List of Weapons that should be added to the Character.</param>
         /// <param name="strForceValue">Force a value to be selected for the Quality.</param>
         /// <param name="strSourceName">Friendly name for the improvement that added this quality.</param>
+        /// <param name="strCondition">Optional Improvement condition (e.g. form gating from metatype data).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public Task CreateAsync(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
+        public Task CreateAsync(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", string strCondition = "", CancellationToken token = default)
         {
-            return CreateCoreAsync(false, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token);
+            return CreateCoreAsync(false, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, strCondition, token);
         }
 
         private async Task CreateCoreAsync(bool blnSync, XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons,
-            string strForceValue = "", string strSourceName = "", CancellationToken token = default)
+            string strForceValue = "", string strSourceName = "", string strCondition = "", CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (!objXmlQuality.TryGetField("id", Guid.TryParse, out _guiSourceID))
@@ -256,6 +259,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 _strSourceName = strSourceName;
+                _strGrantCondition = strCondition ?? string.Empty;
                 objXmlQuality.TryGetStringFieldQuickly("name", ref _strName);
                 if (!objXmlQuality.TryGetBoolFieldQuickly("metagenic", ref _blnMetagenic))
                 {
@@ -439,6 +443,16 @@ namespace Chummer
                 else
                     await RefreshSuppressedAsync(token).ConfigureAwait(false);
 
+                // Metatype (and similar) grants may attach a character-scoped Improvement condition
+                if (!string.IsNullOrEmpty(strCondition))
+                {
+                    if (blnSync)
+                        _objCharacter.ApplyImprovementConditionToSource(InternalId, strCondition, token);
+                    else
+                        await _objCharacter.ApplyImprovementConditionToSourceAsync(InternalId, strCondition, token)
+                            .ConfigureAwait(false);
+                }
+
                 if (GlobalSettings.InsertPdfNotesIfAvailable)
                 {
                     if (blnSync)
@@ -524,6 +538,7 @@ namespace Chummer
                 objWriter.WriteElementString("guid", InternalId);
                 objWriter.WriteElementString("name", _strName);
                 objWriter.WriteElementString("extra", _strExtra);
+                objWriter.WriteElementString("grantcondition", _strGrantCondition);
                 objWriter.WriteElementString("bp", _intBP.ToString(GlobalSettings.InvariantCultureInfo));
                 objWriter.WriteElementString("implemented",
                                              _blnImplemented.ToString(GlobalSettings.InvariantCultureInfo));
@@ -626,6 +641,7 @@ namespace Chummer
                 }
 
                 objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+                objNode.TryGetStringFieldQuickly("grantcondition", ref _strGrantCondition);
                 objNode.TryGetInt32FieldQuickly("bp", ref _intBP);
                 objNode.TryGetBoolFieldQuickly("implemented", ref _blnImplemented);
                 objNode.TryGetBoolFieldQuickly("contributetobp", ref _blnContributeToBP);
@@ -995,6 +1011,66 @@ namespace Chummer
                         return;
                     OnPropertyChanged();
                 }
+            }
+        }
+
+        /// <summary>
+        /// Improvement condition attached when this quality was granted (e.g. shapeshifter form gating).
+        /// </summary>
+        public string GrantCondition
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _strGrantCondition;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                {
+                    if (value == null)
+                        value = string.Empty;
+                    if (Interlocked.Exchange(ref _strGrantCondition, value) == value)
+                        return;
+                    this.OnMultiplePropertyChanged(nameof(GrantCondition), nameof(Active), nameof(Notes),
+                        nameof(CurrentDisplayName));
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether this quality's grant condition is currently satisfied (always true if unrestricted).
+        /// </summary>
+        public bool Active
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    if (string.IsNullOrEmpty(_strGrantCondition))
+                        return true;
+                    return ImprovementManager.EvaluateCondition(_strGrantCondition, _objCharacter);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether this quality's grant condition is currently satisfied (always true if unrestricted).
+        /// </summary>
+        public async Task<bool> GetActiveAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (string.IsNullOrEmpty(_strGrantCondition))
+                    return true;
+                return await ImprovementManager.EvaluateConditionAsync(_strGrantCondition, _objCharacter, token)
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
             }
         }
 
@@ -1459,11 +1535,9 @@ namespace Chummer
                 string strReturn = DisplayNameShort(strLanguage);
                 string strSpace = LanguageManager.GetString("String_Space", strLanguage);
 
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
-                }
+                string strParenthetical = BuildDisplayParenthetical(strLanguage);
+                if (!string.IsNullOrEmpty(strParenthetical))
+                    strReturn += strSpace + "(" + strParenthetical + ")";
 
                 int intLevels = Levels;
                 if (intLevels > 1)
@@ -1510,13 +1584,9 @@ namespace Chummer
                 string strSpace = await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
                                                        .ConfigureAwait(false);
 
-                if (!string.IsNullOrEmpty(Extra))
-                {
-                    // Attempt to retrieve the CharacterAttribute name.
-                    strReturn += strSpace + "(" + await _objCharacter
-                                                        .TranslateExtraAsync(Extra, strLanguage, token: token)
-                                                        .ConfigureAwait(false) + ")";
-                }
+                string strParenthetical = await BuildDisplayParentheticalAsync(strLanguage, token).ConfigureAwait(false);
+                if (!string.IsNullOrEmpty(strParenthetical))
+                    strReturn += strSpace + "(" + strParenthetical + ")";
 
                 int intLevels = await GetLevelsAsync(token).ConfigureAwait(false);
                 if (intLevels > 1)
@@ -1563,6 +1633,64 @@ namespace Chummer
 
         public Task<string> GetCurrentDisplayNameShortAsync(CancellationToken token = default) =>
             DisplayNameShortAsync(GlobalSettings.Language, token);
+
+        /// <summary>
+        /// Clears cached notes and notifies the UI that form activity may have changed.
+        /// </summary>
+        internal void NotifyFormActivityChanged()
+        {
+            using (LockObject.EnterUpgradeableReadLock())
+            {
+                _strCachedNotes = string.Empty;
+                this.OnMultiplePropertyChanged(nameof(Active), nameof(Notes), nameof(CurrentDisplayName));
+            }
+        }
+
+        /// <summary>
+        /// Clears cached notes and notifies the UI that form activity may have changed.
+        /// </summary>
+        internal async Task NotifyFormActivityChangedAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                _strCachedNotes = string.Empty;
+                await this.OnMultiplePropertyChangedAsync(token, nameof(Active), nameof(Notes), nameof(CurrentDisplayName))
+                    .ConfigureAwait(false);
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        private string BuildDisplayParenthetical(string strLanguage)
+        {
+            string strExtra = string.IsNullOrEmpty(Extra)
+                ? string.Empty
+                : _objCharacter.TranslateExtra(Extra, strLanguage);
+            string strForm = Character.GetFormRestrictionDisplayName(_strGrantCondition, strLanguage);
+            if (string.IsNullOrEmpty(strExtra))
+                return strForm ?? string.Empty;
+            if (string.IsNullOrEmpty(strForm))
+                return strExtra;
+            return strExtra + "; " + strForm;
+        }
+
+        private async Task<string> BuildDisplayParentheticalAsync(string strLanguage, CancellationToken token)
+        {
+            string strExtra = string.IsNullOrEmpty(Extra)
+                ? string.Empty
+                : await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false);
+            string strForm = await Character.GetFormRestrictionDisplayNameAsync(_strGrantCondition, strLanguage, token)
+                .ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strExtra))
+                return strForm ?? string.Empty;
+            if (string.IsNullOrEmpty(strForm))
+                return strExtra;
+            return strExtra + "; " + strForm;
+        }
 
         /// <summary>
         /// Returns how many instances of this quality there are in the character's quality list
@@ -2075,6 +2203,11 @@ namespace Chummer
                                                         ?? LanguageManager.GetString("String_Unknown"))
                                           + Environment.NewLine;
                     }
+                    else if (!Active)
+                    {
+                        strCachedNotes += LanguageManager.GetString("String_InactiveInCurrentForm")
+                                          + Environment.NewLine;
+                    }
 
                     strCachedNotes += _strNotes;
                     return _strCachedNotes = strCachedNotes;
@@ -2123,6 +2256,12 @@ namespace Chummer
                                               .ConfigureAwait(false)
                                           ?? await LanguageManager.GetStringAsync("String_Unknown", token: token)
                                               .ConfigureAwait(false))
+                                      + Environment.NewLine;
+                }
+                else if (!await GetActiveAsync(token).ConfigureAwait(false))
+                {
+                    strCachedNotes += await LanguageManager.GetStringAsync("String_InactiveInCurrentForm", token: token)
+                                          .ConfigureAwait(false)
                                       + Environment.NewLine;
                 }
 
@@ -2440,7 +2579,8 @@ namespace Chummer
                     ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
                     ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
                 };
-                if (await GetSuppressedAsync(token).ConfigureAwait(false))
+                if (await GetSuppressedAsync(token).ConfigureAwait(false)
+                    || !await GetActiveAsync(token).ConfigureAwait(false))
                 {
                     //Treenodes store their font as null when inheriting from the treeview; have to pull it from the treeview directly to set the fontstyle.
                     objNode.NodeFont = new Font(await treQualities.DoThreadSafeFuncAsync(x => x.Font, token).ConfigureAwait(false), FontStyle.Strikeout);
@@ -2915,7 +3055,7 @@ namespace Chummer
                         try
                         {
                             await objNewQualityLevel.CreateAsync(objXmlQuality, QualitySource.Selected, lstWeapons, _strExtra,
-                                _strSourceName, token).ConfigureAwait(false);
+                                _strSourceName, token: token).ConfigureAwait(false);
                             await _objCharacter.Qualities.AddAsync(objNewQualityLevel, token).ConfigureAwait(false);
                         }
                         catch

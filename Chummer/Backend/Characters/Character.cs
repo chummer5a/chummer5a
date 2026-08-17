@@ -1262,17 +1262,51 @@ namespace Chummer
             }
         }
 
-        private Task AttributeSectionOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
+        private async Task AttributeSectionOnPropertyChanged(object sender, MultiplePropertiesChangedEventArgs e, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            if (IsLoading || e.PropertyNames.Contains(nameof(AttributeSection.AttributeCategory)))
+            if (e.PropertyNames.Contains(nameof(AttributeSection.AttributeCategory)))
             {
-                return this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
-                    nameof(CurrentRunningRateString),
-                    nameof(CurrentSprintingRateString));
+                // Form-gated improvements use /character/metahumanform conditions; invalidate like Created does for career/create
+                ImprovementManager.ClearCachedValues(this, token);
+                List<Improvement> lstFormConditional = new List<Improvement>();
+                foreach (Improvement objImprovement in await GetImprovementsAsync(token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrEmpty(objImprovement.Condition)
+                        && objImprovement.Condition.IndexOf("metahumanform", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        lstFormConditional.Add(objImprovement);
+                    }
+                }
+
+                if (lstFormConditional.Count > 0)
+                    await ImprovementManager.ProcessRelevantEventsAsync(lstFormConditional, token).ConfigureAwait(false);
+
+                foreach (Quality objQuality in await GetQualitiesAsync(token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrEmpty(objQuality.GrantCondition)
+                        && objQuality.GrantCondition.IndexOf("metahumanform", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        await objQuality.NotifyFormActivityChangedAsync(token).ConfigureAwait(false);
+                    }
+                }
+
+                foreach (CritterPower objPower in await GetCritterPowersAsync(token).ConfigureAwait(false))
+                {
+                    if (!string.IsNullOrEmpty(objPower.GrantCondition)
+                        && objPower.GrantCondition.IndexOf("metahumanform", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        await objPower.NotifyFormActivityChangedAsync(token).ConfigureAwait(false);
+                    }
+                }
             }
 
-            return Task.CompletedTask;
+            if (IsLoading || e.PropertyNames.Contains(nameof(AttributeSection.AttributeCategory)))
+            {
+                await this.OnMultiplePropertyChangedAsync(token, nameof(CurrentWalkingRateString),
+                    nameof(CurrentRunningRateString),
+                    nameof(CurrentSprintingRateString)).ConfigureAwait(false);
+            }
         }
 
         private Task ContactsOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
@@ -2785,11 +2819,14 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         string strForceValue =
                                             objXmlQualityItem.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                                        string strCondition =
+                                            objXmlQualityItem.Attributes["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                         QualitySource objSource =
                                             objXmlQualityItem.Attributes["removable"]?.InnerTextIsTrueString() == true
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
-                                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue, token: token);
+                                        objQuality.Create(objXmlQuality, objSource, lstWeapons, strForceValue,
+                                            strCondition: strCondition, token: token);
                                         objQuality.ContributeToLimit = false;
                                         Qualities.Add(objQuality);
                                     }
@@ -2818,12 +2855,13 @@ namespace Chummer
                         {
                             CritterPower objPower = new CritterPower(this);
                             string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                            string strCondition = objXmlPower.Attributes["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                             int intRating =
                                 CommonFunctions.ExpressionToInt(objXmlPower.Attributes["rating"]?.InnerTextViaPool(token), intForce,
                                                                 0,
                                                                 0, token);
 
-                            objPower.Create(objXmlCritterPower, intRating, strForcedValue);
+                            objPower.Create(objXmlCritterPower, intRating, strForcedValue, strCondition);
                             objPower.CountTowardsLimit = false;
                             CritterPowers.Add(objPower);
                             try
@@ -3458,6 +3496,10 @@ namespace Chummer
                     }
                 }
             }
+
+            // ponytail: stamp form Conditions from Extra onto metatype quality/power improvements (#5142)
+            if (strSelectedMetatypeCategory == "Shapeshifter")
+                ApplyShapeshifterFormConditions(token);
         }
 
         /// <summary>
@@ -3562,12 +3604,15 @@ namespace Chummer
                                         token.ThrowIfCancellationRequested();
                                         string strForceValue =
                                             objXmlQualityItem.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                                        string strCondition =
+                                            objXmlQualityItem.Attributes["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                         QualitySource objSource =
                                             objXmlQualityItem.Attributes["removable"]?.InnerTextIsTrueString() == true
                                                 ? QualitySource.MetatypeRemovable
                                                 : QualitySource.Metatype;
                                         await objQuality.CreateAsync(objXmlQuality, objSource, lstWeapons,
                                             strForceValue,
+                                            strCondition: strCondition,
                                             token: token).ConfigureAwait(false);
                                         await objQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
                                         await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
@@ -3599,13 +3644,14 @@ namespace Chummer
                         {
                             CritterPower objPower = new CritterPower(this);
                             string strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                            string strCondition = objXmlPower.Attributes["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                             int intRating =
                                 await CommonFunctions.ExpressionToIntAsync(objXmlPower.Attributes["rating"]?.InnerTextViaPool(token),
                                     intForce,
                                     0,
                                     0, token).ConfigureAwait(false);
 
-                            await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, token).ConfigureAwait(false);
+                            await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, strCondition, token).ConfigureAwait(false);
                             objPower.CountTowardsLimit = false;
                             await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
                             try
@@ -4222,7 +4268,7 @@ namespace Chummer
                                 if (objXmlCritterPower != null)
                                 {
                                     CritterPower objPower = new CritterPower(this);
-                                    await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token).ConfigureAwait(false);
+                                    await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token: token).ConfigureAwait(false);
                                     objPower.CountTowardsLimit = false;
                                     await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
 
@@ -4256,7 +4302,7 @@ namespace Chummer
                             if (objXmlCritterPower != null)
                             {
                                 CritterPower objPower = new CritterPower(this);
-                                await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token).ConfigureAwait(false);
+                                await objPower.CreateAsync(objXmlCritterPower, 0, string.Empty, token: token).ConfigureAwait(false);
                                 objPower.CountTowardsLimit = false;
                                 await CritterPowers.AddAsync(objPower, token).ConfigureAwait(false);
 
@@ -4286,6 +4332,10 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+
+            // ponytail: stamp form Conditions from Extra onto metatype quality/power improvements (#5142)
+            if (strSelectedMetatypeCategory == "Shapeshifter")
+                await ApplyShapeshifterFormConditionsAsync(token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -11118,6 +11168,12 @@ namespace Chummer
                             else
                                 await SetIsLoadingAsync(false, token).ConfigureAwait(false);
                         }
+
+                        // ponytail: stamp form Conditions for saved characters that predate Condition gating (#5142)
+                        if (blnSync)
+                            ApplyShapeshifterFormConditions(token);
+                        else
+                            await ApplyShapeshifterFormConditionsAsync(token).ConfigureAwait(false);
 
                         if (frmLoadingForm != null)
                         {
@@ -22055,6 +22111,403 @@ namespace Chummer
             {
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
+        }
+
+        /// <summary>
+        /// Localized display label for a shapeshifter form grant condition, or null if not a form gate.
+        /// </summary>
+        /// <param name="strCondition">Improvement condition string.</param>
+        /// <param name="strLanguage">Language to use.</param>
+        /// <returns>Display name, or null.</returns>
+        internal static string GetFormRestrictionDisplayName(string strCondition, string strLanguage)
+        {
+            if (string.IsNullOrEmpty(strCondition))
+                return null;
+            if (string.Equals(strCondition, MetahumanFormCondition, StringComparison.Ordinal)
+                || string.Equals(strCondition, "/character/metahumanform", StringComparison.Ordinal))
+            {
+                return LanguageManager.GetString("String_MetahumanFormOnly", strLanguage);
+            }
+
+            if (string.Equals(strCondition, AnimalFormCondition, StringComparison.Ordinal)
+                || string.Equals(strCondition, "not(/character/metahumanform)", StringComparison.Ordinal))
+            {
+                return LanguageManager.GetString("String_ShapeshifterFormOnly", strLanguage);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Localized display label for a shapeshifter form grant condition, or null if not a form gate.
+        /// </summary>
+        internal static async Task<string> GetFormRestrictionDisplayNameAsync(string strCondition, string strLanguage,
+            CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strCondition))
+                return null;
+            if (string.Equals(strCondition, MetahumanFormCondition, StringComparison.Ordinal)
+                || string.Equals(strCondition, "/character/metahumanform", StringComparison.Ordinal))
+            {
+                return await LanguageManager.GetStringAsync("String_MetahumanFormOnly", strLanguage, token: token)
+                    .ConfigureAwait(false);
+            }
+
+            if (string.Equals(strCondition, AnimalFormCondition, StringComparison.Ordinal)
+                || string.Equals(strCondition, "not(/character/metahumanform)", StringComparison.Ordinal))
+            {
+                return await LanguageManager.GetStringAsync("String_ShapeshifterFormOnly", strLanguage, token: token)
+                    .ConfigureAwait(false);
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Extra text used in data files to mark a quality or power as applying only in metahuman form.
+        /// </summary>
+        internal const string MetahumanFormOnlyExtra = "Metahuman Form Only";
+
+        /// <summary>
+        /// Extra text used in data files to mark a quality or power as applying only in animal (shapeshifter) form.
+        /// </summary>
+        internal const string ShapeshifterFormOnlyExtra = "Shapeshifter Form Only";
+
+        /// <summary>
+        /// Improvement Condition for bonuses that apply only while the shapeshifter is in metahuman form.
+        /// </summary>
+        internal const string MetahumanFormCondition = "/character/metahumanform";
+
+        /// <summary>
+        /// Improvement Condition for bonuses that apply only while the shapeshifter is in animal form.
+        /// </summary>
+        internal const string AnimalFormCondition = "not(/character/metahumanform)";
+
+        /// <summary>
+        /// Parses a quality/power Extra string for shapeshifter form restrictions.
+        /// </summary>
+        /// <param name="strExtra">
+        /// The Extra string. May be a compound value separated by semicolons
+        /// (for example, "Colored Fur; Metahuman Form Only").
+        /// </param>
+        /// <returns>
+        /// <see langword="true"/> if the Extra is restricted to metahuman form;
+        /// <see langword="false"/> if restricted to animal (shapeshifter) form;
+        /// <see langword="null"/> if there is no form restriction.
+        /// </returns>
+        internal static bool? GetShapeshifterFormRestriction(string strExtra)
+        {
+            if (string.IsNullOrEmpty(strExtra))
+                return null;
+
+            // Compound Extras use ';' (e.g. "Colored Fur; Metahuman Form Only")
+            foreach (string strPart in strExtra.Split(';'))
+            {
+                string strTrimmed = strPart.Trim();
+                if (string.Equals(strTrimmed, MetahumanFormOnlyExtra, StringComparison.Ordinal))
+                    return true;
+                if (string.Equals(strTrimmed, ShapeshifterFormOnlyExtra, StringComparison.Ordinal))
+                    return false;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the Improvement Condition string for a form-restricted Extra, or <see langword="null"/> if unrestricted.
+        /// </summary>
+        /// <param name="strExtra">The quality or power Extra string.</param>
+        /// <returns>A character-scoped condition, or <see langword="null"/>.</returns>
+        internal static string GetShapeshifterFormCondition(string strExtra)
+        {
+            bool? blnMetahumanOnly = GetShapeshifterFormRestriction(strExtra);
+            if (blnMetahumanOnly == null)
+                return null;
+            return blnMetahumanOnly.Value ? MetahumanFormCondition : AnimalFormCondition;
+        }
+
+        /// <summary>
+        /// Whether the character is currently in metahuman form (shapeshifter AttributeCategory).
+        /// Non-shapeshifters are never in metahuman form for condition purposes.
+        /// </summary>
+        public bool MetahumanForm
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                {
+                    // AttributeCategory.Shapeshifter = metahuman form; Standard = animal form
+                    return MetatypeCategory == "Shapeshifter"
+                           && AttributeSection.AttributeCategory == AttributeCategory.Shapeshifter;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Whether the character is currently in metahuman form (shapeshifter AttributeCategory).
+        /// </summary>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <returns><see langword="true"/> if in metahuman form.</returns>
+        public async Task<bool> GetMetahumanFormAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetMetatypeCategoryAsync(token).ConfigureAwait(false) != "Shapeshifter")
+                    return false;
+                return await (await GetAttributeSectionAsync(token).ConfigureAwait(false))
+                           .GetAttributeCategoryAsync(token).ConfigureAwait(false)
+                       == AttributeCategory.Shapeshifter;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Stamps Improvement.Condition from form-only Extra tags on old saves, or is a no-op when Conditions are already present.
+        /// </summary>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <returns><see langword="true"/> so the method can be used as a post-load callback.</returns>
+        private bool ApplyShapeshifterFormConditions(CancellationToken token = default)
+        {
+            if (IsLoading)
+            {
+                EnqueuePostLoadMethod(ApplyShapeshifterFormConditions, token);
+                return true;
+            }
+
+            // Migration for characters saved before metatypes.xml used condition= attributes:
+            // Extra still carried "Metahuman Form Only" / "Shapeshifter Form Only".
+            List<ValueTuple<string, string>> lstToApply;
+            List<Quality> lstQualityExtrasToClean;
+            List<CritterPower> lstPowerExtrasToClean;
+            using (LockObject.EnterReadLock(token))
+            {
+                if (MetatypeCategory != "Shapeshifter")
+                    return true;
+
+                lstToApply = new List<ValueTuple<string, string>>();
+                lstQualityExtrasToClean = new List<Quality>();
+                lstPowerExtrasToClean = new List<CritterPower>();
+                foreach (Quality objQuality in Qualities)
+                {
+                    string strCondition = GetShapeshifterFormCondition(objQuality.Extra);
+                    if (strCondition == null)
+                        continue;
+                    lstToApply.Add(new ValueTuple<string, string>(objQuality.InternalId, strCondition));
+                    lstQualityExtrasToClean.Add(objQuality);
+                }
+
+                foreach (CritterPower objPower in CritterPowers)
+                {
+                    string strCondition = GetShapeshifterFormCondition(objPower.Extra);
+                    if (strCondition == null)
+                        continue;
+                    lstToApply.Add(new ValueTuple<string, string>(objPower.InternalId, strCondition));
+                    lstPowerExtrasToClean.Add(objPower);
+                }
+            }
+
+            foreach ((string strSourceName, string strCondition) in lstToApply)
+                ApplyImprovementConditionToSource(strSourceName, strCondition, token);
+
+            // Strip form-only tags from Extra so display matches current data
+            foreach (Quality objQuality in lstQualityExtrasToClean)
+            {
+                string strCondition = GetShapeshifterFormCondition(objQuality.Extra);
+                if (!string.IsNullOrEmpty(strCondition) && string.IsNullOrEmpty(objQuality.GrantCondition))
+                    objQuality.GrantCondition = strCondition;
+                string strCleaned = StripShapeshifterFormExtra(objQuality.Extra);
+                if (!string.Equals(objQuality.Extra, strCleaned, StringComparison.Ordinal))
+                    objQuality.Extra = strCleaned;
+            }
+
+            foreach (CritterPower objPower in lstPowerExtrasToClean)
+            {
+                string strCondition = GetShapeshifterFormCondition(objPower.Extra);
+                if (!string.IsNullOrEmpty(strCondition) && string.IsNullOrEmpty(objPower.GrantCondition))
+                    objPower.GrantCondition = strCondition;
+                string strCleaned = StripShapeshifterFormExtra(objPower.Extra);
+                if (!string.Equals(objPower.Extra, strCleaned, StringComparison.Ordinal))
+                    objPower.Extra = strCleaned;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Stamps Improvement.Condition from form-only Extra tags on old saves, or is a no-op when Conditions are already present.
+        /// </summary>
+        /// <param name="token">Cancellation token to use.</param>
+        /// <returns><see langword="true"/> so the method can be used as a post-load callback.</returns>
+        private async Task<bool> ApplyShapeshifterFormConditionsAsync(CancellationToken token = default)
+        {
+            if (IsLoading)
+            {
+                await EnqueuePostLoadAsyncMethodAsync(ApplyShapeshifterFormConditionsAsync, token).ConfigureAwait(false);
+                return true;
+            }
+
+            List<ValueTuple<string, string>> lstToApply;
+            List<ValueTuple<Quality, string, string>> lstQualityExtrasToClean;
+            List<ValueTuple<CritterPower, string, string>> lstPowerExtrasToClean;
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                if (await GetMetatypeCategoryAsync(token).ConfigureAwait(false) != "Shapeshifter")
+                    return true;
+
+                lstToApply = new List<ValueTuple<string, string>>();
+                lstQualityExtrasToClean = new List<ValueTuple<Quality, string, string>>();
+                lstPowerExtrasToClean = new List<ValueTuple<CritterPower, string, string>>();
+                foreach (Quality objQuality in await GetQualitiesAsync(token).ConfigureAwait(false))
+                {
+                    string strExtra = await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                    string strCondition = GetShapeshifterFormCondition(strExtra);
+                    if (strCondition == null)
+                        continue;
+                    lstToApply.Add(new ValueTuple<string, string>(objQuality.InternalId, strCondition));
+                    lstQualityExtrasToClean.Add(new ValueTuple<Quality, string, string>(
+                        objQuality, StripShapeshifterFormExtra(strExtra), strCondition));
+                }
+
+                foreach (CritterPower objPower in await GetCritterPowersAsync(token).ConfigureAwait(false))
+                {
+                    string strCondition = GetShapeshifterFormCondition(objPower.Extra);
+                    if (strCondition == null)
+                        continue;
+                    lstToApply.Add(new ValueTuple<string, string>(objPower.InternalId, strCondition));
+                    lstPowerExtrasToClean.Add(new ValueTuple<CritterPower, string, string>(
+                        objPower, StripShapeshifterFormExtra(objPower.Extra), strCondition));
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            foreach ((string strSourceName, string strCondition) in lstToApply)
+                await ApplyImprovementConditionToSourceAsync(strSourceName, strCondition, token).ConfigureAwait(false);
+
+            foreach ((Quality objQuality, string strCleaned, string strCondition) in lstQualityExtrasToClean)
+            {
+                if (string.IsNullOrEmpty(objQuality.GrantCondition))
+                    objQuality.GrantCondition = strCondition;
+                if (!string.Equals(await objQuality.GetExtraAsync(token).ConfigureAwait(false), strCleaned, StringComparison.Ordinal))
+                    await objQuality.SetExtraAsync(strCleaned, token).ConfigureAwait(false);
+            }
+
+            foreach ((CritterPower objPower, string strCleaned, string strCondition) in lstPowerExtrasToClean)
+            {
+                if (string.IsNullOrEmpty(objPower.GrantCondition))
+                    objPower.GrantCondition = strCondition;
+                if (!string.Equals(objPower.Extra, strCleaned, StringComparison.Ordinal))
+                    objPower.Extra = strCleaned;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Removes form-only tags from a quality/power Extra, leaving any real forced values.
+        /// </summary>
+        /// <param name="strExtra">Extra that may contain form-only tags.</param>
+        /// <returns>Extra without form-only segments.</returns>
+        internal static string StripShapeshifterFormExtra(string strExtra)
+        {
+            if (string.IsNullOrEmpty(strExtra))
+                return string.Empty;
+
+            List<string> lstKeep = new List<string>(1);
+            foreach (string strPart in strExtra.Split(';'))
+            {
+                string strTrimmed = strPart.Trim();
+                if (string.IsNullOrEmpty(strTrimmed))
+                    continue;
+                if (string.Equals(strTrimmed, MetahumanFormOnlyExtra, StringComparison.Ordinal)
+                    || string.Equals(strTrimmed, ShapeshifterFormOnlyExtra, StringComparison.Ordinal))
+                    continue;
+                lstKeep.Add(strTrimmed);
+            }
+
+            return string.Join("; ", lstKeep);
+        }
+
+        /// <summary>
+        /// Sets <see cref="Improvement.Condition"/> on improvements from a given source.
+        /// </summary>
+        /// <param name="strSourceName">Improvement SourceName (quality/power InternalId).</param>
+        /// <param name="strCondition">Condition string to apply.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        internal void ApplyImprovementConditionToSource(string strSourceName, string strCondition,
+            CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strCondition) || string.IsNullOrEmpty(strSourceName))
+                return;
+
+            List<Improvement> lstToUpdate = new List<Improvement>();
+            using (LockObject.EnterReadLock(token))
+            {
+                foreach (Improvement objImprovement in Improvements)
+                {
+                    if (objImprovement.SourceName != strSourceName)
+                        continue;
+                    if (string.Equals(objImprovement.Condition, strCondition, StringComparison.Ordinal))
+                        continue;
+                    // Only fill empty conditions, or refresh an existing form-gate condition
+                    if (string.IsNullOrEmpty(objImprovement.Condition)
+                        || objImprovement.Condition.IndexOf("metahumanform", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        lstToUpdate.Add(objImprovement);
+                    }
+                }
+            }
+
+            foreach (Improvement objImprovement in lstToUpdate)
+                objImprovement.Condition = strCondition;
+        }
+
+        /// <summary>
+        /// Sets <see cref="Improvement.Condition"/> on improvements from a given source.
+        /// </summary>
+        /// <param name="strSourceName">Improvement SourceName (quality/power InternalId).</param>
+        /// <param name="strCondition">Condition string to apply.</param>
+        /// <param name="token">Cancellation token to use.</param>
+        internal async Task ApplyImprovementConditionToSourceAsync(string strSourceName, string strCondition,
+            CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(strCondition) || string.IsNullOrEmpty(strSourceName))
+                return;
+
+            List<Improvement> lstToUpdate = new List<Improvement>();
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                foreach (Improvement objImprovement in await GetImprovementsAsync(token).ConfigureAwait(false))
+                {
+                    if (objImprovement.SourceName != strSourceName)
+                        continue;
+                    if (string.Equals(objImprovement.Condition, strCondition, StringComparison.Ordinal))
+                        continue;
+                    if (string.IsNullOrEmpty(objImprovement.Condition)
+                        || objImprovement.Condition.IndexOf("metahumanform", StringComparison.OrdinalIgnoreCase) >= 0)
+                    {
+                        lstToUpdate.Add(objImprovement);
+                    }
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+
+            foreach (Improvement objImprovement in lstToUpdate)
+                objImprovement.Condition = strCondition;
         }
 
         private bool RefreshAstralReputationImprovements(CancellationToken token = default)
@@ -44368,6 +44821,8 @@ namespace Chummer
                                     {
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool() ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", strInnerText);
                                         using (LockObject.EnterWriteLock())
@@ -44376,7 +44831,7 @@ namespace Chummer
                                             try
                                             {
                                                 objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                                  strForceValue);
+                                                                  strForceValue, strCondition: strCondition);
                                                 Qualities.Add(objQuality);
                                             }
                                             catch
@@ -44415,6 +44870,8 @@ namespace Chummer
                                     {
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool() ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", strInnerText);
                                         using (LockObject.EnterWriteLock())
@@ -44423,7 +44880,7 @@ namespace Chummer
                                             try
                                             {
                                                 objQuality.Create(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                                  strForceValue);
+                                                                  strForceValue, strCondition: strCondition);
                                                 Qualities.Add(objQuality);
                                             }
                                             catch
@@ -44470,6 +44927,8 @@ namespace Chummer
                                                 string strForceValue =
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool()
                                                     ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool() ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerTextViaPool());
                                                 using (LockObject.EnterWriteLock())
@@ -44479,7 +44938,7 @@ namespace Chummer
                                                     {
                                                         objQuality.Create(objXmlQuality, QualitySource.Metatype,
                                                                           _lstWeapons,
-                                                                          strForceValue);
+                                                                          strForceValue, strCondition: strCondition);
                                                         Qualities.Add(objQuality);
                                                     }
                                                     catch
@@ -44518,6 +44977,8 @@ namespace Chummer
                                                 string strForceValue =
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool()
                                                     ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool() ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality", objXmlMetatypeQuality.InnerTextViaPool());
                                                 using (LockObject.EnterWriteLock())
@@ -44527,7 +44988,7 @@ namespace Chummer
                                                     {
                                                         objQuality.Create(objXmlQuality, QualitySource.Metatype,
                                                                           _lstWeapons,
-                                                                          strForceValue);
+                                                                          strForceValue, strCondition: strCondition);
                                                         Qualities.Add(objQuality);
                                                     }
                                                     catch
@@ -44646,6 +45107,8 @@ namespace Chummer
                                     {
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
                                                 strInnerText);
@@ -44657,7 +45120,7 @@ namespace Chummer
                                             try
                                             {
                                                 await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                    strForceValue, token: token).ConfigureAwait(false);
+                                                    strForceValue, strCondition: strCondition, token: token).ConfigureAwait(false);
                                                 await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                                             }
                                             catch
@@ -44689,6 +45152,8 @@ namespace Chummer
                                     {
                                         string strForceValue =
                                             objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                         XmlNode objXmlQuality =
                                             xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
                                                 objXmlMetatypeQuality.InnerTextViaPool(token));
@@ -44700,7 +45165,7 @@ namespace Chummer
                                             try
                                             {
                                                 await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype, _lstWeapons,
-                                                    strForceValue, token: token).ConfigureAwait(false);
+                                                    strForceValue, strCondition: strCondition, token: token).ConfigureAwait(false);
                                                 await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                                             }
                                             catch
@@ -44741,6 +45206,8 @@ namespace Chummer
                                                 string strForceValue =
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token)
                                                     ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
                                                         objXmlMetatypeQuality.InnerTextViaPool(token));
@@ -44753,7 +45220,7 @@ namespace Chummer
                                                     {
                                                         await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype,
                                                             _lstWeapons,
-                                                            strForceValue, token: token).ConfigureAwait(false);
+                                                            strForceValue, strCondition: strCondition, token: token).ConfigureAwait(false);
                                                         await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                                                     }
                                                     catch
@@ -44786,6 +45253,8 @@ namespace Chummer
                                                 string strForceValue =
                                                     objXmlMetatypeQuality.Attributes?["select"]?.InnerTextViaPool(token)
                                                     ?? string.Empty;
+                                                string strCondition =
+                                                    objXmlMetatypeQuality.Attributes?["condition"]?.InnerTextViaPool(token) ?? string.Empty;
                                                 XmlNode objXmlQuality =
                                                     xmlRootQualitiesNode.TryGetNodeByNameOrId("quality",
                                                         objXmlMetatypeQuality.InnerTextViaPool(token));
@@ -44798,7 +45267,7 @@ namespace Chummer
                                                     {
                                                         await objQuality.CreateAsync(objXmlQuality, QualitySource.Metatype,
                                                             _lstWeapons,
-                                                            strForceValue, token: token).ConfigureAwait(false);
+                                                            strForceValue, strCondition: strCondition, token: token).ConfigureAwait(false);
                                                         await Qualities.AddAsync(objQuality, token).ConfigureAwait(false);
                                                     }
                                                     catch
@@ -55670,7 +56139,7 @@ namespace Chummer
                     if (objXmlPowerNode != null)
                     {
                         CritterPower objCritterPower = new CritterPower(this);
-                        await objCritterPower.CreateAsync(objXmlPowerNode, 0, "Normal Weapons", token).ConfigureAwait(false);
+                        await objCritterPower.CreateAsync(objXmlPowerNode, 0, "Normal Weapons", token: token).ConfigureAwait(false);
                         await CritterPowers.AddAsync(objCritterPower, token).ConfigureAwait(false);
                     }
                 }

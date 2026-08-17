@@ -1822,6 +1822,10 @@ namespace Chummer
                                                 = objXmlQualityItem.SelectSingleNodeAndCacheExpression(
                                                         "@select", token)
                                                     ?.Value ?? string.Empty;
+                                            string strCondition
+                                                = objXmlQualityItem.SelectSingleNodeAndCacheExpression(
+                                                        "@condition", token)
+                                                    ?.Value ?? string.Empty;
                                             if (string.IsNullOrEmpty(strForceValue) &&
                                                 !string.IsNullOrEmpty(strUnlockSkillsFilter))
                                             {
@@ -1881,7 +1885,7 @@ namespace Chummer
                                             }
 
                                             await objQuality.CreateAsync(objXmlQuality, QualitySource.Heritage, lstWeapons,
-                                                strForceValue, token: token).ConfigureAwait(false);
+                                                strForceValue, strCondition: strCondition, token: token).ConfigureAwait(false);
                                             // TODO: Do something if we are prompted to select something for a quality and the user cancels out.
                                             // The naive thing would be to just return, but we've already changed too much about the character (and had to in order to allow this quality
                                             // selection's requirements checking to work properly) to undo it at this point.

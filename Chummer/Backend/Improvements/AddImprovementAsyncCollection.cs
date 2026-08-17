@@ -5809,7 +5809,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     XmlNode objXmlPowerNode = (await _objCharacter.LoadDataAsync("critterpowers.xml", token: token).ConfigureAwait(false))
                         .TryGetNodeByNameOrId("/chummer/powers/power", frmPickPower.MyForm.SelectedPower);
                     CritterPower objPower = new CritterPower(_objCharacter);
-                    await objPower.CreateAsync(objXmlPowerNode, 0, frmPickPower.MyForm.SelectedPowerExtra, token).ConfigureAwait(false);
+                    await objPower.CreateAsync(objXmlPowerNode, 0, frmPickPower.MyForm.SelectedPowerExtra, token: token).ConfigureAwait(false);
                     if (objPower.InternalId.IsEmptyGuid())
                         throw new AbortedException();
 
@@ -5845,7 +5845,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             strForcedValue = objXmlPower.Attributes["select"]?.InnerTextViaPool(token);
                         }
 
-                        await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, token).ConfigureAwait(false);
+                        await objPower.CreateAsync(objXmlCritterPower, intRating, strForcedValue, token: token).ConfigureAwait(false);
                         objPower.Grade = -1;
                         await (await _objCharacter.GetCritterPowersAsync(token).ConfigureAwait(false)).AddAsync(objPower, token).ConfigureAwait(false);
                         await CreateImprovementAsync(objPower.InternalId, _objImprovementSource, SourceName, Improvement.ImprovementType.CritterPower, _strUnique, token: token).ConfigureAwait(false);
@@ -6142,7 +6142,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             {
                                 await discountQuality.SetBPAsync(0, token).ConfigureAwait(false);
                                 await discountQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                                    strForceDiscountValue, _strFriendlyName, token).ConfigureAwait(false);
+                                    strForceDiscountValue, _strFriendlyName, token: token).ConfigureAwait(false);
                                 await CreateImprovementAsync(discountQuality.InternalId, _objImprovementSource, SourceName,
                                     Improvement.ImprovementType.SpecificQuality, _strUnique, token: token).ConfigureAwait(false);
                                 await (await _objCharacter.GetQualitiesAsync(token).ConfigureAwait(false)).AddAsync(discountQuality, token).ConfigureAwait(false);
@@ -7628,7 +7628,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                     try
                     {
                         await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons,
-                            strForceValue, _strFriendlyName, token).ConfigureAwait(false);
+                            strForceValue, _strFriendlyName, token: token).ConfigureAwait(false);
 
                         if (blnDoesNotContributeToBP)
                         {

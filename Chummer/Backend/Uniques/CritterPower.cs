@@ -48,6 +48,7 @@ namespace Chummer
         private string _strRange = string.Empty;
         private string _strDuration = string.Empty;
         private string _strExtra = string.Empty;
+        private string _strGrantCondition = string.Empty;
         private string _strSource = string.Empty;
         private string _strPage = string.Empty;
         private int _intKarma;
@@ -78,7 +79,8 @@ namespace Chummer
         /// <param name="objXmlPowerNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
-        public void Create(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "")
+        /// <param name="strCondition">Optional Improvement condition (e.g. form gating from metatype data).</param>
+        public void Create(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "", string strCondition = "")
         {
             if (!objXmlPowerNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -131,6 +133,10 @@ namespace Chummer
             objXmlPowerNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
+            _strGrantCondition = strCondition ?? string.Empty;
+            if (!string.IsNullOrEmpty(strCondition))
+                _objCharacter.ApplyImprovementConditionToSource(InternalId, strCondition);
+
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(Notes))
             {
                 Notes = CommonFunctions.GetBookNotes(objXmlPowerNode, Name, CurrentDisplayName, Source, Page,
@@ -144,8 +150,9 @@ namespace Chummer
         /// <param name="objXmlPowerNode">XmlNode to create the object from.</param>
         /// <param name="intRating">Selected Rating for the Gear.</param>
         /// <param name="strForcedValue">Value to forcefully select for any ImprovementManager prompts.</param>
+        /// <param name="strCondition">Optional Improvement condition (e.g. form gating from metatype data).</param>
         /// <param name="token">Cancellation token to listen to.</param>
-        public async Task CreateAsync(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "", CancellationToken token = default)
+        public async Task CreateAsync(XmlNode objXmlPowerNode, int intRating = 0, string strForcedValue = "", string strCondition = "", CancellationToken token = default)
         {
             if (!objXmlPowerNode.TryGetField("id", Guid.TryParse, out _guiSourceID))
             {
@@ -198,6 +205,11 @@ namespace Chummer
             objXmlPowerNode.TryGetStringFieldQuickly("page", ref _strPage);
             objXmlPowerNode.TryGetInt32FieldQuickly("karma", ref _intKarma);
 
+            _strGrantCondition = strCondition ?? string.Empty;
+            if (!string.IsNullOrEmpty(strCondition))
+                await _objCharacter.ApplyImprovementConditionToSourceAsync(InternalId, strCondition, token)
+                    .ConfigureAwait(false);
+
             if (GlobalSettings.InsertPdfNotesIfAvailable && string.IsNullOrEmpty(await GetNotesAsync(token).ConfigureAwait(false)))
             {
                 await SetNotesAsync(await CommonFunctions.GetBookNotesAsync(objXmlPowerNode, Name,
@@ -242,6 +254,7 @@ namespace Chummer
             objWriter.WriteElementString("guid", InternalId);
             objWriter.WriteElementString("name", _strName);
             objWriter.WriteElementString("extra", _strExtra);
+            objWriter.WriteElementString("grantcondition", _strGrantCondition);
             objWriter.WriteElementString("rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
             objWriter.WriteElementString("category", _strCategory);
             objWriter.WriteElementString("type", _strType);
@@ -307,6 +320,7 @@ namespace Chummer
                 (blnSync ? objMyNode.Value : await objMyNodeAsync.GetValueAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objNode.TryGetStringFieldQuickly("extra", ref _strExtra);
+            objNode.TryGetStringFieldQuickly("grantcondition", ref _strGrantCondition);
             objNode.TryGetStringFieldQuickly("category", ref _strCategory);
             objNode.TryGetStringFieldQuickly("type", ref _strType);
             objNode.TryGetStringFieldQuickly("action", ref _strAction);
@@ -475,10 +489,10 @@ namespace Chummer
         {
             string strReturn = DisplayNameShort(strLanguage);
 
-            if (!string.IsNullOrEmpty(Extra))
+            string strParenthetical = BuildDisplayParenthetical(strLanguage);
+            if (!string.IsNullOrEmpty(strParenthetical))
             {
-                // Attempt to retrieve the CharacterAttribute name.
-                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + _objCharacter.TranslateExtra(Extra, strLanguage) + ")";
+                strReturn += LanguageManager.GetString("String_Space", strLanguage) + "(" + strParenthetical + ")";
             }
 
             return strReturn;
@@ -491,13 +505,41 @@ namespace Chummer
         {
             string strReturn = await DisplayNameShortAsync(strLanguage, token).ConfigureAwait(false);
 
-            if (!string.IsNullOrEmpty(Extra))
+            string strParenthetical = await BuildDisplayParentheticalAsync(strLanguage, token).ConfigureAwait(false);
+            if (!string.IsNullOrEmpty(strParenthetical))
             {
-                // Attempt to retrieve the CharacterAttribute name.
-                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token).ConfigureAwait(false) + "(" + await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false) + ")";
+                strReturn += await LanguageManager.GetStringAsync("String_Space", strLanguage, token: token)
+                                 .ConfigureAwait(false) + "(" + strParenthetical + ")";
             }
 
             return strReturn;
+        }
+
+        private string BuildDisplayParenthetical(string strLanguage)
+        {
+            string strExtra = string.IsNullOrEmpty(Extra)
+                ? string.Empty
+                : _objCharacter.TranslateExtra(Extra, strLanguage);
+            string strForm = Character.GetFormRestrictionDisplayName(_strGrantCondition, strLanguage);
+            if (string.IsNullOrEmpty(strExtra))
+                return strForm ?? string.Empty;
+            if (string.IsNullOrEmpty(strForm))
+                return strExtra;
+            return strExtra + "; " + strForm;
+        }
+
+        private async Task<string> BuildDisplayParentheticalAsync(string strLanguage, CancellationToken token)
+        {
+            string strExtra = string.IsNullOrEmpty(Extra)
+                ? string.Empty
+                : await _objCharacter.TranslateExtraAsync(Extra, strLanguage, token: token).ConfigureAwait(false);
+            string strForm = await Character.GetFormRestrictionDisplayNameAsync(_strGrantCondition, strLanguage, token)
+                .ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strExtra))
+                return strForm ?? string.Empty;
+            if (string.IsNullOrEmpty(strForm))
+                return strExtra;
+            return strExtra + "; " + strForm;
         }
 
         /// <summary>
@@ -514,6 +556,43 @@ namespace Chummer
         {
             get => _strExtra;
             set => _strExtra = _objCharacter.ReverseTranslateExtra(value);
+        }
+
+        /// <summary>
+        /// Improvement condition attached when this power was granted (e.g. shapeshifter form gating).
+        /// </summary>
+        public string GrantCondition
+        {
+            get => _strGrantCondition;
+            set => _strGrantCondition = value ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Whether this power's grant condition is currently satisfied (always true if unrestricted).
+        /// </summary>
+        public bool Active
+            => string.IsNullOrEmpty(_strGrantCondition)
+               || ImprovementManager.EvaluateCondition(_strGrantCondition, _objCharacter);
+
+        /// <summary>
+        /// Whether this power's grant condition is currently satisfied (always true if unrestricted).
+        /// </summary>
+        public Task<bool> GetActiveAsync(CancellationToken token = default)
+        {
+            if (string.IsNullOrEmpty(_strGrantCondition))
+                return Task.FromResult(true);
+            return ImprovementManager.EvaluateConditionAsync(_strGrantCondition, _objCharacter, token);
+        }
+
+        /// <summary>
+        /// No-op placeholder so form switches can call the same notify path as qualities.
+        /// Tree refresh is handled by the career form after AttributeCategory changes.
+        /// </summary>
+        // ponytail: CritterPower has no property-change infra; career form rebuilds the tree instead.
+        internal Task NotifyFormActivityChangedAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return Task.CompletedTask;
         }
 
         /// <summary>
@@ -972,7 +1051,7 @@ namespace Chummer
 
         #region UI Methods
 
-        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsEnhancement, CancellationToken token = default)
+        public async Task<TreeNode> CreateTreeNode(ContextMenuStrip cmsEnhancement, TreeView treCritterPowers = null, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
             if (Grade < 0 && !string.IsNullOrEmpty(Source) && !await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).BookEnabledAsync(Source, token).ConfigureAwait(false))
@@ -987,6 +1066,13 @@ namespace Chummer
                 ForeColor = await GetPreferredColorAsync(token).ConfigureAwait(false),
                 ToolTipText = (await GetNotesAsync(token).ConfigureAwait(false)).WordWrap()
             };
+            if (!await GetActiveAsync(token).ConfigureAwait(false) && treCritterPowers != null)
+            {
+                objNode.NodeFont = new Font(
+                    await treCritterPowers.DoThreadSafeFuncAsync(x => x.Font, token).ConfigureAwait(false),
+                    FontStyle.Strikeout);
+            }
+
             return objNode;
         }
 

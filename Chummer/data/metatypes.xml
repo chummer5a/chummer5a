@@ -2516,7 +2516,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -2588,11 +2588,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -2662,8 +2662,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -2735,8 +2735,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -2809,14 +2809,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
             </positive>
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -2886,8 +2886,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality select="Pollution">Allergy (Common, Mild)</quality>
@@ -2959,10 +2959,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -3035,9 +3035,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -3119,12 +3119,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3194,14 +3194,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3271,14 +3271,14 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -3336,11 +3336,11 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -3413,8 +3413,8 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3483,10 +3483,10 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3555,8 +3555,8 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3625,11 +3625,11 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -3697,9 +3697,9 @@
           <sprint alt="2/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
           </qualities>
           <karma>120</karma>
@@ -3769,8 +3769,8 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3843,11 +3843,11 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
@@ -3918,8 +3918,8 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -3990,8 +3990,8 @@
           <sprint alt="1/1/0">1/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Shapeshifter Form Only">Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4063,7 +4063,7 @@
           <qualities>
             <positive>
               <quality>Goring Horns</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4273,13 +4273,13 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4444,7 +4444,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4524,14 +4524,14 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4615,7 +4615,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4694,8 +4694,8 @@
           <qualities>
             <positive>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
@@ -4780,8 +4780,8 @@
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
           </qualities>
           <bonus>
@@ -4863,11 +4863,11 @@
             <positive>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
@@ -4950,12 +4950,12 @@
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -5038,12 +5038,12 @@
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -5126,10 +5126,10 @@
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5294,8 +5294,8 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5460,7 +5460,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -5541,7 +5541,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
           </qualities>
           <bonus>
@@ -5621,7 +5621,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
@@ -5706,13 +5706,13 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
@@ -5794,7 +5794,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
@@ -5965,9 +5965,9 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Goring Horns</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
           </qualities>
@@ -6175,10 +6175,10 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -6249,7 +6249,7 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -6322,10 +6322,10 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -6395,15 +6395,15 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -6473,11 +6473,11 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
@@ -6546,9 +6546,9 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -6622,8 +6622,8 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -6709,10 +6709,10 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -6784,12 +6784,12 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -6857,13 +6857,13 @@
           </bonus>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -6922,10 +6922,10 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -6998,7 +6998,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -7071,8 +7071,8 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -7145,7 +7145,7 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -7219,10 +7219,10 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -7291,8 +7291,8 @@
           <sprint alt="2/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -7366,7 +7366,7 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Keen-Eared</quality>
             </positive>
             <negative>
@@ -7444,10 +7444,10 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -7520,7 +7520,7 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7595,7 +7595,7 @@
           <qualities>
             <positive>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -7666,9 +7666,9 @@
           <sprint alt="1/1/0">4/1/0</sprint>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Goring Horns</quality>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -7892,11 +7892,11 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -7986,7 +7986,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8078,11 +8078,11 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -8172,15 +8172,15 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8269,12 +8269,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8363,9 +8363,9 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -8458,8 +8458,8 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
@@ -8553,12 +8553,12 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8649,13 +8649,13 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8746,13 +8746,13 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -8843,10 +8843,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
               <quality>Hawk Eye</quality>
             </positive>
             <negative>
@@ -8941,7 +8941,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9033,10 +9033,10 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Fangs</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9129,7 +9129,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9222,11 +9222,11 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -9315,8 +9315,8 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Low-Light Vision</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9410,7 +9410,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9507,11 +9507,11 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
@@ -9603,7 +9603,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9698,7 +9698,7 @@
           <qualities>
             <positive>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -9792,9 +9792,9 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Goring Horns</quality>
+              <quality condition="/character/metahumanform">Goring Horns</quality>
               <quality>Hawk Eye</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -10040,11 +10040,11 @@
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -10232,7 +10232,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -10323,14 +10323,14 @@
           <qualities>
             <positive>
               <quality>Balance Receptor</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only; Sunlight">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Metahuman Form Only; Colored Fur">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -10425,7 +10425,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only; Pollution">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -10516,8 +10516,8 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -10614,8 +10614,8 @@
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -10709,12 +10709,12 @@
           <qualities>
             <positive>
               <quality>Balance Receptor</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -10806,14 +10806,14 @@
           <qualities>
             <positive>
               <quality>Balance Receptor</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -10907,13 +10907,13 @@
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -11005,10 +11005,10 @@
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11194,7 +11194,7 @@
           </powers>
           <qualities>
             <positive>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
@@ -11388,7 +11388,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -11480,7 +11480,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -11575,7 +11575,7 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -11674,11 +11674,11 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -11773,7 +11773,7 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -11870,7 +11870,7 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -11967,7 +11967,7 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
@@ -12203,12 +12203,12 @@
             <positive>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12377,7 +12377,7 @@
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12459,13 +12459,13 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12550,7 +12550,7 @@
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12631,8 +12631,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12716,10 +12716,10 @@
           <qualities>
             <positive>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -12803,14 +12803,14 @@
           <qualities>
             <positive>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12891,16 +12891,16 @@
           <qualities>
             <positive>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -12981,15 +12981,15 @@
           <qualities>
             <positive>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Low-Light Vision</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -13071,11 +13071,11 @@
             <positive>
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13245,7 +13245,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13416,7 +13416,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -13498,7 +13498,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13584,7 +13584,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13673,11 +13673,11 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
             </negative>
           </qualities>
           <bonus>
@@ -13762,7 +13762,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13849,7 +13849,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -13936,7 +13936,7 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -14172,10 +14172,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -14365,7 +14365,7 @@
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
             </negative>
           </qualities>
           <bonus>
@@ -14456,14 +14456,14 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -14557,7 +14557,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -14649,8 +14649,8 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -14746,8 +14746,8 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -14843,11 +14843,11 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <bonus>
@@ -14940,13 +14940,13 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -15039,13 +15039,13 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -15138,10 +15138,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -15330,7 +15330,7 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -15522,7 +15522,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -15614,7 +15614,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -15710,7 +15710,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -15809,10 +15809,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -15907,7 +15907,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -16004,7 +16004,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -16101,7 +16101,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -16347,10 +16347,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -16539,7 +16539,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -16631,13 +16631,13 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Keen-Eared</quality>
+              <quality condition="/character/metahumanform">Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -16732,7 +16732,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -16823,8 +16823,8 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
@@ -16921,8 +16921,8 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17018,10 +17018,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -17114,14 +17114,14 @@
             <positive>
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -17214,13 +17214,13 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -17313,10 +17313,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17505,7 +17505,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17696,7 +17696,7 @@
               <quality>Low-Light Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -17788,7 +17788,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17884,7 +17884,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -17983,10 +17983,10 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -18081,7 +18081,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -18178,7 +18178,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -18275,7 +18275,7 @@
               <quality>Balance Receptor</quality>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -18523,11 +18523,11 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -18718,7 +18718,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -18814,10 +18814,10 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Shapeshifter Form Only">Nocturnal</quality>
-              <quality select="Shapeshifter Form Only">Uneducated</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="not(/character/metahumanform)">Nocturnal</quality>
+              <quality condition="not(/character/metahumanform)">Uneducated</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -18912,7 +18912,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Pollution; Metahuman Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -19002,8 +19002,8 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality>Vomeronasal Organ</quality>
@@ -19102,8 +19102,8 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -19200,12 +19200,12 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -19299,15 +19299,15 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -19398,16 +19398,16 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -19500,10 +19500,10 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -19693,7 +19693,7 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
               <quality>Vomeronasal Organ</quality>
@@ -19889,7 +19889,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -19981,7 +19981,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -20078,7 +20078,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -20178,11 +20178,11 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -20277,7 +20277,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -20375,7 +20375,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -20473,7 +20473,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -20710,11 +20710,11 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -20885,7 +20885,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Symbiosis</quality>
+              <quality condition="/character/metahumanform">Symbiosis</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -20972,9 +20972,9 @@
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Sunlight; Metahuman Form Only">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Sunlight" condition="/character/metahumanform">Allergy (Common, Mild)</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -21059,7 +21059,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Pollution; Shapeshifter Form Only">Allergy (Common, Mild)</quality>
+              <quality select="Pollution" condition="not(/character/metahumanform)">Allergy (Common, Mild)</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -21144,8 +21144,8 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Elongated Limbs</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Elongated Limbs</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -21229,8 +21229,8 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -21317,12 +21317,12 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -21404,17 +21404,17 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -21495,16 +21495,16 @@
           <qualities>
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <bonus>
@@ -21587,10 +21587,10 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Webbed Digits</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Webbed Digits</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -21761,7 +21761,7 @@
             <positive>
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
               <quality>Low-Light Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
@@ -21936,7 +21936,7 @@
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -22018,7 +22018,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Satyr Legs</quality>
+              <quality condition="/character/metahumanform">Satyr Legs</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -22105,7 +22105,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -22195,11 +22195,11 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Cyclopean Eye</quality>
+              <quality condition="/character/metahumanform">Cyclopean Eye</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -22284,7 +22284,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -22372,7 +22372,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -22460,7 +22460,7 @@
               <quality>Broadened Auditory System (Ultrasound)</quality>
               <quality>Keen-Eared</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Vomeronasal Organ</quality>
             </positive>
             <negative>
@@ -22606,8 +22606,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22693,12 +22693,12 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Shiva Arms (Pair)</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Shiva Arms (Pair)</quality>
             </positive>
             <negative>
-              <quality select="Metahuman Form Only">Striking Skin Pigmentation</quality>
+              <quality condition="/character/metahumanform">Striking Skin Pigmentation</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -22782,8 +22782,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22869,8 +22869,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -22956,13 +22956,13 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality select="Sunlight">Allergy (Common, Mild)</quality>
-              <quality select="Metahuman Form Only">Nocturnal</quality>
-              <quality select="Colored Fur; Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Nocturnal</quality>
+              <quality select="Colored Fur" condition="/character/metahumanform">Unusual Hair</quality>
               <quality removable="True">Uneducated</quality>
             </negative>
           </qualities>
@@ -23046,8 +23046,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality select="Pollution">Allergy (Common, Mild)</quality>
@@ -23134,8 +23134,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
               <quality>Elongated Limbs</quality>
               <quality>Celerity</quality>
             </positive>
@@ -23223,10 +23223,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -23332,13 +23332,13 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Neoteny</quality>
+              <quality condition="/character/metahumanform">Neoteny</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -23422,15 +23422,15 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Monkey Paws</quality>
-              <quality select="Metahuman Form Only">Functional Tail (Prehensile)</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Monkey Paws</quality>
+              <quality condition="/character/metahumanform">Functional Tail (Prehensile)</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Body; Metahuman Form Only">Unusual Hair</quality>
+              <quality select="Body" condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -23514,15 +23514,15 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Celerity</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Celerity</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
-              <quality select="Metahuman Form Only">Unusual Hair</quality>
+              <quality condition="/character/metahumanform">Unusual Hair</quality>
             </negative>
           </qualities>
           <source>RF</source>
@@ -23586,9 +23586,9 @@
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
               <quality>Underwater Vision</quality>
               <quality>Webbed Digits</quality>
             </positive>
@@ -23677,8 +23677,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -23763,9 +23763,9 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Fangs</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Fangs</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -23851,8 +23851,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -23938,8 +23938,8 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -24027,8 +24027,8 @@
               <quality>Keen-Eared</quality>
               <quality>Vomeronasal Organ</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
             </positive>
           </qualities>
           <bonus>
@@ -24111,10 +24111,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -24205,10 +24205,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -24298,10 +24298,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -24390,10 +24390,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>
@@ -24482,10 +24482,10 @@
               <quality>Vomeronasal Organ</quality>
               <quality>Low-Light Vision</quality>
               <quality>Webbed Digits</quality>
-              <quality select="Shapeshifter Form Only">Animal Pelage (Insulating Pelt)</quality>
-              <quality select="Shapeshifter Form Only">Underwater Vision</quality>
-              <quality select="Metahuman Form Only">Thermographic Vision</quality>
-              <quality select="Metahuman Form Only">Resistance to Pathogens/Toxins</quality>
+              <quality condition="not(/character/metahumanform)">Animal Pelage (Insulating Pelt)</quality>
+              <quality condition="not(/character/metahumanform)">Underwater Vision</quality>
+              <quality condition="/character/metahumanform">Thermographic Vision</quality>
+              <quality condition="/character/metahumanform">Resistance to Pathogens/Toxins</quality>
             </positive>
             <negative>
               <quality removable="True">Uneducated</quality>

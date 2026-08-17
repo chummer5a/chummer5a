@@ -10471,6 +10471,18 @@
       <key>String_SuppressedBy</key>
       <text>Suppressed by {0}</text>
     </string>
+    <string>
+      <key>String_MetahumanFormOnly</key>
+      <text>Metahuman Form Only</text>
+    </string>
+    <string>
+      <key>String_ShapeshifterFormOnly</key>
+      <text>Shapeshifter Form Only</text>
+    </string>
+    <string>
+      <key>String_InactiveInCurrentForm</key>
+      <text>Inactive in current form</text>
+    </string>
     <!-- End Region -->
     <!-- Region Text Editor -->
     <string>
