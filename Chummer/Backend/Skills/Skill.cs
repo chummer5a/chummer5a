@@ -7682,12 +7682,33 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                if (!await GetEnabledAsync(token).ConfigureAwait(false)) // Skip updates for disabled skills because it's unnecessary
-                    return;
-                CharacterSettings objSettings =
-                    await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                 using (new FetchSafelyFromSafeObjectPool<HashSet<string>>(Utils.StringHashSetPool, out HashSet<string> setProperties))
                 {
+                    if (!await GetEnabledAsync(token).ConfigureAwait(false))
+                    {
+                        // Disabled members (e.g. Flight) still inherit group ranks and are billed in
+                        // chargen, so Base/Karma/CurrentKarmaCost must refresh. Spec/unlock UI does not.
+                        if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Base)))
+                            setProperties.Add(nameof(Base));
+                        if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Karma)))
+                        {
+                            setProperties.Add(nameof(Karma));
+                            if (!await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false)
+                                && !await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false))
+                                setProperties.Add(nameof(CurrentKarmaCost));
+                        }
+                        else if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Rating)))
+                        {
+                            setProperties.Add(nameof(Base));
+                            setProperties.Add(nameof(Karma));
+                        }
+                        if (setProperties.Count > 0)
+                            await OnMultiplePropertiesChangedAsync(setProperties, token).ConfigureAwait(false);
+                        return;
+                    }
+
+                    CharacterSettings objSettings =
+                        await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.Base)))
                     {
                         setProperties.Add(nameof(Base));
@@ -7754,8 +7775,7 @@ namespace Chummer.Backend.Skills
                     }
 
                     if (e.PropertyNames.Contains(nameof(Skills.SkillGroup.SkillList)) &&
-                        await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false) &&
-                        await GetEnabledAsync(token).ConfigureAwait(false))
+                        await objSettings.GetCompensateSkillGroupKarmaDifferenceAsync(token).ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(RangeCost));
                         setProperties.Add(nameof(UpgradeKarmaCost));
