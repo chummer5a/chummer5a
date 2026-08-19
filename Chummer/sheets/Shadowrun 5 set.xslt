@@ -1558,7 +1558,7 @@
           </xsl:call-template>
         </xsl:if>
 
-        <xsl:if test="calendar/week">
+        <xsl:if test="calendar/week[normalize-space(notes) != '']">
           <div class="block" id="CalendarBlock">
             <table class="tablestyle">
               <tr>

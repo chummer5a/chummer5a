@@ -4,7 +4,7 @@
 <xsl:stylesheet version="1.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">
   <xsl:template name="Calendar">
 
-    <xsl:for-each select="calendar/week">
+    <xsl:for-each select="calendar/week[normalize-space(notes) != '']">
       <tr>
         <xsl:if test="position() mod 2 != 1">
           <xsl:attribute name="bgcolor">#e4e4e4</xsl:attribute>

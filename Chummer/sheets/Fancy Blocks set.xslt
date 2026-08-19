@@ -2272,11 +2272,11 @@
       <br />
     </xsl:if>
 
-    <xsl:if test="count(calendar/week) &gt; 0">
+    <xsl:if test="count(calendar/week[normalize-space(notes) != '']) &gt; 0">
       <table class="stats description">
         <tr><td colspan="2"><div class="bigheader">[<xsl:value-of select="$lang.Calendar" />]</div></td></tr>
         <tr class="smallheader"><td><xsl:value-of select="$lang.Date" /></td><td><xsl:value-of select="$lang.Notes" /></td></tr>
-        <xsl:for-each select="calendar/week">
+        <xsl:for-each select="calendar/week[normalize-space(notes) != '']">
           <tr>
             <td style="white-space:pre;">
                 <xsl:value-of select="year" /><xsl:text>, </xsl:text>

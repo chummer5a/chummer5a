@@ -12969,8 +12969,14 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
+                        // Calendar weeks are themselves notes. Always print them, and skip empty weeks.
                         await (await GetCalendarAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, GlobalSettings.PrintNotes, token), token).ConfigureAwait(false);
+                            .ForEachAsync(async x =>
+                            {
+                                if (string.IsNullOrWhiteSpace(await x.GetNotesAsync(token).ConfigureAwait(false)))
+                                    return;
+                                await x.Print(objWriter, objCulture, true, token).ConfigureAwait(false);
+                            }, token).ConfigureAwait(false);
                     }
                     finally
                     {
