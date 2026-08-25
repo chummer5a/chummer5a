@@ -4687,6 +4687,8 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
             string strSelectedValue = ForcedValue;
             if (string.IsNullOrEmpty(strSelectedValue))
+                strSelectedValue = bonusNode.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelectedValue))
                 strSelectedValue = (await ImprovementManager.DoSelectSkillAsync(bonusNode, _objCharacter, _intRating, _strFriendlyName, token: token).ConfigureAwait(false)).Item1;
             SelectedValue = strSelectedValue;
             (bool blnIsExotic, string strExoticSkillName)

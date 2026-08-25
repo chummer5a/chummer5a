@@ -1542,11 +1542,11 @@ namespace Chummer
         /// <summary>
         /// Shows a skill selection dialog and returns the selected skill name.
         /// </summary>
-        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills, etc.</param>
+        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: select, skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills/knowledgeskill, etc.</param>
         /// <param name="objCharacter">Character whose skills are listed.</param>
         /// <param name="intRating">Rating used when resolving expressions in the bonus node (e.g. minimumrating, maximumrating).</param>
         /// <param name="strFriendlyName">Friendly name shown in the dialog (e.g. quality or item name).</param>
-        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills attribute on the node.</param>
+        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills or knowledgeskill on the node.</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>A tuple of (selected skill name, whether the knowledge-skill picker was used). Throws AbortedException if the user cancels.</returns>
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
@@ -1560,11 +1560,11 @@ namespace Chummer
         /// <summary>
         /// Shows a skill selection dialog and returns the selected skill name (async).
         /// </summary>
-        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills, etc.</param>
+        /// <param name="xmlBonusNode">XML node (e.g. a selectskill element) defining filters: select, skillcategory, limittoskill, skillcategories, excludecategory, knowledgeskills/knowledgeskill, etc.</param>
         /// <param name="objCharacter">Character whose skills are listed.</param>
         /// <param name="intRating">Rating used when resolving expressions in the bonus node (e.g. minimumrating, maximumrating).</param>
         /// <param name="strFriendlyName">Friendly name shown in the dialog (e.g. quality or item name).</param>
-        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills attribute on the node.</param>
+        /// <param name="blnIsKnowledgeSkill">If true, only knowledge skills are offered; if false, only active skills. Can be overridden by knowledgeskills or knowledgeskill on the node.</param>
         /// <param name="token">Cancellation token.</param>
         /// <returns>A task that yields (selected skill name, whether the knowledge-skill picker was used). Throws AbortedException if the user cancels.</returns>
         public static Task<ValueTuple<string, bool>> DoSelectSkillAsync(XmlNode xmlBonusNode, Character objCharacter, int intRating,
@@ -1584,7 +1584,10 @@ namespace Chummer
                 throw new ArgumentNullException(nameof(objCharacter));
             string strSelectedSkill;
             blnIsKnowledgeSkill = blnIsKnowledgeSkill
-                                  || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerTextIsTrueString() == true;
+                                  || xmlBonusNode.Attributes?["knowledgeskills"]?.InnerTextIsTrueString() == true
+                                  || xmlBonusNode.Attributes?["knowledgeskill"]?.InnerTextIsTrueString() == true;
+            string strNodeSelect = xmlBonusNode.SelectSingleNodeAndCacheExpressionAsNavigator("@select", token)?.Value
+                                   ?? string.Empty;
             if (blnIsKnowledgeSkill)
             {
                 int intMinimumRating = 0;
@@ -1646,6 +1649,8 @@ namespace Chummer
                                                                             setAllowedNames))
                         {
                             string strForcedValue = GetForcedValue(objCharacter);
+                            if (string.IsNullOrEmpty(strForcedValue))
+                                strForcedValue = strNodeSelect;
                             if (!string.IsNullOrEmpty(strForcedValue))
                             {
                                 setAllowedNames.Add(strForcedValue);
@@ -1933,6 +1938,8 @@ namespace Chummer
             else
             {
                 string strForcedValue = GetForcedValue(objCharacter);
+                if (string.IsNullOrEmpty(strForcedValue))
+                    strForcedValue = strNodeSelect;
                 if (!string.IsNullOrEmpty(strForcedValue))
                 {
                     (bool blnIsExotic, string strExoticName)

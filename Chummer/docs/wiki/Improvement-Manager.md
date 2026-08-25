@@ -214,6 +214,13 @@ Contents
 -   [Limitations](#Limitations_25)
 -   [Example](#Example_25)
 
+[hardwires](#hardwires)
+
+-   [Attributes](#Attributes_hardwires)
+-   [Elements](#Elements_hardwires)
+-   [Limitations](#Limitations_hardwires)
+-   [Example](#Example_hardwires)
+
 [ignorecmpenaltyphysical](#ignorecmpenaltyphysical)
 
 -   [Attributes](#Attributes_26)
@@ -1502,6 +1509,70 @@ The following example reduces the Nuyen cost of Genetech for the character to 50
 ```XML
 <bonus>
 <genetechcostmultiplier>50</genetechcostmultiplier>
+</bonus>
+```
+
+### hardwires
+
+Grants the character a Hardwire rating in one skill. Hardwires work like skillwires for a single skill: the character's effective rating for that skill is the hardwire rating, and it does not stack with the character's own ranks or with skillwires affecting the same skill. Used by Active Hardwires and Knowledge Hardwires cyberware. Unless a skill is pre-selected, the user is prompted to choose one when the bonus is applied. The chosen skill is stored on the source item's Extra.
+
+##### Attributes
+
+**select** Pre-selects the skill and skips the picker. Use the English skill name (for exotic skills, include the specialization in parentheses, e.g. `Heavy Weapons (Grenade Launchers)`). If the parent item already has a ForcedValue/Extra (for example from a cyberware suite `name/@select`, a PACKS kit, or a previous selection when reapplying improvements), that value takes precedence over this attribute.
+
+**knowledgeskill** / **knowledgeskills** When `True`, the picker lists knowledge skills instead of active skills. Both attribute names are accepted; Knowledge Hardwires uses `knowledgeskill="True"`.
+
+**skillgroup** Limit the list to skills in the specified Skill Group (example: Influence). Comma-separated.
+
+**skillcategory** Limit the list to skills in the specified Category (example: Combat Active). Comma-separated.
+
+**excludecategory** Exclude skills in the specified Category (example: Magical Active,Resonance Active). Comma-separated.
+
+**excludeskill** Exclude the listed skill names. Comma-separated.
+
+**excludeskillgroup** Exclude skills in the specified Skill Group. Comma-separated.
+
+**limittoskill** Limit the list to only the listed skill names. Comma-separated.
+
+**limittoattribute** Limit the list to skills linked to the specified Attribute abbreviations (example: AGI). Comma-separated.
+
+**minimumrating** Minimum current rating a skill must have to appear in the list.
+
+**maximumrating** Maximum current rating a skill may have to appear in the list.
+
+**prompt** For knowledge skills, a suggested name that can be selected even if the character does not already have that skill.
+
+##### Elements
+
+None. The inner text is the Hardwire rating. It may contain the `Rating` keyword (for example `Rating`) or any other Improvement Manager value expression.
+
+##### Limitations
+
+This item can only be used once per bonus element. Multiple Hardwire items on a character are allowed as long as they affect different skills.
+
+##### Example
+
+The following example is Active Hardwires: the user chooses a non-magical, non-resonance active skill, and the hardwire rating equals the cyberware Rating.
+
+```XML
+<bonus>
+  <hardwires excludecategory="Magical Active,Resonance Active">Rating</hardwires>
+</bonus>
+```
+
+The following example is Knowledge Hardwires: the user chooses a knowledge skill.
+
+```XML
+<bonus>
+  <hardwires knowledgeskill="True">Rating</hardwires>
+</bonus>
+```
+
+The following example pre-selects Pistols and does not prompt.
+
+```XML
+<bonus>
+  <hardwires select="Pistols">Rating</hardwires>
 </bonus>
 ```
 

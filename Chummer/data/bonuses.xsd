@@ -518,13 +518,19 @@
         <xs:complexType>
           <xs:simpleContent>
             <xs:extension base="xs:string">
+              <xs:attribute name="select" type="xs:string" use="optional" />
               <xs:attribute name="knowledgeskill" type="xs:string" use="optional" />
+              <xs:attribute name="knowledgeskills" type="xs:string" use="optional" />
               <xs:attribute name="skillgroup" type="xs:string" use="optional" />
               <xs:attribute name="skillcategory" type="xs:string" use="optional" />
               <xs:attribute name="excludecategory" type="xs:string" use="optional" />
               <xs:attribute name="excludeskill" type="xs:string" use="optional" />
+              <xs:attribute name="excludeskillgroup" type="xs:string" use="optional" />
               <xs:attribute name="limittoskill" type="xs:string" use="optional" />
               <xs:attribute name="limittoattribute" type="xs:string" use="optional" />
+              <xs:attribute name="minimumrating" type="xs:string" use="optional" />
+              <xs:attribute name="maximumrating" type="xs:string" use="optional" />
+              <xs:attribute name="prompt" type="xs:string" use="optional" />
             </xs:extension>
           </xs:simpleContent>
         </xs:complexType>

@@ -4482,6 +4482,8 @@ namespace Chummer
 
             string strSelectedValue = ForcedValue;
             if (string.IsNullOrEmpty(strSelectedValue))
+                strSelectedValue = bonusNode.Attributes?["select"]?.InnerTextViaPool() ?? string.Empty;
+            if (string.IsNullOrEmpty(strSelectedValue))
                 strSelectedValue = ImprovementManager.DoSelectSkill(bonusNode, _objCharacter, _intRating, _strFriendlyName).Item1;
             SelectedValue = strSelectedValue;
             (bool blnIsExotic, string strExoticSkillName)

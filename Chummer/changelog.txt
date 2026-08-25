@@ -1,6 +1,7 @@
 Future Build 227
 Application:
 - Broad refactor of some form logic for adding equipment to characters, intended to reduce configuration drift and improve maintainability of the codebase. Nightly builds may have some issues related to this change, so please report any bugs you find.
+- Hardwires bonuses now honor a `select` attribute to pre-select the affected skill (same ForcedValue path used when Extra is already set), and treat `knowledgeskill` as an alias of `knowledgeskills` so Knowledge Hardwires open the knowledge-skill picker.
 - Moved weapon-mount and custom cyber implant base-weapon attachment logic into CharacterShared to reduce duplication between Create and Career modes.
 - Refactored requirement and forbidden node evaluation in SelectionShared to consolidate duplicated logic for installed gear, powers, armor mods, cyberware/bioware, qualities, grouped requirements, and restriction message text.
 - Custom data directories can now be updated from a GitHub releases URL declared in the optional `<updatelocation>` element of manifest.xml. Use the new Update from Repository button in Global Settings to download the latest release, verify that its GUID matches the installed directory, and replace the directory contents.
