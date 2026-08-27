@@ -964,9 +964,14 @@ namespace Chummer
 
                 try
                 {
-                    string strConditionToAcceptForUnconditional = (blnSync ? objCharacter.Created : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
-                        ? "career"
-                        : "create";
+                    // career/create plus the XPath forms that replaced them in data files
+                    bool blnCreated = blnSync
+                        ? objCharacter.Created
+                        : await objCharacter.GetCreatedAsync(token).ConfigureAwait(false);
+                    string strConditionToAcceptForUnconditional = blnCreated ? "career" : "create";
+                    string strXPathConditionToAcceptForUnconditional = blnCreated
+                        ? "/character/created"
+                        : "/character/created = false";
                     List<Improvement> lstImprovementsToConsider;
                     if (blnSync)
                     {
@@ -987,7 +992,9 @@ namespace Chummer
                     {
                         if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
                             return;
-                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition) && objImprovement.Condition != strConditionToAcceptForUnconditional)
+                        if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition)
+                            && objImprovement.Condition != strConditionToAcceptForUnconditional
+                            && objImprovement.Condition != strXPathConditionToAcceptForUnconditional)
                             return;
                         // Matrix initiative boosting gear does not help Living Personas
                         if ((eImprovementType == Improvement.ImprovementType.MatrixInitiativeDice
@@ -6628,6 +6635,21 @@ namespace Chummer
 
         private static readonly char[] s_achrParentheses = new[] { '(', ')' };
 
+        private static int IndexOfMatchingCloseParenthesis(string condition, int intOpenParenthesesIndex)
+        {
+            int intParenthesesLevel = 1;
+            for (int intIndex = condition.IndexOfAny(s_achrParentheses, intOpenParenthesesIndex + 1);
+                 intIndex >= 0;
+                 intIndex = condition.IndexOfAny(s_achrParentheses, intIndex + 1))
+            {
+                if (condition[intIndex] == '(')
+                    ++intParenthesesLevel;
+                else if (--intParenthesesLevel == 0)
+                    return intIndex;
+            }
+            return -1;
+        }
+
         /// <summary>
         /// Evaluates a condition string against a target object using a typed allowlist of known predicates.
         /// Supports XPath-like syntax (/character/created), @property checks, not/and/or, and legacy career/create/spec conditions.
@@ -6650,25 +6672,13 @@ namespace Chummer
                 int intOpenParenthesesIndex = condition.IndexOf('(');
                 while (intOpenParenthesesIndex >= 0)
                 {
-                    int intParenthesesLevel = 1;
-                    intCloseParenthesesIndex = intOpenParenthesesIndex + 1;
-                    for (; intCloseParenthesesIndex >= 0 && intCloseParenthesesIndex < intConditionLength; intCloseParenthesesIndex = condition.IndexOfAny(s_achrParentheses, intCloseParenthesesIndex + 1))
-                    {
-                        if (condition[intCloseParenthesesIndex] == '(')
-                            ++intParenthesesLevel;
-                        else
-                        {
-                            --intParenthesesLevel;
-                            if (intParenthesesLevel == 0)
-                                break;
-                        }
-                    }
-                    if (intParenthesesLevel > 0) // Faulty syntax, just break and ignore the parentheses altogether
+                    intCloseParenthesesIndex = IndexOfMatchingCloseParenthesis(condition, intOpenParenthesesIndex);
+                    if (intCloseParenthesesIndex < 0)
                     {
                         Utils.BreakIfDebug();
                         break;
                     }
-                    bool blnInnerResult = await EvaluateConditionAsync(condition.Substring(intOpenParenthesesIndex, intCloseParenthesesIndex - intOpenParenthesesIndex).Trim(), targetObject, token).ConfigureAwait(false);
+                    bool blnInnerResult = await EvaluateConditionAsync(condition.Substring(intOpenParenthesesIndex + 1, intCloseParenthesesIndex - intOpenParenthesesIndex - 1).Trim(), targetObject, token).ConfigureAwait(false);
                     if (intOpenParenthesesIndex >= 3 && string.Equals(condition.Substring(intOpenParenthesesIndex - 3, 3), "not", StringComparison.OrdinalIgnoreCase))
                         blnInnerResult = !blnInnerResult;
 
@@ -6765,25 +6775,13 @@ namespace Chummer
                 int intOpenParenthesesIndex = condition.IndexOf('(');
                 while (intOpenParenthesesIndex >= 0)
                 {
-                    int intParenthesesLevel = 1;
-                    intCloseParenthesesIndex = intOpenParenthesesIndex + 1;
-                    for (; intCloseParenthesesIndex >= 0 && intCloseParenthesesIndex < intConditionLength; intCloseParenthesesIndex = condition.IndexOfAny(s_achrParentheses, intCloseParenthesesIndex + 1))
-                    {
-                        if (condition[intCloseParenthesesIndex] == '(')
-                            ++intParenthesesLevel;
-                        else
-                        {
-                            --intParenthesesLevel;
-                            if (intParenthesesLevel == 0)
-                                break;
-                        }
-                    }
-                    if (intParenthesesLevel > 0) // Faulty syntax, just break and ignore the parentheses altogether
+                    intCloseParenthesesIndex = IndexOfMatchingCloseParenthesis(condition, intOpenParenthesesIndex);
+                    if (intCloseParenthesesIndex < 0)
                     {
                         Utils.BreakIfDebug();
                         break;
                     }
-                    bool blnInnerResult = EvaluateCondition(condition.Substring(intOpenParenthesesIndex, intCloseParenthesesIndex - intOpenParenthesesIndex).Trim(), targetObject);
+                    bool blnInnerResult = EvaluateCondition(condition.Substring(intOpenParenthesesIndex + 1, intCloseParenthesesIndex - intOpenParenthesesIndex - 1).Trim(), targetObject);
                     if (intOpenParenthesesIndex >= 3 && string.Equals(condition.Substring(intOpenParenthesesIndex - 3, 3), "not", StringComparison.OrdinalIgnoreCase))
                         blnInnerResult = !blnInnerResult;
 

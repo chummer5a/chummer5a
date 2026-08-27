@@ -10825,6 +10825,7 @@
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>
@@ -11476,6 +11477,7 @@
         <spellcategory>
           <name>Combat</name>
           <val>Rating</val>
+          <condition>not(/spell/alchemical)</condition>
         </spellcategory>
         <selecttradition />
       </bonus>

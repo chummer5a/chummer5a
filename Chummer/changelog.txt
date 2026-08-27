@@ -30,6 +30,7 @@ Cyberware:
 - Fixed Spider Eyes not being permitted to add children due to lack of defined subsystems and allowgear entries.
 
 Gear:
+- Combat Individualized Spellcasting Foci (Partial and Complete) now exclude alchemical preparations, matching other Spellcasting Foci. Existing characters with these foci need to Reapply Improvements.
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
 - Fixed custom drugs losing their InternalId on character load, which left drug-granted qualities behind after the drugs were deleted. Orphaned improvement qualities can now be removed when their linking SpecificQuality improvement is gone. Closes #4181.
@@ -39,6 +40,7 @@ PACKs:
 - Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
 
 Qualities:
+- Fixed College Education, Linguist, School of Hard Knocks, Technical School Education, Jack of All Trades, and the War mentor not applying their skill karma discounts after improvement conditions were converted to `/character/created` XPath form.
 - Fixed the Double-Jointed and Combat Paralysis qualities not fetching their description from the PDF.
 - Dedicated Conjurer now prompts for extra summonable spirit types based on Summoning rating (one type per two full ranks, FA p.36). Raising Summoning later prompts for newly earned picks. Existing characers with this quality will need to use the Reapply Improvements menu to add the new improvement type. Closes #4712.
 - Skill specializations are reverse-translated against their parent skill's specialization list before the generic extras lookup, so cases where one translated word maps to both a skill name and a specialization (e.g. German "Wahrnehmung" for Perception vs Detection) keep the correct English specialization name. This restores Dedicated Spellslinger's free Detection spell when Spellcasting is specialized in Detection under German. Characters that already saved the wrong English name need to re-select the specialization. Closes #4739.
@@ -47,6 +49,7 @@ Skills:
 - Fixed a karma calculation bug if the character takes a skill that is not enabled by default for a skill group (ie Flight), adds ranks to the skill group, removes the improvement that grants the skill, then removes ranks from the skill group.
 
 Magic:
+- Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.
 - Watchers and Homunculi no longer count toward the bound spirit (Charisma) limit shared with tradition spirits. Bound spirit dropdowns refresh when AddSpirit improvements change. Closes #4476.
 - Extended the `addspirit` improvement with optional `skill` and `ratingdivisor` attributes for skill-linked spirit type picks (used by Dedicated Conjurer) and clearer selection prompts that indicate why the user is being prompted to select a spirit type.
 
