@@ -56,6 +56,7 @@ Magic:
 - Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.
 - Watchers and Homunculi no longer count toward the bound spirit (Charisma) limit shared with tradition spirits. Bound spirit dropdowns refresh when AddSpirit improvements change. Closes #4476.
 - Extended the `addspirit` improvement with optional `skill` and `ratingdivisor` attributes for skill-linked spirit type picks (used by Dedicated Conjurer) and clearer selection prompts that indicate why the user is being prompted to select a spirit type.
+- Ally Spirits no longer count towards the Bound Spirit Limit. 
 
 Weapons:
 - Fixed an issue with weapons that provide a wireless accuracy bonus (ie monofilament whip) not including the accuracy bonus of weapon accessories due to a malformed formula string. 

@@ -2143,6 +2143,7 @@
         <skill>Perception</skill>
         <skill>Unarmed Combat</skill>
       </skills>
+      <ignoreboundspiritlimit>True</ignoreboundspiritlimit>
       <source>SG</source>
       <page>200</page>
     </spirit>

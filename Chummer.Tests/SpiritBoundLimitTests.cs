@@ -47,6 +47,10 @@ namespace Chummer.Tests
             Assert.IsNull(
                 objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Spirit of Fire']/ignoreboundspiritlimit"),
                 "Normal spirits should not set ignoreboundspiritlimit");
+
+            Assert.AreEqual("True",
+                objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Ally Spirit']/ignoreboundspiritlimit")?.Value,
+                "Ally Spirit should ignore the bound spirit limit");
         }
     }
 }
