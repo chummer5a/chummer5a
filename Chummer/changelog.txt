@@ -14,6 +14,10 @@ Application:
 - Added a global option to insert new character-tree items alphabetically among their siblings. Manual drag-sort / SortOrder still takes precedence when items have been reordered.
 - Added Sum-To-Ten Improved customdata ruleset to the Full House (Sum-to-Ten Improved, German) custom setting file. Closes #5255
 - Fixed calendar print output omitting week notes (they were gated behind the Print Notes option) and skipping weeks that have no notes. Closes #5280
+- Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier.
+
+Bioware:
+- Implemented Narco (Chrome Flesh): each positive attribute modifier from an active drug is increased by +1. Existing characters with Narco need to Reapply Improvements.
 
 Vehicles:
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.

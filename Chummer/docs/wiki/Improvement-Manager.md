@@ -158,6 +158,13 @@ Contents
 -   [Limitations](#Limitations_17)
 -   [Example](#Example_17)
 
+[drugpositiveattributemodifier](#drugpositiveattributemodifier)
+
+-   [Attributes](#Attributes_drugpositiveattributemodifier)
+-   [Elements](#Elements_drugpositiveattributemodifier)
+-   [Limitations](#Limitations_drugpositiveattributemodifier)
+-   [Example](#Example_drugpositiveattributemodifier)
+
 [enabletab](#enabletab)
 
 -   [Attributes](#Attributes_18)
@@ -1300,6 +1307,32 @@ The following example adds 2 dice to the character's Drain Resistance pool.
 XML
 bonus>
 <drainresist>2</drainresist>
+</bonus>
+```
+
+### drugpositiveattributemodifier
+
+Adds the specified amount to each positive attribute modifier granted by an active drug.
+
+##### Attributes
+
+None.
+
+##### Elements
+
+None. The inner text is the amount added to each positive drug attribute modifier. It may contain the `Rating` keyword.
+
+##### Limitations
+
+None.
+
+##### Example
+
+The following example is Narco: each positive drug attribute modifier is increased by 1.
+
+```XML
+<bonus>
+  <drugpositiveattributemodifier>1</drugpositiveattributemodifier>
 </bonus>
 ```
 
@@ -3103,6 +3136,8 @@ None.
 **val** Improves the value of the Attribute by the specified amount.
 
 **affectbase** Whether or not the Improvement should affect the Attribute's base value. The application treats the character's actual Attribute as being a number of points higher which increases the Karma cost of improving the Attribute and the cost of Adept Powers.
+
+**condition** Optional. Restricts when the bonus applies. `career` or `/character/created` apply in Career mode; `create` or `/character/created = false` apply in Create mode.
 
 ##### Limitations
 

@@ -603,6 +603,20 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             await CreateImprovementAsync(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberlimbAttributeBonus, _strUnique, decValue, 0, token: token).ConfigureAwait(false);
         }
 
+        /// <summary>
+        /// Extra bonus applied to each positive drug attribute modifier.
+        /// </summary>
+        public async Task drugpositiveattributemodifier(XmlNode bonusNode, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            decimal decBonus = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
+            await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.DrugPositiveAttributeModifier, _strUnique, decBonus, 1, 0, 0, decBonus,
+                token: token).ConfigureAwait(false);
+        }
+
         public Task blockskillcategorydefaulting(XmlNode bonusNode, CancellationToken token = default)
         {
             if (token.IsCancellationRequested)
@@ -2287,7 +2301,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             decimal decAug = 0;
             int intMax = 0;
             int intAugMax = 0;
-            string strAttribute = bonusNode["name"]?.InnerTextViaPool(token);
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool(token) ?? string.Empty;
 
             // Extract the modifiers.
             string strTemp = bonusNode["min"]?.InnerTextViaPool(token);
@@ -2316,11 +2330,12 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
-            if (bonusNode["affectbase"] != null)
+            if (bonusNode["affectbase"] != null && !string.IsNullOrEmpty(strAttribute))
                 strAttribute += "Base";
 
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool(token) ?? string.Empty;
             await CreateImprovementAsync(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                strUseUnique, 0, 1, intMin, intMax, decAug, intAugMax, token: token).ConfigureAwait(false);
+                strUseUnique, 0, 1, intMin, intMax, decAug, intAugMax, strCondition: strCondition, token: token).ConfigureAwait(false);
         }
 
         // Add a paid increase to an attribute

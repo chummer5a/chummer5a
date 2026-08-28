@@ -435,6 +435,7 @@
       <xs:element name="disablebiowaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
       <xs:element name="disablecyberware" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="dodge" type="xs:string" minOccurs="0" maxOccurs="1" />
+      <xs:element name="drugpositiveattributemodifier" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="directmanaspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="directphysicalspellresist" type="xs:string" minOccurs="0" maxOccurs="1" />
       <xs:element name="disablecyberwaregrade" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
@@ -1347,6 +1348,7 @@
             <xs:element name="min" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="val" type="xs:string" minOccurs="0" maxOccurs="1" />
             <xs:element name="affectbase" type="xs:string" minOccurs="0" maxOccurs="1" />
+            <xs:element name="condition" type="xs:string" minOccurs="0" maxOccurs="1" />
           </xs:sequence>
         </xs:complexType>
       </xs:element>

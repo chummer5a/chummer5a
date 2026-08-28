@@ -571,6 +571,18 @@ namespace Chummer
             CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.CyberlimbAttributeBonus, _strUnique, decValue, 0);
         }
 
+        /// <summary>
+        /// Extra bonus applied to each positive drug attribute modifier.
+        /// </summary>
+        public void drugpositiveattributemodifier(XmlNode bonusNode)
+        {
+            if (bonusNode == null)
+                throw new ArgumentNullException(nameof(bonusNode));
+            decimal decBonus = ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerTextViaPool(), _intRating);
+            CreateImprovement(string.Empty, _objImprovementSource, SourceName,
+                Improvement.ImprovementType.DrugPositiveAttributeModifier, _strUnique, decBonus, 1, 0, 0, decBonus);
+        }
+
         public void blockskillcategorydefaulting(XmlNode bonusNode)
         {
             if (bonusNode == null)
@@ -2203,7 +2215,7 @@ namespace Chummer
             decimal decAug = 0;
             int intMax = 0;
             int intAugMax = 0;
-            string strAttribute = bonusNode["name"]?.InnerTextViaPool();
+            string strAttribute = bonusNode["name"]?.InnerTextViaPool() ?? string.Empty;
 
             // Extract the modifiers.
             string strTemp = bonusNode["min"]?.InnerTextViaPool();
@@ -2232,11 +2244,12 @@ namespace Chummer
             if (xmlPrecedenceNode != null)
                 strUseUnique = "precedence" + xmlPrecedenceNode.Value;
 
-            if (bonusNode["affectbase"] != null)
+            if (bonusNode["affectbase"] != null && !string.IsNullOrEmpty(strAttribute))
                 strAttribute += "Base";
 
+            string strCondition = bonusNode["condition"]?.InnerTextViaPool() ?? string.Empty;
             CreateImprovement(strAttribute, _objImprovementSource, SourceName, Improvement.ImprovementType.Attribute,
-                strUseUnique, 0, 1, intMin, intMax, decAug, intAugMax);
+                strUseUnique, 0, 1, intMin, intMax, decAug, intAugMax, strCondition: strCondition);
         }
 
         // Add a paid increase to an attribute

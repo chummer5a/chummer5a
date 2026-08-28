@@ -1287,6 +1287,24 @@ namespace Chummer.Backend.Equipment
             return _dicCachedAttributes;
         }
 
+        private decimal GetDisplayAttributeModifier(decimal decValue)
+        {
+            if (decValue <= 0)
+                return decValue;
+            return decValue + ImprovementManager.ValueOf(
+                _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier);
+        }
+
+        private async Task<decimal> GetDisplayAttributeModifierAsync(decimal decValue, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            if (decValue <= 0)
+                return decValue;
+            return decValue + await ImprovementManager.ValueOfAsync(
+                _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier, token: token)
+                .ConfigureAwait(false);
+        }
+
         public Color PreferredColor =>
             !string.IsNullOrEmpty(Notes)
                 ? ColorManager.HasNotesColor
@@ -1382,7 +1400,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             sbdDescription.Append(LanguageManager.GetString("String_Attribute" + objAttribute.Key + "Short", strLanguage),
-                                strSpace, objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
+                                strSpace, GetDisplayAttributeModifier(objAttribute.Value).ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }
@@ -1534,7 +1552,7 @@ namespace Chummer.Backend.Equipment
                             }
 
                             sbdDescription.Append(await LanguageManager.GetStringAsync("String_Attribute" + objAttribute.Key + "Short", strLanguage, token: token).ConfigureAwait(false),
-                                strSpace, objAttribute.Value.ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
+                                strSpace, (await GetDisplayAttributeModifierAsync(objAttribute.Value, token).ConfigureAwait(false)).ToString("+#.#;-#.#", GlobalSettings.CultureInfo));
                             blnNewLineFlag = true;
                         }
                     }

@@ -90,6 +90,53 @@ namespace Chummer.Tests
             }
         }
 
+        [TestMethod]
+        public void ValueCache_DrugPositiveAttributeModifier_AddsOnePerPositiveDrugAttribute()
+        {
+            using (Character objCharacter = new Character())
+            {
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "jazz",
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "LOG", Improvement.ImprovementSource.Drug, "jazz",
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "AGI", Improvement.ImprovementSource.Cyberware, "muscle toner",
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, string.Empty, Improvement.ImprovementSource.Bioware, "narco",
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+
+                Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
+                Assert.AreEqual(-1, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "LOG"));
+                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "AGI"));
+            }
+        }
+
+        [TestMethod]
+        public void ValueCache_DrugPositiveAttributeModifier_StacksPerDrug()
+        {
+            using (Character objCharacter = new Character())
+            {
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "kamikaze",
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "cram",
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, string.Empty, Improvement.ImprovementSource.Bioware, "narco",
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+
+                Assert.AreEqual(5, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
+            }
+        }
+
         private static Improvement AddAcademicKarmaCost(Character objCharacter, string strCondition)
         {
             return ImprovementManager.CreateImprovement(

@@ -94,6 +94,8 @@ namespace Chummer
                     return objImprovementAdder.cyberseeker;
                 case "CYBERLIMBATTRIBUTEBONUS":
                     return objImprovementAdder.cyberlimbattributebonus;
+                case "DRUGPOSITIVEATTRIBUTEMODIFIER":
+                    return objImprovementAdder.drugpositiveattributemodifier;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":
@@ -759,6 +761,8 @@ namespace Chummer
                     return objImprovementAsyncAdder.cyberseeker;
                 case "CYBERLIMBATTRIBUTEBONUS":
                     return objImprovementAsyncAdder.cyberlimbattributebonus;
+                case "DRUGPOSITIVEATTRIBUTEMODIFIER":
+                    return objImprovementAsyncAdder.drugpositiveattributemodifier;
                 case "BLOCKSKILLCATEGORYDEFAULTING":
                     return objImprovementAsyncAdder.blockskillcategorydefaulting;
                 case "BLOCKSKILLGROUPDEFAULTING":

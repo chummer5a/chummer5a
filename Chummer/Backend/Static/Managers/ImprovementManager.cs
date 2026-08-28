@@ -341,6 +341,9 @@ namespace Chummer
                     }
                 }
             }
+
+            if (eImprovementType == Improvement.ImprovementType.DrugPositiveAttributeModifier)
+                ClearCachedValue(objCharacter, Improvement.ImprovementType.Attribute, token: token);
         }
 
         public static void ClearCachedValues(Character objCharacter, CancellationToken token = default)
@@ -973,6 +976,7 @@ namespace Chummer
                         ? "/character/created"
                         : "/character/created = false";
                     List<Improvement> lstImprovementsToConsider;
+                    List<Improvement> lstDrugPositiveAttributeModifiers = null;
                     if (blnSync)
                     {
                         lstImprovementsToConsider = new List<Improvement>(objCharacter.Improvements.Count);
@@ -990,7 +994,24 @@ namespace Chummer
 
                     void ImprovementsLoopCommon(Improvement objImprovement)
                     {
-                        if (objImprovement.ImproveType != eImprovementType || !objImprovement.Enabled)
+                        if (!objImprovement.Enabled)
+                            return;
+                        // Collected here so Attribute totals can add Narco-style bonuses without a nested ValueOf (same lock).
+                        if (eImprovementType == Improvement.ImprovementType.Attribute
+                            && objImprovement.ImproveType == Improvement.ImprovementType.DrugPositiveAttributeModifier)
+                        {
+                            if (objImprovement.AddToRating != blnAddToRating)
+                                return;
+                            if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition)
+                                && objImprovement.Condition != strConditionToAcceptForUnconditional
+                                && objImprovement.Condition != strXPathConditionToAcceptForUnconditional)
+                                return;
+                            (lstDrugPositiveAttributeModifiers
+                             ?? (lstDrugPositiveAttributeModifiers = new List<Improvement>(2)))
+                                .Add(objImprovement);
+                            return;
+                        }
+                        if (objImprovement.ImproveType != eImprovementType)
                             return;
                         if (blnUnconditionalOnly && !string.IsNullOrEmpty(objImprovement.Condition)
                             && objImprovement.Condition != strConditionToAcceptForUnconditional
@@ -1340,6 +1361,37 @@ namespace Chummer
                             dicValues.Add(strLoopImprovedName, objLoopValuePair.Value);
                             dicImprovementsForValues.Add(strLoopImprovedName,
                                                          dicCustomImprovementsForValues[strLoopImprovedName]);
+                        }
+                    }
+
+                    if (lstDrugPositiveAttributeModifiers != null)
+                    {
+                        decimal decDrugPositiveAttributeBonus = 0;
+                        foreach (Improvement objBonus in lstDrugPositiveAttributeModifiers)
+                            decDrugPositiveAttributeBonus
+                                += (objBonus.Value != 0 ? objBonus.Value : objBonus.Augmented) * objBonus.Rating;
+                        if (decDrugPositiveAttributeBonus != 0)
+                        {
+                            foreach (KeyValuePair<string, List<Improvement>> kvpUsed in dicImprovementsForValues)
+                            {
+                                List<Improvement> lstUsedForName = kvpUsed.Value;
+                                int intHits = 0;
+                                int intOriginalCount = lstUsedForName.Count;
+                                for (int intUsedIndex = 0; intUsedIndex < intOriginalCount; ++intUsedIndex)
+                                {
+                                    Improvement objUsed = lstUsedForName[intUsedIndex];
+                                    if (objUsed.ImproveSource != Improvement.ImprovementSource.Drug
+                                        || funcValueGetter(objUsed) <= 0)
+                                        continue;
+                                    ++intHits;
+                                    lstUsedForName.AddRange(lstDrugPositiveAttributeModifiers);
+                                }
+
+                                if (intHits == 0)
+                                    continue;
+                                dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key]
+                                                         + decDrugPositiveAttributeBonus * intHits;
+                            }
                         }
                     }
 

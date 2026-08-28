@@ -2283,6 +2283,7 @@
       <avail>12F</avail>
       <cost>16420</cost>
       <bonus>
+        <drugpositiveattributemodifier>1</drugpositiveattributemodifier>
         <physiologicaladdictionfirsttime>-2</physiologicaladdictionfirsttime>
         <psychologicaladdictionfirsttime>-2</psychologicaladdictionfirsttime>
         <physiologicaladdictionalreadyaddicted>2</physiologicaladdictionalreadyaddicted>

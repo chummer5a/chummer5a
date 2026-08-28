@@ -358,6 +358,7 @@ namespace Chummer
             DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
+            DrugPositiveAttributeModifier, // Extra +N on each positive drug attribute modifier (Narco)
             Surprise,
             EnableCyberzombie,
             AllowCritterPowerCategory,
@@ -490,6 +491,10 @@ namespace Chummer
 
         #region Save and Load Methods
 
+        /// <summary>
+        /// Creates an improvement belonging to a character. Does not add it to the character's improvement list.
+        /// </summary>
+        /// <param name="objCharacter">Character that owns the improvement.</param>
         public Improvement(Character objCharacter)
         {
             _objCharacter = objCharacter;
@@ -1167,11 +1172,13 @@ namespace Chummer
                             }
                         }
                         strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
+                        bool blnWildcardName = string.IsNullOrEmpty(strTargetAttribute);
                         if (setAttributePropertiesChanged.Count > 0)
                         {
                             foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
                             {
-                                if (objCharacterAttrib.Abbrev != strTargetAttribute
+                                if (!blnWildcardName
+                                    && objCharacterAttrib.Abbrev != strTargetAttribute
                                     && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true
                                     && lstAddonImprovedNames?.Contains(objCharacterAttrib.Abbrev) != true)
                                     continue;
@@ -1200,6 +1207,20 @@ namespace Chummer
                         yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                             objCharacterAttrib,
                             nameof(CharacterAttrib.TotalAugmentedMaximum));
+                    }
+                }
+                    break;
+
+                case ImprovementType.DrugPositiveAttributeModifier:
+                {
+                    foreach (CharacterAttrib objCharacterAttrib in _objCharacter.GetAllAttributes())
+                    {
+                        yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
+                            objCharacterAttrib,
+                            nameof(CharacterAttrib.AttributeModifiers));
+                        yield return new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
+                            objCharacterAttrib,
+                            nameof(CharacterAttrib.HasModifiers));
                     }
                 }
                     break;
@@ -3232,11 +3253,13 @@ namespace Chummer
                                 }
                             }
                             strTargetAttribute = strTargetAttribute.TrimEndOnce("Base");
+                            bool blnWildcardName = string.IsNullOrEmpty(strTargetAttribute);
                             if (setAttributePropertiesChanged.Count > 0)
                             {
                                 foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
                                 {
-                                    if (objCharacterAttrib.Abbrev != strTargetAttribute
+                                    if (!blnWildcardName
+                                        && objCharacterAttrib.Abbrev != strTargetAttribute
                                         && lstExtraImprovedName?.Contains(objCharacterAttrib.Abbrev) != true
                                         && lstAddonImprovedNames?.Contains(objCharacterAttrib.Abbrev) != true)
                                         continue;
@@ -3266,6 +3289,20 @@ namespace Chummer
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
                                 objCharacterAttrib,
                                 nameof(CharacterAttrib.TotalAugmentedMaximum)));
+                        }
+                    }
+                    break;
+
+                case ImprovementType.DrugPositiveAttributeModifier:
+                    {
+                        foreach (CharacterAttrib objCharacterAttrib in await _objCharacter.GetAllAttributesAsync(token).ConfigureAwait(false))
+                        {
+                            lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.AttributeModifiers)));
+                            lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
+                                objCharacterAttrib,
+                                nameof(CharacterAttrib.HasModifiers)));
                         }
                     }
                     break;
