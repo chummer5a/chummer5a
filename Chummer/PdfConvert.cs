@@ -243,6 +243,8 @@ namespace Codaxy.WkHtmlToPdf
                                                           out StringBuilder sbdParams))
             {
                 sbdParams.Append("--page-size A4 ", "--disable-smart-shrinking ");
+                // SECURITY: sheet HTML is untrusted (character notes/description/etc.); block scripting, local-file reads, and remote links.
+                sbdParams.Append("--disable-javascript ", "--disable-local-file-access ", "--disable-external-links ");
 
                 if (!string.IsNullOrEmpty(document.HeaderUrl))
                 {
