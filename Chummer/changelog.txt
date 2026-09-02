@@ -58,6 +58,7 @@ Qualities:
 
 Skills:
 - Fixed a karma calculation bug if the character takes a skill that is not enabled by default for a skill group (ie Flight), adds ranks to the skill group, removes the improvement that grants the skill, then removes ranks from the skill group.
+- Added code to prevent improvements for skills that have 0 value from displaying in tooltips.
 
 Magic:
 - Fixed `not(...)` improvement conditions always evaluating as false, which prevented Spellcasting Foci from adding their Force to spell tests. Alchemical preparations remain excluded as intended.

@@ -5412,7 +5412,7 @@ namespace Chummer.Backend.Skills
                         bool first = true;
                         foreach (Improvement objImprovement in lstRelevantImprovements)
                         {
-                            if (!objImprovement.AddToRating)
+                            if (!objImprovement.AddToRating || objImprovement.Value == 0)
                                 continue;
                             if (first)
                             {
@@ -5500,7 +5500,8 @@ namespace Chummer.Backend.Skills
                     {
                         if (source.AddToRating
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
-                            || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                            || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute
+                            || source.Value == 0)
                             continue;
                         if (!string.IsNullOrEmpty(source.Condition))
                         {
@@ -5759,7 +5760,7 @@ namespace Chummer.Backend.Skills
                         bool first = true;
                         foreach (Improvement objImprovement in lstRelevantImprovements)
                         {
-                            if (!objImprovement.AddToRating)
+                            if (!objImprovement.AddToRating || objImprovement.Value == 0)
                                 continue;
                             if (first)
                             {
@@ -5857,7 +5858,8 @@ namespace Chummer.Backend.Skills
                     {
                         if (source.AddToRating
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
-                            || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute)
+                            || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute
+                            || source.Value == 0)
                             continue;
                         sbdReturn.Append(strSpace, '+', strSpace).Append(
                             await CharacterObject.GetObjectNameAsync(source, token: token).ConfigureAwait(false));
