@@ -1724,10 +1724,8 @@
       <adeptway>0.5</adeptway>
       <bonus>
         <weaponcategorydice>
-          <category>
-            <name>Bows</name>
-            <value>1</value>
-          </category>
+          <name>Bows</name>
+          <bonus>1</bonus>
         </weaponcategorydice>
       </bonus>
     </power>

@@ -14,10 +14,13 @@ Application:
 - Added a global option to insert new character-tree items alphabetically among their siblings. Manual drag-sort / SortOrder still takes precedence when items have been reordered.
 - Added Sum-To-Ten Improved customdata ruleset to the Full House (Sum-to-Ten Improved, German) custom setting file. Closes #5255
 - Fixed calendar print output omitting week notes (they were gated behind the Print Notes option) and skipping weeks that have no notes. Closes #5280
-- Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier.
+- Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier. Optional `category` attribute restricts the bonus to drugs with that category (`Custom Drug`, `Drugs`, `BTLs`, etc.; `All` for every category). Narco uses `Custom Drug` and `Drugs`.
+- Chrome Flesh BTLs can be added from Create Custom Drug (no Foundation required) and activated like drugs. Downer and Upper apply their attribute modifiers; other CF BTLs are slottable with a source-page note.
+- Fixed drug-granted qualities remaining on the character after the drug is deactivated or deleted. Qualities from drug components are created when the drug's custom improvement group is enabled and removed when it is disabled. A quality `rating` attribute (e.g. Tank's High Pain Tolerance 3) is one improvement stub that grants that many stacked levels, not separate stubs.
+- Fixed addquality/addqualities improvements leaving the granted quality on the character after the parent item is removed. Standalone `<addquality>` bonus nodes (not wrapped in `<addqualities>`) are now processed the same way. Re-enabling a parent also restores the granted quality's bonuses.
 
 Bioware:
-- Implemented Narco (Chrome Flesh): each positive attribute modifier from an active drug is increased by +1. Existing characters with Narco need to Reapply Improvements.
+- Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drug and Drugs categories, not BTLs. Existing characters with Narco need to Reapply Improvements.
 
 Vehicles:
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
@@ -38,10 +41,14 @@ Gear:
 - Fixed Gear objects incorrectly clamping their rating to 1 on purchase if the gear uses {Parent Rating}.
 - Implemented a purchasing control for the Custom Item object in Career mode to allow the user to purchase more of the item while supporting markup and cost modifiers from services like Black Market Pipeline, Free!, etc. Closes #1261
 - Fixed custom drugs losing their InternalId on character load, which left drug-granted qualities behind after the drugs were deleted. Orphaned improvement qualities can now be removed when their linking SpecificQuality improvement is gone. Closes #4181.
+- Added stub data for BTLs from Chrome Flesh. Pending further implementation.
 
 PACKs:
 - Fixed a crash when selecting packs with lifestyles if the lifestyle does not have an increment defined and several other null checks related to knowledge skills, martial arts techniques, spells and programs.
 - Fixed PACKs that add Gear objects not correctly adding items when the name is referred to by name, due to incorrectly cleaning the name of the gear object when checking for it in the data files. Closes #5266.
+
+Powers:
+- Fixed incorrect format for improvement on Master Archer. Characters with this improvement will need to remove and re-add it to properly have it show the dicepool bonus for Bows.
 
 Qualities:
 - Fixed College Education, Linguist, School of Hard Knocks, Technical School Education, Jack of All Trades, and the War mentor not applying their skill karma discounts after improvement conditions were converted to `/character/created` XPath form.
