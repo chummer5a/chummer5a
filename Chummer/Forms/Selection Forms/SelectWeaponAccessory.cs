@@ -762,7 +762,7 @@ namespace Chummer
         private async Task<decimal> ProcessInvariantXPathExpression(string strExpression, int intRating, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token);
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())

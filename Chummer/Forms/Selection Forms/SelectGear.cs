@@ -1055,7 +1055,7 @@ namespace Chummer
 
                         if (objCostNode != null)
                         {
-                            string strCost = objCostNode.Value.ProcessFixedValuesString(intRating);
+                            string strCost = objCostNode.Value.ProcessFixedValuesString(intRating, token);
                             if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                             {
                                 string strFirstHalf = strCost.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -1680,7 +1680,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token);
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;

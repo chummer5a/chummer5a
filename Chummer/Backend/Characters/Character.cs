@@ -45910,7 +45910,7 @@ namespace Chummer
                     }
                     else if (objImprovement.ImproveType == Improvement.ImprovementType.Seeker
                              && objImprovement.Enabled
-                             && ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
+                             && ImprovementManager.EvaluateImprovementCondition(objImprovement, this, token))
                     {
                         string strImprovedName = objImprovement.ImprovedName;
                         if (strImprovedName == "BOX" || AttributeSection.AttributeStrings.Contains(strImprovedName))
@@ -46030,7 +46030,7 @@ namespace Chummer
                 List<Improvement> lstSeekerImprovements = new List<Improvement>(Improvements.Count);
                 List<string> lstSeekerAttributes = new List<string>(AttributeSection.AttributeStrings.Count);
                 bool blnCreated = await GetCreatedAsync(token).ConfigureAwait(false);
-                await Improvements.ForEachAsync(objImprovement =>
+                await Improvements.ForEachAsync(async objImprovement =>
                 {
                     if (objImprovement.ImproveType == Improvement.ImprovementType.Attribute
                         || objImprovement.ImproveType == Improvement.ImprovementType.PhysicalCM)
@@ -46040,7 +46040,7 @@ namespace Chummer
                     }
                     else if (objImprovement.ImproveType == Improvement.ImprovementType.Seeker
                              && objImprovement.Enabled
-                             && ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
+                             && await ImprovementManager.EvaluateImprovementConditionAsync(objImprovement, this, token).ConfigureAwait(false))
                     {
                         string strImprovedName = objImprovement.ImprovedName;
                         if (strImprovedName == "BOX" || AttributeSection.AttributeStrings.Contains(strImprovedName))

@@ -2767,7 +2767,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             string strBonus = bonusNode["devicerating"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2778,7 +2778,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["programlimit"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2789,7 +2789,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["attack"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2800,7 +2800,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["sleaze"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2811,7 +2811,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["dataprocessing"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2822,7 +2822,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["firewall"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;
@@ -2833,7 +2833,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             strBonus = bonusNode["matrixcm"]?.InnerTextViaPool(token);
             if (!string.IsNullOrEmpty(strBonus))
             {
-                strBonus = strBonus.ProcessFixedValuesString(_intRating);
+                strBonus = strBonus.ProcessFixedValuesString(_intRating, token);
                 strBonus = strBonus.Replace("Rating", _intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (int.TryParse(strBonus, out int intTemp) && intTemp > 0)
                     strBonus = "+" + strBonus;

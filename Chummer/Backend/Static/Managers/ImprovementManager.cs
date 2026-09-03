@@ -1474,7 +1474,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating)
+            strValue = strValue.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -1509,7 +1509,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating)
+            strValue = strValue.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -1545,7 +1545,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating)
+            strValue = strValue.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -1580,7 +1580,7 @@ namespace Chummer
             //         Log.Enter("ValueToInt");
             //         Log.Info("strValue = " + strValue);
             //Log.Info("intRating = " + intRating.ToString());
-            strValue = strValue.ProcessFixedValuesString(intRating)
+            strValue = strValue.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
             if (strValue.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
@@ -6727,6 +6727,7 @@ namespace Chummer
                 int intOpenParenthesesIndex = condition.IndexOf('(');
                 while (intOpenParenthesesIndex >= 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intCloseParenthesesIndex = IndexOfMatchingCloseParenthesis(condition, intOpenParenthesesIndex);
                     if (intCloseParenthesesIndex < 0)
                     {
@@ -6817,8 +6818,9 @@ namespace Chummer
         /// <param name="condition">The condition string to evaluate.</param>
         /// <param name="targetObject">The object to evaluate the condition against.</param>
         /// <returns>True if the condition is met, false otherwise.</returns>
-        public static bool EvaluateCondition(string condition, object targetObject)
+        public static bool EvaluateCondition(string condition, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(condition) || targetObject == null)
                 return true;
 
@@ -6830,13 +6832,14 @@ namespace Chummer
                 int intOpenParenthesesIndex = condition.IndexOf('(');
                 while (intOpenParenthesesIndex >= 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intCloseParenthesesIndex = IndexOfMatchingCloseParenthesis(condition, intOpenParenthesesIndex);
                     if (intCloseParenthesesIndex < 0)
                     {
                         Utils.BreakIfDebug();
                         break;
                     }
-                    bool blnInnerResult = EvaluateCondition(condition.Substring(intOpenParenthesesIndex + 1, intCloseParenthesesIndex - intOpenParenthesesIndex - 1).Trim(), targetObject);
+                    bool blnInnerResult = EvaluateCondition(condition.Substring(intOpenParenthesesIndex + 1, intCloseParenthesesIndex - intOpenParenthesesIndex - 1).Trim(), targetObject, token);
                     if (intOpenParenthesesIndex >= 3 && string.Equals(condition.Substring(intOpenParenthesesIndex - 3, 3), "not", StringComparison.OrdinalIgnoreCase))
                         blnInnerResult = !blnInnerResult;
 
@@ -6888,7 +6891,7 @@ namespace Chummer
                 {
                     foreach (string part in condition.SplitNoAlloc(" and ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (!EvaluateCondition(part.Trim(), targetObject))
+                        if (!EvaluateCondition(part.Trim(), targetObject, token))
                             return false;
                     }
                     return true;
@@ -6898,13 +6901,13 @@ namespace Chummer
                 {
                     foreach (string part in condition.SplitNoAlloc(" or ", StringSplitOptions.RemoveEmptyEntries, StringComparison.OrdinalIgnoreCase))
                     {
-                        if (EvaluateCondition(part.Trim(), targetObject))
+                        if (EvaluateCondition(part.Trim(), targetObject, token))
                             return true;
                     }
                     return false;
                 }
 
-                bool? leaf = EvaluateConditionLeaf(condition, targetObject);
+                bool? leaf = EvaluateConditionLeaf(condition, targetObject, token);
                 return leaf ?? true;
             }
             catch (Exception)
@@ -6917,8 +6920,8 @@ namespace Chummer
         private static async Task<bool?> EvaluateConditionLeafAsync(string condition, object targetObject, CancellationToken token)
         {
             token.ThrowIfCancellationRequested();
-
             Match xpathMatch = XPathConditionRegex.Match(condition);
+            token.ThrowIfCancellationRequested();
             if (xpathMatch.Success)
             {
                 string objectType = xpathMatch.Groups[1].Value;
@@ -6935,6 +6938,7 @@ namespace Chummer
             }
 
             Match atMatch = AtPropertyConditionRegex.Match(condition);
+            token.ThrowIfCancellationRequested();
             if (atMatch.Success)
             {
                 string objectType = GetConditionObjectType(targetObject);
@@ -6956,9 +6960,11 @@ namespace Chummer
             return await EvaluateLegacyConditionAsync(condition, targetObject, token).ConfigureAwait(false);
         }
 
-        private static bool? EvaluateConditionLeaf(string condition, object targetObject)
+        private static bool? EvaluateConditionLeaf(string condition, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             Match xpathMatch = XPathConditionRegex.Match(condition);
+            token.ThrowIfCancellationRequested();
             if (xpathMatch.Success)
             {
                 string objectType = xpathMatch.Groups[1].Value;
@@ -6968,12 +6974,13 @@ namespace Chummer
                     ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
                     : null;
 
-                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value))
+                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))
                     return false;
                 return ApplyConditionValue(value, strOperator, expectedValue);
             }
 
             Match atMatch = AtPropertyConditionRegex.Match(condition);
+            token.ThrowIfCancellationRequested();
             if (atMatch.Success)
             {
                 string objectType = GetConditionObjectType(targetObject);
@@ -6986,12 +6993,12 @@ namespace Chummer
                     ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
                     : null;
 
-                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value))
+                if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))
                     return false;
                 return ApplyConditionValue(value, strOperator, expectedValue);
             }
 
-            return EvaluateLegacyCondition(condition, targetObject);
+            return EvaluateLegacyCondition(condition, targetObject, token);
         }
 
         private static bool ApplyConditionValue(object propertyValue, string strOperator, string expectedValue)
@@ -7025,15 +7032,16 @@ namespace Chummer
         /// <summary>
         /// Typed allowlist: resolve a known condition property without reflection.
         /// </summary>
-        private static bool TryGetConditionValue(object targetObject, string objectType, string propertyName, out object value)
+        private static bool TryGetConditionValue(object targetObject, string objectType, string propertyName, out object value, CancellationToken token = default)
         {
             value = null;
+            token.ThrowIfCancellationRequested();
             if (targetObject == null || string.IsNullOrEmpty(objectType) || string.IsNullOrEmpty(propertyName))
                 return false;
 
             string typeKey = objectType.ToLowerInvariant();
             string propKey = propertyName.ToLowerInvariant();
-
+            token.ThrowIfCancellationRequested();
             switch (typeKey)
             {
                 case "character" when targetObject is Character objCharacter:
@@ -7129,7 +7137,7 @@ namespace Chummer
 
             string typeKey = objectType.ToLowerInvariant();
             string propKey = propertyName.ToLowerInvariant();
-
+            token.ThrowIfCancellationRequested();
             switch (typeKey)
             {
                 case "character" when targetObject is Character objCharacter:
@@ -7231,8 +7239,9 @@ namespace Chummer
         /// <summary>
         /// Synchronous legacy condition evaluation.
         /// </summary>
-        private static bool? EvaluateLegacyCondition(string condition, object targetObject)
+        private static bool? EvaluateLegacyCondition(string condition, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (targetObject is Character objCharacter)
             {
                 if (string.Equals(condition, "career", StringComparison.OrdinalIgnoreCase))
@@ -7243,14 +7252,14 @@ namespace Chummer
 
             if (targetObject is Skill objSkill)
             {
-                if (objSkill.HasSpecialization(condition))
+                if (objSkill.HasSpecialization(condition, token))
                     return true;
             }
             else if (targetObject is SkillGroup objSkillGroup)
             {
                 foreach (Skill objSkillInGroup in objSkillGroup.SkillList)
                 {
-                    if (objSkillInGroup.HasSpecialization(condition))
+                    if (objSkillInGroup.HasSpecialization(condition, token))
                         return true;
                 }
             }
@@ -7392,12 +7401,13 @@ namespace Chummer
         /// <param name="improvement">The improvement to evaluate.</param>
         /// <param name="targetObject">The target object to evaluate against.</param>
         /// <returns>True if the improvement should be applied, false otherwise.</returns>
-        public static bool EvaluateImprovementCondition(Improvement improvement, object targetObject)
+        public static bool EvaluateImprovementCondition(Improvement improvement, object targetObject, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (improvement == null || string.IsNullOrEmpty(improvement.Condition))
                 return true;
 
-            return EvaluateCondition(improvement.Condition, targetObject);
+            return EvaluateCondition(improvement.Condition, targetObject, token);
         }
 
         #endregion Condition Evaluation

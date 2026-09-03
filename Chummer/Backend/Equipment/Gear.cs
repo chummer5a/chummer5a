@@ -2782,12 +2782,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating).StandardRound();
+        private int ProcessRatingString(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating).StandardRound();
+        private int ProcessRatingString(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
@@ -2810,22 +2810,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnSuccess)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnSuccess, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
@@ -2833,6 +2834,7 @@ namespace Chummer.Backend.Equipment
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         sbdValue.Append(strExpression);
                         if (Parent is IHasRating objCastParent)
                         {
@@ -2919,7 +2921,7 @@ namespace Chummer.Backend.Equipment
                                 continue;
                             int intTotalChildrenValue = Children.Sum(g => g.Equipped, loopGear =>
                                                                          loopGear.GetBaseMatrixAttribute(
-                                                                             strMatrixAttribute));
+                                                                             strMatrixAttribute), token);
 
                             sbdValue.Replace("{Children " + strMatrixAttribute + "}",
                                              intTotalChildrenValue.ToString(GlobalSettings.InvariantCultureInfo));
@@ -2929,7 +2931,7 @@ namespace Chummer.Backend.Equipment
                         while (objLoopParent is Gear objLoopParentGear)
                             objLoopParent = objLoopParentGear.Parent;
                         if (objLoopParent is Cyberware objCyberwareParent)
-                            objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                         else if (objLoopParent is WeaponAccessory objAccessoryParent)
                         {
                             Weapon objWeaponParent = objAccessoryParent.Parent;
@@ -2940,36 +2942,36 @@ namespace Chummer.Backend.Equipment
                                     string strCyberwareId = objAccessoryParent.Parent.ParentID;
                                     objCyberwareParent = _objCharacter.Cyberware.FindById(strCyberwareId)
                                         ?? _objCharacter.Vehicles.FindVehicleCyberware(x => strCyberwareId == x.InternalId);
-                                    objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    objCyberwareParent.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                                 }
                                 else if (objWeaponParent.ParentVehicle != null)
                                 {
-                                    objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    objWeaponParent.ParentVehicle.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                                 }
                                 else
                                 {
                                     Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                                 }
                             }
                             else
                             {
                                 Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                                _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                                _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                             }
                         }
                         else if (objLoopParent is Vehicle objVehicleParent)
-                            objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression);
+                            objVehicleParent.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                         }
                         strExpression = sbdValue.ToString();
                     }
                 }
                 (bool blnIsSuccess, object objProcess)
-                            = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                            = CommonFunctions.EvaluateInvariantXPath(strExpression, token: token);
                 if (blnIsSuccess)
                 {
                     blnSuccess = true;

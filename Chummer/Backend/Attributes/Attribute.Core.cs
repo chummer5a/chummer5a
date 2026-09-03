@@ -1645,6 +1645,7 @@ namespace Chummer.Backend.Attributes
                         int intLimbTotalReturn = 0;
                         foreach (Cyberware objCyberware in lstToCheck)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objCyberware.IsModularCurrentlyEquipped)
                                 continue;
                             if (objCyberware.IsLimb)
@@ -1654,7 +1655,7 @@ namespace Chummer.Backend.Attributes
 
                                 int intLoop = objCyberware.LimbSlotCount;
                                 intLimbCountReturn += intLoop;
-                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev) *
+                                intLimbTotalReturn += objCyberware.GetAttributeTotalValue(Abbrev, token) *
                                                       intLoop;
                             }
                             else

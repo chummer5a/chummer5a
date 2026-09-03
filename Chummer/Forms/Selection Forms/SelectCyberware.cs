@@ -1380,7 +1380,7 @@ namespace Chummer
                             strCost = objXmlCyberware.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                             if (!string.IsNullOrEmpty(strCost))
                             {
-                                strCost = strCost.ProcessFixedValuesString(intRating);
+                                strCost = strCost.ProcessFixedValuesString(intRating, token);
                                 // Check for a Variable Cost.
                                 if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                                 {
@@ -1528,7 +1528,7 @@ namespace Chummer
                                 }
 
                                 string strEss = objXmlCyberware.SelectSingleNodeAndCacheExpression("ess", token)?.Value ?? string.Empty;
-                                strEss = strEss.ProcessFixedValuesString(intRating);
+                                strEss = strEss.ProcessFixedValuesString(intRating, token);
                                 decESS = (await ProcessInvariantXPathExpression(objXmlCyberware, strEss, intMinRating, intRating, token).ConfigureAwait(false)).Item1;
                                 decESS *= decCharacterESSModifier;
                                 CharacterSettings objSettings = await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false);
@@ -1572,7 +1572,7 @@ namespace Chummer
                         {
                             if (blnSquareBrackets)
                                 strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                            strCapacity = strCapacity.ProcessFixedValuesString(intRating);
+                            strCapacity = strCapacity.ProcessFixedValuesString(intRating, token);
                             if (strCapacity == "[*]" || strCapacity == "*")
                                 await lblCapacity.DoThreadSafeAsync(x => x.Text = "*", token: token).ConfigureAwait(false);
                             else
@@ -1940,7 +1940,7 @@ namespace Chummer
                                 string strAvailExpr
                                     = xmlCyberware.SelectSingleNodeAndCacheExpression("avail", token: token)?.Value
                                       ?? string.Empty;
-                                strAvailExpr = strAvailExpr.ProcessFixedValuesString(intMinRating);
+                                strAvailExpr = strAvailExpr.ProcessFixedValuesString(intMinRating, token);
 
                                 if (strAvailExpr.EndsWith('F', 'R'))
                                 {
@@ -1968,7 +1968,7 @@ namespace Chummer
                         // Apply cost filtering
                         if (!blnFree && (decExactCost > 0 || decMinimumCost != 0 || decMaximumCost != 0))
                         {
-                            string strCost = xmlCyberware.SelectSingleNodeAndCacheExpression("cost", token: token)?.Value.ProcessFixedValuesString(intMinRating) ?? "0";
+                            string strCost = xmlCyberware.SelectSingleNodeAndCacheExpression("cost", token: token)?.Value.ProcessFixedValuesString(intMinRating, token) ?? "0";
 
                             decimal decCost = 0;
                             if (!string.IsNullOrEmpty(strCost))
@@ -2033,7 +2033,7 @@ namespace Chummer
                         if (blnFilterEssence && (decExactEssence > 0 || decMinimumEssence != 0 || decMaximumEssence != 0))
                         {
                             string strEssenceExpr = xmlCyberware.SelectSingleNodeAndCacheExpression("ess", token: token)?.Value ?? "0";
-                            strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating);
+                            strEssenceExpr = strEssenceExpr.ProcessFixedValuesString(intMinRating, token);
 
                             decimal decEssenceCost = 0;
                             if (!string.IsNullOrEmpty(strEssenceExpr) && strEssenceExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decEssenceCost))
@@ -2093,7 +2093,7 @@ namespace Chummer
                             }
 
                             // Process fixed values (like Rating) - use the minimum rating for capacity calculation
-                            strCapacityToCheck = strCapacityToCheck.ProcessFixedValuesString(intMinRating);
+                            strCapacityToCheck = strCapacityToCheck.ProcessFixedValuesString(intMinRating, token);
 
                             decimal decCapacity = 0;
                             if (strCapacityToCheck == "*")
@@ -2266,7 +2266,7 @@ namespace Chummer
                 if (strCapacity?.Contains('[') == true)
                 {
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
+                    strCapacity = strCapacity.ProcessFixedValuesString(intRating, token);
 
                     decimal decCapacity = 0;
                     if (strCapacity != "*" && strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decCapacity))
@@ -2566,7 +2566,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strExpression))
                 return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;

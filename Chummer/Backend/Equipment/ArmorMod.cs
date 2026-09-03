@@ -1079,12 +1079,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _).StandardRound();
+        private int ProcessRatingString(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _).StandardRound();
+        private int ProcessRatingString(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
@@ -1107,22 +1107,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -1130,6 +1131,7 @@ namespace Chummer.Backend.Equipment
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         sbdValue.Append(strExpression);
                         Armor objParent = Parent;
                         if (objParent != null)
@@ -1149,7 +1151,7 @@ namespace Chummer.Backend.Equipment
                             sbdValue.CheapReplace(strExpression, "Armor Weight", () => strParentOwnWeight.Value);
                             sbdValue.CheapReplace(strExpression, "{Parent Weight}", () => strParentOwnWeight.Value);
                             sbdValue.CheapReplace(strExpression, "Parent Weight", () => strParentOwnWeight.Value);
-                            Lazy<string> strParentCapacity = new Lazy<string>(() => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo));
+                            Lazy<string> strParentCapacity = new Lazy<string>(() => objParent.TotalArmorCapacity(GlobalSettings.InvariantCultureInfo, token));
                             sbdValue.CheapReplace(strExpression, "{Armor Capacity}", () => strParentCapacity.Value);
                             sbdValue.CheapReplace(strExpression, "Armor Capacity", () => strParentCapacity.Value);
                             sbdValue.CheapReplace(strExpression, "{Parent Capacity}", () => strParentCapacity.Value);
@@ -1180,13 +1182,13 @@ namespace Chummer.Backend.Equipment
                         }
                         sbdValue.CheapReplace("{Rating}", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
                         sbdValue.CheapReplace("Rating", () => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
-                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                        _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                         strExpression = sbdValue.ToString();
                     }
                 }
                 object objProcess;
                 (blnIsSuccess, objProcess)
-                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression, token);
                 if (blnIsSuccess)
                     return Convert.ToDecimal((double)objProcess);
             }

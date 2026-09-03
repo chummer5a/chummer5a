@@ -618,7 +618,7 @@ namespace Chummer
             string strAvail = objXmlDrug.SelectSingleNodeAndCacheExpression("avail", token)?.Value;
             if (!string.IsNullOrEmpty(strAvail))
             {
-                string strAvailExpr = strAvail.ProcessFixedValuesString(intRating);
+                string strAvailExpr = strAvail.ProcessFixedValuesString(intRating, token);
                 string strSuffix = string.Empty;
                 char chrSuffix = strAvailExpr[strAvailExpr.Length - 1];
                 switch (chrSuffix)
@@ -696,7 +696,7 @@ namespace Chummer
                 string strCost = objXmlDrug.SelectSingleNodeAndCacheExpression("cost", token)?.Value;
                 if (!string.IsNullOrEmpty(strCost))
                 {
-                    strCost = strCost.ProcessFixedValuesString(intRating);
+                    strCost = strCost.ProcessFixedValuesString(intRating, token);
                     // Check for a Variable Cost.
                     if (strCost.StartsWith("Variable(", StringComparison.Ordinal))
                     {

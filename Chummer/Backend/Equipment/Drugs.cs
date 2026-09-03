@@ -2447,7 +2447,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strCostExpression))
                 return 0;
 
-            strCostExpression = strCostExpression.ProcessFixedValuesString(Level).TrimStart('+')
+            strCostExpression = strCostExpression.ProcessFixedValuesString(Level, token).TrimStart('+')
                 .Replace("{Level}", Level.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
 

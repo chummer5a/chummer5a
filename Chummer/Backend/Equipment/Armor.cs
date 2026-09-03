@@ -838,7 +838,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strLoopRating))
                     {
                         intAddWeaponRating = blnSync
-                            ? ProcessRatingString(strLoopRating, () => Rating)
+                            ? ProcessRatingString(strLoopRating, () => Rating, token)
                             : await ProcessRatingStringAsync(strLoopRating, () => GetRatingAsync(token), token);
                     }
 
@@ -1671,57 +1671,59 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, int intRating)
+        private int ProcessRatingString(string strExpression, int intRating, CancellationToken token = default)
         {
-            return ProcessRatingString(strExpression, () => intRating);
+            return ProcessRatingString(strExpression, () => intRating, token);
         }
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, Func<int> funcRating)
+        private int ProcessRatingString(string strExpression, Func<int> funcRating, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _).StandardRound();
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token).StandardRound();
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, int intRating)
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+            return ProcessRatingStringAsDec(strExpression, () => intRating, out bool _, token);
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                 {
+                    token.ThrowIfCancellationRequested();
                     sbdValue.Append(strExpression);
                     Lazy<string> strRating = new Lazy<string>(() => funcRating().ToString(GlobalSettings.InvariantCultureInfo));
                     sbdValue.CheapReplace("{Rating}", () => strRating.Value);
                     sbdValue.CheapReplace("Rating", () => strRating.Value);
-                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                    _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                     object objProcess;
                     (blnIsSuccess, objProcess)
-                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString());
+                        = CommonFunctions.EvaluateInvariantXPath(sbdValue.ToString(), token);
                     return blnIsSuccess ? Convert.ToDecimal((double)objProcess) : 0;
                 }
             }
@@ -1810,12 +1812,13 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Armor's Capacity.
         /// </summary>
-        public string TotalArmorCapacity(CultureInfo objCultureInfo)
+        public string TotalArmorCapacity(CultureInfo objCultureInfo, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             string strArmorCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strArmorCapacity))
                 return 0.0m.ToString("#,0.##", objCultureInfo);
-            strArmorCapacity = strArmorCapacity.ProcessFixedValuesString(() => Rating);
+            strArmorCapacity = strArmorCapacity.ProcessFixedValuesString(() => Rating, token);
 
             if (strArmorCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -1825,7 +1828,7 @@ namespace Chummer.Backend.Equipment
                 string strCapacity = strArmorCapacity;
                 if (blnSquareBrackets)
                     strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                decimal decCapacity = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess);
+                decimal decCapacity = ProcessRatingStringAsDec(strCapacity, () => Rating, out bool blnIsSuccess, token);
                 string strReturn = blnIsSuccess ? decCapacity.ToString("#,0.##", objCultureInfo) : strCapacity;
                 if (blnSquareBrackets)
                     strReturn = "[" + strReturn + "]";

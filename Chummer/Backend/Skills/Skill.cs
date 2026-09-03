@@ -2470,27 +2470,28 @@ namespace Chummer.Backend.Skills
         /// <param name="blnIncludeConditionals">Whether to include improvements that don't apply under all circumstances.</param>
         /// <param name="intAttributeOverrideValue">The value to be used for the attribute if it's not the default value. <see cref="int.MinValue"/> is equivalent to not overriding.</param>
         /// <returns></returns>
-        public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue)
+        public int PoolOtherAttribute(string strAttribute, bool blnIncludeConditionals = false, int intAttributeOverrideValue = int.MinValue, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsNativeLanguage)
                     return int.MaxValue;
                 if (!Enabled)
                     return 0;
                 int intValue = intAttributeOverrideValue > int.MinValue
                     ? intAttributeOverrideValue
-                    : CharacterObject.AttributeSection.GetAttributeByName(strAttribute).TotalValue;
+                    : CharacterObject.AttributeSection.GetAttributeByName(strAttribute, token).TotalValue;
                 if (intValue <= 0)
                     return 0;
                 int intRating = Rating;
                 if (intRating > 0)
                     return Math.Max(0,
-                        intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals) +
+                        intRating + intValue + PoolModifiers(strAttribute, blnIncludeConditionals, token) +
                         CharacterObject.WoundModifier + CharacterObject.SustainingPenalty);
                 return Default
                     ? Math.Max(0,
-                        intValue + PoolModifiers(strAttribute, blnIncludeConditionals) + DefaultModifier +
+                        intValue + PoolModifiers(strAttribute, blnIncludeConditionals, token) + DefaultModifier +
                         CharacterObject.WoundModifier + CharacterObject.SustainingPenalty)
                     : 0;
             }
@@ -2745,33 +2746,38 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the dicepool of the skill
         /// </summary>
-        public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false)
+        public int PoolModifiers(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!blnIncludeConditionals)
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterReadLock(token))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (strUseAttribute == Attribute)
                     {
-                        using (_objCachedPoolModifiersLock.EnterReadLock())
+                        using (_objCachedPoolModifiersLock.EnterReadLock(token))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (_intCachedPoolModifiers != int.MinValue)
                                 return _intCachedPoolModifiers;
                         }
 
-                        using (_objCachedPoolModifiersLock.EnterUpgradeableReadLock())
+                        using (_objCachedPoolModifiersLock.EnterUpgradeableReadLock(token))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (_intCachedPoolModifiers != int.MinValue)
                                 return _intCachedPoolModifiers;
-                            using (_objCachedPoolModifiersLock.EnterWriteLock())
+                            using (_objCachedPoolModifiersLock.EnterWriteLock(token))
                             {
-                                return _intCachedPoolModifiers = Bonus(false, strUseAttribute);
+                                token.ThrowIfCancellationRequested();
+                                return _intCachedPoolModifiers = Bonus(false, strUseAttribute, token: token);
                             }
                         }
                     }
                 }
             }
-            return Bonus(false, strUseAttribute, blnIncludeConditionals);
+            return Bonus(false, strUseAttribute, blnIncludeConditionals, token);
         }
 
         /// <summary>
@@ -2834,33 +2840,38 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Things that modify the rating of the skill
         /// </summary>
-        public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false)
+        public int RatingModifiers(string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!blnIncludeConditionals)
             {
-                using (LockObject.EnterReadLock())
+                using (LockObject.EnterReadLock(token))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (strUseAttribute == Attribute)
                     {
-                        using (_objCachedRatingModifiersLock.EnterReadLock())
+                        using (_objCachedRatingModifiersLock.EnterReadLock(token))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (_intCachedRatingModifiers != int.MinValue)
                                 return _intCachedRatingModifiers;
                         }
 
-                        using (_objCachedRatingModifiersLock.EnterUpgradeableReadLock())
+                        using (_objCachedRatingModifiersLock.EnterUpgradeableReadLock(token))
                         {
+                            token.ThrowIfCancellationRequested();
                             if (_intCachedRatingModifiers != int.MinValue)
                                 return _intCachedRatingModifiers;
-                            using (_objCachedRatingModifiersLock.EnterWriteLock())
+                            using (_objCachedRatingModifiersLock.EnterWriteLock(token))
                             {
-                                return _intCachedRatingModifiers = Bonus(true, strUseAttribute);
+                                token.ThrowIfCancellationRequested();
+                                return _intCachedRatingModifiers = Bonus(true, strUseAttribute, token: token);
                             }
                         }
                     }
                 }
             }
-            return Bonus(true, strUseAttribute, blnIncludeConditionals);
+            return Bonus(true, strUseAttribute, blnIncludeConditionals, token);
         }
 
         /// <summary>
@@ -2920,10 +2931,12 @@ namespace Chummer.Backend.Skills
             return await BonusAsync(true, strUseAttribute, blnIncludeConditionals, token).ConfigureAwait(false);
         }
 
-        protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false)
+        protected int Bonus(bool blnAddToRating, string strUseAttribute, bool blnIncludeConditionals = false, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            token.ThrowIfCancellationRequested();
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 //Some of this is not future proof. Rating that don't stack is not supported but i'm not aware of any cases where that will happen (for skills)
                 if (blnIncludeConditionals)
                 {
@@ -2931,14 +2944,15 @@ namespace Chummer.Backend.Skills
                     decimal decMaxConditionalValue = 0;
                     SkillSpecialization objMaxConditionalSpecialization = null;
                     foreach (Improvement objImprovement in RelevantImprovements(
-                                 x => x.AddToRating == blnAddToRating, strUseAttribute, true))
+                                 x => x.AddToRating == blnAddToRating, strUseAttribute, true, token: token))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (string.IsNullOrEmpty(objImprovement.Condition))
                             decReturn += objImprovement.Value;
                         else
                         {
                             // Use the generic condition evaluator for both legacy and new conditions
-                            if (ImprovementManager.EvaluateImprovementCondition(objImprovement, this))
+                            if (ImprovementManager.EvaluateImprovementCondition(objImprovement, this, token))
                             {
                                 decimal decLoopMaxValue = decMaxConditionalValue;
                                 if (objMaxConditionalSpecialization != null)
@@ -2946,7 +2960,7 @@ namespace Chummer.Backend.Skills
                                 decimal decLoop = objImprovement.Value;
                                 
                                 // Handle legacy specialization conditions
-                                SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition);
+                                SkillSpecialization objLoopSpec = GetSpecialization(objImprovement.Condition, token);
                                 if (objLoopSpec != null)
                                     decLoop += objLoopSpec.SpecializationBonus;
                                 
@@ -2961,7 +2975,7 @@ namespace Chummer.Backend.Skills
 
                     return (decReturn + decMaxConditionalValue).StandardRound();
                 }
-                return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute).Sum(x => x.Value).StandardRound();
+                return RelevantImprovements(x => x.AddToRating == blnAddToRating, strUseAttribute, token: token).Sum(x => x.Value).StandardRound();
             }
         }
 
@@ -3021,15 +3035,17 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false)
+        public IEnumerable<Improvement> RelevantImprovements(Func<Improvement, bool> funcWherePredicate = null, string strUseAttribute = "", bool blnIncludeConditionals = false, bool blnExitAfterFirst = false, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 string strNameToUse = DictionaryKey;
                 if (string.IsNullOrEmpty(strUseAttribute))
                     strUseAttribute = Attribute;
                 foreach (Improvement objImprovement in CharacterObject.Improvements)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!objImprovement.Enabled || funcWherePredicate?.Invoke(objImprovement) == false) continue;
                     if (!blnIncludeConditionals && !string.IsNullOrWhiteSpace(objImprovement.Condition)) continue;
                     switch (objImprovement.ImproveType)
@@ -5306,10 +5322,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public SkillSpecialization GetSpecialization(string strSpecialization)
+        public SkillSpecialization GetSpecialization(string strSpecialization, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill && ((ExoticSkill)this).Specific == strSpecialization)
                 {
                     return Specializations[0];
@@ -5318,7 +5335,7 @@ namespace Chummer.Backend.Skills
                 if (!CanHaveSpecs)
                     return null;
 
-                return HasSpecialization(strSpecialization)
+                return HasSpecialization(strSpecialization, token)
                     ? Specializations.FirstOrDefault(x =>
                         x.Name == strSpecialization || x.CurrentDisplayName == strSpecialization)
                     : null;
@@ -5359,18 +5376,19 @@ namespace Chummer.Backend.Skills
         public Task<string> GetPoolToolTipAsync(CancellationToken token = default) =>
             CompileDicepoolTooltipAsync(token: token);
 
-        public string CompileDicepoolTooltip(string abbrev = "", string strExtraStart = "", string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null)
+        public string CompileDicepoolTooltip(string abbrev = "", string strExtraStart = "", string strExtra = "", bool blnListAllLimbs = true, Cyberware objShowOnlyCyberware = null, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsNativeLanguage)
                 {
-                    return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage");
+                    return strExtraStart + LanguageManager.GetString("Tip_Skill_NativeLanguage", token: token);
                 }
 
                 if (!Enabled)
                 {
-                    return strExtraStart + LanguageManager.GetString("Label_SkillGroup_Disabled");
+                    return strExtraStart + LanguageManager.GetString("Label_SkillGroup_Disabled", token: token);
                 }
 
                 bool blnShowSwapSkillAttribute = false;
@@ -5380,38 +5398,40 @@ namespace Chummer.Backend.Skills
                     blnShowSwapSkillAttribute = Attribute == DefaultAttribute;
                 }
 
-                CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev);
+                CharacterAttrib att = CharacterObject.AttributeSection.GetAttributeByName(abbrev, token);
 
                 if (att.TotalValue <= 0)
                 {
                     return strExtraStart + string.Format(GlobalSettings.CultureInfo,
-                        LanguageManager.GetString("Tip_Skill_Zero_Attribute"),
+                        LanguageManager.GetString("Tip_Skill_Zero_Attribute", token: token),
                         att.DisplayNameShort(GlobalSettings.Language));
                 }
 
                 if (!Default && !Leveled)
                 {
-                    return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default");
+                    return strExtraStart + LanguageManager.GetString("Tip_Skill_Cannot_Default", token: token);
                 }
 
-                string strSpace = LanguageManager.GetString("String_Space");
-                List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true).ToList();
+                string strSpace = LanguageManager.GetString("String_Space", token: token);
+                List<Improvement> lstRelevantImprovements = RelevantImprovements(null, abbrev, true, token: token).ToList();
                 using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                            out StringBuilder sbdReturn))
                 {
+                    token.ThrowIfCancellationRequested();
                     int intCyberwareRating = CyberwareRating;
                     if (intCyberwareRating > TotalBaseRating)
                     {
-                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillsoftRating"), strSpace)
+                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillsoftRating", token: token), strSpace)
                             .Append('(', intCyberwareRating.ToString(GlobalSettings.CultureInfo), ')');
                     }
                     else
                     {
-                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillRating"), strSpace)
+                        sbdReturn.Append(strExtraStart, LanguageManager.GetString("Tip_Skill_SkillRating", token: token), strSpace)
                             .Append('(', Rating.ToString(GlobalSettings.CultureInfo));
                         bool first = true;
                         foreach (Improvement objImprovement in lstRelevantImprovements)
                         {
+                            token.ThrowIfCancellationRequested();
                             if (!objImprovement.AddToRating || objImprovement.Value == 0)
                                 continue;
                             if (first)
@@ -5422,7 +5442,7 @@ namespace Chummer.Backend.Skills
                             }
 
                             sbdReturn.Append(strSpace, '+', strSpace)
-                                .Append(CharacterObject.GetObjectName(objImprovement), strSpace, '(')
+                                .Append(CharacterObject.GetObjectName(objImprovement, token: token), strSpace, '(')
                                 .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo), ')');
                         }
 
@@ -5442,7 +5462,7 @@ namespace Chummer.Backend.Skills
                         sbdReturn.Append(strSpace, '+', strSpace)
                             .Append(objShowOnlyCyberware.CurrentDisplayName, strSpace, att.CurrentDisplayAbbrev)
                             .Append(strSpace, '(')
-                            .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev)
+                            .Append(objShowOnlyCyberware.GetAttributeTotalValue(att.Abbrev, token)
                                 .ToString(GlobalSettings.CultureInfo), ')');
                         if (!CharacterObject.Ambidextrous
                             && (objShowOnlyCyberware.LimbSlot == "arm"
@@ -5452,7 +5472,7 @@ namespace Chummer.Backend.Skills
                         {
                             sbdReturn.Append(strSpace, '-', strSpace)
                                 .Append(2.ToString(GlobalSettings.CultureInfo), strSpace, '(')
-                                .Append(LanguageManager.GetString("Tip_Skill_OffHand"), ')');
+                                .Append(LanguageManager.GetString("Tip_Skill_OffHand", token: token), ')');
                         }
                     }
 
@@ -5463,7 +5483,7 @@ namespace Chummer.Backend.Skills
                                 x => x.ImproveType == Improvement.ImprovementType.SwapSkillAttribute);
                         if (objAttributeSwapImprovement != null)
                             sbdReturn.Append(strSpace)
-                                .Append(CharacterObject.GetObjectName(objAttributeSwapImprovement));
+                                .Append(CharacterObject.GetObjectName(objAttributeSwapImprovement, token: token));
                     }
 
                     if (Default && !Leveled)
@@ -5474,30 +5494,31 @@ namespace Chummer.Backend.Skills
                             Improvement objImprovement
                                 = ImprovementManager.GetCachedImprovementListForValueOf(
                                           CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                          SkillCategory, true)
+                                          SkillCategory, true, token: token)
                                       .FirstOrDefault()
                                   ?? ImprovementManager.GetCachedImprovementListForValueOf(
                                           CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                          SkillGroup, true)
+                                          SkillGroup, true, token: token)
                                       .FirstOrDefault()
                                   ?? ImprovementManager.GetCachedImprovementListForValueOf(
                                           CharacterObject, Improvement.ImprovementType.RemoveSkillDefaultPenalty,
-                                          DictionaryKey, true)
+                                          DictionaryKey, true, token: token)
                                       .FirstOrDefault()
                                   ?? ImprovementManager.GetCachedImprovementListForValueOf(
-                                          CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization)
+                                          CharacterObject, Improvement.ImprovementType.ReflexRecorderOptimization, token: token)
                                       .FirstOrDefault();
-                            sbdReturn.Append(strSpace, CharacterObject.GetObjectName(objImprovement));
+                            sbdReturn.Append(strSpace, CharacterObject.GetObjectName(objImprovement, token: token));
                         }
                         else
                             sbdReturn.Append(strSpace, intDefaultModifier > 0 ? '+' : '-', strSpace)
-                                .Append(LanguageManager.GetString("Tip_Skill_Defaulting"), strSpace, '(')
+                                .Append(LanguageManager.GetString("Tip_Skill_Defaulting", token: token), strSpace, '(')
                                 .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     List<Improvement> lstConditionalImprovements = new List<Improvement>(lstRelevantImprovements.Count);
                     foreach (Improvement source in lstRelevantImprovements)
                     {
+                        token.ThrowIfCancellationRequested();
                         if (source.AddToRating
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillAttribute
                             || source.ImproveType == Improvement.ImprovementType.SwapSkillSpecAttribute
@@ -5509,16 +5530,16 @@ namespace Chummer.Backend.Skills
                             continue;
                         }
                         sbdReturn.Append(strSpace, '+', strSpace)
-                                 .Append(CharacterObject.GetObjectName(source), strSpace, '(')
+                                 .Append(CharacterObject.GetObjectName(source, token: token), strSpace, '(')
                                  .Append(source.Value.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
                     if (lstConditionalImprovements.Count > 0)
                     {
                         sbdReturn.Append(strSpace, '+').Append(strSpace, '(').AppendJoin(
-                            strSpace + LanguageManager.GetString("String_Or") + strSpace,
+                            strSpace + LanguageManager.GetString("String_Or", token: token) + strSpace,
                             lstConditionalImprovements.Select(
-                                x => CharacterObject.GetObjectName(x) + strSpace + "("
+                                x => CharacterObject.GetObjectName(x, token: token) + strSpace + "("
                                      + x.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
                                      + x.CurrentDisplayCondition + ")"), ')');
                     }
@@ -5527,7 +5548,7 @@ namespace Chummer.Backend.Skills
                     if (wound != 0)
                     {
                         sbdReturn.Append(strSpace, '-', strSpace)
-                            .Append(LanguageManager.GetString("Tip_Skill_Wounds"), strSpace)
+                            .Append(LanguageManager.GetString("Tip_Skill_Wounds", token: token), strSpace)
                             .Append('(', wound.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
@@ -5535,7 +5556,7 @@ namespace Chummer.Backend.Skills
                     if (sustains != 0)
                     {
                         sbdReturn.Append(strSpace, '-', strSpace)
-                            .Append(LanguageManager.GetString("Tip_Skill_Sustain"), strSpace)
+                            .Append(LanguageManager.GetString("Tip_Skill_Sustain", token: token), strSpace)
                             .Append('(', sustains.ToString(GlobalSettings.CultureInfo), ')');
                     }
 
@@ -5544,7 +5565,7 @@ namespace Chummer.Backend.Skills
 
                     if (blnListAllLimbs && Cyberware.CyberlimbAttributeAbbrevs.Contains(att.Abbrev))
                     {
-                        CharacterObject.Cyberware.ForEach(x => BuildTooltipString(sbdReturn, x));
+                        CharacterObject.Cyberware.ForEach(x => BuildTooltipString(sbdReturn, x), token);
 
                         void BuildTooltipString(StringBuilder sb, Cyberware objCyberware)
                         {
@@ -5555,7 +5576,7 @@ namespace Chummer.Backend.Skills
 
                             if (objCyberware.InheritAttributes)
                             {
-                                objCyberware.Children.ForEach(x => BuildTooltipString(sbdReturn, x));
+                                objCyberware.Children.ForEach(x => BuildTooltipString(sbdReturn, x), token);
 
                                 return;
                             }
@@ -5568,7 +5589,7 @@ namespace Chummer.Backend.Skills
                             }
 
                             int pool = PoolOtherAttribute(att.Abbrev, false,
-                                objCyberware.GetAttributeTotalValue(att.Abbrev));
+                                objCyberware.GetAttributeTotalValue(att.Abbrev, token), token: token);
                             if (CharacterObject.Ambidextrous
                                 || (objCyberware.LimbSlot != "arm"
                                     && !objCyberware.Name.ContainsAny(" Arm", " Hand"))
@@ -5581,7 +5602,7 @@ namespace Chummer.Backend.Skills
                             {
                                 sb.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})", pool - 2,
                                     strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand"));
+                                    LanguageManager.GetString("Tip_Skill_OffHand", token: token));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -5597,21 +5618,22 @@ namespace Chummer.Backend.Skills
                         if (objSwapSkillAttribute.ImproveType != Improvement.ImprovementType.SwapSkillSpecAttribute)
                             continue;
                         string strExclude = objSwapSkillAttribute.Exclude;
-                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon"))
-                            .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute), strSpace);
+                        sbdReturn.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon", token: token))
+                            .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute, token: token), strSpace);
                         int intBasePool = PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
                             CharacterObject
-                                .GetAttribute(objSwapSkillAttribute.ImprovedName).Value);
+                                .GetAttribute(objSwapSkillAttribute.ImprovedName, token: token).Value, token: token);
                         SkillSpecialization objSpecialization = null;
                         if (Specializations.Count > 0 && CanHaveSpecs && ImprovementManager
                                 .GetCachedImprovementListForValueOf(
                                     CharacterObject,
                                     Improvement.ImprovementType.DisableSpecializationEffects,
-                                    DictionaryKey).Count == 0)
+                                    DictionaryKey, token: token).Count == 0)
                         {
                             int intMaxBonus = 0;
                             foreach (SkillSpecialization objLoopSpecialization in Specializations)
                             {
+                                token.ThrowIfCancellationRequested();
                                 if (objLoopSpecialization.Name == strExclude)
                                 {
                                     int intLoopBonus = objLoopSpecialization.SpecializationBonus;
@@ -5635,7 +5657,7 @@ namespace Chummer.Backend.Skills
                         if (!blnListAllLimbs ||
                             !Cyberware.CyberlimbAttributeAbbrevs.Contains(objSwapSkillAttribute.ImprovedName))
                             continue;
-                        CharacterObject.Cyberware.ForEach(objChild => BuildTooltip(sbdReturn, objChild));
+                        CharacterObject.Cyberware.ForEach(objChild => BuildTooltip(sbdReturn, objChild), token);
 
                         void BuildTooltip(StringBuilder sbdLoop, Cyberware objCyberware)
                         {
@@ -5646,12 +5668,12 @@ namespace Chummer.Backend.Skills
 
                             if (objCyberware.InheritAttributes)
                             {
-                                objCyberware.Children.ForEach(objChild => BuildTooltip(sbdLoop, objChild));
+                                objCyberware.Children.ForEach(objChild => BuildTooltip(sbdLoop, objChild), token);
                                 return;
                             }
 
-                            sbdLoop.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon"))
-                                .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute), strSpace, objCyberware.CurrentDisplayName);
+                            sbdLoop.AppendLine().AppendLine().Append(strExtraStart, strExclude, LanguageManager.GetString("String_Colon", token: token))
+                                .Append(strSpace, CharacterObject.GetObjectName(objSwapSkillAttribute, token: token), strSpace, objCyberware.CurrentDisplayName);
                             Grade objGrade = objCyberware.Grade;
                             if (objGrade.Name != "Standard" && objGrade.Name != "None")
                             {
@@ -5661,7 +5683,7 @@ namespace Chummer.Backend.Skills
                             int intLoopPool =
                                 PoolOtherAttribute(objSwapSkillAttribute.ImprovedName, false,
                                     objCyberware.GetAttributeTotalValue(
-                                        objSwapSkillAttribute.ImprovedName));
+                                        objSwapSkillAttribute.ImprovedName, token), token: token);
                             if (objSpecialization != null)
                             {
                                 intLoopPool += objSpecialization.SpecializationBonus;
@@ -5679,7 +5701,7 @@ namespace Chummer.Backend.Skills
                             {
                                 sbdLoop.AppendFormat(GlobalSettings.CultureInfo, "{1}{0}{1}({2}{1}{3})",
                                     intLoopPool - 2, strSpace, -2,
-                                    LanguageManager.GetString("Tip_Skill_OffHand"));
+                                    LanguageManager.GetString("Tip_Skill_OffHand", token: token));
                             }
 
                             if (!string.IsNullOrEmpty(strExtra))
@@ -6483,14 +6505,15 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string DisplayName(string strLanguage)
+        public string DisplayName(string strLanguage, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                     return Name;
 
-                return this.GetNodeXPath(strLanguage)?.SelectSingleNodeAndCacheExpression("translate")?.Value ?? Name;
+                return this.GetNodeXPath(strLanguage, token)?.SelectSingleNodeAndCacheExpression("translate", token)?.Value ?? Name;
             }
         }
 
@@ -6588,12 +6611,13 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public string DisplayOtherAttribute(string strAttribute)
+        public string DisplayOtherAttribute(string strAttribute, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
-                int intPool = PoolOtherAttribute(strAttribute);
-                int intConditionalBonus = PoolOtherAttribute(strAttribute, true);
+                token.ThrowIfCancellationRequested();
+                int intPool = PoolOtherAttribute(strAttribute, token: token);
+                int intConditionalBonus = PoolOtherAttribute(strAttribute, true, token: token);
                 int intSpecBonus;
                 if (intPool == intConditionalBonus)
                 {
@@ -6603,21 +6627,21 @@ namespace Chummer.Backend.Skills
                         || ImprovementManager.GetCachedImprovementListForValueOf(
                                                  CharacterObject,
                                                  Improvement.ImprovementType.DisableSpecializationEffects,
-                                                 DictionaryKey)
+                                                 DictionaryKey, token: token)
                                              .Count > 0)
                     {
                         return intPool.ToString(GlobalSettings.CultureInfo);
                     }
 
-                    intSpecBonus = GetSpecializationBonus();
+                    intSpecBonus = GetSpecializationBonus(token: token);
                     if (intSpecBonus == 0)
                         return intPool.ToString(GlobalSettings.CultureInfo);
                 }
                 else
-                    intSpecBonus = GetSpecializationBonus();
+                    intSpecBonus = GetSpecializationBonus(token: token);
 
                 return string.Format(GlobalSettings.CultureInfo, "{0}{1}({2})",
-                                     intPool, LanguageManager.GetString("String_Space"),
+                                     intPool, LanguageManager.GetString("String_Space", token: token),
                                      Math.Max(intPool + intSpecBonus,
                                               intConditionalBonus)); // Have to do it this way because some conditional bonuses apply specifically to specializations
             }
@@ -6665,10 +6689,11 @@ namespace Chummer.Backend.Skills
             }
         }
 
-        public int GetSpecializationBonus(string strSpecialization = "")
+        public int GetSpecializationBonus(string strSpecialization = "", CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (IsExoticSkill || Specializations.Count == 0 || !CanHaveSpecs || TotalBaseRating == 0)
                     return 0;
                 SkillSpecialization objTargetSpecialization = default;
@@ -6677,7 +6702,7 @@ namespace Chummer.Backend.Skills
                     if (ImprovementManager
                             .GetCachedImprovementListForValueOf(CharacterObject,
                                 Improvement.ImprovementType.DisableSpecializationEffects,
-                                DictionaryKey).Count == 0)
+                                DictionaryKey, token: token).Count == 0)
                     {
                         int intHighestSpecBonus = 0;
                         Specializations.ForEach(objSpec =>
@@ -6688,11 +6713,11 @@ namespace Chummer.Backend.Skills
                                 intHighestSpecBonus = intLoopSpecBonus;
                                 objTargetSpecialization = objSpec;
                             }
-                        });
+                        }, token);
                     }
                 }
                 else
-                    objTargetSpecialization = GetSpecialization(strSpecialization);
+                    objTargetSpecialization = GetSpecialization(strSpecialization, token);
 
                 return objTargetSpecialization?.SpecializationBonus ?? 0;
             }
