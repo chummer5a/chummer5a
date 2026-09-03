@@ -25696,8 +25696,8 @@
   <ItemGroup>
     <PackageReference Include="Ben.Demystifier" Version="0.4.1" />
     <PackageReference Include="Codaxy.WkHtmlToPdf" Version="0.5.8" />
-    <PackageReference Include="HtmlRenderer.Core" Version="1.6.1" />
-    <PackageReference Include="HtmlRenderer.WinForms" Version="1.6.1" />
+    <PackageReference Include="HtmlRenderer.Core" Version="1.5.2" />
+    <PackageReference Include="HtmlRenderer.WinForms" Version="1.5.2" />
     <PackageReference Include="itext" Version="9.7.0" />
     <PackageReference Include="LiveCharts.WinForms" Version="0.9.7.1" />
     <PackageReference Include="Microsoft.ApplicationInsights.NLogTarget" Version="2.23.0" />
