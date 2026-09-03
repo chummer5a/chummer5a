@@ -39,9 +39,9 @@ namespace Chummer.Tests
             Assert.AreEqual("True",
                 objRoot.SelectSingleNode("/chummer/spirits/spirit[name = 'Watcher']/ignoreboundspiritlimit")?.Value);
 
-            Assert.AreEqual(0,
+            Assert.IsEmpty(
                 objRoot.Select(
-                    "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]").Count,
+                    "/chummer/spirits/spirit[starts-with(name, 'Homunculus') and not(ignoreboundspiritlimit = 'True')]"),
                 "Every Homunculus spirit should set ignoreboundspiritlimit");
 
             Assert.IsNull(

@@ -1311,16 +1311,13 @@ namespace Chummer
                     {
                         string strWeaponsTag = VehicleMod.GetCategoryGroupTag(VehicleMod.WeaponsCategoryKey);
                         nodWeaponsCategory = await treVehicles.DoThreadSafeFuncAsync(
-                            () => nodVehicleParent.FindNode(strWeaponsTag, false), token: token).ConfigureAwait(false);
-                        if (nodWeaponsCategory == null)
-                        {
-                            nodWeaponsCategory = new TreeNode
+                            () => nodVehicleParent.FindNode(strWeaponsTag, false), token: token).ConfigureAwait(false)
+                            ?? new TreeNode
                             {
                                 Tag = strWeaponsTag,
                                 Text = await VehicleMod.GetCategoryGroupDisplayNameAsync(
                                     VehicleMod.WeaponsCategoryKey, objCharacter, token).ConfigureAwait(false)
                             };
-                        }
                     }
 
                     await treVehicles.DoThreadSafeAsync(() =>

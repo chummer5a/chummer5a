@@ -75,8 +75,8 @@ namespace Chummer.Tests
                 Improvement objCareerOnly = AddAcademicKarmaCost(objCreate, "/character/created");
                 Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCreate, "/character/created = false");
 
-                CollectionAssert.DoesNotContain(GetAcademicCosts(objCreate), objCareerOnly);
-                CollectionAssert.Contains(GetAcademicMultipliers(objCreate), objCreateOnly);
+                Assert.DoesNotContain(objCareerOnly, GetAcademicCosts(objCreate));
+                Assert.Contains(objCreateOnly, GetAcademicMultipliers(objCreate));
             }
 
             using (Character objCareer = new Character())
@@ -85,8 +85,8 @@ namespace Chummer.Tests
                 Improvement objCareerOnly = AddAcademicKarmaCost(objCareer, "/character/created");
                 Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCareer, "/character/created = false");
 
-                CollectionAssert.Contains(GetAcademicCosts(objCareer), objCareerOnly);
-                CollectionAssert.DoesNotContain(GetAcademicMultipliers(objCareer), objCreateOnly);
+                Assert.Contains(objCareerOnly, GetAcademicCosts(objCareer));
+                Assert.DoesNotContain(objCreateOnly, GetAcademicMultipliers(objCareer));
             }
         }
 

@@ -1389,8 +1389,11 @@ namespace Chummer
 
                                 if (intHits == 0)
                                     continue;
-                                dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key]
-                                                         + decDrugPositiveAttributeBonus * intHits;
+                                string strKey = kvpUsed.Key;
+                                if (dicValues.TryGetValue(strKey, out decimal decValue))
+                                    dicValues[strKey] = decValue + decDrugPositiveAttributeBonus * intHits;
+                                else // Just in case
+                                    dicValues.Add(strKey, decDrugPositiveAttributeBonus * intHits);
                             }
                         }
                     }
