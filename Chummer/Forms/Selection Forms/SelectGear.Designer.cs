@@ -163,7 +163,7 @@ namespace Chummer
             this.lstGear.FormattingEnabled = true;
             this.lstGear.Location = new System.Drawing.Point(3, 30);
             this.lstGear.Name = "lstGear";
-            this.lstGear.Size = new System.Drawing.Size(300, 481);
+            this.lstGear.Size = new System.Drawing.Size(300, 510);
             this.lstGear.TabIndex = 35;
             this.lstGear.SelectedIndexChanged += new System.EventHandler(this.lstGear_SelectedIndexChanged);
             this.lstGear.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -211,6 +211,11 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(59, 20);
             this.nudRating.TabIndex = 11;
+            this.nudRating.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
             // lblRatingLabel
@@ -479,6 +484,11 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 20;
+            this.nudMarkup.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupLabel
@@ -678,6 +688,11 @@ namespace Chummer
             this.nudMinimumCost.Name = "nudMinimumCost";
             this.nudMinimumCost.Size = new System.Drawing.Size(74, 20);
             this.nudMinimumCost.TabIndex = 3;
+            this.nudMinimumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMinimumCost.ValueChanged += new System.EventHandler(this.CostFilter);
             // 
             // nudMaximumCost
@@ -704,6 +719,11 @@ namespace Chummer
             this.nudMaximumCost.Name = "nudMaximumCost";
             this.nudMaximumCost.Size = new System.Drawing.Size(74, 20);
             this.nudMaximumCost.TabIndex = 4;
+            this.nudMaximumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaximumCost.ValueChanged += new System.EventHandler(this.CostFilter);
             // 
             // nudExactCost
@@ -730,6 +750,11 @@ namespace Chummer
             this.nudExactCost.Name = "nudExactCost";
             this.nudExactCost.Size = new System.Drawing.Size(74, 20);
             this.nudExactCost.TabIndex = 5;
+            this.nudExactCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudExactCost.ValueChanged += new System.EventHandler(this.CostFilter);
             // 
             // tlpMain
@@ -776,6 +801,12 @@ namespace Chummer
             this.tlpMain.SetRowSpan(this.tlpLeft, 6);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpLeft.Size = new System.Drawing.Size(306, 514);
             this.tlpLeft.TabIndex = 69;
             // 

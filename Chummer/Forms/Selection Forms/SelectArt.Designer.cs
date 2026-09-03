@@ -62,6 +62,7 @@ namespace Chummer
             this.chkLimitList.Tag = "Checkbox_SelectArt_LimitList";
             this.chkLimitList.Text = "Show only Arts I can take";
             this.chkLimitList.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
@@ -96,8 +97,8 @@ namespace Chummer
             this.lstArt.FormattingEnabled = true;
             this.lstArt.Location = new System.Drawing.Point(3, 3);
             this.lstArt.Name = "lstArt";
-            this.tlpMain.SetRowSpan(this.lstArt, 5);
-            this.lstArt.Size = new System.Drawing.Size(297, 417);
+            this.tlpMain.SetRowSpan(this.lstArt, 4);
+            this.lstArt.Size = new System.Drawing.Size(297, 388);
             this.lstArt.TabIndex = 7;
             this.lstArt.SelectedIndexChanged += new System.EventHandler(this.lstArt_SelectedIndexChanged);
             this.lstArt.DoubleClick += new System.EventHandler(this.lstArt_DoubleClick);

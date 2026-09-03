@@ -291,7 +291,7 @@ namespace Chummer
             this.trePowers.ShowLines = false;
             this.trePowers.ShowPlusMinus = false;
             this.trePowers.ShowRootLines = false;
-            this.trePowers.Size = new System.Drawing.Size(295, 390);
+            this.trePowers.Size = new System.Drawing.Size(295, 361);
             this.trePowers.TabIndex = 0;
             this.trePowers.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.trePowers_AfterSelect);
             this.trePowers.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -389,17 +389,18 @@ namespace Chummer
             this.tlpMain.ColumnCount = 2;
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 2);
             this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.bufferedTableLayoutPanel1, 1, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 24;
             // 
@@ -440,7 +441,7 @@ namespace Chummer
             this.tlpMain.SetRowSpan(this.tlpLeft, 3);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLeft.Size = new System.Drawing.Size(301, 423);
+            this.tlpLeft.Size = new System.Drawing.Size(301, 394);
             this.tlpLeft.TabIndex = 31;
             // 
             // tlpRight

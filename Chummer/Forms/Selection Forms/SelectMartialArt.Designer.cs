@@ -75,8 +75,8 @@ namespace Chummer
             this.lstMartialArts.FormattingEnabled = true;
             this.lstMartialArts.Location = new System.Drawing.Point(3, 3);
             this.lstMartialArts.Name = "lstMartialArts";
-            this.tlpMain.SetRowSpan(this.lstMartialArts, 4);
-            this.lstMartialArts.Size = new System.Drawing.Size(297, 417);
+            this.tlpMain.SetRowSpan(this.lstMartialArts, 3);
+            this.lstMartialArts.Size = new System.Drawing.Size(297, 388);
             this.lstMartialArts.TabIndex = 0;
             this.lstMartialArts.SelectedIndexChanged += new System.EventHandler(this.lstMartialArts_SelectedIndexChanged);
             this.lstMartialArts.DoubleClick += new System.EventHandler(this.lstMartialArts_DoubleClick);

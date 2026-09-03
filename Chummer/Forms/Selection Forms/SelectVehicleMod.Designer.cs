@@ -64,6 +64,8 @@ namespace Chummer
             this.chkHideOverAvailLimit = new Chummer.ColorableCheckBox();
             this.tlpMain = new System.Windows.Forms.TableLayoutPanel();
             this.chkShowOnlyAffordItems = new Chummer.ColorableCheckBox();
+            this.tlpLeft = new System.Windows.Forms.TableLayoutPanel();
+            this.cboCategory = new Chummer.ElasticComboBox();
             this.gpbCostFilter = new System.Windows.Forms.GroupBox();
             this.tlpCostFilter = new System.Windows.Forms.TableLayoutPanel();
             this.lblMinimumCost = new System.Windows.Forms.Label();
@@ -72,8 +74,6 @@ namespace Chummer
             this.nudMinimumCost = new Chummer.NumericUpDownEx();
             this.nudMaximumCost = new Chummer.NumericUpDownEx();
             this.nudExactCost = new Chummer.NumericUpDownEx();
-            this.tableLayoutPanel2 = new System.Windows.Forms.TableLayoutPanel();
-            this.cboCategory = new Chummer.ElasticComboBox();
             this.tlpButtons = new System.Windows.Forms.TableLayoutPanel();
             this.tlpRight = new System.Windows.Forms.TableLayoutPanel();
             this.flpCheckBoxes = new System.Windows.Forms.FlowLayoutPanel();
@@ -84,7 +84,12 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudRating)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).BeginInit();
             this.tlpMain.SuspendLayout();
-            this.tableLayoutPanel2.SuspendLayout();
+            this.tlpLeft.SuspendLayout();
+            this.gpbCostFilter.SuspendLayout();
+            this.tlpCostFilter.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinimumCost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumCost)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudExactCost)).BeginInit();
             this.tlpButtons.SuspendLayout();
             this.tlpRight.SuspendLayout();
             this.flpCheckBoxes.SuspendLayout();
@@ -97,8 +102,8 @@ namespace Chummer
             // 
             this.lblMaximumCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMaximumCapacity.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblMaximumCapacity, 4);
-            this.lblMaximumCapacity.Location = new System.Drawing.Point(3, 132);
+            this.tlpRight.SetColumnSpan(this.lblMaximumCapacity, 2);
+            this.lblMaximumCapacity.Location = new System.Drawing.Point(155, 81);
             this.lblMaximumCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMaximumCapacity.Name = "lblMaximumCapacity";
             this.lblMaximumCapacity.Size = new System.Drawing.Size(101, 13);
@@ -109,7 +114,7 @@ namespace Chummer
             // 
             this.lblCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCost.AutoSize = true;
-            this.lblCost.Location = new System.Drawing.Point(61, 182);
+            this.lblCost.Location = new System.Drawing.Point(61, 132);
             this.lblCost.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCost.Name = "lblCost";
             this.lblCost.Size = new System.Drawing.Size(19, 13);
@@ -120,7 +125,7 @@ namespace Chummer
             // 
             this.lblCostLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblCostLabel.AutoSize = true;
-            this.lblCostLabel.Location = new System.Drawing.Point(24, 182);
+            this.lblCostLabel.Location = new System.Drawing.Point(24, 132);
             this.lblCostLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblCostLabel.Name = "lblCostLabel";
             this.lblCostLabel.Size = new System.Drawing.Size(31, 13);
@@ -132,7 +137,7 @@ namespace Chummer
             // 
             this.lblAvail.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblAvail.AutoSize = true;
-            this.lblAvail.Location = new System.Drawing.Point(61, 157);
+            this.lblAvail.Location = new System.Drawing.Point(61, 107);
             this.lblAvail.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAvail.Name = "lblAvail";
             this.lblAvail.Size = new System.Drawing.Size(19, 13);
@@ -143,7 +148,7 @@ namespace Chummer
             // 
             this.lblAvailLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblAvailLabel.AutoSize = true;
-            this.lblAvailLabel.Location = new System.Drawing.Point(22, 157);
+            this.lblAvailLabel.Location = new System.Drawing.Point(22, 107);
             this.lblAvailLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblAvailLabel.Name = "lblAvailLabel";
             this.lblAvailLabel.Size = new System.Drawing.Size(33, 13);
@@ -170,6 +175,11 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 14;
+            this.nudRating.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
             // lblRatingLabel
@@ -217,12 +227,12 @@ namespace Chummer
             // 
             // lstMod
             // 
-            this.tableLayoutPanel2.SetColumnSpan(this.lstMod, 2);
+            this.tlpLeft.SetColumnSpan(this.lstMod, 2);
             this.lstMod.Dock = System.Windows.Forms.DockStyle.Fill;
             this.lstMod.FormattingEnabled = true;
             this.lstMod.Location = new System.Drawing.Point(3, 30);
             this.lstMod.Name = "lstMod";
-            this.lstMod.Size = new System.Drawing.Size(297, 390);
+            this.lstMod.Size = new System.Drawing.Size(297, 361);
             this.lstMod.TabIndex = 22;
             this.lstMod.SelectedIndexChanged += new System.EventHandler(this.lstMod_SelectedIndexChanged);
             this.lstMod.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -231,7 +241,6 @@ namespace Chummer
             // 
             this.lblSlots.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSlots.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblSlots, 3);
             this.lblSlots.Location = new System.Drawing.Point(61, 56);
             this.lblSlots.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSlots.Name = "lblSlots";
@@ -307,7 +316,7 @@ namespace Chummer
             this.lblSource.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblSource.AutoSize = true;
             this.lblSource.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.lblSource.Location = new System.Drawing.Point(61, 233);
+            this.lblSource.Location = new System.Drawing.Point(61, 183);
             this.lblSource.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSource.Name = "lblSource";
             this.lblSource.Size = new System.Drawing.Size(47, 13);
@@ -319,7 +328,7 @@ namespace Chummer
             // 
             this.lblSourceLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSourceLabel.AutoSize = true;
-            this.lblSourceLabel.Location = new System.Drawing.Point(11, 233);
+            this.lblSourceLabel.Location = new System.Drawing.Point(11, 183);
             this.lblSourceLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSourceLabel.Name = "lblSourceLabel";
             this.lblSourceLabel.Size = new System.Drawing.Size(44, 13);
@@ -339,6 +348,7 @@ namespace Chummer
             this.chkFreeItem.TabIndex = 15;
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.ToolTipText = "";
             this.chkFreeItem.UseVisualStyleBackColor = true;
             this.chkFreeItem.CheckedChanged += new System.EventHandler(this.chkFreeItem_CheckedChanged);
             // 
@@ -384,13 +394,18 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 17;
+            this.nudMarkup.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupLabel
             // 
             this.lblMarkupLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblMarkupLabel.AutoSize = true;
-            this.lblMarkupLabel.Location = new System.Drawing.Point(157, 182);
+            this.lblMarkupLabel.Location = new System.Drawing.Point(160, 132);
             this.lblMarkupLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblMarkupLabel.Name = "lblMarkupLabel";
             this.lblMarkupLabel.Size = new System.Drawing.Size(46, 13);
@@ -413,7 +428,7 @@ namespace Chummer
             // 
             this.lblTest.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblTest.AutoSize = true;
-            this.lblTest.Location = new System.Drawing.Point(209, 157);
+            this.lblTest.Location = new System.Drawing.Point(212, 107);
             this.lblTest.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTest.Name = "lblTest";
             this.lblTest.Size = new System.Drawing.Size(19, 13);
@@ -424,7 +439,7 @@ namespace Chummer
             // 
             this.lblTestLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblTestLabel.AutoSize = true;
-            this.lblTestLabel.Location = new System.Drawing.Point(172, 157);
+            this.lblTestLabel.Location = new System.Drawing.Point(175, 107);
             this.lblTestLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblTestLabel.Name = "lblTestLabel";
             this.lblTestLabel.Size = new System.Drawing.Size(31, 13);
@@ -444,6 +459,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.TabIndex = 39;
             this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.ToolTipText = "";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
@@ -464,8 +480,7 @@ namespace Chummer
             // 
             this.lblVehicleCapacity.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblVehicleCapacity.AutoSize = true;
-            this.tlpRight.SetColumnSpan(this.lblVehicleCapacity, 3);
-            this.lblVehicleCapacity.Location = new System.Drawing.Point(61, 107);
+            this.lblVehicleCapacity.Location = new System.Drawing.Point(212, 56);
             this.lblVehicleCapacity.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCapacity.Name = "lblVehicleCapacity";
             this.lblVehicleCapacity.Size = new System.Drawing.Size(19, 13);
@@ -476,26 +491,28 @@ namespace Chummer
             // 
             this.lblVehicleCapacityLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblVehicleCapacityLabel.AutoSize = true;
-            this.lblVehicleCapacityLabel.Location = new System.Drawing.Point(4, 107);
+            this.lblVehicleCapacityLabel.Location = new System.Drawing.Point(155, 56);
             this.lblVehicleCapacityLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblVehicleCapacityLabel.Name = "lblVehicleCapacityLabel";
             this.lblVehicleCapacityLabel.Size = new System.Drawing.Size(51, 13);
             this.lblVehicleCapacityLabel.TabIndex = 42;
             this.lblVehicleCapacityLabel.Tag = "Label_Capacity";
             this.lblVehicleCapacityLabel.Text = "Capacity:";
+            this.lblVehicleCapacityLabel.ToolTipText = "";
             // 
             // chkHideOverAvailLimit
             // 
             this.chkHideOverAvailLimit.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkHideOverAvailLimit.AutoSize = true;
             this.chkHideOverAvailLimit.DefaultColorScheme = true;
-            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(306, 348);
+            this.chkHideOverAvailLimit.Location = new System.Drawing.Point(306, 245);
             this.chkHideOverAvailLimit.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkHideOverAvailLimit.Name = "chkHideOverAvailLimit";
             this.chkHideOverAvailLimit.Size = new System.Drawing.Size(175, 17);
             this.chkHideOverAvailLimit.TabIndex = 65;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.ToolTipText = "";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
@@ -508,7 +525,7 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.chkShowOnlyAffordItems, 1, 4);
             this.tlpMain.Controls.Add(this.chkHideOverAvailLimit, 1, 3);
-            this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 0);
+            this.tlpMain.Controls.Add(this.tlpLeft, 0, 0);
             this.tlpMain.Controls.Add(this.gpbCostFilter, 1, 5);
             this.tlpMain.Controls.Add(this.tlpButtons, 1, 6);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
@@ -523,7 +540,6 @@ namespace Chummer
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 100F));
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 66;
@@ -533,15 +549,47 @@ namespace Chummer
             this.chkShowOnlyAffordItems.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkShowOnlyAffordItems.AutoSize = true;
             this.chkShowOnlyAffordItems.DefaultColorScheme = true;
-            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(306, 373);
+            this.chkShowOnlyAffordItems.Location = new System.Drawing.Point(306, 270);
             this.chkShowOnlyAffordItems.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkShowOnlyAffordItems.Name = "chkShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Size = new System.Drawing.Size(164, 17);
             this.chkShowOnlyAffordItems.TabIndex = 68;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.ToolTipText = "";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.RefreshCurrentList);
+            // 
+            // tlpLeft
+            // 
+            this.tlpLeft.ColumnCount = 2;
+            this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
+            this.tlpLeft.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLeft.Controls.Add(this.label1, 0, 0);
+            this.tlpLeft.Controls.Add(this.cboCategory, 1, 0);
+            this.tlpLeft.Controls.Add(this.lstMod, 0, 1);
+            this.tlpLeft.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.tlpLeft.Location = new System.Drawing.Point(0, 0);
+            this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
+            this.tlpLeft.Name = "tlpLeft";
+            this.tlpLeft.RowCount = 2;
+            this.tlpMain.SetRowSpan(this.tlpLeft, 6);
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpLeft.Size = new System.Drawing.Size(303, 394);
+            this.tlpLeft.TabIndex = 71;
+            // 
+            // cboCategory
+            // 
+            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
+            this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
+            this.cboCategory.FormattingEnabled = true;
+            this.cboCategory.Location = new System.Drawing.Point(61, 3);
+            this.cboCategory.Name = "cboCategory";
+            this.cboCategory.Size = new System.Drawing.Size(239, 21);
+            this.cboCategory.TabIndex = 41;
+            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // gpbCostFilter
             // 
@@ -549,9 +597,9 @@ namespace Chummer
             this.gpbCostFilter.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.gpbCostFilter.Controls.Add(this.tlpCostFilter);
             this.gpbCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.gpbCostFilter.Location = new System.Drawing.Point(309, 350);
+            this.gpbCostFilter.Location = new System.Drawing.Point(306, 294);
             this.gpbCostFilter.Name = "gpbCostFilter";
-            this.gpbCostFilter.Size = new System.Drawing.Size(200, 100);
+            this.gpbCostFilter.Size = new System.Drawing.Size(297, 97);
             this.gpbCostFilter.TabIndex = 72;
             this.gpbCostFilter.TabStop = false;
             this.gpbCostFilter.Tag = "Label_FilterByCost";
@@ -577,7 +625,7 @@ namespace Chummer
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCostFilter.Size = new System.Drawing.Size(194, 81);
+            this.tlpCostFilter.Size = new System.Drawing.Size(291, 78);
             this.tlpCostFilter.TabIndex = 0;
             // 
             // lblMinimumCost
@@ -595,7 +643,7 @@ namespace Chummer
             // 
             this.lblMaximumCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMaximumCost.AutoSize = true;
-            this.lblMaximumCost.Location = new System.Drawing.Point(3, 33);
+            this.lblMaximumCost.Location = new System.Drawing.Point(3, 32);
             this.lblMaximumCost.Name = "lblMaximumCost";
             this.lblMaximumCost.Size = new System.Drawing.Size(54, 13);
             this.lblMaximumCost.TabIndex = 1;
@@ -606,9 +654,9 @@ namespace Chummer
             // 
             this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblExactCost.AutoSize = true;
-            this.lblExactCost.Location = new System.Drawing.Point(3, 60);
+            this.lblExactCost.Location = new System.Drawing.Point(3, 58);
             this.lblExactCost.Name = "lblExactCost";
-            this.lblExactCost.Size = new System.Drawing.Size(35, 13);
+            this.lblExactCost.Size = new System.Drawing.Size(37, 13);
             this.lblExactCost.TabIndex = 2;
             this.lblExactCost.Tag = "Label_Exact";
             this.lblExactCost.Text = "Exact:";
@@ -623,7 +671,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudMinimumCost.Location = new System.Drawing.Point(60, 3);
+            this.nudMinimumCost.Location = new System.Drawing.Point(63, 3);
             this.nudMinimumCost.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -635,7 +683,7 @@ namespace Chummer
             0,
             0});
             this.nudMinimumCost.Name = "nudMinimumCost";
-            this.nudMinimumCost.Size = new System.Drawing.Size(60, 20);
+            this.nudMinimumCost.Size = new System.Drawing.Size(74, 20);
             this.nudMinimumCost.TabIndex = 3;
             this.nudMinimumCost.Value = new decimal(new int[] {
             0,
@@ -654,7 +702,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudMaximumCost.Location = new System.Drawing.Point(60, 30);
+            this.nudMaximumCost.Location = new System.Drawing.Point(63, 29);
             this.nudMaximumCost.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -666,7 +714,7 @@ namespace Chummer
             0,
             0});
             this.nudMaximumCost.Name = "nudMaximumCost";
-            this.nudMaximumCost.Size = new System.Drawing.Size(60, 20);
+            this.nudMaximumCost.Size = new System.Drawing.Size(74, 20);
             this.nudMaximumCost.TabIndex = 4;
             this.nudMaximumCost.Value = new decimal(new int[] {
             0,
@@ -685,7 +733,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudExactCost.Location = new System.Drawing.Point(60, 57);
+            this.nudExactCost.Location = new System.Drawing.Point(63, 55);
             this.nudExactCost.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -697,7 +745,7 @@ namespace Chummer
             0,
             0});
             this.nudExactCost.Name = "nudExactCost";
-            this.nudExactCost.Size = new System.Drawing.Size(60, 20);
+            this.nudExactCost.Size = new System.Drawing.Size(74, 20);
             this.nudExactCost.TabIndex = 5;
             this.nudExactCost.Value = new decimal(new int[] {
             0,
@@ -705,37 +753,6 @@ namespace Chummer
             0,
             0});
             this.nudExactCost.ValueChanged += new System.EventHandler(this.CostFilter);
-            // 
-            // tableLayoutPanel2
-            // 
-            this.tableLayoutPanel2.ColumnCount = 2;
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle());
-            this.tableLayoutPanel2.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Controls.Add(this.label1, 0, 0);
-            this.tableLayoutPanel2.Controls.Add(this.cboCategory, 1, 0);
-            this.tableLayoutPanel2.Controls.Add(this.lstMod, 0, 1);
-            this.tableLayoutPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.tableLayoutPanel2.Location = new System.Drawing.Point(0, 0);
-            this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
-            this.tableLayoutPanel2.Name = "tableLayoutPanel2";
-            this.tableLayoutPanel2.RowCount = 2;
-            this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 6);
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 423);
-            this.tableLayoutPanel2.TabIndex = 71;
-            // 
-            // cboCategory
-            // 
-            this.cboCategory.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.cboCategory.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDownList;
-            this.cboCategory.FormattingEnabled = true;
-            this.cboCategory.Location = new System.Drawing.Point(61, 3);
-            this.cboCategory.Name = "cboCategory";
-            this.cboCategory.Size = new System.Drawing.Size(239, 21);
-            this.cboCategory.TabIndex = 41;
-            this.cboCategory.SelectedIndexChanged += new System.EventHandler(this.RefreshCurrentList);
             // 
             // tlpButtons
             // 
@@ -777,16 +794,16 @@ namespace Chummer
             this.tlpRight.Controls.Add(this.lblMarkupLabel, 2, 8);
             this.tlpRight.Controls.Add(this.lblCostLabel, 0, 8);
             this.tlpRight.Controls.Add(this.lblCost, 1, 8);
-            this.tlpRight.Controls.Add(this.lblSlots, 1, 3);
             this.tlpRight.Controls.Add(this.flpRating, 1, 4);
             this.tlpRight.Controls.Add(this.lblRatingLabel, 0, 4);
-            this.tlpRight.Controls.Add(this.lblVehicleCapacityLabel, 0, 5);
             this.tlpRight.Controls.Add(this.lblTest, 3, 7);
             this.tlpRight.Controls.Add(this.lblTestLabel, 2, 7);
             this.tlpRight.Controls.Add(this.lblAvail, 1, 7);
             this.tlpRight.Controls.Add(this.lblAvailLabel, 0, 7);
-            this.tlpRight.Controls.Add(this.lblVehicleCapacity, 1, 5);
-            this.tlpRight.Controls.Add(this.lblMaximumCapacity, 0, 6);
+            this.tlpRight.Controls.Add(this.lblVehicleCapacityLabel, 2, 3);
+            this.tlpRight.Controls.Add(this.lblSlots, 1, 3);
+            this.tlpRight.Controls.Add(this.lblVehicleCapacity, 3, 3);
+            this.tlpRight.Controls.Add(this.lblMaximumCapacity, 2, 4);
             this.tlpRight.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpRight.Location = new System.Drawing.Point(303, 26);
             this.tlpRight.Margin = new System.Windows.Forms.Padding(0);
@@ -803,7 +820,8 @@ namespace Chummer
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpRight.Size = new System.Drawing.Size(303, 252);
+            this.tlpRight.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
+            this.tlpRight.Size = new System.Drawing.Size(303, 202);
             this.tlpRight.TabIndex = 75;
             // 
             // flpCheckBoxes
@@ -814,7 +832,7 @@ namespace Chummer
             this.tlpRight.SetColumnSpan(this.flpCheckBoxes, 4);
             this.flpCheckBoxes.Controls.Add(this.chkFreeItem);
             this.flpCheckBoxes.Controls.Add(this.chkBlackMarketDiscount);
-            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 202);
+            this.flpCheckBoxes.Location = new System.Drawing.Point(0, 152);
             this.flpCheckBoxes.Margin = new System.Windows.Forms.Padding(0);
             this.flpCheckBoxes.Name = "flpCheckBoxes";
             this.flpCheckBoxes.Size = new System.Drawing.Size(225, 25);
@@ -827,7 +845,7 @@ namespace Chummer
             this.flpMarkup.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
             this.flpMarkup.Controls.Add(this.nudMarkup);
             this.flpMarkup.Controls.Add(this.lblMarkupPercentLabel);
-            this.flpMarkup.Location = new System.Drawing.Point(206, 176);
+            this.flpMarkup.Location = new System.Drawing.Point(209, 126);
             this.flpMarkup.Margin = new System.Windows.Forms.Padding(0);
             this.flpMarkup.Name = "flpMarkup";
             this.flpMarkup.Size = new System.Drawing.Size(83, 26);
@@ -839,7 +857,6 @@ namespace Chummer
             this.flpRating.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.flpRating.AutoSize = true;
             this.flpRating.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpRight.SetColumnSpan(this.flpRating, 3);
             this.flpRating.Controls.Add(this.nudRating);
             this.flpRating.Controls.Add(this.lblRatingNALabel);
             this.flpRating.Location = new System.Drawing.Point(58, 75);
@@ -903,8 +920,15 @@ namespace Chummer
             ((System.ComponentModel.ISupportInitialize)(this.nudMarkup)).EndInit();
             this.tlpMain.ResumeLayout(false);
             this.tlpMain.PerformLayout();
-            this.tableLayoutPanel2.ResumeLayout(false);
-            this.tableLayoutPanel2.PerformLayout();
+            this.tlpLeft.ResumeLayout(false);
+            this.tlpLeft.PerformLayout();
+            this.gpbCostFilter.ResumeLayout(false);
+            this.gpbCostFilter.PerformLayout();
+            this.tlpCostFilter.ResumeLayout(false);
+            this.tlpCostFilter.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMinimumCost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudMaximumCost)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.nudExactCost)).EndInit();
             this.tlpButtons.ResumeLayout(false);
             this.tlpButtons.PerformLayout();
             this.tlpRight.ResumeLayout(false);
@@ -971,7 +995,7 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudMinimumCost;
         private Chummer.NumericUpDownEx nudMaximumCost;
         private Chummer.NumericUpDownEx nudExactCost;
-        private System.Windows.Forms.TableLayoutPanel tableLayoutPanel2;
+        private System.Windows.Forms.TableLayoutPanel tlpLeft;
         private System.Windows.Forms.TableLayoutPanel tlpRight;
         private System.Windows.Forms.TableLayoutPanel tlpTopRight;
     }

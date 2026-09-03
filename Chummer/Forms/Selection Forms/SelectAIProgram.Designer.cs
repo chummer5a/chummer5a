@@ -87,7 +87,7 @@ namespace Chummer
             this.lstAIPrograms.FormattingEnabled = true;
             this.lstAIPrograms.Location = new System.Drawing.Point(3, 30);
             this.lstAIPrograms.Name = "lstAIPrograms";
-            this.lstAIPrograms.Size = new System.Drawing.Size(297, 390);
+            this.lstAIPrograms.Size = new System.Drawing.Size(297, 361);
             this.lstAIPrograms.TabIndex = 37;
             this.lstAIPrograms.SelectedIndexChanged += new System.EventHandler(this.lstAIPrograms_SelectedIndexChanged);
             this.lstAIPrograms.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -130,6 +130,7 @@ namespace Chummer
             this.chkLimitList.Tag = "Checkbox_SelectAIProgram_LimitList";
             this.chkLimitList.Text = "Show only Advanced Programs I can take";
             this.chkLimitList.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
@@ -146,10 +147,10 @@ namespace Chummer
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 2;
-            this.tlpMain.SetRowSpan(this.tlpLeft, 5);
+            this.tlpMain.SetRowSpan(this.tlpLeft, 4);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.Size = new System.Drawing.Size(303, 423);
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpLeft.Size = new System.Drawing.Size(303, 394);
             this.tlpLeft.TabIndex = 39;
             // 
             // tlpButtons
@@ -263,6 +264,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 5;
             this.lblSource.Text = "[Source]";
+            this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblRequiresProgram

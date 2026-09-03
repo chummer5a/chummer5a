@@ -67,7 +67,7 @@ namespace Chummer
             this.lstLifestyleQualities.FormattingEnabled = true;
             this.lstLifestyleQualities.Location = new System.Drawing.Point(3, 30);
             this.lstLifestyleQualities.Name = "lstLifestyleQualities";
-            this.lstLifestyleQualities.Size = new System.Drawing.Size(297, 390);
+            this.lstLifestyleQualities.Size = new System.Drawing.Size(297, 361);
             this.lstLifestyleQualities.TabIndex = 9;
             this.lstLifestyleQualities.SelectedIndexChanged += new System.EventHandler(this.lstLifestyleQualities_SelectedIndexChanged);
             this.lstLifestyleQualities.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -107,6 +107,7 @@ namespace Chummer
             this.lblSource.Size = new System.Drawing.Size(47, 13);
             this.lblSource.TabIndex = 5;
             this.lblSource.Text = "[Source]";
+            this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblSourceLabel
@@ -181,6 +182,7 @@ namespace Chummer
             this.chkLimitList.TabIndex = 6;
             this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
             this.chkLimitList.Text = "Show only Qualities I can take";
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             // 
@@ -219,6 +221,7 @@ namespace Chummer
             this.chkFree.TabIndex = 8;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
+            this.chkFree.ToolTipText = "";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.RefreshListControlWithCurrentCategory);
             // 
@@ -350,10 +353,10 @@ namespace Chummer
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 2;
-            this.tlpMain.SetRowSpan(this.tlpLeft, 5);
+            this.tlpMain.SetRowSpan(this.tlpLeft, 4);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tlpLeft.Size = new System.Drawing.Size(303, 423);
+            this.tlpLeft.Size = new System.Drawing.Size(303, 394);
             this.tlpLeft.TabIndex = 23;
             // 
             // tlpRight

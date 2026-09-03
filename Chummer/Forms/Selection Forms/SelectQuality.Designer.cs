@@ -226,6 +226,7 @@ namespace Chummer
             this.chkFree.TabIndex = 8;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
+            this.chkFree.ToolTipText = "";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.CostControl_Changed);
             // 
@@ -241,49 +242,50 @@ namespace Chummer
             this.chkMetagenic.TabIndex = 7;
             this.chkMetagenic.Tag = "Checkbox_SelectQuality_Metagenic";
             this.chkMetagenic.Text = "Show only Metagenic Qualities";
+            this.chkMetagenic.ToolTipText = "";
             this.chkMetagenic.UseVisualStyleBackColor = true;
             this.chkMetagenic.CheckedChanged += new System.EventHandler(this.chkMetagenic_CheckedChanged);
             // 
             // txtSearch
             // 
             this.txtSearch.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Left | System.Windows.Forms.AnchorStyles.Right)));
-            this.txtSearch.DropDownStyle = System.Windows.Forms.ComboBoxStyle.DropDown;
             this.txtSearch.FormattingEnabled = true;
-            this.txtSearch.Location = new System.Drawing.Point(53, 3);
+            this.txtSearch.Location = new System.Drawing.Point(94, 3);
             this.txtSearch.Name = "txtSearch";
-            this.txtSearch.Size = new System.Drawing.Size(247, 21);
+            this.txtSearch.Size = new System.Drawing.Size(206, 21);
             this.txtSearch.TabIndex = 1;
+            this.txtSearch.SelectedIndexChanged += new System.EventHandler(this.txtSearch_SelectedIndexChanged);
             this.txtSearch.TextChanged += new System.EventHandler(this.txtSearch_TextChanged);
             this.txtSearch.KeyDown += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyDown);
             this.txtSearch.KeyUp += new System.Windows.Forms.KeyEventHandler(this.txtSearch_KeyUp);
-            this.txtSearch.SelectedIndexChanged += new System.EventHandler(this.txtSearch_SelectedIndexChanged);
-            // 
-            // chkXPathMode
-            // 
-            this.chkXPathMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
-            this.chkXPathMode.AutoSize = true;
-            this.chkXPathMode.DefaultColorScheme = true;
-            this.chkXPathMode.Location = new System.Drawing.Point(3, 29);
-            this.chkXPathMode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
-            this.chkXPathMode.Name = "chkXPathMode";
-            this.chkXPathMode.Size = new System.Drawing.Size(80, 17);
-            this.chkXPathMode.TabIndex = 2;
-            this.chkXPathMode.Tag = "Checkbox_SelectQuality_XPathMode";
-            this.chkXPathMode.Text = "XPath Mode";
-            this.chkXPathMode.UseVisualStyleBackColor = true;
-            this.chkXPathMode.CheckedChanged += new System.EventHandler(this.chkXPathMode_CheckedChanged);
             // 
             // lblSearchLabel
             // 
             this.lblSearchLabel.Anchor = System.Windows.Forms.AnchorStyles.Right;
             this.lblSearchLabel.AutoSize = true;
-            this.lblSearchLabel.Location = new System.Drawing.Point(3, 6);
+            this.lblSearchLabel.Location = new System.Drawing.Point(44, 7);
             this.lblSearchLabel.Margin = new System.Windows.Forms.Padding(3, 6, 3, 6);
             this.lblSearchLabel.Name = "lblSearchLabel";
             this.lblSearchLabel.Size = new System.Drawing.Size(44, 13);
             this.lblSearchLabel.TabIndex = 0;
             this.lblSearchLabel.Tag = "Label_Search";
             this.lblSearchLabel.Text = "&Search:";
+            // 
+            // chkXPathMode
+            // 
+            this.chkXPathMode.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkXPathMode.AutoSize = true;
+            this.chkXPathMode.DefaultColorScheme = true;
+            this.chkXPathMode.Location = new System.Drawing.Point(3, 31);
+            this.chkXPathMode.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkXPathMode.Name = "chkXPathMode";
+            this.chkXPathMode.Size = new System.Drawing.Size(85, 17);
+            this.chkXPathMode.TabIndex = 2;
+            this.chkXPathMode.Tag = "Checkbox_SelectQuality_XPathMode";
+            this.chkXPathMode.Text = "XPath Mode";
+            this.chkXPathMode.ToolTipText = "";
+            this.chkXPathMode.UseVisualStyleBackColor = true;
+            this.chkXPathMode.CheckedChanged += new System.EventHandler(this.chkXPathMode_CheckedChanged);
             // 
             // chkNotMetagenic
             // 
@@ -297,6 +299,7 @@ namespace Chummer
             this.chkNotMetagenic.TabIndex = 15;
             this.chkNotMetagenic.Tag = "Checkbox_SelectQuality_Not_Metagenic";
             this.chkNotMetagenic.Text = "Don\'t show Metagenic Qualities";
+            this.chkNotMetagenic.ToolTipText = "";
             this.chkNotMetagenic.UseVisualStyleBackColor = true;
             this.chkNotMetagenic.CheckedChanged += new System.EventHandler(this.chkNotMetagenic_CheckedChanged);
             // 
@@ -318,6 +321,11 @@ namespace Chummer
             this.nudMinimumBP.Name = "nudMinimumBP";
             this.nudMinimumBP.Size = new System.Drawing.Size(41, 20);
             this.nudMinimumBP.TabIndex = 16;
+            this.nudMinimumBP.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMinimumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMinimumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
@@ -339,6 +347,11 @@ namespace Chummer
             this.nudValueBP.Name = "nudValueBP";
             this.nudValueBP.Size = new System.Drawing.Size(41, 20);
             this.nudValueBP.TabIndex = 17;
+            this.nudValueBP.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudValueBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudValueBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
@@ -360,6 +373,11 @@ namespace Chummer
             this.nudMaximumBP.Name = "nudMaximumBP";
             this.nudMaximumBP.Size = new System.Drawing.Size(41, 20);
             this.nudMaximumBP.TabIndex = 18;
+            this.nudMaximumBP.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaximumBP.TextChanged += new System.EventHandler(this.KarmaFilter);
             this.nudMaximumBP.ValueChanged += new System.EventHandler(this.KarmaFilter);
             // 
@@ -436,10 +454,10 @@ namespace Chummer
             this.tableLayoutPanel2.Margin = new System.Windows.Forms.Padding(0);
             this.tableLayoutPanel2.Name = "tableLayoutPanel2";
             this.tableLayoutPanel2.RowCount = 2;
-            this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 5);
+            this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 4);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 449);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 420);
             this.tableLayoutPanel2.TabIndex = 24;
             // 
             // tlpButtons
@@ -498,6 +516,7 @@ namespace Chummer
             this.chkLimitList.TabIndex = 6;
             this.chkLimitList.Tag = "Checkbox_SelectQuality_LimitList";
             this.chkLimitList.Text = "Show only Qualities I can take";
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
