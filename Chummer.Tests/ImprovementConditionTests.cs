@@ -28,14 +28,6 @@ namespace Chummer.Tests
     [TestClass]
     public class ImprovementConditionTests
     {
-        [AssemblyInitialize]
-        public static void Initialize(TestContext context)
-        {
-            Utils.IsUnitTest = true;
-            Utils.IsUnitTestForUI = false;
-            Utils.CreateSynchronizationContext();
-        }
-
         public TestContext TestContext { get; set; }
 
         [TestMethod]
