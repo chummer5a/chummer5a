@@ -87,8 +87,8 @@ namespace Chummer
             this.lstCyberware.FormattingEnabled = true;
             this.lstCyberware.Location = new System.Drawing.Point(3, 3);
             this.lstCyberware.Name = "lstCyberware";
-            this.tlpMain.SetRowSpan(this.lstCyberware, 3);
-            this.lstCyberware.Size = new System.Drawing.Size(297, 417);
+            this.tlpMain.SetRowSpan(this.lstCyberware, 2);
+            this.lstCyberware.Size = new System.Drawing.Size(297, 388);
             this.lstCyberware.TabIndex = 0;
             this.lstCyberware.SelectedIndexChanged += new System.EventHandler(this.lstCyberware_SelectedIndexChanged);
             this.lstCyberware.DoubleClick += new System.EventHandler(this.lstCyberware_DoubleClick);

@@ -260,7 +260,7 @@ namespace Chummer
             this.gpbEssenceFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbEssenceFilter.Location = new System.Drawing.Point(3, 3);
             this.gpbEssenceFilter.Name = "gpbEssenceFilter";
-            this.gpbEssenceFilter.Size = new System.Drawing.Size(221, 108);
+            this.gpbEssenceFilter.Size = new System.Drawing.Size(221, 149);
             this.gpbEssenceFilter.TabIndex = 73;
             this.gpbEssenceFilter.TabStop = false;
             this.gpbEssenceFilter.Tag = "Label_FilterByEssence";
@@ -281,7 +281,6 @@ namespace Chummer
             this.tlpEssenceFilter.Controls.Add(this.nudMaximumEssence, 1, 1);
             this.tlpEssenceFilter.Controls.Add(this.nudExactEssence, 1, 2);
             this.tlpEssenceFilter.Controls.Add(this.chkUseCurrentEssence, 2, 1);
-            // Capacity controls in same positions but hidden initially - will be shown/hidden based on radio button
             this.tlpEssenceFilter.Controls.Add(this.lblCapacityFilterMinimum, 0, 0);
             this.tlpEssenceFilter.Controls.Add(this.lblCapacityFilterMaximum, 0, 1);
             this.tlpEssenceFilter.Controls.Add(this.lblCapacityFilterExact, 0, 2);
@@ -295,14 +294,14 @@ namespace Chummer
             this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpEssenceFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpEssenceFilter.Size = new System.Drawing.Size(215, 89);
+            this.tlpEssenceFilter.Size = new System.Drawing.Size(215, 130);
             this.tlpEssenceFilter.TabIndex = 0;
             // 
             // lblMinimumEssence
             // 
             this.lblMinimumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMinimumEssence.AutoSize = true;
-            this.lblMinimumEssence.Location = new System.Drawing.Point(3, 6);
+            this.lblMinimumEssence.Location = new System.Drawing.Point(60, 6);
             this.lblMinimumEssence.Name = "lblMinimumEssence";
             this.lblMinimumEssence.Size = new System.Drawing.Size(51, 13);
             this.lblMinimumEssence.TabIndex = 0;
@@ -313,7 +312,7 @@ namespace Chummer
             // 
             this.lblMaximumEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblMaximumEssence.AutoSize = true;
-            this.lblMaximumEssence.Location = new System.Drawing.Point(3, 52);
+            this.lblMaximumEssence.Location = new System.Drawing.Point(122, 32);
             this.lblMaximumEssence.Name = "lblMaximumEssence";
             this.lblMaximumEssence.Size = new System.Drawing.Size(54, 13);
             this.lblMaximumEssence.TabIndex = 1;
@@ -341,7 +340,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudMinimumEssence.Location = new System.Drawing.Point(63, 23);
+            this.nudMinimumEssence.Location = new System.Drawing.Point(3, 29);
             this.nudMinimumEssence.Maximum = new decimal(new int[] {
             10,
             0,
@@ -355,6 +354,11 @@ namespace Chummer
             this.nudMinimumEssence.Name = "nudMinimumEssence";
             this.nudMinimumEssence.Size = new System.Drawing.Size(50, 20);
             this.nudMinimumEssence.TabIndex = 2;
+            this.nudMinimumEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMinimumEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // nudMaximumEssence
@@ -367,7 +371,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudMaximumEssence.Location = new System.Drawing.Point(63, 49);
+            this.nudMaximumEssence.Location = new System.Drawing.Point(3, 55);
             this.nudMaximumEssence.Maximum = new decimal(new int[] {
             10,
             0,
@@ -381,6 +385,11 @@ namespace Chummer
             this.nudMaximumEssence.Name = "nudMaximumEssence";
             this.nudMaximumEssence.Size = new System.Drawing.Size(50, 20);
             this.nudMaximumEssence.TabIndex = 3;
+            this.nudMaximumEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaximumEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // nudExactEssence
@@ -393,7 +402,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudExactEssence.Location = new System.Drawing.Point(63, 81);
+            this.nudExactEssence.Location = new System.Drawing.Point(3, 107);
             this.nudExactEssence.Maximum = new decimal(new int[] {
             10,
             0,
@@ -407,6 +416,11 @@ namespace Chummer
             this.nudExactEssence.Name = "nudExactEssence";
             this.nudExactEssence.Size = new System.Drawing.Size(50, 20);
             this.nudExactEssence.TabIndex = 5;
+            this.nudExactEssence.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudExactEssence.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // chkUseCurrentEssence
@@ -414,7 +428,7 @@ namespace Chummer
             this.chkUseCurrentEssence.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkUseCurrentEssence.AutoSize = true;
             this.chkUseCurrentEssence.DefaultColorScheme = true;
-            this.chkUseCurrentEssence.Location = new System.Drawing.Point(119, 50);
+            this.chkUseCurrentEssence.Location = new System.Drawing.Point(122, 56);
             this.chkUseCurrentEssence.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkUseCurrentEssence.Name = "chkUseCurrentEssence";
             this.chkUseCurrentEssence.Size = new System.Drawing.Size(104, 17);
@@ -441,7 +455,7 @@ namespace Chummer
             // 
             this.lblCapacityFilterMaximum.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCapacityFilterMaximum.AutoSize = true;
-            this.lblCapacityFilterMaximum.Location = new System.Drawing.Point(3, 32);
+            this.lblCapacityFilterMaximum.Location = new System.Drawing.Point(60, 32);
             this.lblCapacityFilterMaximum.Name = "lblCapacityFilterMaximum";
             this.lblCapacityFilterMaximum.Size = new System.Drawing.Size(54, 13);
             this.lblCapacityFilterMaximum.TabIndex = 1;
@@ -453,7 +467,7 @@ namespace Chummer
             // 
             this.lblCapacityFilterExact.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblCapacityFilterExact.AutoSize = true;
-            this.lblCapacityFilterExact.Location = new System.Drawing.Point(3, 64);
+            this.lblCapacityFilterExact.Location = new System.Drawing.Point(60, 84);
             this.lblCapacityFilterExact.Name = "lblCapacityFilterExact";
             this.lblCapacityFilterExact.Size = new System.Drawing.Size(37, 13);
             this.lblCapacityFilterExact.TabIndex = 2;
@@ -471,7 +485,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudCapacityFilterMinimum.Location = new System.Drawing.Point(63, 3);
+            this.nudCapacityFilterMinimum.Location = new System.Drawing.Point(122, 3);
             this.nudCapacityFilterMinimum.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -483,8 +497,13 @@ namespace Chummer
             0,
             0});
             this.nudCapacityFilterMinimum.Name = "nudCapacityFilterMinimum";
-            this.nudCapacityFilterMinimum.Size = new System.Drawing.Size(50, 20);
+            this.nudCapacityFilterMinimum.Size = new System.Drawing.Size(56, 20);
             this.nudCapacityFilterMinimum.TabIndex = 3;
+            this.nudCapacityFilterMinimum.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudCapacityFilterMinimum.Visible = false;
             this.nudCapacityFilterMinimum.ValueChanged += new System.EventHandler(this.CapacityCostFilter);
             // 
@@ -498,7 +517,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudCapacityFilterMaximum.Location = new System.Drawing.Point(63, 29);
+            this.nudCapacityFilterMaximum.Location = new System.Drawing.Point(60, 55);
             this.nudCapacityFilterMaximum.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -510,8 +529,13 @@ namespace Chummer
             0,
             0});
             this.nudCapacityFilterMaximum.Name = "nudCapacityFilterMaximum";
-            this.nudCapacityFilterMaximum.Size = new System.Drawing.Size(50, 20);
+            this.nudCapacityFilterMaximum.Size = new System.Drawing.Size(56, 20);
             this.nudCapacityFilterMaximum.TabIndex = 4;
+            this.nudCapacityFilterMaximum.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudCapacityFilterMaximum.Visible = false;
             this.nudCapacityFilterMaximum.ValueChanged += new System.EventHandler(this.CapacityCostFilter);
             // 
@@ -525,7 +549,7 @@ namespace Chummer
             0,
             0,
             131072});
-            this.nudCapacityFilterExact.Location = new System.Drawing.Point(63, 60);
+            this.nudCapacityFilterExact.Location = new System.Drawing.Point(122, 81);
             this.nudCapacityFilterExact.Maximum = new decimal(new int[] {
             1000,
             0,
@@ -537,8 +561,13 @@ namespace Chummer
             0,
             0});
             this.nudCapacityFilterExact.Name = "nudCapacityFilterExact";
-            this.nudCapacityFilterExact.Size = new System.Drawing.Size(50, 20);
+            this.nudCapacityFilterExact.Size = new System.Drawing.Size(56, 20);
             this.nudCapacityFilterExact.TabIndex = 5;
+            this.nudCapacityFilterExact.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudCapacityFilterExact.Visible = false;
             this.nudCapacityFilterExact.ValueChanged += new System.EventHandler(this.CapacityCostFilter);
             // 
@@ -550,7 +579,7 @@ namespace Chummer
             this.gpbCostFilter.Dock = System.Windows.Forms.DockStyle.Fill;
             this.gpbCostFilter.Location = new System.Drawing.Point(230, 3);
             this.gpbCostFilter.Name = "gpbCostFilter";
-            this.gpbCostFilter.Size = new System.Drawing.Size(221, 108);
+            this.gpbCostFilter.Size = new System.Drawing.Size(221, 149);
             this.gpbCostFilter.TabIndex = 74;
             this.gpbCostFilter.TabStop = false;
             this.gpbCostFilter.Tag = "Label_FilterByCost";
@@ -578,7 +607,7 @@ namespace Chummer
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpCostFilter.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpCostFilter.Size = new System.Drawing.Size(215, 89);
+            this.tlpCostFilter.Size = new System.Drawing.Size(215, 130);
             this.tlpCostFilter.TabIndex = 0;
             // 
             // lblMinimumCost
@@ -607,7 +636,7 @@ namespace Chummer
             // 
             this.lblExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.lblExactCost.AutoSize = true;
-            this.lblExactCost.Location = new System.Drawing.Point(3, 64);
+            this.lblExactCost.Location = new System.Drawing.Point(3, 84);
             this.lblExactCost.Name = "lblExactCost";
             this.lblExactCost.Size = new System.Drawing.Size(37, 13);
             this.lblExactCost.TabIndex = 2;
@@ -632,6 +661,11 @@ namespace Chummer
             this.nudMinimumCost.Name = "nudMinimumCost";
             this.nudMinimumCost.Size = new System.Drawing.Size(59, 20);
             this.nudMinimumCost.TabIndex = 3;
+            this.nudMinimumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMinimumCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // nudMaximumCost
@@ -652,13 +686,18 @@ namespace Chummer
             this.nudMaximumCost.Name = "nudMaximumCost";
             this.nudMaximumCost.Size = new System.Drawing.Size(59, 20);
             this.nudMaximumCost.TabIndex = 4;
+            this.nudMaximumCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMaximumCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // nudExactCost
             // 
             this.nudExactCost.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.nudExactCost.AutoSize = true;
-            this.nudExactCost.Location = new System.Drawing.Point(63, 60);
+            this.nudExactCost.Location = new System.Drawing.Point(63, 81);
             this.nudExactCost.Maximum = new decimal(new int[] {
             999999,
             0,
@@ -672,6 +711,11 @@ namespace Chummer
             this.nudExactCost.Name = "nudExactCost";
             this.nudExactCost.Size = new System.Drawing.Size(59, 20);
             this.nudExactCost.TabIndex = 5;
+            this.nudExactCost.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudExactCost.ValueChanged += new System.EventHandler(this.EssenceCostFilter);
             // 
             // chkUseCurrentNuyen
@@ -704,11 +748,11 @@ namespace Chummer
             this.tlpLeft.Location = new System.Drawing.Point(0, 0);
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
-            this.tlpLeft.RowCount = 5;
+            this.tlpLeft.RowCount = 3;
             this.tlpMain.SetRowSpan(this.tlpLeft, 5);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
+            this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.tlpLeft.Size = new System.Drawing.Size(306, 514);
@@ -767,8 +811,7 @@ namespace Chummer
             this.lstCyberware.FormattingEnabled = true;
             this.lstCyberware.Location = new System.Drawing.Point(3, 57);
             this.lstCyberware.Name = "lstCyberware";
-            this.tlpLeft.SetRowSpan(this.lstCyberware, 3);
-            this.lstCyberware.Size = new System.Drawing.Size(300, 483);
+            this.lstCyberware.Size = new System.Drawing.Size(300, 454);
             this.lstCyberware.TabIndex = 26;
             this.lstCyberware.SelectedIndexChanged += new System.EventHandler(this.lstCyberware_SelectedIndexChanged);
             this.lstCyberware.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -920,6 +963,11 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 41;
+            this.nudMarkup.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupPercentLabel
@@ -1161,6 +1209,11 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 3;
+            this.nudRating.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudRating.ValueChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // lblRatingNALabel
@@ -1225,6 +1278,11 @@ namespace Chummer
             this.nudESSDiscount.Name = "nudESSDiscount";
             this.nudESSDiscount.Size = new System.Drawing.Size(56, 20);
             this.nudESSDiscount.TabIndex = 7;
+            this.nudESSDiscount.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudESSDiscount.ValueChanged += new System.EventHandler(this.ProcessCyberwareInfoChanged);
             // 
             // lblESSDiscountPercentLabel

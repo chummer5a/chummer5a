@@ -28,6 +28,7 @@ Application:
 - Gland `Gear Cost` / `Parent Gear Cost` / `or Gear` pricing and availability now include nested drug cost and avail (Restricted Gear swallow applies).
 - Add Drug on Chemical Gland / Expanded Reservoir (Create and Career) opens Select Drug filtered by allowed categories, including Create Custom Drug.
 - Nested gland drugs create a disabled custom improvement group for Improvements-tab activation and Narco, same flow as Drugs-tab doses. The group name includes the parent ware (e.g. `Bliss (Chemical Gland)`) so it does not collide with a Drugs-tab dose of the same drug. Removing the drug or deleting the gland clears those improvements. Characters saved before this change get missing groups created on load.
+- Changing character settings in the Master Index no longer causes the displayed list of items to initially ignore the file and search filters.
 
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.

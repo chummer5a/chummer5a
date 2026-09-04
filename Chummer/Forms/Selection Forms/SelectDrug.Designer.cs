@@ -151,6 +151,7 @@ namespace Chummer
             this.chkHideOverAvailLimit.TabIndex = 65;
             this.chkHideOverAvailLimit.Tag = "Checkbox_HideOverAvailLimit";
             this.chkHideOverAvailLimit.Text = "Hide Items Over Avail Limit ({0})";
+            this.chkHideOverAvailLimit.ToolTipText = "";
             this.chkHideOverAvailLimit.UseVisualStyleBackColor = true;
             this.chkHideOverAvailLimit.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
@@ -168,6 +169,7 @@ namespace Chummer
             this.chkHideBannedGrades.TabIndex = 67;
             this.chkHideBannedGrades.Tag = "Checkbox_HideBannedCyberwareGrades";
             this.chkHideBannedGrades.Text = "Hide Banned Cyberware Grades";
+            this.chkHideBannedGrades.ToolTipText = "";
             this.chkHideBannedGrades.UseVisualStyleBackColor = true;
             this.chkHideBannedGrades.CheckedChanged += new System.EventHandler(this.chkHideBannedGrades_CheckedChanged);
             // 
@@ -183,6 +185,7 @@ namespace Chummer
             this.chkShowOnlyAffordItems.TabIndex = 72;
             this.chkShowOnlyAffordItems.Tag = "Checkbox_ShowOnlyAffordItems";
             this.chkShowOnlyAffordItems.Text = "Show Only Items I Can Afford";
+            this.chkShowOnlyAffordItems.ToolTipText = "";
             this.chkShowOnlyAffordItems.UseVisualStyleBackColor = true;
             this.chkShowOnlyAffordItems.CheckedChanged += new System.EventHandler(this.chkHideOverAvailLimit_CheckedChanged);
             // 
@@ -199,11 +202,11 @@ namespace Chummer
             this.tlpLeft.Margin = new System.Windows.Forms.Padding(0);
             this.tlpLeft.Name = "tlpLeft";
             this.tlpLeft.RowCount = 3;
-            this.tlpMain.SetRowSpan(this.tlpLeft, 7);
+            this.tlpMain.SetRowSpan(this.tlpLeft, 6);
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpLeft.RowStyles.Add(new System.Windows.Forms.RowStyle());
-            this.tlpLeft.Size = new System.Drawing.Size(303, 423);
+            this.tlpLeft.Size = new System.Drawing.Size(303, 394);
             this.tlpLeft.TabIndex = 75;
             // 
             // cboGrade
@@ -475,6 +478,7 @@ namespace Chummer
             this.chkFree.TabIndex = 17;
             this.chkFree.Tag = "Checkbox_Free";
             this.chkFree.Text = "Free!";
+            this.chkFree.ToolTipText = "";
             this.chkFree.UseVisualStyleBackColor = true;
             this.chkFree.CheckedChanged += new System.EventHandler(this.chkFree_CheckedChanged);
             // 
@@ -490,6 +494,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.TabIndex = 39;
             this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.ToolTipText = "";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.chkBlackMarketDiscount_CheckedChanged);
@@ -539,6 +544,11 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 41;
+            this.nudMarkup.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMarkup.ValueChanged += new System.EventHandler(this.nudMarkup_ValueChanged);
             // 
             // lblMarkupPercentLabel
@@ -584,6 +594,11 @@ namespace Chummer
             this.nudRating.Name = "nudRating";
             this.nudRating.Size = new System.Drawing.Size(41, 20);
             this.nudRating.TabIndex = 3;
+            this.nudRating.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudRating.ValueChanged += new System.EventHandler(this.nudRating_ValueChanged);
             // 
             // lblRatingNALabel

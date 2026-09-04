@@ -17,8 +17,11 @@
  *  https://github.com/chummer5a/chummer5a
  */
 
+using System;
 using System.Collections.Generic;
 using Chummer.Backend.Equipment;
+using System.Diagnostics;
+using System.Threading;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
@@ -26,69 +29,111 @@ namespace Chummer.Tests
     [TestClass]
     public class ImprovementConditionTests
     {
+        public TestContext TestContext { get; set; }
+
         [TestMethod]
         public void EvaluateCondition_CharacterCreated_FollowsCareerMode()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Assert.IsFalse(ImprovementManager.EvaluateCondition("/character/created", objCharacter));
-                Assert.IsTrue(ImprovementManager.EvaluateCondition("/character/created = false", objCharacter));
-                Assert.IsTrue(ImprovementManager.EvaluateCondition("create", objCharacter));
-                Assert.IsFalse(ImprovementManager.EvaluateCondition("career", objCharacter));
+                using (Character objCharacter = new Character())
+                {
+                    Assert.IsFalse(ImprovementManager.EvaluateCondition("/character/created", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsTrue(ImprovementManager.EvaluateCondition("/character/created = false", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsTrue(ImprovementManager.EvaluateCondition("create", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsFalse(ImprovementManager.EvaluateCondition("career", objCharacter, token: TestContext.CancellationToken));
 
-                objCharacter.SetCreated(true, false);
+                    objCharacter.SetCreated(true, false);
 
-                Assert.IsTrue(ImprovementManager.EvaluateCondition("/character/created", objCharacter));
-                Assert.IsFalse(ImprovementManager.EvaluateCondition("/character/created = false", objCharacter));
-                Assert.IsFalse(ImprovementManager.EvaluateCondition("create", objCharacter));
-                Assert.IsTrue(ImprovementManager.EvaluateCondition("career", objCharacter));
+                    Assert.IsTrue(ImprovementManager.EvaluateCondition("/character/created", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsFalse(ImprovementManager.EvaluateCondition("/character/created = false", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsFalse(ImprovementManager.EvaluateCondition("create", objCharacter, token: TestContext.CancellationToken));
+                    Assert.IsTrue(ImprovementManager.EvaluateCondition("career", objCharacter, token: TestContext.CancellationToken));
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void EvaluateCondition_SpellAlchemical_ExcludesPreparations()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Spell objSpell = new Spell(objCharacter);
-                try
+                using (Character objCharacter = new Character())
                 {
-                    Assert.IsTrue(ImprovementManager.EvaluateCondition("not(/spell/alchemical)", objSpell));
-                    Assert.IsFalse(ImprovementManager.EvaluateCondition("/spell/alchemical", objSpell));
+                    using (Spell objSpell = new Spell(objCharacter))
+                    {
+                        Assert.IsTrue(ImprovementManager.EvaluateCondition("not(/spell/alchemical)", objSpell, token: TestContext.CancellationToken));
+                        Assert.IsFalse(ImprovementManager.EvaluateCondition("/spell/alchemical", objSpell, token: TestContext.CancellationToken));
 
-                    objSpell.Alchemical = true;
+                        objSpell.Alchemical = true;
 
-                    Assert.IsFalse(ImprovementManager.EvaluateCondition("not(/spell/alchemical)", objSpell));
-                    Assert.IsTrue(ImprovementManager.EvaluateCondition("/spell/alchemical", objSpell));
-                }
-                finally
-                {
-                    objSpell.Dispose();
+                        Assert.IsFalse(ImprovementManager.EvaluateCondition("not(/spell/alchemical)", objSpell, token: TestContext.CancellationToken));
+                        Assert.IsTrue(ImprovementManager.EvaluateCondition("/spell/alchemical", objSpell, token: TestContext.CancellationToken));
+                    }
                 }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void ValueCache_CharacterCreatedConditions_ApplyOnlyInMatchingMode()
         {
-            using (Character objCreate = new Character())
+            try
             {
-                Improvement objCareerOnly = AddAcademicKarmaCost(objCreate, "/character/created");
-                Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCreate, "/character/created = false");
+                using (Character objCreate = new Character())
+                {
+                    Improvement objCareerOnly = AddAcademicKarmaCost(objCreate, "/character/created", token: TestContext.CancellationToken);
+                    Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCreate, "/character/created = false", token: TestContext.CancellationToken);
 
-                CollectionAssert.DoesNotContain(GetAcademicCosts(objCreate), objCareerOnly);
-                CollectionAssert.Contains(GetAcademicMultipliers(objCreate), objCreateOnly);
+                    Assert.DoesNotContain(objCareerOnly, GetAcademicCosts(objCreate, token: TestContext.CancellationToken));
+                    Assert.Contains(objCreateOnly, GetAcademicMultipliers(objCreate, token: TestContext.CancellationToken));
+                }
+
+                using (Character objCareer = new Character())
+                {
+                    objCareer.SetCreated(true, false);
+                    Improvement objCareerOnly = AddAcademicKarmaCost(objCareer, "/character/created", token: TestContext.CancellationToken);
+                    Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCareer, "/character/created = false", token: TestContext.CancellationToken);
+
+                    Assert.Contains(objCareerOnly, GetAcademicCosts(objCareer, token: TestContext.CancellationToken));
+                    Assert.DoesNotContain(objCreateOnly, GetAcademicMultipliers(objCareer, token: TestContext.CancellationToken));
+                }
             }
-
-            using (Character objCareer = new Character())
+            catch (Exception ex)
             {
-                objCareer.SetCreated(true, false);
-                Improvement objCareerOnly = AddAcademicKarmaCost(objCareer, "/character/created");
-                Improvement objCreateOnly = AddAcademicKarmaMultiplier(objCareer, "/character/created = false");
-
-                CollectionAssert.Contains(GetAcademicCosts(objCareer), objCareerOnly);
-                CollectionAssert.DoesNotContain(GetAcademicMultipliers(objCareer), objCreateOnly);
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
             }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
@@ -99,24 +144,37 @@ namespace Chummer.Tests
                 Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
                 ImprovementManager.CreateImprovement(
                     objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "LOG", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1, token: TestContext.CancellationToken);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "AGI", Improvement.ImprovementSource.Cyberware, "muscle toner",
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
-                Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
-                Assert.AreEqual(-1, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "LOG"));
-                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "AGI"));
+                    Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR", token: TestContext.CancellationToken));
+                    Assert.AreEqual(-1, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "LOG", token: TestContext.CancellationToken));
+                    Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "AGI", token: TestContext.CancellationToken));
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
@@ -128,13 +186,13 @@ namespace Chummer.Tests
                 Drug objCram = AddDrug(objCharacter, "Custom Drugs");
                 ImprovementManager.CreateImprovement(
                     objCharacter, "STR", Improvement.ImprovementSource.Drug, objKamikaze.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "STR", Improvement.ImprovementSource.Drug, objCram.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1, token: TestContext.CancellationToken);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
                 Assert.AreEqual(5, ImprovementManager.AugmentedValueOf(
                     objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
@@ -213,32 +271,32 @@ namespace Chummer.Tests
             return objDrug;
         }
 
-        private static Improvement AddAcademicKarmaCost(Character objCharacter, string strCondition)
+        private static Improvement AddAcademicKarmaCost(Character objCharacter, string strCondition, CancellationToken token = default)
         {
             return ImprovementManager.CreateImprovement(
                 objCharacter, "Academic", Improvement.ImprovementSource.Quality, "test",
                 Improvement.ImprovementType.SkillCategoryKarmaCost, string.Empty, -1, 1, 3,
-                strCondition: strCondition);
+                strCondition: strCondition, token: token);
         }
 
-        private static Improvement AddAcademicKarmaMultiplier(Character objCharacter, string strCondition)
+        private static Improvement AddAcademicKarmaMultiplier(Character objCharacter, string strCondition, CancellationToken token = default)
         {
             return ImprovementManager.CreateImprovement(
                 objCharacter, "Academic", Improvement.ImprovementSource.Quality, "test",
                 Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, string.Empty, 50,
-                strCondition: strCondition);
+                strCondition: strCondition, token: token);
         }
 
-        private static List<Improvement> GetAcademicCosts(Character objCharacter)
+        private static List<Improvement> GetAcademicCosts(Character objCharacter, CancellationToken token = default)
         {
             return ImprovementManager.GetCachedImprovementListForValueOf(
-                objCharacter, Improvement.ImprovementType.SkillCategoryKarmaCost, "Academic");
+                objCharacter, Improvement.ImprovementType.SkillCategoryKarmaCost, "Academic", token: token);
         }
 
-        private static List<Improvement> GetAcademicMultipliers(Character objCharacter)
+        private static List<Improvement> GetAcademicMultipliers(Character objCharacter, CancellationToken token = default)
         {
             return ImprovementManager.GetCachedImprovementListForValueOf(
-                objCharacter, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, "Academic");
+                objCharacter, Improvement.ImprovementType.SkillCategoryKarmaCostMultiplier, "Academic", token: token);
         }
     }
 }

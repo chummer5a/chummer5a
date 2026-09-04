@@ -4506,11 +4506,12 @@ namespace Chummer.Backend.Skills
         /// </summary>
         /// <param name="strInput">Stringbuilder object that contains the input.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public string ProcessSkillsInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public string ProcessSkillsInXPath(string strInput, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             return string.IsNullOrEmpty(strInput)
                 ? strInput
-                : ProcessSkillsInXPathForTooltip(strInput, blnShowValues: false, dicValueOverrides: dicValueOverrides);
+                : ProcessSkillsInXPathForTooltip(strInput, blnShowValues: false, dicValueOverrides: dicValueOverrides, token: token);
         }
 
         /// <summary>
@@ -4519,12 +4520,13 @@ namespace Chummer.Backend.Skills
         /// <param name="sbdInput">Stringbuilder object that contains the input.</param>
         /// <param name="strOriginal">Original text that will be used in the final Stringbuilder. Replaces stringbuilder input without replacing the object.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public void ProcessSkillsInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessSkillsInXPath(StringBuilder sbdInput, string strOriginal = "", IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
             ProcessSkillsInXPathForTooltip(sbdInput, strOriginal, blnShowValues: false,
-                dicValueOverrides: dicValueOverrides);
+                dicValueOverrides: dicValueOverrides, token: token);
         }
 
         /// <summary>
@@ -4535,8 +4537,9 @@ namespace Chummer.Backend.Skills
         /// <param name="strLanguage">Language to use for displayname translation.</param>
         /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public string ProcessSkillsInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public string ProcessSkillsInXPathForTooltip(string strInput, CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return strInput;
             if (objCultureInfo == null)
@@ -4544,17 +4547,19 @@ namespace Chummer.Backend.Skills
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
             string strReturn = strInput;
-            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (LockObject.EnterReadLock())
+            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage, token: token) + "({0})" : string.Empty;
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (blnShowValues)
                         strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
                                                            () =>
                                                            {
-                                                               Skill objLoopSkill = GetActiveSkill(strSkillKey);
-                                                               return objLoopSkill.DisplayName(strLanguage)
+                                                               Skill objLoopSkill = GetActiveSkill(strSkillKey, token);
+                                                               return objLoopSkill.DisplayName(strLanguage, token)
                                                                       + string.Format(
                                                                           objCultureInfo, strFormat,
                                                                           dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
@@ -4562,11 +4567,11 @@ namespace Chummer.Backend.Skills
                                                                               : objLoopSkill.PoolOtherAttribute(
                                                                                   objLoopSkill.Attribute,
                                                                                   intAttributeOverrideValue:
-                                                                                  0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                                                                  0, token: token)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
                                                            });
                     else
                         strReturn = strReturn.CheapReplace("{" + strSkillKey + "}",
-                                                           () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
+                                                           () => GetActiveSkill(strSkillKey, token).DisplayName(strLanguage, token));
                 }
             }
 
@@ -4582,8 +4587,9 @@ namespace Chummer.Backend.Skills
         /// <param name="strLanguage">Language to use for displayname translation.</param>
         /// <param name="blnShowValues">Whether to include the dicepool value in the return string.</param>
         /// <param name="dicValueOverrides">Alternative dictionary to use for value lookup instead of SkillsSection.GetActiveSkill.</param>
-        public void ProcessSkillsInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null)
+        public void ProcessSkillsInXPathForTooltip(StringBuilder sbdInput, string strOriginal = "", CultureInfo objCultureInfo = null, string strLanguage = "", bool blnShowValues = true, IReadOnlyDictionary<string, int> dicValueOverrides = null, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
             if (string.IsNullOrEmpty(strOriginal))
@@ -4592,17 +4598,19 @@ namespace Chummer.Backend.Skills
                 objCultureInfo = GlobalSettings.CultureInfo;
             if (string.IsNullOrEmpty(strLanguage))
                 strLanguage = GlobalSettings.Language;
-            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage) + "({0})" : string.Empty;
-            using (LockObject.EnterReadLock())
+            string strFormat = blnShowValues ? LanguageManager.GetString("String_Space", strLanguage, token: token) + "({0})" : string.Empty;
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 foreach (string strSkillKey in Skills.Select(i => i.DictionaryKey))
                 {
+                    token.ThrowIfCancellationRequested();
                     if (blnShowValues)
                         sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
                                               () =>
                                               {
-                                                  Skill objLoopSkill = GetActiveSkill(strSkillKey);
-                                                  return objLoopSkill.DisplayName(strLanguage)
+                                                  Skill objLoopSkill = GetActiveSkill(strSkillKey, token);
+                                                  return objLoopSkill.DisplayName(strLanguage, token)
                                                          + string.Format(
                                                              objCultureInfo, strFormat,
                                                              dicValueOverrides != null && dicValueOverrides.TryGetValue(strSkillKey, out int intOverride)
@@ -4610,11 +4618,11 @@ namespace Chummer.Backend.Skills
                                                                  : objLoopSkill.PoolOtherAttribute(
                                                                      objLoopSkill.Attribute,
                                                                      intAttributeOverrideValue:
-                                                                     0)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
+                                                                     0, token: token)); // We explicitly want to override the attribute value with 0 because we're just fetching the pure skill pool
                                               });
                     else
                         sbdInput.CheapReplace(strOriginal, "{" + strSkillKey + "}",
-                                              () => GetActiveSkill(strSkillKey).DisplayName(strLanguage));
+                                              () => GetActiveSkill(strSkillKey, token).DisplayName(strLanguage, token));
                 }
             }
         }

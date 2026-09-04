@@ -3366,7 +3366,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating)
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
 
@@ -3446,7 +3446,7 @@ namespace Chummer
 
             // If avail contains "F" or "R", remove it from the string so we can use the expression.
             string strAvailExpr = objAvailNode?.Value ?? string.Empty;
-            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating)
+            strAvailExpr = strAvailExpr.ProcessFixedValuesString(intRating, token)
                 .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
 
@@ -3513,7 +3513,7 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                strCost = strCost.ProcessFixedValuesString(intRating)
+                strCost = strCost.ProcessFixedValuesString(intRating, token)
                     .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                     .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strCost.StartsWith("Variable", StringComparison.Ordinal))
@@ -3576,7 +3576,7 @@ namespace Chummer
             string strCost = objCostNode?.Value;
             if (!string.IsNullOrEmpty(strCost))
             {
-                strCost = strCost.ProcessFixedValuesString(intRating)
+                strCost = strCost.ProcessFixedValuesString(intRating, token)
                     .Replace("{Rating}", intRating.ToString(GlobalSettings.InvariantCultureInfo))
                     .Replace("Rating", intRating.ToString(GlobalSettings.InvariantCultureInfo));
                 if (strCost.StartsWith("Variable", StringComparison.Ordinal))

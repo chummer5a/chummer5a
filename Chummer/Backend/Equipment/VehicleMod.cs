@@ -855,12 +855,12 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        public int ProcessRatingString(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating).StandardRound();
+        public int ProcessRatingString(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        public int ProcessRatingString(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating).StandardRound();
+        public int ProcessRatingString(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, token).StandardRound();
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
@@ -883,22 +883,23 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        public decimal ProcessRatingStringAsDec(string strExpression, int intRating) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _);
+        public decimal ProcessRatingStringAsDec(string strExpression, int intRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, () => intRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        public decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _);
+        public decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, CancellationToken token = default) => ProcessRatingStringAsDec(strExpression, funcRating, out bool _, token);
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        public decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess)
+        public decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -906,6 +907,7 @@ namespace Chummer.Backend.Equipment
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         sbdValue.Append(strExpression);
                         if (strExpression.Contains("Rating"))
                         {
@@ -933,12 +935,12 @@ namespace Chummer.Backend.Equipment
                         Vehicle objVehicle = Parent;
                         if (objVehicle != null)
                         {
-                            objVehicle.ProcessAttributesInXPath(sbdValue, strExpression, this);
+                            objVehicle.ProcessAttributesInXPath(sbdValue, strExpression, this, token: token);
                         }
                         else
                         {
                             Vehicle.FillAttributesInXPathWithDummies(sbdValue);
-                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression);
+                            _objCharacter.ProcessAttributesInXPath(sbdValue, strExpression, token: token);
                         }
                         strExpression = sbdValue.ToString();
                     }
@@ -946,7 +948,7 @@ namespace Chummer.Backend.Equipment
                 // This is first converted to a decimal and rounded up since some items have a multiplier that is not a whole number, such as 2.5.
                 object objProcess;
                 (blnIsSuccess, objProcess)
-                    = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                    = CommonFunctions.EvaluateInvariantXPath(strExpression, token);
                 if (blnIsSuccess)
                     return Convert.ToDecimal((double)objProcess);
             }

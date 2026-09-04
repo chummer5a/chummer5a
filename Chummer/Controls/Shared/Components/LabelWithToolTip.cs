@@ -59,7 +59,15 @@ namespace Chummer
         }
 
         // ReSharper disable once MemberCanBePrivate.Global
-        public LabelWithToolTip(int intToolTipWrap = -1) : base()
+        public LabelWithToolTip() : base() // Constructor with no parameter mainly for the WinForms Designer
+        {
+            _intToolTipWrap = -1;
+            _frmParent = FindForm();
+            _objToolTip = ToolTipFactory.GetToolTipForForm(_frmParent);
+        }
+
+        // ReSharper disable once MemberCanBePrivate.Global
+        public LabelWithToolTip(int intToolTipWrap) : base()
         {
             _intToolTipWrap = intToolTipWrap;
             _frmParent = FindForm();

@@ -55,7 +55,7 @@ namespace Chummer
             this.lstTechniques.Location = new System.Drawing.Point(3, 3);
             this.lstTechniques.Name = "lstTechniques";
             this.tlpMain.SetRowSpan(this.lstTechniques, 3);
-            this.lstTechniques.Size = new System.Drawing.Size(297, 417);
+            this.lstTechniques.Size = new System.Drawing.Size(297, 388);
             this.lstTechniques.TabIndex = 0;
             this.lstTechniques.SelectedIndexChanged += new System.EventHandler(this.lstTechniques_SelectedIndexChanged);
             this.lstTechniques.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -68,16 +68,17 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.lstTechniques, 0, 0);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 2);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 6;
             // 

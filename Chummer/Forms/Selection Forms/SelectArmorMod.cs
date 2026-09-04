@@ -353,7 +353,7 @@ namespace Chummer
                 else
                 {
                     string strCostElement = objXmlMod.SelectSingleNodeAndCacheExpression("cost", token)?.Value ?? string.Empty;
-                    strCostElement = strCostElement.ProcessFixedValuesString(intRating);
+                    strCostElement = strCostElement.ProcessFixedValuesString(intRating, token);
                     if (strCostElement.StartsWith("Variable(", StringComparison.Ordinal))
                     {
                         string strFirstHalf = strCostElement.TrimStartOnce("Variable(", true).TrimEndOnce(')');
@@ -411,7 +411,7 @@ namespace Chummer
                     await lblCapacity.DoThreadSafeAsync(x => x.Text = "[" + 0.ToString(GlobalSettings.CultureInfo) + "]", token: token).ConfigureAwait(false);
                 else
                 {
-                    strCapacity = strCapacity.ProcessFixedValuesString(intRating);
+                    strCapacity = strCapacity.ProcessFixedValuesString(intRating, token);
 
                     bool blnSquareBrackets = strCapacity.StartsWith('[');
                     if (blnSquareBrackets)
@@ -623,7 +623,7 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating);
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token);
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;

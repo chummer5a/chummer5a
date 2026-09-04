@@ -416,6 +416,7 @@ namespace Chummer
             this.lblQualitySource.TabIndex = 69;
             this.lblQualitySource.Text = "[Source]";
             this.lblQualitySource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblQualitySource.ToolTipText = "";
             this.lblQualitySource.Click += new System.EventHandler(this.OpenSourceFromLabel);
             // 
             // lblQualitySourceLabel
@@ -562,8 +563,8 @@ namespace Chummer
             treeNode2,
             treeNode3,
             treeNode4});
-            this.tlpMain.SetRowSpan(this.treLifestyleQualities, 4);
-            this.treLifestyleQualities.Size = new System.Drawing.Size(300, 508);
+            this.tlpMain.SetRowSpan(this.treLifestyleQualities, 3);
+            this.treLifestyleQualities.Size = new System.Drawing.Size(300, 479);
             this.treLifestyleQualities.TabIndex = 53;
             this.treLifestyleQualities.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.treLifestyleQualities_AfterSelect);
             // 
@@ -712,6 +713,11 @@ namespace Chummer
             this.nudArea.Name = "nudArea";
             this.nudArea.Size = new System.Drawing.Size(41, 20);
             this.nudArea.TabIndex = 40;
+            this.nudArea.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // nudSecurity
             // 
@@ -732,6 +738,11 @@ namespace Chummer
             this.nudSecurity.Name = "nudSecurity";
             this.nudSecurity.Size = new System.Drawing.Size(41, 20);
             this.nudSecurity.TabIndex = 41;
+            this.nudSecurity.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // lblSecurity
             // 
@@ -789,6 +800,11 @@ namespace Chummer
             this.nudRoommates.Name = "nudRoommates";
             this.nudRoommates.Size = new System.Drawing.Size(56, 20);
             this.nudRoommates.TabIndex = 15;
+            this.nudRoommates.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudRoommates.ValueChanged += new System.EventHandler(this.nudRoommates_ValueChanged);
             // 
             // chkSplitCostWithRoommates
@@ -800,10 +816,11 @@ namespace Chummer
             this.chkSplitCostWithRoommates.Location = new System.Drawing.Point(191, 174);
             this.chkSplitCostWithRoommates.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
             this.chkSplitCostWithRoommates.Name = "chkSplitCostWithRoommates";
-            this.chkSplitCostWithRoommates.Size = new System.Drawing.Size(97, 17);
+            this.chkSplitCostWithRoommates.Size = new System.Drawing.Size(75, 17);
             this.chkSplitCostWithRoommates.TabIndex = 74;
             this.chkSplitCostWithRoommates.Tag = "Label_SelectAdvancedLifestyle_Tenant";
             this.chkSplitCostWithRoommates.Text = "Split Costs";
+            this.chkSplitCostWithRoommates.ToolTipText = "";
             this.chkSplitCostWithRoommates.UseVisualStyleBackColor = true;
             // 
             // chkTrustFund
@@ -818,6 +835,7 @@ namespace Chummer
             this.chkTrustFund.Size = new System.Drawing.Size(77, 17);
             this.chkTrustFund.TabIndex = 54;
             this.chkTrustFund.Text = "Trust Fund";
+            this.chkTrustFund.ToolTipText = "";
             this.chkTrustFund.UseVisualStyleBackColor = true;
             this.chkTrustFund.Visible = false;
             this.chkTrustFund.CheckedChanged += new System.EventHandler(this.chkTrustFund_Changed);
@@ -965,6 +983,11 @@ namespace Chummer
             this.tlpRight.SetRowSpan(this.nudBonusLP, 2);
             this.nudBonusLP.Size = new System.Drawing.Size(41, 20);
             this.nudBonusLP.TabIndex = 82;
+            this.nudBonusLP.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudBonusLP.Visible = false;
             // 
             // chkBonusLPRandomize
@@ -982,6 +1005,7 @@ namespace Chummer
             this.chkBonusLPRandomize.TabIndex = 83;
             this.chkBonusLPRandomize.Tag = "Checkbox_Randomize1D6";
             this.chkBonusLPRandomize.Text = "Randomize 1D6";
+            this.chkBonusLPRandomize.ToolTipText = "";
             this.chkBonusLPRandomize.UseVisualStyleBackColor = true;
             this.chkBonusLPRandomize.Visible = false;
             this.chkBonusLPRandomize.CheckedChanged += new System.EventHandler(this.chkTravelerBonusLPRandomize_CheckedChanged);
@@ -1005,6 +1029,11 @@ namespace Chummer
             this.nudComforts.Name = "nudComforts";
             this.nudComforts.Size = new System.Drawing.Size(41, 20);
             this.nudComforts.TabIndex = 39;
+            this.nudComforts.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             // 
             // tlpLifestyleQuality
             // 
@@ -1045,10 +1074,11 @@ namespace Chummer
             this.chkQualityUseLPCost.TabIndex = 78;
             this.chkQualityUseLPCost.Tag = "Label_SelectAdvancedLifestyle_LPContribution";
             this.chkQualityUseLPCost.Text = "Use Lifestyle Points to Pay for Quality";
+            this.chkQualityUseLPCost.ToolTipText = "";
             this.chkQualityUseLPCost.UseVisualStyleBackColor = true;
             this.chkQualityUseLPCost.CheckedChanged += new System.EventHandler(this.chkQualityContributesLP_CheckedChanged);
             // 
-            // SelectLifestyleAdvanced
+            // SelectLifestyle
             // 
             this.AcceptButton = this.cmdOK;
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1123,7 +1153,7 @@ namespace Chummer
         private Chummer.ColorableCheckBox chkTrustFund;
         private System.Windows.Forms.Label lblQualityLp;
         private System.Windows.Forms.Label lblQualityLPLabel;
-        private LabelWithToolTip lblQualitySource;
+        private Chummer.LabelWithToolTip lblQualitySource;
         private System.Windows.Forms.Label lblQualitySourceLabel;
         private System.Windows.Forms.Label lblQualityCost;
         private System.Windows.Forms.Label lblQualityCostLabel;

@@ -1344,7 +1344,7 @@ namespace Chummer
         private Chummer.NumericUpDownEx nudMarkup;
         private System.Windows.Forms.Label lblMarkupPercentLabel;
         private Chummer.ColorableCheckBox chkFreeItem;
-        private LabelWithToolTip lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.Label lblIncludedAccessories;
         private System.Windows.Forms.Label lblTestLabel;

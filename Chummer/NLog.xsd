@@ -4107,7 +4107,7 @@
           <xs:element name="namespace" type="xs:string" minOccurs="0" maxOccurs="1" />
           <xs:element name="protocol" type="NLog.Targets.WebServiceProtocol" minOccurs="0" maxOccurs="1" default="Soap11" />
           <xs:element name="proxyAddress" type="Layout" minOccurs="0" maxOccurs="1" />
-          <xs:element name="proxyType" type="NLog.Targets.WebServiceProxyType" minOccurs="0" maxOccurs="1" default="NoProxy" />
+          <xs:element name="proxyType" type="NLog.Targets.WebServiceProxyType" minOccurs="0" maxOccurs="1" default="DefaultWebProxy" />
           <xs:element name="url" type="xs:anyURI" minOccurs="0" maxOccurs="1" />
           <xs:element name="userAgent" type="Layout" minOccurs="0" maxOccurs="1" />
           <xs:element name="preAuthenticate" type="xs:boolean" minOccurs="0" maxOccurs="1" default="false" />
@@ -4759,7 +4759,7 @@
         </xs:attribute>
         <xs:attribute name="splunkSourceType" type="SimpleLayoutAttribute">
           <xs:annotation>
-            <xs:documentation>Splunk Message SourceType-attribute. SourceType can be used hint for choosing Splunk Indexer</xs:documentation>
+            <xs:documentation>Splunk Message SourceType-attribute, which tells Splunk how to parse and index the event content.</xs:documentation>
           </xs:annotation>
         </xs:attribute>
       </xs:extension>

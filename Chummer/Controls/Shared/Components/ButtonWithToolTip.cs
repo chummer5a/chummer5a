@@ -56,7 +56,14 @@ namespace Chummer
                 : Task.CompletedTask;
         }
 
-        public ButtonWithToolTip(int intToolTipWrap = -1) : base()
+        public ButtonWithToolTip() : base() // Constructor with no parameter mainly for the WinForms Designer
+        {
+            _intToolTipWrap = -1;
+            _frmParent = FindForm();
+            _objToolTip = ToolTipFactory.GetToolTipForForm(_frmParent);
+        }
+
+        public ButtonWithToolTip(int intToolTipWrap) : base()
         {
             _intToolTipWrap = intToolTipWrap;
             _frmParent = FindForm();

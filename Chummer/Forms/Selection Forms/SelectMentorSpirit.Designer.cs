@@ -124,8 +124,8 @@ namespace Chummer
             this.lstMentor.FormattingEnabled = true;
             this.lstMentor.Location = new System.Drawing.Point(3, 3);
             this.lstMentor.Name = "lstMentor";
-            this.tlpMain.SetRowSpan(this.lstMentor, 4);
-            this.lstMentor.Size = new System.Drawing.Size(300, 537);
+            this.tlpMain.SetRowSpan(this.lstMentor, 3);
+            this.lstMentor.Size = new System.Drawing.Size(300, 508);
             this.lstMentor.TabIndex = 0;
             this.lstMentor.SelectedIndexChanged += new System.EventHandler(this.lstMentor_SelectedIndexChanged);
             this.lstMentor.DoubleClick += new System.EventHandler(this.AcceptForm);

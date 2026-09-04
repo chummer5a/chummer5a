@@ -5671,10 +5671,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Rating.
         /// </summary>
-        public int GetRating(bool blnForAttributeEvaluation = false)
+        public int GetRating(bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
-            using (LockObject.EnterReadLock())
-                return Math.Max(Math.Min(_intRating, GetMaxRating(blnForAttributeEvaluation)), GetMinRating(blnForAttributeEvaluation));
+            using (LockObject.EnterReadLock(token))
+                return Math.Max(Math.Min(_intRating, GetMaxRating(blnForAttributeEvaluation, token)), GetMinRating(blnForAttributeEvaluation, token));
         }
 
         /// <summary>
@@ -6135,22 +6135,25 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public string ProcessAttributesInXPath(string strInput, bool blnForAttributeEvaluation = false)
+        public string ProcessAttributesInXPath(string strInput, bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
                 return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
+                token.ThrowIfCancellationRequested();
                 sbdInput.Append(strInput);
-                ProcessAttributesInXPath(sbdInput, strInput, blnForAttributeEvaluation);
+                ProcessAttributesInXPath(sbdInput, strInput, blnForAttributeEvaluation, token);
                 return sbdInput.ToString();
             }
         }
 
-        public StringBuilder ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false)
+        public StringBuilder ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput.Length == 0)
                 return sbdInput;
             if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
@@ -6221,12 +6224,12 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (Category == "Cyberlimb" || IsLimb)
                     {
-                        intSTR = GetAttributeTotalValue("STR");
-                        intSTRValue = GetAttributeValue("STR");
-                        intSTRBase = GetAttributeBaseValue("STR");
-                        intAGI = GetAttributeTotalValue("AGI");
-                        intAGIValue = GetAttributeValue("AGI");
-                        intAGIBase = GetAttributeBaseValue("AGI");
+                        intSTR = GetAttributeTotalValue("STR", token);
+                        intSTRValue = GetAttributeValue("STR", token);
+                        intSTRBase = GetAttributeBaseValue("STR", token);
+                        intAGI = GetAttributeTotalValue("AGI", token);
+                        intAGIValue = GetAttributeValue("AGI", token);
+                        intAGIBase = GetAttributeBaseValue("AGI", token);
                     }
                     else
                     {
@@ -6238,12 +6241,12 @@ namespace Chummer.Backend.Equipment
                         }
                         if (objCyberlimbParent != null)
                         {
-                            intSTR = objCyberlimbParent.GetAttributeTotalValue("STR");
-                            intSTRValue = objCyberlimbParent.GetAttributeValue("STR");
-                            intSTRBase = objCyberlimbParent.GetAttributeBaseValue("STR");
-                            intAGI = objCyberlimbParent.GetAttributeTotalValue("AGI");
-                            intAGIValue = objCyberlimbParent.GetAttributeValue("AGI");
-                            intAGIBase = objCyberlimbParent.GetAttributeBaseValue("AGI");
+                            intSTR = objCyberlimbParent.GetAttributeTotalValue("STR", token);
+                            intSTRValue = objCyberlimbParent.GetAttributeValue("STR", token);
+                            intSTRBase = objCyberlimbParent.GetAttributeBaseValue("STR", token);
+                            intAGI = objCyberlimbParent.GetAttributeTotalValue("AGI", token);
+                            intAGIValue = objCyberlimbParent.GetAttributeValue("AGI", token);
+                            intAGIBase = objCyberlimbParent.GetAttributeBaseValue("AGI", token);
                         }
                         else if (ParentVehicle != null)
                         {
@@ -6291,11 +6294,11 @@ namespace Chummer.Backend.Equipment
             }
 
             if (ParentVehicle != null)
-                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues);
+                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicVehicleValues, token: token);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicVehicleValues);
+                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicVehicleValues, token);
             }
             return sbdInput;
         }
@@ -6484,18 +6487,20 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Minimum Rating.
         /// </summary>
-        public int GetMinRating(bool blnForAttributeEvaluation = false)
+        public int GetMinRating(bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intReturn = 0;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 string strRating = MinRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation);
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
+                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
                     if (blnIsSuccess)
                         intReturn = ((double)objProcess).StandardRound();
                 }
@@ -6570,19 +6575,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total Maximum Rating.
         /// </summary>
-        public int GetMaxRating(bool blnForAttributeEvaluation = false)
+        public int GetMaxRating(bool blnForAttributeEvaluation = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intReturn = 0;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 string strRating = MaxRatingString;
 
                 // Not a simple integer, so we need to start mucking around with strings
                 if (strRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation);
+                    strRating = ProcessAttributesInXPath(strRating, blnForAttributeEvaluation, token);
 
-                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating);
+                    (bool blnIsSuccess, object objProcess) = CommonFunctions.EvaluateInvariantXPath(strRating, token);
                     if (blnIsSuccess)
                         intReturn = ((double)objProcess).StandardRound();
                 }
@@ -9305,7 +9312,7 @@ namespace Chummer.Backend.Equipment
 
                 string strESS = ESS;
                 if (blnSync)
-                    strESS = strESS.ProcessFixedValuesString(() => Rating);
+                    strESS = strESS.ProcessFixedValuesString(() => Rating, token);
                 else
                     strESS = await strESS.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
                 if (strESS.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
@@ -9327,7 +9334,7 @@ namespace Chummer.Backend.Equipment
                             strESS = strESS.CheapReplace("Rating",
                                                   () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            strESS = ProcessAttributesInXPath(strESS);
+                            strESS = ProcessAttributesInXPath(strESS, token: token);
                         }
                         else
                         {
@@ -9548,7 +9555,7 @@ namespace Chummer.Backend.Equipment
                                     strPostModifierExpression = strPostModifierExpression.CheapReplace("Rating",
                                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    strPostModifierExpression = ProcessAttributesInXPath(strPostModifierExpression);
+                                    strPostModifierExpression = ProcessAttributesInXPath(strPostModifierExpression, token: token);
                                 }
                                 else
                                 {
@@ -10905,12 +10912,14 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Base Cyberlimb attribute value (before modifiers and customization).
         /// </summary>
-        public int GetAttributeBaseValue(string strAbbrev)
+        public int GetAttributeBaseValue(string strAbbrev, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
                 return 0;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (Category != "Cyberlimb" && !IsLimb)
                     return 0;
                 switch (strAbbrev.ToUpperInvariant())
@@ -10961,13 +10970,15 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Unaugmented Cyberlimb attribute value (before modifiers).
         /// </summary>
-        public int GetAttributeValue(string strAbbrev)
+        public int GetAttributeValue(string strAbbrev, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
                 return 0;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
-                int intValue = GetAttributeBaseValue(strAbbrev);
+                token.ThrowIfCancellationRequested();
+                int intValue = GetAttributeBaseValue(strAbbrev, token);
                 if (Children.Count > 0
                     && s_AttributeCustomizationCyberwares.TryGetValue(
                         strAbbrev, out IReadOnlyCollection<string> setNamesToCheck))
@@ -10977,18 +10988,18 @@ namespace Chummer.Backend.Equipment
                     {
                         if (setNamesToCheck.Contains(objChild.Name))
                             lstCustomizationWare.Add(objChild);
-                    });
+                    }, token: token);
 
                     if (lstCustomizationWare.Count > 0)
                     {
                         intValue = lstCustomizationWare.Count > 1
-                            ? lstCustomizationWare.Max(s => s.GetRating(true))
-                            : lstCustomizationWare[0].GetRating(true);
+                            ? lstCustomizationWare.Max(s => s.GetRating(true, token))
+                            : lstCustomizationWare[0].GetRating(true, token);
                     }
                 }
 
                 return ParentVehicle == null
-                    ? Math.Min(intValue, _objCharacter.GetAttribute(strAbbrev)?.TotalMaximum ?? 0)
+                    ? Math.Min(intValue, _objCharacter.GetAttribute(strAbbrev, token: token)?.TotalMaximum ?? 0)
                     : Math.Min(intValue, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }
@@ -11055,18 +11066,21 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Total value for an attribute on a cyberlimb.
         /// </summary>
-        public int GetAttributeTotalValue(string strAbbrev)
+        public int GetAttributeTotalValue(string strAbbrev, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (!CyberlimbAttributeAbbrevs.Contains(strAbbrev))
                 return 0;
-            using (LockObject.EnterReadLock())
+            using (LockObject.EnterReadLock(token))
             {
+                token.ThrowIfCancellationRequested();
                 if (InheritAttributes)
                 {
                     int intAverageAttribute = 0;
                     int intCyberlimbChildrenNumber = 0;
                     foreach (int intChildTotalValue in Children.Select(x => x.GetAttributeTotalValue(strAbbrev)))
                     {
+                        token.ThrowIfCancellationRequested();
                         if (intChildTotalValue <= 0)
                             continue;
                         ++intCyberlimbChildrenNumber;
@@ -11093,7 +11107,7 @@ namespace Chummer.Backend.Equipment
                     {
                         if (setNamesToCheck.Contains(objChild.Name))
                             lstEnhancementWare.Add(objChild);
-                    });
+                    }, token);
 
                     if (lstEnhancementWare.Count > 0)
                     {
@@ -11107,14 +11121,14 @@ namespace Chummer.Backend.Equipment
                 {
                     intBonus += _objCharacter.RedlinerBonus;
                     // Add CyberlimbAttributeBonus improvements
-                    intBonus += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberlimbAttributeBonus, strImprovedName: strAbbrev).StandardRound();
+                    intBonus += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.CyberlimbAttributeBonus, strImprovedName: strAbbrev, token: token).StandardRound();
                 }
 
                 intBonus = Math.Min(intBonus, _objCharacter.Settings.CyberlimbAttributeBonusCap);
 
-                int intReturn = GetAttributeValue(strAbbrev) + intBonus;
+                int intReturn = GetAttributeValue(strAbbrev, token) + intBonus;
                 return ParentVehicle == null
-                    ? Math.Min(intReturn, _objCharacter.GetAttribute(strAbbrev)?.TotalAugmentedMaximum ?? 0)
+                    ? Math.Min(intReturn, _objCharacter.GetAttribute(strAbbrev, token: token)?.TotalAugmentedMaximum ?? 0)
                     : Math.Min(intReturn, Math.Max(ParentVehicle.TotalBody * 2, 1));
             }
         }

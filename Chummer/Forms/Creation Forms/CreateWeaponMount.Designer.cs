@@ -307,6 +307,7 @@ namespace Chummer
             this.chkFreeItem.TabIndex = 59;
             this.chkFreeItem.Tag = "Checkbox_Free";
             this.chkFreeItem.Text = "Free!";
+            this.chkFreeItem.ToolTipText = "";
             this.chkFreeItem.UseVisualStyleBackColor = true;
             this.chkFreeItem.CheckedChanged += new System.EventHandler(this.DoUpdateInfo);
             // 
@@ -329,6 +330,11 @@ namespace Chummer
             this.nudMarkup.Name = "nudMarkup";
             this.nudMarkup.Size = new System.Drawing.Size(56, 20);
             this.nudMarkup.TabIndex = 63;
+            this.nudMarkup.Value = new decimal(new int[] {
+            0,
+            0,
+            0,
+            0});
             this.nudMarkup.ValueChanged += new System.EventHandler(this.DoUpdateInfo);
             // 
             // lblMarkupPercentLabel
@@ -361,8 +367,7 @@ namespace Chummer
             this.treMods.Dock = System.Windows.Forms.DockStyle.Fill;
             this.treMods.Location = new System.Drawing.Point(3, 32);
             this.treMods.Name = "treMods";
-            this.tlpMain.SetRowSpan(this.treMods, 2);
-            this.treMods.Size = new System.Drawing.Size(297, 388);
+            this.treMods.Size = new System.Drawing.Size(297, 359);
             this.treMods.TabIndex = 65;
             this.treMods.AfterSelect += new System.Windows.Forms.TreeViewEventHandler(this.DoUpdateInfo);
             // 
@@ -408,6 +413,7 @@ namespace Chummer
             this.lblSource.TabIndex = 69;
             this.lblSource.Text = "[Source]";
             this.lblSource.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.lblSource.ToolTipText = "";
             this.lblSource.Click += new System.EventHandler(this.lblSource_Click);
             // 
             // lblSourceLabel
@@ -571,6 +577,7 @@ namespace Chummer
             this.chkBlackMarketDiscount.TabIndex = 60;
             this.chkBlackMarketDiscount.Tag = "Checkbox_BlackMarketDiscount";
             this.chkBlackMarketDiscount.Text = "Black Market Discount (10%)";
+            this.chkBlackMarketDiscount.ToolTipText = "";
             this.chkBlackMarketDiscount.UseVisualStyleBackColor = true;
             this.chkBlackMarketDiscount.Visible = false;
             this.chkBlackMarketDiscount.CheckedChanged += new System.EventHandler(this.DoUpdateInfo);
@@ -637,7 +644,7 @@ namespace Chummer
         private System.Windows.Forms.TreeView treMods;
         private System.Windows.Forms.Button cmdDeleteMod;
         private System.Windows.Forms.Button cmdAddMod;
-        private LabelWithToolTip lblSource;
+        private Chummer.LabelWithToolTip lblSource;
         private System.Windows.Forms.Label lblSourceLabel;
         private System.Windows.Forms.TableLayoutPanel tlpMain;
         private System.Windows.Forms.TableLayoutPanel tlpTopButtons;

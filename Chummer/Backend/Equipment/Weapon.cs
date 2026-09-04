@@ -1035,7 +1035,7 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strRating))
                     {
                         intAddWeaponRating = blnSync
-                                ? ProcessRatingString(strRating, () => Rating)
+                                ? ProcessRatingString(strRating, () => Rating, token: token)
                                 : await ProcessRatingStringAsync(strRating, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
                     }
 
@@ -3068,44 +3068,45 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, int intRating, bool blnForRange = false)
+        private int ProcessRatingString(string strExpression, int intRating, bool blnForRange = false, CancellationToken token = default)
         {
-            return ProcessRatingString(strExpression, () => intRating, blnForRange);
+            return ProcessRatingString(strExpression, () => intRating, blnForRange, token);
         }
 
         /// <summary>
         /// Processes a string into an int based on logical processing.
         /// </summary>
-        private int ProcessRatingString(string strExpression, Func<int> funcRating, bool blnForRange = false)
+        private int ProcessRatingString(string strExpression, Func<int> funcRating, bool blnForRange = false, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, funcRating, blnForRange).StandardRound();
+            return ProcessRatingStringAsDec(strExpression, funcRating, blnForRange, token).StandardRound();
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, int intRating, bool blnForRange = false)
+        private decimal ProcessRatingStringAsDec(string strExpression, int intRating, bool blnForRange = false, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, () => intRating, blnForRange);
+            return ProcessRatingStringAsDec(strExpression, () => intRating, blnForRange, token);
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, bool blnForRange = false)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, bool blnForRange = false, CancellationToken token = default)
         {
-            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, blnForRange);
+            return ProcessRatingStringAsDec(strExpression, funcRating, out bool _, blnForRange, token);
         }
 
         /// <summary>
         /// Processes a string into a decimal based on logical processing.
         /// </summary>
-        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess, bool blnForRange = false)
+        private decimal ProcessRatingStringAsDec(string strExpression, Func<int> funcRating, out bool blnIsSuccess, bool blnForRange = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -3113,6 +3114,7 @@ namespace Chummer.Backend.Equipment
                 {
                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdValue))
                     {
+                        token.ThrowIfCancellationRequested();
                         sbdValue.Append(strExpression);
                         if (strExpression.Contains("Physical") || strExpression.Contains("Missile"))
                         {
@@ -3150,12 +3152,12 @@ namespace Chummer.Backend.Equipment
                         sbdValue.CheapReplace("Weapon Rating", () => strRating.Value);
                         sbdValue.CheapReplace("{Rating}", () => strRating.Value);
                         sbdValue.CheapReplace("Rating", () => strRating.Value);
-                        ProcessAttributesInXPath(sbdValue, strExpression, blnForRange);
+                        ProcessAttributesInXPath(sbdValue, strExpression, blnForRange, token);
                         strExpression = sbdValue.ToString();
                     }
                 }
                 object objProcess;
-                (blnIsSuccess, objProcess) = CommonFunctions.EvaluateInvariantXPath(strExpression);
+                (blnIsSuccess, objProcess) = CommonFunctions.EvaluateInvariantXPath(strExpression, token);
                 if (blnIsSuccess)
                 {
                     try
@@ -4474,7 +4476,7 @@ namespace Chummer.Backend.Equipment
                 if (blnSync)
                 {
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                    ProcessAttributesInXPath(sbdDamage, Damage);
+                    ProcessAttributesInXPath(sbdDamage, Damage, token: token);
                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                     sbdDamage.CheapReplace(Damage, "{Rating}",
                         () => Rating.ToString(GlobalSettings.InvariantCultureInfo));
@@ -4805,7 +4807,7 @@ namespace Chummer.Backend.Equipment
                     bool blnIsSuccess;
                     decimal decValue;
                     if (blnSync)
-                        decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess);
+                        decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess, token: token);
                     else
                         (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strDamage, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -4871,7 +4873,7 @@ namespace Chummer.Backend.Equipment
                     bool blnIsSuccess;
                     decimal decValue;
                     if (blnSync)
-                        decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess);
+                        decValue = ProcessRatingStringAsDec(strDamage, () => Rating, out blnIsSuccess, token: token);
                     else
                         (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strDamage, () => GetRatingAsync(token), token: token).ConfigureAwait(false);
                     if (blnIsSuccess)
@@ -6845,7 +6847,7 @@ namespace Chummer.Backend.Equipment
             int intAP = 0;
             if (blnSync)
             {
-                decimal decAP = ProcessRatingStringAsDec(strAP, () => Rating, out bool blnIsSuccess);
+                decimal decAP = ProcessRatingStringAsDec(strAP, () => Rating, out bool blnIsSuccess, token: token);
                 if (blnIsSuccess)
                     intAP = decAP.StandardRound();
                 // If AP is not numeric (for example "-half"), do do anything and just return the weapon's AP.
@@ -7201,6 +7203,7 @@ namespace Chummer.Backend.Equipment
 
                 foreach ((string strGroup, decimal decRecoil) in lstRCDeployGroups)
                 {
+                    token.ThrowIfCancellationRequested();
                     if (!string.IsNullOrEmpty(strGroup))
                     {
                         int intRecoil = decRecoil.StandardRound();
@@ -7246,12 +7249,12 @@ namespace Chummer.Backend.Equipment
                                 Cyberware objAttributeSource = objWeaponParent;
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 int intSTR = blnSync
-                                    ? objAttributeSource.GetAttributeTotalValue("STR")
+                                    ? objAttributeSource.GetAttributeTotalValue("STR", token)
                                     : await objAttributeSource.GetAttributeTotalValueAsync("STR", token)
                                         .ConfigureAwait(false);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 int intAGI = blnSync
-                                    ? objAttributeSource.GetAttributeTotalValue("AGI")
+                                    ? objAttributeSource.GetAttributeTotalValue("AGI", token)
                                     : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token)
                                         .ConfigureAwait(false);
                                 while (objAttributeSource != null)
@@ -7262,12 +7265,12 @@ namespace Chummer.Backend.Equipment
                                     if (objAttributeSource == null) continue;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     intSTR = blnSync
-                                        ? objAttributeSource.GetAttributeTotalValue("STR")
+                                        ? objAttributeSource.GetAttributeTotalValue("STR", token)
                                         : await objAttributeSource.GetAttributeTotalValueAsync("STR", token)
                                             .ConfigureAwait(false);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     intAGI = blnSync
-                                        ? objAttributeSource.GetAttributeTotalValue("AGI")
+                                        ? objAttributeSource.GetAttributeTotalValue("AGI", token)
                                         : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token)
                                             .ConfigureAwait(false);
                                 }
@@ -7295,12 +7298,12 @@ namespace Chummer.Backend.Equipment
                             Cyberware objAttributeSource = objWeaponParent;
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             int intSTR = blnSync
-                                ? objAttributeSource.GetAttributeTotalValue("STR")
+                                ? objAttributeSource.GetAttributeTotalValue("STR", token)
                                 : await objAttributeSource.GetAttributeTotalValueAsync("STR", token)
                                     .ConfigureAwait(false);
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             int intAGI = blnSync
-                                ? objAttributeSource.GetAttributeTotalValue("AGI")
+                                ? objAttributeSource.GetAttributeTotalValue("AGI", token)
                                 : await objAttributeSource.GetAttributeTotalValueAsync("AGI", token)
                                     .ConfigureAwait(false);
                             while (objAttributeSource != null)
@@ -7312,7 +7315,7 @@ namespace Chummer.Backend.Equipment
                                     continue;
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 intSTR = blnSync
-                                    ? objAttributeSource.GetAttributeTotalValue("STR")
+                                    ? objAttributeSource.GetAttributeTotalValue("STR", token)
                                     : await objAttributeSource.GetAttributeTotalValueAsync("STR", token)
                                         .ConfigureAwait(false);
                             }
@@ -9076,8 +9079,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Dice Pool size for the Active Skill required to use the Weapon.
         /// </summary>
-        public int GetDicePool(bool blnIncludeAmmo = true)
+        public int GetDicePool(bool blnIncludeAmmo = true, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             int intDicePool = 0;
             decimal decDicePoolModifier = 0;
             switch (FireMode)
@@ -9093,7 +9097,7 @@ namespace Chummer.Backend.Equipment
                         objAutosoft = _objCharacter.Gear.DeepFirstOrDefault(
                             x => x.Children.Where(y => y.Equipped),
                             x => x.Name == strAutosoft && x.Equipped &&
-                                 (x.Extra == strName || x.Extra == strDisplayName));
+                                 (x.Extra == strName || x.Extra == strDisplayName), token);
                     }
 
                     if (ParentVehicle != null)
@@ -9110,14 +9114,14 @@ namespace Chummer.Backend.Equipment
                                 if (objVehicleMod?.UseOwnAttributesForWeapon == true && objAttributeSource != null)
                                 {
                                     while (objAttributeSource != null
-                                           && objAttributeSource.GetAttributeTotalValue("AGI") == 0)
+                                           && objAttributeSource.GetAttributeTotalValue("AGI", token) == 0)
                                     {
                                         objAttributeSource = objAttributeSource.Parent;
                                     }
 
                                     if (objAttributeSource != null)
                                     {
-                                        intDicePool = objAttributeSource.GetAttributeTotalValue("AGI");
+                                        intDicePool = objAttributeSource.GetAttributeTotalValue("AGI", token);
                                     }
                                 }
                             }
@@ -9127,12 +9131,12 @@ namespace Chummer.Backend.Equipment
                             objAutosoft = ParentVehicle.GearChildren.DeepFirstOrDefault(
                                 x => x.Children.Where(y => y.Equipped),
                                 x => x.Name == strAutosoft && x.Equipped &&
-                                     (x.Extra == strName || x.Extra == strDisplayName));
+                                     (x.Extra == strName || x.Extra == strDisplayName), token);
                         }
 
                         if (WirelessOn && HasWirelessSmartgun)
                         {
-                            if (_objCharacter.Settings.BookEnabled("R5"))
+                            if (_objCharacter.Settings.BookEnabled("R5", token))
                             {
                                 if (ParentVehicle.GearChildren.DeepAny(
                                         x => x.Children.Where(y => y.Equipped),
@@ -9157,21 +9161,21 @@ namespace Chummer.Backend.Equipment
                 }
                 case FiringMode.RemoteOperated:
                 {
-                    intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery").PoolOtherAttribute("LOG");
+                    intDicePool = _objCharacter.SkillsSection.GetActiveSkill("Gunnery", token).PoolOtherAttribute("LOG", token: token);
 
                     if (WirelessOn && HasWirelessSmartgun)
                     {
                         decimal decSmartlinkBonus = ImprovementManager.ValueOf(_objCharacter,
-                            Improvement.ImprovementType.Smartlink);
+                            Improvement.ImprovementType.Smartlink, token: token);
                         foreach (Gear objLoopGear in ParentVehicle.GearChildren.DeepWhere(x => x.Children.Where(y => y.Equipped),
-                                     x => x.Equipped))
+                                     x => x.Equipped, token))
                         {
                             string strLoopBonus = string.Empty;
                             if (objLoopGear.Bonus.TryGetStringFieldQuickly("smartlink", ref strLoopBonus))
                             {
                                 decSmartlinkBonus = Math.Max(decSmartlinkBonus, ImprovementManager.ValueToDec(
                                     _objCharacter, strLoopBonus,
-                                    objLoopGear.Rating));
+                                    objLoopGear.Rating, token));
                             }
                         }
 
@@ -9180,19 +9184,19 @@ namespace Chummer.Backend.Equipment
 
                     decDicePoolModifier
                         += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
-                            false, Category);
+                            false, Category, token: token);
                     break;
                 }
                 case FiringMode.GunneryCommandDevice:
                 case FiringMode.ManualOperation:
                 {
-                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                    Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery", token: token);
                     if (Cyberware && Equipment.Cyberware.CyberlimbAttributeAbbrevs.Contains(objSkill.Attribute)
                                   && _objMountedVehicle == null)
                     {
-                        Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID);
+                        Cyberware objAttributeSource = _objCharacter.Cyberware.DeepFindById(ParentID, token);
                         while (objAttributeSource != null
-                               && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
+                               && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute, token) == 0)
                         {
                             objAttributeSource = objAttributeSource.Parent;
                         }
@@ -9200,7 +9204,7 @@ namespace Chummer.Backend.Equipment
                         if (objAttributeSource != null)
                             intDicePool = objSkill.PoolOtherAttribute(
                                 objSkill.Attribute, false,
-                                objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
+                                objAttributeSource.GetAttributeTotalValue(objSkill.Attribute, token: token), token: token);
                         else
                             intDicePool = objSkill.Pool;
                     }
@@ -9210,12 +9214,12 @@ namespace Chummer.Backend.Equipment
                     if (WirelessOn && HasWirelessSmartgun)
                     {
                         decDicePoolModifier +=
-                            ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                            ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink, token: token);
                     }
 
                     decDicePoolModifier
                         += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
-                            false, Category);
+                            false, Category, token: token);
                     break;
                 }
                 case FiringMode.Skill:
@@ -9227,9 +9231,9 @@ namespace Chummer.Backend.Equipment
                         {
                             Cyberware objAttributeSource = _objMountedVehicle != null
                                 ? _objCharacter.Vehicles.FindVehicleCyberware(x => x.InternalId == ParentID)
-                                : _objCharacter.Cyberware.DeepFindById(ParentID);
+                                : _objCharacter.Cyberware.DeepFindById(ParentID, token);
                             while (objAttributeSource != null
-                                   && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute) == 0)
+                                   && objAttributeSource.GetAttributeTotalValue(objSkill.Attribute, token) == 0)
                             {
                                 objAttributeSource = objAttributeSource.Parent;
                             }
@@ -9237,7 +9241,7 @@ namespace Chummer.Backend.Equipment
                             if (objAttributeSource != null)
                                 intDicePool = objSkill.PoolOtherAttribute(
                                     objSkill.Attribute, false,
-                                    objAttributeSource.GetAttributeTotalValue(objSkill.Attribute));
+                                    objAttributeSource.GetAttributeTotalValue(objSkill.Attribute, token), token);
                             else
                                 intDicePool = objSkill.Pool;
                         }
@@ -9247,35 +9251,35 @@ namespace Chummer.Backend.Equipment
                         if (WirelessOn && HasWirelessSmartgun)
                         {
                             decDicePoolModifier
-                                += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink);
+                                += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Smartlink, token: token);
                         }
 
                         decDicePoolModifier
                             += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.WeaponCategoryDice,
-                                false, Category);
+                                false, Category, token: token);
                         decDicePoolModifier += ImprovementManager.ValueOf(
-                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId);
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDice, false, InternalId, token: token);
                         decDicePoolModifier += ImprovementManager.ValueOf(
-                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDV, false, InternalId);
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificDV, false, InternalId, token: token);
                         decDicePoolModifier += ImprovementManager.ValueOf(
-                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAP, false, InternalId);
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAP, false, InternalId, token: token);
                         decDicePoolModifier += ImprovementManager.ValueOf(
-                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAccuracy, false, InternalId);
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificAccuracy, false, InternalId, token: token);
                         decDicePoolModifier += ImprovementManager.ValueOf(
-                            _objCharacter, Improvement.ImprovementType.WeaponSpecificRange, false, InternalId);
+                            _objCharacter, Improvement.ImprovementType.WeaponSpecificRange, false, InternalId, token: token);
 
                         // If the character has a Specialization, include it in the Dice Pool string.
                         if (objSkill.Specializations.Count > 0 && !objSkill.IsExoticSkill)
                         {
                             SkillSpecialization objSpec =
-                                objSkill.GetSpecialization(CurrentDisplayNameShort) ??
-                                objSkill.GetSpecialization(Name) ??
-                                objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language)) ??
-                                objSkill.GetSpecialization(Category);
+                                objSkill.GetSpecialization(CurrentDisplayNameShort, token) ??
+                                objSkill.GetSpecialization(Name, token) ??
+                                objSkill.GetSpecialization(DisplayCategory(GlobalSettings.Language), token) ??
+                                objSkill.GetSpecialization(Category, token);
 
                             if (objSpec == null && objSkill.Specializations.Count > 0)
                             {
-                                objSpec = objSkill.GetSpecialization(Spec) ?? objSkill.GetSpecialization(Spec2);
+                                objSpec = objSkill.GetSpecialization(Spec, token) ?? objSkill.GetSpecialization(Spec2, token);
                             }
 
                             if (objSpec != null)
@@ -9292,13 +9296,13 @@ namespace Chummer.Backend.Equipment
             if (FireMode == FiringMode.GunneryCommandDevice || FireMode == FiringMode.RemoteOperated ||
                 FireMode == FiringMode.ManualOperation)
             {
-                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery");
+                Skill objSkill = _objCharacter.SkillsSection.GetActiveSkill("Gunnery", token);
                 if (objSkill != null)
                 {
                     string strSpec = RelevantSpecialization;
                     if (!string.IsNullOrEmpty(strSpec) && strSpec != "None" && objSkill.Specializations.Count > 0)
                     {
-                        intDicePool += objSkill.GetSpecializationBonus(strSpec);
+                        intDicePool += objSkill.GetSpecializationBonus(strSpec, token);
                     }
                 }
             }
@@ -9306,17 +9310,18 @@ namespace Chummer.Backend.Equipment
             string strToEvaluate;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdExtraModifier))
             {
+                token.ThrowIfCancellationRequested();
                 // First look at any changes caused by the weapon being wireless
                 if (WirelessOn && WirelessWeaponBonus != null)
                 {
-                    string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerTextViaPool();
+                    string strWeaponBonusPool = WirelessWeaponBonus["pool"]?.InnerTextViaPool(token);
                     if (!string.IsNullOrEmpty(strWeaponBonusPool) && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                     {
                         sbdExtraModifier.Append('(', strWeaponBonusPool.TrimStart('+'), ')');
                     }
                     if (HasWirelessSmartgun)
                     {
-                        strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool();
+                        strWeaponBonusPool = WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strWeaponBonusPool) && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
                             sbdExtraModifier.Append("+(")
@@ -9329,7 +9334,7 @@ namespace Chummer.Backend.Equipment
                 {
                     if (WirelessOn && a.WirelessOn && a.WirelessWeaponBonus != null)
                     {
-                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool();
+                        string strWeaponBonusPool = a.WirelessWeaponBonus["pool"]?.InnerTextViaPool(token);
                         if (!string.IsNullOrEmpty(strWeaponBonusPool)
                             && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
@@ -9341,7 +9346,7 @@ namespace Chummer.Backend.Equipment
                         }
                         if (HasWirelessSmartgun)
                         {
-                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool();
+                            strWeaponBonusPool = a.WirelessWeaponBonus["smartlinkpool"]?.InnerTextViaPool(token);
                             if (!string.IsNullOrEmpty(strWeaponBonusPool)
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
@@ -9354,7 +9359,7 @@ namespace Chummer.Backend.Equipment
                         }
                     }
                     return a.DicePool;
-                });
+                }, token);
 
                 if (blnIncludeAmmo)
                 {
@@ -9416,7 +9421,7 @@ namespace Chummer.Backend.Equipment
                         }
 
                         // Do the same for any plugins.
-                        foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped))
+                        foreach (Gear objChild in objAmmo.Children.DeepWhere(x => x.Children.Where(y => y.Equipped), x => x.Equipped, token))
                         {
                             if (Damage.Contains("(f)") && AmmoCategory != "Gear" && objChild.FlechetteWeaponBonus != null)
                             {
@@ -9477,7 +9482,7 @@ namespace Chummer.Backend.Equipment
                 strToEvaluate = sbdExtraModifier.ToString();
             }
 
-            decimal decExtraModifier = ProcessRatingStringAsDec(strToEvaluate, () => Rating);
+            decimal decExtraModifier = ProcessRatingStringAsDec(strToEvaluate, () => Rating, token: token);
             return intDicePool + (decDicePoolModifier + decExtraModifier).StandardRound();
         }
 
@@ -14528,22 +14533,25 @@ namespace Chummer.Backend.Equipment
                                                 .ConfigureAwait(false);
         }
 
-        public string ProcessAttributesInXPath(string strInput, bool blnForRange = false)
+        public string ProcessAttributesInXPath(string strInput, bool blnForRange = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (!strInput.HasValuesNeedingReplacementForXPathProcessing())
                 return strInput;
             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdInput))
             {
+                token.ThrowIfCancellationRequested();
                 sbdInput.Append(strInput);
-                ProcessAttributesInXPath(sbdInput, strInput, blnForRange);
+                ProcessAttributesInXPath(sbdInput, strInput, blnForRange, token);
                 return sbdInput.ToString();
             }
         }
 
-        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false)
+        public void ProcessAttributesInXPath(StringBuilder sbdInput, string strOriginal = "", bool blnForRange = false, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (sbdInput == null || sbdInput.Length <= 0)
                 return;
             if (!sbdInput.HasValuesNeedingReplacementForXPathProcessing())
@@ -14576,23 +14584,23 @@ namespace Chummer.Backend.Equipment
                             if (objWeaponParent != null)
                             {
                                 Cyberware objAttributeSource = objWeaponParent;
-                                int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                                int intSTRValue = objAttributeSource.GetAttributeValue("STR");
-                                int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
-                                int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
-                                int intAGIValue = objAttributeSource.GetAttributeValue("AGI");
-                                int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
+                                int intSTR = objAttributeSource.GetAttributeTotalValue("STR", token);
+                                int intSTRValue = objAttributeSource.GetAttributeValue("STR", token);
+                                int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR", token);
+                                int intAGI = objAttributeSource.GetAttributeTotalValue("AGI", token);
+                                int intAGIValue = objAttributeSource.GetAttributeValue("AGI", token);
+                                int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI", token);
                                 while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                                 {
                                     objAttributeSource = objAttributeSource.Parent;
                                     if (objAttributeSource == null)
                                         continue;
-                                    intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                                    intSTRValue = objAttributeSource.GetAttributeValue("STR");
-                                    intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
-                                    intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
-                                    intAGIValue = objAttributeSource.GetAttributeValue("AGI");
-                                    intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
+                                    intSTR = objAttributeSource.GetAttributeTotalValue("STR", token);
+                                    intSTRValue = objAttributeSource.GetAttributeValue("STR", token);
+                                    intSTRBase = objAttributeSource.GetAttributeBaseValue("STR", token);
+                                    intAGI = objAttributeSource.GetAttributeTotalValue("AGI", token);
+                                    intAGIValue = objAttributeSource.GetAttributeValue("AGI", token);
+                                    intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI", token);
                                 }
 
                                 intUseSTR = intSTR;
@@ -14620,27 +14628,27 @@ namespace Chummer.Backend.Equipment
                     else if (!string.IsNullOrEmpty(ParentID))
                     {
                         // Look to see if this is attached to a Cyberlimb and use its STR instead.
-                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID);
+                        Cyberware objWeaponParent = _objCharacter.Cyberware.DeepFirstOrDefault(x => x.Children, x => x.InternalId == ParentID, token);
                         if (objWeaponParent != null)
                         {
                             Cyberware objAttributeSource = objWeaponParent;
-                            int intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                            int intSTRValue = objAttributeSource.GetAttributeValue("STR");
-                            int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
-                            int intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
-                            int intAGIValue = objAttributeSource.GetAttributeValue("AGI");
-                            int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
+                            int intSTR = objAttributeSource.GetAttributeTotalValue("STR", token);
+                            int intSTRValue = objAttributeSource.GetAttributeValue("STR", token);
+                            int intSTRBase = objAttributeSource.GetAttributeBaseValue("STR", token);
+                            int intAGI = objAttributeSource.GetAttributeTotalValue("AGI", token);
+                            int intAGIValue = objAttributeSource.GetAttributeValue("AGI", token);
+                            int intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI", token);
                             while (objAttributeSource != null && intSTR == 0 && intAGI == 0 && intSTRValue == 0 && intAGIValue == 0 && intSTRBase == 0 && intAGIBase == 0)
                             {
                                 objAttributeSource = objAttributeSource.Parent;
                                 if (objAttributeSource == null)
                                     continue;
-                                intSTR = objAttributeSource.GetAttributeTotalValue("STR");
-                                intSTRValue = objAttributeSource.GetAttributeValue("STR");
-                                intSTRBase = objAttributeSource.GetAttributeBaseValue("STR");
-                                intAGI = objAttributeSource.GetAttributeTotalValue("AGI");
-                                intAGIValue = objAttributeSource.GetAttributeValue("AGI");
-                                intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI");
+                                intSTR = objAttributeSource.GetAttributeTotalValue("STR", token);
+                                intSTRValue = objAttributeSource.GetAttributeValue("STR", token);
+                                intSTRBase = objAttributeSource.GetAttributeBaseValue("STR", token);
+                                intAGI = objAttributeSource.GetAttributeTotalValue("AGI", token);
+                                intAGIValue = objAttributeSource.GetAttributeValue("AGI", token);
+                                intAGIBase = objAttributeSource.GetAttributeBaseValue("AGI", token);
                             }
 
                             intUseSTR = intSTR;
@@ -14676,9 +14684,9 @@ namespace Chummer.Backend.Equipment
 
                 if (Category == "Throwing Weapons" || Skill?.DictionaryKey == "Throwing Weapons")
                     intUseSTR += (blnForRange
-                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR) +
-                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR)
-                            : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR))
+                            ? ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token) +
+                              ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowRangeSTR, token: token)
+                            : ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.ThrowSTR, token: token))
                         .StandardRound();
                 dicAttributeOverrides = new Dictionary<string, int>(6)
                 {
@@ -14691,11 +14699,11 @@ namespace Chummer.Backend.Equipment
                 };
             }
             if (ParentVehicle != null)
-                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides);
+                ParentVehicle.ProcessAttributesInXPath(sbdInput, strOriginal, dicValueOverrides: dicAttributeOverrides, token: token);
             else
             {
                 Vehicle.FillAttributesInXPathWithDummies(sbdInput);
-                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides);
+                _objCharacter.ProcessAttributesInXPath(sbdInput, strOriginal, dicAttributeOverrides, token);
             }
         }
 

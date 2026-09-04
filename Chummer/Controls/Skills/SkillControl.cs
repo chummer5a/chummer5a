@@ -1361,8 +1361,8 @@ namespace Chummer.UI.Skills
         {
             token.ThrowIfCancellationRequested();
             string strAbbrev = AttributeActive.Abbrev;
-            string strBackgroundCalcPool = _objSkill.DisplayOtherAttribute(strAbbrev);
-            string strBackgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(strAbbrev);
+            string strBackgroundCalcPool = _objSkill.DisplayOtherAttribute(strAbbrev, token);
+            string strBackgroundCalcTooltip = _objSkill.CompileDicepoolTooltip(strAbbrev, token: token);
             lblModifiedRating.DoThreadSafe((x, y) =>
             {
                 x.Text = strBackgroundCalcPool;

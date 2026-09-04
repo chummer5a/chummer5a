@@ -75,7 +75,7 @@ namespace Chummer
             this.lstSpells.FormattingEnabled = true;
             this.lstSpells.Location = new System.Drawing.Point(3, 30);
             this.lstSpells.Name = "lstSpells";
-            this.lstSpells.Size = new System.Drawing.Size(297, 390);
+            this.lstSpells.Size = new System.Drawing.Size(297, 361);
             this.lstSpells.TabIndex = 17;
             this.lstSpells.SelectedIndexChanged += new System.EventHandler(this.lstSpells_SelectedIndexChanged);
             this.lstSpells.DoubleClick += new System.EventHandler(this.cmdOK_Click);
@@ -324,6 +324,7 @@ namespace Chummer
             this.chkLimited.TabIndex = 14;
             this.chkLimited.Tag = "Checkbox_SelectSpell_LimitedSpell";
             this.chkLimited.Text = "Limited Spell";
+            this.chkLimited.ToolTipText = "";
             this.chkLimited.UseVisualStyleBackColor = true;
             this.chkLimited.CheckedChanged += new System.EventHandler(this.chkLimited_CheckedChanged);
             // 
@@ -340,6 +341,7 @@ namespace Chummer
             this.chkExtended.TabIndex = 21;
             this.chkExtended.Tag = "Checkbox_SelectSpell_ExtendedSpell";
             this.chkExtended.Text = "Extended Spell";
+            this.chkExtended.ToolTipText = "";
             this.chkExtended.UseVisualStyleBackColor = true;
             this.chkExtended.Visible = false;
             this.chkExtended.CheckedChanged += new System.EventHandler(this.chkExtended_CheckedChanged);
@@ -356,6 +358,7 @@ namespace Chummer
             this.chkAlchemical.TabIndex = 15;
             this.chkAlchemical.Tag = "Checkbox_SelectSpell_Alchemical";
             this.chkAlchemical.Text = "Alchemical Preparation";
+            this.chkAlchemical.ToolTipText = "";
             this.chkAlchemical.UseVisualStyleBackColor = true;
             // 
             // chkFreeBonus
@@ -371,6 +374,7 @@ namespace Chummer
             this.chkFreeBonus.TabIndex = 22;
             this.chkFreeBonus.Tag = "Checkbox_Free";
             this.chkFreeBonus.Text = "Free!";
+            this.chkFreeBonus.ToolTipText = "";
             this.chkFreeBonus.UseVisualStyleBackColor = true;
             // 
             // lblCategory
@@ -404,16 +408,17 @@ namespace Chummer
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpMain.Controls.Add(this.tableLayoutPanel2, 0, 0);
-            this.tlpMain.Controls.Add(this.tlpButtons, 1, 2);
             this.tlpMain.Controls.Add(this.tlpRight, 1, 1);
             this.tlpMain.Controls.Add(this.tlpTopRight, 1, 0);
+            this.tlpMain.Controls.Add(this.tlpButtons, 1, 3);
             this.tlpMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.tlpMain.Location = new System.Drawing.Point(9, 9);
             this.tlpMain.Name = "tlpMain";
-            this.tlpMain.RowCount = 3;
+            this.tlpMain.RowCount = 4;
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
+            this.tlpMain.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tlpMain.Size = new System.Drawing.Size(606, 423);
             this.tlpMain.TabIndex = 39;
             // 
@@ -433,7 +438,7 @@ namespace Chummer
             this.tlpMain.SetRowSpan(this.tableLayoutPanel2, 3);
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle());
             this.tableLayoutPanel2.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 100F));
-            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 423);
+            this.tableLayoutPanel2.Size = new System.Drawing.Size(303, 394);
             this.tableLayoutPanel2.TabIndex = 39;
             // 
             // tlpButtons

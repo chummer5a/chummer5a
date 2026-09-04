@@ -5277,8 +5277,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
         /// <param name="intRating">Rating to use for FixedValues.</param>
-        public static string ProcessFixedValuesString(this string strInput, int intRating)
+        public static string ProcessFixedValuesString(this string strInput, int intRating, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
@@ -5291,7 +5292,7 @@ namespace Chummer
                 int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndexInner < 0)
                     return strInput;
-                return ProcessFixedValuesStringCore(strInput, intRating, intIndexInner);
+                return ProcessFixedValuesStringCore(strInput, intRating, intIndexInner, token);
             }
             string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
             string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
@@ -5301,13 +5302,14 @@ namespace Chummer
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex, token), intRating, token);
             }
             if (strSecondPart[intIndex] != ')')
             {
                 int intNumParentheses = 1;
                 while (intNumParentheses > 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
                     if (intIndex < 0)
                         break;
@@ -5336,7 +5338,7 @@ namespace Chummer
                     intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                     if (intIndex < 0)
                         return strFirstPart + strSecondPart;
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex, token), intRating, token);
                 }
             }
 
@@ -5347,7 +5349,7 @@ namespace Chummer
                 intIndex = strSecondPart.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex), intRating);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRating, intIndex, token), intRating, token);
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
@@ -5355,7 +5357,7 @@ namespace Chummer
             intIndex = strSecondPartA.IndexOfAny(s_achrOpenParenthesesComma);
             if (intIndex < 0)
                 return strFirstPart + strSecondPartA + strSecondPartB;
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
         }
 
         /// <summary>
@@ -5364,8 +5366,9 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">String to process (should not have FixedValues trimmed).</param>
         /// <param name="funcRating">Function to get the rating to use for FixedValues.</param>
-        public static string ProcessFixedValuesString(this string strInput, Func<int> funcRating)
+        public static string ProcessFixedValuesString(this string strInput, Func<int> funcRating, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             int intFixedValuesIndex = strInput.IndexOf("FixedValues(", StringComparison.Ordinal);
@@ -5378,7 +5381,7 @@ namespace Chummer
                 int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndexInner < 0)
                     return strInput;
-                return ProcessFixedValuesStringCore(strInput, funcRating(), intIndexInner);
+                return ProcessFixedValuesStringCore(strInput, funcRating(), intIndexInner, token);
             }
             string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
             string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
@@ -5389,13 +5392,14 @@ namespace Chummer
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
                 int intRatingInner = funcRating();
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
             }
             if (strSecondPart[intIndex] != ')')
             {
                 int intNumParentheses = 1;
                 while (intNumParentheses > 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
                     if (intIndex < 0)
                         break;
@@ -5425,7 +5429,7 @@ namespace Chummer
                     if (intIndex < 0)
                         return strFirstPart + strSecondPart;
                     int intRatingInner = funcRating();
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
                 }
             }
 
@@ -5437,7 +5441,7 @@ namespace Chummer
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
                 int intRatingInner = funcRating();
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
@@ -5446,7 +5450,7 @@ namespace Chummer
             if (intIndex < 0)
                 return strFirstPart + strSecondPartA + strSecondPartB;
             int intRating = funcRating();
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
         }
 
         /// <summary>
@@ -5471,7 +5475,7 @@ namespace Chummer
                 int intIndexInner = strInput.IndexOfAny(s_achrOpenParenthesesComma);
                 if (intIndexInner < 0)
                     return strInput;
-                return ProcessFixedValuesStringCore(strInput, await funcRating().ConfigureAwait(false), intIndexInner);
+                return ProcessFixedValuesStringCore(strInput, await funcRating().ConfigureAwait(false), intIndexInner, token);
             }
             string strFirstPart = strInput.Substring(0, intFixedValuesIndex);
             string strSecondPart = strInput.Substring(intFixedValuesIndex + 13);
@@ -5482,13 +5486,14 @@ namespace Chummer
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
                 int intRatingInner = await funcRating().ConfigureAwait(false);
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
             }
             if (strSecondPart[intIndex] != ')')
             {
                 int intNumParentheses = 1;
                 while (intNumParentheses > 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intIndex = strSecondPart.IndexOfAny(s_achrParentheses, intIndex);
                     if (intIndex < 0)
                         break;
@@ -5518,7 +5523,7 @@ namespace Chummer
                     if (intIndex < 0)
                         return strFirstPart + strSecondPart;
                     int intRatingInner = await funcRating().ConfigureAwait(false);
-                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                    return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
                 }
             }
 
@@ -5530,7 +5535,7 @@ namespace Chummer
                 if (intIndex < 0)
                     return strFirstPart + strSecondPart;
                 int intRatingInner = await funcRating().ConfigureAwait(false);
-                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex), intRatingInner);
+                return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPart, intRatingInner, intIndex, token), intRatingInner, token);
             }
 
             string strSecondPartA = strSecondPart.Substring(0, intIndex);
@@ -5539,11 +5544,12 @@ namespace Chummer
             if (intIndex < 0)
                 return strFirstPart + strSecondPartA + strSecondPartB;
             int intRating = await funcRating().ConfigureAwait(false);
-            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex), intRating) + ProcessFixedValuesString(strSecondPartB, intRating);
+            return strFirstPart + ProcessFixedValuesString(ProcessFixedValuesStringCore(strSecondPartA, intRating, intIndex, token), intRating, token) + ProcessFixedValuesString(strSecondPartB, intRating, token);
         }
 
-        private static string ProcessFixedValuesStringCore(this string strInput, int intRating, int intIndex)
+        private static string ProcessFixedValuesStringCore(this string strInput, int intRating, int intIndex, CancellationToken token = default)
         {
+            token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strInput))
                 return string.Empty;
             if (intIndex < 0)
@@ -5562,6 +5568,7 @@ namespace Chummer
                 int intNumParentheses = 1;
                 while (intNumParentheses > 0)
                 {
+                    token.ThrowIfCancellationRequested();
                     intIndex = strInput.LastIndexOfAny(s_achrParentheses, 0, intIndex + 1);
                     // Unclosed parantheses before our last comma, so just seek to last comma and split from there
                     if (intIndex <= 0)
@@ -5601,6 +5608,7 @@ namespace Chummer
                     int intNumParentheses = 1;
                     while (intNumParentheses > 0)
                     {
+                        token.ThrowIfCancellationRequested();
                         intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
                         // Unclosed parantheses before our first comma, so return the entire string
                         if (intIndex < 0 || intIndex == intInputLength - 1)
@@ -5636,6 +5644,7 @@ namespace Chummer
                     int intLastCommaIndex = intIndex;
                     for (int intCurrentCount = 2; intCurrentCount <= intRating; intCurrentCount++)
                     {
+                        token.ThrowIfCancellationRequested();
                         intIndex = strInput.IndexOfAny(s_achrOpenParenthesesComma, intIndex + 1);
                         if (intIndex < 0 || intIndex == intInputLength - 1)
                             return strInput.Substring(intLastCommaIndex + 1);
@@ -5651,6 +5660,7 @@ namespace Chummer
                             int intNumParentheses = 1;
                             while (intNumParentheses > 0)
                             {
+                                token.ThrowIfCancellationRequested();
                                 intIndex = strInput.IndexOfAny(s_achrParentheses, intIndex);
                                 // Unclosed parantheses before our first comma, so skip directly to next comma
                                 if (intIndex < 0 || intIndex == intInputLength - 1)

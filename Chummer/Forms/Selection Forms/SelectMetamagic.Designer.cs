@@ -83,8 +83,8 @@ namespace Chummer
             this.lstMetamagic.FormattingEnabled = true;
             this.lstMetamagic.Location = new System.Drawing.Point(3, 3);
             this.lstMetamagic.Name = "lstMetamagic";
-            this.tlpMain.SetRowSpan(this.lstMetamagic, 5);
-            this.lstMetamagic.Size = new System.Drawing.Size(297, 417);
+            this.tlpMain.SetRowSpan(this.lstMetamagic, 4);
+            this.lstMetamagic.Size = new System.Drawing.Size(297, 388);
             this.lstMetamagic.TabIndex = 0;
             this.lstMetamagic.SelectedIndexChanged += new System.EventHandler(this.lstMetamagic_SelectedIndexChanged);
             this.lstMetamagic.DoubleClick += new System.EventHandler(this.lstMetamagic_DoubleClick);
@@ -130,6 +130,7 @@ namespace Chummer
             this.chkLimitList.Tag = "Checkbox_SelectGeneric_LimitList";
             this.chkLimitList.Text = "Show only Metamagics I can take";
             this.chkLimitList.TextAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.chkLimitList.ToolTipText = "";
             this.chkLimitList.UseVisualStyleBackColor = true;
             this.chkLimitList.CheckedChanged += new System.EventHandler(this.chkLimitList_CheckedChanged);
             // 
