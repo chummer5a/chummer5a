@@ -86,7 +86,8 @@ namespace Chummer
         AddWeaponGear,
         ImproveInitiateGrade,
         AddVehicleWeaponMountMod,
-        ModifyVehicleWeaponMount
+        ModifyVehicleWeaponMount,
+        AddDrug
     }
 
     /// <summary>

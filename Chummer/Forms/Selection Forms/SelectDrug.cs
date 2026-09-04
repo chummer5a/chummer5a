@@ -45,7 +45,7 @@ namespace Chummer
         private bool _blnLockGrade;
         private int _intLoading = 1;
 
-        private const string _strNodeXPath = "Drugs/Drug";
+        private const string _strNodeXPath = "drugs/drug";
         private static string _sStrSelectGrade = string.Empty;
         private string _strOldSelectedGrade = string.Empty;
         private bool _blnOldGradeEnabled = true;
@@ -53,22 +53,39 @@ namespace Chummer
         private string _strForceGrade = string.Empty;
         private HashSet<string> _setBlackMarketMaps;
         private readonly XPathNavigator _xmlBaseDrugDataNode;
+        private readonly HashSet<string> _setAllowedCategories;
+        private const string CreateCustomSentinel = "CREATE_CUSTOM_DRUG";
 
         #region Control Events
 
-        public SelectDrug(Character objCharacter)
+        /// <summary>
+        /// Create a drug selection form for the character.
+        /// </summary>
+        /// <param name="objCharacter">Character purchasing or attaching the drug.</param>
+        /// <param name="strAllowedCategories">
+        /// Optional comma-separated drug categories to show. Empty means all catalog categories.
+        /// When Custom Drugs is included, a Create Custom entry is offered.
+        /// </param>
+        public SelectDrug(Character objCharacter, string strAllowedCategories = "")
         {
             _objCharacter = objCharacter ?? throw new ArgumentNullException(nameof(objCharacter));
             InitializeComponent();
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
-            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath("drugcomponents.xml").SelectSingleNodeAndCacheExpression("/chummer");
+            _xmlBaseDrugDataNode = objCharacter.LoadDataXPath(DrugsData.CatalogFileName).SelectSingleNodeAndCacheExpression("/chummer");
             _lstGrades = _objCharacter.GetGradesList(Improvement.ImprovementSource.Drug);
             _strNoneGradeId = _lstGrades.Find(x => x.Name == "None")?.SourceIDString;
             _setDisallowedGrades = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps = Utils.StringHashSetPool.Get();
             _setBlackMarketMaps.AddRange(_objCharacter.GenerateBlackMarketMappings(_xmlBaseDrugDataNode));
+            _setAllowedCategories = Utils.StringHashSetPool.Get();
+            foreach (string strCategory in strAllowedCategories.TrimEndOnce(',').SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
+            {
+                string strTrimmed = strCategory.Trim();
+                if (!string.IsNullOrEmpty(strTrimmed))
+                    _setAllowedCategories.Add(strTrimmed);
+            }
         }
 
         private async void SelectDrug_Load(object sender, EventArgs e)
@@ -110,7 +127,6 @@ namespace Chummer
                 }).ConfigureAwait(false);
             }
 
-            // Populate the Grade list. Do not show the Adapsin Grades if Adapsin is not enabled for the character.
             await PopulateGrades(null, true, _objForcedGrade?.SourceIDString ?? string.Empty).ConfigureAwait(false);
 
             await cboGrade.DoThreadSafeAsync(x =>
@@ -207,20 +223,6 @@ namespace Chummer
                 string strForceGrade;
                 if (xmlDrug != null)
                 {
-                    Dictionary<string, int> dicVehicleValues = null;
-                    if (ParentVehicle != null)
-                    {
-                        int intVehicleBody = await ParentVehicle.GetTotalBodyAsync().ConfigureAwait(false);
-                        int intVehiclePilot = await ParentVehicle.GetPilotAsync().ConfigureAwait(false);
-                        dicVehicleValues = new Dictionary<string, int>(4)
-                        {
-                            { "STRMaximum", Math.Max(1, intVehicleBody * 2) },
-                            { "AGIMaximum", Math.Max(1, intVehiclePilot * 2) },
-                            { "STRMinimum", Math.Max(1, intVehicleBody) },
-                            { "AGIMinimum", Math.Max(1, intVehiclePilot) }
-                        };
-                    }
-
                     strForceGrade = xmlDrug.SelectSingleNodeAndCacheExpression("forcegrade")?.Value;
                     // If the piece has a Rating value, enable the Rating control, otherwise, disable it and set its value to 0.
                     XPathNavigator xmlRatingNode = xmlDrug.SelectSingleNodeAndCacheExpression("rating");
@@ -231,7 +233,7 @@ namespace Chummer
                         // Not a simple integer, so we need to start mucking around with strings
                         if (strMinRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                         {
-                            strMinRating = await _objCharacter.ProcessAttributesInXPathAsync(strMinRating, dicVehicleValues).ConfigureAwait(false);
+                            strMinRating = await _objCharacter.ProcessAttributesInXPathAsync(strMinRating).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMinRating)
                                                                            .ConfigureAwait(false);
@@ -247,7 +249,7 @@ namespace Chummer
                         // Not a simple integer, so we need to start mucking around with strings
                         if (strMaxRating.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                         {
-                            strMaxRating = await _objCharacter.ProcessAttributesInXPathAsync(strMaxRating, dicVehicleValues).ConfigureAwait(false);
+                            strMaxRating = await _objCharacter.ProcessAttributesInXPathAsync(strMaxRating).ConfigureAwait(false);
                             (bool blnIsSuccess, object objProcess) = await CommonFunctions
                                                                            .EvaluateInvariantXPathAsync(strMaxRating)
                                                                            .ConfigureAwait(false);
@@ -551,6 +553,11 @@ namespace Chummer
         public string SelectedDrug { get; private set; } = string.Empty;
 
         /// <summary>
+        /// Custom drug recipe built when the Create Custom entry is chosen (not added to Character.Drugs).
+        /// </summary>
+        public Drug SelectedCustomDrug { get; private set; }
+
+        /// <summary>
         /// Grade of the selected piece of Drug.
         /// </summary>
         public Grade SelectedGrade { get; private set; }
@@ -561,26 +568,11 @@ namespace Chummer
         public int SelectedRating { get; private set; }
 
         /// <summary>
-        /// Selected Essence cost discount.
-        /// </summary>
-        public int SelectedESSDiscount { get; private set; }
-
-        /// <summary>
-        /// Whether the selected Vehicle is used.
+        /// Whether Black Market Pipeline discount applies.
         /// </summary>
         public bool BlackMarketDiscount { get; private set; }
 
-        /// <summary>
-        /// Parent vehicle that the cyberlimb will be attached to.
-        /// </summary>
-        public Vehicle ParentVehicle { get; set; }
-
         public decimal Markup => _decMarkup;
-
-        /// <summary>
-        /// Parent Drug that the current selection will be added to.
-        /// </summary>
-        public Drug DrugParent { get; set; }
 
         /// <summary>
         /// Default text string to filter by.
@@ -855,6 +847,11 @@ namespace Chummer
                             .Select(x => x.ImprovedName)))
                         continue;
 
+                    string strDrugCategory = xmlDrug.SelectSingleNodeAndCacheExpression("category", token)?.Value;
+                    if (_setAllowedCategories.Count > 0
+                        && (string.IsNullOrEmpty(strDrugCategory) || !_setAllowedCategories.Contains(strDrugCategory)))
+                        continue;
+
                     string strMaxRating = xmlDrug.SelectSingleNodeAndCacheExpression("rating", token)?.Value;
                     string strMinRating = xmlDrug.SelectSingleNodeAndCacheExpression("minrating", token)?.Value;
                     int intMinRating = 1;
@@ -878,7 +875,7 @@ namespace Chummer
                         continue;
                     }
 
-                    if (ParentVehicle == null && !await xmlDrug.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
+                    if (!await xmlDrug.RequirementsMetAsync(_objCharacter, token: token).ConfigureAwait(false))
                         continue;
 
                     if (!blnDoUIUpdate)
@@ -917,6 +914,15 @@ namespace Chummer
                 if (blnDoUIUpdate)
                 {
                     lstDrugs.Sort(CompareListItems.CompareNames);
+                    if (_setAllowedCategories.Count > 0
+                        && (_setAllowedCategories.Contains("Custom Drugs")
+                            || _setAllowedCategories.Any(Drug.IsCustomDrugsCategory)))
+                    {
+                        lstDrugs.Insert(0, new ListItem(
+                            CreateCustomSentinel,
+                            await LanguageManager.GetStringAsync("Button_CreateCustomDrug", token: token)
+                                .ConfigureAwait(false)));
+                    }
                     if (intOverLimit > 0)
                     {
                         // Add after sort so that it's always at the end
@@ -976,6 +982,29 @@ namespace Chummer
             string strSelectedId = await lstDrug.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);
             if (string.IsNullOrEmpty(strSelectedId))
                 return;
+
+            if (strSelectedId == CreateCustomSentinel)
+            {
+                using (ThreadSafeForm<CreateCustomDrug> frmCreate
+                       = await ThreadSafeForm<CreateCustomDrug>.GetAsync(
+                           () => new CreateCustomDrug(_objCharacter), token).ConfigureAwait(false))
+                {
+                    if (await frmCreate.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                        return;
+                    SelectedCustomDrug = frmCreate.MyForm.CustomDrug;
+                    if (SelectedCustomDrug == null)
+                        return;
+                    SelectedDrug = string.Empty;
+                    await this.DoThreadSafeAsync(x =>
+                    {
+                        x.DialogResult = DialogResult.OK;
+                        x.Close();
+                    }, token: token).ConfigureAwait(false);
+                }
+
+                return;
+            }
+
             if (await cboGrade.DoThreadSafeFuncAsync(x => x.Text.StartsWith('*'), token: token).ConfigureAwait(false))
             {
                 await Program.ShowScrollableMessageBoxAsync(this,
@@ -1007,6 +1036,7 @@ namespace Chummer
 
             _sStrSelectGrade = SelectedGrade?.SourceIDString;
             SelectedDrug = strSelectedId;
+            SelectedCustomDrug = null;
             SelectedRating = await nudRating.DoThreadSafeFuncAsync(x => x.ValueAsInt, token: token).ConfigureAwait(false);
             BlackMarketDiscount = await chkBlackMarketDiscount.DoThreadSafeFuncAsync(x => x.Checked, token: token).ConfigureAwait(false);
             _decMarkup = await nudMarkup.DoThreadSafeFuncAsync(x => x.Value, token: token).ConfigureAwait(false);
@@ -1051,17 +1081,8 @@ namespace Chummer
                         //    continue;
                         if (_setDisallowedGrades.Contains(objWareGrade.Name))
                             continue;
-                        /*
-                        if (blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
-                            continue;
-                        if (!blnHideBannedGrades && !_objCharacter.Created && !_objCharacter.IgnoreRules && _objCharacter.BannedDrugGrades.Any(s => objWareGrade.Name.Contains(s)))
-                        {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo), '*' + await objWareGrade.GetCurrentDisplayNameAsync(token)));
-                        }
-                        else
-                        {
-                            lstGrade.Add(new ListItem(objWareGrade.SourceID.ToString("D", GlobalSettings.InvariantCultureInfo), await objWareGrade.GetCurrentDisplayNameAsync(token)));
-                        }*/
+                        lstGrade.Add(new ListItem(objWareGrade.SourceIDString,
+                            await objWareGrade.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
                     }
 
                     string strOldSelected = await cboGrade.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(), token: token).ConfigureAwait(false);

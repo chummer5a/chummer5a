@@ -193,7 +193,7 @@ namespace Chummer.Backend.Equipment
             switch (eSource)
             {
                 case Improvement.ImprovementSource.Drug:
-                    return "drugcomponents.xml";
+                    return DrugsData.CatalogFileName;
 
                 case Improvement.ImprovementSource.Bioware:
                     return "bioware.xml";

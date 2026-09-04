@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -18,7 +18,6 @@
     https://github.com/chummer5a/chummer5a
 -->
 <!-- この言語ファイルは、AhonokoP氏が作成されたものを元に日本語版5版を参考にai-tsurugiが追加で日本語化作業を行っています -->
-
 <chummer>
   <version>-497</version>
   <chummer file="armor.xml">
@@ -10939,7 +10938,7 @@
       <category translate="Matrix Accessories">Matrix Accessories</category>
       <category translate="Booster Chips">Booster Chips</category>
       <category translate="Custom Cyberdeck Attributes">Custom Cyberdeck Attributes</category>
-      <category translate="Custom Drug">Custom Drug</category>
+      <category translate="Custom Drugs">Custom Drugs</category>
       <category translate="Paydata">Paydata</category>
       <category translate="Printing">Printing</category>
       <category translate="Reporter Gear">Reporter Gear</category>
@@ -50215,32 +50214,6 @@
     </metatypes>
   </chummer>
   <chummer file="drugcomponents.xml">
-    <grades>
-      <grade>
-        <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
-        <name>Standard</name>
-        <translate>Standard</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade>
-        <id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
-        <name>Street Cooked</name>
-        <translate>Street Cooked</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade>
-        <id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
-        <name>Pharmaceutical</name>
-        <translate>Pharmaceutical</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade>
-        <id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
-        <name>Designer</name>
-        <translate>Designer</translate>
-        <altpage>190</altpage>
-      </grade>
-    </grades>
     <drugcomponents>
       <drugcomponent>
         <id>33ae6b1c-62f6-4824-967d-0e2b37c7d1b9</id>
@@ -50434,5 +50407,33 @@
         <translate>Looks like you're into some pretty fine shootin' there, Tex.</translate>
       </tip>
     </tips>
+  </chummer>
+  <chummer file="drugs.xml">
+    <grades>
+      <grade>
+        <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
+        <name>Standard</name>
+        <translate>Standard</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade>
+        <id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
+        <name>Street Cooked</name>
+        <translate>Street Cooked</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade>
+        <id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
+        <name>Pharmaceutical</name>
+        <translate>Pharmaceutical</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade>
+        <id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
+        <name>Designer</name>
+        <translate>Designer</translate>
+        <altpage>190</altpage>
+      </grade>
+    </grades>
   </chummer>
 </chummer>

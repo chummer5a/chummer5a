@@ -1296,7 +1296,7 @@ namespace Chummer
                             bool blnValuesDictionaryContains
                                 = dicCustomValues.TryGetValue(strLoopImprovedName, out decimal decLoopValue);
                             if (blnValuesDictionaryContains)
-                                dicImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
+                                dicCustomImprovementsForValues.TryGetValue(strLoopImprovedName, out lstLoopImprovements);
                             else
                                 lstLoopImprovements = new List<Improvement>(dicUniqueNames.Count);
                             if (dicUniquePairs.TryGetValue(strLoopImprovedName,
@@ -1366,32 +1366,53 @@ namespace Chummer
 
                     if (lstDrugPositiveAttributeModifiers != null)
                     {
-                        decimal decDrugPositiveAttributeBonus = 0;
-                        foreach (Improvement objBonus in lstDrugPositiveAttributeModifiers)
-                            decDrugPositiveAttributeBonus
-                                += (objBonus.Value != 0 ? objBonus.Value : objBonus.Augmented) * objBonus.Rating;
-                        if (decDrugPositiveAttributeBonus != 0)
+                        Dictionary<string, string> dicDrugCategoryByInternalId =
+                            new Dictionary<string, string>(blnSync
+                                ? objCharacter.Drugs.Count
+                                : await objCharacter.Drugs.GetCountAsync(token).ConfigureAwait(false));
+                        if (blnSync)
                         {
-                            foreach (KeyValuePair<string, List<Improvement>> kvpUsed in dicImprovementsForValues)
-                            {
-                                List<Improvement> lstUsedForName = kvpUsed.Value;
-                                int intHits = 0;
-                                int intOriginalCount = lstUsedForName.Count;
-                                for (int intUsedIndex = 0; intUsedIndex < intOriginalCount; ++intUsedIndex)
-                                {
-                                    Improvement objUsed = lstUsedForName[intUsedIndex];
-                                    if (objUsed.ImproveSource != Improvement.ImprovementSource.Drug
-                                        || funcValueGetter(objUsed) <= 0)
-                                        continue;
-                                    ++intHits;
-                                    lstUsedForName.AddRange(lstDrugPositiveAttributeModifiers);
-                                }
+                            objCharacter.Drugs.ForEach(
+                                x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, token);
+                            Drug.AddNestedDrugCategoriesToLookup(objCharacter, dicDrugCategoryByInternalId);
+                        }
+                        else
+                        {
+                            await objCharacter.Drugs.ForEachAsync(
+                                    x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, token)
+                                .ConfigureAwait(false);
+                            await Drug.AddNestedDrugCategoriesToLookupAsync(
+                                    objCharacter, dicDrugCategoryByInternalId, token)
+                                .ConfigureAwait(false);
+                        }
 
-                                if (intHits == 0)
+                        foreach (KeyValuePair<string, List<Improvement>> kvpUsed in dicImprovementsForValues)
+                        {
+                            List<Improvement> lstUsedForName = kvpUsed.Value;
+                            decimal decExtra = 0;
+                            int intOriginalCount = lstUsedForName.Count;
+                            for (int intUsedIndex = 0; intUsedIndex < intOriginalCount; ++intUsedIndex)
+                            {
+                                Improvement objUsed = lstUsedForName[intUsedIndex];
+                                if (objUsed.ImproveSource != Improvement.ImprovementSource.Drug
+                                    || funcValueGetter(objUsed) <= 0)
                                     continue;
-                                dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key]
-                                                         + decDrugPositiveAttributeBonus * intHits;
+                                string strDrugCategory = Drug.GetCategoryForDrugSource(
+                                    objCharacter, objUsed.SourceName, dicDrugCategoryByInternalId);
+                                foreach (Improvement objBonus in lstDrugPositiveAttributeModifiers)
+                                {
+                                    if (!Drug.PositiveAttributeModifierAppliesToCategory(
+                                            objBonus.ImprovedName, strDrugCategory))
+                                        continue;
+                                    decExtra += (objBonus.Value != 0 ? objBonus.Value : objBonus.Augmented)
+                                                * objBonus.Rating;
+                                    lstUsedForName.Add(objBonus);
+                                }
                             }
+
+                            if (decExtra == 0)
+                                continue;
+                            dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key] + decExtra;
                         }
                     }
 
@@ -2974,6 +2995,187 @@ namespace Chummer
             return new ValueTuple<bool, string>(true, strSourceName);
         }
 
+        private static string GetDrugGrantedQualityName(Improvement objImprovement)
+        {
+            string strUniqueName = objImprovement.UniqueName;
+            if (!string.IsNullOrEmpty(strUniqueName) && !strUniqueName.IsGuid())
+                return strUniqueName;
+            string strImprovedName = objImprovement.ImprovedName;
+            if (!string.IsNullOrEmpty(strImprovedName) && !strImprovedName.IsGuid())
+                return strImprovedName;
+            return string.Empty;
+        }
+
+        private static Quality FindQualityGrantedBySpecificImprovement(Character objCharacter, Improvement objImprovement, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strImprovedName = objImprovement.ImprovedName;
+            Quality objQuality = objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName);
+            if (objQuality != null)
+                return objQuality;
+            string strUniqueName = objImprovement.UniqueName;
+            if (strUniqueName.IsGuid())
+            {
+                objQuality = objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strUniqueName);
+                if (objQuality != null)
+                    return objQuality;
+            }
+            string strQualityName = GetDrugGrantedQualityName(objImprovement);
+            if (string.IsNullOrEmpty(strQualityName))
+                return null;
+            string strSourceFriendlyName = objImprovement.CustomGroup;
+            return objCharacter.Qualities.FirstOrDefault(o =>
+                o.Name == strQualityName
+                && o.OriginSource == QualitySource.Improvement
+                && (string.IsNullOrEmpty(strSourceFriendlyName) || o.SourceName == strSourceFriendlyName));
+        }
+
+        private static async Task<Quality> FindQualityGrantedBySpecificImprovementAsync(Character objCharacter, Improvement objImprovement, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strImprovedName = objImprovement.ImprovedName;
+            Quality objQuality = await objCharacter.Qualities
+                .FirstOrDefaultAsync(o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+            if (objQuality != null)
+                return objQuality;
+            string strUniqueName = objImprovement.UniqueName;
+            if (strUniqueName.IsGuid())
+            {
+                objQuality = await objCharacter.Qualities
+                    .FirstOrDefaultAsync(o => o.InternalId == strUniqueName, token).ConfigureAwait(false);
+                if (objQuality != null)
+                    return objQuality;
+            }
+            string strQualityName = GetDrugGrantedQualityName(objImprovement);
+            if (string.IsNullOrEmpty(strQualityName))
+                return null;
+            string strSourceFriendlyName = objImprovement.CustomGroup;
+            return await objCharacter.Qualities.FirstOrDefaultAsync(o =>
+                o.Name == strQualityName
+                && o.OriginSource == QualitySource.Improvement
+                && (string.IsNullOrEmpty(strSourceFriendlyName) || o.SourceName == strSourceFriendlyName), token).ConfigureAwait(false);
+        }
+
+        private static async Task<List<Quality>> ListDrugGrantedQualitiesCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strQualityName = GetDrugGrantedQualityName(objImprovement);
+            string strSourceFriendlyName = objImprovement.CustomGroup;
+            if (blnSync)
+            {
+                return objCharacter.Qualities.Where(o =>
+                {
+                    if (o.OriginSource != QualitySource.Improvement)
+                        return false;
+                    if (!string.IsNullOrEmpty(strSourceFriendlyName) && o.SourceName != strSourceFriendlyName)
+                        return false;
+                    if (!string.IsNullOrEmpty(strQualityName) && o.Name == strQualityName)
+                        return true;
+                    string strImprovedName = objImprovement.ImprovedName;
+                    return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
+                }).ToList();
+            }
+
+            return await objCharacter.Qualities.ToListAsync(async o =>
+            {
+                if (await o.GetOriginSourceAsync(token).ConfigureAwait(false) != QualitySource.Improvement)
+                    return false;
+                if (!string.IsNullOrEmpty(strSourceFriendlyName)
+                    && await o.GetSourceNameAsync(token).ConfigureAwait(false) != strSourceFriendlyName)
+                    return false;
+                if (!string.IsNullOrEmpty(strQualityName)
+                    && await o.GetNameAsync(token).ConfigureAwait(false) == strQualityName)
+                    return true;
+                string strImprovedName = objImprovement.ImprovedName;
+                return strImprovedName.IsGuid() && o.InternalId == strImprovedName;
+            }, token: token).ConfigureAwait(false);
+        }
+
+        private static async Task<Quality> CreateDrugGrantedQualityCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strQualityName = GetDrugGrantedQualityName(objImprovement);
+            if (string.IsNullOrEmpty(strQualityName))
+                return null;
+            XmlDocument objXmlDocument = blnSync
+                // ReSharper disable once MethodHasAsyncOverload
+                ? objCharacter.LoadData("qualities.xml", token: token)
+                : await objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
+            XmlNode objXmlSelectedQuality = objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", strQualityName);
+            if (objXmlSelectedQuality == null)
+                return null;
+            int intCount = Math.Max(1, objImprovement.Rating);
+            Quality objFirstQuality = null;
+            for (int i = 0; i < intCount; ++i)
+            {
+                List<Weapon> lstWeapons = new List<Weapon>(1);
+                Quality objAddQuality = new Quality(objCharacter);
+                try
+                {
+                    string strForceValue = objImprovement.Target;
+                    string strSourceName = objImprovement.CustomGroup;
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objAddQuality.Create(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, strSourceName, token);
+                    else
+                        await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement, lstWeapons, strForceValue, strSourceName, token).ConfigureAwait(false);
+                    if (objAddQuality.InternalId.IsEmptyGuid())
+                    {
+                        if (blnSync)
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objAddQuality.DeleteQuality(token: token);
+                        else
+                            await objAddQuality.DeleteQualityAsync(token: token).ConfigureAwait(false);
+                        continue;
+                    }
+                    if (blnSync)
+                    {
+                        objAddQuality.BP = 0;
+                        objAddQuality.ContributeToLimit = false;
+                        objCharacter.Qualities.Add(objAddQuality);
+                        foreach (Weapon objWeapon in lstWeapons)
+                            objCharacter.Weapons.Add(objWeapon);
+                    }
+                    else
+                    {
+                        await objAddQuality.SetBPAsync(0, token).ConfigureAwait(false);
+                        await objAddQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
+                        await objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);
+                        foreach (Weapon objWeapon in lstWeapons)
+                            await objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
+                    }
+                    if (objFirstQuality == null)
+                        objFirstQuality = objAddQuality;
+                }
+                catch
+                {
+                    if (blnSync)
+                        // ReSharper disable once MethodHasAsyncOverload
+                        objAddQuality.DeleteQuality(token: CancellationToken.None);
+                    else
+                        await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
+                    throw;
+                }
+            }
+            return objFirstQuality;
+        }
+
+        private static async Task DeleteDrugGrantedQualitiesCoreAsync(bool blnSync, Character objCharacter, Improvement objImprovement, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            List<Quality> lstQualities = await ListDrugGrantedQualitiesCoreAsync(blnSync, objCharacter, objImprovement, token)
+                .ConfigureAwait(false);
+            if (lstQualities.Count == 0)
+                return;
+            // Full removal clears every stacked level from this drug (same SourceName / Extra / SourceID).
+            Quality objFirst = lstQualities[0];
+            if (blnSync)
+                // ReSharper disable once MethodHasAsyncOverload
+                objFirst.DeleteQuality(true, token);
+            else
+                await objFirst.DeleteQualityAsync(true, token).ConfigureAwait(false);
+        }
+
         public static void EnableImprovements(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
         {
             EnableImprovements(objCharacter, objImprovementList.ToList(), token);
@@ -3572,28 +3774,52 @@ namespace Chummer
 
                         case Improvement.ImprovementType.SpecificQuality:
                             Quality objQuality = blnSync
-                                ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
-                                : await objCharacter.Qualities.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                ? FindQualityGrantedBySpecificImprovement(objCharacter, objImprovement, token)
+                                : await FindQualityGrantedBySpecificImprovementAsync(objCharacter, objImprovement, token)
+                                    .ConfigureAwait(false);
+                            if (objQuality == null
+                                && objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                            {
+                                string strCatalogName = GetDrugGrantedQualityName(objImprovement);
+                                objQuality = await CreateDrugGrantedQualityCoreAsync(blnSync, objCharacter, objImprovement, token)
+                                    .ConfigureAwait(false);
+                                if (objQuality != null)
+                                {
+                                    objImprovement.ImprovedName = objQuality.InternalId;
+                                    if (string.IsNullOrEmpty(objImprovement.UniqueName))
+                                        objImprovement.UniqueName = !string.IsNullOrEmpty(strCatalogName)
+                                            ? strCatalogName
+                                            : objQuality.Name;
+                                }
+                            }
                             if (objQuality != null)
                             {
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    EnableImprovements(objCharacter,
-                                                       objCharacter.Improvements.Where(
-                                                           x => x.ImproveSource
-                                                                == Improvement.ImprovementSource.Quality
-                                                                && x.SourceName == strImprovedName && x.Enabled),
-                                                       token);
-                                else
-                                    await EnableImprovementsAsync(objCharacter,
-                                                                  await objCharacter.Improvements.ToListAsync(
-                                                                          x => x.ImproveSource
-                                                                               == Improvement.ImprovementSource.Quality
-                                                                               && x.SourceName == strImprovedName
-                                                                               && x.Enabled, token: token)
-                                                                      .ConfigureAwait(false), token)
-                                        .ConfigureAwait(false);
+                                List<Quality> lstDrugQualities =
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug
+                                        ? await ListDrugGrantedQualitiesCoreAsync(blnSync, objCharacter, objImprovement, token)
+                                            .ConfigureAwait(false)
+                                        : new List<Quality> { objQuality };
+                                foreach (Quality objLoopQuality in lstDrugQualities)
+                                {
+                                    string strQualityId = objLoopQuality.InternalId;
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        EnableImprovements(objCharacter,
+                                                           objCharacter.Improvements.Where(
+                                                               x => x.ImproveSource
+                                                                    == Improvement.ImprovementSource.Quality
+                                                                    && x.SourceName == strQualityId && !x.Enabled),
+                                                           token);
+                                    else
+                                        await EnableImprovementsAsync(objCharacter,
+                                                                      await objCharacter.Improvements.ToListAsync(
+                                                                              x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource.Quality
+                                                                                   && x.SourceName == strQualityId
+                                                                                   && !x.Enabled, token: token)
+                                                                          .ConfigureAwait(false), token)
+                                            .ConfigureAwait(false);
+                                }
                             }
 
                             break;
@@ -4301,28 +4527,46 @@ namespace Chummer
 
                         case Improvement.ImprovementType.SpecificQuality:
                             Quality objQuality = blnSync
-                                ? objCharacter.Qualities.FirstOrDefault(o => o.InternalId == strImprovedName)
-                                : await objCharacter.Qualities.FirstOrDefaultAsync(
-                                    o => o.InternalId == strImprovedName, token).ConfigureAwait(false);
+                                ? FindQualityGrantedBySpecificImprovement(objCharacter, objImprovement, token)
+                                : await FindQualityGrantedBySpecificImprovementAsync(objCharacter, objImprovement, token)
+                                    .ConfigureAwait(false);
                             if (objQuality != null)
                             {
-                                if (blnSync)
-                                    // ReSharper disable once MethodHasAsyncOverload
-                                    DisableImprovements(objCharacter,
-                                                        objCharacter.Improvements.Where(
-                                                            x => x.ImproveSource
-                                                                 == Improvement.ImprovementSource.Quality
-                                                                 && x.SourceName == strImprovedName && x.Enabled),
-                                                        token);
-                                else
-                                    await DisableImprovementsAsync(objCharacter,
-                                                                   await objCharacter.Improvements.ToListAsync(
-                                                                           x => x.ImproveSource
-                                                                               == Improvement.ImprovementSource.Quality
-                                                                               && x.SourceName == strImprovedName
-                                                                               && x.Enabled, token: token)
-                                                                       .ConfigureAwait(false), token)
+                                List<Quality> lstDrugQualities =
+                                    objImprovement.ImproveSource == Improvement.ImprovementSource.Drug
+                                        ? await ListDrugGrantedQualitiesCoreAsync(blnSync, objCharacter, objImprovement, token)
+                                            .ConfigureAwait(false)
+                                        : new List<Quality> { objQuality };
+                                foreach (Quality objLoopQuality in lstDrugQualities)
+                                {
+                                    string strQualityId = objLoopQuality.InternalId;
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        DisableImprovements(objCharacter,
+                                                            objCharacter.Improvements.Where(
+                                                                x => x.ImproveSource
+                                                                     == Improvement.ImprovementSource.Quality
+                                                                     && x.SourceName == strQualityId && x.Enabled),
+                                                            token);
+                                    else
+                                        await DisableImprovementsAsync(objCharacter,
+                                                                       await objCharacter.Improvements.ToListAsync(
+                                                                               x => x.ImproveSource
+                                                                                   == Improvement.ImprovementSource.Quality
+                                                                                   && x.SourceName == strQualityId
+                                                                                   && x.Enabled, token: token)
+                                                                           .ConfigureAwait(false), token)
+                                            .ConfigureAwait(false);
+                                }
+                                if (objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                                {
+                                    if (string.IsNullOrEmpty(objImprovement.UniqueName)
+                                        || objImprovement.UniqueName.IsGuid())
+                                        objImprovement.UniqueName = objQuality.Name;
+                                    await DeleteDrugGrantedQualitiesCoreAsync(blnSync, objCharacter, objImprovement, token)
                                         .ConfigureAwait(false);
+                                    objImprovement.ImprovedName = objImprovement.UniqueName;
+                                }
                             }
 
                             break;
@@ -5723,22 +5967,48 @@ namespace Chummer
                             break;
 
                         case Improvement.ImprovementType.SpecificQuality:
+                            if (objImprovement.ImproveSource == Improvement.ImprovementSource.Drug)
+                            {
+                                Quality objDrugQuality = blnSync
+                                    ? FindQualityGrantedBySpecificImprovement(objCharacter, objImprovement, token)
+                                    : await FindQualityGrantedBySpecificImprovementAsync(objCharacter, objImprovement, token)
+                                        .ConfigureAwait(false);
+                                if (objDrugQuality != null)
+                                {
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        decReturn += objDrugQuality.DeleteQuality(true, token);
+                                    else
+                                        decReturn += await objDrugQuality.DeleteQualityAsync(true, token)
+                                            .ConfigureAwait(false);
+                                }
+                                break;
+                            }
                             Quality objQuality = blnSync
-                                ? objCharacter.Qualities.FirstOrDefault(
-                                    objLoopQuality => objLoopQuality.InternalId == strImprovedName)
-                                : await objCharacter.Qualities
-                                                    .FirstOrDefaultAsync(
-                                                        objLoopQuality => objLoopQuality.InternalId == strImprovedName,
-                                                        token).ConfigureAwait(false);
+                                ? FindQualityGrantedBySpecificImprovement(objCharacter, objImprovement, token)
+                                : await FindQualityGrantedBySpecificImprovementAsync(objCharacter, objImprovement, token)
+                                    .ConfigureAwait(false);
                             if (objQuality != null)
                             {
-                                // We need to add in the return cost of deleting the quality, so call this manually
-                                if (blnSync)
+                                // Another source may still be granting this same quality instance.
+                                bool blnStillReferenced = blnSync
                                     // ReSharper disable once MethodHasAsyncOverload
-                                    decReturn += objQuality.DeleteQuality(token: token);
-                                else
-                                    decReturn += await objQuality.DeleteQualityAsync(token: token)
-                                                                 .ConfigureAwait(false);
+                                    ? objCharacter.Improvements.Any(
+                                        x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                             && x.ImprovedName == strImprovedName, token)
+                                    : await objCharacter.Improvements.AnyAsync(
+                                        x => x.ImproveType == Improvement.ImprovementType.SpecificQuality
+                                             && x.ImprovedName == strImprovedName, token: token).ConfigureAwait(false);
+                                if (!blnStillReferenced)
+                                {
+                                    // We need to add in the return cost of deleting the quality, so call this manually
+                                    if (blnSync)
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        decReturn += objQuality.DeleteQuality(token: token);
+                                    else
+                                        decReturn += await objQuality.DeleteQualityAsync(token: token)
+                                                                     .ConfigureAwait(false);
+                                }
                             }
 
                             break;

@@ -3,29 +3,14 @@
   <xs:element name="chummer">
     <xs:complexType>
       <xs:sequence>
-        <xs:element name="grades">
+        <xs:element name="categories" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
-              <xs:element name="grade" minOccurs="0" maxOccurs="unbounded">
-                <xs:complexType>
-                  <xs:sequence>
-                    <xs:element name="id" type="xs:string" minOccurs="1" maxOccurs="1" />
-                    <xs:element name="hide" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="ignoresourcedisabled" type="xs:string" minOccurs="0" maxOccurs="1" />
-                    <xs:element name="name" type="xs:string" minOccurs="0" />
-                    <xs:element name="ess" type="xs:string" minOccurs="0" />
-                    <xs:element name="cost" type="xs:string" minOccurs="0" />
-                    <xs:element name="addictionthreshold" type="xs:integer" minOccurs="0" />
-                    <xs:element name="avail" type="xs:string" minOccurs="0" />
-                    <xs:element name="source" type="xs:string" minOccurs="0" />
-                    <xs:element name="page" type="xs:string" minOccurs="0" />
-                  </xs:sequence>
-                </xs:complexType>
-              </xs:element>
+              <xs:element name="category" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>
-        <xs:element name="drugcomponents">
+        <xs:element name="drugcomponents" minOccurs="0" maxOccurs="1">
           <xs:complexType>
             <xs:sequence>
               <xs:element name="drugcomponent" maxOccurs="unbounded">
@@ -62,6 +47,14 @@
                                   </xs:complexType>
                                 </xs:element>
                                 <xs:element name="quality" type="xs:string" minOccurs="0" />
+                                <xs:element name="specificskill" minOccurs="0" maxOccurs="unbounded">
+                                  <xs:complexType>
+                                    <xs:sequence>
+                                      <xs:element name="name" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                      <xs:element name="bonus" type="xs:string" minOccurs="0" maxOccurs="1" />
+                                    </xs:sequence>
+                                  </xs:complexType>
+                                </xs:element>
                                 <xs:element name="speed" type="xs:int" minOccurs="0" maxOccurs="1" />
                               </xs:sequence>
                             </xs:complexType>

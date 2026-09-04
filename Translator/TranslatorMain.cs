@@ -2673,11 +2673,61 @@ namespace Translator
             xmlDataDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "drugcomponents.xml"));
             XPathNavigator xmlDataDocumentBaseChummerNode = xmlDataDocument.GetFastNavigator().SelectSingleNode("/chummer");
 
+            XmlDocument xmlCatalogDocument = new XmlDocument { XmlResolver = null };
+            xmlCatalogDocument.Load(Path.Combine(Utils.GetStartupPath, "data", "drugs.xml"));
+            XPathNavigator xmlDataCatalogChummerNode = xmlCatalogDocument.GetFastNavigator().SelectSingleNode("/chummer");
+
             XmlNode xmlRootNode = objDataDoc.SelectSingleNode("/chummer");
             if (xmlRootNode == null)
             {
                 xmlRootNode = objDataDoc.CreateElement("chummer");
                 objDataDoc.AppendChild(xmlRootNode);
+            }
+
+            XmlNode xmlRootCatalogFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"drugs.xml\"]");
+            if (xmlRootCatalogFileNode == null)
+            {
+                xmlRootCatalogFileNode = objDataDoc.CreateElement("chummer");
+                XmlAttribute xmlCatalogAttribute = objDataDoc.CreateAttribute("file");
+                xmlCatalogAttribute.Value = "drugs.xml";
+                xmlRootCatalogFileNode.Attributes?.Append(xmlCatalogAttribute);
+                xmlRootNode.AppendChild(xmlRootCatalogFileNode);
+            }
+
+            XmlNode xmlGradeNodesParent = xmlRootCatalogFileNode.SelectSingleNode("grades");
+            if (xmlGradeNodesParent == null)
+            {
+                xmlGradeNodesParent = objDataDoc.CreateElement("grades");
+                xmlRootCatalogFileNode.AppendChild(xmlGradeNodesParent);
+            }
+
+            XPathNavigator xmlDataGradeNodeList = xmlDataCatalogChummerNode?.SelectSingleNode("grades");
+            if (xmlDataGradeNodeList != null)
+            {
+                foreach (XPathNavigator xmlDataGradeNode in xmlDataGradeNodeList.Select("grade"))
+                {
+                    if (objWorker.CancellationPending)
+                        return;
+                    string strDataGradeId = xmlDataGradeNode.SelectSingleNode("id")?.Value ?? string.Empty;
+                    string strDataGradeName = xmlDataGradeNode.SelectSingleNode("name")?.Value ?? string.Empty;
+                    XmlNode xmlGradeNode = xmlGradeNodesParent.SelectSingleNode("grade[id = " + strDataGradeId.CleanXPath() + "]");
+                    if (xmlGradeNode != null)
+                        continue;
+                    xmlGradeNode = objDataDoc.CreateElement("grade");
+                    XmlNode xmlIdElement = objDataDoc.CreateElement("id");
+                    xmlIdElement.InnerText = strDataGradeId;
+                    xmlGradeNode.AppendChild(xmlIdElement);
+                    XmlNode xmlNameElement = objDataDoc.CreateElement("name");
+                    xmlNameElement.InnerText = strDataGradeName;
+                    xmlGradeNode.AppendChild(xmlNameElement);
+                    XmlNode xmlTranslateElement = objDataDoc.CreateElement("translate");
+                    xmlTranslateElement.InnerText = strDataGradeName;
+                    xmlGradeNode.AppendChild(xmlTranslateElement);
+                    XmlNode xmlPageElement = objDataDoc.CreateElement("altpage");
+                    xmlPageElement.InnerText = xmlDataGradeNode.SelectSingleNode("page")?.Value ?? string.Empty;
+                    xmlGradeNode.AppendChild(xmlPageElement);
+                    xmlGradeNodesParent.AppendChild(xmlGradeNode);
+                }
             }
 
             XmlNode xmlRootDrugFileNode = objDataDoc.SelectSingleNode("/chummer/chummer[@file = \"drugcomponents.xml\"]");

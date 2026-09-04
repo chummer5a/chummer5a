@@ -8817,6 +8817,45 @@ namespace Chummer
             }
         }
 
+        private async void tsCyberwareAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cyberware objCyberware = await TryGetSelectedCyberwareAllowingDrugFromTreeAsync(
+                    treCyberware,
+                    "Message_SelectCyberware",
+                    "MessageTitle_SelectCyberware",
+                    "Message_CyberwareDrug",
+                    "MessageTitle_CyberwareDrug",
+                    GenericToken).ConfigureAwait(false);
+                if (objCyberware == null)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        blnAddAgain = await AddDrugToCyberwareAsync(
+                            objCyberware,
+                            false,
+                            string.Empty,
+                            NuyenExpenseType.AddDrug,
+                            GenericToken).ConfigureAwait(false);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
             try
@@ -8846,6 +8885,45 @@ namespace Chummer
                             false,
                             string.Empty,
                             NuyenExpenseType.AddCyberwareGear,
+                            GenericToken).ConfigureAwait(false);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsVehicleCyberwareAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cyberware objCyberware = await TryGetSelectedCyberwareAllowingDrugFromTreeAsync(
+                    treVehicles,
+                    "Message_SelectCyberware",
+                    "MessageTitle_SelectCyberware",
+                    "Message_CyberwareDrug",
+                    "MessageTitle_CyberwareDrug",
+                    GenericToken).ConfigureAwait(false);
+                if (objCyberware == null)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        blnAddAgain = await AddDrugToCyberwareAsync(
+                            objCyberware,
+                            false,
+                            string.Empty,
+                            NuyenExpenseType.AddDrug,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
                 }
@@ -24508,17 +24586,7 @@ namespace Chummer
 
                     Drug objCustomDrug = form.MyForm.CustomDrug;
                     if (objCustomDrug != null)
-                    {
-                        try
-                        {
-                            await CharacterObject.Drugs.AddAsync(objCustomDrug, GenericToken).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await objCustomDrug.DisposeAsync().ConfigureAwait(false);
-                            throw;
-                        }
-                    }
+                        await AddDrugToCharacterAsync(objCustomDrug, token: GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)

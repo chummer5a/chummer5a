@@ -605,6 +605,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
 
         /// <summary>
         /// Extra bonus applied to each positive drug attribute modifier.
+        /// Optional category attribute restricts the bonus to that drug category. All or * matches every category.
         /// </summary>
         public async Task drugpositiveattributemodifier(XmlNode bonusNode, CancellationToken token = default)
         {
@@ -612,7 +613,8 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             decimal decBonus = await ImprovementManager.ValueToDecAsync(_objCharacter, bonusNode.InnerTextViaPool(token), _intRating, token).ConfigureAwait(false);
-            await CreateImprovementAsync(string.Empty, _objImprovementSource, SourceName,
+            string strCategory = bonusNode.Attributes?["category"]?.InnerTextViaPool(token) ?? string.Empty;
+            await CreateImprovementAsync(strCategory, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.DrugPositiveAttributeModifier, _strUnique, decBonus, 1, 0, 0, decBonus,
                 token: token).ConfigureAwait(false);
         }

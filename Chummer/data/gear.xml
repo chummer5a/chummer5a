@@ -46,7 +46,7 @@
     <category>Currency</category>
     <category blackmarket="Armor,Bioware,Cyberware,Drugs,Electronics,Geneware,Magic,Nanoware,Software,Vehicles,Weapons">Custom</category>
     <category blackmarket="Electronics">Custom Cyberdeck Attributes</category>
-    <category blackmarket="Drugs">Custom Drug</category>
+    <category blackmarket="Drugs">Custom Drugs</category>
     <category blackmarket="Electronics">Cyberdeck Modules</category>
     <category blackmarket="Electronics">Cyberdecks</category>
     <category blackmarket="Electronics">Cyberterminals</category>

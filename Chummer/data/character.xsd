@@ -232,6 +232,13 @@
                 </xs:sequence>
             </xs:complexType>
         </xs:element>
+        <xs:element name="allowdrug" minOccurs="0" maxOccurs="1">
+            <xs:complexType>
+                <xs:sequence>
+                    <xs:element name="drugcategory" type="xs:string" minOccurs="0" maxOccurs="unbounded" />
+                </xs:sequence>
+            </xs:complexType>
+        </xs:element>
         <xs:element name="improvementsource" type="xs:string" minOccurs="1" maxOccurs="1" />
         <xs:element name="weaponguid" type="xs:string" minOccurs="0" maxOccurs="1" />
         <xs:element name="children" minOccurs="1" maxOccurs="1">
@@ -245,6 +252,13 @@
           <xs:complexType>
             <xs:sequence>
               <xs:element ref="gear" minOccurs="0" maxOccurs="unbounded" />
+            </xs:sequence>
+          </xs:complexType>
+        </xs:element>
+        <xs:element name="drugs" minOccurs="0" maxOccurs="1">
+          <xs:complexType>
+            <xs:sequence>
+              <xs:any minOccurs="0" maxOccurs="unbounded" processContents="skip" />
             </xs:sequence>
           </xs:complexType>
         </xs:element>

@@ -166,11 +166,13 @@ namespace Chummer
             this.cmsCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsCyberwareAddDrug = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsCyberwareReapplyImprovements = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsVehicleCyberware = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsVehicleCyberwareAddAsPlugin = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleCyberwareAddGear = new Chummer.DpiFriendlyToolStripMenuItem();
+            this.tsVehicleCyberwareAddDrug = new Chummer.DpiFriendlyToolStripMenuItem();
             this.tsVehicleCyberwareNotes = new Chummer.DpiFriendlyToolStripMenuItem();
             this.cmsLifestyle = new System.Windows.Forms.ContextMenuStrip(this.components);
             this.tsAdvancedLifestyle = new Chummer.DpiFriendlyToolStripMenuItem();
@@ -800,6 +802,7 @@ namespace Chummer
             this.flpDrugCheckboxes = new System.Windows.Forms.FlowLayoutPanel();
             this.chkDrugStolen = new Chummer.ColorableCheckBox();
             this.tlpDrugButtons = new System.Windows.Forms.TableLayoutPanel();
+            this.btnAddDrug = new System.Windows.Forms.Button();
             this.btnCreateCustomDrug = new System.Windows.Forms.Button();
             this.btnDeleteCustomDrug = new System.Windows.Forms.Button();
             this.tabLifestyle = new System.Windows.Forms.TabPage();
@@ -2322,10 +2325,11 @@ namespace Chummer
             this.cmsCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsCyberwareAddAsPlugin,
             this.tsCyberwareAddGear,
+            this.tsCyberwareAddDrug,
             this.tsCyberwareNotes,
             this.tsCyberwareReapplyImprovements});
             this.cmsCyberware.Name = "cmsCyberware";
-            this.cmsCyberware.Size = new System.Drawing.Size(204, 92);
+            this.cmsCyberware.Size = new System.Drawing.Size(204, 114);
             // 
             // tsCyberwareAddAsPlugin
             // 
@@ -2356,6 +2360,21 @@ namespace Chummer
             this.tsCyberwareAddGear.Tag = "Menu_AddGear";
             this.tsCyberwareAddGear.Text = "Add &Gear";
             this.tsCyberwareAddGear.Click += new System.EventHandler(this.tsCyberwareAddGear_Click);
+            // 
+            // tsCyberwareAddDrug
+            // 
+            this.tsCyberwareAddDrug.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsCyberwareAddDrug.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsCyberwareAddDrug.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsCyberwareAddDrug.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsCyberwareAddDrug.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsCyberwareAddDrug.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsCyberwareAddDrug.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsCyberwareAddDrug.Name = "tsCyberwareAddDrug";
+            this.tsCyberwareAddDrug.Size = new System.Drawing.Size(203, 22);
+            this.tsCyberwareAddDrug.Tag = "Menu_AddDrug";
+            this.tsCyberwareAddDrug.Text = "Add &Drug";
+            this.tsCyberwareAddDrug.Click += new System.EventHandler(this.tsCyberwareAddDrug_Click);
             // 
             // tsCyberwareNotes
             // 
@@ -2392,9 +2411,10 @@ namespace Chummer
             this.cmsVehicleCyberware.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.tsVehicleCyberwareAddAsPlugin,
             this.tsVehicleCyberwareAddGear,
+            this.tsVehicleCyberwareAddDrug,
             this.tsVehicleCyberwareNotes});
             this.cmsVehicleCyberware.Name = "cmsVehicleCyberware";
-            this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 70);
+            this.cmsVehicleCyberware.Size = new System.Drawing.Size(148, 92);
             // 
             // tsVehicleCyberwareAddAsPlugin
             // 
@@ -2425,6 +2445,21 @@ namespace Chummer
             this.tsVehicleCyberwareAddGear.Tag = "Menu_AddGear";
             this.tsVehicleCyberwareAddGear.Text = "Add &Gear";
             this.tsVehicleCyberwareAddGear.Click += new System.EventHandler(this.tsVehicleCyberwareAddGear_Click);
+            // 
+            // tsVehicleCyberwareAddDrug
+            // 
+            this.tsVehicleCyberwareAddDrug.Image = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleCyberwareAddDrug.ImageDpi120 = global::Chummer.Properties.Resources.camera_add_20;
+            this.tsVehicleCyberwareAddDrug.ImageDpi144 = global::Chummer.Properties.Resources.camera_add_24;
+            this.tsVehicleCyberwareAddDrug.ImageDpi192 = global::Chummer.Properties.Resources.camera_add_32;
+            this.tsVehicleCyberwareAddDrug.ImageDpi288 = global::Chummer.Properties.Resources.camera_add_48;
+            this.tsVehicleCyberwareAddDrug.ImageDpi384 = global::Chummer.Properties.Resources.camera_add_64;
+            this.tsVehicleCyberwareAddDrug.ImageDpi96 = global::Chummer.Properties.Resources.camera_add_16;
+            this.tsVehicleCyberwareAddDrug.Name = "tsVehicleCyberwareAddDrug";
+            this.tsVehicleCyberwareAddDrug.Size = new System.Drawing.Size(147, 22);
+            this.tsVehicleCyberwareAddDrug.Tag = "Menu_AddDrug";
+            this.tsVehicleCyberwareAddDrug.Text = "Add &Drug";
+            this.tsVehicleCyberwareAddDrug.Click += new System.EventHandler(this.tsVehicleCyberwareAddDrug_Click);
             // 
             // tsVehicleCyberwareNotes
             // 
@@ -11493,12 +11528,14 @@ namespace Chummer
             // 
             this.tlpDrugButtons.AutoSize = true;
             this.tlpDrugButtons.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
-            this.tlpDrugButtons.ColumnCount = 2;
+            this.tlpDrugButtons.ColumnCount = 3;
             this.tlpDrugInfo.SetColumnSpan(this.tlpDrugButtons, 2);
-            this.tlpDrugButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDrugButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 50F));
-            this.tlpDrugButtons.Controls.Add(this.btnCreateCustomDrug, 0, 0);
-            this.tlpDrugButtons.Controls.Add(this.btnDeleteCustomDrug, 1, 0);
+            this.tlpDrugButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpDrugButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpDrugButtons.ColumnStyles.Add(new System.Windows.Forms.ColumnStyle(System.Windows.Forms.SizeType.Percent, 33.33333F));
+            this.tlpDrugButtons.Controls.Add(this.btnAddDrug, 0, 0);
+            this.tlpDrugButtons.Controls.Add(this.btnCreateCustomDrug, 1, 0);
+            this.tlpDrugButtons.Controls.Add(this.btnDeleteCustomDrug, 2, 0);
             this.tlpDrugButtons.Location = new System.Drawing.Point(0, 0);
             this.tlpDrugButtons.Margin = new System.Windows.Forms.Padding(0);
             this.tlpDrugButtons.Name = "tlpDrugButtons";
@@ -11506,6 +11543,21 @@ namespace Chummer
             this.tlpDrugButtons.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 50F));
             this.tlpDrugButtons.Size = new System.Drawing.Size(236, 29);
             this.tlpDrugButtons.TabIndex = 101;
+            // 
+            // btnAddDrug
+            // 
+            this.btnAddDrug.AutoSize = true;
+            this.btnAddDrug.AutoSizeMode = System.Windows.Forms.AutoSizeMode.GrowAndShrink;
+            this.btnAddDrug.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.btnAddDrug.Location = new System.Drawing.Point(3, 3);
+            this.btnAddDrug.MinimumSize = new System.Drawing.Size(80, 0);
+            this.btnAddDrug.Name = "btnAddDrug";
+            this.btnAddDrug.Size = new System.Drawing.Size(74, 23);
+            this.btnAddDrug.TabIndex = 0;
+            this.btnAddDrug.Tag = "Button_AddDrug";
+            this.btnAddDrug.Text = "Add Drug";
+            this.btnAddDrug.UseVisualStyleBackColor = true;
+            this.btnAddDrug.Click += new System.EventHandler(this.btnAddDrug_Click);
             // 
             // btnCreateCustomDrug
             // 
@@ -16920,6 +16972,7 @@ namespace Chummer
 	    private System.Windows.Forms.TabPage tabDrugs;
 	    private System.Windows.Forms.Button btnDeleteCustomDrug;
 	    private System.Windows.Forms.TreeView treCustomDrugs;
+	    private System.Windows.Forms.Button btnAddDrug;
 	    private System.Windows.Forms.Button btnCreateCustomDrug;
 	    private System.Windows.Forms.Label lblDrugComponents;
 	    private System.Windows.Forms.Label lblDrugCost;
@@ -17223,6 +17276,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleCyberwareGearMenuAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsVehicleCyberwareAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsVehicleCyberwareAddGear;
+        private DpiFriendlyToolStripMenuItem tsVehicleCyberwareAddDrug;
         private DpiFriendlyToolStripMenuItem tsVehicleCyberwareNotes;
         private DpiFriendlyToolStripMenuItem mnuFileSave;
         private DpiFriendlyToolStripMenuItem mnuFileSaveAs;
@@ -17253,6 +17307,7 @@ namespace Chummer
         private DpiFriendlyToolStripMenuItem tsVehicleWeaponMountNotes;
         private DpiFriendlyToolStripMenuItem tsCyberwareAddAsPlugin;
         private DpiFriendlyToolStripMenuItem tsCyberwareAddGear;
+        private DpiFriendlyToolStripMenuItem tsCyberwareAddDrug;
         private DpiFriendlyToolStripMenuItem tsCyberwareNotes;
         private DpiFriendlyToolStripMenuItem tsCreateNaturalWeapon;
         private DpiFriendlyToolStripMenuItem tsWeaponAddAccessory;

@@ -178,6 +178,9 @@
     <Content Include="customdata\Shapeshifter Provisional Run Faster Errata\manifest.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
+    <Content Update="data\drugs.xsd">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
     <Content Update="data\drugcomponents.xsd">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
@@ -25526,6 +25529,9 @@
     <Content Include="data\cyberware.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
       <SubType>Designer</SubType>
+    </Content>
+    <Content Include="data\drugs.xml">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
     </Content>
     <Content Include="data\drugcomponents.xml">
       <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>

@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <!--This file is part of Chummer5a.
 
     Chummer5a is free software: you can redistribute it and/or modify
@@ -8392,7 +8392,8 @@
         <id>f8240798-3ed5-4884-8188-ba6afcc39e29</id>
         <name>Ross Seal</name>
         <translate />
-        <altpage></altpage>
+        <altpage>
+        </altpage>
       </metatype>
       <metatype>
         <id>1598214f-42a0-472d-82bf-d9e3c3043067</id>
@@ -11756,7 +11757,7 @@
       <category translate="Matrix-Zubehör">Matrix Accessories</category>
       <category translate="Boosterchips">Booster Chips</category>
       <category translate="Attribute des angepassten Cyberdecks">Custom Cyberdeck Attributes</category>
-      <category translate="Maßgeschneiderte Drogen">Custom Drug</category>
+      <category translate="Maßgeschneiderte Drogen">Custom Drugs</category>
       <category translate="Erscheinungsmodifikatoren">Appearance Modification</category>
       <category translate="Druckerpressen">Printing</category>
       <category translate="Reporterausrüstung">Reporter Gear</category>
@@ -21659,26 +21660,26 @@
         <translate>Sternschutz Tactical</translate>
         <altpage>17</altpage>
       </martialart>
-          <martialart translated="True">
-            <id>e253fc2a-87f5-4a20-9f2c-c0b9e54e0f6e</id>
-            <name>Arbeitskreis INI</name>
-            <translate>Arbeitskreis INI</translate>
-          </martialart>
-          <martialart>
-            <id>e78deb308-4e17-4b86-b084-897009c55a15</id>
-            <name>Circle Fencing</name>
-            <translate>Zirkelfechten</translate>
-          </martialart>
-          <martialart>
-            <id>70f75f97-ba03-41a6-b591-7c3ae24953a2</id>
-            <name>Kreussler Fencing</name>
-            <translate>Fechten nach Kreussler</translate>
-          </martialart>
-          <martialart translated="True">
-            <id>736db820-cbe4-4a0b-b6c3-d90471117731</id>
-            <name>Asthenologica</name>
-            <translate>Asthenologica</translate>
-          </martialart>
+      <martialart translated="True">
+        <id>e253fc2a-87f5-4a20-9f2c-c0b9e54e0f6e</id>
+        <name>Arbeitskreis INI</name>
+        <translate>Arbeitskreis INI</translate>
+      </martialart>
+      <martialart>
+        <id>e78deb308-4e17-4b86-b084-897009c55a15</id>
+        <name>Circle Fencing</name>
+        <translate>Zirkelfechten</translate>
+      </martialart>
+      <martialart>
+        <id>70f75f97-ba03-41a6-b591-7c3ae24953a2</id>
+        <name>Kreussler Fencing</name>
+        <translate>Fechten nach Kreussler</translate>
+      </martialart>
+      <martialart translated="True">
+        <id>736db820-cbe4-4a0b-b6c3-d90471117731</id>
+        <name>Asthenologica</name>
+        <translate>Asthenologica</translate>
+      </martialart>
     </martialarts>
     <techniques>
       <technique translated="True">
@@ -24126,8 +24127,10 @@
             <translate>Magician: +2 dice for summoning spirits of man.</translate>
           </choice>
           <choice>
-            <name></name>
-            <translate></translate>
+            <name>
+            </name>
+            <translate>
+            </translate>
           </choice>
         </choices>
       </mentor>
@@ -28036,7 +28039,8 @@
         <name>Deus Vult!</name>
         <translate>Deus Vult!</translate>
         <altpage>16</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>204d2317-77cd-448c-9506-091269d1e58a</id>
@@ -28259,7 +28263,8 @@
         <name>Illness</name>
         <translate>Krankheit</translate>
         <altpage>12</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>08cceb0d-4fbe-44c8-97ca-e9ec24b692df</id>
@@ -30967,14 +30972,16 @@
         <name>Soul Swallower</name>
         <translate>Seelenreißer</translate>
         <altpage>165</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>94702bfe-ec3e-4b57-ba3e-8c45f214e9f1</id>
         <name>Metaviral Attunement</name>
         <translate>Metavirale Einstimmung</translate>
         <altpage>164</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>3109f474-0d10-4c75-bc07-ef22afdd92ab</id>
@@ -31755,7 +31762,8 @@
         <name>Black Forest Native</name>
         <translate>Schwarzwaldgeboren</translate>
         <altpage>188</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>397eee55-11eb-4ede-bede-a8a13befa21c</id>
@@ -31768,14 +31776,16 @@
         <name>Delicate Fingers</name>
         <translate>Schlanke Finger</translate>
         <altpage>188</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>9ad4e8e7-80d7-4941-96d5-9a1aaa1bd4c9</id>
         <name>Human Lifespan</name>
         <translate>Menschliche Lebensspanne</translate>
         <altpage>188</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>3a5b909e-7b37-471d-a24a-3fda7c18d837</id>
@@ -31788,7 +31798,8 @@
         <name>Trog Artisan</name>
         <translate>Trog-Handwerker</translate>
         <altpage>188</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>94d14ec2-7bcf-4728-8ff6-ef315da4c80c</id>
@@ -31801,7 +31812,8 @@
         <name>Trog Leader</name>
         <translate>Trog-Anführer</translate>
         <altpage>188</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>14b5b9c0-5180-47ec-8bf9-f422d3196744</id>
@@ -31820,21 +31832,24 @@
         <name>Elevated Stress</name>
         <translate>Dauerstress</translate>
         <altpage>189</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>13379299-27a2-4b5d-8938-6a54f49dc861</id>
         <name>Force of Chaos</name>
         <translate>Macht des Chaos</translate>
         <altpage>189</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>ca4459b7-ea68-4b6c-9754-8bdcf3f4aef7</id>
         <name>Trog Traitor</name>
         <translate>Trog-Verräter</translate>
         <altpage>189</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>ab862f1f-5ed3-4976-a781-bf63565faf26</id>
@@ -31931,63 +31946,72 @@
         <name>Deck Builder</name>
         <translate>Deckbastler</translate>
         <altpage>76</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>7ac54323-a913-4a8e-803e-c6ac2d4ba359</id>
         <name>Impenetrable Logic</name>
         <translate>Unerschütterlliche Logik</translate>
         <altpage>76</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>fb8bce41-05ea-48af-a45b-dc80dc392f23</id>
         <name>Rootkit</name>
         <translate>Systemlücke</translate>
         <altpage>76</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>eefe6c28-5d7b-403d-8c24-5bc26536b52b</id>
         <name>Silence is Golden</name>
         <translate>Schweigen ist Gold</translate>
         <altpage>76</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>8e16f569-a1b1-499c-8046-85d25fb00041</id>
         <name>AVRse</name>
         <translate>VR-Angst</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>19042705-1c57-4973-bf2e-45186ea2b8d5</id>
         <name>Basement Dweller</name>
         <translate>Kellerbewohner</translate>
         <altpage>78</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>2c3a3f51-53c5-4d47-b991-0c64f31472d3</id>
         <name>Big Baby</name>
         <translate>Großes Baby</translate>
         <altpage>78</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>6bbeb733-a7cc-4427-924b-8c6174399051</id>
         <name>Buddy System</name>
         <translate>Nicht ohne Kumpel</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>a3d131f2-5ed9-42d0-86c2-396e50a9117d</id>
         <name>Discombobulated</name>
         <translate>Verwirrt</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>282c446f-8156-4268-8baa-5d7e732fcd53</id>
@@ -32000,126 +32024,144 @@
         <name>Echo Chamber</name>
         <translate>Echokammer</translate>
         <altpage>77</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>356eabd2-7d97-46bb-81a1-ac913a670364</id>
         <name>Frostbite</name>
         <translate>Frostbeulen</translate>
         <altpage>77</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>96322f26-94cf-4d2c-9282-6525f9008fec</id>
         <name>Information Auctioneer</name>
         <translate>Informationsauktionator</translate>
         <altpage>78</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>c4dab0b4-32c4-4840-9713-aa46c2412835</id>
         <name>Lazy Fingers</name>
         <translate>Nichts überstürzen</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>f4a052dc-17ca-4bec-a9bf-30e6da80285e</id>
         <name>Malware Infection</name>
         <translate>Malware-Infektion</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ba1644ab-2191-4366-8f5f-13c21eca1cc4</id>
         <name>Matrix Troll</name>
         <translate>Matrix-Troll</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>5e75a946-b14e-488d-93ea-cd82e648286d</id>
         <name>Sloppy Code</name>
         <translate>Schlampiger Code</translate>
         <altpage>79</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>b45b2d09-80d4-4e24-b96c-1e1f3665dee3</id>
         <name>Well, Actually...</name>
         <translate>Also, eigentlich ...</translate>
         <altpage>77</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>522dbfb5-5ea0-4707-a7e8-1ac777b3aff7</id>
         <name>Better on the Net [Attack]</name>
         <translate>Besser im Netz [Angriff]</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>39139f84-b8ab-4523-ac02-851350e3f2b6</id>
         <name>Better on the Net [Data Processing]</name>
         <translate>Besser im Netz [Datenverarbeitung]</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>25d34c52-6927-44dd-85bd-684e9add1f89</id>
         <name>Better on the Net [Firewall]</name>
         <translate>Besser im Netz [Firewall]</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>59436ccc-5e4b-481d-8d63-d3ba912f2d8a</id>
         <name>Better on the Net [Sleaze]</name>
         <translate>Besser im Netz [Schleicher]</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>63fd5450-5f3d-4090-933e-ad0cf39ef0e2</id>
         <name>Brilliant Heuristics</name>
         <translate>Brilliante Heuristik</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>cc967d0f-6b7a-4c62-b202-37f94242169c</id>
         <name>Groveler</name>
         <translate>Datenparasit</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ad8d9751-d82f-4d80-b351-c102cd60c2b1</id>
         <name>Hold the Door</name>
         <translate>Durchhalten</translate>
         <altpage>97</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>530062d2-6dbe-4e19-b16a-82953c72745d</id>
         <name>Fractal Punch</name>
         <translate>Fraktalschlag</translate>
         <altpage>97</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ca9b24ba-3a2e-41cd-8434-b33f91d691aa</id>
         <name>Lone Wolf</name>
         <translate>Einsamer Wolf</translate>
         <altpage>97</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>be396e6b-55f8-46ac-b6d8-866985b3cffd</id>
         <name>Natural Hacker</name>
         <translate>Geborener Hacker</translate>
         <altpage>98</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>c80d0f3d-5be7-4d63-8891-ae3bccbfe48f</id>
@@ -32132,28 +32174,32 @@
         <name>Team Player</name>
         <translate>Teamspieler</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>0b8c9e67-6767-48d3-b14d-8a9b2024447a</id>
         <name>Trust Data, Not Lore</name>
         <translate>Daten statt Instinkt</translate>
         <altpage>96</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>223bad23-027c-4ea3-ac0b-1ccccace61fe</id>
         <name>Trust Lore, Not Data</name>
         <translate>Instinkt statt Daten</translate>
         <altpage>98</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ad35c6ec-664c-46a3-8dc5-ac48dfddd0cf</id>
         <name>Unique Avatar</name>
         <translate>Einzigartiger Avatar</translate>
         <altpage>97</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>d40aee6b-80b7-43f5-b335-dabf8f1ad14d</id>
@@ -32166,140 +32212,160 @@
         <name>Brittle [Sleaze]</name>
         <translate>[Schleicher]-Schwäche</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>64d430b1-6d6a-4abc-9ef8-3ddaee2352ce</id>
         <name>Brittle [Data Processing]</name>
         <translate>[Datenverarbeitung]-Schwäche</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>a1530804-a35b-4d2f-ae3e-50d647016903</id>
         <name>Brittle [Firewall]</name>
         <translate>[Firewall]-Schwäche</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>d3ed1f43-ffd8-4c96-8faf-de8bbf4c3c83</id>
         <name>Code of Honor: Black Hat</name>
         <translate>Ehrenkodex: Black Hat</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>7e172644-9b48-4822-8636-b45827ff6938</id>
         <name>Data Hog</name>
         <translate>Axt im Datenwald</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>2cafaee0-fb4b-4b56-90e2-8eb864c5a033</id>
         <name>Escaped Custody</name>
         <translate>Entflohen</translate>
         <altpage>100</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>57e260d7-7e08-4dae-a3e3-0d174bf61689</id>
         <name>Know Your Limit</name>
         <translate>Geschwunden</translate>
         <altpage>100</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ff939676-0195-4885-ba91-5ee536719b2f</id>
         <name>On the Wagon</name>
         <translate>Abstinent</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>f6a8d504-db7a-47eb-ace5-604de21c80fd</id>
         <name>Resonant Burnout</name>
         <translate>Resonanzverschleiss</translate>
         <altpage>100</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>4116d691-86f0-4fb5-bf78-f2059514956a</id>
         <name>Sprite Combustion</name>
         <translate>Sprite-Instabilität</translate>
         <altpage>100</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>153dc4b0-199d-4fc7-9b94-b8cf05afdf56</id>
         <name>Taint of Dissonance</name>
         <translate>Dissonanzbefleckt</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>2509cf19-002f-4f24-a52f-f1441dd4d614</id>
         <name>'Ware Intolerance</name>
         <translate>Bodytechintoleranz</translate>
         <altpage>99</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>102c4f07-f82c-4976-89bd-bcd3b906fb68</id>
         <name>Wired User</name>
         <translate>Voll drauf</translate>
         <altpage>100</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>d2873478-d265-45bb-8a9f-320b8d0d33d3</id>
         <name>Resonant Stream: Cyberadept</name>
         <translate>Resonante Strömung: Cyberadept</translate>
         <altpage>90</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>e3d04705-b90a-4d94-90d0-4ad2c7adfa79</id>
         <name>Resonant Stream: Machinist</name>
         <translate>Resonante Strömung: Maschinist</translate>
         <altpage>90</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>11d6c3b6-47c4-4765-a625-7a5907ba1b4a</id>
         <name>Resonant Stream: Sourceror</name>
         <translate>Resonante Strömung: Sourcerer</translate>
         <altpage>91</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>71511c8f-85f1-4e35-aeaa-be8fa3a45331</id>
         <name>Resonant Stream: Technoshaman</name>
         <translate>Resonante Strömung: Technoschamanen</translate>
         <altpage>92</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>e40e318d-ecde-4a20-bfc5-36d341a644b5</id>
         <name>Dissonant Stream: Apophenian</name>
         <translate>Dissonante Strömung: Apophänianer</translate>
         <altpage>138</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>ee5d131f-5606-4a40-8035-9970aa3b5b29</id>
         <name>Dissonant Stream: Erisian</name>
         <translate>Dissonante Strömung: Erisianer</translate>
         <altpage>139</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>580c8ae5-899b-4fa9-8f2d-600c9ac758f9</id>
         <name>Dissonant Stream: Morphinae</name>
         <translate>Dissonante Strömung: Morphinae</translate>
         <altpage>137</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality>
         <id>90691f29-5b81-4a81-9ebc-21f2f5da1d55</id>
@@ -32336,7 +32402,8 @@
         <name>Paragon</name>
         <translate>Paragon</translate>
         <altpage>102</altpage>
-        <altnameonpage></altnameonpage>
+        <altnameonpage>
+        </altnameonpage>
       </quality>
       <quality translated="True">
         <id>eeb4db5b-f5b7-4ab5-b310-1d7107cd722f</id>
@@ -36846,7 +36913,8 @@
         <id>71407a60-c753-40d9-9d5b-416c43b51fef</id>
         <name>Infected</name>
         <translate>Infizierte</translate>
-        <specs></specs>
+        <specs>
+        </specs>
       </skill>
       <skill>
         <id>516713c4-8022-46ea-b1d1-f843922731d4</id>
@@ -36880,7 +36948,8 @@
         <id>974e376f-5eec-4df8-b7d5-e53e900058e9</id>
         <name>Undead</name>
         <translate>Untote</translate>
-        <specs></specs>
+        <specs>
+        </specs>
       </skill>
       <skill>
         <id>37013018-70bd-4016-827c-c366949622f5</id>
@@ -47640,7 +47709,8 @@
         <id>3c329adb-7c13-4d2c-b25c-49be89173fa1</id>
         <name>Sound Suppressor</name>
         <translate>Schallunterdrücker</translate>
-        <altpage></altpage>
+        <altpage>
+        </altpage>
       </accessory>
       <accessory>
         <id>4c47baf0-6b34-4e00-8627-a0f605f84ba0</id>
@@ -49653,7 +49723,8 @@
     <sexes />
   </chummer>
   <chummer file="ranges.xml">
-    <modifiers></modifiers>
+    <modifiers>
+    </modifiers>
     <ranges>
       <range>
         <name>Tasers</name>
@@ -50490,32 +50561,6 @@
     </metatypes>
   </chummer>
   <chummer file="drugcomponents.xml">
-    <grades>
-      <grade translated="True">
-        <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
-        <name>Standard</name>
-        <translate>Standard</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade translated="True">
-        <id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
-        <name>Street Cooked</name>
-        <translate>Straßenware</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade translated="True">
-        <id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
-        <name>Pharmaceutical</name>
-        <translate>Medizinisch rein</translate>
-        <altpage>190</altpage>
-      </grade>
-      <grade translated="True">
-        <id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
-        <name>Designer</name>
-        <translate>Personalisiert</translate>
-        <altpage>190</altpage>
-      </grade>
-    </grades>
     <drugs>
       <drug>
         <id>62bffcd7-4a43-45cd-9cf7-3067ba9688f6</id>
@@ -51083,5 +51128,33 @@
       <category translate="Baustein">Block</category>
       <category translate="Verstärker">Enhancer</category>
     </categories>
+  </chummer>
+  <chummer file="drugs.xml">
+    <grades>
+      <grade translated="True">
+        <id>b00a075a-2c2c-4816-bb4a-0d0a33d06370</id>
+        <name>Standard</name>
+        <translate>Standard</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade translated="True">
+        <id>b8b70858-6433-451a-835b-49b67d7b63e2</id>
+        <name>Street Cooked</name>
+        <translate>Straßenware</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade translated="True">
+        <id>b3366009-4884-44d7-9efa-34e213a75e7e</id>
+        <name>Pharmaceutical</name>
+        <translate>Medizinisch rein</translate>
+        <altpage>190</altpage>
+      </grade>
+      <grade translated="True">
+        <id>cd20695d-fedb-476b-956b-1a1ecdd65f03</id>
+        <name>Designer</name>
+        <translate>Personalisiert</translate>
+        <altpage>190</altpage>
+      </grade>
+    </grades>
   </chummer>
 </chummer>

@@ -1935,6 +1935,10 @@
       <text>A&amp;dd Gear</text>
     </string>
     <string>
+      <key>Menu_AddDrug</key>
+      <text>Add &amp;Drug</text>
+    </string>
+    <string>
       <key>Menu_AddWeapon</key>
       <text>Add &amp;Weapon</text>
     </string>
@@ -2805,6 +2809,14 @@
     <string>
       <key>MessageTitle_CyberwareGear</key>
       <text>Cannot Add Gear</text>
+    </string>
+    <string>
+      <key>Message_CyberwareDrug</key>
+      <text>Drugs cannot be added to this piece of Cyberware.</text>
+    </string>
+    <string>
+      <key>MessageTitle_CyberwareDrug</key>
+      <text>Cannot Add Drug</text>
     </string>
     <string>
       <key>Message_SelectArmor</key>
@@ -3906,6 +3918,10 @@
     <string>
       <key>String_ExpensePurchaseCyberwareGear</key>
       <text>Purchased Cyberware Gear</text>
+    </string>
+    <string>
+      <key>String_ExpensePurchaseCyberwareDrug</key>
+      <text>Purchased Cyberware Drug</text>
     </string>
     <string>
       <key>String_ExpenseSoldCyberwareGear</key>
@@ -5572,6 +5588,10 @@
     <string>
       <key>Label_DrugComponents</key>
       <text>Components:</text>
+    </string>
+    <string>
+      <key>Button_AddDrug</key>
+      <text>Add Drug</text>
     </string>
     <string>
       <key>Button_CreateCustomDrug</key>
@@ -8273,6 +8293,10 @@
     <string>
       <key>Checkbox_Options_AlphabetizeTreeNodesOnInsert</key>
       <text>Insert new items alphabetically in character trees</text>
+    </string>
+    <string>
+      <key>Checkbox_Options_UseImprovementGroupNameInTooltips</key>
+      <text>Use improvement group name in tooltips instead of individual names</text>
     </string>
     <string>
       <key>Checkbox_Options_NestWeaponMountsUnderWeaponsCategory</key>

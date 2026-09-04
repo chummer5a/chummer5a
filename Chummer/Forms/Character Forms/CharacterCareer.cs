@@ -13266,6 +13266,66 @@ namespace Chummer
                         }
                             break;
 
+                        case NuyenExpenseType.AddDrug:
+                        {
+                            Drug objDrug = await CharacterObject.Drugs
+                                .FirstOrDefaultAsync(x => x.InternalId == strUndoId, GenericToken)
+                                .ConfigureAwait(false);
+                            if (objDrug == null)
+                            {
+                                // Nested under Chemical Gland (DrugChildren), not Character.Drugs.
+                                async Task<Drug> FindNestedDrugAsync(
+                                    ThreadSafeObservableCollection<Cyberware> lstWare)
+                                {
+                                    foreach (Cyberware objWare in lstWare)
+                                    {
+                                        Drug objFound = await (await objWare.GetDrugChildrenAsync(GenericToken)
+                                                .ConfigureAwait(false))
+                                            .FirstOrDefaultAsync(x => x.InternalId == strUndoId, GenericToken)
+                                            .ConfigureAwait(false);
+                                        if (objFound != null)
+                                            return objFound;
+                                        objFound = await FindNestedDrugAsync(
+                                            await objWare.GetChildrenAsync(GenericToken).ConfigureAwait(false))
+                                            .ConfigureAwait(false);
+                                        if (objFound != null)
+                                            return objFound;
+                                    }
+
+                                    return null;
+                                }
+
+                                objDrug = await FindNestedDrugAsync(
+                                        await CharacterObject.GetCyberwareAsync(GenericToken).ConfigureAwait(false))
+                                    .ConfigureAwait(false);
+                            }
+
+                            if (objDrug == null)
+                                break;
+
+                            decimal decQty = objExpense.Undo.Qty;
+                            if (decQty <= 0)
+                                decQty = 1;
+                            objDrug.Quantity -= decQty;
+                            if (objDrug.Quantity <= 0)
+                            {
+                                await objDrug.RemoveAsync(false, GenericToken).ConfigureAwait(false);
+                            }
+                            else if (objDrug.ParentCyberware == null)
+                            {
+                                TreeNode objNode = await treCustomDrugs.DoThreadSafeFuncAsync(
+                                    x => x.FindNode(objDrug.InternalId), GenericToken).ConfigureAwait(false);
+                                if (objNode != null)
+                                {
+                                    string strText = await objDrug.GetCurrentDisplayNameAsync(GenericToken)
+                                        .ConfigureAwait(false);
+                                    await objNode.TreeView.DoThreadSafeAsync(() => objNode.Text = strText,
+                                        GenericToken).ConfigureAwait(false);
+                                }
+                            }
+                        }
+                            break;
+
                         case NuyenExpenseType.AddVehicle:
                         {
                             // Locate the Vehicle that was added.
@@ -14246,6 +14306,46 @@ namespace Chummer
             }
         }
 
+        private async void tsCyberwareAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cyberware objCyberware = await TryGetSelectedCyberwareAllowingDrugFromTreeAsync(
+                    treCyberware,
+                    "Message_SelectCyberware",
+                    "MessageTitle_SelectCyberware",
+                    "Message_CyberwareDrug",
+                    "MessageTitle_CyberwareDrug",
+                    GenericToken).ConfigureAwait(false);
+                if (objCyberware == null)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        blnAddAgain = await AddDrugToCyberwareAsync(
+                            objCyberware,
+                            true,
+                            await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareDrug", token: GenericToken)
+                                .ConfigureAwait(false),
+                            NuyenExpenseType.AddDrug,
+                            GenericToken).ConfigureAwait(false);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
         private async void tsVehicleCyberwareAddGear_Click(object sender, EventArgs e)
         {
             try
@@ -14275,6 +14375,46 @@ namespace Chummer
                             false,
                             await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareGear", token: GenericToken).ConfigureAwait(false),
                             NuyenExpenseType.AddCyberwareGear,
+                            GenericToken).ConfigureAwait(false);
+                    } while (blnAddAgain);
+                }
+                finally
+                {
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                }
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
+        }
+
+        private async void tsVehicleCyberwareAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Cyberware objCyberware = await TryGetSelectedCyberwareAllowingDrugFromTreeAsync(
+                    treVehicles,
+                    "Message_SelectCyberware",
+                    "MessageTitle_SelectCyberware",
+                    "Message_CyberwareDrug",
+                    "MessageTitle_CyberwareDrug",
+                    GenericToken).ConfigureAwait(false);
+                if (objCyberware == null)
+                    return;
+
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: GenericToken).ConfigureAwait(false);
+                try
+                {
+                    bool blnAddAgain;
+                    do
+                    {
+                        blnAddAgain = await AddDrugToCyberwareAsync(
+                            objCyberware,
+                            true,
+                            await LanguageManager.GetStringAsync("String_ExpensePurchaseCyberwareDrug", token: GenericToken)
+                                .ConfigureAwait(false),
+                            NuyenExpenseType.AddDrug,
                             GenericToken).ConfigureAwait(false);
                     } while (blnAddAgain);
                 }
@@ -28098,17 +28238,7 @@ namespace Chummer
 
                     Drug objCustomDrug = form.MyForm.CustomDrug;
                     if (objCustomDrug != null)
-                    {
-                        try
-                        {
-                            await CharacterObject.Drugs.AddAsync(objCustomDrug, GenericToken).ConfigureAwait(false);
-                        }
-                        catch
-                        {
-                            await objCustomDrug.DisposeAsync().ConfigureAwait(false);
-                            throw;
-                        }
-                    }
+                        await AddDrugToCharacterAsync(objCustomDrug, token: GenericToken).ConfigureAwait(false);
                 }
             }
             catch (OperationCanceledException)
@@ -28132,26 +28262,8 @@ namespace Chummer
                 try
                 {
                     GenericToken.ThrowIfCancellationRequested();
-                    decimal decCost = selectedDrug.Cost;
-                    /* Apply a markup if applicable.
-                    if (frmPickArmor.Markup != 0)
-                    {
-                        decCost *= 1 + (frmPickArmor.Markup / 100.0m);
-                    }*/
-
-                    // Multiply the cost if applicable.
-                    char chrAvail = (await selectedDrug.TotalAvailTupleAsync(token: GenericToken).ConfigureAwait(false))
-                        .Suffix;
-                    switch (chrAvail)
-                    {
-                        case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
-                            decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
-                            break;
-
-                        case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
-                            decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
-                            break;
-                    }
+                    decimal decCost = await GetCareerDrugPurchaseCostAsync(selectedDrug, 0, GenericToken)
+                        .ConfigureAwait(false);
 
                     // Check the item's Cost and make sure the character can afford it.
                     if (decCost > await CharacterObject.GetNuyenAsync(GenericToken).ConfigureAwait(false))
@@ -28164,6 +28276,7 @@ namespace Chummer
                                     .ConfigureAwait(false),
                                 MessageBoxButtons.OK, MessageBoxIcon.Information, token: GenericToken)
                             .ConfigureAwait(false);
+                        return;
                     }
 
                     if (!await CharacterObject.Improvements.AnyAsync(imp =>
@@ -28175,27 +28288,12 @@ namespace Chummer
                         await selectedDrug.GenerateImprovement(GenericToken).ConfigureAwait(false);
                     }
 
-                    // Create the Expense Log Entry.
-                    ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
-                    objExpense.Create(decCost * -1,
-                        await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug", token: GenericToken)
-                            .ConfigureAwait(false) +
-                        await LanguageManager.GetStringAsync("String_Space", token: GenericToken)
-                            .ConfigureAwait(false) +
-                        await selectedDrug.GetCurrentDisplayNameShortAsync(GenericToken)
-                            .ConfigureAwait(false), ExpenseType.Nuyen, DateTime.Now);
-                    await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: GenericToken)
+                    await CreateCareerDrugPurchaseExpenseAsync(selectedDrug, decCost, 1, GenericToken)
                         .ConfigureAwait(false);
-                    await CharacterObject.ModifyNuyenAsync(-decCost, GenericToken).ConfigureAwait(false);
                     selectedDrug.Quantity++;
                     string strText = await selectedDrug.GetCurrentDisplayNameAsync(GenericToken).ConfigureAwait(false);
                     await treCustomDrugs.DoThreadSafeAsync(() => objSelectedNode.Text = strText,
                         GenericToken).ConfigureAwait(false);
-                    ExpenseUndo objUndo = new ExpenseUndo();
-                    objUndo.CreateNuyen(NuyenExpenseType.AddGear, selectedDrug.InternalId);
-                    objExpense.Undo = objUndo;
-
-                    await MakeDirtyWithCharacterUpdate(GenericToken).ConfigureAwait(false);
                 }
                 finally
                 {

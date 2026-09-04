@@ -88,6 +88,7 @@ namespace Chummer.Backend.Equipment
 
         private readonly TaggedObservableCollection<Cyberware> _lstChildren;
         private readonly TaggedObservableCollection<Gear> _lstGear;
+        private readonly TaggedObservableCollection<Drug> _lstDrug;
         private XmlNode _nodBonus;
         private XmlNode _nodPairBonus;
         private XmlNode _nodWirelessBonus;
@@ -96,6 +97,7 @@ namespace Chummer.Backend.Equipment
         private HashSet<string> _lstIncludeInWirelessPairBonus;
         private bool _blnWirelessOn = true;
         private XmlNode _nodAllowGear;
+        private XmlNode _nodAllowDrug;
         private Improvement.ImprovementSource _eImprovementSource = Improvement.ImprovementSource.Cyberware;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
@@ -218,6 +220,8 @@ namespace Chummer.Backend.Equipment
                     _lstChildren.AddTaggedCollectionChanged(this, CyberwareChildrenOnCollectionChanged);
                     _lstGear = new TaggedObservableCollection<Gear>(LockObject);
                     _lstGear.AddTaggedCollectionChanged(this, GearChildrenOnCollectionChanged);
+                    _lstDrug = new TaggedObservableCollection<Drug>(LockObject);
+                    _lstDrug.AddTaggedCollectionChanged(this, DrugChildrenOnCollectionChanged);
                 }
                 catch
                 {
@@ -785,6 +789,41 @@ namespace Chummer.Backend.Equipment
             }
         }
 
+        private async Task DrugChildrenOnCollectionChanged(object sender, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (e.Action == NotifyCollectionChangedAction.Move)
+                return;
+            IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                switch (e.Action)
+                {
+                    case NotifyCollectionChangedAction.Add:
+                        foreach (Drug objNewItem in e.NewItems)
+                            objNewItem.ParentCyberware = this;
+                        break;
+
+                    case NotifyCollectionChangedAction.Remove:
+                        foreach (Drug objOldItem in e.OldItems)
+                            objOldItem.ParentCyberware = null;
+                        break;
+
+                    case NotifyCollectionChangedAction.Replace:
+                        foreach (Drug objOldItem in e.OldItems)
+                            objOldItem.ParentCyberware = null;
+                        foreach (Drug objNewItem in e.NewItems)
+                            objNewItem.ParentCyberware = this;
+                        break;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
         /// <summary>
         /// Create a Cyberware from an XmlNode.
         /// </summary>
@@ -917,6 +956,7 @@ namespace Chummer.Backend.Equipment
                     _nodWirelessPairBonus = objXmlCyberware["wirelesspairbonus"];
                     _blnWirelessOn = _nodWirelessBonus != null || _nodWirelessPairBonus != null;
                     _nodAllowGear = objXmlCyberware["allowgear"];
+                    _nodAllowDrug = objXmlCyberware["allowdrug"];
                     objXmlCyberware.TryGetStringFieldQuickly("mountsto", ref _strPlugsIntoModularMount);
                     objXmlCyberware.TryGetStringFieldQuickly("modularmount", ref _strHasModularMount);
                     objXmlCyberware.TryGetStringFieldQuickly("blocksmounts", ref _strBlocksMounts);
@@ -2297,6 +2337,8 @@ namespace Chummer.Backend.Equipment
                     objWriter.WriteElementString("wirelesspairbonus", string.Empty);
                 if (_nodAllowGear != null)
                     objWriter.WriteRaw(_nodAllowGear.OuterXmlViaPool());
+                if (_nodAllowDrug != null)
+                    objWriter.WriteRaw(_nodAllowDrug.OuterXmlViaPool());
                 objWriter.WriteElementString("improvementsource", _eImprovementSource.ToString());
                 if (_guiWeaponID != Guid.Empty)
                     objWriter.WriteElementString("weaponguid",
@@ -2344,6 +2386,17 @@ namespace Chummer.Backend.Equipment
                 }
 
                 #endregion Gear
+
+                #region Drugs
+
+                if (_lstDrug.Count > 0)
+                {
+                    objWriter.WriteStartElement("drugs");
+                    _lstDrug.ForEach(x => x.Save(objWriter));
+                    objWriter.WriteEndElement();
+                }
+
+                #endregion Drugs
 
                 objWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
                 objWriter.WriteElementString("notesColor", ColorTranslator.ToHtml(_colNotes));
@@ -2648,6 +2701,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     _nodAllowGear = objNode["allowgear"];
+                    _nodAllowDrug = objNode["allowdrug"];
                     // Legacy Sweep
                     if (_strForceGrade != "None" && IsGeneware)
                     {
@@ -2743,6 +2797,48 @@ namespace Chummer.Backend.Equipment
                                 catch
                                 {
                                     await objGear.DeleteGearAsync(token: CancellationToken.None).ConfigureAwait(false);
+                                    throw;
+                                }
+                            }
+                        }
+                    }
+
+                    if (objNode.HasChildWithName("drugs"))
+                    {
+                        XmlNodeList nodChildren = objNode.SelectNodes("drugs/drug");
+                        foreach (XmlNode nodChild in nodChildren)
+                        {
+                            Drug objDrug = new Drug(_objCharacter);
+                            if (blnSync)
+                            {
+                                try
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objDrug.Load(nodChild);
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    _lstDrug.Add(objDrug);
+                                    // Legacy gland drugs had no improvements; create disabled group if missing.
+                                    await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
+                                    objDrug.Dispose();
+                                    throw;
+                                }
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    await objDrug.LoadAsync(nodChild, token).ConfigureAwait(false);
+                                    await _lstDrug.AddAsync(objDrug, token).ConfigureAwait(false);
+                                    // Legacy gland drugs had no improvements; create disabled group if missing.
+                                    await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                                }
+                                catch
+                                {
+                                    await objDrug.DisposeAsync().ConfigureAwait(false);
                                     throw;
                                 }
                             }
@@ -3210,6 +3306,26 @@ namespace Chummer.Backend.Equipment
                         }
                     }
 
+                    if (DrugChildren.Count > 0)
+                    {
+                        // <drugs>
+                        XmlElementWriteHelper objDrugsElement
+                            = await objWriter.StartElementAsync("drugs", token: token).ConfigureAwait(false);
+                        try
+                        {
+                            foreach (Drug objDrug in DrugChildren)
+                            {
+                                await objDrug.Print(objWriter, objCulture, strLanguageToPrint, token)
+                                    .ConfigureAwait(false);
+                            }
+                        }
+                        finally
+                        {
+                            // </drugs>
+                            await objDrugsElement.DisposeAsync().ConfigureAwait(false);
+                        }
+                    }
+
                     // <children>
                     XmlElementWriteHelper objChildrenElement
                         = await objWriter.StartElementAsync("children", token: token).ConfigureAwait(false);
@@ -3422,6 +3538,23 @@ namespace Chummer.Backend.Equipment
             {
                 using (LockObject.EnterUpgradeableReadLock())
                     _nodAllowGear = value;
+            }
+        }
+
+        /// <summary>
+        /// AllowDrug node from the XML file.
+        /// </summary>
+        public XmlNode AllowDrug
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _nodAllowDrug;
+            }
+            set
+            {
+                using (LockObject.EnterUpgradeableReadLock())
+                    _nodAllowDrug = value;
             }
         }
 
@@ -7312,6 +7445,35 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
+        /// A List of the Drugs attached to the Cyberware (e.g. Chemical Gland contents).
+        /// </summary>
+        public TaggedObservableCollection<Drug> DrugChildren
+        {
+            get
+            {
+                using (LockObject.EnterReadLock())
+                    return _lstDrug;
+            }
+        }
+
+        /// <summary>
+        /// A List of the Drugs attached to the Cyberware (e.g. Chemical Gland contents).
+        /// </summary>
+        public async Task<TaggedObservableCollection<Drug>> GetDrugChildrenAsync(CancellationToken token = default)
+        {
+            IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                return _lstDrug;
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
         /// List of names to include in pair bonus
         /// </summary>
         public HashSet<string> IncludePair
@@ -8464,6 +8626,30 @@ namespace Chummer.Backend.Equipment
                     }
                 }
 
+                // Same for drug children (Chemical Gland, etc.).
+                foreach (Drug objChild in DrugChildren)
+                {
+                    AvailabilityValue objLoopAvailTuple = objChild.TotalAvailTuple();
+                    if (!objLoopAvailTuple.AddToParent)
+                        intLoopAvail = Math.Max(intLoopAvail, objLoopAvailTuple.Value);
+                    if (blnCheckChildren)
+                    {
+                        if (objLoopAvailTuple.AddToParent)
+                            intAvail += objLoopAvailTuple.Value;
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                    else if (blnOrGear)
+                    {
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+                }
+
                 intAvail += ImprovementManager.ValueOf(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: SourceIDString, blnIncludeNonImproved: true).StandardRound();
 
                 // Avail cannot go below 0. This typically happens when an item with Avail 0 is given the Second Hand category.
@@ -8556,6 +8742,33 @@ namespace Chummer.Backend.Equipment
                 int intLoopAvail = 0;
                 // Run through gear children and increase the Avail by any Mod whose Avail starts with "+" or "-".
                 intAvail += await GearChildren.SumAsync(x => x.ParentID != InternalId, async objChild =>
+                {
+                    AvailabilityValue objLoopAvailTuple =
+                        await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                    if (!objLoopAvailTuple.AddToParent)
+                        intLoopAvail = Math.Max(intLoopAvail, await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false));
+                    if (blnCheckChildren)
+                    {
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                        return objLoopAvailTuple.AddToParent ? await objLoopAvailTuple.GetValueAsync(token).ConfigureAwait(false) : 0;
+                    }
+
+                    if (blnOrGear)
+                    {
+                        if (objLoopAvailTuple.Suffix == 'F')
+                            chrLastAvailChar = 'F';
+                        else if (chrLastAvailChar != 'F' && objLoopAvailTuple.Suffix == 'R')
+                            chrLastAvailChar = 'R';
+                    }
+
+                    return 0;
+                }, token).ConfigureAwait(false);
+
+                // Same for drug children (Chemical Gland, etc.).
+                intAvail += await DrugChildren.SumAsync(async objChild =>
                 {
                     AvailabilityValue objLoopAvailTuple =
                         await objChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
@@ -9668,14 +9881,16 @@ namespace Chummer.Backend.Equipment
                         }
                         if (strCostExpression.Contains("Parent Gear Cost") && _objParent != null)
                         {
-                            decTotalParentGearCost = _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                            decTotalParentGearCost = _objParent.GearChildren.Sum(loopGear => loopGear.CalculatedCost)
+                                                     + _objParent.DrugChildren.Sum(loopDrug => loopDrug.TotalCost);
                         }
                     }
 
                     decimal decTotalGearCost = 0;
-                    if (GearChildren.Count > 0 && strCostExpression.Contains("Gear Cost"))
+                    if (GearChildren.Count + DrugChildren.Count > 0 && strCostExpression.Contains("Gear Cost"))
                     {
-                        decTotalGearCost = GearChildren.Sum(loopGear => loopGear.CalculatedCost);
+                        decTotalGearCost = GearChildren.Sum(loopGear => loopGear.CalculatedCost)
+                                           + DrugChildren.Sum(loopDrug => loopDrug.TotalCost);
                     }
 
                     decimal decTotalChildrenCost = 0;
@@ -9759,14 +9974,17 @@ namespace Chummer.Backend.Equipment
                         if (strCostExpression.Contains("Parent Gear Cost") && _objParent != null)
                         {
                             decTotalParentGearCost = await (await _objParent.GetGearChildrenAsync(token).ConfigureAwait(false))
-                                .SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
+                                                         .SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false)
+                                                     + await (await _objParent.GetDrugChildrenAsync(token).ConfigureAwait(false))
+                                                         .SumAsync(loopDrug => loopDrug.GetTotalCostAsync(token), token).ConfigureAwait(false);
                         }
                     }
 
                     decimal decTotalGearCost = 0;
                     if (strCostExpression.Contains("Gear Cost"))
                     {
-                        decTotalGearCost = await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false);
+                        decTotalGearCost = await (await GetGearChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopGear => loopGear.GetCalculatedCostAsync(token), token).ConfigureAwait(false)
+                                           + await (await GetDrugChildrenAsync(token).ConfigureAwait(false)).SumAsync(loopDrug => loopDrug.GetTotalCostAsync(token), token).ConfigureAwait(false);
                     }
 
                     decimal decTotalChildrenCost = 0;
@@ -9913,6 +10131,8 @@ namespace Chummer.Backend.Equipment
 
                 // Add in the cost of all Gear plugins.
                 decReturn += GearChildren.Sum(x => x.TotalCost);
+                // Nested drugs (e.g. Chemical Gland) count like gear for total cost.
+                decReturn += DrugChildren.Sum(x => x.TotalCost);
 
                 return decReturn;
             }
@@ -10020,6 +10240,7 @@ namespace Chummer.Backend.Equipment
 
                 // Add in the cost of all Gear plugins.
                 decReturn += await GearChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                decReturn += await DrugChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
 
                 return decReturn;
             }
@@ -11551,6 +11772,13 @@ namespace Chummer.Backend.Equipment
                 }
 
                 decReturn += GearChildren.AsEnumerableWithSideEffects().Sum(x => x.DeleteGear(false));
+                while (DrugChildren.Count > 0)
+                {
+                    Drug objDrug = DrugChildren[0];
+                    decReturn += objDrug.TotalCost;
+                    // Keep ParentCyberware so Remove clears DrugChildren and drug improvements.
+                    objDrug.Remove(false);
+                }
 
                 // Fix for legacy characters with old addqualities improvements.
                 XPathNodeIterator xmlOldAddQualitiesList
@@ -11862,6 +12090,13 @@ namespace Chummer.Backend.Equipment
 
                 decReturn += await GearChildren.SumWithSideEffectsAsync(x => x.DeleteGearAsync(false, token), token)
                                                .ConfigureAwait(false);
+                while (await DrugChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
+                {
+                    Drug objDrug = await DrugChildren.GetValueAtAsync(0, token).ConfigureAwait(false);
+                    decReturn += await objDrug.GetTotalCostAsync(token).ConfigureAwait(false);
+                    // Keep ParentCyberware so RemoveAsync clears DrugChildren and drug improvements.
+                    await objDrug.RemoveAsync(false, token).ConfigureAwait(false);
+                }
 
                 // Fix for legacy characters with old addqualities improvements.
                 XPathNavigator objDataNode = await this.GetNodeXPathAsync(token: token).ConfigureAwait(false);
@@ -11917,6 +12152,7 @@ namespace Chummer.Backend.Equipment
                 token.ThrowIfCancellationRequested();
 
                 bool blnSwallowGear = false;
+                bool blnUseChildAvail = false;
                 Gear objSwallowedGear = null;
 
                 if (string.IsNullOrEmpty(ParentID))
@@ -11924,7 +12160,7 @@ namespace Chummer.Backend.Equipment
                     int intGearAvailToCheck = 0;
                     AvailabilityValue objTotalAvail = await TotalAvailTupleAsync(token: token).ConfigureAwait(false);
 
-                    // If parent ends with 'or Gear', swallow highest gear child
+                    // If parent ends with 'or Gear', swallow highest gear/drug child
                     if (Avail.EndsWith("or Gear", StringComparison.OrdinalIgnoreCase))
                     {
                         TaggedObservableCollection<Gear> gearChildren = await GetGearChildrenAsync(token).ConfigureAwait(false);
@@ -11940,15 +12176,30 @@ namespace Chummer.Backend.Equipment
                                 objHighestGear = gearChild;
                             }
                         }
-                        if (objHighestGear != null)
+
+                        foreach (Drug objDrugChild in await GetDrugChildrenAsync(token).ConfigureAwait(false))
                         {
-                            blnSwallowGear = true;
+                            AvailabilityValue drugAvailValue = await objDrugChild.TotalAvailTupleAsync(token: token).ConfigureAwait(false);
+                            int drugAvailInt = await drugAvailValue.GetValueAsync(token).ConfigureAwait(false);
+                            if (drugAvailInt > highestAvail)
+                            {
+                                highestAvail = drugAvailInt;
+                                objHighestGear = null; // drug wins; do not swallow a gear
+                            }
+                        }
+
+                        if (highestAvail != int.MinValue)
+                        {
+                            blnUseChildAvail = true;
+                            blnSwallowGear = objHighestGear != null;
                             intGearAvailToCheck = highestAvail;
                             objSwallowedGear = objHighestGear;
                         }
                     }
 
-                    int intAvailInt = blnSwallowGear ? intGearAvailToCheck : await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
+                    int intAvailInt = blnUseChildAvail
+                        ? intGearAvailToCheck
+                        : await objTotalAvail.GetValueAsync(token).ConfigureAwait(false);
 
                     if (!objTotalAvail.AddToParent &&
                         intAvailInt > await (await _objCharacter.GetSettingsAsync(token).ConfigureAwait(false)).GetMaximumAvailabilityAsync(token).ConfigureAwait(false))
@@ -12112,6 +12363,16 @@ namespace Chummer.Backend.Equipment
                         lstChildNodes.Add(objLoopNode);
                 }, token).ConfigureAwait(false);
 
+                await (await GetDrugChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(async objDrug =>
+                {
+                    TreeNode objLoopNode = await objDrug.CreateTreeNode(token).ConfigureAwait(false);
+                    if (objLoopNode != null)
+                    {
+                        objLoopNode.ContextMenuStrip = cmsCyberware;
+                        lstChildNodes.Add(objLoopNode);
+                    }
+                }, token).ConfigureAwait(false);
+
                 if (lstChildNodes.Count > 0)
                     objNode.Expand();
 
@@ -12186,14 +12447,25 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
                         funcMakeDirty, token: innerToken);
 
+                async Task<int> FuncDrugOffset(CancellationToken innerToken = default)
+                {
+                    return await Children.GetCountAsync(innerToken).ConfigureAwait(false)
+                           + await GearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
+                }
+
+                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    RefreshChildrenDrugs(treCyberware, cmsCyberware, () => FuncDrugOffset(innerToken), y, innerToken);
+
                 Children.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
                 Children.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
                 GearChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncGearBeforeClearToAdd);
                 GearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
+                DrugChildren.AddTaggedCollectionChanged(treCyberware, FuncDrugToAdd);
                 if (funcMakeDirty != null)
                 {
                     Children.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
                     GearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                    DrugChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
                 }
 
                 foreach (Cyberware objChild in Children)
@@ -12212,6 +12484,7 @@ namespace Chummer.Backend.Equipment
                 Children.RemoveTaggedAsyncCollectionChanged(treCyberware);
                 GearChildren.RemoveTaggedAsyncBeforeClearCollectionChanged(treCyberware);
                 GearChildren.RemoveTaggedAsyncCollectionChanged(treCyberware);
+                DrugChildren.RemoveTaggedAsyncCollectionChanged(treCyberware);
                 foreach (Cyberware objChild in Children)
                     objChild.SetupChildrenCyberwareCollectionChanged(false, treCyberware);
                 foreach (Gear objGear in GearChildren)
@@ -12225,6 +12498,7 @@ namespace Chummer.Backend.Equipment
         {
             TaggedObservableCollection<Cyberware> lstChildren = await GetChildrenAsync(token).ConfigureAwait(false);
             TaggedObservableCollection<Gear> lstGearChildren = await GetGearChildrenAsync(token).ConfigureAwait(false);
+            TaggedObservableCollection<Drug> lstDrugChildren = await GetDrugChildrenAsync(token).ConfigureAwait(false);
             if (blnAdd)
             {
                 Task FuncCyberwareBeforeClearToAdd(object x, NotifyCollectionChangedEventArgs y,
@@ -12243,14 +12517,25 @@ namespace Chummer.Backend.Equipment
                     this.RefreshChildrenGears(treCyberware, cmsCyberwareGear, null, () => Children.GetCountAsync(innerToken), y,
                         funcMakeDirty, token: innerToken);
 
+                async Task<int> FuncDrugOffset(CancellationToken innerToken = default)
+                {
+                    return await lstChildren.GetCountAsync(innerToken).ConfigureAwait(false)
+                           + await lstGearChildren.GetCountAsync(innerToken).ConfigureAwait(false);
+                }
+
+                Task FuncDrugToAdd(object x, NotifyCollectionChangedEventArgs y, CancellationToken innerToken = default) =>
+                    RefreshChildrenDrugs(treCyberware, cmsCyberware, () => FuncDrugOffset(innerToken), y, innerToken);
+
                 lstChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncCyberwareBeforeClearToAdd);
                 lstChildren.AddTaggedCollectionChanged(treCyberware, FuncCyberwareToAdd);
                 lstGearChildren.AddTaggedBeforeClearCollectionChanged(treCyberware, FuncGearBeforeClearToAdd);
                 lstGearChildren.AddTaggedCollectionChanged(treCyberware, FuncGearToAdd);
+                lstDrugChildren.AddTaggedCollectionChanged(treCyberware, FuncDrugToAdd);
                 if (funcMakeDirty != null)
                 {
                     lstChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
                     lstGearChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
+                    lstDrugChildren.AddTaggedCollectionChanged(treCyberware, funcMakeDirty);
                 }
 
                 await lstChildren.ForEachWithSideEffectsAsync(
@@ -12266,12 +12551,134 @@ namespace Chummer.Backend.Equipment
                 await lstChildren.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
                 await lstGearChildren.RemoveTaggedAsyncBeforeClearCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
                 await lstGearChildren.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
+                await lstDrugChildren.RemoveTaggedAsyncCollectionChangedAsync(treCyberware, token).ConfigureAwait(false);
                 await lstChildren.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenCyberwareCollectionChangedAsync(false, treCyberware,
                         token: token), token).ConfigureAwait(false);
                 await lstGearChildren.ForEachWithSideEffectsAsync(
                     objChild => objChild.SetupChildrenGearsCollectionChangedAsync(false, treCyberware, token: token),
                     token).ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Minimal tree refresh for DrugChildren. RefreshChildrenGears only accepts Gear.
+        /// </summary>
+        private async Task RefreshChildrenDrugs(TreeView treCyberware, ContextMenuStrip cmsCyberware,
+            Func<Task<int>> funcOffset, NotifyCollectionChangedEventArgs e, CancellationToken token = default)
+        {
+            if (e == null || treCyberware == null)
+                return;
+
+            TreeNode nodParent = await treCyberware.DoThreadSafeFuncAsync(x => x.FindNodeByTag(this), token: token).ConfigureAwait(false);
+            if (nodParent == null)
+                return;
+
+            switch (e.Action)
+            {
+                case NotifyCollectionChangedAction.Add:
+                    {
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Remove:
+                    {
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Replace:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        foreach (Drug objDrug in e.OldItems)
+                        {
+                            await treCyberware.DoThreadSafeAsync(() => nodParent.FindNodeByTag(objDrug)?.Remove(), token: token)
+                                .ConfigureAwait(false);
+                        }
+
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Move:
+                    {
+                        string strSelectedId
+                            = (await treCyberware.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token: token).ConfigureAwait(false) as IHasInternalId)?.InternalId
+                              ?? string.Empty;
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            foreach (Drug objDrug in e.OldItems)
+                                nodParent.FindNodeByTag(objDrug)?.Remove();
+                        }, token: token).ConfigureAwait(false);
+                        int intNewIndex = e.NewStartingIndex;
+                        if (funcOffset != null)
+                            intNewIndex += await funcOffset.Invoke().ConfigureAwait(false);
+                        foreach (Drug objDrug in e.NewItems)
+                        {
+                            await AddDrugToTree(objDrug, intNewIndex).ConfigureAwait(false);
+                            ++intNewIndex;
+                        }
+
+                        await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = x.FindNode(strSelectedId), token: token)
+                            .ConfigureAwait(false);
+                        break;
+                    }
+
+                case NotifyCollectionChangedAction.Reset:
+                    {
+                        await treCyberware.DoThreadSafeAsync(() =>
+                        {
+                            for (int i = nodParent.Nodes.Count - 1; i >= 0; --i)
+                            {
+                                TreeNode objNode = nodParent.Nodes[i];
+                                if (objNode.Tag is Drug)
+                                    objNode.Remove();
+                            }
+                        }, token: token).ConfigureAwait(false);
+                        break;
+                    }
+            }
+
+            async ValueTask AddDrugToTree(Drug objDrug, int intIndex = -1, bool blnSingleAdd = true)
+            {
+                TreeNode objNode = await objDrug.CreateTreeNode(token).ConfigureAwait(false);
+                if (objNode == null)
+                    return;
+                objNode.ContextMenuStrip = cmsCyberware;
+                await treCyberware.DoThreadSafeAsync(() =>
+                {
+                    nodParent.Nodes.AddOrInsert(objNode, intIndex);
+                    nodParent.Expand();
+                }, token: token).ConfigureAwait(false);
+                if (blnSingleAdd)
+                    await treCyberware.DoThreadSafeAsync(x => x.SelectedNode = objNode, token: token)
+                        .ConfigureAwait(false);
             }
         }
 
@@ -13362,6 +13769,7 @@ namespace Chummer.Backend.Equipment
             {
                 _lstChildren.EnumerateWithSideEffects().ForEach(x => x.Dispose());
                 _lstGear.EnumerateWithSideEffects().ForEach(x => x.Dispose());
+                _lstDrug.EnumerateWithSideEffects().ForEach(x => x.Dispose());
             }
 
             DisposeSelf();
@@ -13375,6 +13783,7 @@ namespace Chummer.Backend.Equipment
             {
                 _lstChildren.Dispose();
                 _lstGear.Dispose();
+                _lstDrug.Dispose();
                 Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
                 Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
             }
@@ -13390,6 +13799,7 @@ namespace Chummer.Backend.Equipment
             {
                 await _lstChildren.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
                 await _lstGear.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
+                await _lstDrug.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false)).ConfigureAwait(false);
             }
             finally
             {
@@ -13408,6 +13818,7 @@ namespace Chummer.Backend.Equipment
             {
                 await _lstChildren.DisposeAsync().ConfigureAwait(false);
                 await _lstGear.DisposeAsync().ConfigureAwait(false);
+                await _lstDrug.DisposeAsync().ConfigureAwait(false);
                 Utils.StringHashSetPool.Return(ref _lstIncludeInPairBonus);
                 Utils.StringHashSetPool.Return(ref _lstIncludeInWirelessPairBonus);
             }

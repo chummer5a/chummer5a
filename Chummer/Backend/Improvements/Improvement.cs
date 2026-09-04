@@ -358,7 +358,7 @@ namespace Chummer
             DisableDrugGrade,
             DrugDuration,
             DrugDurationMultiplier,
-            DrugPositiveAttributeModifier, // Extra +N on each positive drug attribute modifier (Narco)
+            DrugPositiveAttributeModifier, // Extra +N on each positive drug attribute modifier (Narco). ImprovedName filters by drug category; All/* matches every category.
             Surprise,
             EnableCyberzombie,
             AllowCritterPowerCategory,

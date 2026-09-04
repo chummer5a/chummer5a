@@ -18,6 +18,7 @@
  */
 
 using System.Collections.Generic;
+using Chummer.Backend.Equipment;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Chummer.Tests
@@ -95,17 +96,18 @@ namespace Chummer.Tests
         {
             using (Character objCharacter = new Character())
             {
+                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
                 ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "jazz",
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
                 ImprovementManager.CreateImprovement(
-                    objCharacter, "LOG", Improvement.ImprovementSource.Drug, "jazz",
+                    objCharacter, "LOG", Improvement.ImprovementSource.Drug, objJazz.InternalId,
                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1);
                 ImprovementManager.CreateImprovement(
                     objCharacter, "AGI", Improvement.ImprovementSource.Cyberware, "muscle toner",
                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
                 ImprovementManager.CreateImprovement(
-                    objCharacter, string.Empty, Improvement.ImprovementSource.Bioware, "narco",
+                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
                     Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
 
                 Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
@@ -122,19 +124,93 @@ namespace Chummer.Tests
         {
             using (Character objCharacter = new Character())
             {
+                Drug objKamikaze = AddDrug(objCharacter, "Custom Drugs");
+                Drug objCram = AddDrug(objCharacter, "Custom Drugs");
                 ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "kamikaze",
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objKamikaze.InternalId,
                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
                 ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, "cram",
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objCram.InternalId,
                     Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
                 ImprovementManager.CreateImprovement(
-                    objCharacter, string.Empty, Improvement.ImprovementSource.Bioware, "narco",
+                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
                     Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
 
                 Assert.AreEqual(5, ImprovementManager.AugmentedValueOf(
                     objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
             }
+        }
+
+        [TestMethod]
+        public void ValueCache_DrugPositiveAttributeModifier_EmptyFilter_SkipsBtls()
+        {
+            using (Character objCharacter = new Character())
+            {
+                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
+                Drug objDowner = AddDrug(objCharacter, "BTLs");
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+
+                Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
+                Assert.AreEqual(1, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT"));
+            }
+        }
+
+        [TestMethod]
+        public void ValueCache_DrugPositiveAttributeModifier_BtlFilter_SkipsPhysicalChems()
+        {
+            using (Character objCharacter = new Character())
+            {
+                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
+                Drug objDowner = AddDrug(objCharacter, "BTLs");
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
+                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
+                ImprovementManager.CreateImprovement(
+                    objCharacter, "BTLs", Improvement.ImprovementSource.Quality, "btl narco",
+                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+
+                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
+                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT"));
+            }
+        }
+
+        [TestMethod]
+        public void PositiveAttributeModifierAppliesToCategory_MatchesCategory()
+        {
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory(string.Empty, string.Empty));
+            Assert.IsFalse(Drug.PositiveAttributeModifierAppliesToCategory(string.Empty, "BTLs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("Custom Drugs", "Custom Drugs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("Custom Drug", "Custom Drugs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("Custom Drugs", "Custom Drug"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("Drugs", "Drugs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("BTLs", "BTLs"));
+            Assert.IsFalse(Drug.PositiveAttributeModifierAppliesToCategory("BTLs", "Custom Drugs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("All", "BTLs"));
+            Assert.IsTrue(Drug.PositiveAttributeModifierAppliesToCategory("All", "Custom Drugs"));
+            Assert.IsTrue(Drug.IsCustomDrugsCategory("Custom Drug"));
+            Assert.IsTrue(Drug.IsCustomDrugsCategory("Custom Drugs"));
+        }
+
+        private static Drug AddDrug(Character objCharacter, string strCategory)
+        {
+            Drug objDrug = new Drug(objCharacter) { Category = strCategory };
+            objCharacter.Drugs.Add(objDrug);
+            return objDrug;
         }
 
         private static Improvement AddAcademicKarmaCost(Character objCharacter, string strCondition)

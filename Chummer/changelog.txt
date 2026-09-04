@@ -14,13 +14,24 @@ Application:
 - Added a global option to insert new character-tree items alphabetically among their siblings. Manual drag-sort / SortOrder still takes precedence when items have been reordered.
 - Added Sum-To-Ten Improved customdata ruleset to the Full House (Sum-to-Ten Improved, German) custom setting file. Closes #5255
 - Fixed calendar print output omitting week notes (they were gated behind the Print Notes option) and skipping weeks that have no notes. Closes #5280
-- Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier. Optional `category` attribute restricts the bonus to drugs with that category (`Custom Drug`, `Drugs`, `BTLs`, etc.; `All` for every category). Narco uses `Custom Drug` and `Drugs`.
-- Chrome Flesh BTLs can be added from Create Custom Drug (no Foundation required) and activated like drugs. Downer and Upper apply their attribute modifiers; other CF BTLs are slottable with a source-page note.
+- Added `drugpositiveattributemodifier` improvement: extra +N applied to each positive Drug-sourced attribute modifier. Optional `category` attribute restricts the bonus to drugs with that category (`Custom Drugs`, `Drugs`, `BTLs`, etc.; `All` for every category). Narco uses `Custom Drugs` and `Drugs`.
+- Premade catalog drugs (including Chrome Flesh BTLs) can be added from the Drugs tab via Add Drug. Catalog effects live in `drugs.xml` as `<bonus>` nodes (same vocabulary as gear, with a compile step for drug-specific `<attribute>`/`<limit>`). Create Custom Drug is for Foundation/Block/Enhancer recipes only. Closes #5148.
+- Split premade drug catalog and grades into `drugs.xml`; `drugcomponents.xml` now holds only custom-drug design components.
+- Adding a catalog or custom drug creates its improvement group immediately (disabled). Enable the group on the Improvements tab to take the dose.
+- Fixed enabling custom drug improvements that use UniqueName (e.g. Cram's Initiative Dice) incorrectly caching a non-zero ValueOf with an empty used-improvements list.
+- Black Market Pipeline on drugs applies the 10% price discount (`DiscountCost`) instead of marking the dose Stolen. Stolen Gear remains a separate checkbox.
 - Fixed drug-granted qualities remaining on the character after the drug is deactivated or deleted. Qualities from drug components are created when the drug's custom improvement group is enabled and removed when it is disabled. A quality `rating` attribute (e.g. Tank's High Pain Tolerance 3) is one improvement stub that grants that many stacked levels, not separate stubs.
 - Fixed addquality/addqualities improvements leaving the granted quality on the character after the parent item is removed. Standalone `<addquality>` bonus nodes (not wrapped in `<addqualities>`) are now processed the same way. Re-enabling a parent also restores the granted quality's bonuses.
+- Renamed the custom drug gear/improvement category from `Custom Drug` to `Custom Drugs` to match plural category naming. Legacy character saves still load and match Narco correctly.
+- Added a global option to show an improvement group's name in attribute/skill tooltips instead of each nested custom improvement's individual name.
+- Chemical Glands (and Expanded Reservoir) nest catalog and custom drugs as `DrugChildren` via `<allowdrug>` / `<drugcategory>` instead of gear stubs. Chemicals and Custom gear remain on residual `<allowgear>`. Nested drugs are saved under the ware, appear in the Cyberware/Bioware tree, and are not added to the Drugs tab.
+- Gland `Gear Cost` / `Parent Gear Cost` / `or Gear` pricing and availability now include nested drug cost and avail (Restricted Gear swallow applies).
+- Add Drug on Chemical Gland / Expanded Reservoir (Create and Career) opens Select Drug filtered by allowed categories, including Create Custom Drug.
+- Nested gland drugs create a disabled custom improvement group for Improvements-tab activation and Narco, same flow as Drugs-tab doses. The group name includes the parent ware (e.g. `Bliss (Chemical Gland)`) so it does not collide with a Drugs-tab dose of the same drug. Removing the drug or deleting the gland clears those improvements. Characters saved before this change get missing groups created on load.
 
 Bioware:
-- Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drug and Drugs categories, not BTLs. Existing characters with Narco need to Reapply Improvements.
+- Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drugs and Drugs categories (including gland-nested doses), not BTLs. Existing characters with Narco need to Reapply Improvements.
+- Chemical Glands and Expanded Reservoir accept Drugs, Custom Drugs, Toxins, and BTLs through Add Drug; Chemicals/Custom gear still use Add Gear.
 
 Vehicles:
 - Vehicle mods in the Vehicles tree can now be grouped under collapsible category folders (Body, Powertrain, Protection, etc.), matching the issue request for clearer mod organization. The data category "All" is shown as General. Toggleable in Global Options (on by default). Closes #5018.
@@ -98,6 +109,16 @@ Changed/New Strings:
 - Checkbox_Options_AlphabetizeTreeNodesOnInsert
 - Checkbox_Options_NestWeaponMountsUnderWeaponsCategory
 - String_VehicleModCategory_General
+- Menu_AddDrug
+- Message_CyberwareDrug
+- MessageTitle_CyberwareDrug
+- String_ExpensePurchaseCyberwareDrug
+- Button_AddDrug
+- Node_BTLs
+- Message_CustomDrug_CannotMixBtl
+- MessageTitle_CustomDrug_CannotMixBtl
+- Message_DuplicateBtlWarning
+- Checkbox_Options_UseImprovementGroupNameInTooltips
 
 Build 226
 Application Changes:

@@ -25,22 +25,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Xml;
 using Chummer.Backend.Equipment;
-using NLog;
 
 namespace Chummer
 {
     public partial class CreateCustomDrug : Form, IHasCharacterObject
     {
-        private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
-        private static Logger Log => s_ObjLogger.Value;
         private readonly Dictionary<string, DrugComponent> _dicDrugComponents;
         private readonly List<DrugNodeData> _lstSelectedDrugComponents;
         private List<ListItem> _lstGrade;
         private readonly Character _objCharacter;
         private Drug _objDrug;
         private readonly XmlDocument _objXmlDocument;
-        private double _dblCostMultiplier;
-        private int _intAddictionThreshold;
 
         public Character CharacterObject => _objCharacter;
 
@@ -52,7 +47,7 @@ namespace Chummer
             this.UpdateLightDarkMode();
             this.TranslateWinForm();
             this.UpdateParentForToolTipControls();
-            _objXmlDocument = objCharacter.LoadData("drugcomponents.xml");
+            _objXmlDocument = objCharacter.LoadData(DrugsData.ComponentsFileName);
             XmlNodeList xmlComponentsNodeList = _objXmlDocument.SelectNodes("chummer/drugcomponents/drugcomponent");
             _dicDrugComponents = new Dictionary<string, DrugComponent>(xmlComponentsNodeList?.Count ?? 0);
             if (xmlComponentsNodeList?.Count > 0)
@@ -61,6 +56,8 @@ namespace Chummer
                 {
                     DrugComponent objDrugComponent = new DrugComponent(_objCharacter);
                     objDrugComponent.Load(objXmlComponent);
+                    if (string.Equals(objDrugComponent.Category, "BTLs", StringComparison.OrdinalIgnoreCase))
+                        continue;
                     _dicDrugComponents[objDrugComponent.Name] = objDrugComponent;
                 }
             }
@@ -75,12 +72,9 @@ namespace Chummer
             foreach (KeyValuePair<string, DrugComponent> objItem in _dicDrugComponents)
             {
                 string strCategory = objItem.Value.Category;
-                TreeNode nodCategoryNode = await treAvailableComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory)).ConfigureAwait(false);
+                TreeNode nodCategoryNode = await GetOrCreateCategoryNode(treAvailableComponents, strCategory).ConfigureAwait(false);
                 if (nodCategoryNode == null)
-                {
-                    Log.Warn("Unknown category " + strCategory + " in component " + objItem.Key);
-                    return;
-                }
+                    continue;
 
                 string strName = await objItem.Value.GetCurrentDisplayNameShortAsync().ConfigureAwait(false);
                 TreeNode objNode = await treAvailableComponents.DoThreadSafeFuncAsync(() => nodCategoryNode.Nodes.Add(strName)).ConfigureAwait(false);
@@ -128,7 +122,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             Drug objNewDrug = new Drug(_objCharacter)
             {
-                Category = "Custom Drug"
+                Category = "Custom Drugs"
             };
             await objNewDrug.SetNameAsync(await txtDrugName.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false), token).ConfigureAwait(false);
             if (_objCharacter != null)
@@ -155,7 +149,6 @@ namespace Chummer
         private async Task AcceptForm(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            // Make sure the suite and file name fields are populated.
             if (string.IsNullOrEmpty(txtDrugName.Text))
             {
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_CustomDrug_Name", token: token).ConfigureAwait(false), await LanguageManager.GetStringAsync("MessageTitle_CustomDrug_Name", token: token).ConfigureAwait(false), MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
@@ -185,14 +178,10 @@ namespace Chummer
             }
 
             string strCategory = objNodeData.DrugComponent.Category;
-            TreeNode nodCategoryNode = await treChosenComponents.DoThreadSafeFuncAsync(x => x.FindNode("Node_" + strCategory), token).ConfigureAwait(false);
+            TreeNode nodCategoryNode = await GetOrCreateCategoryNode(treChosenComponents, strCategory, token).ConfigureAwait(false);
             if (nodCategoryNode == null)
-            {
-                Log.Warn("Unknown category " + strCategory + " in component " + objNodeData.DrugComponent.Name);
                 return;
-            }
 
-            //prevent adding same component multiple times.
             if (_lstSelectedDrugComponents.Count(c => c.DrugComponent.Name == objNodeData.DrugComponent.Name) >=
                 objNodeData.DrugComponent.Limit && objNodeData.DrugComponent.Limit != 0)
             {
@@ -202,7 +191,6 @@ namespace Chummer
                 return;
             }
 
-            //drug can have only one foundation
             if (objNodeData.DrugComponent.Category == "Foundation" && _lstSelectedDrugComponents.Exists(c => c.DrugComponent.Category == "Foundation"))
             {
                 await Program.ShowScrollableMessageBoxAsync(this, await LanguageManager.GetStringAsync("Message_DuplicateDrugFoundationWarning", token: token).ConfigureAwait(false), token: token).ConfigureAwait(false);
@@ -210,7 +198,6 @@ namespace Chummer
             }
 
             string strSpaceString = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            //restriction for maximum level of block (CF 191)
             if (objNodeData.Level + 1 > 2)
             {
                 string strColonString = await LanguageManager.GetStringAsync("String_Colon", token: token).ConfigureAwait(false);
@@ -241,22 +228,44 @@ namespace Chummer
                 }
             }
 
-            string strNodeText = await objNodeData.DrugComponent.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
-            if (objNodeData.DrugComponent.Level <= 0 && objNodeData.DrugComponent.DrugEffects.Count > 1)
-                strNodeText += strSpaceString + "(" + await LanguageManager.GetStringAsync("String_Level", token: token).ConfigureAwait(false) + strSpaceString + (objNodeData.Level + 1).ToString(GlobalSettings.CultureInfo) + ")";
+            DrugComponent objClone = objNodeData.DrugComponent.Clone();
+            objClone.Level = objNodeData.Level;
+            DrugNodeData objChosenData = new DrugNodeData(objClone, objNodeData.Level);
+            string strNodeText = await objClone.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
             await treChosenComponents.DoThreadSafeAsync(() =>
             {
                 TreeNode objNewNode = nodCategoryNode.Nodes.Add(strNodeText);
-                objNewNode.Tag = objNodeData;
+                objNewNode.Tag = objChosenData;
                 objNewNode.EnsureVisible();
             }, token).ConfigureAwait(false);
-            _lstSelectedDrugComponents.Add(objNodeData);
+            _lstSelectedDrugComponents.Add(objChosenData);
             await UpdateCustomDrugStats(token).ConfigureAwait(false);
             string strDescription = await _objDrug.GenerateDescriptionAsync(0, token: token).ConfigureAwait(false);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription, token).ConfigureAwait(false);
         }
 
         public Drug CustomDrug => _objDrug;
+
+        private static async Task<TreeNode> GetOrCreateCategoryNode(TreeView treComponents, string strCategory,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            string strTag = "Node_" + strCategory;
+            TreeNode nodCategoryNode = await treComponents
+                .DoThreadSafeFuncAsync(x => x.FindNode(strTag), token).ConfigureAwait(false);
+            if (nodCategoryNode != null)
+                return nodCategoryNode;
+            string strText = await LanguageManager.GetStringAsync(strTag, false, token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strText))
+                strText = strCategory;
+            return await treComponents.DoThreadSafeFuncAsync(() =>
+            {
+                TreeNode objNew = treComponents.Nodes.Add(strText);
+                objNew.Name = strTag;
+                objNew.Tag = strTag;
+                return objNew;
+            }, token).ConfigureAwait(false);
+        }
 
         private async void treAvailableComponents_AfterSelect(object sender, TreeViewEventArgs e)
         {
@@ -323,17 +332,6 @@ namespace Chummer
             if (cboGrade.SelectedValue == null)
                 return;
 
-            // Update the Essence and Cost multipliers based on the Grade that has been selected.
-            // Retrieve the information for the selected Grade.
-            XmlNode objXmlGrade = _objXmlDocument.TryGetNodeByNameOrId("/chummer/grades/grade",
-                                                                       await cboGrade
-                                                                             .DoThreadSafeFuncAsync(
-                                                                                 x => x.SelectedValue.ToString())
-                                                                             .ConfigureAwait(false));
-            if (!objXmlGrade.TryGetDoubleFieldQuickly("cost", ref _dblCostMultiplier))
-                _dblCostMultiplier = 1.0;
-            if (!objXmlGrade.TryGetInt32FieldQuickly("addictionthreshold", ref _intAddictionThreshold))
-                _intAddictionThreshold = 0;
             await UpdateCustomDrugStats().ConfigureAwait(false);
             string strDescription = await _objDrug.GenerateDescriptionAsync(0).ConfigureAwait(false);
             await lblDrugDescription.DoThreadSafeAsync(x => x.Text = strDescription).ConfigureAwait(false);

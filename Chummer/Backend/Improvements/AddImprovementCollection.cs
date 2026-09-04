@@ -579,7 +579,8 @@ namespace Chummer
             if (bonusNode == null)
                 throw new ArgumentNullException(nameof(bonusNode));
             decimal decBonus = ImprovementManager.ValueToDec(_objCharacter, bonusNode.InnerTextViaPool(), _intRating);
-            CreateImprovement(string.Empty, _objImprovementSource, SourceName,
+            string strCategory = bonusNode.Attributes?["category"]?.InnerTextViaPool() ?? string.Empty;
+            CreateImprovement(strCategory, _objImprovementSource, SourceName,
                 Improvement.ImprovementType.DrugPositiveAttributeModifier, _strUnique, decBonus, 1, 0, 0, decBonus);
         }
 

@@ -279,6 +279,7 @@ namespace Chummer
         private static bool _blnGroupVehicleModsByCategory = true;
         private static bool _blnAlphabetizeTreeNodesOnInsert;
         private static bool _blnNestWeaponMountsUnderWeaponsCategory;
+        private static bool _blnUseImprovementGroupNameInTooltips;
         private static bool _blnAllowSkillDiceRolling;
         private static bool _blnPrintExpenses;
         private static bool _blnPrintFreeExpenses = true;
@@ -597,6 +598,7 @@ namespace Chummer
             LoadBoolFromRegistry(ref _blnGroupVehicleModsByCategory, "groupvehiclemodsbycategory");
             LoadBoolFromRegistry(ref _blnAlphabetizeTreeNodesOnInsert, "alphabetizetreenodesoninsert");
             LoadBoolFromRegistry(ref _blnNestWeaponMountsUnderWeaponsCategory, "nestweaponmountsunderweaponscategory");
+            LoadBoolFromRegistry(ref _blnUseImprovementGroupNameInTooltips, "useimprovementgroupnameintooltips");
             // Whether dice rolling is allowed for Skills.
             LoadBoolFromRegistry(ref _blnAllowSkillDiceRolling, "allowskilldicerolling");
 
@@ -942,6 +944,7 @@ namespace Chummer
                 objRegistry.SetValue("groupvehiclemodsbycategory", GroupVehicleModsByCategory.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("alphabetizetreenodesoninsert", AlphabetizeTreeNodesOnInsert.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("nestweaponmountsunderweaponscategory", NestWeaponMountsUnderWeaponsCategory.ToString(InvariantCultureInfo));
+                objRegistry.SetValue("useimprovementgroupnameintooltips", UseImprovementGroupNameInTooltips.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("allowskilldicerolling", AllowSkillDiceRolling.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("pluginsenabled", PluginsEnabled.ToString(InvariantCultureInfo));
                 objRegistry.SetValue("alloweastereggs", AllowEasterEggs.ToString(InvariantCultureInfo));
@@ -1186,6 +1189,15 @@ namespace Chummer
         {
             get => _blnNestWeaponMountsUnderWeaponsCategory;
             set => _blnNestWeaponMountsUnderWeaponsCategory = value;
+        }
+
+        /// <summary>
+        /// Whether custom improvements that belong to a group show the group name in tooltips instead of the individual custom name.
+        /// </summary>
+        public static bool UseImprovementGroupNameInTooltips
+        {
+            get => _blnUseImprovementGroupNameInTooltips;
+            set => _blnUseImprovementGroupNameInTooltips = value;
         }
 
         public static NumericUpDownEx.InterceptMouseWheelMode InterceptMode => AllowHoverIncrement

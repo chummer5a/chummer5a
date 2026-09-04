@@ -224,6 +224,45 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Resolves the selected cyberware/bioware that accepts nested drugs via <see cref="Cyberware.AllowDrug"/>.
+        /// </summary>
+        /// <param name="objTree">Tree to read the current selection from.</param>
+        /// <param name="strSelectMessageKey">Localization key for the selection-required message body.</param>
+        /// <param name="strSelectTitleKey">Localization key for the selection-required message title.</param>
+        /// <param name="strAllowDrugMessageKey">Localization key when selected cyberware cannot host drugs.</param>
+        /// <param name="strAllowDrugTitleKey">Localization key for the cannot-host-drug title.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        protected async Task<Cyberware> TryGetSelectedCyberwareAllowingDrugFromTreeAsync(TreeView objTree,
+                                                                                           string strSelectMessageKey,
+                                                                                           string strSelectTitleKey,
+                                                                                           string strAllowDrugMessageKey,
+                                                                                           string strAllowDrugTitleKey,
+                                                                                           CancellationToken token = default)
+        {
+            if (!(await objTree.DoThreadSafeFuncAsync(x => x.SelectedNode?.Tag, token).ConfigureAwait(false) is Cyberware objCyberware))
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync(strSelectMessageKey, token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync(strSelectTitleKey, token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return null;
+            }
+
+            if (objCyberware.AllowDrug == null)
+            {
+                await Program.ShowScrollableMessageBoxAsync(
+                    this,
+                    await LanguageManager.GetStringAsync(strAllowDrugMessageKey, token: token).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync(strAllowDrugTitleKey, token: token).ConfigureAwait(false),
+                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                return null;
+            }
+
+            return objCyberware;
+        }
+
+        /// <summary>
         /// Resolves the vehicle root node associated with the current vehicle-tree selection and returns its
         /// <see cref="Vehicle"/> object, or shows a localized selection prompt if none is available.
         /// </summary>
@@ -1269,6 +1308,134 @@ namespace Chummer
 
                     await objCyberware.GearChildren.AddAsync(objNewGear, token).ConfigureAwait(false);
                     return frmPickGear.MyForm.AddAgain;
+                }
+            }
+            finally
+            {
+                await objLocker.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Opens SelectDrug filtered by the cyberware's allowdrug categories and nests the result under DrugChildren.
+        /// Does not add the drug to Character.Drugs. Creates a distinct disabled improvement group for the nested dose.
+        /// </summary>
+        /// <param name="objCyberware">Parent ware that hosts the drug.</param>
+        /// <param name="blnChargeCost">Whether to deduct nuyen in career mode.</param>
+        /// <param name="strExpenseString">Localized expense prefix used when charging cost.</param>
+        /// <param name="eUndoType">Undo entry type to create for charged purchases.</param>
+        /// <param name="token">Cancellation token for UI and data operations.</param>
+        /// <returns>True when the picker requests Add Again.</returns>
+        protected async Task<bool> AddDrugToCyberwareAsync(Cyberware objCyberware,
+                                                            bool blnChargeCost,
+                                                            string strExpenseString,
+                                                            NuyenExpenseType eUndoType,
+                                                            CancellationToken token = default)
+        {
+            if (objCyberware == null)
+                throw new ArgumentNullException(nameof(objCyberware));
+
+            string strCategories = string.Empty;
+            using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool, out StringBuilder sbdCategories))
+            {
+                using (XmlNodeList xmlDrugCategoryList = objCyberware.AllowDrug?.SelectNodes("drugcategory"))
+                {
+                    if (xmlDrugCategoryList != null)
+                    {
+                        foreach (XmlNode objXmlCategory in xmlDrugCategoryList)
+                            sbdCategories.Append(objXmlCategory.InnerTextViaPool(token), ',');
+                    }
+                }
+
+                if (sbdCategories.Length > 0)
+                {
+                    --sbdCategories.Length;
+                    strCategories = sbdCategories.ToString();
+                }
+            }
+
+            IAsyncDisposable objLocker = await CharacterObject.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+            try
+            {
+                token.ThrowIfCancellationRequested();
+                using (ThreadSafeForm<SelectDrug> frmPickDrug
+                       = await ThreadSafeForm<SelectDrug>.GetAsync(
+                           () => new SelectDrug(CharacterObject, strCategories), token).ConfigureAwait(false))
+                {
+                    if (await frmPickDrug.ShowDialogSafeAsync(this, token).ConfigureAwait(false) == DialogResult.Cancel)
+                        return false;
+
+                    SelectDrug frmDrug = frmPickDrug.MyForm;
+                    Drug objDrug = frmDrug.SelectedCustomDrug;
+                    if (objDrug == null)
+                    {
+                        if (string.IsNullOrEmpty(frmDrug.SelectedDrug))
+                            return frmDrug.AddAgain;
+                        objDrug = await Drug.CreateFromCatalogAsync(
+                            CharacterObject, frmDrug.SelectedDrug, frmDrug.SelectedGrade, frmDrug.SelectedRating, token)
+                            .ConfigureAwait(false);
+                        if (objDrug == null)
+                            return frmDrug.AddAgain;
+                        objDrug.DiscountCost = frmDrug.BlackMarketDiscount;
+                    }
+
+                    try
+                    {
+                        if (blnChargeCost && !frmDrug.FreeCost)
+                        {
+                            decimal decCost = await objDrug.GetTotalCostAsync(token).ConfigureAwait(false);
+                            if (frmDrug.Markup != 0)
+                                decCost *= 1 + frmDrug.Markup / 100.0m;
+
+                            char chrAvail = (await objDrug.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+                            switch (chrAvail)
+                            {
+                                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                                    break;
+                                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                                    break;
+                            }
+
+                            if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                            {
+                                await objDrug.DisposeAsync().ConfigureAwait(false);
+                                await Program.ShowScrollableMessageBoxAsync(
+                                    this,
+                                    await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false),
+                                    await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                                        .ConfigureAwait(false),
+                                    MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                                return frmDrug.AddAgain;
+                            }
+
+                            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+                            objExpense.Create(decCost * -1,
+                                strExpenseString + await LanguageManager.GetStringAsync("String_Space", token: token)
+                                    .ConfigureAwait(false)
+                                + await objDrug.GetCurrentDisplayNameAsync(token).ConfigureAwait(false),
+                                ExpenseType.Nuyen, DateTime.Now);
+                            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token)
+                                .ConfigureAwait(false);
+                            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+
+                            ExpenseUndo objUndo = new ExpenseUndo();
+                            objUndo.CreateNuyen(eUndoType, objDrug.InternalId, 1);
+                            objExpense.Undo = objUndo;
+                        }
+
+                        await objCyberware.DrugChildren.AddAsync(objDrug, token).ConfigureAwait(false);
+                        await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                    }
+                    catch
+                    {
+                        await objDrug.DisposeAsync().ConfigureAwait(false);
+                        throw;
+                    }
+
+                    return frmDrug.AddAgain;
                 }
             }
             finally
@@ -5668,6 +5835,175 @@ namespace Chummer
             finally
             {
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
+            }
+        }
+
+        /// <summary>
+        /// Opens the premade drug selection dialog and adds the chosen catalog drug to the character.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected async Task AddPremadeDrugAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (ThreadSafeForm<SelectDrug> frmPickDrug = await ThreadSafeForm<SelectDrug>.GetAsync(
+                       () => new SelectDrug(CharacterObject), token).ConfigureAwait(false))
+            {
+                do
+                {
+                    if (await frmPickDrug.ShowDialogSafeAsync(this, token).ConfigureAwait(false) != DialogResult.OK)
+                        return;
+
+                    SelectDrug frmDrug = frmPickDrug.MyForm;
+                    Drug objDrug = await Drug.CreateFromCatalogAsync(
+                        CharacterObject, frmDrug.SelectedDrug, frmDrug.SelectedGrade, frmDrug.SelectedRating, token)
+                        .ConfigureAwait(false);
+                    if (objDrug == null)
+                        return;
+
+                    objDrug.DiscountCost = frmDrug.BlackMarketDiscount;
+                    if (!await AddDrugToCharacterAsync(objDrug, frmDrug.Markup, frmDrug.FreeCost, token)
+                            .ConfigureAwait(false)
+                        && !frmPickDrug.MyForm.AddAgain)
+                    {
+                        return;
+                    }
+                } while (frmPickDrug.MyForm.AddAgain);
+            }
+        }
+
+        /// <summary>
+        /// Adds a drug dose to the character and creates its disabled improvement group.
+        /// In career mode, deducts nuyen unless the purchase is marked free.
+        /// </summary>
+        /// <param name="objDrug">Drug to add. Disposed if adding fails or the character cannot afford it.</param>
+        /// <param name="decMarkup">Career-mode street markup percentage from the picker.</param>
+        /// <param name="blnFreeCost">Whether the purchase is free (no nuyen deducted).</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>False when career mode cannot afford the drug; otherwise true.</returns>
+        protected async Task<bool> AddDrugToCharacterAsync(Drug objDrug, decimal decMarkup = 0, bool blnFreeCost = false,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDrug == null)
+                throw new ArgumentNullException(nameof(objDrug));
+
+            bool blnCareer = await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false);
+            decimal decCost = 0;
+            if (blnCareer && !blnFreeCost)
+            {
+                decCost = await GetCareerDrugPurchaseCostAsync(objDrug, decMarkup, token).ConfigureAwait(false);
+                if (decCost > await CharacterObject.GetNuyenAsync(token).ConfigureAwait(false))
+                {
+                    await Program.ShowScrollableMessageBoxAsync(
+                        this,
+                        await LanguageManager.GetStringAsync("Message_NotEnoughNuyen", token: token)
+                            .ConfigureAwait(false),
+                        await LanguageManager.GetStringAsync("MessageTitle_NotEnoughNuyen", token: token)
+                            .ConfigureAwait(false),
+                        MessageBoxButtons.OK, MessageBoxIcon.Information, token: token).ConfigureAwait(false);
+                    await objDrug.DisposeAsync().ConfigureAwait(false);
+                    return false;
+                }
+            }
+
+            try
+            {
+                await CharacterObject.Drugs.AddAsync(objDrug, token).ConfigureAwait(false);
+            }
+            catch
+            {
+                await objDrug.DisposeAsync().ConfigureAwait(false);
+                throw;
+            }
+
+            await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+
+            if (blnCareer && !blnFreeCost)
+            {
+                await CreateCareerDrugPurchaseExpenseAsync(objDrug, decCost, objDrug.Quantity, token)
+                    .ConfigureAwait(false);
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Career-mode street cost of a drug after markup and restricted/forbidden multipliers.
+        /// Black Market Pipeline is already included in <see cref="Drug.Cost"/>.
+        /// </summary>
+        /// <param name="objDrug">Drug being purchased.</param>
+        /// <param name="decMarkup">Street markup percentage.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The nuyen to deduct.</returns>
+        protected async Task<decimal> GetCareerDrugPurchaseCostAsync(Drug objDrug, decimal decMarkup,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDrug == null)
+                throw new ArgumentNullException(nameof(objDrug));
+
+            decimal decCost = await objDrug.GetCostAsync(token).ConfigureAwait(false);
+            if (decMarkup != 0)
+                decCost *= 1 + decMarkup / 100.0m;
+
+            char chrAvail = (await objDrug.TotalAvailTupleAsync(token: token).ConfigureAwait(false)).Suffix;
+            switch (chrAvail)
+            {
+                case 'R' when CharacterObjectSettings.MultiplyRestrictedCost:
+                    decCost *= CharacterObjectSettings.RestrictedCostMultiplier;
+                    break;
+                case 'F' when CharacterObjectSettings.MultiplyForbiddenCost:
+                    decCost *= CharacterObjectSettings.ForbiddenCostMultiplier;
+                    break;
+            }
+
+            return decCost;
+        }
+
+        /// <summary>
+        /// Deducts nuyen and writes an undoable expense for a career drug purchase.
+        /// </summary>
+        /// <param name="objDrug">Drug that was purchased.</param>
+        /// <param name="decCost">Nuyen deducted.</param>
+        /// <param name="decQuantity">Dose count recorded on the undo entry.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        protected async Task CreateCareerDrugPurchaseExpenseAsync(Drug objDrug, decimal decCost, decimal decQuantity,
+            CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objDrug == null)
+                throw new ArgumentNullException(nameof(objDrug));
+
+            ExpenseLogEntry objExpense = new ExpenseLogEntry(CharacterObject);
+            objExpense.Create(
+                decCost * -1,
+                await LanguageManager.GetStringAsync("String_ExpensePurchaseDrug", token: token).ConfigureAwait(false)
+                + await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false)
+                + await objDrug.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false),
+                ExpenseType.Nuyen,
+                DateTime.Now);
+            await CharacterObject.ExpenseEntries.AddWithSortAsync(objExpense, token: token).ConfigureAwait(false);
+            await CharacterObject.ModifyNuyenAsync(-decCost, token).ConfigureAwait(false);
+            ExpenseUndo objUndo = new ExpenseUndo();
+            objUndo.CreateNuyen(NuyenExpenseType.AddDrug, objDrug.InternalId, decQuantity);
+            objExpense.Undo = objUndo;
+            await MakeDirtyWithCharacterUpdate(token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Opens the premade drug selection dialog when the Add Drug button is clicked.
+        /// </summary>
+        /// <param name="sender">Event sender.</param>
+        /// <param name="e">Event arguments.</param>
+        protected async void btnAddDrug_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                await AddPremadeDrugAsync(GenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                // swallow this
             }
         }
 

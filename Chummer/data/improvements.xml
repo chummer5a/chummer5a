@@ -910,7 +910,32 @@
       <xml><![CDATA[{val}]]></xml>
       <page>Adjusts the availability of all of the character's items by the value entered. Positive numbers increase availability. Negative numbers reduce availability.</page>
     </improvement>
+    <improvement>
+      <name>Drug Positive Attribute Modifier</name>
+      <id>drugpositiveattributemodifier</id>
+      <internal>drugpositiveattributemodifier</internal>
+      <fields>
+        <field>val</field>
+        <field xml="improvements.xml" xpath="/chummer/drugpositiveattributecategories/category">SelectXPath</field>
+      </fields>
+      <xml><![CDATA[<drugpositiveattributemodifier category="{select}">{val}</drugpositiveattributemodifier>]]></xml>
+      <page>Increases each positive attribute modifier from an active drug whose category matches the selection by the value entered. All matches every category.</page>
+    </improvement>
   </improvements>
+  <drugpositiveattributecategories>
+    <category>
+      <name>Custom Drugs</name>
+    </category>
+    <category>
+      <name>Drugs</name>
+    </category>
+    <category>
+      <name>BTLs</name>
+    </category>
+    <category>
+      <name>All</name>
+    </category>
+  </drugpositiveattributecategories>
   <movementcategories>
     <category>
       <name>Ground</name>

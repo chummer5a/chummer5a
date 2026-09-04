@@ -33,7 +33,7 @@ using NLog;
 
 namespace Chummer.Backend.Equipment
 {
-    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
+    public sealed class Drug : IHasName, IHasSourceId, IHasXmlDataNode, ICanSort, IHasStolenProperty, ICanBlackMarketDiscount, ICanRemove, IDisposable, IAsyncDisposable, IHasCharacterObject, IHasNotes, IHasInternalId
     {
         private static readonly Lazy<Logger> s_ObjLogger = new Lazy<Logger>(LogManager.GetCurrentClassLogger);
         private static Logger Log => s_ObjLogger.Value;
@@ -58,6 +58,7 @@ namespace Chummer.Backend.Equipment
         private int _intSortOrder;
         private readonly Character _objCharacter;
         private bool _blnStolen;
+        private bool _blnDiscountCost;
         private bool _blnCachedAttributeFlag;
         private XmlNode _objCachedMyXmlNode;
         private string _strCachedXmlNodeLanguage;
@@ -66,6 +67,7 @@ namespace Chummer.Backend.Equipment
         private int _intDurationDice;
         private string _strNotes = string.Empty;
         private Color _colNotes = ColorManager.HasNotesColor;
+        private Cyberware _objParentCyberware;
 
         #region Constructor, Create, Save, Load, and Print Methods
 
@@ -98,6 +100,7 @@ namespace Chummer.Backend.Equipment
             _objCachedMyXmlNode = null;
             _objCachedMyXPathNode = null;
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            NormalizeCustomDrugsCategory(ref _strCategory);
             if (objXmlData["sourceid"] == null || !objXmlData.TryGetField("sourceid", Guid.TryParse, out _guiSourceID))
             {
                 this.GetNodeXPath()?.TryGetField("id", Guid.TryParse, out _guiSourceID);
@@ -110,6 +113,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objXmlData.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objXmlData.TryGetStringFieldQuickly("duration", ref _strDuration);
             objXmlData.TryGetInt32FieldQuickly("durationdice", ref _intDurationDice);
             DurationTimescale = CommonFunctions.ConvertStringToTimescale(objXmlData["timescale"]?.InnerTextViaPool());
@@ -148,6 +152,7 @@ namespace Chummer.Backend.Equipment
                 (blnSync ? this.GetNodeXPath(token) : await this.GetNodeXPathAsync(token).ConfigureAwait(false))?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            NormalizeCustomDrugsCategory(ref _strCategory);
             Grade = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
                 ? Grade.ConvertToCyberwareGrade(objXmlData["grade"]?.InnerTextViaPool(token), Improvement.ImprovementSource.Drug, _objCharacter, token)
@@ -186,6 +191,7 @@ namespace Chummer.Backend.Equipment
             objXmlData.TryGetStringFieldQuickly("grade", ref _strGrade);
             objXmlData.TryGetInt32FieldQuickly("sortorder", ref _intSortOrder);
             objXmlData.TryGetBoolFieldQuickly("stolen", ref _blnStolen);
+            objXmlData.TryGetBoolFieldQuickly("discountedcost", ref _blnDiscountCost);
             objXmlData.TryGetField("source", out _strSource);
             objXmlData.TryGetField("page", out _strPage);
             objXmlData.TryGetMultiLineStringFieldQuickly("notes", ref _strNotes);
@@ -193,6 +199,74 @@ namespace Chummer.Backend.Equipment
             string sNotesColor = ColorTranslator.ToHtml(ColorManager.HasNotesColor);
             objXmlData.TryGetStringFieldQuickly("notesColor", ref sNotesColor);
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
+        }
+
+        /// <summary>
+        /// Creates a character drug from a premade catalog entry in drugs.xml.
+        /// Catalog &lt;bonus&gt; is the source of effects. A matching drugcomponent is attached only when the catalog entry has no bonus.
+        /// </summary>
+        /// <param name="objCharacter">Character receiving the drug.</param>
+        /// <param name="strCatalogId">Catalog id from <c>/chummer/drugs/drug</c>.</param>
+        /// <param name="objGrade">Selected drug grade.</param>
+        /// <param name="intRating">Selected rating when applicable.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The new drug, or null when the catalog id is unknown.</returns>
+        public static async Task<Drug> CreateFromCatalogAsync(Character objCharacter, string strCatalogId,
+            Grade objGrade, int intRating = 0, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objCharacter == null)
+                throw new ArgumentNullException(nameof(objCharacter));
+            if (string.IsNullOrEmpty(strCatalogId))
+                throw new ArgumentException("Catalog id is required.", nameof(strCatalogId));
+
+            XmlNode objCatalogNode =
+                await DrugsData.GetCatalogDrugNodeByNameOrIdAsync(objCharacter, strCatalogId, token)
+                    .ConfigureAwait(false);
+            if (objCatalogNode == null)
+                return null;
+
+            Drug objDrug = new Drug(objCharacter);
+            objCatalogNode.TryGetStringFieldQuickly("name", ref objDrug._strName);
+            objCatalogNode.TryGetStringFieldQuickly("category", ref objDrug._strCategory);
+            NormalizeCustomDrugsCategory(ref objDrug._strCategory);
+            if (!objCatalogNode.TryGetStringFieldQuickly("availability", ref objDrug._strAvailability))
+                objCatalogNode.TryGetStringFieldQuickly("avail", ref objDrug._strAvailability);
+            objCatalogNode.TryGetDecFieldQuickly("cost", ref objDrug._decCost);
+            objCatalogNode.TryGetInt32FieldQuickly("rating", ref objDrug._intAddictionRating);
+            objCatalogNode.TryGetInt32FieldQuickly("threshold", ref objDrug._intAddictionThreshold);
+            objCatalogNode.TryGetField("source", out objDrug._strSource);
+            objCatalogNode.TryGetField("page", out objDrug._strPage);
+            if (objCatalogNode.TryGetField("id", Guid.TryParse, out Guid guiCatalogId))
+                objDrug._guiSourceID = guiCatalogId;
+
+            if (objGrade != null)
+                objDrug.Grade = objGrade;
+
+            if (intRating > 0)
+                objDrug._intAddictionRating = intRating;
+
+            objCatalogNode.TryGetStringFieldQuickly("duration", ref objDrug._strDuration);
+            int intCatalogSpeed = 0;
+            if (objCatalogNode.TryGetInt32FieldQuickly("speed", ref intCatalogSpeed))
+                objDrug._intCachedSpeed = intCatalogSpeed;
+
+            if (objDrug._guiSourceID != Guid.Empty)
+            {
+                XmlDocument objComponentDoc =
+                    await objCharacter.LoadDataAsync(DrugsData.ComponentsFileName, token: token).ConfigureAwait(false);
+                XmlNode objComponentNode =
+                    objComponentDoc.TryGetNodeById(DrugsData.ComponentXPath, objDrug._guiSourceID);
+                if (objComponentNode != null && objCatalogNode["bonus"] == null)
+                {
+                    DrugComponent objComponent = new DrugComponent(objCharacter);
+                    await objComponent.LoadAsync(objComponentNode, token).ConfigureAwait(false);
+                    await objDrug.Components.AddAsync(objComponent, token: token).ConfigureAwait(false);
+                }
+            }
+
+            objDrug._decQty = 1;
+            return objDrug;
         }
 
         public void Save(XmlWriter objXmlWriter)
@@ -224,6 +298,7 @@ namespace Chummer.Backend.Equipment
                 objXmlWriter.WriteElementString("grade", Grade.Name);
             objXmlWriter.WriteElementString("sortorder", _intSortOrder.ToString(GlobalSettings.InvariantCultureInfo));
             objXmlWriter.WriteElementString("stolen", _blnStolen.ToString(GlobalSettings.InvariantCultureInfo));
+            objXmlWriter.WriteElementString("discountedcost", _blnDiscountCost.ToString(GlobalSettings.InvariantCultureInfo));
             objXmlWriter.WriteElementString("source", _strSource);
             objXmlWriter.WriteElementString("page", _strPage);
             objXmlWriter.WriteElementString("notes", _strNotes.CleanOfXmlInvalidUnicodeChars());
@@ -519,8 +594,168 @@ namespace Chummer.Backend.Equipment
         public string Category
         {
             get => _strCategory;
-            set => _strCategory = value;
+            set
+            {
+                _strCategory = value;
+                NormalizeCustomDrugsCategory(ref _strCategory);
+            }
         }
+
+        /// <summary>
+        /// Whether <paramref name="strCategory"/> is Custom Drugs, including the legacy singular name.
+        /// </summary>
+        /// <param name="strCategory">Category to test.</param>
+        /// <returns>True if the category is Custom Drugs or the legacy Custom Drug name.</returns>
+        public static bool IsCustomDrugsCategory(string strCategory) =>
+            string.Equals(strCategory, "Custom Drugs", StringComparison.OrdinalIgnoreCase)
+            || string.Equals(strCategory, "Custom Drug", StringComparison.OrdinalIgnoreCase);
+
+        /// <summary>
+        /// Rewrites the legacy singular Custom Drug category to Custom Drugs.
+        /// </summary>
+        /// <param name="strCategory">Category string to normalize in place.</param>
+        private static void NormalizeCustomDrugsCategory(ref string strCategory)
+        {
+            if (string.Equals(strCategory, "Custom Drug", StringComparison.OrdinalIgnoreCase))
+                strCategory = "Custom Drugs";
+        }
+
+        /// <summary>
+        /// Drug category for improvements whose <see cref="Improvement.SourceName"/> is the granting drug's internal id.
+        /// </summary>
+        /// <param name="objCharacter">Character owning the drug.</param>
+        /// <param name="strDrugInternalId">Internal id stored on the drug improvement's <see cref="Improvement.SourceName"/>.</param>
+        /// <param name="dicDrugCategoryByInternalId">Optional lookup built from <see cref="Character.Drugs"/> and nested cyberware drugs.</param>
+        /// <returns>The drug's category, or an empty string if not found.</returns>
+        public static string GetCategoryForDrugSource(Character objCharacter, string strDrugInternalId,
+            IReadOnlyDictionary<string, string> dicDrugCategoryByInternalId = null)
+        {
+            if (string.IsNullOrEmpty(strDrugInternalId))
+                return string.Empty;
+            if (dicDrugCategoryByInternalId != null
+                && dicDrugCategoryByInternalId.TryGetValue(strDrugInternalId, out string strCachedCategory))
+                return strCachedCategory ?? string.Empty;
+            if (objCharacter == null)
+                return string.Empty;
+            Drug objDrug = objCharacter.Drugs.FirstOrDefault(x => x.InternalId == strDrugInternalId);
+            if (objDrug != null)
+                return objDrug.Category ?? string.Empty;
+            return FindNestedDrug(objCharacter, strDrugInternalId)?.Category ?? string.Empty;
+        }
+
+        /// <summary>
+        /// Finds a drug nested under cyberware/bioware <see cref="Cyberware.DrugChildren"/>.
+        /// </summary>
+        /// <param name="objCharacter">Character to search.</param>
+        /// <param name="strDrugInternalId">Internal id of the nested drug.</param>
+        /// <returns>The matching drug, or null if not found.</returns>
+        public static Drug FindNestedDrug(Character objCharacter, string strDrugInternalId)
+        {
+            if (objCharacter == null || string.IsNullOrEmpty(strDrugInternalId))
+                return null;
+            return FindNestedDrug(objCharacter.Cyberware, strDrugInternalId);
+        }
+
+        private static Drug FindNestedDrug(IEnumerable<Cyberware> lstWare, string strDrugInternalId)
+        {
+            foreach (Cyberware objWare in lstWare)
+            {
+                Drug objFound = objWare.DrugChildren.FirstOrDefault(x => x.InternalId == strDrugInternalId);
+                if (objFound != null)
+                    return objFound;
+                objFound = FindNestedDrug(objWare.Children, strDrugInternalId);
+                if (objFound != null)
+                    return objFound;
+            }
+
+            return null;
+        }
+
+        /// <summary>
+        /// Adds categories for all drugs nested under cyberware/bioware into a lookup dictionary.
+        /// </summary>
+        /// <param name="objCharacter">Character whose ware to scan.</param>
+        /// <param name="dicDrugCategoryByInternalId">Dictionary to populate.</param>
+        public static void AddNestedDrugCategoriesToLookup(Character objCharacter,
+            IDictionary<string, string> dicDrugCategoryByInternalId)
+        {
+            if (objCharacter == null || dicDrugCategoryByInternalId == null)
+                return;
+            AddNestedDrugCategoriesToLookup(objCharacter.Cyberware, dicDrugCategoryByInternalId);
+        }
+
+        private static void AddNestedDrugCategoriesToLookup(IEnumerable<Cyberware> lstWare,
+            IDictionary<string, string> dicDrugCategoryByInternalId)
+        {
+            foreach (Cyberware objWare in lstWare)
+            {
+                foreach (Drug objDrug in objWare.DrugChildren)
+                    dicDrugCategoryByInternalId[objDrug.InternalId] = objDrug.Category ?? string.Empty;
+                AddNestedDrugCategoriesToLookup(objWare.Children, dicDrugCategoryByInternalId);
+            }
+        }
+
+        /// <summary>
+        /// Adds categories for all drugs nested under cyberware/bioware into a lookup dictionary.
+        /// </summary>
+        /// <param name="objCharacter">Character whose ware to scan.</param>
+        /// <param name="dicDrugCategoryByInternalId">Dictionary to populate.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task AddNestedDrugCategoriesToLookupAsync(Character objCharacter,
+            IDictionary<string, string> dicDrugCategoryByInternalId, CancellationToken token = default)
+        {
+            if (objCharacter == null || dicDrugCategoryByInternalId == null)
+                return;
+            await AddNestedDrugCategoriesToLookupAsync(
+                await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false),
+                dicDrugCategoryByInternalId, token).ConfigureAwait(false);
+        }
+
+        private static async Task AddNestedDrugCategoriesToLookupAsync(
+            ThreadSafeObservableCollection<Cyberware> lstWare,
+            IDictionary<string, string> dicDrugCategoryByInternalId, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            await lstWare.ForEachAsync(async objWare =>
+            {
+                await (await objWare.GetDrugChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objDrug =>
+                {
+                    dicDrugCategoryByInternalId[objDrug.InternalId] = objDrug.Category ?? string.Empty;
+                }, token).ConfigureAwait(false);
+                await AddNestedDrugCategoriesToLookupAsync(
+                    await objWare.GetChildrenAsync(token).ConfigureAwait(false),
+                    dicDrugCategoryByInternalId, token).ConfigureAwait(false);
+            }, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Whether a <see cref="Improvement.ImprovementType.DrugPositiveAttributeModifier"/> filter applies to a drug category.
+        /// "All" or "*" matches every category. An empty filter matches only drugs with no category. Otherwise the filter must equal the drug category.
+        /// Singular and plural Custom Drug(s) are treated as the same category for legacy saves.
+        /// </summary>
+        /// <param name="strFilter">
+        /// ImprovedName of the DrugPositiveAttributeModifier improvement.
+        /// </param>
+        /// <param name="strDrugCategory">
+        /// Category of the drug that granted the attribute bonus.
+        /// </param>
+        /// <returns>
+        /// True if the modifier should increase positive attribute bonuses from that category.
+        /// </returns>
+        public static bool PositiveAttributeModifierAppliesToCategory(string strFilter, string strDrugCategory)
+        {
+            if (strFilter == "*" || strFilter.Equals("All", StringComparison.OrdinalIgnoreCase))
+                return true;
+            if (string.IsNullOrEmpty(strFilter))
+                return string.IsNullOrEmpty(strDrugCategory);
+            if (string.Equals(strFilter, strDrugCategory, StringComparison.OrdinalIgnoreCase))
+                return true;
+            return IsCustomDrugsCategory(strFilter) && IsCustomDrugsCategory(strDrugCategory);
+        }
+
+        private bool IncludeDefaultDurationAndSpeed =>
+            IsCustomDrugsCategory(Category)
+            || string.Equals(Category, "BTLs", StringComparison.OrdinalIgnoreCase);
 
         private decimal _decCachedCost = decimal.MinValue;
 
@@ -531,9 +766,14 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                return _decCachedCost != decimal.MinValue
-                    ? _decCachedCost
-                    : _decCachedCost = Components.Sum(d => d.ActiveDrugEffect != null, d => d.CostPerLevel);
+                if (_decCachedCost != decimal.MinValue)
+                    return _decCachedCost;
+                decimal decReturn = Components.Count > 0
+                    ? Components.Sum(d => d.ActiveDrugEffect != null, d => d.CostPerLevel)
+                    : _decCost;
+                if (DiscountCost)
+                    decReturn *= 0.9m;
+                return _decCachedCost = decReturn;
             }
         }
 
@@ -543,10 +783,15 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return _decCachedCost != decimal.MinValue
-                    ? _decCachedCost
-                    : _decCachedCost = await Components.SumAsync(d => d.ActiveDrugEffect != null,
-                                            d => d.GetCostPerLevelAsync(token), token).ConfigureAwait(false);
+            if (_decCachedCost != decimal.MinValue)
+                return _decCachedCost;
+            decimal decReturn = Components.Count > 0
+                ? await Components.SumAsync(d => d.ActiveDrugEffect != null,
+                    d => d.GetCostPerLevelAsync(token), token).ConfigureAwait(false)
+                : _decCost;
+            if (DiscountCost)
+                decReturn *= 0.9m;
+            return _decCachedCost = decReturn;
         }
 
         /// <summary>
@@ -577,6 +822,15 @@ namespace Chummer.Backend.Equipment
         {
             get => _decQty;
             set => _decQty = value;
+        }
+
+        /// <summary>
+        /// Cyberware that contains this drug (e.g. a Chemical Gland), if any.
+        /// </summary>
+        public Cyberware ParentCyberware
+        {
+            get => _objParentCyberware;
+            set => _objParentCyberware = value;
         }
 
         /// <summary>
@@ -1291,8 +1545,7 @@ namespace Chummer.Backend.Equipment
         {
             if (decValue <= 0)
                 return decValue;
-            return decValue + ImprovementManager.ValueOf(
-                _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier);
+            return decValue + GetPositiveAttributeModifierBonus();
         }
 
         private async Task<decimal> GetDisplayAttributeModifierAsync(decimal decValue, CancellationToken token)
@@ -1300,9 +1553,36 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (decValue <= 0)
                 return decValue;
-            return decValue + await ImprovementManager.ValueOfAsync(
-                _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier, token: token)
-                .ConfigureAwait(false);
+            return decValue + await GetPositiveAttributeModifierBonusAsync(token).ConfigureAwait(false);
+        }
+
+        private decimal GetPositiveAttributeModifierBonus()
+        {
+            decimal decBonus = 0;
+            foreach (Improvement objBonus in ImprovementManager.GetCachedImprovementListForValueOf(
+                         _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier))
+            {
+                if (!PositiveAttributeModifierAppliesToCategory(objBonus.ImprovedName, Category))
+                    continue;
+                decBonus += (objBonus.Value != 0 ? objBonus.Value : objBonus.Augmented) * objBonus.Rating;
+            }
+            return decBonus;
+        }
+
+        private async Task<decimal> GetPositiveAttributeModifierBonusAsync(CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decBonus = 0;
+            foreach (Improvement objBonus in await ImprovementManager.GetCachedImprovementListForValueOfAsync(
+                         _objCharacter, Improvement.ImprovementType.DrugPositiveAttributeModifier, token: token)
+                         .ConfigureAwait(false))
+            {
+                token.ThrowIfCancellationRequested();
+                if (!PositiveAttributeModifierAppliesToCategory(objBonus.ImprovedName, Category))
+                    continue;
+                decBonus += (objBonus.Value != 0 ? objBonus.Value : objBonus.Augmented) * objBonus.Rating;
+            }
+            return decBonus;
         }
 
         public Color PreferredColor =>
@@ -1332,6 +1612,21 @@ namespace Chummer.Backend.Equipment
         {
             get => _blnStolen;
             set => _blnStolen = value;
+        }
+
+        /// <summary>
+        /// Whether the Drug's cost should be discounted by 10% through the Black Market Pipeline Quality.
+        /// </summary>
+        public bool DiscountCost
+        {
+            get => _blnDiscountCost;
+            set
+            {
+                if (_blnDiscountCost == value)
+                    return;
+                _blnDiscountCost = value;
+                _decCachedCost = decimal.MinValue;
+            }
         }
 
         public Character CharacterObject => _objCharacter;
@@ -1460,11 +1755,11 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in Infos)
                         sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo, strLanguage));
 
-                    if (Category == "Custom Drug" || Duration != 0)
+                    if (IncludeDefaultDurationAndSpeed || Duration != 0)
                         sbdDescription.Append(LanguageManager.GetString("Label_Duration", strLanguage))
                                       .AppendLine(GetDisplayDuration(objCulture, strLanguage));
 
-                    if (Category == "Custom Drug" || Speed != 0)
+                    if (IncludeDefaultDurationAndSpeed || Speed != 0)
                     {
                         sbdDescription.Append(LanguageManager.GetString("Label_Speed"))
                                       .Append(LanguageManager.GetString("String_Colon", strLanguage)).Append(strSpace);
@@ -1614,12 +1909,12 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in await GetInfosAsync(token).ConfigureAwait(false))
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, strLanguage, token: token).ConfigureAwait(false));
 
-                    if (Category == "Custom Drug" || await GetDurationAsync(token).ConfigureAwait(false) != 0)
+                    if (IncludeDefaultDurationAndSpeed || await GetDurationAsync(token).ConfigureAwait(false) != 0)
                         sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", strLanguage, token: token).ConfigureAwait(false))
                                       .AppendLine(await GetDisplayDurationAsync(objCulture, strLanguage, token).ConfigureAwait(false));
 
                     int intSpeed = await GetSpeedAsync(token).ConfigureAwait(false);
-                    if (Category == "Custom Drug" || intSpeed != 0)
+                    if (IncludeDefaultDurationAndSpeed || intSpeed != 0)
                     {
                         sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false))
                                       .Append(await LanguageManager.GetStringAsync("String_Colon", strLanguage, token: token).ConfigureAwait(false)).Append(strSpace);
@@ -1681,194 +1976,220 @@ namespace Chummer.Backend.Equipment
         }
 
         /// <summary>
-        /// Creates the improvements necessary to 'activate' a given drug.
-        /// TODO: I'm really not happy with the lack of extensibility on this.
-        /// TODO: Refactor drug effects to just use XML nodes, which can then be passed to Improvement Manager?
-        /// TODO: Refactor Improvement Manager to automatically collapse improvements of the same type into a single improvement?
+        /// Improvement group name for this dose. Nested gland drugs append the parent ware name so they
+        /// do not share a CustomGroup with a Drugs-tab dose of the same catalog name.
+        /// </summary>
+        /// <returns>The custom improvement group name for this drug instance.</returns>
+        public string GetImprovementGroupName()
+        {
+            if (_objParentCyberware == null)
+                return Name;
+            string strParent = _objParentCyberware.CurrentDisplayNameShort;
+            if (string.IsNullOrEmpty(strParent))
+                strParent = _objParentCyberware.Name;
+            return string.IsNullOrEmpty(strParent) ? Name : Name + " (" + strParent + ")";
+        }
+
+        /// <summary>
+        /// Improvement group name for this dose. Nested gland drugs append the parent ware name so they
+        /// do not share a CustomGroup with a Drugs-tab dose of the same catalog name.
+        /// </summary>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The custom improvement group name for this drug instance.</returns>
+        public async Task<string> GetImprovementGroupNameAsync(CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (_objParentCyberware == null)
+                return Name;
+            string strParent = await _objParentCyberware.GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+            if (string.IsNullOrEmpty(strParent))
+                strParent = _objParentCyberware.Name;
+            return string.IsNullOrEmpty(strParent) ? Name : Name + " (" + strParent + ")";
+        }
+
+        /// <summary>
+        /// Creates disabled improvements for this drug dose (improvement group is enabled when the dose is taken).
         /// </summary>
         public async Task GenerateImprovement(CancellationToken token = default)
         {
             if (await _objCharacter.Improvements.AnyAsync(ig => ig.SourceName == InternalId, token: token)
                     .ConfigureAwait(false))
                 return;
-            await (await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false)).AddAsync(Name, token).ConfigureAwait(false);
+
+            string strGroupName = await GetImprovementGroupNameAsync(token).ConfigureAwait(false);
+            await (await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false))
+                .AddAsync(strGroupName, token).ConfigureAwait(false);
+
+            DrugBonusCompiler.CompileResult objCompileResult =
+                await DrugBonusCompiler.CompileAsync(_objCharacter, this, token).ConfigureAwait(false);
+            if (objCompileResult.BonusNode == null && objCompileResult.QualityNodes.Count == 0)
+                return;
+
+            string strDisplayName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+
+            if (objCompileResult.BonusNode?.HasChildNodes == true
+                && !await ImprovementManager.CreateImprovementsAsync(
+                    _objCharacter,
+                    Improvement.ImprovementSource.Drug,
+                    InternalId,
+                    objCompileResult.BonusNode,
+                    intRating: 1,
+                    strDisplayName,
+                    token: token).ConfigureAwait(false))
+            {
+                return;
+            }
+
+            await AddDrugQualityImprovementsAsync(objCompileResult.QualityNodes, strDisplayName, token)
+                .ConfigureAwait(false);
+            await FinalizeDrugImprovementsAsync(strGroupName, token).ConfigureAwait(false);
+        }
+
+        private async Task AddDrugQualityImprovementsAsync(IReadOnlyList<XmlNode> lstQualities, string strDisplayName,
+            CancellationToken token = default)
+        {
+            if (lstQualities == null || lstQualities.Count == 0)
+                return;
+
             string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
-            string strNamePrefix = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false) + strSpace + "-" +
-                                   strSpace;
-            List<Improvement> lstImprovements = new List<Improvement>(16);
-            foreach (KeyValuePair<string, decimal> kvpAttribute in await GetAttributesAsync(token).ConfigureAwait(false))
+            string strNamePrefix = strDisplayName + strSpace + "-" + strSpace;
+            XmlDocument objXmlDocument =
+                await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
+            List<Improvement> lstImprovements = new List<Improvement>(lstQualities.Count);
+
+            foreach (XmlNode objXmlAddQuality in lstQualities)
             {
-                if (kvpAttribute.Value != 0)
-                {
-                    lstImprovements.Add(new Improvement(_objCharacter)
-                    {
-                        ImproveSource = Improvement.ImprovementSource.Drug,
-                        ImproveType = Improvement.ImprovementType.Attribute,
-                        SourceName = InternalId,
-                        Augmented = kvpAttribute.Value,
-                        ImprovedName = kvpAttribute.Key,
-                        CustomName =
-                        strNamePrefix + await LanguageManager.GetStringAsync("String_Attribute" + kvpAttribute.Key + "Short", token: token).ConfigureAwait(false)
-                                      + strSpace +
-                                      kvpAttribute.Value.ToString("+#,0;-#,0;0", GlobalSettings.CultureInfo)
-                    });
-                }
-            }
+                XmlNode objXmlSelectedQuality =
+                    objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality",
+                        objXmlAddQuality.InnerTextViaPool(token));
+                if (objXmlSelectedQuality == null)
+                    continue;
+                XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
+                string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
 
-            foreach (KeyValuePair<string, int> objLimit in await GetLimitsAsync(token).ConfigureAwait(false))
-            {
-                if (objLimit.Value == 0) continue;
-                Improvement i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    SourceName = InternalId,
-                    CustomName = strNamePrefix + await LanguageManager
-                                                   .GetStringAsync("Node_" + objLimit.Key, token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + objLimit.Value.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
-                };
-                await i.SetValueAsync(objLimit.Value, token).ConfigureAwait(false);
-                switch (objLimit.Key.ToUpperInvariant())
-                {
-                    case "PHYSICAL":
-                        i.ImproveType = Improvement.ImprovementType.PhysicalLimit;
-                        break;
+                string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerTextViaPool(token);
+                int intCount = string.IsNullOrEmpty(strRating)
+                    ? 1
+                    : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, 1, token)
+                        .ConfigureAwait(false);
 
-                    case "MENTAL":
-                        i.ImproveType = Improvement.ImprovementType.MentalLimit;
-                        break;
-
-                    case "SOCIAL":
-                        i.ImproveType = Improvement.ImprovementType.SocialLimit;
-                        break;
+                string strQualityName = objXmlAddQuality.InnerTextViaPool(token);
+                string strQualityLabel =
+                    await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false);
+                if (objXmlAddQuality.Attributes?["forced"]?.InnerTextIsTrueString() != true &&
+                    !await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
+                        strLocalName: strQualityLabel, strIgnoreQuality: Name, token: token).ConfigureAwait(false))
+                {
+                    throw new AbortedException();
                 }
 
-                lstImprovements.Add(i);
-            }
-
-            int intInitiative = await GetInitiativeAsync(token).ConfigureAwait(false);
-            if (intInitiative != 0)
-            {
-                Improvement i = new Improvement(_objCharacter)
+                string strCustomName = strNamePrefix + strQualityLabel + strSpace + strQualityName;
+                if (intCount > 1)
+                    strCustomName += strSpace + intCount.ToString(GlobalSettings.CultureInfo);
+                Improvement objImprovement = new Improvement(_objCharacter)
                 {
+                    ImprovedName = strQualityName,
+                    UniqueName = strQualityName,
+                    Target = strForceValue,
                     ImproveSource = Improvement.ImprovementSource.Drug,
                     SourceName = InternalId,
-                    ImproveType = Improvement.ImprovementType.Initiative,
-                    CustomName = strNamePrefix + await LanguageManager.GetStringAsync("String_AttributeINILong", token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + intInitiative.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
+                    ImproveType = Improvement.ImprovementType.SpecificQuality,
+                    CustomName = strCustomName,
+                    SetupComplete = true
                 };
-                await i.SetValueAsync(intInitiative, token).ConfigureAwait(false);
-                lstImprovements.Add(i);
-            }
-
-            int intInitiativeDice = await GetInitiativeDiceAsync(token).ConfigureAwait(false);
-            if (intInitiativeDice != 0)
-            {
-                Improvement i = new Improvement(_objCharacter)
-                {
-                    ImproveSource = Improvement.ImprovementSource.Drug,
-                    SourceName = InternalId,
-                    ImproveType = Improvement.ImprovementType.InitiativeDice,
-                    CustomName = strNamePrefix + await LanguageManager
-                                                   .GetStringAsync("String_InitiativeDice", token: token)
-                                                   .ConfigureAwait(false)
-                                               + strSpace + intInitiativeDice.ToString("+#,0;-#,0;0",
-                                                   GlobalSettings.CultureInfo)
-                };
-                await i.SetValueAsync(intInitiativeDice, token).ConfigureAwait(false);
-                lstImprovements.Add(i);
-            }
-
-            List<XmlNode> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
-            if (lstQualities.Count > 0)
-            {
-                XmlDocument objXmlDocument =
-                    await _objCharacter.LoadDataAsync("qualities.xml", token: token).ConfigureAwait(false);
-                foreach (XmlNode objXmlAddQuality in lstQualities)
-                {
-                    XmlNode objXmlSelectedQuality =
-                        objXmlDocument.TryGetNodeByNameOrId("/chummer/qualities/quality", objXmlAddQuality.InnerTextViaPool(token));
-                    if (objXmlSelectedQuality == null)
-                        continue;
-                    XPathNavigator xpnSelectedQuality = objXmlSelectedQuality.CreateNavigator();
-                    string strForceValue = objXmlAddQuality.Attributes?["select"]?.InnerTextViaPool(token) ?? string.Empty;
-
-                    string strRating = objXmlAddQuality.Attributes?["rating"]?.InnerTextViaPool(token);
-                    int intCount = string.IsNullOrEmpty(strRating)
-                        ? 1
-                        : await ImprovementManager.ValueToIntAsync(_objCharacter, strRating, 1, token)
-                            .ConfigureAwait(false);
-                    bool blnDoesNotContributeToBP =
-                        !string.Equals(objXmlAddQuality.Attributes?["contributetobp"]?.InnerTextViaPool(token), bool.TrueString,
-                            StringComparison.OrdinalIgnoreCase);
-
-                    for (int i = 0; i < intCount; ++i)
-                    {
-                        // Makes sure we aren't over our limits for this particular quality from this overall source
-                        if (objXmlAddQuality.Attributes?["forced"]?.InnerTextIsTrueString() == true ||
-                            await xpnSelectedQuality.RequirementsMetAsync(_objCharacter,
-                                strLocalName: await LanguageManager.GetStringAsync("String_Quality", token: token)
-                                    .ConfigureAwait(false), strIgnoreQuality: Name, token: token).ConfigureAwait(false))
-                        {
-                            List<Weapon> lstWeapons = new List<Weapon>(1);
-                            Quality objAddQuality = new Quality(_objCharacter);
-                            try
-                            {
-                                await objAddQuality.CreateAsync(objXmlSelectedQuality, QualitySource.Improvement,
-                                    lstWeapons,
-                                    strForceValue, Name, token).ConfigureAwait(false);
-
-                                if (blnDoesNotContributeToBP)
-                                {
-                                    await objAddQuality.SetBPAsync(0, token).ConfigureAwait(false);
-                                    await objAddQuality.SetContributeToLimitAsync(false, token).ConfigureAwait(false);
-                                }
-
-                                await _objCharacter.Qualities.AddAsync(objAddQuality, token).ConfigureAwait(false);
-                                foreach (Weapon objWeapon in lstWeapons)
-                                    await _objCharacter.Weapons.AddAsync(objWeapon, token).ConfigureAwait(false);
-                                Improvement objImprovement = new Improvement(_objCharacter)
-                                {
-                                    ImprovedName = objAddQuality.InternalId,
-                                    ImproveSource = Improvement.ImprovementSource.Drug,
-                                    SourceName = InternalId,
-                                    ImproveType = Improvement.ImprovementType.SpecificQuality,
-                                    CustomName =
-                                        strNamePrefix + await LanguageManager
-                                                          .GetStringAsync("String_Quality", token: token)
-                                                          .ConfigureAwait(false)
-                                                      + strSpace + await objAddQuality.GetNameAsync(token)
-                                                          .ConfigureAwait(false)
-                                };
-                                lstImprovements.Add(objImprovement);
-                            }
-                            catch
-                            {
-                                await objAddQuality.DeleteQualityAsync(token: CancellationToken.None).ConfigureAwait(false);
-                                throw;
-                            }
-                        }
-                        else
-                        {
-                            throw new AbortedException();
-                        }
-                    }
-                }
-            }
-
-            foreach (Improvement i in lstImprovements)
-            {
-                i.CustomGroup = Name;
-                i.Custom = true;
-                await i.SetEnabledAsync(false, token).ConfigureAwait(false);
-                // This is initially set to false make sure no property changers are triggered
-                i.SetupComplete = true;
+                await objImprovement.SetRatingAsync(Math.Max(1, intCount), token).ConfigureAwait(false);
+                lstImprovements.Add(objImprovement);
             }
 
             _objCharacter.Improvements.AddRange(lstImprovements);
+        }
+
+        private async Task FinalizeDrugImprovementsAsync(string strGroupName, CancellationToken token = default)
+        {
+            List<Improvement> lstImprovements = await _objCharacter.Improvements
+                .ToListAsync(x => x.SourceName == InternalId, token: token).ConfigureAwait(false);
+            if (lstImprovements.Count == 0)
+                return;
+
+            string strDisplayName = await GetCurrentDisplayNameShortAsync(token).ConfigureAwait(false);
+            string strSpace = await LanguageManager.GetStringAsync("String_Space", token: token).ConfigureAwait(false);
+
+            // CreateImprovements adds entries before CustomGroup/CustomName are set, so the Improvements
+            // tab nests them under Selected Improvements with blank labels. Remove and re-add after
+            // filling those fields so they land under the drug's group with readable names.
+            foreach (Improvement objImprovement in lstImprovements)
+            {
+                await _objCharacter.Improvements.RemoveAsync(objImprovement, token).ConfigureAwait(false);
+            }
+
+            foreach (Improvement objImprovement in lstImprovements)
+            {
+                if (string.IsNullOrEmpty(objImprovement.CustomName))
+                {
+                    objImprovement.CustomName = await BuildDrugImprovementCustomNameAsync(
+                        objImprovement, strDisplayName, strSpace, token).ConfigureAwait(false);
+                }
+
+                objImprovement.CustomGroup = strGroupName;
+                objImprovement.Custom = true;
+                objImprovement.SetupComplete = true;
+                await objImprovement.SetEnabledAsync(false, token).ConfigureAwait(false);
+                await _objCharacter.Improvements.AddAsync(objImprovement, token).ConfigureAwait(false);
+            }
+        }
+
+        private static async Task<string> BuildDrugImprovementCustomNameAsync(Improvement objImprovement,
+            string strDisplayName, string strSpace, CancellationToken token)
+        {
+            token.ThrowIfCancellationRequested();
+            string strPrefix = strDisplayName + strSpace + "-" + strSpace;
+            decimal decBonus = objImprovement.Augmented != 0 ? objImprovement.Augmented : objImprovement.Value;
+            string strBonus = decBonus.ToString("+0;-0;0", GlobalSettings.CultureInfo);
+
+            switch (objImprovement.ImproveType)
+            {
+                case Improvement.ImprovementType.Attribute:
+                {
+                    string strAttrKey = "String_Attribute" + objImprovement.ImprovedName + "Short";
+                    string strAttr = await LanguageManager.GetStringAsync(strAttrKey, token: token)
+                        .ConfigureAwait(false);
+                    if (string.IsNullOrEmpty(strAttr) || string.Equals(strAttr, strAttrKey, StringComparison.Ordinal))
+                        strAttr = objImprovement.ImprovedName;
+                    return strPrefix + strAttr + strSpace + strBonus;
+                }
+                case Improvement.ImprovementType.PhysicalLimit:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("Node_Physical", token: token).ConfigureAwait(false)
+                           + strSpace + strBonus;
+                case Improvement.ImprovementType.MentalLimit:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("Node_Mental", token: token).ConfigureAwait(false)
+                           + strSpace + strBonus;
+                case Improvement.ImprovementType.SocialLimit:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("Node_Social", token: token).ConfigureAwait(false)
+                           + strSpace + strBonus;
+                case Improvement.ImprovementType.Skill:
+                case Improvement.ImprovementType.SkillBase:
+                case Improvement.ImprovementType.SkillLevel:
+                    return strPrefix + objImprovement.ImprovedName + strSpace + strBonus;
+                case Improvement.ImprovementType.Initiative:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("String_Initiative", token: token)
+                               .ConfigureAwait(false)
+                           + strSpace + strBonus;
+                case Improvement.ImprovementType.InitiativeDice:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("String_InitiativeDice", token: token)
+                               .ConfigureAwait(false)
+                           + strSpace + strBonus;
+                case Improvement.ImprovementType.SpecificQuality:
+                    return strPrefix
+                           + await LanguageManager.GetStringAsync("String_Quality", token: token).ConfigureAwait(false)
+                           + strSpace + objImprovement.ImprovedName;
+                default:
+                    return strPrefix + objImprovement.ImproveType + strSpace + strBonus;
+            }
         }
 
         public async Task<XmlNode> GetNodeCoreAsync(bool blnSync, string strLanguage, CancellationToken token = default)
@@ -1877,16 +2198,27 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXmlNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XmlDocument objDoc = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
-                : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);
             if (SourceID != Guid.Empty)
-                objReturn = objDoc.TryGetNodeById("/chummer/drugcomponents/drugcomponent", SourceID);
+            {
+                objReturn = blnSync
+                    ? DrugsData.GetCatalogDrugNode(_objCharacter, SourceID, strLanguage, token)
+                    : await DrugsData.GetCatalogDrugNodeAsync(_objCharacter, SourceID, strLanguage, token)
+                        .ConfigureAwait(false);
+            }
             if (objReturn == null)
             {
-                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/drugcomponents/drugcomponent", Name);
-                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                XmlDocument objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadData(DrugsData.ComponentsFileName, strLanguage, token: token)
+                    : await _objCharacter.LoadDataAsync(DrugsData.ComponentsFileName, strLanguage, token: token)
+                        .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById(DrugsData.ComponentXPath, SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId(DrugsData.ComponentXPath, Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
             }
             _objCachedMyXmlNode = objReturn;
             _strCachedXmlNodeLanguage = strLanguage;
@@ -1903,16 +2235,36 @@ namespace Chummer.Backend.Equipment
             if (objReturn != null && strLanguage == _strCachedXPathNodeLanguage
                                   && !GlobalSettings.LiveCustomData)
                 return objReturn;
-            XPathNavigator objDoc = blnSync
-                // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage, token: token)
-                : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);
             if (SourceID != Guid.Empty)
-                objReturn = objDoc.TryGetNodeById("/chummer/drugcomponents/drugcomponent", SourceID);
+            {
+                XPathNavigator objCatalogDoc = blnSync
+                    ? _objCharacter.LoadDataXPath(DrugsData.CatalogFileName, strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync(DrugsData.CatalogFileName, strLanguage, token: token)
+                        .ConfigureAwait(false);
+                objReturn = objCatalogDoc.TryGetNodeById(DrugsData.CatalogDrugXPath, SourceID);
+                if (objReturn == null)
+                {
+                    XPathNavigator objLegacyDoc = blnSync
+                        ? _objCharacter.LoadDataXPath(DrugsData.ComponentsFileName, strLanguage, token: token)
+                        : await _objCharacter.LoadDataXPathAsync(DrugsData.ComponentsFileName, strLanguage, token: token)
+                            .ConfigureAwait(false);
+                    objReturn = objLegacyDoc.TryGetNodeById(DrugsData.CatalogDrugXPath, SourceID);
+                }
+            }
             if (objReturn == null)
             {
-                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/drugcomponents/drugcomponent", Name);
-                objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                XPathNavigator objDoc = blnSync
+                    // ReSharper disable once MethodHasAsyncOverload
+                    ? _objCharacter.LoadDataXPath(DrugsData.ComponentsFileName, strLanguage, token: token)
+                    : await _objCharacter.LoadDataXPathAsync(DrugsData.ComponentsFileName, strLanguage, token: token)
+                        .ConfigureAwait(false);
+                if (SourceID != Guid.Empty)
+                    objReturn = objDoc.TryGetNodeById(DrugsData.ComponentXPath, SourceID);
+                if (objReturn == null)
+                {
+                    objReturn = objDoc.TryGetNodeByNameOrId(DrugsData.ComponentXPath, Name);
+                    objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
+                }
             }
             _objCachedMyXPathNode = objReturn;
             _strCachedXPathNodeLanguage = strLanguage;
@@ -1925,9 +2277,19 @@ namespace Chummer.Backend.Equipment
             {
                 return false;
             }
-            _objCharacter.Drugs.Remove(this);
-            RemoveDrugImprovementsAndQualities();
 
+            if (_objParentCyberware != null)
+            {
+                Cyberware objParent = _objParentCyberware;
+                _objParentCyberware = null;
+                objParent.DrugChildren.Remove(this);
+            }
+            else
+            {
+                _objCharacter.Drugs.Remove(this);
+            }
+
+            RemoveDrugImprovementsAndQualities();
             Dispose();
 
             return true;
@@ -1944,9 +2306,19 @@ namespace Chummer.Backend.Equipment
                 return false;
             }
 
-            await _objCharacter.Drugs.RemoveAsync(this, token).ConfigureAwait(false);
-            await RemoveDrugImprovementsAndQualitiesAsync(token).ConfigureAwait(false);
+            if (_objParentCyberware != null)
+            {
+                Cyberware objParent = _objParentCyberware;
+                _objParentCyberware = null;
+                await (await objParent.GetDrugChildrenAsync(token).ConfigureAwait(false))
+                    .RemoveAsync(this, token).ConfigureAwait(false);
+            }
+            else
+            {
+                await _objCharacter.Drugs.RemoveAsync(this, token).ConfigureAwait(false);
+            }
 
+            await RemoveDrugImprovementsAndQualitiesAsync(token).ConfigureAwait(false);
             await DisposeAsync().ConfigureAwait(false);
 
             return true;
@@ -1957,16 +2329,19 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         private void RemoveDrugImprovementsAndQualities()
         {
+            string strGroupName = GetImprovementGroupName();
             ImprovementManager.RemoveImprovements(_objCharacter, Improvement.ImprovementSource.Drug, InternalId);
             // Fallback for character files loaded before Drug.guid was restored on Load (mismatched SourceName).
+            // Scoped to this dose's group name so Drugs-tab and gland doses of the same drug do not wipe each other.
             List<Improvement> lstByGroup = _objCharacter.Improvements
-                .Where(x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == Name)
+                .Where(x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == strGroupName)
                 .ToList();
             if (lstByGroup.Count > 0)
                 ImprovementManager.RemoveImprovements(_objCharacter, lstByGroup);
             RemoveOrphanedDrugQualities();
-            if (_objCharacter.ImprovementGroups.Contains(Name))
-                _objCharacter.ImprovementGroups.Remove(Name);
+            if (_objCharacter.ImprovementGroups.Contains(strGroupName)
+                && !_objCharacter.Improvements.Any(x => x.CustomGroup == strGroupName))
+                _objCharacter.ImprovementGroups.Remove(strGroupName);
         }
 
         /// <summary>
@@ -1975,12 +2350,14 @@ namespace Chummer.Backend.Equipment
         private async Task RemoveDrugImprovementsAndQualitiesAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
+            string strGroupName = await GetImprovementGroupNameAsync(token).ConfigureAwait(false);
             await ImprovementManager
                 .RemoveImprovementsAsync(_objCharacter, Improvement.ImprovementSource.Drug, InternalId, token)
                 .ConfigureAwait(false);
             // Fallback for character files loaded before Drug.guid was restored on Load (mismatched SourceName).
+            // Scoped to this dose's group name so Drugs-tab and gland doses of the same drug do not wipe each other.
             List<Improvement> lstByGroup = await _objCharacter.Improvements.ToListAsync(
-                x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == Name,
+                x => x.ImproveSource == Improvement.ImprovementSource.Drug && x.CustomGroup == strGroupName,
                 token: token).ConfigureAwait(false);
             if (lstByGroup.Count > 0)
                 await ImprovementManager.RemoveImprovementsAsync(_objCharacter, lstByGroup, token: token)
@@ -1988,8 +2365,10 @@ namespace Chummer.Backend.Equipment
             await RemoveOrphanedDrugQualitiesAsync(token).ConfigureAwait(false);
             ThreadSafeObservableCollection<string> lstGroups =
                 await _objCharacter.GetImprovementGroupsAsync(token).ConfigureAwait(false);
-            if (await lstGroups.ContainsAsync(Name, token).ConfigureAwait(false))
-                await lstGroups.RemoveAsync(Name, token).ConfigureAwait(false);
+            if (await lstGroups.ContainsAsync(strGroupName, token).ConfigureAwait(false)
+                && !await _objCharacter.Improvements.AnyAsync(x => x.CustomGroup == strGroupName, token: token)
+                    .ConfigureAwait(false))
+                await lstGroups.RemoveAsync(strGroupName, token).ConfigureAwait(false);
         }
 
         private void RemoveOrphanedDrugQualities()
@@ -2083,6 +2462,29 @@ namespace Chummer.Backend.Equipment
 
         public Character CharacterObject => _objCharacter;
 
+        /// <summary>
+        /// Independent copy for a custom-drug recipe so Level changes do not leak across recipes.
+        /// </summary>
+        /// <returns>A new component with a new instance id and copied effects.</returns>
+        public DrugComponent Clone()
+        {
+            DrugComponent objCopy = new DrugComponent(_objCharacter);
+            objCopy._guiSourceID = _guiSourceID;
+            objCopy._strName = _strName;
+            objCopy._strCategory = _strCategory;
+            objCopy._strAvailability = _strAvailability;
+            objCopy._intLevel = _intLevel;
+            objCopy._intLimit = _intLimit;
+            objCopy._strSource = _strSource;
+            objCopy._strPage = _strPage;
+            objCopy._strCost = _strCost;
+            objCopy._intAddictionThreshold = _intAddictionThreshold;
+            objCopy._intAddictionRating = _intAddictionRating;
+            foreach (DrugEffect objEffect in DrugEffects)
+                objCopy.DrugEffects.Add(objEffect.Clone());
+            return objCopy;
+        }
+
         #region Constructor, Create, Save, Load, and Print Methods
 
         public void Load(XmlNode objXmlData)
@@ -2108,6 +2510,9 @@ namespace Chummer.Backend.Equipment
             }
             objXmlData.TryGetField("internalid", Guid.TryParse, out _guidId);
             objXmlData.TryGetStringFieldQuickly("category", ref _strCategory);
+            // Legacy saves used singular "Custom Drug"
+            if (string.Equals(_strCategory, "Custom Drug", StringComparison.OrdinalIgnoreCase))
+                _strCategory = "Custom Drugs";
             XmlNodeList xmlEffectsList = objXmlData.SelectNodes("effects/effect");
             if (xmlEffectsList?.Count > 0)
             {
@@ -2142,6 +2547,10 @@ namespace Chummer.Backend.Equipment
                                     }
                                 case "QUALITY":
                                     objDrugEffect.Qualities.Add(objXmlEffect);
+                                    break;
+
+                                case "SPECIFICSKILL":
+                                    objDrugEffect.SpecificSkills.Add(objXmlEffect);
                                     break;
 
                                 case "INFO":
@@ -2230,6 +2639,11 @@ namespace Chummer.Backend.Equipment
                 {
                     if (!nodQuality.IsNullOrInnerTextIsEmpty())
                         objXmlWriter.WriteRaw("<quality>" + nodQuality.InnerXmlViaPool() + "</quality>");
+                }
+                foreach (XmlNode nodSkill in objDrugEffect.SpecificSkills)
+                {
+                    if (nodSkill != null)
+                        objXmlWriter.WriteRaw(nodSkill.OuterXmlViaPool());
                 }
                 foreach (string strInfo in objDrugEffect.Infos)
                 {
@@ -2352,7 +2766,7 @@ namespace Chummer.Backend.Equipment
             if (strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
                 return Category;
 
-            return _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage)
+            return _objCharacter.LoadDataXPath(DrugsData.ComponentsFileName, strLanguage)
                                 .SelectSingleNodeAndCacheExpression(
                                     "/chummer/categories/category[. = " + Category.CleanXPath() + "]/@translate")?.Value
                    ?? Category;
@@ -2364,8 +2778,17 @@ namespace Chummer.Backend.Equipment
         public string Category
         {
             get => _strCategory;
-            set => _strCategory = value;
+            set
+            {
+                _strCategory = value;
+                if (string.Equals(_strCategory, "Custom Drug", StringComparison.OrdinalIgnoreCase))
+                    _strCategory = "Custom Drugs";
+            }
         }
+
+        private bool IncludeDefaultDurationAndSpeed =>
+            Drug.IsCustomDrugsCategory(Category)
+            || string.Equals(Category, "BTLs", StringComparison.OrdinalIgnoreCase);
 
         /// <summary>
         /// Sourcebook.
@@ -2705,7 +3128,7 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in objDrugEffect.Infos)
                         sbdDescription.AppendLine(_objCharacter.TranslateExtra(strInfo));
 
-                    if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
+                    if (IncludeDefaultDurationAndSpeed || objDrugEffect.Duration != 0)
                         sbdDescription.Append(LanguageManager.GetString("Label_Duration")).Append(strColon)
                                       .Append(strSpace)
                                       .Append("10 ⨯ ")
@@ -2713,7 +3136,7 @@ namespace Chummer.Backend.Equipment
                                       .Append(LanguageManager.GetString("String_D6")).Append(strSpace)
                                       .AppendLine(LanguageManager.GetString("String_Minutes"));
 
-                    if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
+                    if (IncludeDefaultDurationAndSpeed || objDrugEffect.Speed != 0)
                     {
                         sbdDescription.Append(LanguageManager.GetString("Label_Speed")).Append(strColon)
                                       .Append(strSpace);
@@ -2852,7 +3275,7 @@ namespace Chummer.Backend.Equipment
                     foreach (string strInfo in objDrugEffect.Infos)
                         sbdDescription.AppendLine(await _objCharacter.TranslateExtraAsync(strInfo, token: token).ConfigureAwait(false));
 
-                    if (Category == "Custom Drug" || objDrugEffect.Duration != 0)
+                    if (IncludeDefaultDurationAndSpeed || objDrugEffect.Duration != 0)
                         sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Duration", token: token).ConfigureAwait(false)).Append(strColon)
                                       .Append(strSpace)
                                       .Append("10 ⨯ ")
@@ -2860,7 +3283,7 @@ namespace Chummer.Backend.Equipment
                                       .Append(await LanguageManager.GetStringAsync("String_D6", token: token).ConfigureAwait(false)).Append(strSpace)
                                       .AppendLine(await LanguageManager.GetStringAsync("String_Minutes", token: token).ConfigureAwait(false));
 
-                    if (Category == "Custom Drug" || objDrugEffect.Speed != 0)
+                    if (IncludeDefaultDurationAndSpeed || objDrugEffect.Speed != 0)
                     {
                         sbdDescription.Append(await LanguageManager.GetStringAsync("Label_Speed", token: token).ConfigureAwait(false)).Append(strColon)
                                       .Append(strSpace);
@@ -2924,13 +3347,14 @@ namespace Chummer.Backend.Equipment
                 return objReturn;
             XmlDocument objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadData("drugcomponents.xml", strLanguage, token: token)
-                : await _objCharacter.LoadDataAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);
+                ? _objCharacter.LoadData(DrugsData.ComponentsFileName, strLanguage, token: token)
+                : await _objCharacter.LoadDataAsync(DrugsData.ComponentsFileName, strLanguage, token: token)
+                    .ConfigureAwait(false);
             if (SourceID != Guid.Empty)
-                objReturn = objDoc.TryGetNodeById("/chummer/drugcomponents/drugcomponent", SourceID);
+                objReturn = objDoc.TryGetNodeById(DrugsData.ComponentXPath, SourceID);
             if (objReturn == null)
             {
-                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/drugcomponents/drugcomponent", Name);
+                objReturn = objDoc.TryGetNodeByNameOrId(DrugsData.ComponentXPath, Name);
                 objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             _objCachedMyXmlNode = objReturn;
@@ -2949,13 +3373,14 @@ namespace Chummer.Backend.Equipment
                 return objReturn;
             XPathNavigator objDoc = blnSync
                 // ReSharper disable once MethodHasAsyncOverload
-                ? _objCharacter.LoadDataXPath("drugcomponents.xml", strLanguage, token: token)
-                : await _objCharacter.LoadDataXPathAsync("drugcomponents.xml", strLanguage, token: token).ConfigureAwait(false);
+                ? _objCharacter.LoadDataXPath(DrugsData.ComponentsFileName, strLanguage, token: token)
+                : await _objCharacter.LoadDataXPathAsync(DrugsData.ComponentsFileName, strLanguage, token: token)
+                    .ConfigureAwait(false);
             if (SourceID != Guid.Empty)
-                objReturn = objDoc.TryGetNodeById("/chummer/drugcomponents/drugcomponent", SourceID);
+                objReturn = objDoc.TryGetNodeById(DrugsData.ComponentXPath, SourceID);
             if (objReturn == null)
             {
-                objReturn = objDoc.TryGetNodeByNameOrId("/chummer/drugcomponents/drugcomponent", Name);
+                objReturn = objDoc.TryGetNodeByNameOrId(DrugsData.ComponentXPath, Name);
                 objReturn?.TryGetGuidFieldQuickly("id", ref _guiSourceID);
             }
             _objCachedMyXPathNode = objReturn;
@@ -2977,6 +3402,11 @@ namespace Chummer.Backend.Equipment
 
         public List<XmlNode> Qualities { get; } = new List<XmlNode>();
 
+        /// <summary>
+        /// Skill bonus nodes from the component effect (name + bonus).
+        /// </summary>
+        public List<XmlNode> SpecificSkills { get; } = new List<XmlNode>();
+
         public List<string> Infos { get; } = new List<string>();
 
         public int Initiative { get; set; }
@@ -2990,5 +3420,30 @@ namespace Chummer.Backend.Equipment
         public int Duration { get; set; }
 
         public int Level { get; set; }
+
+        /// <summary>
+        /// Shallow copy of this effect (XML nodes are shared read-only catalog data).
+        /// </summary>
+        /// <returns>A new effect with copied numeric fields and the same quality/skill nodes.</returns>
+        public DrugEffect Clone()
+        {
+            DrugEffect objCopy = new DrugEffect
+            {
+                Initiative = Initiative,
+                InitiativeDice = InitiativeDice,
+                CrashDamage = CrashDamage,
+                Speed = Speed,
+                Duration = Duration,
+                Level = Level
+            };
+            foreach (KeyValuePair<string, decimal> kvp in Attributes)
+                objCopy.Attributes.Add(kvp.Key, kvp.Value);
+            foreach (KeyValuePair<string, int> kvp in Limits)
+                objCopy.Limits.Add(kvp.Key, kvp.Value);
+            objCopy.Qualities.AddRange(Qualities);
+            objCopy.SpecificSkills.AddRange(SpecificSkills);
+            objCopy.Infos.AddRange(Infos);
+            return objCopy;
+        }
     }
 }

@@ -113,6 +113,7 @@ namespace Chummer
             this.chkGroupVehicleModsByCategory = new Chummer.ColorableCheckBox();
             this.chkAlphabetizeTreeNodesOnInsert = new Chummer.ColorableCheckBox();
             this.chkNestWeaponMountsUnderWeaponsCategory = new Chummer.ColorableCheckBox();
+            this.chkUseImprovementGroupNameInTooltips = new Chummer.ColorableCheckBox();
             this.flpEnablePlugins = new System.Windows.Forms.FlowLayoutPanel();
             this.chkEnablePlugins = new Chummer.ColorableCheckBox();
             this.cmdPluginsHelp = new System.Windows.Forms.Button();
@@ -505,6 +506,7 @@ namespace Chummer
             this.tlpGlobalOptions.Controls.Add(this.chkGroupVehicleModsByCategory, 0, 19);
             this.tlpGlobalOptions.Controls.Add(this.chkAlphabetizeTreeNodesOnInsert, 2, 19);
             this.tlpGlobalOptions.Controls.Add(this.chkNestWeaponMountsUnderWeaponsCategory, 0, 20);
+            this.tlpGlobalOptions.Controls.Add(this.chkUseImprovementGroupNameInTooltips, 2, 20);
             this.tlpGlobalOptions.Controls.Add(this.flpEnablePlugins, 2, 17);
             this.tlpGlobalOptions.Controls.Add(this.chkLifeModule, 2, 16);
             this.tlpGlobalOptions.Controls.Add(this.lblMugshotCompression, 2, 12);
@@ -1392,7 +1394,7 @@ namespace Chummer
             this.chkAlphabetizeTreeNodesOnInsert.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // chkNestWeaponMountsUnderWeaponsCategory
-            // 
+            //
             this.chkNestWeaponMountsUnderWeaponsCategory.Anchor = System.Windows.Forms.AnchorStyles.Left;
             this.chkNestWeaponMountsUnderWeaponsCategory.AutoSize = true;
             this.chkNestWeaponMountsUnderWeaponsCategory.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
@@ -1407,6 +1409,23 @@ namespace Chummer
             this.chkNestWeaponMountsUnderWeaponsCategory.Text = "Place weapon mounts under the Weapons vehicle mod category";
             this.chkNestWeaponMountsUnderWeaponsCategory.UseVisualStyleBackColor = true;
             this.chkNestWeaponMountsUnderWeaponsCategory.CheckedChanged += new System.EventHandler(this.OptionsChanged);
+            //
+            // chkUseImprovementGroupNameInTooltips
+            //
+            this.chkUseImprovementGroupNameInTooltips.Anchor = System.Windows.Forms.AnchorStyles.Left;
+            this.chkUseImprovementGroupNameInTooltips.AutoSize = true;
+            this.chkUseImprovementGroupNameInTooltips.CheckAlign = System.Drawing.ContentAlignment.TopLeft;
+            this.tlpGlobalOptions.SetColumnSpan(this.chkUseImprovementGroupNameInTooltips, 2);
+            this.chkUseImprovementGroupNameInTooltips.DefaultColorScheme = true;
+            this.chkUseImprovementGroupNameInTooltips.Location = new System.Drawing.Point(413, 609);
+            this.chkUseImprovementGroupNameInTooltips.Margin = new System.Windows.Forms.Padding(3, 4, 3, 4);
+            this.chkUseImprovementGroupNameInTooltips.Name = "chkUseImprovementGroupNameInTooltips";
+            this.chkUseImprovementGroupNameInTooltips.Size = new System.Drawing.Size(380, 17);
+            this.chkUseImprovementGroupNameInTooltips.TabIndex = 71;
+            this.chkUseImprovementGroupNameInTooltips.Tag = "Checkbox_Options_UseImprovementGroupNameInTooltips";
+            this.chkUseImprovementGroupNameInTooltips.Text = "Use improvement group name in tooltips instead of individual names";
+            this.chkUseImprovementGroupNameInTooltips.UseVisualStyleBackColor = true;
+            this.chkUseImprovementGroupNameInTooltips.CheckedChanged += new System.EventHandler(this.OptionsChanged);
             // 
             // flpEnablePlugins
             // 
@@ -2613,6 +2632,7 @@ namespace Chummer
         private ColorableCheckBox chkGroupVehicleModsByCategory;
         private ColorableCheckBox chkAlphabetizeTreeNodesOnInsert;
         private ColorableCheckBox chkNestWeaponMountsUnderWeaponsCategory;
+        private ColorableCheckBox chkUseImprovementGroupNameInTooltips;
         private ColorableCheckBox chkAllowEasterEggs;
         private Chummer.ElasticComboBox cboDefaultCharacterSetting;
         private NumericUpDownEx nudBrowserVersion;

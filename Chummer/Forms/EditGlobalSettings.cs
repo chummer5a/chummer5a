@@ -1893,6 +1893,9 @@ namespace Chummer
             await chkAlphabetizeTreeNodesOnInsert
                   .DoThreadSafeAsync(x => x.Checked = GlobalSettings.AlphabetizeTreeNodesOnInsert, token)
                   .ConfigureAwait(false);
+            await chkUseImprovementGroupNameInTooltips
+                  .DoThreadSafeAsync(x => x.Checked = GlobalSettings.UseImprovementGroupNameInTooltips, token)
+                  .ConfigureAwait(false);
             await chkNestWeaponMountsUnderWeaponsCategory.DoThreadSafeAsync(x =>
             {
                 x.Checked = GlobalSettings.NestWeaponMountsUnderWeaponsCategory;
@@ -2033,6 +2036,9 @@ namespace Chummer
             GlobalSettings.AlphabetizeTreeNodesOnInsert = await chkAlphabetizeTreeNodesOnInsert
                                                                 .DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                 .ConfigureAwait(false);
+            GlobalSettings.UseImprovementGroupNameInTooltips = await chkUseImprovementGroupNameInTooltips
+                                                                     .DoThreadSafeFuncAsync(x => x.Checked, token)
+                                                                     .ConfigureAwait(false);
             GlobalSettings.NestWeaponMountsUnderWeaponsCategory
                 = await chkNestWeaponMountsUnderWeaponsCategory.DoThreadSafeFuncAsync(x => x.Checked, token)
                                                                .ConfigureAwait(false);

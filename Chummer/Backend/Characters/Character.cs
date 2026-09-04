@@ -15417,8 +15417,14 @@ namespace Chummer
                             if (objImprovement.ImproveType == Improvement.ImprovementType.ArmorEncumbrancePenalty)
                                 return LanguageManager.GetString("String_ArmorEncumbrance", strLanguage, token: token);
                             // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                            // Optionally prefer the improvement group name when the improvement is nested under one.
                             if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                            {
+                                if (GlobalSettings.UseImprovementGroupNameInTooltips
+                                    && !string.IsNullOrEmpty(objImprovement.CustomGroup))
+                                    return objImprovement.CustomGroup;
                                 return objImprovement.CustomName;
+                            }
                             string strReturn = strImprovedSourceName;
                             if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                             {
@@ -16245,8 +16251,14 @@ namespace Chummer
                                     .GetStringAsync("String_ArmorEncumbrance", strLanguage, token: token)
                                     .ConfigureAwait(false);
                             // If this comes from a custom Improvement, use the name the player gave it instead of showing a GUID.
+                            // Optionally prefer the improvement group name when the improvement is nested under one.
                             if (!string.IsNullOrEmpty(objImprovement.CustomName))
+                            {
+                                if (GlobalSettings.UseImprovementGroupNameInTooltips
+                                    && !string.IsNullOrEmpty(objImprovement.CustomGroup))
+                                    return objImprovement.CustomGroup;
                                 return objImprovement.CustomName;
+                            }
                             string strReturn = strImprovedSourceName;
                             if (string.IsNullOrEmpty(strReturn) || strReturn.IsGuid())
                             {
