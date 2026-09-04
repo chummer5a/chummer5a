@@ -713,7 +713,14 @@ namespace Chummer
         {
             if (_intSkipRefresh > 0)
                 return;
-            await DoRefreshList(_objGenericToken).ConfigureAwait(false);
+            try
+            {
+                await DoRefreshList(_objGenericToken).ConfigureAwait(false);
+            }
+            catch (OperationCanceledException)
+            {
+                //swallow this
+            }
         }
 
         private async Task DoRefreshList(CancellationToken token = default)
@@ -729,52 +736,40 @@ namespace Chummer
             using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
                 token = objJoinedCancellationTokenSource.Token;
+                CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
                 try
                 {
-                    CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);
+                    string strFileFilter
+                                = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
+                                                                        token).ConfigureAwait(false) ?? string.Empty;
+                    string strSearchFilter
+                            = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
+                    bool blnCustomList = !string.IsNullOrEmpty(strFileFilter) || !string.IsNullOrEmpty(strSearchFilter);
+                    List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
                     try
                     {
-                        string strFileFilter
-                                    = await cboFile.DoThreadSafeFuncAsync(x => x.SelectedValue?.ToString(),
-                                                                          token).ConfigureAwait(false) ?? string.Empty;
-                        string strSearchFilter
-                                = await txtSearch.DoThreadSafeFuncAsync(x => x.Text, token).ConfigureAwait(false);
-                        bool blnCustomList = !string.IsNullOrEmpty(strFileFilter) || !string.IsNullOrEmpty(strSearchFilter);
-                        List<ListItem> lstFilteredItems = blnCustomList ? Utils.ListItemListPool.Get() : _lstItems;
-                        try
+                        if (blnCustomList)
                         {
-                            if (blnCustomList)
+                            if (!string.IsNullOrEmpty(strFileFilter))
                             {
-                                if (!string.IsNullOrEmpty(strFileFilter))
+                                if (!string.IsNullOrEmpty(strSearchFilter))
                                 {
-                                    if (!string.IsNullOrEmpty(strSearchFilter))
+                                    foreach (ListItem objItem in _lstItems)
                                     {
-                                        foreach (ListItem objItem in _lstItems)
-                                        {
-                                            token.ThrowIfCancellationRequested();
-                                            if (!(objItem.Value is MasterIndexEntry objItemEntry) || !objItemEntry.FileNames.Contains(strFileFilter))
-                                                continue;
-                                            string strDisplayNameNoFile = objItemEntry.DisplayName;
-                                            if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
-                                                strDisplayNameNoFile = strDisplayNameNoFile
-                                                                       .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
-                                                                       .Trim();
-                                            if (strDisplayNameNoFile.IndexOf(strSearchFilter,
-                                                                             StringComparison.OrdinalIgnoreCase)
-                                                == -1)
-                                                continue;
+                                        token.ThrowIfCancellationRequested();
+                                        if (!(objItem.Value is MasterIndexEntry objItemEntry) || !objItemEntry.FileNames.Contains(strFileFilter))
+                                            continue;
+                                        string strDisplayNameNoFile = objItemEntry.DisplayName;
+                                        if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                            strDisplayNameNoFile = strDisplayNameNoFile
+                                                                    .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
+                                                                    .Trim();
+                                        if (strDisplayNameNoFile.IndexOf(strSearchFilter,
+                                                                            StringComparison.OrdinalIgnoreCase)
+                                            == -1)
+                                            continue;
 
-                                            lstFilteredItems.Add(objItem);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        foreach (ListItem objItem in _lstItems)
-                                        {
-                                            token.ThrowIfCancellationRequested();
-                                            if (objItem.Value is MasterIndexEntry objItemEntry && objItemEntry.FileNames.Contains(strFileFilter))
-                                                lstFilteredItems.Add(objItem);
-                                        }
+                                        lstFilteredItems.Add(objItem);
                                     }
                                 }
                                 else
@@ -782,60 +777,65 @@ namespace Chummer
                                     foreach (ListItem objItem in _lstItems)
                                     {
                                         token.ThrowIfCancellationRequested();
-                                        if (!(objItem.Value is MasterIndexEntry objItemEntry))
-                                            continue;
-                                        string strDisplayNameNoFile = objItemEntry.DisplayName;
-                                        if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
-                                            strDisplayNameNoFile = strDisplayNameNoFile
-                                                                   .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
-                                                                   .Trim();
-                                        if (strDisplayNameNoFile.IndexOf(strSearchFilter,
-                                                                         StringComparison.OrdinalIgnoreCase)
-                                            == -1)
-                                            continue;
-
-                                        lstFilteredItems.Add(objItem);
+                                        if (objItem.Value is MasterIndexEntry objItemEntry && objItemEntry.FileNames.Contains(strFileFilter))
+                                            lstFilteredItems.Add(objItem);
                                     }
                                 }
                             }
-
-                            object objOldSelectedValue
-                                = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false);
-                            Interlocked.Increment(ref _intSkipRefresh);
-                            try
-                            {
-                                await lstItems.PopulateWithListItemsAsync(lstFilteredItems, token)
-                                              .ConfigureAwait(false);
-                            }
-                            finally
-                            {
-                                Interlocked.Decrement(ref _intSkipRefresh);
-                            }
-
-                            if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
-                                await lstItems.DoThreadSafeFuncAsync(
-                                    x => x.SelectedIndex
-                                        // ReSharper disable once AccessToModifiedClosure
-                                        = lstFilteredItems.FindIndex(
-                                            y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)),
-                                    token).ConfigureAwait(false);
                             else
-                                await lstItems.DoThreadSafeFuncAsync(x => x.SelectedIndex = -1, token).ConfigureAwait(false);
+                            {
+                                foreach (ListItem objItem in _lstItems)
+                                {
+                                    token.ThrowIfCancellationRequested();
+                                    if (!(objItem.Value is MasterIndexEntry objItemEntry))
+                                        continue;
+                                    string strDisplayNameNoFile = objItemEntry.DisplayName;
+                                    if (strDisplayNameNoFile.EndsWith(".xml]", StringComparison.OrdinalIgnoreCase))
+                                        strDisplayNameNoFile = strDisplayNameNoFile
+                                                                .Substring(0, strDisplayNameNoFile.LastIndexOf('['))
+                                                                .Trim();
+                                    if (strDisplayNameNoFile.IndexOf(strSearchFilter,
+                                                                        StringComparison.OrdinalIgnoreCase)
+                                        == -1)
+                                        continue;
+
+                                    lstFilteredItems.Add(objItem);
+                                }
+                            }
+                        }
+
+                        object objOldSelectedValue
+                            = await lstItems.DoThreadSafeFuncAsync(x => x.SelectedValue, token).ConfigureAwait(false);
+                        Interlocked.Increment(ref _intSkipRefresh);
+                        try
+                        {
+                            await lstItems.PopulateWithListItemsAsync(lstFilteredItems, token)
+                                            .ConfigureAwait(false);
                         }
                         finally
                         {
-                            if (blnCustomList)
-                                Utils.ListItemListPool.Return(ref lstFilteredItems);
+                            Interlocked.Decrement(ref _intSkipRefresh);
                         }
+
+                        if (objOldSelectedValue is MasterIndexEntry objOldSelectedEntry)
+                            await lstItems.DoThreadSafeFuncAsync(
+                                x => x.SelectedIndex
+                                    // ReSharper disable once AccessToModifiedClosure
+                                    = lstFilteredItems.FindIndex(
+                                        y => objOldSelectedEntry.Equals(y.Value as MasterIndexEntry)),
+                                token).ConfigureAwait(false);
+                        else
+                            await lstItems.DoThreadSafeFuncAsync(x => x.SelectedIndex = -1, token).ConfigureAwait(false);
                     }
                     finally
                     {
-                        await objCursorWait.DisposeAsync().ConfigureAwait(false);
+                        if (blnCustomList)
+                            Utils.ListItemListPool.Return(ref lstFilteredItems);
                     }
                 }
-                catch (OperationCanceledException)
+                finally
                 {
-                    //swallow this
+                    await objCursorWait.DisposeAsync().ConfigureAwait(false);
                 }
             }
         }
