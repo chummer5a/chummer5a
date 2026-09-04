@@ -139,21 +139,23 @@ namespace Chummer.Tests
         [TestMethod]
         public void ValueCache_DrugPositiveAttributeModifier_AddsOnePerPositiveDrugAttribute()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "LOG", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1, token: TestContext.CancellationToken);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "AGI", Improvement.ImprovementSource.Cyberware, "muscle toner",
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
+                using (Character objCharacter = new Character())
+                {
+                    Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "LOG", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, -1, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "AGI", Improvement.ImprovementSource.Cyberware, "muscle toner",
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
+                        Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
                     Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
                         objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR", token: TestContext.CancellationToken));
@@ -180,71 +182,116 @@ namespace Chummer.Tests
         [TestMethod]
         public void ValueCache_DrugPositiveAttributeModifier_StacksPerDrug()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Drug objKamikaze = AddDrug(objCharacter, "Custom Drugs");
-                Drug objCram = AddDrug(objCharacter, "Custom Drugs");
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objKamikaze.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objCram.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1, token: TestContext.CancellationToken);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
+                using (Character objCharacter = new Character())
+                {
+                    Drug objKamikaze = AddDrug(objCharacter, "Custom Drugs");
+                    Drug objCram = AddDrug(objCharacter, "Custom Drugs");
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "STR", Improvement.ImprovementSource.Drug, objKamikaze.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "STR", Improvement.ImprovementSource.Drug, objCram.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
+                        Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
-                Assert.AreEqual(5, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
+                    Assert.AreEqual(5, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR", token: TestContext.CancellationToken));
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void ValueCache_DrugPositiveAttributeModifier_EmptyFilter_SkipsBtls()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
-                Drug objDowner = AddDrug(objCharacter, "BTLs");
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+                using (Character objCharacter = new Character())
+                {
+                    Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
+                    Drug objDowner = AddDrug(objCharacter, "BTLs");
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "Custom Drugs", Improvement.ImprovementSource.Bioware, "narco",
+                        Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
-                Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
-                Assert.AreEqual(1, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT"));
+                    Assert.AreEqual(3, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR", token: TestContext.CancellationToken));
+                    Assert.AreEqual(1, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT", token: TestContext.CancellationToken));
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]
         public void ValueCache_DrugPositiveAttributeModifier_BtlFilter_SkipsPhysicalChems()
         {
-            using (Character objCharacter = new Character())
+            try
             {
-                Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
-                Drug objDowner = AddDrug(objCharacter, "BTLs");
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
-                    Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1);
-                ImprovementManager.CreateImprovement(
-                    objCharacter, "BTLs", Improvement.ImprovementSource.Quality, "btl narco",
-                    Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1);
+                using (Character objCharacter = new Character())
+                {
+                    Drug objJazz = AddDrug(objCharacter, "Custom Drugs");
+                    Drug objDowner = AddDrug(objCharacter, "BTLs");
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "STR", Improvement.ImprovementSource.Drug, objJazz.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 2, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "INT", Improvement.ImprovementSource.Drug, objDowner.InternalId,
+                        Improvement.ImprovementType.Attribute, string.Empty, 0, 1, 0, 0, 1, token: TestContext.CancellationToken);
+                    ImprovementManager.CreateImprovement(
+                        objCharacter, "BTLs", Improvement.ImprovementSource.Quality, "btl narco",
+                        Improvement.ImprovementType.DrugPositiveAttributeModifier, string.Empty, 1, token: TestContext.CancellationToken);
 
-                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR"));
-                Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
-                    objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT"));
+                    Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "STR", token: TestContext.CancellationToken));
+                    Assert.AreEqual(2, ImprovementManager.AugmentedValueOf(
+                        objCharacter, Improvement.ImprovementType.Attribute, strImprovedName: "INT", token: TestContext.CancellationToken));
+                }
             }
+            catch (Exception ex)
+            {
+                ex = ex.Demystify();
+                Assert.Fail(ex.Message);
+                throw;
+            }
+#if MEMORYTESTING
+            finally
+            {
+                TestContext.CancellationTokenSource.Dispose();
+            }
+#endif
         }
 
         [TestMethod]

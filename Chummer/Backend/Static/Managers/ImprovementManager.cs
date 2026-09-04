@@ -1412,7 +1412,11 @@ namespace Chummer
 
                             if (decExtra == 0)
                                 continue;
-                            dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key] + decExtra;
+                            string strKey = kvpUsed.Key;
+                            if (dicValues.TryGetValue(strKey, out decimal decValue))
+                                dicValues[strKey] = decValue + decExtra;
+                            else // Just in case
+                                dicValues.Add(strKey, decExtra);
                         }
                     }
 
