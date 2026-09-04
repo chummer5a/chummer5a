@@ -73,6 +73,7 @@ namespace Chummer
             {
                 strFileName += "_packs.xml";
             }
+            strFileName = strFileName.CleanForFileName();
 
             // See if a Kit with this name already exists for the Custom category.
             // This was originally done without the XmlManager, but because amends and overrides and toggling custom data directories can change names, we need to use it.

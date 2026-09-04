@@ -66,6 +66,8 @@ namespace Chummer
                 return;
             }
 
+            strFileName = strFileName.CleanForFileName();
+
             // Make sure the file name starts with custom and ends with _cyberware.xml.
             if (!strFileName.StartsWith("custom_", StringComparison.OrdinalIgnoreCase) || !strFileName.EndsWith("_" + _strType + ".xml", StringComparison.OrdinalIgnoreCase))
             {
