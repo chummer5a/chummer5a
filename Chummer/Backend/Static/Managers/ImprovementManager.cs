@@ -1410,14 +1410,9 @@ namespace Chummer
                                 }
                             }
 
-                                if (intHits == 0)
-                                    continue;
-                                string strKey = kvpUsed.Key;
-                                if (dicValues.TryGetValue(strKey, out decimal decValue))
-                                    dicValues[strKey] = decValue + decDrugPositiveAttributeBonus * intHits;
-                                else // Just in case
-                                    dicValues.Add(strKey, decDrugPositiveAttributeBonus * intHits);
-                            }
+                            if (decExtra == 0)
+                                continue;
+                            dicValues[kvpUsed.Key] = dicValues[kvpUsed.Key] + decExtra;
                         }
                     }
 
