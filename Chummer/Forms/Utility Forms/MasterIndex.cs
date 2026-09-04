@@ -680,9 +680,7 @@ namespace Chummer
                                         x.SelectedIndex = -1;
                                     }
                                 }, token).ConfigureAwait(false);
-                                await lstItems.PopulateWithListItemsAsync(_lstItems, token).ConfigureAwait(false);
-                                await lstItems.DoThreadSafeAsync(x => x.SelectedIndex = -1, token)
-                                              .ConfigureAwait(false);
+                                await DoRefreshList(token).ConfigureAwait(false);
                             }
                         }
                         finally
@@ -715,6 +713,11 @@ namespace Chummer
         {
             if (_intSkipRefresh > 0)
                 return;
+            await DoRefreshList(_objGenericToken).ConfigureAwait(false);
+        }
+
+        private async Task DoRefreshList(CancellationToken token = default)
+        {
             CancellationTokenSource objNewCancellationTokenSource = new CancellationTokenSource();
             CancellationToken objNewToken = objNewCancellationTokenSource.Token;
             CancellationTokenSource objOldCancellationTokenSource = Interlocked.Exchange(ref _objRefreshListCancellationTokenSource, objNewCancellationTokenSource);
@@ -723,9 +726,9 @@ namespace Chummer
                 objOldCancellationTokenSource.Cancel(false);
                 objOldCancellationTokenSource.Dispose();
             }
-            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(_objGenericToken, objNewToken))
+            using (CancellationTokenSource objJoinedCancellationTokenSource = CancellationTokenSource.CreateLinkedTokenSource(token, objNewToken))
             {
-                CancellationToken token = objJoinedCancellationTokenSource.Token;
+                token = objJoinedCancellationTokenSource.Token;
                 try
                 {
                     CursorWait objCursorWait = await CursorWait.NewAsync(this, token: token).ConfigureAwait(false);

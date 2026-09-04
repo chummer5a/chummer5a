@@ -18,6 +18,7 @@ Application:
 - Chrome Flesh BTLs can be added from Create Custom Drug (no Foundation required) and activated like drugs. Downer and Upper apply their attribute modifiers; other CF BTLs are slottable with a source-page note.
 - Fixed drug-granted qualities remaining on the character after the drug is deactivated or deleted. Qualities from drug components are created when the drug's custom improvement group is enabled and removed when it is disabled. A quality `rating` attribute (e.g. Tank's High Pain Tolerance 3) is one improvement stub that grants that many stacked levels, not separate stubs.
 - Fixed addquality/addqualities improvements leaving the granted quality on the character after the parent item is removed. Standalone `<addquality>` bonus nodes (not wrapped in `<addqualities>`) are now processed the same way. Re-enabling a parent also restores the granted quality's bonuses.
+- Changing character settings in the Master Index no longer causes the displayed list of items to initially ignore the file and search filters.
 
 Bioware:
 - Implemented Narco (Chrome Flesh): each positive attribute modifier from an active physical drug is increased by +1. Applies to Custom Drug and Drugs categories, not BTLs. Existing characters with Narco need to Reapply Improvements.
