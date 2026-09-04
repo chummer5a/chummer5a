@@ -271,7 +271,7 @@ namespace Chummer.Tests
                 DefaultNodeMatcher objDiffNodeMatcher = new DefaultNodeMatcher(ElementSelectors.ByNameAndText);
                 foreach (Character objCharacterControl in GetTestCharacters(TestContext.CancellationToken))
                 {
-                    string strFileName = Path.GetFileName(objCharacterControl.FileName) ?? "Unknown";
+                    string strFileName = (Path.GetFileName(objCharacterControl.FileName) ?? "Unknown").CleanForFileName();
                     Debug.WriteLine("Saving Control for " + strFileName);
                     // First Load-Save cycle
                     string strDestinationControl = Path.Combine(CommonTestData.TestPathInfo.FullName, "(Control) " + strFileName);

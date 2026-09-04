@@ -718,10 +718,8 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             await lstWare.ForEachAsync(async objWare =>
             {
-                await (await objWare.GetDrugChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objDrug =>
-                {
-                    dicDrugCategoryByInternalId[objDrug.InternalId] = objDrug.Category ?? string.Empty;
-                }, token).ConfigureAwait(false);
+                await (await objWare.GetDrugChildrenAsync(token).ConfigureAwait(false))
+                    .ForEachAsync(x => dicDrugCategoryByInternalId[x.InternalId] = x.Category ?? string.Empty, token).ConfigureAwait(false);
                 await AddNestedDrugCategoriesToLookupAsync(
                     await objWare.GetChildrenAsync(token).ConfigureAwait(false),
                     dicDrugCategoryByInternalId, token).ConfigureAwait(false);

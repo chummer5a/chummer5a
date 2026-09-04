@@ -222,7 +222,8 @@ namespace Chummer.Backend
                 if (File.Exists(strChummerLog))
                     dump.AddFile(strChummerLog);
 
-                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture) + ".json");
+                string strDateTime = datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture).CleanForFileName();
+                string strJsonPath = Path.Combine(Utils.GetStartupPath, "chummer_crash_" + strDateTime + ".json");
                 using (FileStream objFileStream = new FileStream(strJsonPath, FileMode.Create, FileAccess.Write, FileShare.None))
                 using (StreamWriter objStreamWriter = new StreamWriter(objFileStream))
                 using (JsonTextWriter objJsonWriter = new JsonTextWriter(objStreamWriter))
@@ -234,11 +235,10 @@ namespace Chummer.Backend
                 string strCrashHandler = Path.Combine(Utils.GetStartupPath, "CrashHandler.exe");
                 if (File.Exists(strCrashHandler))
                 {
-                    string strArgs = "crash \"" + strJsonPath + "\" \"" + datCrashDateTime.ToFileTimeUtc().ToString(CultureInfo.InvariantCulture)
 #if DEBUG
-                        + "\" --debug";
+                    string strArgs = "crash \"" + strJsonPath + "\" \"" + strDateTime + "\" --debug";
 #else
-                        + "\"";
+                    string strArgs = "crash \"" + strJsonPath + "\" \"" + strDateTime + "\"";
 #endif
                     using (Process prcCrashHandler = Process.Start(strCrashHandler, strArgs))
                     {

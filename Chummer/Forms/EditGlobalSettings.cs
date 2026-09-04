@@ -1383,10 +1383,11 @@ namespace Chummer
                     using (OpenFileDialog dlgOpenFile = new OpenFileDialog())
                     {
                         dlgOpenFile.Filter = strFilter;
-                        if (!string.IsNullOrEmpty(txtPDFAppPath.Text) && File.Exists(txtPDFAppPath.Text))
+                        string strPdfAppPath = txtPDFAppPath.Text;
+                        if (!string.IsNullOrEmpty(strPdfAppPath) && File.Exists(strPdfAppPath))
                         {
-                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(txtPDFAppPath.Text);
-                            dlgOpenFile.FileName = Path.GetFileName(txtPDFAppPath.Text);
+                            dlgOpenFile.InitialDirectory = Path.GetDirectoryName(strPdfAppPath);
+                            dlgOpenFile.FileName = Path.GetFileName(strPdfAppPath);
                         }
 
                         DialogResult eReturn = dlgOpenFile.ShowDialog(x);
