@@ -5536,7 +5536,7 @@ namespace Chummer.Backend.Skills
 
                     if (lstConditionalImprovements.Count > 0)
                     {
-                        sbdReturn.Append(strSpace, '+').Append(strSpace, '(').AppendJoin(
+                        sbdReturn.Append(strSpace, '+', strSpace).Append('(').AppendJoin(
                             strSpace + LanguageManager.GetString("String_Or", token: token) + strSpace,
                             lstConditionalImprovements.Select(
                                 x => CharacterObject.GetObjectName(x, token: token) + strSpace + "("
@@ -5876,6 +5876,7 @@ namespace Chummer.Backend.Skills
                                 .Append(Math.Abs(intDefaultModifier).ToString(GlobalSettings.CultureInfo), ')');
                     }
 
+                    List<Improvement> lstConditionalImprovements = new List<Improvement>(lstRelevantImprovements.Count);
                     foreach (Improvement source in lstRelevantImprovements)
                     {
                         if (source.AddToRating
@@ -5887,11 +5888,30 @@ namespace Chummer.Backend.Skills
                             await CharacterObject.GetObjectNameAsync(source, token: token).ConfigureAwait(false));
                         if (!string.IsNullOrEmpty(source.Condition))
                         {
-                            string strDisplayCondition = await source.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false);
-                            sbdReturn.Append(strSpace, '(').Append(strDisplayCondition, ')');
+                            lstConditionalImprovements.Add(source);
+                            continue;
                         }
 
                         sbdReturn.Append(strSpace, '(').Append(source.Value.ToString(GlobalSettings.CultureInfo), ')');
+                    }
+
+                    if (lstConditionalImprovements.Count > 0)
+                    {
+                        sbdReturn.Append(strSpace, '+', strSpace).Append('(');
+                        string strConjunction = strSpace + await LanguageManager.GetStringAsync("String_Or", token: token).ConfigureAwait(false) + strSpace;
+                        bool blnAddConjunction = false;
+                        foreach (Improvement objImprovement in lstConditionalImprovements)
+                        {
+                            if (blnAddConjunction)
+                                sbdReturn.Append(strConjunction);
+                            else
+                                blnAddConjunction = true;
+                            sbdReturn
+                                .Append(await CharacterObject.GetObjectNameAsync(objImprovement, token: token).ConfigureAwait(false), strSpace, '(')
+                                .Append(objImprovement.Value.ToString(GlobalSettings.CultureInfo), ',', strSpace)
+                                .Append(await objImprovement.GetCurrentDisplayConditionAsync(token).ConfigureAwait(false), ')');
+                        }
+                        sbdReturn.Append(')');
                     }
 
                     int wound = await CharacterObject.GetWoundModifierAsync(token).ConfigureAwait(false);
