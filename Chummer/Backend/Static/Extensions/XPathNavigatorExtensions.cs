@@ -110,7 +110,7 @@ namespace Chummer
         public static bool ProcessFilterOperationNode(this XPathNavigator xmlParentNode,
                                                       XPathNavigator xmlOperationNode, bool blnIsOrNode, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode, token), token);
+            return Utils.SafelyRunSynchronously(t => ProcessFilterOperationNodeCoreAsync(true, xmlParentNode, xmlOperationNode, blnIsOrNode, t), token);
         }
 
         /// <summary>

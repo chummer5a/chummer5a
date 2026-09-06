@@ -433,7 +433,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, token), token);
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -611,8 +611,8 @@ namespace Chummer
                             };
                             if (blnSync)
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objEnhancement.Load(nodEnhancement);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objEnhancement.Load(nodEnhancement, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Enhancements.Add(objEnhancement);
                             }

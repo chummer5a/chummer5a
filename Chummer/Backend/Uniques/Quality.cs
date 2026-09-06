@@ -219,7 +219,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlQuality, QualitySource objQualitySource, IList<Weapon> lstWeapons, string strForceValue = "", string strSourceName = "", CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlQuality, objQualitySource, lstWeapons, strForceValue, strSourceName, t), token);
         }
 
         /// <summary>
@@ -577,9 +577,9 @@ namespace Chummer
         /// Load the Quality from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>

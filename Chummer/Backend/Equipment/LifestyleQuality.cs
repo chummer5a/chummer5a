@@ -460,9 +460,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="objParentLifestyle">Lifestyle object to which this LifestyleQuality belongs.</param>
-        public void Load(XmlNode objNode, Lifestyle objParentLifestyle)
+        public void Load(XmlNode objNode, Lifestyle objParentLifestyle, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, objParentLifestyle));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, objParentLifestyle, t), token);
         }
 
         /// <summary>

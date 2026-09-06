@@ -128,9 +128,9 @@ namespace Chummer.Backend.Equipment
             _colNotes = ColorTranslator.FromHtml(sNotesColor);
         }
 
-        public void Load(XmlNode objXmlData)
+        public void Load(XmlNode objXmlData, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objXmlData));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objXmlData, t), token);
         }
 
         public Task LoadAsync(XmlNode objXmlData, CancellationToken token = default)
@@ -167,7 +167,7 @@ namespace Chummer.Backend.Equipment
                     {
                         DrugComponent c = new DrugComponent(_objCharacter);
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                        c.Load(objXmlLevel);
+                        c.Load(objXmlLevel, token);
                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                         Components.Add(c);
                     }
@@ -2485,9 +2485,9 @@ namespace Chummer.Backend.Equipment
 
         #region Constructor, Create, Save, Load, and Print Methods
 
-        public void Load(XmlNode objXmlData)
+        public void Load(XmlNode objXmlData, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objXmlData));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objXmlData, t), token);
         }
 
         public Task LoadAsync(XmlNode objXmlData, CancellationToken token = default)

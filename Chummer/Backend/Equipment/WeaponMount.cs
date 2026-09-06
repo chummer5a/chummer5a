@@ -204,7 +204,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public void Create(XmlNode objXmlMod, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlMod, t), token);
         }
 
         /// <summary>
@@ -452,9 +452,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing Weapon Mount?</param>
-        public bool Load(XmlNode objNode, bool blnCopy = false)
+        public bool Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            return Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -465,7 +465,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public Task<bool> LoadAsync(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            return LoadCoreAsync(true, objNode, blnCopy, token);
+            return LoadCoreAsync(false, objNode, blnCopy, token);
         }
 
         private async Task<bool> LoadCoreAsync(bool blnSync, XmlNode objNode, bool blnCopy, CancellationToken token = default)
@@ -550,8 +550,8 @@ namespace Chummer.Backend.Equipment
                             VehicleMod objMod = new VehicleMod(_objCharacter);
                             try
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objMod.Load(xmlModNode, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objMod.Load(xmlModNode, blnCopy, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 Mods.Add(objMod);
                             }
@@ -598,16 +598,16 @@ namespace Chummer.Backend.Equipment
                                 if (Weapons.Count >= WeaponCapacity)
                                 {
                                     // Stop loading more weapons than we can actually mount and dump the rest into the character's basic inventory
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objWeapon.Load(xmlWeaponNode, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _objCharacter.Weapons.Add(objWeapon);
                                 }
                                 else
                                 {
                                     objWeapon.ParentMount = this;
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objWeapon.Load(xmlWeaponNode, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objWeapon.Load(xmlWeaponNode, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     Weapons.Add(objWeapon);
                                 }
@@ -2248,7 +2248,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public bool Create(XmlNode objXmlMod, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, token), token);
+            return Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlMod, t), token);
         }
 
         /// <summary>

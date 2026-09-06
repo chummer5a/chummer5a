@@ -252,8 +252,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlVehicle, bool blnSkipCost = false, bool blnCreateChildren = true,
             bool blnCreateImprovements = true, bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlVehicle, blnSkipCost, blnCreateChildren,
-                blnCreateImprovements, blnSkipSelectForms, blnForSelectForm, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlVehicle, blnSkipCost, blnCreateChildren,
+                blnCreateImprovements, blnSkipSelectForms, blnForSelectForm, t), token);
         }
 
         /// <summary>
@@ -1105,9 +1105,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing Vehicle?</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -1301,8 +1301,8 @@ namespace Chummer.Backend.Equipment
                             try
                             {
                                 objMod.Parent = this;
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objMod.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objMod.Load(nodChild, blnCopy, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstVehicleMods.Add(objMod);
                             }
@@ -1350,8 +1350,8 @@ namespace Chummer.Backend.Equipment
                             Gear objGear = new Gear(_objCharacter);
                             try
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objGear.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objGear.Load(nodChild, blnCopy, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstGear.Add(objGear);
                             }
@@ -1394,8 +1394,8 @@ namespace Chummer.Backend.Equipment
                         try
                         {
                             objWeapon.ParentVehicle = this;
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            objWeapon.Load(nodChild, blnCopy);
+                            // ReSharper disable once MethodHasAsyncOverload
+                            objWeapon.Load(nodChild, blnCopy, token);
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             _lstWeapons.Add(objWeapon);
                         }
@@ -1438,8 +1438,8 @@ namespace Chummer.Backend.Equipment
                     {
                         try
                         {
-                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                            if (wm.Load(nodChild, blnCopy))
+                            // ReSharper disable once MethodHasAsyncOverload
+                            if (wm.Load(nodChild, blnCopy, token))
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 WeaponMounts.Add(wm);
                             else

@@ -518,9 +518,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing lifestyle.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -741,8 +741,8 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objQuality.Load(xmlQuality, this, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);
                                 }
@@ -787,8 +787,8 @@ namespace Chummer.Backend.Equipment
                                 LifestyleQuality objQuality = new LifestyleQuality(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objQuality.Load(xmlQuality, this);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objQuality.Load(xmlQuality, this, token);
                                     objQuality.IsFreeGrid = true;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     LifestyleQualities.Add(objQuality);

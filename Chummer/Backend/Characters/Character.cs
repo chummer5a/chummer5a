@@ -552,7 +552,7 @@ namespace Chummer
 
         public XmlNode GetNode(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token), token);
+            return Utils.SafelyRunSynchronously(t => GetNodeCoreAsync(true, blnReturnMetatypeOnly, strLanguage, t), token);
         }
 
         public Task<XmlNode> GetNodeAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -608,7 +608,7 @@ namespace Chummer
 
         public XPathNavigator GetNodeXPath(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, token), token);
+            return Utils.SafelyRunSynchronously(t => GetNodeXPathCoreAsync(true, blnReturnMetatypeOnly, strLanguage, t), token);
         }
 
         public Task<XPathNavigator> GetNodeXPathAsync(bool blnReturnMetatypeOnly, string strLanguage = "", CancellationToken token = default)
@@ -4293,7 +4293,7 @@ namespace Chummer
         /// </summary>
         public bool Save(string strFileName = "", bool addToMRU = true, bool callOnSaveCallBack = true, LzmaHelper.ChummerCompressionPreset eOverrideCompressionLevel = LzmaHelper.ChummerCompressionPreset.None, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, eOverrideCompressionLevel, token), token);
+            return Utils.SafelyRunSynchronously(t => SaveCoreAsync(true, strFileName, addToMRU, callOnSaveCallBack, eOverrideCompressionLevel, t), token);
         }
 
         /// <summary>
@@ -6153,7 +6153,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to use.</param>
         public bool Load(string strFileName = "", LoadingBar frmLoadingForm = null, bool showWarnings = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, token), token);
+            return Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, strFileName, frmLoadingForm, showWarnings, t), token);
         }
 
         /// <summary>
@@ -7524,8 +7524,8 @@ namespace Chummer
                                         {
                                             if (blnSync)
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objMentor.Load(objXmlMentor);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objMentor.Load(objXmlMentor, token);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 _lstMentorSpirits.Add(objMentor);
                                             }
@@ -7885,8 +7885,8 @@ namespace Chummer
                                                     token.ThrowIfCancellationRequested();
                                                     if (blnSync)
                                                     {
-                                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                        objQuality.Load(objXmlQuality);
+                                                        // ReSharper disable once MethodHasAsyncOverload
+                                                        objQuality.Load(objXmlQuality, token);
                                                         // ReSharper disable once MethodHasAsyncOverload
                                                         if (_lstQualities.Any(x => x.InternalId == objQuality.InternalId, token))
                                                             // Corrects an issue arising from older versions of CorrectedUnleveledQuality()
@@ -8508,8 +8508,8 @@ namespace Chummer
                                             || xpathTraditionNavigator.SelectSingleNodeAndCacheExpression("id", token) != null)
                                         {
                                             if (blnSync)
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                _objTradition.Load(objXmlCharacter["tradition"]);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                _objTradition.Load(objXmlCharacter["tradition"], token);
                                             else
                                                 await _objTradition.LoadAsync(objXmlCharacter["tradition"], token).ConfigureAwait(false);
                                         }
@@ -8886,8 +8886,8 @@ namespace Chummer
                                     {
                                         try
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objArmor.Load(objXmlArmor);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objArmor.Load(objXmlArmor, token: token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstArmor.Add(objArmor);
                                         }
@@ -8941,8 +8941,8 @@ namespace Chummer
                                     {
                                         try
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objDrug.Load(objXmlDrug);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objDrug.Load(objXmlDrug, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstDrugs.Add(objDrug);
                                         }
@@ -9430,8 +9430,8 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objSpell.Load(objXmlSpell);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objSpell.Load(objXmlSpell, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstSpells.Add(objSpell);
                                         }
@@ -9705,8 +9705,8 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objComplexForm.Load(objXmlComplexForm);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objComplexForm.Load(objXmlComplexForm, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstComplexForms.Add(objComplexForm);
                                         }
@@ -9756,8 +9756,8 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objProgram.Load(objXmlProgram);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objProgram.Load(objXmlProgram, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstAIPrograms.Add(objProgram);
                                         }
@@ -9807,8 +9807,8 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objMartialArt.Load(objXmlArt);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objMartialArt.Load(objXmlArt, token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstMartialArts.Add(objMartialArt);
                                         }
@@ -9855,8 +9855,8 @@ namespace Chummer
                                     LimitModifier objLimitModifier = new LimitModifier(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objLimitModifier.Load(objXmlLimit);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objLimitModifier.Load(objXmlLimit, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstLimitModifiers.Add(objLimitModifier);
                                     }
@@ -9895,8 +9895,8 @@ namespace Chummer
                                     {
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objLifestyle.Load(objXmlLifestyle);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objLifestyle.Load(objXmlLifestyle, token: token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstLifestyles.Add(objLifestyle);
                                         }
@@ -9945,8 +9945,8 @@ namespace Chummer
                                     {
                                         try
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objGear.Load(objXmlGear);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objGear.Load(objXmlGear, token: token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstGear.Add(objGear);
                                         }
@@ -10150,8 +10150,8 @@ namespace Chummer
                                     {
                                         try
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objVehicle.Load(objXmlVehicle);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objVehicle.Load(objXmlVehicle, token: token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstVehicles.Add(objVehicle);
                                         }
@@ -10205,8 +10205,8 @@ namespace Chummer
                                     {
                                         try
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objWeapon.Load(objXmlWeapon);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objWeapon.Load(objXmlWeapon, token: token);
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             _lstWeapons.Add(objWeapon);
                                         }
@@ -10259,8 +10259,8 @@ namespace Chummer
                                     Metamagic objMetamagic = new Metamagic(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objMetamagic.Load(objXmlMetamagic);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objMetamagic.Load(objXmlMetamagic, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstMetamagics.Add(objMetamagic);
                                     }
@@ -10297,8 +10297,8 @@ namespace Chummer
                                     Art objArt = new Art(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objArt.Load(objXmlArt);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objArt.Load(objXmlArt, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstArts.Add(objArt);
                                     }
@@ -10336,8 +10336,8 @@ namespace Chummer
                                     Enhancement objEnhancement = new Enhancement(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objEnhancement.Load(objXmlEnhancement);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objEnhancement.Load(objXmlEnhancement, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstEnhancements.Add(objEnhancement);
                                     }
@@ -10374,8 +10374,8 @@ namespace Chummer
                                     CritterPower objPower = new CritterPower(this);
                                     if (blnSync)
                                     {
-                                        // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                        objPower.Load(objXmlPower);
+                                        // ReSharper disable once MethodHasAsyncOverload
+                                        objPower.Load(objXmlPower, token);
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         _lstCritterPowers.Add(objPower);
                                     }
@@ -10490,8 +10490,8 @@ namespace Chummer
                                         ExpenseLogEntry objExpenseLogEntry = new ExpenseLogEntry(this);
                                         if (blnSync)
                                         {
-                                            // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                            objExpenseLogEntry.Load(objXmlExpense);
+                                            // ReSharper disable once MethodHasAsyncOverload
+                                            objExpenseLogEntry.Load(objXmlExpense, token);
                                             _lstExpenseLog.AddWithSort(objExpenseLogEntry, token: token);
                                         }
                                         else
@@ -11294,7 +11294,7 @@ namespace Chummer
                             {
                                 while (_setPostLoadAsyncMethods.TryTake(out Func<CancellationToken, Task<bool>> funcToCall))
                                 {
-                                    if (!Utils.SafelyRunSynchronously(() => funcToCall.Invoke(token), token))
+                                    if (!Utils.SafelyRunSynchronously(t => funcToCall.Invoke(t), token))
                                         return false;
                                 }
                             }
@@ -16493,7 +16493,7 @@ namespace Chummer
                         foreach (XmlNode objNode in xmlGradeList)
                         {
                             Grade objGrade = new Grade(this, objSource);
-                            objGrade.Load(objNode);
+                            objGrade.Load(objNode, token);
                             yield return objGrade;
                         }
                     }
@@ -19996,7 +19996,7 @@ namespace Chummer
 
         public void SaveMugshots(XmlWriter objWriter, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => SaveMugshotsCore(true, objWriter, token), token);
+            Utils.SafelyRunSynchronously(t => SaveMugshotsCore(true, objWriter, t), token);
         }
 
         public Task SaveMugshotsAsync(XmlWriter objWriter, CancellationToken token = default)
@@ -51099,17 +51099,17 @@ namespace Chummer
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "")
+        public bool LoadFromHeroLabFile(string strPorFile, string strCharacterId, string strSettingsKey = "", CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey));
+            return Utils.SafelyRunSynchronously(t => LoadFromHeroLabFileCoreAsync(true, strPorFile, strCharacterId, strSettingsKey, t), token);
         }
 
         /// <summary>
         /// Load the Character from an XML file.
         /// </summary>
-        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsKey = "")
+        public Task<bool> LoadFromHeroLabFileAsync(string strPorFile, string strCharacterId, string strSettingsKey = "", CancellationToken token = default)
         {
-            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsKey);
+            return LoadFromHeroLabFileCoreAsync(false, strPorFile, strCharacterId, strSettingsKey, token);
         }
 
         /// <summary>
@@ -55907,7 +55907,7 @@ namespace Chummer
         /// </summary>
         public bool ProcessQualityLevels(CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => ProcessQualityLevelsCoreAsync(true, token), token);
+            return Utils.SafelyRunSynchronously(t => ProcessQualityLevelsCoreAsync(true, t), token);
         }
 
         /// <summary>

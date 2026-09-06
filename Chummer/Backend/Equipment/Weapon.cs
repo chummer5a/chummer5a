@@ -447,8 +447,8 @@ namespace Chummer.Backend.Equipment
             bool blnCreateImprovements = true, bool blnSkipCost = false, int intRating = 0, bool blnForSelectForm = false,
             CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlWeapon, lstWeapons, blnCreateChildren,
-                blnCreateImprovements, blnSkipCost, intRating, blnForSelectForm, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlWeapon, lstWeapons, blnCreateChildren,
+                blnCreateImprovements, blnSkipCost, intRating, blnForSelectForm, t), token);
         }
 
         /// <summary>
@@ -1406,9 +1406,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing weapon?</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -1580,8 +1580,8 @@ namespace Chummer.Backend.Equipment
                                 WeaponAccessory objAccessory = new WeaponAccessory(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objAccessory.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objAccessory.Load(nodChild, blnCopy, token);
                                     objAccessory.Parent = this;
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstAccessories.Add(objAccessory);
@@ -1861,8 +1861,8 @@ namespace Chummer.Backend.Equipment
                                 objUnderbarrel.ParentVehicle = ParentVehicle;
                                 if (blnSync)
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objUnderbarrel.Load(nodWeapon, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objUnderbarrel.Load(nodWeapon, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstUnderbarrel.Add(objUnderbarrel);
                                 }
@@ -4444,10 +4444,10 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// Weapon's Damage including all Accessories, Modifications, Attributes, and Ammunition.
         /// </summary>
-        public string CalculatedDamage(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
+        public string CalculatedDamage(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() =>
-                CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
+            return Utils.SafelyRunSynchronously(t =>
+                CalculatedDamageCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, t), token);
         }
 
         /// <summary>
@@ -5111,7 +5111,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedAmmo(CultureInfo objCulture, string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedAmmoCoreAsync(true, objCulture, strLanguage, token),
+            return Utils.SafelyRunSynchronously(t => CalculatedAmmoCoreAsync(true, objCulture, strLanguage, t),
                 token);
         }
 
@@ -5580,7 +5580,7 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         public string CalculatedMode(string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedModeCoreAsync(true, strLanguage, blnIncludeAmmo, token),
+            return Utils.SafelyRunSynchronously(t => CalculatedModeCoreAsync(true, strLanguage, blnIncludeAmmo, t),
                 token);
         }
 
@@ -6470,9 +6470,9 @@ namespace Chummer.Backend.Equipment
         /// <summary>
         /// The Weapon's total AP including Ammunition.
         /// </summary>
-        public string TotalAP(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true)
+        public string TotalAP(CultureInfo objCulture, string strLanguage, bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo));
+            return Utils.SafelyRunSynchronously(t => TotalAPCoreAsync(true, objCulture, strLanguage, blnIncludeAmmo, t), token);
         }
 
         /// <summary>
@@ -6894,10 +6894,10 @@ namespace Chummer.Backend.Equipment
         /// The Weapon's total RC including Accessories and Modifications. The first item is the RC, the second is the tooltip.
         /// </summary>
         public ValueTuple<string, string> TotalRC(CultureInfo objCulture, string strLanguage, bool blnWithTooltip = false,
-            bool blnIncludeAmmo = true)
+            bool blnIncludeAmmo = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() =>
-                TotalRCCoreAsync(true, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo));
+            return Utils.SafelyRunSynchronously(t =>
+                TotalRCCoreAsync(true, objCulture, strLanguage, blnWithTooltip, blnIncludeAmmo, t), token);
         }
 
         /// <summary>

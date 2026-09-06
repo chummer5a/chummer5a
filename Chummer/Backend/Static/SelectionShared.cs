@@ -52,10 +52,10 @@ namespace Chummer
             if (objCharacter.IgnoreRules)
                 return true;
             XPathNavigator objNavigator = xmlNode.CreateNavigator();
-            return Utils.SafelyRunSynchronously(() => objNavigator.RequirementsMetCoreAsync(
+            return Utils.SafelyRunSynchronously(t => objNavigator.RequirementsMetCoreAsync(
                                                     true, objCharacter, objParent, strLocalName,
                                                     strIgnoreQuality, strLocation,
-                                                    blnIgnoreLimit, token), token);
+                                                    blnIgnoreLimit, t), token);
         }
 
         /// <summary>Evaluates requirements of a given node against a given Character object.</summary>
@@ -96,8 +96,8 @@ namespace Chummer
                                            bool blnIgnoreLimit = false, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
-                                                       strLocation, blnIgnoreLimit, token), token);
+                t => xmlNode.RequirementsMetCoreAsync(true, objCharacter, objParent, strLocalName, strIgnoreQuality,
+                                                       strLocation, blnIgnoreLimit, t), token);
         }
 
         //TODO: Might be a better location for this; Class names are screwy.
@@ -663,8 +663,8 @@ namespace Chummer
                         // The character is not allowed to take the Quality, so display a message and uncheck the item.
                         (bool blnLoopSuccess, string strName) = blnSync
                             ? Utils.SafelyRunSynchronously(
-                                () => xmlForbiddenItemNode.TestNodeRequirementsAsync(
-                                    true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                t => xmlForbiddenItemNode.TestNodeRequirementsAsync(
+                                    true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                             : await xmlForbiddenItemNode
                                     .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                blnShowMessage, token).ConfigureAwait(false);
@@ -731,8 +731,8 @@ namespace Chummer
                             {
                                 (bool blnLoopSuccess, string strName) = blnSync
                                     ? Utils.SafelyRunSynchronously(
-                                        () => xmlRequiredItemNode.TestNodeRequirementsAsync(
-                                            true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                        t => xmlRequiredItemNode.TestNodeRequirementsAsync(
+                                            true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                                     : await xmlRequiredItemNode
                                             .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                        blnShowMessage, token).ConfigureAwait(false);
@@ -783,8 +783,8 @@ namespace Chummer
                                     // If this item was not found, fail the AllOfMet condition.
                                     (bool blnLoopSuccess, string strName) = blnSync
                                         ? Utils.SafelyRunSynchronously(
-                                            () => xmlRequiredItemNode.TestNodeRequirementsAsync(
-                                                true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, token), token)
+                                            t => xmlRequiredItemNode.TestNodeRequirementsAsync(
+                                                true, objCharacter, objParent, strIgnoreQuality, blnShowMessage, t), token)
                                         : await xmlRequiredItemNode
                                                 .TestNodeRequirementsAsync(false, objCharacter, objParent, strIgnoreQuality,
                                                                            blnShowMessage, token).ConfigureAwait(false);
@@ -1082,10 +1082,10 @@ namespace Chummer
                 case "bioware":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.ExactNameOrId, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1093,10 +1093,10 @@ namespace Chummer
                 case "cyberware":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId,
                                 "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText,
-                                strSpace, blnShowMessage, token), token)
+                                strSpace, blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.ExactNameOrId, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1104,10 +1104,10 @@ namespace Chummer
                 case "biowarecategory":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.Category, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1115,10 +1115,10 @@ namespace Chummer
                 case "cyberwarecategory":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
                                 "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace,
-                                blnShowMessage, token), token)
+                                blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.Category, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", true, strNodeInnerText, strSpace, blnShowMessage,
@@ -1126,10 +1126,10 @@ namespace Chummer
                 case "biowarecontains":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
                                 "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
-                                token), token)
+                                t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Bioware, WareMatchMode.NameContains, "Label_Bioware",
                             "bioware.xml", "biowares/bioware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1137,10 +1137,10 @@ namespace Chummer
                 case "cyberwarecontains":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledWareRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains,
                                 "Label_Cyberware", "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText,
-                                strSpace, blnShowMessage, token), token)
+                                strSpace, blnShowMessage, t), token)
                         : await TestInstalledWareRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             Improvement.ImprovementSource.Cyberware, WareMatchMode.NameContains, "Label_Cyberware",
                             "cyberware.xml", "cyberwares/cyberware", false, strNodeInnerText, strSpace, blnShowMessage,
@@ -1349,24 +1349,24 @@ namespace Chummer
                 case "gear":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
-                                "gear.xml", "gears/gear", "String_Gear", token), token)
+                                "gear.xml", "gears/gear", "String_Gear", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.Gear, strNodeInnerText, strSpace, blnShowMessage,
                             "gear.xml", "gears/gear", "String_Gear", token).ConfigureAwait(false);
                 case "group":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
-                                strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token), token)
+                            t => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, t), token)
                         : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
                             strIgnoreQuality, RequirementGroupMode.AllOf, blnShowMessage, token).ConfigureAwait(false);
                 case "grouponeof":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
-                                strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token), token)
+                            t => TestGroupedRequirementsCoreAsync(true, xmlNode, objCharacter, objParent,
+                                strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, t), token)
                         : await TestGroupedRequirementsCoreAsync(false, xmlNode, objCharacter, objParent,
                             strIgnoreQuality, RequirementGroupMode.OneOf, blnShowMessage, token).ConfigureAwait(false);
                 case "initiategrade":
@@ -1774,9 +1774,9 @@ namespace Chummer
                 case "power":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
-                                "powers.xml", "powers/power", "Tab_Adept", token), token)
+                                "powers.xml", "powers/power", "Tab_Adept", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.Power, strNodeInnerText, strSpace, blnShowMessage,
                             "powers.xml", "powers/power", "Tab_Adept", token).ConfigureAwait(false);
@@ -1800,15 +1800,15 @@ namespace Chummer
                 case "quality":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                            t => TestInstalledCharacterQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledCharacterQualityRequirementCoreAsync(false, xmlNode, objCharacter,
                             strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                 case "lifestylequality":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
-                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token), token)
+                            t => TestInstalledLifestyleQualityRequirementCoreAsync(true, xmlNode, objCharacter,
+                                objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, t), token)
                         : await TestInstalledLifestyleQualityRequirementCoreAsync(false, xmlNode, objCharacter,
                             objParent, strNodeInnerText, strSpace, strIgnoreQuality, blnShowMessage, token)
                             .ConfigureAwait(false);
@@ -2544,9 +2544,9 @@ namespace Chummer
                 case "armormod":
                     return blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
+                            t => TestInstalledDataItemRequirementCoreAsync(true, xmlNode, objCharacter, objParent,
                                 InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
-                                "armor.xml", "armormods/armormod", "String_ArmorMod", token), token)
+                                "armor.xml", "armormods/armormod", "String_ArmorMod", t), token)
                         : await TestInstalledDataItemRequirementCoreAsync(false, xmlNode, objCharacter, objParent,
                             InstalledDataItemRequirementKind.ArmorMod, strNodeInnerText, strSpace, blnShowMessage,
                             "armor.xml", "armormods/armormod", "String_ArmorMod", token).ConfigureAwait(false);
@@ -2767,8 +2767,8 @@ namespace Chummer
             if (blnSync)
             {
                 return Utils.SafelyRunSynchronously(
-                    () => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, token), token);
+                    t => BuildInstalledWareRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strLabelKey, strDataFile, strItemXPathBase, eMatchMode, t), token);
             }
 
             return await BuildInstalledWareRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
@@ -2839,8 +2839,8 @@ namespace Chummer
             if (blnSync)
             {
                 return Utils.SafelyRunSynchronously(
-                    () => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
-                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, token), token);
+                    t => BuildDataItemRequirementRestrictionMessageCoreAsync(true, objCharacter, strNodeInnerText,
+                        strSpace, strDataFile, strItemXPathBase, strTypeLabelKey, t), token);
             }
 
             return await BuildDataItemRequirementRestrictionMessageCoreAsync(false, objCharacter, strNodeInnerText,
@@ -2943,8 +2943,8 @@ namespace Chummer
                 {
                     (bool blnLoopResult, string strLoopResult) = blnSync
                         ? Utils.SafelyRunSynchronously(
-                            () => xmlChildNode.TestNodeRequirementsAsync(true, objCharacter, objParent,
-                                strIgnoreQuality, blnShowMessage, token), token)
+                            t => xmlChildNode.TestNodeRequirementsAsync(true, objCharacter, objParent,
+                                strIgnoreQuality, blnShowMessage, t), token)
                         : await xmlChildNode.TestNodeRequirementsAsync(false, objCharacter, objParent,
                             strIgnoreQuality, blnShowMessage, token).ConfigureAwait(false);
                     if (eMode == RequirementGroupMode.AllOf)

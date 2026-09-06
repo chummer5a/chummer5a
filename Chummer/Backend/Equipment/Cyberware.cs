@@ -845,10 +845,10 @@ namespace Chummer.Backend.Equipment
             bool blnCreateChildren = true, string strForced = "", Cyberware objParent = null,
             Vehicle objParentVehicle = null, bool blnSkipSelectForms = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlCyberware, objGrade, objSource, intRating,
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlCyberware, objGrade, objSource, intRating,
                 lstWeapons, lstVehicles,
                 blnCreateImprovements, blnCreateChildren, strForced, objParent, objParentVehicle, blnSkipSelectForms,
-                token), token);
+                t), token);
         }
 
         /// <summary>
@@ -1529,9 +1529,9 @@ namespace Chummer.Backend.Equipment
                     if (blnSync)
                     {
                         if (Children.Count > 0)
-                            Utils.SafelyRunSynchronously(() => CyberwareChildrenOnCollectionChanged(
+                            Utils.SafelyRunSynchronously(t => CyberwareChildrenOnCollectionChanged(
                                 this, new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children),
-                                token), token);
+                                t), token);
                     }
                     else if (await (await GetChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0)
                         await CyberwareChildrenOnCollectionChanged(this,
@@ -2442,7 +2442,7 @@ namespace Chummer.Backend.Equipment
         /// <param name="token">Cancellation token to listen to.</param>
         public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy, token), token);
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -2775,8 +2775,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objGear.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGear.Load(nodChild, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }
@@ -2813,12 +2813,12 @@ namespace Chummer.Backend.Equipment
                             {
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objDrug.Load(nodChild);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objDrug.Load(nodChild, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstDrug.Add(objDrug);
                                     // Legacy gland drugs had no improvements; create disabled group if missing.
-                                    await objDrug.GenerateImprovement(token).ConfigureAwait(false);
+                                    Utils.SafelyRunSynchronously(t => objDrug.GenerateImprovement(t), token);
                                 }
                                 catch
                                 {
@@ -3048,9 +3048,9 @@ namespace Chummer.Backend.Equipment
                     if (blnSync)
                     {
                         if (Children.Count > 0)
-                            Utils.SafelyRunSynchronously(() => CyberwareChildrenOnCollectionChanged(
+                            Utils.SafelyRunSynchronously(t => CyberwareChildrenOnCollectionChanged(
                                 this,
-                                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children), token), token);
+                                new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Add, Children), t), token);
                     }
                     else if (await (await GetChildrenAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) > 0)
                         await CyberwareChildrenOnCollectionChanged(
@@ -9275,9 +9275,9 @@ namespace Chummer.Backend.Equipment
             }
         }
 
-        public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade)
+        public decimal GetCalculatedESSPrototypeInvariant(int intRating, Grade objGrade, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade));
+            return Utils.SafelyRunSynchronously(t => GetCalculatedESSPrototypeInvariantCoreAsync(true, intRating, objGrade, t), token);
         }
 
         public Task<decimal> GetCalculatedESSPrototypeInvariantAsync(int intRating, Grade objGrade, CancellationToken token = default)

@@ -1650,7 +1650,7 @@ namespace Chummer
                     s_xmlClipboard.ImportNode(value, true);
 
                     if (ClipboardChangedAsync != null)
-                        Utils.SafelyRunSynchronously(() => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), token), token);
+                        Utils.SafelyRunSynchronously(t => ClipboardChangedAsync.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)), t), token);
                     ClipboardChanged?.Invoke(null, new PropertyChangedEventArgs(nameof(Clipboard)));
                 }
             }

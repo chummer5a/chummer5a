@@ -175,8 +175,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlAccessory, ValueTuple<string, string> strMount, int intRating,
             bool blnSkipCost = false, bool blnCreateChildren = true, bool blnCreateImprovements = true, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlAccessory, strMount, intRating, blnSkipCost,
-                blnCreateChildren, blnCreateImprovements, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlAccessory, strMount, intRating, blnSkipCost,
+                blnCreateChildren, blnCreateImprovements, t), token);
         }
 
         /// <summary>
@@ -591,9 +591,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing weapon accessory.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -694,8 +694,8 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objGear.Load(nodChild, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGear.Load(nodChild, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }

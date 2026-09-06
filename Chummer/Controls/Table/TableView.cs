@@ -346,9 +346,9 @@ namespace Chummer.UI.Table
                     Func<T, T, CancellationToken, Task<int>> comparison = _sortColumn.CreateSorter();
                     objJoinedToken.ThrowIfCancellationRequested();
                     _lstPermutation.Sort((i1, i2) => Utils.SafelyRunSynchronously(
-                                             async () => await comparison(
+                                             async t => await comparison(
                                                      await Items.GetValueAtAsync(i1, objJoinedToken).ConfigureAwait(false),
-                                                     await Items.GetValueAtAsync(i2, objJoinedToken).ConfigureAwait(false), objJoinedToken)
+                                                     await Items.GetValueAtAsync(i2, objJoinedToken).ConfigureAwait(false), t)
                                                  .ConfigureAwait(false), objJoinedToken));
                     objJoinedToken.ThrowIfCancellationRequested();
                     if (_eSortType == SortOrder.Descending)

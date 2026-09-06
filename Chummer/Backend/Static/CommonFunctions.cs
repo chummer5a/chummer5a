@@ -2287,7 +2287,7 @@ namespace Chummer
         /// <param name="token">Cancellation token to listen to.</param>
         public static string GetTextFromPdf(string strSource, string strText, CharacterSettings objSettings = null, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, token), token);
+            return Utils.SafelyRunSynchronously(t => GetTextFromPdfCoreAsync(true, strSource, strText, objSettings, t), token);
         }
 
         /// <summary>
@@ -2442,20 +2442,20 @@ namespace Chummer
             int intBlockEndIndex = -1;
             int intExtraAllCapsInfo = 0;
             bool blnTitleWithColon = false; // it is either an uppercase title or title in a paragraph with a colon
-            string strReturn = blnSync ? Utils.SafelyRunSynchronously(FetchTexts, token) : await FetchTexts().ConfigureAwait(false);
+            string strReturn = blnSync ? Utils.SafelyRunSynchronously(FetchTexts, token) : await FetchTexts(token).ConfigureAwait(false);
 
-            async Task<string> FetchTexts()
+            async Task<string> FetchTexts(CancellationToken innerToken)
             {
-                token.ThrowIfCancellationRequested();
+                innerToken.ThrowIfCancellationRequested();
                 PdfDocument objPdfDocument = objBookInfo.CachedPdfDocument;
                 if (objPdfDocument == null)
                     return string.Empty;
-                token.ThrowIfCancellationRequested();
+                innerToken.ThrowIfCancellationRequested();
                 int intMaxPagesToRead = 3; // parse at most 3 pages of content
                 // Loop through each page, starting at the listed page + offset.
                 for (; intPage <= objPdfDocument.GetNumberOfPages(); ++intPage)
                 {
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     // failsafe if something goes wrong, I guess no description takes more than two full pages?
                     if (intMaxPagesToRead-- == 0)
                         break;
@@ -2465,35 +2465,35 @@ namespace Chummer
                     // this way we don't need to check for previous page appearing in the current page
                     // https://stackoverflow.com/questions/35911062/why-are-gettextfrompage-from-itextsharp-returning-longer-and-longer-strings
 
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     string strPageText = string.Empty;
                     try
                     {
                         strPageText = blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? GetPdfTextFromPageSafe(objPdfDocument, intPage, token)
-                            : await GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, token).ConfigureAwait(false);
+                            ? GetPdfTextFromPageSafe(objPdfDocument, intPage, innerToken)
+                            : await GetPdfTextFromPageSafeAsync(objPdfDocument, intPage, innerToken).ConfigureAwait(false);
                     }
                     catch (IndexOutOfRangeException)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         return blnSync
                             // ReSharper disable once MethodHasAsyncOverload
-                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, token)
-                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, token)
+                            ? LanguageManager.GetString("Error_Message_PDF_IndexOutOfBounds", false, innerToken)
+                            : await LanguageManager.GetStringAsync("Error_Message_PDF_IndexOutOfBounds", false, innerToken)
                                                    .ConfigureAwait(false);
                     }
                     // Don't generate a new canceled exception if the one we generated originates from our token
-                    catch (OperationCanceledException) when (!token.IsCancellationRequested)
+                    catch (OperationCanceledException) when (!innerToken.IsCancellationRequested)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                     }
                     // All sorts of weird things can happen when we hammer I/O from constantly running tasks, and there's no good way of handling these without this very broad try-catch
 #if DEBUG
                     catch (Exception e)
                     {
                         // Make sure we throw the cancellation token if it was triggered first
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         Utils.BreakIfDebug();
                         return e.ToString();
                     }
@@ -2501,15 +2501,15 @@ namespace Chummer
                     catch (Exception)
                     {
                         // Make sure we throw the cancellation token if it was triggered first
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         return string.Empty;
                     }
 #endif
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
 
                     strPageText = strPageText.CleanStylisticLigatures().NormalizeWhiteSpace()
                                              .NormalizeLineEndings().CleanOfXmlInvalidUnicodeChars();
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
 
                     // don't trust it to be correct, trim all whitespace and remove empty strings before we even start
                     lstStringFromPdf.AddRange(strPageText
@@ -2518,14 +2518,14 @@ namespace Chummer
 
                     for (int i = intProcessedStrings; i < lstStringFromPdf.Count; i++)
                     {
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         // failsafe for languages that don't have case distinction (chinese, japanese, etc)
                         // there not much to be done for those languages, so stop after 10 continuous lines of uppercase text after our title
                         if (intExtraAllCapsInfo > 10)
                             break;
 
                         string strCurrentLine = lstStringFromPdf[i];
-                        token.ThrowIfCancellationRequested();
+                        innerToken.ThrowIfCancellationRequested();
                         // we still haven't found anything
                         if (intTitleIndex == -1)
                         {
@@ -2536,7 +2536,7 @@ namespace Chummer
                                 // if the line is smaller first check if it contains the start of the text, before parsing the rest
                                 if (strTextToSearch.StartsWith(strCurrentLine, StringComparison.OrdinalIgnoreCase))
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    innerToken.ThrowIfCancellationRequested();
                                     // now just add more lines to it until it is enough
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdCurrentLine))
@@ -2545,7 +2545,7 @@ namespace Chummer
                                         while (sbdCurrentLine.Length < intTextToSearchLength
                                                && i + intTitleExtraLines + 1 < lstStringFromPdf.Count)
                                         {
-                                            token.ThrowIfCancellationRequested();
+                                            innerToken.ThrowIfCancellationRequested();
                                             intTitleExtraLines++;
                                             // add the content plus a space
                                             sbdCurrentLine.Append(' ', lstStringFromPdf[i + intTitleExtraLines]);
@@ -2601,7 +2601,7 @@ namespace Chummer
                             // it is something in all caps we need to verify what it is
                             if (strCurrentLine.IsAllLettersUpperCase())
                             {
-                                token.ThrowIfCancellationRequested();
+                                innerToken.ThrowIfCancellationRequested();
                                 // if it is header or footer information just remove it
                                 // do we also include lines with just numbers as probably page numbers??
                                 if (strCurrentLine.All(char.IsDigit) || strCurrentLine.ContainsAny(">>", "<<"))

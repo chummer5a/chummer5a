@@ -158,8 +158,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlMod, int intRating, Vehicle objParent,
             string strForcedValue = "", bool blnSkipSelectForms = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlMod, intRating, objParent,
-                strForcedValue, blnSkipSelectForms, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlMod, intRating, objParent,
+                strForcedValue, blnSkipSelectForms, t), token);
         }
 
         /// <summary>
@@ -472,9 +472,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Are we loading a copy of an existing Vehicle Mod?</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -572,8 +572,8 @@ namespace Chummer.Backend.Equipment
                             {
                                 objWeapon.ParentVehicle = Parent;
                                 objWeapon.ParentVehicleMod = this;
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objWeapon.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objWeapon.Load(nodChild, blnCopy, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstVehicleWeapons.Add(objWeapon);
                             }

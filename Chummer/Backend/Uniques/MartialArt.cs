@@ -354,9 +354,9 @@ namespace Chummer
         /// Load the Martial Art from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -413,8 +413,8 @@ namespace Chummer
                             foreach (XmlNode nodTechnique in xmlLegacyTechniqueList)
                             {
                                 MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objTechnique.Load(nodTechnique, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstTechniques.Add(objTechnique);
                             }
@@ -440,8 +440,8 @@ namespace Chummer
                             foreach (XmlNode nodTechnique in xmlTechniqueList)
                             {
                                 MartialArtTechnique objTechnique = new MartialArtTechnique(_objCharacter);
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objTechnique.Load(nodTechnique);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objTechnique.Load(nodTechnique, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstTechniques.Add(objTechnique);
                             }

@@ -943,9 +943,9 @@ namespace Chummer.Backend.Skills
         /// <summary>
         /// Loads skill saved in legacy format
         /// </summary>
-        public static Skill LegacyLoad(Character objCharacter, XmlNode xmlSkillNode)
+        public static Skill LegacyLoad(Character objCharacter, XmlNode xmlSkillNode, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LegacyLoadCoreAsync(true, objCharacter, xmlSkillNode));
+            return Utils.SafelyRunSynchronously(t => LegacyLoadCoreAsync(true, objCharacter, xmlSkillNode, t), token);
         }
 
         /// <summary>

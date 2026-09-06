@@ -12936,7 +12936,7 @@ namespace Chummer
 
             try
             {
-                Utils.SafelyRunSynchronously(() => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable, GenericToken),
+                Utils.SafelyRunSynchronously(t => MoveTreeNode(objSelectedNode, intNewIndex, requireParentSortable, t),
                                              GenericToken);
             }
             catch (OperationCanceledException)

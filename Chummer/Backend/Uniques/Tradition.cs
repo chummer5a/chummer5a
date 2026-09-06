@@ -487,9 +487,9 @@ namespace Chummer.Backend.Uniques
         /// Load the Tradition from the XmlNode.
         /// </summary>
         /// <param name="xmlNode">XmlNode to load.</param>
-        public void Load(XmlNode xmlNode)
+        public void Load(XmlNode xmlNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, xmlNode, t), token);
         }
 
         /// <summary>

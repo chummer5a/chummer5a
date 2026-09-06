@@ -179,9 +179,9 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlGear, int intRating, ICollection<Weapon> lstWeapons, string strForceValue = "",
             bool blnAddImprovements = true, bool blnCreateChildren = true, bool blnSkipSelectForms = false, object objParent = null, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlGear, intRating, lstWeapons, strForceValue,
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlGear, intRating, lstWeapons, strForceValue,
                 blnAddImprovements,
-                blnCreateChildren, blnSkipSelectForms, objParent, token), token);
+                blnCreateChildren, blnSkipSelectForms, objParent, t), token);
         }
 
         /// <summary>
@@ -1659,9 +1659,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing gear.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -1796,8 +1796,8 @@ namespace Chummer.Backend.Equipment
                             Gear objGear = new Gear(_objCharacter);
                             try
                             {
-                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                objGear.Load(nodChild, blnCopy);
+                                // ReSharper disable once MethodHasAsyncOverload
+                                objGear.Load(nodChild, blnCopy, token);
                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                 _lstChildren.Add(objGear);
                             }

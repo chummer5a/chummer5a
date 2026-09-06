@@ -290,7 +290,7 @@ namespace Chummer
                                             {
                                                 CancellationToken objTimeoutToken = objTimeout.Token;
                                                 Utils.SafelyRunSynchronously(
-                                                    () => objLocalTelemetryClient.FlushAsync(objTimeoutToken),
+                                                    t => objLocalTelemetryClient.FlushAsync(t),
                                                     objTimeoutToken);
                                             }
                                         }
@@ -630,7 +630,7 @@ namespace Chummer
                                        = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
                                 {
                                     CancellationToken objTimeoutToken = objTimeout.Token;
-                                    Utils.SafelyRunSynchronously(() => objTelemetryClient.FlushAsync(objTimeoutToken),
+                                    Utils.SafelyRunSynchronously(t => objTelemetryClient.FlushAsync(t),
                                                                  objTimeoutToken);
                                 }
                             }
@@ -1262,8 +1262,8 @@ namespace Chummer
         public static Character LoadCharacter(string strFileName, string strNewName = "", bool blnClearFileName = false, bool blnShowErrors = true, LoadingBar frmLoadingBar = null, CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors,
-                                             frmLoadingBar, token), token);
+                t => LoadCharacterCoreAsync(true, strFileName, strNewName, blnClearFileName, blnShowErrors,
+                                             frmLoadingBar, t), token);
         }
 
         /// <summary>

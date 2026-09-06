@@ -33,9 +33,9 @@ namespace Chummer.Backend.Skills
         {
         }
 
-        public void Load(XmlNode node)
+        public void Load(XmlNode node, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, node));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, node, t), token);
         }
 
         public Task LoadAsync(XmlNode node, CancellationToken token = default)

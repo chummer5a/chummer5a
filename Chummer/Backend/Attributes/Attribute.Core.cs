@@ -127,9 +127,9 @@ namespace Chummer.Backend.Attributes
         /// Load the Character Attribute from the XmlNode.
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
-        public void Load(XmlNode objNode)
+        public void Load(XmlNode objNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, t), token);
         }
 
         /// <summary>
@@ -1581,7 +1581,7 @@ namespace Chummer.Backend.Attributes
         /// </summary>
         public int CalculatedTotalValue(bool blnIncludeCyberlimbs = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, token), token);
+            return Utils.SafelyRunSynchronously(t => CalculatedTotalValueCore(true, blnIncludeCyberlimbs, t), token);
         }
 
         /// <summary>

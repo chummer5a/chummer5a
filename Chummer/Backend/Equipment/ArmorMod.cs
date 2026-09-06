@@ -149,8 +149,8 @@ namespace Chummer.Backend.Equipment
         public void Create(XmlNode objXmlArmorNode, int intRating, IList<Weapon> lstWeapons, bool blnSkipCost = false,
             bool blnSkipSelectForms = false, bool blnForSelectForm = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => CreateCoreAsync(true, objXmlArmorNode, intRating, lstWeapons,
-                blnSkipCost, blnSkipSelectForms, blnForSelectForm, token), token);
+            Utils.SafelyRunSynchronously(t => CreateCoreAsync(true, objXmlArmorNode, intRating, lstWeapons,
+                blnSkipCost, blnSkipSelectForms, blnForSelectForm, t), token);
         }
 
         /// <summary>
@@ -532,9 +532,9 @@ namespace Chummer.Backend.Equipment
         /// </summary>
         /// <param name="objNode">XmlNode to load.</param>
         /// <param name="blnCopy">Whether we are loading a copy of an existing armor mod.</param>
-        public void Load(XmlNode objNode, bool blnCopy = false)
+        public void Load(XmlNode objNode, bool blnCopy = false, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, objNode, blnCopy));
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, objNode, blnCopy, t), token);
         }
 
         /// <summary>
@@ -625,8 +625,8 @@ namespace Chummer.Backend.Equipment
                                 Gear objGear = new Gear(_objCharacter);
                                 try
                                 {
-                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                    objGear.Load(nodGear, blnCopy);
+                                    // ReSharper disable once MethodHasAsyncOverload
+                                    objGear.Load(nodGear, blnCopy, token);
                                     // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                     _lstGear.Add(objGear);
                                 }

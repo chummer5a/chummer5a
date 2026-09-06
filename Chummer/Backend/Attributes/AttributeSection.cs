@@ -1456,7 +1456,7 @@ namespace Chummer.Backend.Attributes
 
         public void Load(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlSavedCharacterNode, token), token);
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, xmlSavedCharacterNode, t), token);
         }
 
         public Task LoadAsync(XmlNode xmlSavedCharacterNode, CancellationToken token = default)
@@ -1679,8 +1679,8 @@ namespace Chummer.Backend.Attributes
                                         {
                                             try
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objAttribute.Load(xmlAttributeNode);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objAttribute.Load(xmlAttributeNode, token);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 SpecialAttributeList.Add(objAttribute);
                                             }
@@ -1716,8 +1716,8 @@ namespace Chummer.Backend.Attributes
                                         {
                                             try
                                             {
-                                                // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                objAttribute.Load(xmlAttributeNode);
+                                                // ReSharper disable once MethodHasAsyncOverload
+                                                objAttribute.Load(xmlAttributeNode, token);
                                                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                                 AttributeList.Add(objAttribute);
                                             }

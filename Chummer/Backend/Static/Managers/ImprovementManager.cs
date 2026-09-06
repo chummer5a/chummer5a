@@ -719,8 +719,8 @@ namespace Chummer
                                                                      bool blnAddToRating, string strImprovedName,
                                                                      bool blnUnconditionalOnly, bool blnIncludeNonImproved, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
-                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, token), token);
+            return Utils.SafelyRunSynchronously(t => MetaValueOfCoreAsync(true, objCharacter, eImprovementType, funcValueGetter, dicCachedValuesToUse,
+                                                                           blnAddToRating, strImprovedName, blnUnconditionalOnly, blnIncludeNonImproved, t), token);
         }
 
         /// <summary>
@@ -1636,9 +1636,9 @@ namespace Chummer
         public static ValueTuple<string, bool> DoSelectSkill(XmlNode xmlBonusNode, Character objCharacter, int intRating,
             string strFriendlyName, bool blnIsKnowledgeSkill = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillCoreAsync(false, xmlBonusNode, objCharacter,
+            return Utils.SafelyRunSynchronously(t => DoSelectSkillCoreAsync(true, xmlBonusNode, objCharacter,
                 intRating, strFriendlyName,
-                blnIsKnowledgeSkill, token), token);
+                blnIsKnowledgeSkill, t), token);
         }
 
         /// <summary>
@@ -2300,8 +2300,8 @@ namespace Chummer
         public static string DoSelectSkillGroup(XmlNode xmlBonusNode, Character objCharacter, string strFriendlyName,
             CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => DoSelectSkillGroupCoreAsync(false, xmlBonusNode, objCharacter,
-                strFriendlyName, token), token);
+            return Utils.SafelyRunSynchronously(t => DoSelectSkillGroupCoreAsync(true, xmlBonusNode, objCharacter,
+                strFriendlyName, t), token);
         }
 
         public static Task<string> DoSelectSkillGroupAsync(XmlNode xmlBonusNode, Character objCharacter,
@@ -2391,8 +2391,8 @@ namespace Chummer
                                               XmlNode nodBonus, int intRating = 1, string strFriendlyName = "",
                                               bool blnAddImprovementsToCharacter = true, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
-                                                    intRating, strFriendlyName, blnAddImprovementsToCharacter, token), token);
+            return Utils.SafelyRunSynchronously(t => CreateImprovementsCoreAsync(true, objCharacter, objImprovementSource, strSourceName, nodBonus,
+                                                    intRating, strFriendlyName, blnAddImprovementsToCharacter, t), token);
         }
 
         /// <summary>
@@ -3198,7 +3198,7 @@ namespace Chummer
 
         public static void EnableImprovements(Character objCharacter, IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => EnableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+            Utils.SafelyRunSynchronously(t => EnableImprovementsCoreAsync(true, objCharacter, objImprovementList, t), token);
         }
 
         public static Task EnableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
@@ -3918,7 +3918,7 @@ namespace Chummer
         public static void DisableImprovements(Character objCharacter,
                                                IReadOnlyCollection<Improvement> objImprovementList, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => DisableImprovementsCoreAsync(true, objCharacter, objImprovementList, token), token);
+            Utils.SafelyRunSynchronously(t => DisableImprovementsCoreAsync(true, objCharacter, objImprovementList, t), token);
         }
 
         public static Task DisableImprovementsAsync(Character objCharacter, IEnumerable<Improvement> objImprovementList, CancellationToken token = default)
@@ -5155,8 +5155,8 @@ namespace Chummer
                                                  bool blnReapplyImprovements = false,
                                                  bool blnAllowDuplicatesFromSameSource = false, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => RemoveImprovementsCoreAsync(false, objCharacter, objImprovementList, blnReapplyImprovements,
-                                                    blnAllowDuplicatesFromSameSource, token), token);
+            return Utils.SafelyRunSynchronously(t => RemoveImprovementsCoreAsync(true, objCharacter, objImprovementList, blnReapplyImprovements,
+                                                    blnAllowDuplicatesFromSameSource, t), token);
         }
 
         /// <summary>

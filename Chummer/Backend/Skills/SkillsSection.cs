@@ -1506,7 +1506,7 @@ namespace Chummer.Backend.Skills
 
         internal void Load(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
         {
-            Utils.SafelyRunSynchronously(() => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, token), token);
+            Utils.SafelyRunSynchronously(t => LoadCoreAsync(true, xmlSkillNode, blnLegacy, parentActivity, t), token);
         }
 
         internal Task LoadAsync(XmlNode xmlSkillNode, bool blnLegacy, CustomActivity parentActivity, CancellationToken token = default)
@@ -2186,8 +2186,8 @@ namespace Chummer.Backend.Skills
                                             foreach (XmlNode xmlNode in xmlSkillsList)
                                             {
                                                 Skill objSkill = blnSync
-                                                    // ReSharper disable once MethodHasAsyncOverloadWithCancellation
-                                                    ? Skill.LegacyLoad(_objCharacter, xmlNode)
+                                                    // ReSharper disable once MethodHasAsyncOverload
+                                                    ? Skill.LegacyLoad(_objCharacter, xmlNode, token)
                                                     : await Skill.LegacyLoadAsync(_objCharacter, xmlNode, token).ConfigureAwait(false);
                                                 if (objSkill != null)
                                                     lstTempSkillList.Add(objSkill);

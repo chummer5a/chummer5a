@@ -333,7 +333,7 @@ namespace Chummer.Plugins
                                            = new CancellationTokenSource(TimeSpan.FromSeconds(30)))
                                     {
                                         CancellationToken objTimeoutToken = objTimeout.Token;
-                                        Utils.SafelyRunSynchronously(() => objTelemetry.FlushAsync(objTimeoutToken),
+                                        Utils.SafelyRunSynchronously(t => objTelemetry.FlushAsync(t),
                                                                      objTimeoutToken);
                                     }
                                 }

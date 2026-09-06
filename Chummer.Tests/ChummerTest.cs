@@ -786,8 +786,8 @@ namespace Chummer.Tests
 
                 XmlDocument xmlDocument
                     = Utils.SafelyRunSynchronously(
-                        () => objCharacter.GenerateExportXml(objExportCultureInfo,
-                                                             strExportLanguage, token), token); // Need this wrapper to make unit test work
+                        t => objCharacter.GenerateExportXml(objExportCultureInfo,
+                                                             strExportLanguage, t), token); // Need this wrapper to make unit test work
                 using (FileStream objFileStream
                        = new FileStream(strPath, FileMode.Create, FileAccess.Write, FileShare.None))
                     xmlDocument.Save(objFileStream);

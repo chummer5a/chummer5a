@@ -757,9 +757,9 @@ namespace Chummer
             }
         }
 
-        public bool LoadFromFile(string strFile)
+        public bool LoadFromFile(string strFile, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => LoadFromFileCoreAsync(true, strFile));
+            return Utils.SafelyRunSynchronously(t => LoadFromFileCoreAsync(true, strFile, t), token);
         }
 
         public Task<bool> LoadFromFileAsync(string strFile, CancellationToken token = default)

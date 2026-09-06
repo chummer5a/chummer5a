@@ -207,7 +207,7 @@ namespace Chummer
         public static bool LoadLanguage(string strLanguage, CancellationToken token = default)
         {
             return strLanguage.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase)
-                   || Utils.SafelyRunSynchronously(() => LoadLanguageCoreAsync(true, strLanguage, token), token);
+                   || Utils.SafelyRunSynchronously(t => LoadLanguageCoreAsync(true, strLanguage, t), token);
         }
 
         /// <summary>
@@ -842,7 +842,7 @@ namespace Chummer
                                        CancellationToken token = default)
         {
             return Utils.SafelyRunSynchronously(
-                () => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, token), token);
+                t => GetStringCoreAsync(true, strKey, strLanguage, blnReturnError, t), token);
         }
 
         /// <summary>
@@ -894,7 +894,7 @@ namespace Chummer
         public static char GetChar(string strKey, string strLanguage, CancellationToken token = default)
         {
             string strReturn
-                = Utils.SafelyRunSynchronously(() => GetStringCoreAsync(true, strKey, strLanguage, false, token), token);
+                = Utils.SafelyRunSynchronously(t => GetStringCoreAsync(true, strKey, strLanguage, false, t), token);
             return string.IsNullOrWhiteSpace(strReturn) ? default : strReturn[0];
         }
 
@@ -1093,7 +1093,7 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static XPathDocument GetDataDocument(string strLanguage, CancellationToken token = default)
         {
-            return Utils.SafelyRunSynchronously(() => GetDataDocumentCoreAsync(true, strLanguage, token), token);
+            return Utils.SafelyRunSynchronously(t => GetDataDocumentCoreAsync(true, strLanguage, t), token);
         }
 
         /// <summary>
@@ -1439,7 +1439,7 @@ namespace Chummer
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
                 : Utils.SafelyRunSynchronously(
-                    () => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, token),
+                    t => TranslateExtraCoreAsync(true, strExtra, strIntoLanguage, objCharacter, strPreferFile, t),
                     token);
         }
 
@@ -2001,8 +2001,8 @@ namespace Chummer
             return string.IsNullOrWhiteSpace(strExtra)
                 ? string.Empty
                 : Utils.SafelyRunSynchronously(
-                    () => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
-                                                         token), token);
+                    t => ReverseTranslateExtraCoreAsync(true, strExtra, strFromLanguage, objCharacter, strPreferFile,
+                                                         t), token);
         }
 
         /// <summary>
