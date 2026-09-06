@@ -1368,7 +1368,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     if (strAvail.HasValuesNeedingReplacementForXPathProcessing())
@@ -1449,7 +1449,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     if (strAvail.HasValuesNeedingReplacementForXPathProcessing())
@@ -1606,7 +1606,7 @@ namespace Chummer.Backend.Equipment
                 if (FreeCost)
                     return 0;
                 // If the cost is determined by the Rating, evaluate the expression.
-                string strCost = Cost.TrimStart('+');
+                string strCost = Cost.TrimStartNoAlloc('+');
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 {
                     Vehicle objVehicle = Parent;
@@ -1641,7 +1641,7 @@ namespace Chummer.Backend.Equipment
             if (FreeCost)
                 return 0;
             // If the cost is determined by the Rating, evaluate the expression.
-            string strCost = Cost.TrimStart('+');
+            string strCost = Cost.TrimStartNoAlloc('+');
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
             {
                 Vehicle objVehicle = Parent;
@@ -2507,7 +2507,7 @@ namespace Chummer.Backend.Equipment
         {
             get
             {
-                string strCost = _strCost.TrimStart('+');
+                string strCost = _strCost.TrimStartNoAlloc('+');
                 if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     if (strCost.HasValuesNeedingReplacementForXPathProcessing())
@@ -2560,7 +2560,7 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetCostAsync(CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            string strCost = _strCost.TrimStart('+');
+            string strCost = _strCost.TrimStartNoAlloc('+');
             if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strCost.HasValuesNeedingReplacementForXPathProcessing())
@@ -2733,7 +2733,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                    strAvail = strAvail.TrimStart('+');
+                    strAvail = strAvail.TrimStartNoAlloc('+');
                     if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         if (strAvail.HasValuesNeedingReplacementForXPathProcessing())
@@ -2808,7 +2808,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     if (strAvail.HasValuesNeedingReplacementForXPathProcessing())

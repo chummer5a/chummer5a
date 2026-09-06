@@ -1649,6 +1649,56 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3, char chr4)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 4);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3).Append(chr4);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3, char chr4, char chr5)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 5);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3).Append(chr4).Append(chr5);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3, char chr4, char chr5, char chr6)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 6);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3).Append(chr4).Append(chr5).Append(chr6);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3, char chr4, char chr5, char chr6, char chr7)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 7);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3).Append(chr4).Append(chr5).Append(chr6).Append(chr7);
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(char)"/> that over multiple chars.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, char chr1, char chr2, char chr3, char chr4, char chr5, char chr6, char chr7, char chr8)
+        {
+            sbdInput.EnsureCapacity(sbdInput.Length + 8);
+            return sbdInput.Append(chr1).Append(chr2).Append(chr3).Append(chr4).Append(chr5).Append(chr6).Append(chr7).Append(chr8);
+        }
+
+        /// <summary>
         /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
@@ -1704,6 +1754,21 @@ namespace Chummer
             {
                 sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
                 sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).Append(str7);
+            }
+            return sbdInput;
+        }
+
+        /// <summary>
+        /// Syntactic sugar for <see cref="StringBuilder.Append(string)"/> that over multiple strings.
+        /// </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static StringBuilder Append([NotNull] this StringBuilder sbdInput, string str1, string str2, string str3, string str4, string str5, string str6, string str7, string str8)
+        {
+            int intExtraLength = (str1?.Length ?? 0) + (str2?.Length ?? 0) + (str3?.Length ?? 0) + (str4?.Length ?? 0) + (str5?.Length ?? 0) + (str6?.Length ?? 0) + (str7?.Length ?? 0) + (str8?.Length ?? 0);
+            if (intExtraLength > 0)
+            {
+                sbdInput.EnsureCapacity(sbdInput.Length + intExtraLength);
+                sbdInput.Append(str1).Append(str2).Append(str3).Append(str4).Append(str5).Append(str6).Append(str7).Append(str8);
             }
             return sbdInput;
         }

@@ -5541,7 +5541,7 @@ namespace Chummer.Backend.Skills
                             lstConditionalImprovements.Select(
                                 x => CharacterObject.GetObjectName(x, token: token) + strSpace + "("
                                      + x.Value.ToString(GlobalSettings.CultureInfo) + "," + strSpace
-                                     + x.CurrentDisplayCondition + ")"), ')');
+                                     + x.CurrentDisplayCondition + ")")).Append(')');
                     }
 
                     int wound = CharacterObject.WoundModifier;

@@ -194,7 +194,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(innerText))
                 return string.Empty;
-            string endString = innerText.ToLowerInvariant().Substring(1).TrimEnd(',', '.');
+            string endString = innerText.ToLowerInvariant().Substring(1).TrimEndNoAlloc(',', '.');
             string macroName, macroPool;
             if (endString.Contains('_'))
             {

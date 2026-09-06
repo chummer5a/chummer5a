@@ -1654,7 +1654,7 @@ namespace Chummer
                                 string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
                                 if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                                 {
-                                    strPreferFile = strSnippet.Trim('[', ']');
+                                    strPreferFile = strSnippet.TrimNoAlloc('[', ']');
                                     strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
                                 }
                             }
@@ -2171,7 +2171,7 @@ namespace Chummer
                     string strSnippet = strReturn.Substring(0, intFileSpecifierIndex + 5);
                     if (!string.IsNullOrEmpty(strSnippet) && strSnippet.IndexOfAny(Path.GetInvalidFileNameChars()) == -1)
                     {
-                        strPreferFile = strSnippet.Trim('[', ']');
+                        strPreferFile = strSnippet.TrimNoAlloc('[', ']');
                         strReturn = strReturn.Substring(intFileSpecifierIndex + 5);
                     }
                 }

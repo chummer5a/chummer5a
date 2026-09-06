@@ -759,7 +759,7 @@ namespace Chummer
                         bool blnForce = strReturn.StartsWith('L');
                         string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                         //Navigator can't do math on a single value, so inject a mathable value.
-                        strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
+                        strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStartNoAlloc('+');
 
                         string strToAppend = string.Empty;
                         int intFadingDv = 0;
@@ -829,7 +829,7 @@ namespace Chummer
                     bool blnForce = strReturn.StartsWith('L');
                     string strFv = blnForce ? strReturn.TrimStartOnce("L", true) : strReturn;
                     //Navigator can't do math on a single value, so inject a mathable value.
-                    strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStart('+');
+                    strFv = string.IsNullOrEmpty(strFv) ? "0" : strFv.TrimStartNoAlloc('+');
 
                     string strToAppend = string.Empty;
                     int intFadingDv = 0;

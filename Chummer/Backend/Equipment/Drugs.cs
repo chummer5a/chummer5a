@@ -880,7 +880,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvail = _objCharacter.ProcessAttributesInXPath(strAvail);
@@ -933,7 +933,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvail = await _objCharacter.ProcessAttributesInXPathAsync(strAvail, token: token).ConfigureAwait(false);
@@ -2841,7 +2841,7 @@ namespace Chummer.Backend.Equipment
                 if (string.IsNullOrEmpty(strCostExpression))
                     return 0;
 
-                strCostExpression = strCostExpression.ProcessFixedValuesString(Level).TrimStart('+')
+                strCostExpression = strCostExpression.ProcessFixedValuesString(Level).TrimStartNoAlloc('+')
                     .Replace("{Level}", Level.ToString(GlobalSettings.InvariantCultureInfo))
                     .Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
 
@@ -2868,7 +2868,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strCostExpression))
                 return 0;
 
-            strCostExpression = strCostExpression.ProcessFixedValuesString(Level, token).TrimStart('+')
+            strCostExpression = strCostExpression.ProcessFixedValuesString(Level, token).TrimStartNoAlloc('+')
                 .Replace("{Level}", Level.ToString(GlobalSettings.InvariantCultureInfo))
                 .Replace("Level", Level.ToString(GlobalSettings.InvariantCultureInfo));
 
@@ -2936,7 +2936,7 @@ namespace Chummer.Backend.Equipment
                     }
 
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                    strAvail = strAvail.TrimStart('+');
+                    strAvail = strAvail.TrimStartNoAlloc('+');
                     if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strAvail = _objCharacter.ProcessAttributesInXPath(strAvail);
@@ -2977,7 +2977,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvail = await _objCharacter.ProcessAttributesInXPathAsync(strAvail, token: token).ConfigureAwait(false);

@@ -534,7 +534,7 @@ namespace Chummer
                                         string strWhatPlugin =
                                             strArg.Substring(strArg.IndexOf("/plugin", StringComparison.Ordinal) + 8);
                                         //some external apps choose to add a '/' before a ':' even in the middle of an url...
-                                        strWhatPlugin = strWhatPlugin.TrimStart(':');
+                                        strWhatPlugin = strWhatPlugin.TrimStartNoAlloc(':');
                                         int intEndPlugin = strWhatPlugin.IndexOf(':');
                                         string strParameter = strWhatPlugin.Substring(intEndPlugin + 1);
                                         strWhatPlugin = strWhatPlugin.Substring(0, intEndPlugin);

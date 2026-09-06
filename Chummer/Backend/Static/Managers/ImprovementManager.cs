@@ -7199,7 +7199,7 @@ namespace Chummer
                 string propertyName = xpathMatch.Groups[2].Value;
                 string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
                 string expectedValue = xpathMatch.Groups[4].Success
-                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    ? xpathMatch.Groups[4].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
@@ -7219,7 +7219,7 @@ namespace Chummer
                 string propertyName = atMatch.Groups[1].Value;
                 string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
                 string expectedValue = atMatch.Groups[3].Success
-                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    ? atMatch.Groups[3].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 (bool found, object value) = await TryGetConditionValueAsync(targetObject, objectType, propertyName, token).ConfigureAwait(false);
@@ -7242,7 +7242,7 @@ namespace Chummer
                 string propertyName = xpathMatch.Groups[2].Value;
                 string strOperator = xpathMatch.Groups[3].Success ? xpathMatch.Groups[3].Value : null;
                 string expectedValue = xpathMatch.Groups[4].Success
-                    ? xpathMatch.Groups[4].Value.Trim().Trim('"', '\'')
+                    ? xpathMatch.Groups[4].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))
@@ -7261,7 +7261,7 @@ namespace Chummer
                 string propertyName = atMatch.Groups[1].Value;
                 string strOperator = atMatch.Groups[2].Success ? atMatch.Groups[2].Value : null;
                 string expectedValue = atMatch.Groups[3].Success
-                    ? atMatch.Groups[3].Value.Trim().Trim('"', '\'')
+                    ? atMatch.Groups[3].Value.TrimNoAllocWithWhitespace('"', '\'')
                     : null;
 
                 if (!TryGetConditionValue(targetObject, objectType, propertyName, out object value, token))

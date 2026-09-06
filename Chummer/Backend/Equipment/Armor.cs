@@ -1709,7 +1709,7 @@ namespace Chummer.Backend.Equipment
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -1765,7 +1765,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strExpression))
                 return new ValueTuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
-            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
@@ -2918,7 +2918,7 @@ namespace Chummer.Backend.Equipment
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             continue;
-                        sbdReturn.Append("-(", objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).Trim('[', ']'), ')');
+                        sbdReturn.Append("-(", objMod.GetCalculatedCapacity(GlobalSettings.InvariantCultureInfo).TrimNoAlloc('[', ']'), ')');
                     }
 
                     strReturn = sbdReturn.ToString();
@@ -2964,7 +2964,7 @@ namespace Chummer.Backend.Equipment
                         string strArmorModCapacity = objMod.ArmorCapacity;
                         if (!strArmorModCapacity.StartsWith('-') && !strArmorModCapacity.StartsWith("[-", StringComparison.Ordinal))
                             return;
-                        sbdReturn.Append("-(", (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).Trim('[', ']'), ')');
+                        sbdReturn.Append("-(", (await objMod.GetCalculatedCapacityAsync(GlobalSettings.InvariantCultureInfo, token).ConfigureAwait(false)).TrimNoAlloc('[', ']'), ')');
                     }, token).ConfigureAwait(false);
 
                     strReturn = sbdReturn.ToString();

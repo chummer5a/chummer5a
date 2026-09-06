@@ -51245,8 +51245,8 @@ namespace Chummer
                                                              : await objReader.ReadLineAsync().ConfigureAwait(false))
                                                     {
                                                         token.ThrowIfCancellationRequested();
-                                                        // Trim away the newlines and empty spaces at the beginning and end of lines
-                                                        lstTextStatBlockLines.Add(strLine.Trim('\n', '\r', ' ').Trim());
+                                                        // Trim away the newlines and empty spaces at the beginning and end of lines (default trim already removes newlines)
+                                                        lstTextStatBlockLines.Add(strLine.Trim());
                                                     }
                                                 }
                                             }
@@ -51616,7 +51616,7 @@ namespace Chummer
                                 if (intAsIndex != -1)
                                 {
                                     _strName = strCharacterId.Substring(0, intAsIndex);
-                                    _strAlias = strCharacterId.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
+                                    _strAlias = strCharacterId.Substring(intAsIndex).TrimStart(" as ").TrimNoAlloc('\'');
                                 }
                                 else
                                 {

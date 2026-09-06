@@ -28490,7 +28490,7 @@ namespace Chummer
                                 }
                                 else
                                 {
-                                    strCurrentCapacity = strCurrentCapacity.Trim('[', ']');
+                                    strCurrentCapacity = strCurrentCapacity.TrimNoAlloc('[', ']');
                                 }
 
                                 if (decimal.TryParse(strCurrentCapacity, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decCurrentCapacity))

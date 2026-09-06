@@ -899,7 +899,7 @@ namespace Chummer.Backend.Equipment
             blnIsSuccess = true;
             if (string.IsNullOrEmpty(strExpression))
                 return 0;
-            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(funcRating, token).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnIsSuccess = false;
@@ -970,7 +970,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strExpression))
                 return new ValueTuple<decimal, bool>(0, true);
             bool blnIsSuccess = true;
-            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            strExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 if (strExpression.HasValuesNeedingReplacementForXPathProcessing())
@@ -1673,7 +1673,7 @@ namespace Chummer.Backend.Equipment
                         string[] astrValue = strValue.SplitFixedSizePooledArray('[', 2);
                         try
                         {
-                            string strAvailCode = astrValue[1].Trim('[', ']');
+                            string strAvailCode = astrValue[1].TrimNoAlloc('[', ']');
                             int.TryParse(astrValue[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                 out int intMax);
                             int intRating = Rating;
@@ -1765,7 +1765,7 @@ namespace Chummer.Backend.Equipment
                         string[] astrValue = strValue.SplitFixedSizePooledArray('[', 2);
                         try
                         {
-                            string strAvailCode = astrValue[1].Trim('[', ']');
+                            string strAvailCode = astrValue[1].TrimNoAlloc('[', ']');
                             int.TryParse(astrValue[0], NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
                                 out int intMax);
                             int intRating = await GetRatingAsync(token).ConfigureAwait(false);
@@ -1870,7 +1870,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                     decValue = ProcessRatingStringAsDec(strFirstHalf, () => Rating, out bool blnIsSuccess);
                     strSecondHalf = "[" + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + "]";
                 }
@@ -1949,7 +1949,7 @@ namespace Chummer.Backend.Equipment
 
                 if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
-                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                     bool blnIsSuccess;
                     (decValue, blnIsSuccess) = await ProcessRatingStringAsDecAsync(strSecondHalf, () => GetRatingAsync(token), token).ConfigureAwait(false);
                     strSecondHalf = "[" + (blnIsSuccess ? decValue.ToString("#,0.##", objCulture) : strSecondHalf) + "]";

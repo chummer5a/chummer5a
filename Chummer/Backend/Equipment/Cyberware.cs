@@ -8557,7 +8557,7 @@ namespace Chummer.Backend.Equipment
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
                     if (blnModifyParentAvail)
                         intAvail = 0;
-                    strAvail = strAvail.TrimStart('+');
+                    strAvail = strAvail.TrimStartNoAlloc('+');
                     if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         if (strAvail.HasValuesNeedingReplacementForXPathProcessing())
@@ -8701,7 +8701,7 @@ namespace Chummer.Backend.Equipment
                     blnModifyParentAvail = strAvail.StartsWith('+', '-');
                     if (blnModifyParentAvail)
                         intAvail = 0;
-                    strAvail = strAvail.TrimStart('+');
+                    strAvail = strAvail.TrimStartNoAlloc('+');
                     if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         if (strAvail.HasValuesNeedingReplacementForXPathProcessing())
@@ -8881,7 +8881,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
 
-                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                     if (Children.Any(x => x.AddToParentCapacity))
                     {
                         // Run through its Children and deduct the Capacity costs.
@@ -9079,7 +9079,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                         strReturn = "[" + strCapacity + "]";
 
-                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                     if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(x => x.GetAddToParentCapacityAsync(token), token: token).ConfigureAwait(false))
                     {
                         // Run through its Children and deduct the Capacity costs.
@@ -9865,7 +9865,7 @@ namespace Chummer.Backend.Equipment
         {
             if (string.IsNullOrEmpty(strExpression))
                 return "0";
-            string strCostExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+            string strCostExpression = strExpression.ProcessFixedValuesString(funcRating).TrimStartNoAlloc('+');
             if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
             using (LockObject.EnterReadLock())
@@ -9950,7 +9950,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
             if (string.IsNullOrEmpty(strExpression))
                 return "0";
-            string strCostExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStart('+');
+            string strCostExpression = (await strExpression.ProcessFixedValuesStringAsync(funcRating, token).ConfigureAwait(false)).TrimStartNoAlloc('+');
             if (!strCostExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decReturn))
                 return decReturn.ToString(GlobalSettings.InvariantCultureInfo);
             IAsyncDisposable objLocker = await LockObject.EnterReadLockAsync(token).ConfigureAwait(false);
@@ -10513,7 +10513,7 @@ namespace Chummer.Backend.Equipment
                 string strWeightExpression = Weight;
                 if (string.IsNullOrEmpty(strWeightExpression))
                     return 0;
-                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating).TrimStart('+');
+                strWeightExpression = strWeightExpression.ProcessFixedValuesString(funcRating).TrimStartNoAlloc('+');
                 string strParentWeight = "0";
                 decimal decTotalParentGearWeight = 0;
                 if (_objParent != null)
@@ -10580,7 +10580,7 @@ namespace Chummer.Backend.Equipment
                     // If the child cost starts with "*", multiply the item's base cost.
                     if (objChild.Weight.StartsWith('*'))
                     {
-                        if (decimal.TryParse(objChild.Weight.TrimStart('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
+                        if (decimal.TryParse(objChild.Weight.TrimStartNoAlloc('*'), NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decPluginWeight))
                         {
                             --decPluginWeight;
                             decPluginWeight *= decWeight;

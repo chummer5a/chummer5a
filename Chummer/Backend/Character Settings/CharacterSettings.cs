@@ -8509,7 +8509,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strContactPointsExpression, value) == value)
@@ -8542,7 +8542,7 @@ namespace Chummer
         public async Task SetContactPointsExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8568,7 +8568,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strKnowledgePointsExpression, value) == value)
@@ -8601,7 +8601,7 @@ namespace Chummer
         public async Task SetKnowledgePointsExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8627,7 +8627,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 // A safety check to make sure that we always still account for Priority-given Nuyen
                 if (SettingsManager.LoadedCharacterSettings.ContainsKey(DictionaryKey)
                     && !value.Contains("{PriorityNuyen}"))
@@ -8665,7 +8665,7 @@ namespace Chummer
         /// </summary>
         public async Task SetChargenKarmaToNuyenExpressionAsync(string value, CancellationToken token = default)
         {
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             // A safety check to make sure that we always still account for Priority-given Nuyen
             if ((await SettingsManager.GetLoadedCharacterSettingsAsync(token).ConfigureAwait(false))
                 .ContainsKey(await GetDictionaryKeyAsync(token).ConfigureAwait(false))
@@ -8701,7 +8701,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strBoundSpiritExpression, value) == value)
@@ -8734,7 +8734,7 @@ namespace Chummer
         public async Task SetBoundSpiritExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8760,7 +8760,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strRegisteredSpriteExpression, value) == value)
@@ -8793,7 +8793,7 @@ namespace Chummer
         public async Task SetRegisteredSpriteExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -8819,7 +8819,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEssenceModifierPostExpression, value) == value)
@@ -8852,7 +8852,7 @@ namespace Chummer
         public async Task SetEssenceModifierPostExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11239,7 +11239,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strLiftLimitExpression, value) == value)
@@ -11273,7 +11273,7 @@ namespace Chummer
         public async Task SetLiftLimitExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11299,7 +11299,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strCarryLimitExpression, value) == value)
@@ -11333,7 +11333,7 @@ namespace Chummer
         public async Task SetCarryLimitExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {
@@ -11359,7 +11359,7 @@ namespace Chummer
             }
             set
             {
-                value = value.CleanXPath().Trim('\"');
+                value = value.CleanXPath().TrimNoAlloc('\"');
                 using (LockObject.EnterUpgradeableReadLock())
                 {
                     if (Interlocked.Exchange(ref _strEncumbranceIntervalExpression, value) == value)
@@ -11393,7 +11393,7 @@ namespace Chummer
         public async Task SetEncumbranceIntervalExpressionAsync(string value, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            value = value.CleanXPath().Trim('\"');
+            value = value.CleanXPath().TrimNoAlloc('\"');
             IAsyncDisposable objLocker = await LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
             try
             {

@@ -402,7 +402,7 @@ namespace Chummer
             token.ThrowIfCancellationRequested();
             JObject objRelease = JObject.Parse(strJson);
             string strTagName = objRelease["tag_name"]?.ToString();
-            if (string.IsNullOrEmpty(strTagName) || !ValueVersion.TryParse(strTagName.TrimStart('v', 'V'), out ValueVersion objVersion))
+            if (string.IsNullOrEmpty(strTagName) || !ValueVersion.TryParse(strTagName.TrimStartNoAlloc('v', 'V'), out ValueVersion objVersion))
                 throw new InvalidDataException();
 
             string strDownloadUrl = string.Empty;
@@ -552,7 +552,7 @@ namespace Chummer
 
             if (uriUpdateLocation.Host.Equals("api.github.com", StringComparison.OrdinalIgnoreCase))
             {
-                string strPath = uriUpdateLocation.AbsolutePath.TrimEnd('/');
+                string strPath = uriUpdateLocation.AbsolutePath.TrimEndNoAlloc('/');
                 if (!strPath.EndsWith("/latest", StringComparison.OrdinalIgnoreCase)
                     && strPath.Contains("/releases", StringComparison.OrdinalIgnoreCase))
                 {
@@ -569,7 +569,7 @@ namespace Chummer
             if (!uriUpdateLocation.Host.Equals("github.com", StringComparison.OrdinalIgnoreCase))
                 return false;
 
-            string[] astrPathParts = uriUpdateLocation.AbsolutePath.Trim('/').Split('/');
+            string[] astrPathParts = uriUpdateLocation.AbsolutePath.TrimNoAlloc('/').Split('/');
             if (astrPathParts.Length < 2)
                 return false;
 
@@ -792,7 +792,7 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 string strRelativePath = strSourceFile.Substring(strSourcePath.Length)
-                                                      .TrimStart(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
+                                                      .TrimStartNoAlloc(Path.DirectorySeparatorChar, Path.AltDirectorySeparatorChar);
                 string strDestinationFile = Path.Combine(strDestinationPath, strRelativePath);
                 string strDestinationDirectory = Path.GetDirectoryName(strDestinationFile);
                 if (!string.IsNullOrEmpty(strDestinationDirectory))

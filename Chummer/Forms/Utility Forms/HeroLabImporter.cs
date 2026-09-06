@@ -233,7 +233,7 @@ namespace Chummer
                         {
                             objCache.CharacterName = strNameString.Substring(0, intAsIndex);
                             objCache.CharacterAlias
-                                = strNameString.Substring(intAsIndex).TrimStart(" as ").Trim('\'');
+                                = strNameString.Substring(intAsIndex).TrimStart(" as ").TrimNoAlloc('\'');
                         }
                         else
                         {

@@ -1234,7 +1234,7 @@ namespace Chummer
                                                       token: token).ConfigureAwait(false), strNodeInnerText,
                                               strEssNodeGradeAttributeText,
                                               decGrade.ToString(GlobalSettings.CultureInfo));
-                            decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold1);
+                            decimal.TryParse(strNodeInnerText.TrimStartNoAlloc('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold1);
                             return new ValueTuple<bool, string>(decGrade < decThreshold1, strName);
                         }
 
@@ -1274,7 +1274,7 @@ namespace Chummer
                                                   "Message_SelectQuality_RequireESSBelow",
                                                   token: token).ConfigureAwait(false), strNodeInnerText,
                                           decEssence.ToString(GlobalSettings.CultureInfo));
-                        decimal.TryParse(strNodeInnerText.TrimStart('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold3);
+                        decimal.TryParse(strNodeInnerText.TrimStartNoAlloc('-'), System.Globalization.NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out decimal decThreshold3);
                         return new ValueTuple<bool, string>(decEssence < decThreshold3, strName);
                     }
 

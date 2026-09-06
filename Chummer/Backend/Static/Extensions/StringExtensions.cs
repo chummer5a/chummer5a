@@ -2594,6 +2594,59 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Method to quickly remove all instances of all chars in an array from a string (much faster than using a series of <see cref="string.Replace(string, string)"/> with an empty string)
+        /// </summary>
+        /// <param name="strInput">String on which to operate</param>
+        /// <param name="chrToDelete1">First character to remove</param>
+        /// <param name="chrToDelete2">Second character to remove</param>
+        /// <returns>New string with characters removed</returns>
+        public static string FastEscape(this string strInput, char chrToDelete1, char chrToDelete2)
+        {
+            if (strInput == null)
+                return string.Empty;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return strInput;
+            if (intLength > Utils.MaxStackLimit16BitTypes)
+            {
+                string strReturn;
+                using (new FetchSafelyFromArrayPool<char>(ArrayPool<char>.Shared, intLength, out char[] achrNewChars))
+                {
+                    // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                    int intCurrent = 0;
+                    for (int i = 0; i < intLength; ++i)
+                    {
+                        char chrLoop = strInput[i];
+                        if (chrLoop != chrToDelete1 && chrLoop != chrToDelete2)
+                            achrNewChars[intCurrent++] = chrLoop;
+                    }
+
+                    // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                    strReturn = new string(achrNewChars, 0, intCurrent);
+                }
+
+                return strReturn;
+            }
+
+            // Stackalloc is faster than a heap-allocated array, but string constructor requires use of unsafe context because there are no overloads for Span<char>
+            unsafe
+            {
+                char* achrNewChars = stackalloc char[intLength];
+                // What we're doing here is copying the string-as-CharArray char-by-char into a new CharArray, but skipping over any instance of chrToDelete...
+                int intCurrent = 0;
+                for (int i = 0; i < intLength; ++i)
+                {
+                    char chrLoop = strInput[i];
+                    if (chrLoop != chrToDelete1 && chrLoop != chrToDelete2)
+                        achrNewChars[intCurrent++] = chrLoop;
+                }
+
+                // ... then we create a new string from the new CharArray, but only up to the number of characters that actually ended up getting copied
+                return new string(achrNewChars, 0, intCurrent);
+            }
+        }
+
+        /// <summary>
         /// Method to quickly remove all instances of a substring from a string (should be faster than using <see cref="string.Replace(string, string)"/> with an empty string)
         /// </summary>
         /// <param name="strInput">String on which to operate</param>
@@ -2657,6 +2710,292 @@ namespace Chummer
 
             int intIndexToBeginRemove = strInput.LastIndexOf(strSubstringToDelete, intStartIndex, eComparison);
             return intIndexToBeginRemove == -1 ? strInput : strInput.Remove(intIndexToBeginRemove, intToDeleteLength);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength && strInput[intStart] == chrToTrim; ++intStart)
+            {
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart && strInput[intEnd] == chrToTrim; --intEnd)
+            {
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Trim(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            int intEnd = intInputLength - 1;
+            for (; intEnd > intStart; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            return strInput.Substring(intStart, intEnd + 1 - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimStartNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength && strInput[intStart] == chrToTrim; ++intStart)
+            {
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimStartNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimStartNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimStart(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimStartNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intStart = 0;
+            for (; intStart < intInputLength; ++intStart)
+            {
+                char chrLoop = strInput[intStart];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intStart == intInputLength)
+                return string.Empty;
+            return strInput.Substring(intStart, intInputLength - intStart);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0 && strInput[intEnd] == chrToTrim; --intEnd)
+            {
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// </summary>
+        public static string TrimEndNoAlloc(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2)
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.TrimEnd(char[])"/> that works off of just one char and so does not require a char array to be allocated.
+        /// This function also trims whitespace characters, too.
+        /// </summary>
+        public static string TrimEndNoAllocWithWhitespace(this string strInput, char chrToTrim1, char chrToTrim2)
+        {
+            if (string.IsNullOrEmpty(strInput))
+                return strInput;
+            int intInputLength = strInput.Length;
+            if (intInputLength == 0)
+                return strInput;
+            int intEnd = intInputLength - 1;
+            for (; intEnd >= 0; --intEnd)
+            {
+                char chrLoop = strInput[intEnd];
+                if (chrLoop != chrToTrim1 && chrLoop != chrToTrim2 && !char.IsWhiteSpace(chrLoop))
+                    break;
+            }
+            if (intEnd < 0)
+                return string.Empty;
+            return strInput.Substring(0, intEnd + 1);
         }
 
         /// <summary>
@@ -2937,7 +3276,6 @@ namespace Chummer
         /// Find the index of the first instance of a set of strings inside a haystack string.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
-        /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="intStartIndex">Index from which to start looking.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
@@ -4449,7 +4787,7 @@ namespace Chummer
                 return strInput;
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
-                return strInput.TrimStart(strToTrim[0]);
+                return strInput.TrimStartNoAlloc(strToTrim[0]);
 
             int i = strInput.IndexOf(strToTrim, eComparison);
             if (i == -1)
@@ -4480,7 +4818,7 @@ namespace Chummer
                 return strInput;
             int intTrimLength = strToTrim.Length;
             if (intTrimLength == 1)
-                return strInput.TrimEnd(strToTrim[0]);
+                return strInput.TrimEndNoAlloc(strToTrim[0]);
 
             int i = strInput.LastIndexOf(strToTrim, eComparison);
             if (i == -1)

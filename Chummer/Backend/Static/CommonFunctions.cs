@@ -158,7 +158,7 @@ namespace Chummer
                 return Task.FromResult(tupReturn);
             }
             if (blnIsMathExpression)
-                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStartNoAlloc('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, strXPath);
@@ -184,7 +184,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {
@@ -234,7 +234,7 @@ namespace Chummer
                 return tupReturn;
             }
             if (blnIsMathExpression)
-                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStart('+');
+                strXPath = strXPath.Replace("/", " div ").Replace("\\", " div ").Replace("÷", " div ").Replace(" x ", " * ").Replace('∙', '*').Replace('×', '*').Replace('[', '(').Replace(']', ')').TrimStartNoAlloc('+');
             if (!strXPath.IsLegalCharsOnly(true, s_LstInvariantXPathLegalChars))
             {
                 ValueTuple<bool, object> tupReturn = new ValueTuple<bool, object>(false, strXPath);
@@ -259,7 +259,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {
@@ -302,7 +302,7 @@ namespace Chummer
 
                     try
                     {
-                        objReturn = objEvaluator?.Evaluate(x.TrimStart('+'));
+                        objReturn = objEvaluator?.Evaluate(x.TrimStartNoAlloc('+'));
                     }
                     finally
                     {

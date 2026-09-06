@@ -2452,7 +2452,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvail = ProcessAttributesInXPath(strAvail);
@@ -2543,7 +2543,7 @@ namespace Chummer.Backend.Equipment
                 }
 
                 blnModifyParentAvail = strAvail.StartsWith('+', '-');
-                strAvail = strAvail.TrimStart('+');
+                strAvail = strAvail.TrimStartNoAlloc('+');
                 if (strAvail.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvail = await ProcessAttributesInXPathAsync(strAvail, token: token)

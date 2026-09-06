@@ -1601,7 +1601,7 @@ namespace Chummer
                                         strText = "[" + strText + "]";
                                     await lblCapacity.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
 
-                                    strSecondHalf = strSecondHalf.Trim('[', ']');
+                                    strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
                                     if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                                     {
                                         bool blnIsSuccess;
@@ -2566,7 +2566,7 @@ namespace Chummer
             if (string.IsNullOrEmpty(strExpression))
                 return new ValueTuple<decimal, bool>(0, true);
             bool blnSuccess = true;
-            strExpression = strExpression.ProcessFixedValuesString(intRating, token).TrimStart('+');
+            strExpression = strExpression.ProcessFixedValuesString(intRating, token).TrimStartNoAlloc('+');
             if (strExpression.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 blnSuccess = false;
