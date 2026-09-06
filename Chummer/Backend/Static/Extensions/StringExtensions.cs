@@ -2779,12 +2779,195 @@ namespace Chummer
         /// Find the index of the first instance of a set of strings inside a haystack string.
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.IndexOf(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.IndexOfAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
         /// <param name="astrNeedles">Array of strings to match.</param>
         /// <param name="intStartIndex">Index from which to start looking.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static int IndexOfAny(this string strHaystack, int intStartIndex, params string[] astrNeedles)
         {
-            return strHaystack.IndexOfAny(astrNeedles, intStartIndex);
+            return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle)
+        {
+            return strHaystack.IndexOf(strNeedle, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="astrNeedles">Array of strings to match.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find the index of the first instance of a set of strings inside a haystack string.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <param name="intStartIndex">Index from which to start looking.</param>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static int IndexOfAny(this string strHaystack, int intStartIndex, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.IndexOfAny(astrNeedles, intStartIndex, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -2861,6 +3044,101 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.Contains(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings.
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAny(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.ContainsAny(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
         /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
         /// </summary>
         /// <param name="strHaystack">String to search.</param>
@@ -2918,6 +3196,101 @@ namespace Chummer
         public static bool ContainsAnyParallel(this string strHaystack, params string[] astrNeedles)
         {
             return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle)
+        {
+            return strHaystack.Contains(strNeedle, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
+        }
+
+        /// <summary>
+        /// Find if of a haystack string contains any of a set of strings (parallelized version where each needle is checked in parallel).
+        /// </summary>
+        /// <param name="strHaystack">String to search.</param>
+        /// <returns></returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool ContainsAnyParallel(this string strHaystack, string strNeedle1, string strNeedle2, string strNeedle3, string strNeedle4, string strNeedle5, string strNeedle6, string strNeedle7, string strNeedle8)
+        {
+            using (TemporaryStringArray astrNeedles = new TemporaryStringArray(strNeedle1, strNeedle2, strNeedle3, strNeedle4, strNeedle5, strNeedle6, strNeedle7, strNeedle8))
+                return strHaystack.ContainsAnyParallel(astrNeedles, StringComparison.Ordinal);
         }
 
         /// <summary>
@@ -4306,6 +4679,25 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Determines whether the first char of this string instance matches one of a list of specified chars.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="chrToCheck1">First Char to check.</param>
+        /// <param name="chrToCheck2">Second Char to check.</param>
+        /// <returns>True if string has a non-zero length and begins with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool StartsWith(this string strInput, char chrToCheck1, char chrToCheck2)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return false;
+            char chrFirstChar = strInput[0];
+            return chrFirstChar == chrToCheck1 || chrFirstChar == chrToCheck2;
+        }
+
+        /// <summary>
         /// Determines whether the first char of this string instance matches any of the specified chars.
         /// </summary>
         /// <param name="strInput">String to check.</param>
@@ -4364,6 +4756,25 @@ namespace Chummer
                 return false;
             int intLength = strInput.Length;
             return intLength > 0 && strInput[intLength - 1] == chrToCheck;
+        }
+
+        /// <summary>
+        /// Determines whether the last char of this string instance matches the specified char.
+        /// </summary>
+        /// <param name="strInput">String to check.</param>
+        /// <param name="chrToCheck1">First char to check.</param>
+        /// <param name="chrToCheck2">Second char to check.</param>
+        /// <returns>True if string has a non-zero length and ends with the char, false otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static bool EndsWith(this string strInput, char chrToCheck1, char chrToCheck2)
+        {
+            if (strInput == null)
+                return false;
+            int intLength = strInput.Length;
+            if (intLength == 0)
+                return false;
+            char chrLastChar = strInput[intLength - 1];
+            return chrLastChar == chrToCheck1 || chrLastChar == chrToCheck2;
         }
 
         /// <summary>

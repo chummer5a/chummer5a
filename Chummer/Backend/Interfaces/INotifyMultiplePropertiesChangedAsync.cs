@@ -52,10 +52,142 @@ namespace Chummer
         }
 
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, string strPropertyName)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, string strPropertyName1, string strPropertyName2)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, string strPropertyName1, string strPropertyName2, string strPropertyName3)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7, string strPropertyName8)
+        {
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7, strPropertyName8))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
             params string[] lstPropertyNames)
         {
             return objSubject.OnMultiplePropertiesChangedAsync(Array.AsReadOnly(lstPropertyNames), token);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
+        }
+
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task OnMultiplePropertyChangedAsync(this INotifyMultiplePropertiesChangedAsync objSubject, CancellationToken token,
+            string strPropertyName1, string strPropertyName2, string strPropertyName3, string strPropertyName4, string strPropertyName5, string strPropertyName6, string strPropertyName7, string strPropertyName8)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrArg = new TemporaryStringArray(strPropertyName1, strPropertyName2, strPropertyName3, strPropertyName4, strPropertyName5, strPropertyName6, strPropertyName7, strPropertyName8))
+                await objSubject.OnMultiplePropertiesChangedAsync(astrArg, token).ConfigureAwait(false);
         }
     }
 }

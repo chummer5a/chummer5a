@@ -2629,6 +2629,94 @@ namespace Chummer.Backend.Attributes
             }
         }
 
+        internal void ForceAttributePropertyChangedNotificationAll(string strName)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3, string strName4)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3, string strName4, string strName5)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3, string strName4, string strName5, string strName6)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3, string strName4, string strName5, string strName6, string strName7)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6, strName7))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
+        internal void ForceAttributePropertyChangedNotificationAll(string strName1, string strName2, string strName3, string strName4, string strName5, string strName6, string strName7, string strName8)
+        {
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6, strName7, strName8))
+            {
+                foreach (CharacterAttrib att in AttributeList)
+                {
+                    att.OnMultiplePropertiesChanged(astrNames);
+                }
+            }
+        }
+
         internal Task ForceAttributePropertyChangedNotificationAllAsync(params string[] lstNames)
         {
             return ForceAttributePropertyChangedNotificationAllAsync(default, lstNames);
@@ -2639,6 +2727,86 @@ namespace Chummer.Backend.Attributes
             ReadOnlyCollection<string> lstNamesToUse = Array.AsReadOnly(lstNames);
             return AttributeList.ForEachWithSideEffectsAsync(
                 att => att.OnMultiplePropertiesChangedAsync(lstNamesToUse, token), token);
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3, string strName4)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3, string strName4, string strName5)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3, string strName4, string strName5, string strName6)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3, string strName4, string strName5, string strName6, string strName7)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6, strName7))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
+        }
+
+        internal async Task ForceAttributePropertyChangedNotificationAllAsync(CancellationToken token, string strName1, string strName2, string strName3, string strName4, string strName5, string strName6, string strName7, string strName8)
+        {
+            token.ThrowIfCancellationRequested();
+            using (TemporaryStringArray astrNames = new TemporaryStringArray(strName1, strName2, strName3, strName4, strName5, strName6, strName7, strName8))
+            {
+                await AttributeList.ForEachWithSideEffectsAsync(
+                    att => att.OnMultiplePropertiesChangedAsync(astrNames, token), token).ConfigureAwait(false);
+            }
         }
 
         public static void CopyAttribute(CharacterAttrib objSource, CharacterAttrib objTarget, string strMetavariantXPath, XPathNavigator xmlDoc)
