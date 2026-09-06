@@ -86,7 +86,7 @@ namespace Chummer
                 return Task.FromCanceled<HtmlToolTip>(token);
             if (form == null)
                 return Task.FromResult<HtmlToolTip>(default);
-            return s_dicToolTipFactories.GetOrAddAsync(form, x =>
+            return s_dicToolTipFactories.GetOrAddAsync(form, (x, t) =>
             {
                 return x.DoThreadSafeFuncAsync(y =>
                 {
@@ -107,7 +107,7 @@ namespace Chummer
                     };
                     y.Disposed += TryClearToolTips;
                     return objReturn;
-                }, token);
+                }, t);
             }, token);
         }
 

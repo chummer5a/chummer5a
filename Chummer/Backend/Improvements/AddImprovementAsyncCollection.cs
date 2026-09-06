@@ -730,9 +730,9 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             {
                 if (await _objCharacter.SkillsSection.KnowledgeSkills.AnyAsync(async k => await k.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strSelectedSkill, token).ConfigureAwait(false))
                 {
-                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async objKnowledgeSkill =>
+                    await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async (objKnowledgeSkill, t) =>
                     {
-                        string strName = await objKnowledgeSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                        string strName = await objKnowledgeSkill.GetDictionaryKeyAsync(t).ConfigureAwait(false);
                         if (strName != strSelectedSkill)
                             return;
                         // We've found the selected Skill.
@@ -740,22 +740,22 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 Improvement.ImprovementType.Skill, _strUnique,
-                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, token).ConfigureAwait(false), 1, 0, 0,
-                                0, 0, string.Empty, blnAddToRating, token: token).ConfigureAwait(false);
+                                await ImprovementManager.ValueToDecAsync(_objCharacter, strVal, _intRating, t).ConfigureAwait(false), 1, 0, 0,
+                                0, 0, string.Empty, blnAddToRating, token: t).ConfigureAwait(false);
                         }
 
                         if (blnDisableSpec)
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
-                                Improvement.ImprovementType.DisableSpecializationEffects, _strUnique, token: token).ConfigureAwait(false);
+                                Improvement.ImprovementType.DisableSpecializationEffects, _strUnique, token: t).ConfigureAwait(false);
                         }
 
                         if (!string.IsNullOrEmpty(strMax))
                         {
                             await CreateImprovementAsync(strName, _objImprovementSource, SourceName,
                                 Improvement.ImprovementType.Skill, _strUnique, 0, 1, 0,
-                                await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, token).ConfigureAwait(false), 0, 0,
-                                string.Empty, blnAddToRating, token: token).ConfigureAwait(false);
+                                await ImprovementManager.ValueToIntAsync(_objCharacter, strMax, _intRating, t).ConfigureAwait(false), 0, 0,
+                                string.Empty, blnAddToRating, token: t).ConfigureAwait(false);
                         }
                     }, token: token).ConfigureAwait(false);
                 }
@@ -3822,17 +3822,17 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                 string strType = bonusNode.Attributes?["type"]?.InnerTextViaPool(token);
                 if (!string.IsNullOrEmpty(strType))
                 {
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async objWeapon =>
+                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objWeapon, t) =>
                     {
                         if (objWeapon.RangeType == strType)
                         {
-                            lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                            lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(t).ConfigureAwait(false)));
                         }
                     }, token: token).ConfigureAwait(false);
                 }
                 else
                 {
-                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async objWeapon => lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(token).ConfigureAwait(false))), token).ConfigureAwait(false);
+                    await (await _objCharacter.GetWeaponsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objWeapon, t) => lstGeneralItems.Add(new ListItem(objWeapon.InternalId, await objWeapon.GetCurrentDisplayNameAsync(t).ConfigureAwait(false))), token).ConfigureAwait(false);
                 }
 
                 Weapon objSelectedWeapon;
@@ -6745,11 +6745,11 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                         }
                         else
                         {
-                            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objGroup =>
+                            await (await (await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false)).GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objGroup, t) =>
                             {
-                                if (!await objGroup.GetIsDisabledAsync(token).ConfigureAwait(false))
+                                if (!await objGroup.GetIsDisabledAsync(t).ConfigureAwait(false))
                                     lstSkills.Add(new ListItem(objGroup.Name,
-                                        await objGroup.GetCurrentDisplayNameAsync(token).ConfigureAwait(false)));
+                                        await objGroup.GetCurrentDisplayNameAsync(t).ConfigureAwait(false)));
                             }, token).ConfigureAwait(false);
                         }
                     }

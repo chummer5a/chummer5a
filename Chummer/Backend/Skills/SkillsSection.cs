@@ -172,9 +172,9 @@ namespace Chummer.Backend.Skills
                     {
                         token.ThrowIfCancellationRequested();
                         _dicSkills.Clear();
-                        await _lstSkills.ForEachAsync(async objSkill =>
+                        await _lstSkills.ForEachAsync(async (objSkill, t) =>
                         {
-                            string strLoop = await objSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
+                            string strLoop = await objSkill.GetDictionaryKeyAsync(t).ConfigureAwait(false);
                             _dicSkills.TryAdd(strLoop, objSkill);
                         }, token: token).ConfigureAwait(false);
                     }
@@ -318,13 +318,13 @@ namespace Chummer.Backend.Skills
                 if (e.PropertyNames.Contains(nameof(CharacterSettings.MaxSkillRatingCreate)))
                 {
                     await Skills.ForEachAsync(
-                        objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
+                        (objSkill, t) => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), t),
                         token: token).ConfigureAwait(false);
                     if (e.PropertyNames.Contains(nameof(CharacterSettings.MaxKnowledgeSkillRatingCreate)))
                     {
                         await KnowledgeSkills
                             .ForEachAsync(
-                                objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
+                                (objSkill, t) => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), t),
                                 token: token).ConfigureAwait(false);
                         foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                         {
@@ -348,7 +348,7 @@ namespace Chummer.Backend.Skills
                 {
                     await KnowledgeSkills
                         .ForEachAsync(
-                            objSkill => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), token),
+                            (objSkill, t) => objSkill.OnPropertyChangedAsync(nameof(Skill.RatingMaximum), t),
                             token: token).ConfigureAwait(false);
                     foreach (KeyValuePair<Guid, Skill> kvpSkill in _dicSkillBackups) // Do not use Values collection to avoid race conditions
                     {
@@ -528,7 +528,7 @@ namespace Chummer.Backend.Skills
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -562,7 +562,7 @@ namespace Chummer.Backend.Skills
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -1048,13 +1048,13 @@ namespace Chummer.Backend.Skills
                 HashSet<Skill> setSkillsToRemove = new HashSet<Skill>(await FetchExistingSkillsByFilterAsync(eSkillsToRemove, strName, token).ConfigureAwait(false));
                 // Check for duplicates (we'd normally want to make sure the improvement is enabled, but disabled SpecialSkills just force-disables a skill, so we need to keep those)
                 await (await _objCharacter.GetImprovementsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                    async objImprovement =>
+                    async (objImprovement, t) =>
                     {
                         if (objImprovement.ImproveType != Improvement.ImprovementType.SpecialSkills)
                             return;
                         FilterOption eFilterOption
                             = (FilterOption)Enum.Parse(typeof(FilterOption), objImprovement.ImprovedName);
-                        foreach (Skill objSkill in await FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, token).ConfigureAwait(false))
+                        foreach (Skill objSkill in await FetchExistingSkillsByFilterAsync(eFilterOption, objImprovement.Target, t).ConfigureAwait(false))
                         {
                             setSkillsToRemove.Remove(objSkill);
                         }
@@ -1145,17 +1145,17 @@ namespace Chummer.Backend.Skills
                     {
                         // zero out any skill groups whose skills did not make the final cut
                         await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async objSkillGroup =>
+                            async (objSkillGroup, t) =>
                             {
                                 if (!await objSkillGroup.SkillList
                                         .AnyAsync(
                                             async x => _dicSkills.ContainsKey(
-                                                await x.GetDictionaryKeyAsync(token)
-                                                    .ConfigureAwait(false)), token: token)
+                                                await x.GetDictionaryKeyAsync(t)
+                                                    .ConfigureAwait(false)), token: t)
                                         .ConfigureAwait(false))
                                 {
-                                    await objSkillGroup.SetBaseAsync(0, token).ConfigureAwait(false);
-                                    await objSkillGroup.SetKarmaAsync(0, token).ConfigureAwait(false);
+                                    await objSkillGroup.SetBaseAsync(0, t).ConfigureAwait(false);
+                                    await objSkillGroup.SetKarmaAsync(0, t).ConfigureAwait(false);
                                 }
                             }, token: token).ConfigureAwait(false);
                     }
@@ -2314,8 +2314,8 @@ namespace Chummer.Backend.Skills
                                     {
                                         await Skills
                                             .ForEachAsync(
-                                                async objSkill =>
-                                                    setSkillNames.Add(await objSkill.GetNameAsync(token)
+                                                async (objSkill, t) =>
+                                                    setSkillNames.Add(await objSkill.GetNameAsync(t)
                                                         .ConfigureAwait(false)),
                                                 token: token).ConfigureAwait(false);
                                     }
@@ -2475,22 +2475,22 @@ namespace Chummer.Backend.Skills
                             else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
                                 // zero out any skillgroups whose skills did not make the final cut
-                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async objSkillGroup =>
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkillGroup, t) =>
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (!await objSkillGroup.SkillList.AnyAsync(
                                                 async x => _dicSkills.ContainsKey(
-                                                        await x.GetDictionaryKeyAsync(token)
-                                                            .ConfigureAwait(false)), token: token)
+                                                        await x.GetDictionaryKeyAsync(t)
+                                                            .ConfigureAwait(false)), token: t)
                                             .ConfigureAwait(false))
                                     {
-                                        await objSkillGroup.SetBaseAsync(0, token).ConfigureAwait(false);
-                                        await objSkillGroup.SetKarmaAsync(0, token).ConfigureAwait(false);
+                                        await objSkillGroup.SetBaseAsync(0, t).ConfigureAwait(false);
+                                        await objSkillGroup.SetKarmaAsync(0, t).ConfigureAwait(false);
                                     }
                                     else
                                     {
                                         // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                        await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token)
+                                        await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), t)
                                             .ConfigureAwait(false);
                                     }
                                 }, token).ConfigureAwait(false);
@@ -2498,14 +2498,14 @@ namespace Chummer.Backend.Skills
                             else if (_objCharacterSettings.AllowSkillRegrouping)
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objSkillGroup =>
-                                    objSkillGroup.OnMultiplePropertyChangedAsync(token, nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills)), token).ConfigureAwait(false);
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((objSkillGroup, t) =>
+                                    objSkillGroup.OnMultiplePropertyChangedAsync(t, nameof(SkillGroup.SkillList), nameof(SkillGroup.HasAnyBreakingSkills)), token).ConfigureAwait(false);
                             }
                             else
                             {
                                 // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(objSkillGroup =>
-                                    objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), token), token).ConfigureAwait(false);
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync((objSkillGroup, t) =>
+                                    objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), t), token).ConfigureAwait(false);
                             }
 
                             //Workaround for probably breaking compability between earlier beta builds
@@ -2964,10 +2964,10 @@ namespace Chummer.Backend.Skills
                 //First create dictionary mapping name=>guid
                 ConcurrentDictionary<string, Guid> dicToProcess = new ConcurrentDictionary<string, Guid>();
                 // Potentially expensive checks that can (and therefore should) be parallelized.
-                await ParallelExtensions.ForEachAsync(Skills, async x =>
+                await ParallelExtensions.ForEachAsync(Skills, async (x, t) =>
                 {
                     // ReSharper disable once AccessToDisposedClosure
-                    if (await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) > 0)
+                    if (await x.GetTotalBaseRatingAsync(t).ConfigureAwait(false) > 0)
                         dicToProcess.TryAdd(x.Name, x.Id);
                 }, token).ConfigureAwait(false);
                 await KnowledgeSkills.ForEachAsync(x => dicToProcess.TryAdd(x.Name, x.Id), token).ConfigureAwait(false);
@@ -2977,10 +2977,10 @@ namespace Chummer.Backend.Skills
                     UpdateUndoSpecific(dicToProcess, eYielded);
                 }
                 dicToProcess.Clear();
-                await ParallelExtensions.ForEachAsync(SkillGroups, async x =>
+                await ParallelExtensions.ForEachAsync(SkillGroups, async (x, t) =>
                 {
                     // ReSharper disable once AccessToDisposedClosure
-                    if (await x.GetRatingAsync(token).ConfigureAwait(false) > 0)
+                    if (await x.GetRatingAsync(t).ConfigureAwait(false) > 0)
                         dicToProcess.TryAdd(x.Name, x.Id);
                 }, token).ConfigureAwait(false);
                 using (TemporaryArray<KarmaExpenseType> eYielded = KarmaExpenseType.ImproveSkillGroup.YieldAsPooled())
@@ -3126,11 +3126,11 @@ namespace Chummer.Backend.Skills
                     _dicSkillBackups.Clear();
                     foreach (Skill objSkill in lstSkillBackups)
                         await objSkill.RemoveAsync(token).ConfigureAwait(false);
-                    await _lstSkills.ForEachAsync(x => x.RemoveAsync(token), token).ConfigureAwait(false);
-                    await KnowledgeSkills.ForEachAsync(objSkill =>
+                    await _lstSkills.ForEachAsync((x, t) => x.RemoveAsync(t), token).ConfigureAwait(false);
+                    await KnowledgeSkills.ForEachAsync((objSkill, t) =>
                     {
                         objSkill.MultiplePropertiesChangedAsync -= OnKnowledgeSkillPropertyChanged;
-                        return objSkill.RemoveAsync(token);
+                        return objSkill.RemoveAsync(t);
                     }, token).ConfigureAwait(false);
                     await SkillGroups.ForEachWithSideEffectsAsync(async x => await x.DisposeAsync().ConfigureAwait(false), token).ConfigureAwait(false);
                     _dicSkillBackups.Clear();

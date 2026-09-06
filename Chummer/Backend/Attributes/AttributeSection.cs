@@ -221,7 +221,7 @@ namespace Chummer.Backend.Attributes
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -255,7 +255,7 @@ namespace Chummer.Backend.Attributes
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -2493,7 +2493,7 @@ namespace Chummer.Backend.Attributes
             {
                 if (objEvents.AsyncPropertyChangedList.Count != 0)
                 {
-                    await ParallelExtensions.ForEachAsync(objEvents.AsyncPropertyChangedList, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(objEvents.AsyncPropertyChangedList, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                 }
                 if (objEvents.PropertyChangedList.Count != 0)
                 {
@@ -3854,7 +3854,7 @@ namespace Chummer.Backend.Attributes
                         {
                             MultiplePropertiesChangedEventArgs
                                 e = new MultiplePropertiesChangedEventArgs(lstProperties);
-                            await ParallelExtensions.ForEachAsync(objEvents.AsyncPropertyChangedList, objEvent => objEvent.Invoke(this, e, token), token).ConfigureAwait(false);
+                            await ParallelExtensions.ForEachAsync(objEvents.AsyncPropertyChangedList, (objEvent, t) => objEvent.Invoke(this, e, t), token).ConfigureAwait(false);
                             if (objEvents.PropertyChangedList.Count != 0)
                             {
                                 await Utils.RunOnMainThreadAsync(() =>

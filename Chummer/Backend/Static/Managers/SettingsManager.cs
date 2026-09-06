@@ -325,21 +325,21 @@ namespace Chummer
 
             await ParallelExtensions.ForEachAsync((await XmlManager.LoadXPathAsync("settings.xml", token: token)
                     .ConfigureAwait(false)).SelectAndCacheExpression("/chummer/settings/setting", token: token),
-                xmlBuiltInSetting => LoadSettings(xmlBuiltInSetting as XPathNavigator), token).ConfigureAwait(false);
+                (xmlBuiltInSetting, t) => LoadSettings(xmlBuiltInSetting as XPathNavigator, t), token).ConfigureAwait(false);
 
-            async Task LoadSettings(XPathNavigator xmlBuiltInSetting)
+            async Task LoadSettings(XPathNavigator xmlBuiltInSetting, CancellationToken innerToken)
             {
                 CharacterSettings objNewCharacterSettings = new CharacterSettings();
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, token)
+                    if (!await objNewCharacterSettings.LoadAsync(xmlBuiltInSetting, innerToken)
                                                       .ConfigureAwait(false)
                         || (!GlobalSettings.LifeModuleEnabled
-                            && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token)
+                            && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(innerToken)
                                                             .ConfigureAwait(false))
                         || !s_DicLoadedCharacterSettings.TryAdd(
-                            await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                            await objNewCharacterSettings.GetDictionaryKeyAsync(innerToken).ConfigureAwait(false),
                             objNewCharacterSettings))
                     {
                         await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
@@ -359,20 +359,20 @@ namespace Chummer
             {
                 await ParallelExtensions.ForEachAsync(Directory.EnumerateFiles(strSettingsPath, "*.xml"), LoadSettingsFromFile, token).ConfigureAwait(false);
 
-                async Task LoadSettingsFromFile(string strSettingsFilePath)
+                async Task LoadSettingsFromFile(string strSettingsFilePath, CancellationToken innerToken)
                 {
-                    token.ThrowIfCancellationRequested();
+                    innerToken.ThrowIfCancellationRequested();
                     string strSettingName = Path.GetFileName(strSettingsFilePath);
                     CharacterSettings objNewCharacterSettings = new CharacterSettings();
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, false, token)
+                        innerToken.ThrowIfCancellationRequested();
+                        if (!await objNewCharacterSettings.LoadAsync(strSettingName, false, false, innerToken)
                                                           .ConfigureAwait(false)
                             || (!GlobalSettings.LifeModuleEnabled
-                                && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(token).ConfigureAwait(false))
+                                && await objNewCharacterSettings.GetBuildMethodIsLifeModuleAsync(innerToken).ConfigureAwait(false))
                             || !s_DicLoadedCharacterSettings.TryAdd(
-                                await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false),
+                                await objNewCharacterSettings.GetDictionaryKeyAsync(innerToken).ConfigureAwait(false),
                                 objNewCharacterSettings))
                         {
                             await objNewCharacterSettings.DisposeAsync().ConfigureAwait(false);
@@ -407,12 +407,12 @@ namespace Chummer
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
                     strKey, objNewCharacterSettings,
-                    async (x, objOldCharacterSettings) =>
+                    async (x, objOldCharacterSettings, t) =>
                     {
                         await objOldCharacterSettings
                               .CopyValuesAsync(
                                   objNewCharacterSettings,
-                                  token: token)
+                                  token: t)
                               .ConfigureAwait(false);
                         return objOldCharacterSettings;
                     }, token).ConfigureAwait(false);
@@ -448,14 +448,14 @@ namespace Chummer
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
-                    await s_DicLoadedCharacterSettings.ForEachAsync(async x =>
+                    await s_DicLoadedCharacterSettings.ForEachAsync(async (x, t) =>
                     {
                         if (strKeyToDelete == x.Key)
                             return;
                         // ReSharper disable once AccessToDisposedClosure
                         int intLoopScore
                             = await CalculateCharacterSettingsMatchScore(
-                                objSettingsToDelete, x.Value, true, token).ConfigureAwait(false);
+                                objSettingsToDelete, x.Value, true, t).ConfigureAwait(false);
                         if (intLoopScore > intBestScore)
                         {
                             intBestScore = intLoopScore;
@@ -468,14 +468,14 @@ namespace Chummer
                 {
                     int intBestScore = int.MinValue;
                     string strReturn = string.Empty;
-                    await s_DicLoadedCharacterSettings.ForEachAsync(async x =>
+                    await s_DicLoadedCharacterSettings.ForEachAsync(async (x, t) =>
                     {
                         if (strKeyToDelete == x.Key)
                             return;
                         // ReSharper disable once AccessToDisposedClosure
                         int intLoopScore
                             = await CalculateCharacterSettingsMatchScore(
-                                objSettingsToDelete, x.Value, false, token).ConfigureAwait(false);
+                                objSettingsToDelete, x.Value, false, t).ConfigureAwait(false);
                         if (intLoopScore > intBestScore)
                         {
                             intBestScore = intLoopScore;
@@ -484,19 +484,19 @@ namespace Chummer
                     }, token: token).ConfigureAwait(false);
                     return strReturn;
                 }, Utils.JoinableTaskFactory);
-                await Program.OpenCharacters.ForEachAsync(async objCharacter =>
+                await Program.OpenCharacters.ForEachAsync(async (objCharacter, t) =>
                 {
-                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(token).ConfigureAwait(false);
+                    System.IAsyncDisposable objLocker2 = await objCharacter.LockObject.EnterUpgradeableReadLockAsync(t).ConfigureAwait(false);
                     try
                     {
-                        token.ThrowIfCancellationRequested();
-                        if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
+                        t.ThrowIfCancellationRequested();
+                        if (await objCharacter.GetSettingsKeyAsync(t).ConfigureAwait(false) == strKeyToDelete)
                         {
                             await objCharacter
-                                .SetSettingsKeyAsync(await objCharacter.GetCreatedAsync(token).ConfigureAwait(false)
-                                ? await strBestMatchForCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false)
-                                : await strBestMatchForNonCreatedNewSettingsKey.GetValueAsync(token).ConfigureAwait(false),
-                                    token).ConfigureAwait(false);
+                                .SetSettingsKeyAsync(await objCharacter.GetCreatedAsync(t).ConfigureAwait(false)
+                                ? await strBestMatchForCreatedNewSettingsKey.GetValueAsync(t).ConfigureAwait(false)
+                                : await strBestMatchForNonCreatedNewSettingsKey.GetValueAsync(t).ConfigureAwait(false),
+                                    t).ConfigureAwait(false);
                         }
                     }
                     finally
@@ -535,12 +535,12 @@ namespace Chummer
                 string strKey = await objNewCharacterSettings.GetDictionaryKeyAsync(token).ConfigureAwait(false);
                 CharacterSettings objSettingsLoaded = await s_DicLoadedCharacterSettings.AddOrUpdateAsync(
                     strKey, objNewCharacterSettings,
-                    async (x, objOldCharacterSettings) =>
+                    async (x, objOldCharacterSettings, t) =>
                     {
                         await objOldCharacterSettings
                               .CopyValuesAsync(
                                   objNewCharacterSettings,
-                                  token: token)
+                                  token: t)
                               .ConfigureAwait(false);
                         return objOldCharacterSettings;
                     }, token).ConfigureAwait(false);
@@ -560,10 +560,10 @@ namespace Chummer
                     if (objToDelete != null)
                     {
                         string strKeyToDelete = await objToDelete.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                        await Program.OpenCharacters.ForEachAsync(async objCharacter =>
+                        await Program.OpenCharacters.ForEachAsync(async (objCharacter, t) =>
                         {
-                            if (await objCharacter.GetSettingsKeyAsync(token).ConfigureAwait(false) == strKeyToDelete)
-                                await objCharacter.SetSettingsKeyAsync(strKey, token).ConfigureAwait(false);
+                            if (await objCharacter.GetSettingsKeyAsync(t).ConfigureAwait(false) == strKeyToDelete)
+                                await objCharacter.SetSettingsKeyAsync(strKey, t).ConfigureAwait(false);
                         }, token: token).ConfigureAwait(false);
                         if (s_DicLoadedCharacterSettings.TryRemove(strKeyToDelete, out CharacterSettings objRemovedSetting)
                             && !ReferenceEquals(objRemovedSetting, objToDelete))

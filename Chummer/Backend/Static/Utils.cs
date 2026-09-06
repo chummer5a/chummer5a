@@ -207,7 +207,7 @@ namespace Chummer
         public static Task<Bitmap> GetCachedIconBitmapAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, x => TaskExtensions.RunWithoutEC(x.ToBitmap, token), token);
+            return s_dicCachedIconBitmaps.GetOrAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(x.ToBitmap, t), token);
         }
 
         private static readonly ConcurrentDictionary<Icon, Bitmap> s_dicStockIconBitmapsForSystemIcons = new ConcurrentDictionary<Icon, Bitmap>();
@@ -266,7 +266,7 @@ namespace Chummer
         public static Task<Bitmap> GetStockIconBitmapsForSystemIconAsync(Icon objIcon, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
-            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, x => TaskExtensions.RunWithoutEC(() =>
+            return s_dicStockIconBitmapsForSystemIcons.GetOrAddAsync(objIcon, (x, t) => TaskExtensions.RunWithoutEC(() =>
             {
                 if (x == SystemIcons.Application)
                 {
@@ -304,7 +304,7 @@ namespace Chummer
                 }
 
                 throw new ArgumentOutOfRangeException(nameof(objIcon));
-            }, token), token);
+            }, t), token);
         }
 
         /// <summary>

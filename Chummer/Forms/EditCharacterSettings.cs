@@ -2028,9 +2028,9 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 await _dicEnabledCharacterCustomDataDirectorys.ClearAsync(token).ConfigureAwait(false);
                 await (await _objCharacterSettings.GetCustomDataDirectoryKeysAsync(token).ConfigureAwait(false))
-                    .ForEachAsync(kvpCustomDataDirectory => _dicEnabledCharacterCustomDataDirectorys.AddAsync(
+                    .ForEachAsync((kvpCustomDataDirectory, t) => _dicEnabledCharacterCustomDataDirectorys.AddAsync(
                         kvpCustomDataDirectory.Key,
-                        kvpCustomDataDirectory.Value, token), token: token).ConfigureAwait(false);
+                        kvpCustomDataDirectory.Value, t), token: token).ConfigureAwait(false);
             }
             finally
             {

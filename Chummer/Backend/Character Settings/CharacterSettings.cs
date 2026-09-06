@@ -480,7 +480,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -514,7 +514,7 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -3257,7 +3257,7 @@ namespace Chummer
                     await objWriter.WriteStartElementAsync("customdatadirectorynames", token: token)
                         .ConfigureAwait(false);
                     int i = -1;
-                    await _dicCustomDataDirectoryKeys.ForEachAsync(async kvpDirectoryInfo =>
+                    await _dicCustomDataDirectoryKeys.ForEachAsync(async (kvpDirectoryInfo, t) =>
                     {
                         string strDirectoryName = kvpDirectoryInfo.Key;
                         bool blnDirectoryIsEnabled = kvpDirectoryInfo.Value;
@@ -3267,17 +3267,17 @@ namespace Chummer
                                             strDirectoryName, StringComparison.OrdinalIgnoreCase)))
                             return; // Do not save disabled custom data directories that are in the customdata folder and would be auto-populated anyway
                         // ReSharper disable AccessToDisposedClosure
-                        await objWriter.WriteStartElementAsync("customdatadirectoryname", token: token)
+                        await objWriter.WriteStartElementAsync("customdatadirectoryname", token: t)
                             .ConfigureAwait(false);
-                        await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: token)
+                        await objWriter.WriteElementStringAsync("directoryname", strDirectoryName, token: t)
                             .ConfigureAwait(false);
                         await objWriter
                             .WriteElementStringAsync("order",
                                 Interlocked.Increment(ref i).ToString(GlobalSettings.InvariantCultureInfo),
-                                token: token).ConfigureAwait(false);
+                                token: t).ConfigureAwait(false);
                         await objWriter.WriteElementStringAsync(
                             "enabled", blnDirectoryIsEnabled.ToString(GlobalSettings.InvariantCultureInfo),
-                            token: token).ConfigureAwait(false);
+                            token: t).ConfigureAwait(false);
                         await objWriter.WriteEndElementAsync().ConfigureAwait(false);
                         // ReSharper restore AccessToDisposedClosure
                     }, token).ConfigureAwait(false);

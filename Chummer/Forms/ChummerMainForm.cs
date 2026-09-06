@@ -853,8 +853,8 @@ namespace Chummer
                                             }
 
                                             // Delete all old autosaves
-                                            await ParallelExtensions.ForEachAsync(lstOldAutosaves, strOldAutosave =>
-                                                FileExtensions.SafeDeleteAsync(strOldAutosave, token: _objGenericToken), _objGenericToken).ConfigureAwait(false);
+                                            await ParallelExtensions.ForEachAsync(lstOldAutosaves, (strOldAutosave, t) =>
+                                                FileExtensions.SafeDeleteAsync(strOldAutosave, token: t), _objGenericToken).ConfigureAwait(false);
                                         }
 
                                         if (setFilesToLoad.Count > 0)
@@ -2830,11 +2830,11 @@ namespace Chummer
                                                                          Character.NumLoadingSections * s.Length, _objGenericToken).ConfigureAwait(false))
                     {
                         // Array instead of concurrent bag because we want to preserve order
-                        await ParallelExtensions.ForAsync(0, s.Length, async i =>
+                        await ParallelExtensions.ForAsync(0, s.Length, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(s[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3462,11 +3462,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3678,11 +3678,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -3918,11 +3918,11 @@ namespace Chummer
                                    lstFilesToOpen.Select(Path.GetFileName)),
                                lstFilesToOpen.Count * Character.NumLoadingSections, _objGenericToken).ConfigureAwait(false))
                     {
-                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async i =>
+                        await ParallelExtensions.ForAsync(0, lstFilesToOpen.Count, async (i, t) =>
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             lstCharacters[i]
-                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: _objGenericToken)
+                                = await Program.LoadCharacterAsync(lstFilesToOpen[i], frmLoadingBar: frmLoadingBar.MyForm, token: t)
                                     .ConfigureAwait(false);
                         }, _objGenericToken).ConfigureAwait(false);
                     }
@@ -4121,8 +4121,8 @@ namespace Chummer
                                                                          * setCharactersToOpen.Count, token)
                                           .ConfigureAwait(false))
                     {
-                        lstCharacters.AddRange(await ParallelExtensions.ForEachAsync(setCharactersToOpen, strFile =>
-                            Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: token), token).ConfigureAwait(false));
+                        lstCharacters.AddRange(await ParallelExtensions.ForEachAsync(setCharactersToOpen, (strFile, t) =>
+                            Program.LoadCharacterAsync(strFile, frmLoadingBar: frmLoadingBar.MyForm, token: t), token).ConfigureAwait(false));
                     }
 
                     await OpenCharacterList(lstCharacters, token: token).ConfigureAwait(false);

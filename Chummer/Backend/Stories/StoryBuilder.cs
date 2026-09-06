@@ -99,13 +99,13 @@ namespace Chummer
                     XPathNavigator xmlBaseMacrosNode = xdoc
                             .SelectSingleNodeAndCacheExpression(
                                 "/chummer/storybuilder/macros", token: token);
-                    await ParallelExtensions.ForAsync(0, modules.Count, async i =>
+                    await ParallelExtensions.ForAsync(0, modules.Count, async (i, t) =>
                     {
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                            out StringBuilder sbdTemp))
                         {
-                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool(token) ?? string.Empty, 5,
-                                xmlBaseMacrosNode, token).ConfigureAwait(false)).ToTrimmedString();
+                            story[i] = (await Write(sbdTemp, modules[i]["story"]?.InnerTextViaPool(t) ?? string.Empty, 5,
+                                xmlBaseMacrosNode, t).ConfigureAwait(false)).ToTrimmedString();
                         }
                     }, token).ConfigureAwait(false);
 

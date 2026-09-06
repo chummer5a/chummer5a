@@ -1622,12 +1622,12 @@ namespace Chummer.Backend.Equipment
             }
             if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
-                await GearChildren.ForEachAsync(async objChild =>
+                await GearChildren.ForEachAsync(async (objChild, t) =>
                 {
                     if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(t).ConfigureAwait(false), t).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
             }
@@ -1848,7 +1848,7 @@ namespace Chummer.Backend.Equipment
             string strArmorCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strArmorCapacity))
                 return 0.0m.ToString("#,0.##", objCultureInfo);
-            strArmorCapacity = await strArmorCapacity.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strArmorCapacity = await strArmorCapacity.ProcessFixedValuesStringAsync(t => GetRatingAsync(t), token).ConfigureAwait(false);
             if (strArmorCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
                 // If the Capacity is determined by the Rating, evaluate the expression.
@@ -1906,8 +1906,8 @@ namespace Chummer.Backend.Equipment
             decimal decItemCost = 0;
             string strReturn = Cost;
             strReturn = blnUseRating
-                ? await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false)
-                : await strReturn.ProcessFixedValuesStringAsync(() => GetMaxRatingValueAsync(token), token).ConfigureAwait(false);
+                ? await strReturn.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false)
+                : await strReturn.ProcessFixedValuesStringAsync(GetMaxRatingValueAsync, token).ConfigureAwait(false);
             string strNuyenSymbol = await LanguageManager.GetStringAsync("String_NuyenSymbol", token: token).ConfigureAwait(false);
             if (strReturn.StartsWith("Variable(", StringComparison.Ordinal))
             {
@@ -2851,7 +2851,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')

@@ -463,16 +463,16 @@ namespace Chummer
                                             = new ConcurrentBag<ListItem>();
                                         IReadOnlyList<string> lstCustomDataPaths = await _objSelectedSetting.GetEnabledCustomDataDirectoryPathsAsync(token).ConfigureAwait(false);
                                         // Preload all data first to prevent weird locking issues with the rest of the program
-                                        await ParallelExtensions.ForEachAsync(_astrFileNames, strFile => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths, token: token), token).ConfigureAwait(false);
-                                        await ParallelExtensions.ForEachAsync(_astrFileNames, async strFileName =>
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, (strFile, t) => XmlManager.LoadXPathAsync(strFile, lstCustomDataPaths, token: t), token).ConfigureAwait(false);
+                                        await ParallelExtensions.ForEachAsync(_astrFileNames, async (strFileName, t) =>
                                         {
                                             XPathNavigator xmlBaseNode
                                                 = await XmlManager.LoadXPathAsync(strFileName,
                                                     lstCustomDataPaths,
-                                                    token: token).ConfigureAwait(false);
+                                                    token: t).ConfigureAwait(false);
                                             xmlBaseNode
                                                 = xmlBaseNode.SelectSingleNodeAndCacheExpression(
-                                                    "/chummer", token: token);
+                                                    "/chummer", token: t);
                                             if (xmlBaseNode == null)
                                                 return;
                                             bool blnLoopFileNameHasItems = false;
@@ -482,44 +482,44 @@ namespace Chummer
                                                 blnLoopFileNameHasItems = true;
                                                 string strName
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                            "name", token: token)
+                                                            "name", token: t)
                                                     ?.Value;
                                                 string strDisplayName
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                              "translate", token: token)
+                                                              "translate", token: t)
                                                       ?.Value
                                                       ?? strName
                                                       ?? xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                          "id", token: token)?.Value
+                                                          "id", token: t)?.Value
                                                       ?? await LanguageManager
-                                                               .GetStringAsync("String_Unknown", token: token)
+                                                               .GetStringAsync("String_Unknown", token: t)
                                                                .ConfigureAwait(false);
                                                 string strSource
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                        "source", token: token)?.Value;
+                                                        "source", token: t)?.Value;
                                                 string strPage
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                            "page", token: token)
+                                                            "page", token: t)
                                                     ?.Value;
                                                 string strDisplayPage
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                          "altpage", token: token)?.Value
+                                                          "altpage", token: t)?.Value
                                                       ?? strPage;
                                                 string strEnglishNameOnPage
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                              "nameonpage", token: token)
+                                                              "nameonpage", token: t)
                                                       ?.Value
                                                       ?? strName;
                                                 string strTranslatedNameOnPage =
                                                     xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                            "altnameonpage", token: token)
+                                                            "altnameonpage", token: t)
                                                     ?.Value
                                                     ?? strDisplayName;
                                                 string strNotes
                                                     = xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                          "altnotes", token: token)?.Value
+                                                          "altnotes", token: t)?.Value
                                                       ?? xmlItemNode.SelectSingleNodeAndCacheExpression(
-                                                              "notes", token: token)
+                                                              "notes", token: t)
                                                       ?.Value;
                                                 MasterIndexEntry objEntry = new MasterIndexEntry(
                                                     strDisplayName,
@@ -528,11 +528,11 @@ namespace Chummer
                                                                           strSource, strPage,
                                                                           GlobalSettings.DefaultLanguage,
                                                                           GlobalSettings.InvariantCultureInfo,
-                                                                          token: token)
+                                                                          token: t)
                                                                       .ConfigureAwait(false),
                                                     await SourceString.GetSourceStringAsync(
                                                         strSource, strDisplayPage, GlobalSettings.Language,
-                                                        GlobalSettings.CultureInfo, token: token).ConfigureAwait(false),
+                                                        GlobalSettings.CultureInfo, token: t).ConfigureAwait(false),
                                                     strEnglishNameOnPage,
                                                     strTranslatedNameOnPage);
                                                 lstItemsForLoading.Add(new ListItem(objEntry, strDisplayName));

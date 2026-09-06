@@ -249,7 +249,7 @@ namespace Chummer
             {
                 objNewLanguage = await s_DicLanguageData
                     .GetOrAddAsync(
-                        strKey, x => LanguageData.CreateAsync(strLanguage, token), token)
+                        strKey, (x, t) => LanguageData.CreateAsync(strLanguage, t), token)
                     .ConfigureAwait(false);
             }
 

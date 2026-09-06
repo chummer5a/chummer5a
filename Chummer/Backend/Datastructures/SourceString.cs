@@ -43,8 +43,8 @@ namespace Chummer
         {
             return s_DicCachedStrings.GetOrAddAsync(
                 strLanguage,
-                async x => new ValueTuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: token).ConfigureAwait(false),
-                    await LanguageManager.GetStringAsync("String_Page", x, token: token).ConfigureAwait(false)), token);
+                async (x, t) => new ValueTuple<string, string>(await LanguageManager.GetStringAsync("String_Space", x, token: t).ConfigureAwait(false),
+                    await LanguageManager.GetStringAsync("String_Page", x, token: t).ConfigureAwait(false)), token);
         }
 
         private readonly int _intHashCode;

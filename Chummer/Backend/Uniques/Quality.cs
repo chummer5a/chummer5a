@@ -3172,7 +3172,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -3206,7 +3206,7 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {

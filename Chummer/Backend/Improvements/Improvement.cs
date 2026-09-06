@@ -3908,9 +3908,9 @@ namespace Chummer
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                            await _objCharacter.Contacts.ForEachAsync(async (objTargetContact, t) =>
                             {
-                                string strId = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                                string strId = await objTargetContact.GetUniqueIdAsync(t).ConfigureAwait(false);
                                 if (strId == ImprovedName || lstExtraImprovedName.Contains(strId))
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -4074,9 +4074,9 @@ namespace Chummer
                         SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objTargetGroup, t) =>
                             {
-                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                string strName = await objTargetGroup.GetNameAsync(t).ConfigureAwait(false);
                                 if (strName == ImprovedName ||
                                     lstExtraImprovedName.Contains(strName))
                                 {
@@ -4268,10 +4268,10 @@ namespace Chummer
                         // Get the power improved by this improvement
                         if (lstExtraImprovedName?.Count > 0 || lstExtraUniqueName?.Count > 0)
                         {
-                            await _objCharacter.Powers.ForEachAsync(async objImprovedPower =>
+                            await _objCharacter.Powers.ForEachAsync(async (objImprovedPower, t) =>
                             {
-                                string strName = await objImprovedPower.GetNameAsync(token).ConfigureAwait(false);
-                                string strExtra = await objImprovedPower.GetExtraAsync(token).ConfigureAwait(false);
+                                string strName = await objImprovedPower.GetNameAsync(t).ConfigureAwait(false);
+                                string strExtra = await objImprovedPower.GetExtraAsync(t).ConfigureAwait(false);
                                 if ((strName == ImprovedName || lstExtraImprovedName?.Contains(strName) == true)
                                     && (strExtra == UniqueName || lstExtraUniqueName?.Contains(strExtra) == true))
                                 {
@@ -4299,12 +4299,12 @@ namespace Chummer
                         // Get the power improved by this improvement
                         if (lstExtraImprovedName?.Count > 0 || lstExtraUniqueName?.Count > 0)
                         {
-                            await _objCharacter.Powers.ForEachAsync(async objImprovedPower =>
+                            await _objCharacter.Powers.ForEachAsync(async (objImprovedPower, t) =>
                             {
-                                string strLoop = await objImprovedPower.GetNameAsync(token).ConfigureAwait(false);
+                                string strLoop = await objImprovedPower.GetNameAsync(t).ConfigureAwait(false);
                                 if (strLoop == ImprovedName || lstExtraImprovedName?.Contains(strLoop) == true)
                                 {
-                                    strLoop = await objImprovedPower.GetExtraAsync(token).ConfigureAwait(false);
+                                    strLoop = await objImprovedPower.GetExtraAsync(t).ConfigureAwait(false);
                                     if (strLoop == UniqueName || lstExtraUniqueName?.Contains(strLoop) == true)
                                     {
                                         lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -4680,9 +4680,9 @@ namespace Chummer
                         {
                             if (lstExtraImprovedName?.Count > 0)
                             {
-                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objTargetGroup, t) =>
                                 {
-                                    string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                    string strName = await objTargetGroup.GetNameAsync(t).ConfigureAwait(false);
                                     if (strName == ImprovedName ||
                                         lstExtraImprovedName.Contains(strName))
                                     {
@@ -4719,9 +4719,9 @@ namespace Chummer
                         SkillsSection objSkillsSection = await _objCharacter.GetSkillsSectionAsync(token).ConfigureAwait(false);
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async objTargetGroup =>
+                            await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(async (objTargetGroup, t) =>
                             {
-                                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                                string strName = await objTargetGroup.GetNameAsync(t).ConfigureAwait(false);
                                 if (strName == ImprovedName ||
                                     lstExtraImprovedName.Contains(strName))
                                 {
@@ -5052,9 +5052,9 @@ namespace Chummer
 
                 case ImprovementType.MagiciansWayDiscount:
                 {
-                    await _objCharacter.Powers.ForEachAsync(async objLoopPower =>
+                    await _objCharacter.Powers.ForEachAsync(async (objLoopPower, t) =>
                     {
-                        if (await objLoopPower.GetAdeptWayDiscountAsync(token).ConfigureAwait(false) != 0)
+                        if (await objLoopPower.GetAdeptWayDiscountAsync(t).ConfigureAwait(false) != 0)
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objLoopPower,
                                 nameof(Power.AdeptWayDiscountEnabled)));
                     }, token).ConfigureAwait(false);
@@ -5068,9 +5068,9 @@ namespace Chummer
                 {
                     if (lstExtraImprovedName?.Count > 0)
                     {
-                        await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                        await _objCharacter.Contacts.ForEachAsync(async (objTargetContact, t) =>
                         {
-                            string strLoop = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                            string strLoop = await objTargetContact.GetUniqueIdAsync(t).ConfigureAwait(false);
                             if (strLoop == ImprovedName || lstExtraImprovedName.Contains(strLoop))
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -5097,9 +5097,9 @@ namespace Chummer
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.Contacts.ForEachAsync(async objTargetContact =>
+                            await _objCharacter.Contacts.ForEachAsync(async (objTargetContact, t) =>
                             {
-                                string strLoop = await objTargetContact.GetUniqueIdAsync(token).ConfigureAwait(false);
+                                string strLoop = await objTargetContact.GetUniqueIdAsync(t).ConfigureAwait(false);
                                 if (strLoop == ImprovedName || lstExtraImprovedName.Contains(strLoop))
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(
@@ -5149,10 +5149,10 @@ namespace Chummer
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                            await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
                             {
-                                string strName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
-                                string strSourceId = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false);
+                                string strName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
+                                string strSourceId = await objQuality.GetSourceIDStringAsync(t).ConfigureAwait(false);
                                 if (strName == ImprovedName
                                     || string.Equals(strSourceId, ImprovedName, StringComparison.OrdinalIgnoreCase)
                                     || lstExtraImprovedName.Contains(strName)
@@ -5184,10 +5184,10 @@ namespace Chummer
                     {
                         if (lstExtraImprovedName?.Count > 0)
                         {
-                            await _objCharacter.Qualities.ForEachAsync(async objQuality =>
+                            await _objCharacter.Qualities.ForEachAsync(async (objQuality, t) =>
                             {
-                                string strName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
-                                string strSourceId = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false);
+                                string strName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
+                                string strSourceId = await objQuality.GetSourceIDStringAsync(t).ConfigureAwait(false);
                                 if (strName == ImprovedName
                                     || string.Equals(strSourceId, ImprovedName, StringComparison.OrdinalIgnoreCase)
                                     || lstExtraImprovedName.Contains(strName)
@@ -5427,10 +5427,10 @@ namespace Chummer
         /// </summary>
         private static Task ProcessSkillsWithPropertyComprehensiveAsync<T>(IAsyncEnumerable<T> skills, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default) where T : Skill
         {
-            return skills.ForEachAsync(async objTargetSkill =>
+            return skills.ForEachAsync(async (objTargetSkill, t) =>
             {
-                string strKey = await objTargetSkill.GetDictionaryKeyAsync(token).ConfigureAwait(false);
-                string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(token).ConfigureAwait(false);
+                string strKey = await objTargetSkill.GetDictionaryKeyAsync(t).ConfigureAwait(false);
+                string strDisplayName = await objTargetSkill.GetCurrentDisplayNameAsync(t).ConfigureAwait(false);
                 
                 // Check against ImprovedName
                 if (strKey == strImprovedName || strImprovedName == objTargetSkill.InternalId || strDisplayName == strImprovedName)
@@ -5591,9 +5591,9 @@ namespace Chummer
             IAsyncEnumerable<SkillGroup> skillGroups, string strImprovedName, string strTarget, IReadOnlyCollection<string> lstExtraImprovedName, IReadOnlyCollection<string> lstExtraTarget, 
             string strPropertyName, List<ValueTuple<INotifyMultiplePropertiesChangedAsync, string>> lstReturn, CancellationToken token = default)
         {
-            return skillGroups.ForEachAsync(async objTargetGroup =>
+            return skillGroups.ForEachAsync(async (objTargetGroup, t) =>
             {
-                string strName = await objTargetGroup.GetNameAsync(token).ConfigureAwait(false);
+                string strName = await objTargetGroup.GetNameAsync(t).ConfigureAwait(false);
 
                 // Check against ImprovedName
                 if (strName == strImprovedName)

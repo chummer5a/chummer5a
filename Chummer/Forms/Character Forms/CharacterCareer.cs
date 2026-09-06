@@ -4265,13 +4265,13 @@ namespace Chummer
                     {
                         string strSpace = await LanguageManager.GetStringAsync("String_Space", token: GenericToken).ConfigureAwait(false);
                         // Await structure prevents UI thread lock-ups if the LoadCharacter() function shows any messages
-                        await ParallelExtensions.ForAsync(0, intClones, async i =>
+                        await ParallelExtensions.ForAsync(0, intClones, async (i, t) =>
                         {
                             string strNewName = strAlias + strSpace + i.ToString(GlobalSettings.CultureInfo);
                             lstClones[i] = await Program.LoadCharacterAsync(strFileName, strNewName, true,
                                                                      // ReSharper disable once AccessToDisposedClosure
                                                                      frmLoadingBar: frmLoadingBar.MyForm,
-                                                                     token: GenericToken).ConfigureAwait(false);
+                                                                     token: t).ConfigureAwait(false);
                         }, GenericToken).ConfigureAwait(false);
                     }
 

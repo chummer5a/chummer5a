@@ -323,11 +323,11 @@ namespace Chummer
                     token.ThrowIfCancellationRequested();
                     // Parallelized load because this is one major bottleneck.
                     Character[] lstCharacters = new Character[intNodesCount];
-                    await ParallelExtensions.ForAsync(0, intNodesCount, async i =>
+                    await ParallelExtensions.ForAsync(0, intNodesCount, async (i, t) =>
                     {
                         string strLoopFile
-                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), token).ConfigureAwait(false);
-                        lstCharacters[i] = await InnerLoad(strLoopFile, token).ConfigureAwait(false);
+                            = await treCharacters.DoThreadSafeFuncAsync(x => x.Nodes[i].Tag.ToString(), t).ConfigureAwait(false);
+                        lstCharacters[i] = await InnerLoad(strLoopFile, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
                     
                     async Task<Character> InnerLoad(string strLoopFile, CancellationToken innerToken = default)

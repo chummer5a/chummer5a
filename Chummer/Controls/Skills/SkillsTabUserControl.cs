@@ -372,9 +372,9 @@ namespace Chummer.UI.Skills
                     }
                 }, token: token).ConfigureAwait(false);
 
-                await ParallelExtensions.ForEachAsync(_lstActiveSkills.ContentControls.OfType<SkillControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
-                await ParallelExtensions.ForEachAsync(_lstKnowledgeSkills.ContentControls.OfType<KnowledgeSkillControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
-                await ParallelExtensions.ForEachAsync(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>(), x => x.DoLoad(token), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstActiveSkills.ContentControls.OfType<SkillControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstKnowledgeSkills.ContentControls.OfType<KnowledgeSkillControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_lstSkillGroups.ContentControls.OfType<SkillGroupControl>(), (x, t) => x.DoLoad(t), token).ConfigureAwait(false);
 
                 if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                 {

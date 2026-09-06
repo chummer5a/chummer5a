@@ -171,7 +171,7 @@ namespace Chummer
                 s_DicCompiledEvaluations.TryAdd(strXPath, tupReturn);
                 return Task.FromResult(tupReturn);
             }
-            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strXPath, async (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -179,7 +179,7 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(t).ConfigureAwait(false);
                     }
 
                     try
@@ -289,7 +289,7 @@ namespace Chummer
         public static Task<ValueTuple<bool, object>> EvaluateInvariantXPathAsync(XPathExpression objXPath, CancellationToken token = default)
         {
             string strExpression = objXPath.Expression;
-            return s_DicCompiledEvaluations.GetOrAddAsync(strExpression, async x =>
+            return s_DicCompiledEvaluations.GetOrAddAsync(strExpression, async (x, t) =>
             {
                 bool blnIsSuccess;
                 object objReturn;
@@ -297,7 +297,7 @@ namespace Chummer
                 {
                     if (!s_StkXPathNavigatorPool.TryPop(out XPathNavigator objEvaluator))
                     {
-                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(token).ConfigureAwait(false);
+                        objEvaluator = await XPathNavigatorExtensions.GetEmptyDocumentNavigatorAsync(t).ConfigureAwait(false);
                     }
 
                     try
@@ -494,9 +494,9 @@ namespace Chummer
             Vehicle objReturnVehicle = null;
             if (!string.IsNullOrEmpty(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
+                await lstVehicles.ForEachWithBreakAsync(async (objVehicle, t) =>
                 {
-                    (objReturn, objReturnAccessory, objReturnCyberware) = await objVehicle.FindVehicleGearAsync(strGuid, token).ConfigureAwait(false);
+                    (objReturn, objReturnAccessory, objReturnCyberware) = await objVehicle.FindVehicleGearAsync(strGuid, t).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
@@ -673,52 +673,52 @@ namespace Chummer
             VehicleMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstVehicles.ForEachWithBreakAsync(async objVehicle =>
+                await lstVehicles.ForEachWithBreakAsync(async (objVehicle, t1) =>
                 {
-                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                    objReturn = await objVehicle.Weapons.DeepFindByIdAsync(strGuid, token: t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
                         return false;
                     }
 
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objWeaponMount, t2) =>
                     {
-                        objReturn = await objWeaponMount.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objWeaponMount.Weapons.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn != null)
                         {
                             objReturnMount = objWeaponMount;
                             return false;
                         }
 
-                        await objWeaponMount.Mods.ForEachWithBreakAsync(async objMod =>
+                        await objWeaponMount.Mods.ForEachWithBreakAsync(async (objMod, t3) =>
                         {
-                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                            objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: t3).ConfigureAwait(false);
                             if (objReturn == null)
                                 return true;
                             objReturnMod = objMod;
                             return false;
-                        }, token).ConfigureAwait(false);
+                        }, t2).ConfigureAwait(false);
 
                         if (objReturn == null)
                             return true;
                         objReturnMount = objWeaponMount;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnVehicle = objVehicle;
                         return false;
                     }
 
-                    await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.Mods.ForEachWithBreakAsync(async (objMod, t2) =>
                     {
-                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn == null)
                             return true;
                         objReturnMod = objMod;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
                     if (objReturn == null)
                         return true;
@@ -853,10 +853,10 @@ namespace Chummer
                 {
                     VehicleMod objReturnMod = null;
                     WeaponMount objReturnMount = null;
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objWeaponMount =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objWeaponMount, t) =>
                     {
                         objReturnMod =
-                            await objWeaponMount.Mods.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                            await objWeaponMount.Mods.FirstOrDefaultAsync(x => x.InternalId == strGuid, t).ConfigureAwait(false);
                         if (objReturnMod != null)
                         {
                             objReturnMount = objWeaponMount;
@@ -935,9 +935,9 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objMod, t) =>
                     {
-                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                     if (objReturn != null)
@@ -945,9 +945,9 @@ namespace Chummer
                         return objReturn;
                     }
 
-                    await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                    await objVehicle.Mods.ForEachWithBreakAsync(async (objMod, t) =>
                     {
-                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, token).ConfigureAwait(false);
+                        objReturn = await objMod.Weapons.FindWeaponAccessoryAsync(strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                     if (objReturn != null)
@@ -1089,24 +1089,24 @@ namespace Chummer
             ArmorMod objReturnMod = null;
             if (!string.IsNullOrWhiteSpace(strGuid) && !strGuid.IsEmptyGuid())
             {
-                await lstArmors.ForEachWithBreakAsync(async objArmor =>
+                await lstArmors.ForEachWithBreakAsync(async (objArmor, t1) =>
                 {
-                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                    objReturn = await objArmor.GearChildren.DeepFindByIdAsync(strGuid, token: t1).ConfigureAwait(false);
                     if (objReturn != null)
                     {
                         objReturnArmor = objArmor;
                         return false;
                     }
 
-                    await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                    await objArmor.ArmorMods.ForEachWithBreakAsync(async (objMod, t2) =>
                     {
-                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: token).ConfigureAwait(false);
+                        objReturn = await objMod.GearChildren.DeepFindByIdAsync(strGuid, token: t2).ConfigureAwait(false);
                         if (objReturn == null)
                             return true;
 
                         objReturnMod = objMod;
                         return false;
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
                     if (objReturn == null)
                         return true;
@@ -1358,9 +1358,9 @@ namespace Chummer
                                  async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
                              token: token).ConfigureAwait(false))
                 {
-                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objAccessory =>
+                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objAccessory, t) =>
                     {
-                        objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(strGuid, token)
+                        objReturn = await objAccessory.GearChildren.DeepFindByIdAsync(strGuid, t)
                             .ConfigureAwait(false);
                         if (objReturn != null)
                         {
@@ -1427,9 +1427,9 @@ namespace Chummer
                     if (objReturn != null)
                         return objReturn;
 
-                    await objCharacter.Powers.ForEachWithBreakAsync(async objPower =>
+                    await objCharacter.Powers.ForEachWithBreakAsync(async (objPower, t) =>
                     {
-                        objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, token).ConfigureAwait(false);
+                        objReturn = await objPower.Enhancements.FirstOrDefaultAsync(x => x.InternalId == strGuid, t).ConfigureAwait(false);
                         return objReturn == null;
                     }, token: token).ConfigureAwait(false);
                 }

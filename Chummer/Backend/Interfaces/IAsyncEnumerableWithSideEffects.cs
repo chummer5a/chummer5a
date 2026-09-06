@@ -64,6 +64,27 @@ namespace Chummer
             }
         }
 
+        public static async Task ForEachWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Action<T, CancellationToken> objFuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    objFuncToRun.Invoke(objEnumerator.Current, token);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
         public static async Task ForEachWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -85,12 +106,43 @@ namespace Chummer
             }
         }
 
+        public static async Task ForEachWithSideEffectsAsync<T>(this IAsyncEnumerableWithSideEffects<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task> objFuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = await objEnumerable.EnumerateWithSideEffectsAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    await objFuncToRun.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+        }
+
         public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
 
+        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Action<T, CancellationToken> objFuncToRun, CancellationToken token = default)
+        {
+            await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
+        }
+
         public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
+        {
+            await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
+        }
+
+        public static async Task ForEachWithSideEffectsAsync<T>(this Task<IAsyncEnumerableWithSideEffects<T>> tskEnumerable, [NotNull] Func<T, CancellationToken, Task> objFuncToRun, CancellationToken token = default)
         {
             await ForEachWithSideEffectsAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }

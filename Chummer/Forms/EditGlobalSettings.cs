@@ -2920,12 +2920,12 @@ namespace Chummer
             if (dicPatternsToMatch != null)
             {
                 int intFileCounter = 0;
-                await ParallelExtensions.ForEachAsync(lstFiles, async strFile =>
+                await ParallelExtensions.ForEachAsync(lstFiles, async (strFile, t) =>
                 {
                     if (!dicPatternsToMatch.IsEmpty)
                     {
                         Interlocked.Increment(ref intFileCounter);
-                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicPatternsToMatch).ConfigureAwait(false))
+                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicPatternsToMatch, innerToken: t).ConfigureAwait(false))
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
@@ -2954,12 +2954,12 @@ namespace Chummer
             {
                 string strFallbackFormat = await LanguageManager.GetStringAsync("String_Fallback_Pattern", _strSelectedLanguage, token: token).ConfigureAwait(false);
                 int intFileCounter = 0;
-                await ParallelExtensions.ForEachAsync(lstFiles, async strFile =>
+                await ParallelExtensions.ForEachAsync(lstFiles, async (strFile, t) =>
                 {
                     if (!dicBackupPatternsToMatch.IsEmpty)
                     {
                         Interlocked.Increment(ref intFileCounter);
-                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicBackupPatternsToMatch, strFallbackFormat).ConfigureAwait(false))
+                        foreach (SourcebookInfo objInfo in await GetSourcebookInfo(strFile, dicBackupPatternsToMatch, strFallbackFormat, t).ConfigureAwait(false))
                         {
                             // ReSharper disable once AccessToDisposedClosure
                             if (objInfo == null)
@@ -2985,16 +2985,16 @@ namespace Chummer
                 }
             }
 
-            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "")
+            async Task<List<SourcebookInfo>> GetSourcebookInfo(string strBookFile, ConcurrentDictionary<string, ValueTuple<string, int>> dicPatternsToUse, string strProgressBarTextFormat = "", CancellationToken innerToken = default)
             {
                 FileInfo objFileInfo = new FileInfo(strBookFile);
                 string strText = string.IsNullOrEmpty(strProgressBarTextFormat)
                     ? objFileInfo.Name
                     : string.Format(_objSelectedCultureInfo, strProgressBarTextFormat, objFileInfo.Name);
                 await frmProgressBar
-                      .PerformStepAsync(strText, LoadingBar.ProgressBarTextPatterns.Scanning, token)
+                      .PerformStepAsync(strText, LoadingBar.ProgressBarTextPatterns.Scanning, innerToken)
                       .ConfigureAwait(false);
-                return await ScanPDFForMatchingText(objFileInfo.FullName, dicPatternsToUse, token).ConfigureAwait(false);
+                return await ScanPDFForMatchingText(objFileInfo.FullName, dicPatternsToUse, innerToken).ConfigureAwait(false);
             }
 
             List<SourcebookInfo> lstReturn

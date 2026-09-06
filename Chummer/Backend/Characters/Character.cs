@@ -1184,7 +1184,7 @@ namespace Chummer
                     if (_lstSettingsMultiplePropertiesChangedAsync.Count > 0)
                     {
                         MultiplePropertiesChangedEventArgs objArgs = new MultiplePropertiesChangedEventArgs(lstProperties);
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
 
                         if (SettingsPropertyChanged != null)
                         {
@@ -1221,7 +1221,7 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (SettingsPropertyChanged != null)
                         {
@@ -2448,9 +2448,9 @@ namespace Chummer
                                         {
                                             // Needed in order to properly process named sources where
                                             // the tooltip was built before the object was added to the character
-                                            await Improvements.ForEachAsync(objImprovement =>
+                                            await Improvements.ForEachAsync((objImprovement, t) =>
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 if (objImprovement.SourceName.TrimEndOnce("Pair").TrimEndOnce("Wireless") ==
                                                     objNewItem.InternalId && objImprovement.Enabled)
                                                 {
@@ -2458,7 +2458,7 @@ namespace Chummer
                                                                  string strPropertyToUpdate) in
                                                              objImprovement.GetRelevantPropertyChangers())
                                                     {
-                                                        token.ThrowIfCancellationRequested();
+                                                        t.ThrowIfCancellationRequested();
                                                         if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                                 out HashSet<string> setChangedProperties))
                                                         {
@@ -20169,11 +20169,13 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, (i, t) =>
                             {
+                                if (t.IsCancellationRequested)
+                                    return Task.FromCanceled<Bitmap>(t);
                                 string strLoop = astrMugshotsBase64[i];
                                 if (!string.IsNullOrEmpty(strLoop))
-                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, t);
                                 return Task.FromResult<Bitmap>(null);
                             }, token).ConfigureAwait(false);
                             foreach (Bitmap objImage in aobjMugshots)
@@ -50933,7 +50935,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
 
                         if (MultiplePropertiesChanged != null)
                         {
@@ -50968,7 +50970,7 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {

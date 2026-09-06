@@ -1030,12 +1030,12 @@ namespace Chummer.Backend.Equipment
             }
             if (await GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0)
             {
-                await GearChildren.ForEachAsync(async objChild =>
+                await GearChildren.ForEachAsync(async (objChild, t) =>
                 {
                     if (objChild.MaxRating.Contains("Parent") || objChild.MinRating.Contains("Parent"))
                     {
                         // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await objChild.SetRatingAsync(await objChild.GetRatingAsync(t).ConfigureAwait(false), t).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
             }
@@ -1694,7 +1694,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -1773,7 +1773,7 @@ namespace Chummer.Backend.Equipment
             string strCapacity = GearCapacity;
             if (string.IsNullOrEmpty(strCapacity))
                 return "0";
-            strCapacity = await strCapacity.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strCapacity = await strCapacity.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
             if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
             {
@@ -1912,7 +1912,7 @@ namespace Chummer.Backend.Equipment
             string strCapacity = ArmorCapacity;
             if (string.IsNullOrEmpty(strCapacity))
                 return 0.0m.ToString("#,0.##", objCulture);
-            strCapacity = await strCapacity.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strCapacity = await strCapacity.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
             bool blnSquareBrackets = strCapacity.StartsWith('[');
             if (blnSquareBrackets)
@@ -2184,30 +2184,30 @@ namespace Chummer.Backend.Equipment
             {
                 List<Weapon> lstWeapons = await _objCharacter.Weapons
                     .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
-                await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
+                await _objCharacter.Vehicles.ForEachAsync(async (objVehicle, t1) =>
                 {
                     lstWeapons.AddRange(await objVehicle.Weapons
-                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t1)
                         .ConfigureAwait(false));
-                    await objVehicle.Mods.ForEachAsync(async objMod =>
+                    await objVehicle.Mods.ForEachAsync(async (objMod, t2) =>
                     {
                         lstWeapons.AddRange(await objMod.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                             .ConfigureAwait(false));
-                    }, token).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
 
-                    await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                    await objVehicle.WeaponMounts.ForEachAsync(async (objMount, t2) =>
                     {
                         lstWeapons.AddRange(await objMount.Weapons
-                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                            .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                             .ConfigureAwait(false));
-                        await objMount.Mods.ForEachAsync(async objMod =>
+                        await objMount.Mods.ForEachAsync(async (objMod, t3) =>
                         {
                             lstWeapons.AddRange(await objMod.Weapons
-                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t3)
                                 .ConfigureAwait(false));
-                        }, token).ConfigureAwait(false);
-                    }, token).ConfigureAwait(false);
+                        }, t2).ConfigureAwait(false);
+                    }, t1).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
 
                 decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>
@@ -2404,9 +2404,9 @@ namespace Chummer.Backend.Equipment
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            await GearChildren.ForEachAsync(async objGear =>
+            await GearChildren.ForEachAsync(async (objGear, t) =>
             {
-                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsArmorGear, null, token).ConfigureAwait(false);
+                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsArmorGear, null, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);

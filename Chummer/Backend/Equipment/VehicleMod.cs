@@ -704,10 +704,10 @@ namespace Chummer.Backend.Equipment
             await objWriter.WriteElementStringAsync("page", await DisplayPageAsync(strLanguageToPrint, token).ConfigureAwait(false), token).ConfigureAwait(false);
             await objWriter.WriteElementStringAsync("included", IncludedInVehicle.ToString(GlobalSettings.InvariantCultureInfo), token).ConfigureAwait(false);
             await objWriter.WriteStartElementAsync("weapons", token).ConfigureAwait(false);
-            await Weapons.ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+            await Weapons.ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             await objWriter.WriteStartElementAsync("cyberwares", token).ConfigureAwait(false);
-            await Cyberware.ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+            await Cyberware.ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
             await objWriter.WriteEndElementAsync().ConfigureAwait(false);
             if (GlobalSettings.PrintNotes)
                 await objWriter.WriteElementStringAsync("notes", await GetNotesAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
@@ -1572,8 +1572,8 @@ namespace Chummer.Backend.Equipment
                 return;
             if (WeaponMountParent?.Parent != value)
                 await SetWeaponMountParentAsync(null, token).ConfigureAwait(false);
-            await Weapons.ForEachWithSideEffectsAsync(x => x.SetParentVehicleAsync(value, token), token).ConfigureAwait(false);
-            await Cyberware.ForEachWithSideEffectsAsync(x => x.SetParentVehicleAsync(value, token), token).ConfigureAwait(false);
+            await Weapons.ForEachWithSideEffectsAsync((x, t) => x.SetParentVehicleAsync(value, t), token).ConfigureAwait(false);
+            await Cyberware.ForEachWithSideEffectsAsync((x, t) => x.SetParentVehicleAsync(value, t), token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -1752,7 +1752,7 @@ namespace Chummer.Backend.Equipment
             if (strAvail.Length > 0)
             {
                 // Reordered to process fixed value strings
-                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                 if (strAvail.StartsWith("Range(", StringComparison.Ordinal))
                 {
@@ -1916,7 +1916,7 @@ namespace Chummer.Backend.Equipment
             if (string.IsNullOrEmpty(strReturn))
                 return 0.0m.ToString("#,0.##", objCulture);
 
-            strReturn = await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strReturn = await strReturn.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
             int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
@@ -1932,7 +1932,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = "*";
                 else
                 {
-                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue2))
                     {
@@ -2368,17 +2368,17 @@ namespace Chummer.Backend.Equipment
 
             int intBonus = 0;
 
-            await Cyberware.ForEachAsync(async objChild =>
+            await Cyberware.ForEachAsync(async (objChild, t) =>
             {
                 switch (objChild.Name)
                 {
                     // If the limb has Customized Strength, this is its new base value.
                     case "Customized Strength":
-                        intAttribute = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
+                        intAttribute = await objChild.GetRatingAsync(true, t).ConfigureAwait(false);
                         break;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
                     case "Enhanced Strength":
-                        intBonus = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
+                        intBonus = await objChild.GetRatingAsync(true, t).ConfigureAwait(false);
                         break;
                 }
             }, token: token).ConfigureAwait(false);
@@ -2405,17 +2405,17 @@ namespace Chummer.Backend.Equipment
 
             int intBonus = 0;
 
-            await Cyberware.ForEachAsync(async objChild =>
+            await Cyberware.ForEachAsync(async (objChild, t) =>
             {
                 switch (objChild.Name)
                 {
                     // If the limb has Customized Strength, this is its new base value.
                     case "Customized Agility":
-                        intAttribute = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
+                        intAttribute = await objChild.GetRatingAsync(true, t).ConfigureAwait(false);
                         break;
                     // If the limb has Enhanced Strength, this adds to the limb's value.
                     case "Enhanced Agility":
-                        intBonus = await objChild.GetRatingAsync(true, token).ConfigureAwait(false);
+                        intBonus = await objChild.GetRatingAsync(true, t).ConfigureAwait(false);
                         break;
                 }
             }, token: token).ConfigureAwait(false);
@@ -2751,10 +2751,10 @@ namespace Chummer.Backend.Equipment
 
             if (!GlobalSettings.GroupVehicleModsByCategory)
             {
-                await lstMods.ForEachAsync(async objMod =>
+                await lstMods.ForEachAsync(async (objMod, t) =>
                 {
                     TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear,
-                        cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                        cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, t).ConfigureAwait(false);
                     if (objLoopNode != null)
                         lstChildNodes.Add(objLoopNode);
                 }, token).ConfigureAwait(false);
@@ -2762,17 +2762,17 @@ namespace Chummer.Backend.Equipment
             }
 
             Dictionary<string, TreeNode> dicCategories = new Dictionary<string, TreeNode>(StringComparer.OrdinalIgnoreCase);
-            await lstMods.ForEachAsync(async objMod =>
+            await lstMods.ForEachAsync(async (objMod, t) =>
             {
                 TreeNode objLoopNode = await objMod.CreateTreeNode(cmsVehicleMod, cmsCyberware, cmsCyberwareGear,
-                    cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                    cmsVehicleWeapon, cmsVehicleWeaponAccessory, cmsVehicleWeaponAccessoryGear, t).ConfigureAwait(false);
                 if (objLoopNode == null)
                     return;
 
                 string strCategoryKey = GetCategoryGroupKey(objMod.Category);
                 if (!dicCategories.TryGetValue(strCategoryKey, out TreeNode nodCategory))
                 {
-                    nodCategory = await objMod.CreateCategoryGroupTreeNode(token).ConfigureAwait(false);
+                    nodCategory = await objMod.CreateCategoryGroupTreeNode(t).ConfigureAwait(false);
                     dicCategories.Add(strCategoryKey, nodCategory);
                 }
 
@@ -2809,18 +2809,18 @@ namespace Chummer.Backend.Equipment
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
             // Cyberware.
-            await Cyberware.ForEachAsync(async objCyberware =>
+            await Cyberware.ForEachAsync(async (objCyberware, t) =>
             {
-                TreeNode objLoopNode = await objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear, token).ConfigureAwait(false);
+                TreeNode objLoopNode = await objCyberware.CreateTreeNode(cmsCyberware, cmsCyberwareGear, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);
 
             // VehicleWeapons.
-            await Weapons.ForEachAsync(async objWeapon =>
+            await Weapons.ForEachAsync(async (objWeapon, t) =>
             {
                 TreeNode objLoopNode = await objWeapon.CreateTreeNode(cmsVehicleWeapon, cmsVehicleWeaponAccessory,
-                    cmsVehicleWeaponAccessoryGear, token).ConfigureAwait(false);
+                    cmsVehicleWeaponAccessoryGear, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                     lstChildNodes.Add(objLoopNode);
             }, token).ConfigureAwait(false);

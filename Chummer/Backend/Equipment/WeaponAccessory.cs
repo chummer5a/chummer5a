@@ -1307,12 +1307,12 @@ namespace Chummer.Backend.Equipment
             }
             if (await GearChildren.CountAsync(token).ConfigureAwait(false) > 0)
             {
-                await GearChildren.ForEachAsync(async objChild =>
+                await GearChildren.ForEachAsync(async (objChild, t) =>
                 {
                     if (!objChild.MaxRating.Contains("Parent") && objChild.MinRating.Contains("Parent"))
                         return;
                     // This will update a child's rating if it would become out of bounds due to its parent's rating changing
-                    await objChild.SetRatingAsync(await objChild.GetRatingAsync(token).ConfigureAwait(false), token).ConfigureAwait(false);
+                    await objChild.SetRatingAsync(await objChild.GetRatingAsync(t).ConfigureAwait(false), t).ConfigureAwait(false);
                 }, token).ConfigureAwait(false);
             }
         }
@@ -1759,11 +1759,11 @@ namespace Chummer.Backend.Equipment
             Weapon objParent = Parent;
             if (objParent.Equipped && objParent.ParentVehicle == null)
             {
-                await GearChildren.ForEachWithSideEffectsAsync(async objGear =>
+                await GearChildren.ForEachWithSideEffectsAsync(async (objGear, t) =>
                 {
                     if (objGear.Equipped)
                     {
-                        await objGear.ChangeEquippedStatusAsync(value, true, token).ConfigureAwait(false);
+                        await objGear.ChangeEquippedStatusAsync(value, true, t).ConfigureAwait(false);
                     }
                 }, token).ConfigureAwait(false);
 
@@ -1775,8 +1775,8 @@ namespace Chummer.Backend.Equipment
             }
             else
             {
-                await GearChildren.ForEachWithSideEffectsAsync(objGear =>
-                    objGear.ChangeEquippedStatusAsync(false, token: token), token: token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync((objGear, t) =>
+                    objGear.ChangeEquippedStatusAsync(false, token: t), token: token).ConfigureAwait(false);
             }
         }
 
@@ -1915,7 +1915,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -2008,11 +2008,11 @@ namespace Chummer.Backend.Equipment
                 return;
             if (value.ParentVehicle != null)
             {
-                await GearChildren.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(false, token: token), token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync((x, t) => x.ChangeEquippedStatusAsync(false, token: t), token).ConfigureAwait(false);
             }
             else if (Equipped)
             {
-                await GearChildren.ForEachWithSideEffectsAsync(x => x.ChangeEquippedStatusAsync(true, token: token), token).ConfigureAwait(false);
+                await GearChildren.ForEachWithSideEffectsAsync((x, t) => x.ChangeEquippedStatusAsync(true, token: t), token).ConfigureAwait(false);
             }
         }
 
@@ -2439,7 +2439,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            await GearChildren.ForEachWithSideEffectsAsync(x => x.RefreshWirelessBonusesAsync(token), token: token).ConfigureAwait(false);
+            await GearChildren.ForEachWithSideEffectsAsync((x, t) => x.RefreshWirelessBonusesAsync(t), token: token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -2542,9 +2542,9 @@ namespace Chummer.Backend.Equipment
             };
 
             TreeNodeCollection lstChildNodes = objNode.Nodes;
-            await GearChildren.ForEachAsync(async objGear =>
+            await GearChildren.ForEachAsync(async (objGear, t) =>
             {
-                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsWeaponAccessoryGear, null, token).ConfigureAwait(false);
+                TreeNode objLoopNode = await objGear.CreateTreeNode(cmsWeaponAccessoryGear, null, t).ConfigureAwait(false);
                 if (objLoopNode != null)
                 {
                     lstChildNodes.Add(objLoopNode);

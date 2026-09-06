@@ -397,7 +397,7 @@ namespace Chummer
                                      .ConfigureAwait(false);
                         if (lstPlugins.Count > 0)
                         {
-                            await ParallelExtensions.ForEachAsync(lstPlugins, objPlugin => RefreshPluginNodesAsync(objPlugin, objTempToken), objTempToken).ConfigureAwait(false);
+                            await ParallelExtensions.ForEachAsync(lstPlugins, RefreshPluginNodesAsync, objTempToken).ConfigureAwait(false);
                         }
                     }
                     catch (OperationCanceledException)
@@ -1180,8 +1180,8 @@ namespace Chummer
 
                     try
                     {
-                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async i => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
-                        await ParallelExtensions.ForAsync(0, intRecentsCount, async i => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: token).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intFavoritesCount, async (i, t) => lstFavoritesNodes[i] = await CacheCharacter(lstFavorites[i], token: t).ConfigureAwait(false), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForAsync(0, intRecentsCount, async (i, t) => lstRecentsNodes[i] = await CacheCharacter(lstRecents[i], token: t).ConfigureAwait(false), token).ConfigureAwait(false);
                     }
                     catch (OperationCanceledException)
                     {
@@ -1410,11 +1410,11 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async strKey =>
+                await ParallelExtensions.ForEachAsync(dicWatch.Keys, async (strKey, t) =>
                 {
-                    TreeNode objNode = await CacheCharacter(strKey, token: token).ConfigureAwait(false);
+                    TreeNode objNode = await CacheCharacter(strKey, token: t).ConfigureAwait(false);
                     if (objNode.Tag is CharacterCache objCache && !objCache.IsDisposed)
-                        dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(token).ConfigureAwait(false)]);
+                        dicWatchNodes.Add(objNode, dicWatch[await objCache.GetFilePathAsync(t).ConfigureAwait(false)]);
                 }, token).ConfigureAwait(false);
                 
                 foreach (string s in new SortedSet<string>(dicWatchNodes.Values))
@@ -1675,14 +1675,14 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .AddOrUpdateAsync(
                                                  strFile,
-                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token)
+                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t)
                                                      .ConfigureAwait(false),
-                                                 async (x, y) =>
+                                                 async (x, y, t) =>
                                                  {
-                                                     if (!await y.LoadFromFileAsync(strFile, token).ConfigureAwait(false))
+                                                     if (!await y.LoadFromFileAsync(strFile, t).ConfigureAwait(false))
                                                      {
                                                          objToDispose = y;
-                                                         return objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false);
+                                                         return objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false);
                                                      }
                                                      return y;
                                                  }, token)
@@ -1695,7 +1695,7 @@ namespace Chummer
                             objCache = await _dicSavedCharacterCaches
                                              .GetOrAddAsync(
                                                  strFile,
-                                                 async x => objTemp = await objGeneratedCache.GetValueAsync(token).ConfigureAwait(false),
+                                                 async (x, t) => objTemp = await objGeneratedCache.GetValueAsync(t).ConfigureAwait(false),
                                                  token)
                                              .ConfigureAwait(false);
                         }

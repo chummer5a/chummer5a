@@ -2532,7 +2532,7 @@ namespace Chummer
                     {
                         MultiplePropertiesChangedEventArgs objArgs =
                             new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                         if (MultiplePropertiesChanged != null)
                         {
                             await Utils.RunOnMainThreadAsync(() =>
@@ -2566,7 +2566,7 @@ namespace Chummer
                                 lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                             }
                         }
-                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                        await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                         if (PropertyChanged != null)
                         {
@@ -3471,11 +3471,13 @@ namespace Chummer
 
                         if (xmlMugshotsList.Count > 1)
                         {
-                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, i =>
+                            Bitmap[] aobjMugshots = await ParallelExtensions.ForAsync(0, xmlMugshotsList.Count, (i, t) =>
                             {
+                                if (t.IsCancellationRequested)
+                                    return Task.FromCanceled<Bitmap>(t);
                                 string strLoop = astrMugshotsBase64[i];
                                 if (!string.IsNullOrEmpty(strLoop))
-                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, token);
+                                    return strLoop.ToImageAsync(PixelFormat.Format32bppPArgb, t);
                                 return Task.FromResult<Bitmap>(null);
                             }, token).ConfigureAwait(false);
                             foreach (Bitmap objImage in aobjMugshots)

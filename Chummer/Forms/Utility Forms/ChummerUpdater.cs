@@ -1197,11 +1197,11 @@ namespace Chummer
                         DebuggableSemaphoreSlim objBlockedFilesPopulateSemaphore = Utils.SemaphorePool.Get();
                         try
                         {
-                            await ParallelExtensions.ForEachAsync(lstFilesToDelete, async strFileToDelete =>
+                            await ParallelExtensions.ForEachAsync(lstFilesToDelete, async (strFileToDelete, t) =>
                             {
-                                if (!await FileExtensions.SafeDeleteAsync(strFileToDelete, token: token).ConfigureAwait(false))
+                                if (!await FileExtensions.SafeDeleteAsync(strFileToDelete, token: t).ConfigureAwait(false))
                                 {
-                                    await objBlockedFilesPopulateSemaphore.WaitAsync(token).ConfigureAwait(false);
+                                    await objBlockedFilesPopulateSemaphore.WaitAsync(t).ConfigureAwait(false);
                                     try
                                     {
                                         setBlocked.Add(strFileToDelete);

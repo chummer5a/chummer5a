@@ -236,7 +236,7 @@ namespace Chummer
                             strInfo =
                                 string.Format(GlobalSettings.InvariantCultureInfo,
                                     "Application Chummer5a build {0} started at {1} with command line arguments {2}",
-                                    Utils.CurrentChummerVersion, DateTime.UtcNow,
+                                    Utils.CurrentChummerVersion, DateTime.UtcNow.ToString(GlobalSettings.InvariantCultureInfo),
                                     Environment.CommandLine);
                             sw.TaskEnd("infogen");
 
@@ -1402,8 +1402,8 @@ namespace Chummer
                                             // ReSharper disable once MethodHasAsyncOverload
                                             LanguageManager.GetString("Message_AutosaveFound", token: token),
                                             Path.GetFileName(strFileName),
-                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                            File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime().ToString(GlobalSettings.CultureInfo),
+                                            File.GetLastWriteTimeUtc(strFileName).ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                         // ReSharper disable once MethodHasAsyncOverload
                                         LanguageManager.GetString("MessageTitle_AutosaveFound", token: token),
                                         MessageBoxButtons.YesNo, MessageBoxIcon.Question) != DialogResult.Yes)
@@ -1417,8 +1417,8 @@ namespace Chummer
                                                  .GetStringAsync("Message_AutosaveFound", token: token)
                                                  .ConfigureAwait(false),
                                              Path.GetFileName(strFileName),
-                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime(),
-                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime()),
+                                             File.GetLastWriteTimeUtc(strAutosaveName).ToLocalTime().ToString(GlobalSettings.CultureInfo),
+                                             File.GetLastWriteTimeUtc(strFileName).ToLocalTime().ToString(GlobalSettings.CultureInfo)),
                                          await LanguageManager
                                              .GetStringAsync("MessageTitle_AutosaveFound", token: token)
                                              .ConfigureAwait(false),

@@ -9644,6 +9644,45 @@ namespace Chummer
             return Task.CompletedTask;
         }
 
+        public static Task ForEachAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Action<T, CancellationToken> objFuncToRun, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCastOuter)
+            {
+                return Inner(objEnumerableCastOuter, objFuncToRun, token);
+                async Task Inner(IAsyncEnumerable<T> objEnumerableCast, Action<T, CancellationToken> objFuncToRunInner, CancellationToken tokenInner)
+                {
+                    IEnumerator<T> objEnumerator =
+                        await objEnumerableCast.GetEnumeratorAsync(tokenInner).ConfigureAwait(false);
+                    try
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            tokenInner.ThrowIfCancellationRequested();
+                            objFuncToRunInner.Invoke(objEnumerator.Current, tokenInner);
+                        }
+                    }
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
+                }
+            }
+
+            foreach (T objItem in objEnumerable)
+            {
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled(token);
+                objFuncToRun.Invoke(objItem, token);
+            }
+
+            return Task.CompletedTask;
+        }
+
         public static async Task ForEachAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -9676,12 +9715,54 @@ namespace Chummer
             }
         }
 
+        public static async Task ForEachAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task> objFuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCast)
+            {
+                IEnumerator<T> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        await objFuncToRun.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    await objFuncToRun.Invoke(objItem, token).ConfigureAwait(false);
+                }
+            }
+        }
+
         public static async Task ForEachAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Action<T> objFuncToRun, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             await ForEachAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
 
+        public static async Task ForEachAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Action<T, CancellationToken> objFuncToRun, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            await ForEachAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
+        }
+
         public static async Task ForEachAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task> objFuncToRun, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            await ForEachAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
+        }
+
+        public static async Task ForEachAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task> objFuncToRun, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             await ForEachAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRun, token).ConfigureAwait(false);
         }
@@ -9698,6 +9779,22 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (!objFuncToRunWithPossibleTerminate.Invoke(objItem))
+                    return;
+            }
+        }
+
+        /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static void ForEachWithBreak<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        {
+            foreach (T objItem in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objItem, token))
                     return;
             }
         }
@@ -9750,6 +9847,53 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        {
+            if (token.IsCancellationRequested)
+                return Task.FromCanceled(token);
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCast)
+            {
+                return Inner(objEnumerableCast, token);
+
+                async Task Inner(IAsyncEnumerable<T> objEnumerableInner, CancellationToken innerToken)
+                {
+                    IEnumerator<T> objEnumerator = await objEnumerableInner.GetEnumeratorAsync(innerToken).ConfigureAwait(false);
+                    try
+                    {
+                        while (objEnumerator.MoveNext())
+                        {
+                            token.ThrowIfCancellationRequested();
+                            if (!objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current, innerToken))
+                                return;
+                        }
+                    }
+                    finally
+                    {
+                        if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                            await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                        else
+                            objEnumerator.Dispose();
+                    }
+                }
+            }
+
+            foreach (T objItem in objEnumerable)
+            {
+                if (token.IsCancellationRequested)
+                    return Task.FromCanceled(token);
+                if (!objFuncToRunWithPossibleTerminate.Invoke(objItem, token))
+                    break;
+            }
+
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
         /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
         /// </summary>
         /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
@@ -9791,6 +9935,47 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="objEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachWithBreakAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCast)
+            {
+                IEnumerator<T> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (!await objFuncToRunWithPossibleTerminate.Invoke(objEnumerator.Current, token)
+                                .ConfigureAwait(false))
+                            return;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!await objFuncToRunWithPossibleTerminate.Invoke(objItem, token).ConfigureAwait(false))
+                        return;
+                }
+            }
+        }
+
+        /// <summary>
         /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
         /// </summary>
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
@@ -9802,12 +9987,34 @@ namespace Chummer
         }
 
         /// <summary>
+        /// Perform a synchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachWithBreakAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> objFuncToRunWithPossibleTerminate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
         /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
         /// </summary>
         /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
         /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
         /// <param name="token">Cancellation token to listen to.</param>
         public static async Task ForEachWithBreakAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Perform an asynchronous action on every element in an enumerable with support for breaking out of the loop.
+        /// </summary>
+        /// <param name="tskEnumerable">Enumerable on which to perform tasks.</param>
+        /// <param name="objFuncToRunWithPossibleTerminate">Action to perform. Return true to continue iterating and false to break.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        public static async Task ForEachWithBreakAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> objFuncToRunWithPossibleTerminate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             await ForEachWithBreakAsync(await tskEnumerable.ConfigureAwait(false), objFuncToRunWithPossibleTerminate, token).ConfigureAwait(false);
         }
@@ -10779,13 +10986,13 @@ namespace Chummer
         {
             token.ThrowIfCancellationRequested();
             List<T> lstReturn = new List<T>();
-            await objParentList.ForEachAsync(async objLoopChild =>
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
             {
                 lstReturn.Add(objLoopChild);
-                token.ThrowIfCancellationRequested();
+                t.ThrowIfCancellationRequested();
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                    lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token).ConfigureAwait(false));
+                    lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, t).ConfigureAwait(false));
                 else
                     lstReturn.AddRange(lstChildren.GetAllDescendants(funcGetChildrenMethod));
             }, token).ConfigureAwait(false);
@@ -10801,16 +11008,16 @@ namespace Chummer
             List<T> lstReturn = new List<T>();
             if (objParentList is IAsyncEnumerable<T> objParentListCast)
             {
-                await objParentListCast.ForEachAsync(async objLoopChild =>
+                await objParentListCast.ForEachAsync(async (objLoopChild, t) =>
                 {
                     lstReturn.Add(objLoopChild);
-                    token.ThrowIfCancellationRequested();
+                    t.ThrowIfCancellationRequested();
                     T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
                     if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
-                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, t)
                             .ConfigureAwait(false));
                     else
-                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, t)
                             .ConfigureAwait(false));
                 }, token).ConfigureAwait(false);
             }

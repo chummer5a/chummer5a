@@ -262,7 +262,7 @@ namespace Chummer
             {
                 MultiplePropertiesChangedEventArgs objArgs =
                     new MultiplePropertiesChangedEventArgs(lstPropertyNames);
-                await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                 if (MultiplePropertiesChanged != null)
                 {
                     await Utils.RunOnMainThreadAsync(() =>
@@ -296,7 +296,7 @@ namespace Chummer
                         lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                     }
                 }
-                await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                 if (PropertyChanged != null)
                 {
@@ -406,7 +406,7 @@ namespace Chummer
                                 new NotifyCollectionChangedEventArgs(NotifyCollectionChangedAction.Remove,
                                     (IList)Items);
                         await ParallelExtensions.ForEachAsync(
-                                _setBeforeClearCollectionChangedAsync, x => x.Invoke(this, objArgs, token), token)
+                                _setBeforeClearCollectionChangedAsync, (x, t) => x.Invoke(this, objArgs, t), token)
                             .ConfigureAwait(false);
                         BeforeClearCollectionChanged?.Invoke(this, objArgs);
                     }
@@ -499,7 +499,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 if (_setCollectionChangedAsync.Count != 0)
                 {
-                    await ParallelExtensions.ForEachAsync(_setCollectionChangedAsync, x => x.Invoke(this, e, token), token)
+                    await ParallelExtensions.ForEachAsync(_setCollectionChangedAsync, (x, t) => x.Invoke(this, e, t), token)
                         .ConfigureAwait(false);
                 }
                 base.OnCollectionChanged(e);

@@ -3724,7 +3724,7 @@ namespace Chummer.Backend.Equipment
                 }
             }
 
-            strExpression = await strExpression.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strExpression = await strExpression.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
             if (Name == "Living Persona")
             {
@@ -4240,7 +4240,7 @@ namespace Chummer.Backend.Equipment
             int intAvail = 0;
             if (strAvail.Length > 0)
             {
-                strAvail = await strAvail.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                strAvail = await strAvail.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                 chrLastAvailChar = strAvail[strAvail.Length - 1];
                 if (chrLastAvailChar == 'F' || chrLastAvailChar == 'R')
@@ -4366,12 +4366,12 @@ namespace Chummer.Backend.Equipment
             string strReturn = Capacity;
             if (string.IsNullOrEmpty(strReturn))
                 return 0.0m.ToString("#,0.##", objCulture);
-            strReturn = await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strReturn = await strReturn.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
             int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
             {
-                string strFirstHalf = await strReturn.Substring(0, intPos).ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                string strFirstHalf = await strReturn.Substring(0, intPos).ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
                 string strSecondHalf = strReturn.Substring(intPos + 1);
                 bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                 if (blnSquareBrackets && strFirstHalf.Length > 2)
@@ -4381,7 +4381,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = "*";
                 else
                 {
-                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
@@ -4508,11 +4508,11 @@ namespace Chummer.Backend.Equipment
             string strReturn = ArmorCapacity;
             if (string.IsNullOrEmpty(strReturn))
                 return 0.ToString(objCulture);
-            strReturn = await strReturn.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+            strReturn = await strReturn.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
             int intPos = strReturn.IndexOf("/[", StringComparison.Ordinal);
             if (intPos != -1)
             {
-                string strFirstHalf = await strReturn.Substring(0, intPos).ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                string strFirstHalf = await strReturn.Substring(0, intPos).ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
                 string strSecondHalf = strReturn.Substring(intPos + 1);
                 bool blnSquareBrackets = strFirstHalf.StartsWith('[');
                 if (blnSquareBrackets && strFirstHalf.Length > 2)
@@ -4522,7 +4522,7 @@ namespace Chummer.Backend.Equipment
                     strReturn = "*";
                 else
                 {
-                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(() => GetRatingAsync(token), token).ConfigureAwait(false);
+                    strFirstHalf = await strFirstHalf.ProcessFixedValuesStringAsync(GetRatingAsync, token).ConfigureAwait(false);
 
                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
@@ -7329,7 +7329,7 @@ namespace Chummer.Backend.Equipment
                 {
                     MultiplePropertiesChangedEventArgs objArgs =
                         new MultiplePropertiesChangedEventArgs(setNamesOfChangedProperties.ToArray());
-                    await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, objEvent => objEvent.Invoke(this, objArgs, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(_setMultiplePropertiesChangedAsync, (objEvent, t) => objEvent.Invoke(this, objArgs, t), token).ConfigureAwait(false);
                     if (MultiplePropertiesChanged != null)
                     {
                         await Utils.RunOnMainThreadAsync(() =>
@@ -7363,7 +7363,7 @@ namespace Chummer.Backend.Equipment
                             lstAsyncEventsList.Add(new ValueTuple<PropertyChangedAsyncEventHandler, PropertyChangedEventArgs>(objEvent, objArg));
                         }
                     }
-                    await ParallelExtensions.ForEachAsync(lstAsyncEventsList, tupEvent => tupEvent.Item1.Invoke(this, tupEvent.Item2, token), token).ConfigureAwait(false);
+                    await ParallelExtensions.ForEachAsync(lstAsyncEventsList, (tupEvent, t) => tupEvent.Item1.Invoke(this, tupEvent.Item2, t), token).ConfigureAwait(false);
 
                     if (PropertyChanged != null)
                     {
