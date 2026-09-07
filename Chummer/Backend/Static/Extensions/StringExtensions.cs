@@ -4205,6 +4205,57 @@ namespace Chummer
         /// </summary>
         /// <param name="strInput">Input textblock.</param>
         /// <param name="intSize">Size of the array to return.</param>
+        /// <param name="chrSplit">Character to use for splitting.</param>
+        /// <param name="eSplitOptions">Optional argument that can be used to skip over empty entries.</param>
+        /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="chrSplit"/></returns>
+        public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, char chrSplit, StringSplitOptions eSplitOptions = StringSplitOptions.None)
+        {
+            if (intSize < 0)
+                throw new ArgumentOutOfRangeException(nameof(intSize));
+            if (intSize == 0)
+                return ArrayPool<string>.Shared.Rent(0);
+            string[] astrReturn = ArrayPool<string>.Shared.Rent(intSize);
+            try
+            {
+                Array.Clear(astrReturn, 0, intSize);
+                if (string.IsNullOrEmpty(strInput))
+                    return astrReturn;
+                if (intSize == 1)
+                {
+                    astrReturn[0] = strInput;
+                    return astrReturn;
+                }
+                int intLoopLength;
+                int intIndex = 0;
+                for (int intStart = 0; intStart < strInput.Length; intStart += intLoopLength + 1)
+                {
+                    intLoopLength = strInput.IndexOf(chrSplit, intStart);
+                    if (intLoopLength < 0)
+                        intLoopLength = strInput.Length;
+                    intLoopLength -= intStart;
+                    if (intLoopLength != 0)
+                        astrReturn[intIndex] = strInput.Substring(intStart, intLoopLength);
+                    else if (eSplitOptions == StringSplitOptions.None)
+                        ++intIndex;
+                    if (intIndex >= intSize)
+                        break;
+                }
+                return astrReturn;
+            }
+            catch
+            {
+                ArrayPool<string>.Shared.Return(astrReturn);
+                throw;
+            }
+        }
+
+        /// <summary>
+        /// Version of <see cref="string.Split(char[], int)"/> that returns an array from <see cref="ArrayPool{string}.Shared"/> instead of allocating it, and only splits to a specific array size, padding with <see cref="string.Empty"/> when necessary.
+        /// Slightly faster than built-in versions of <see cref="string.Split"/> because no allocations are needed and there is no need to search ahead for how many elements should be in the returned array.
+        /// Remember to return the result to <see cref="ArrayPool{string}.Shared"/> when finished with it!
+        /// </summary>
+        /// <param name="strInput">Input textblock.</param>
+        /// <param name="intSize">Size of the array to return.</param>
         /// <param name="achrSplit">Characters to use for splitting.</param>
         /// <returns>Array of length <paramref name="intSize"/> containing substrings of <paramref name="strInput"/> split based on <paramref name="achrSplit"/></returns>
         public static string[] SplitFixedSizePooledArray(this string strInput, int intSize, params char[] achrSplit)
