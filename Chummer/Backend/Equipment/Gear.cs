@@ -552,7 +552,7 @@ namespace Chummer.Backend.Equipment
                                             GlobalSettings
                                                 .InvariantCultureInfo))
                                     : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                        async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
+                                        async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(
                                             GlobalSettings
                                                 .InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo, out intAddWeaponRating);
@@ -3054,7 +3054,7 @@ namespace Chummer.Backend.Equipment
                         if (strExpression.Contains("Children Cost"))
                         {
                             decimal decTotalChildrenCost = await Children.GetCountAsync(token).ConfigureAwait(false) > 0
-                                ? await Children.SumAsync(x => x.GetCalculatedCostAsync(token), token).ConfigureAwait(false)
+                                ? await Children.SumAsync((x, t) => x.GetCalculatedCostAsync(t), token).ConfigureAwait(false)
                                 : 0;
                             sbdValue.Replace("{Children Cost}", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
                             sbdValue.Replace("Children Cost", decTotalChildrenCost.ToString(GlobalSettings.InvariantCultureInfo));
@@ -4630,7 +4630,7 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
 
             // Add in the cost of all child components.
-            decimal decPlugin = await Children.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+            decimal decPlugin = await Children.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
 
             // The number is divided at the end for ammo purposes. This is done since the cost is per "costfor" but is being multiplied by the actual number of rounds.
             int intParentMultiplier = (Parent as IHasChildrenAndCost<Gear>)?.ChildCostMultiplier ?? 1;
@@ -4666,7 +4666,9 @@ namespace Chummer.Backend.Equipment
             token.ThrowIfCancellationRequested();
 
             // Add in the cost of all child components.
-            decimal decPlugin = await Children.SumAsync(x => x.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
+            decimal decPlugin = blnStolen // This setup looks weird, but helps avoid having to allocate blnStolen for the closures below
+                ? await Children.SumAsync((x, t) => x.CalculatedStolenTotalCostAsync(true, t), token).ConfigureAwait(false)
+                : await Children.SumAsync((x, t) => x.CalculatedStolenTotalCostAsync(false, t), token).ConfigureAwait(false);
             if (Stolen != blnStolen)
                 return decPlugin * Quantity;
 
@@ -5143,7 +5145,7 @@ namespace Chummer.Backend.Equipment
             strReturn = await Weapon
                 .ReplaceStringsAsync(
                     await strReturn.CheapReplaceAsync("-half",
-                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: t),
                             token: token)
                         .ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
 
@@ -5339,7 +5341,7 @@ namespace Chummer.Backend.Equipment
             strReturn = await Weapon
                 .ReplaceStringsAsync(
                     await strReturn.CheapReplaceAsync("-half",
-                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: t),
                             token: token)
                         .ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
 
@@ -7367,14 +7369,14 @@ namespace Chummer.Backend.Equipment
 
                     if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, objArgs);
                                 }
                             }
@@ -7383,14 +7385,14 @@ namespace Chummer.Backend.Equipment
                 }
                 else if (PropertyChanged != null)
                 {
-                    await Utils.RunOnMainThreadAsync(() =>
+                    await Utils.RunOnMainThreadAsync(t =>
                     {
                         if (PropertyChanged != null)
                         {
                             // ReSharper disable once AccessToModifiedClosure
                             foreach (string strPropertyToChange in setNamesOfChangedProperties)
                             {
-                                token.ThrowIfCancellationRequested();
+                                t.ThrowIfCancellationRequested();
                                 PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                             }
                         }

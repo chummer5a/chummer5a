@@ -1889,9 +1889,9 @@ namespace Chummer
                                             // a lot of backend stuff.
                                             QualityType eQualityType = await objQuality.GetTypeAsync(token).ConfigureAwait(false);
                                             objExistingQuality = await lstOldPriorityQualities.FirstOrDefaultAsync(
-                                                async x => x.SourceID == objQuality.SourceID
+                                                async (x, t) => x.SourceID == objQuality.SourceID
                                                            && x.Extra == objQuality.Extra &&
-                                                           await x.GetTypeAsync(token).ConfigureAwait(false) ==
+                                                           await x.GetTypeAsync(t).ConfigureAwait(false) ==
                                                            eQualityType, token: token).ConfigureAwait(false);
                                             if (objExistingQuality == null)
                                                 await _objCharacter.Qualities.AddAsync(objQuality, token: token)

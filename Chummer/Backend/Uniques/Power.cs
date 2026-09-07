@@ -753,7 +753,7 @@ namespace Chummer
                     try
                     {
                         await Enhancements
-                            .ForEachAsync(objEnhancement => objEnhancement.Print(objWriter, strLanguageToPrint, token),
+                            .ForEachAsync((objEnhancement, t) => objEnhancement.Print(objWriter, strLanguageToPrint, t),
                                 token).ConfigureAwait(false);
                     }
                     finally
@@ -3497,14 +3497,14 @@ namespace Chummer
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3513,14 +3513,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

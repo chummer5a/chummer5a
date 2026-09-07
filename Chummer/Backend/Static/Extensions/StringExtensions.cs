@@ -5244,6 +5244,33 @@ namespace Chummer
 
         /// <summary>
         /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static string CheapReplace(this string strInput, string strOldValue, Func<CancellationToken, string> funcNewValueFactory,
+                                          StringComparison eStringComparison = StringComparison.Ordinal, CancellationToken token = default)
+        {
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                        return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(token));
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                    return strInput.Replace(strOldValue, funcNewValueFactory.Invoke(token), eStringComparison);
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
         /// This is the async version that can be run in case a value is really expensive to get.
         /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
         /// </summary>
@@ -5429,6 +5456,202 @@ namespace Chummer
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
         public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
                                                            Func<Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strFactoryResult = string.Empty;
+                        using (CancellationTokenTaskSource<string> objCancelTaskSource
+                               = new CancellationTokenTaskSource<string>(token))
+                        {
+                            await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                      x => strFactoryResult
+                                                                          = funcNewValueFactory.EndInvoke(x), token, null),
+                                               objCancelTaskSource.Task).ConfigureAwait(false);
+                        }
+
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strFactoryResult);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strFactoryResult = string.Empty;
+                    using (CancellationTokenTaskSource<string> objCancelTaskSource
+                           = new CancellationTokenTaskSource<string>(token))
+                    {
+                        await Task.WhenAny(Task.Factory.FromAsync(funcNewValueFactory.BeginInvoke,
+                                                                  x => strFactoryResult
+                                                                      = funcNewValueFactory.EndInvoke(x), token, null),
+                                           objCancelTaskSource.Task).ConfigureAwait(false);
+                    }
+
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strFactoryResult, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, string> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInput">Base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this string strInput, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (!string.IsNullOrEmpty(strInput) && funcNewValueFactory != null)
+            {
+                if (eStringComparison == StringComparison.Ordinal)
+                {
+                    if (strInput.Contains(strOldValue))
+                    {
+                        token.ThrowIfCancellationRequested();
+                        string strNewValue = await funcNewValueFactory.Invoke(token).ConfigureAwait(false);
+                        token.ThrowIfCancellationRequested();
+                        return strInput.Replace(strOldValue, strNewValue);
+                    }
+                }
+                else if (strInput.IndexOf(strOldValue, eStringComparison) != -1)
+                {
+                    token.ThrowIfCancellationRequested();
+                    string strNewValue = await funcNewValueFactory.Invoke(token).ConfigureAwait(false);
+                    token.ThrowIfCancellationRequested();
+                    return strInput.Replace(strOldValue, strNewValue, eStringComparison);
+                }
+            }
+
+            return strInput;
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this ValueTask<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
+                                                           StringComparison eStringComparison
+                                                               = StringComparison.Ordinal,
+                                                           CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            return await CheapReplaceAsync(await strInputTask.ConfigureAwait(false), strOldValue, funcNewValueFactory,
+                                           eStringComparison, token).ConfigureAwait(false);
+        }
+
+        /// <summary>
+        /// Like <see cref="string.Replace(string, string)"/>, but meant for if the new value would be expensive to calculate. Actually slower than <see cref="string.Replace(string, string)"/> if the new value is something simple.
+        /// This is the async version that can be run in case a value is really expensive to get.
+        /// If the string does not contain any instances of the pattern to replace, then the expensive method to generate a replacement is not run.
+        /// </summary>
+        /// <param name="strInputTask">Task returning the base string in which the replacing takes place.</param>
+        /// <param name="strOldValue">Pattern for which to check and which to replace.</param>
+        /// <param name="funcNewValueFactory">Function to generate the string that replaces the pattern in the base string.</param>
+        /// <param name="eStringComparison">The StringComparison to use for finding and replacing items.</param>
+        /// <param name="token">Cancellation token to listen to.</param>
+        /// <returns>The result of <see cref="string.Replace(string, string)"/> if a replacement is made, the original string otherwise.</returns>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static async Task<string> CheapReplaceAsync(this Task<string> strInputTask, string strOldValue,
+                                                           Func<CancellationToken, Task<string>> funcNewValueFactory,
                                                            StringComparison eStringComparison
                                                                = StringComparison.Ordinal,
                                                            CancellationToken token = default)

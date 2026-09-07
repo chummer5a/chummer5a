@@ -1303,7 +1303,7 @@ namespace Chummer.Backend.Skills
                     {
                         Skill objFirstEnabledSkill = await SkillList
                             .FirstOrDefaultAsync(
-                                x => x.GetEnabledAsync(token), token)
+                                (x, t) => x.GetEnabledAsync(t), token)
                             .ConfigureAwait(false);
                         if (objFirstEnabledSkill == null ||
                             await SkillList
@@ -2147,7 +2147,7 @@ namespace Chummer.Backend.Skills
                     }
                     else if (SkillList.Count > 1)
                     {
-                        Skill objFirstEnabledSkill = await SkillList.FirstOrDefaultAsync(x => x.GetEnabledAsync(token), token: token).ConfigureAwait(false);
+                        Skill objFirstEnabledSkill = await SkillList.FirstOrDefaultAsync((x, t) => x.GetEnabledAsync(t), token: token).ConfigureAwait(false);
                         if (objFirstEnabledSkill != null)
                         {
                             if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false))
@@ -2176,7 +2176,7 @@ namespace Chummer.Backend.Skills
                              .ConfigureAwait(false) && SkillList.Count > 1)
                 {
                     Skill objFirstEnabledSkill = await SkillList
-                        .FirstOrDefaultAsync(x => x.GetEnabledAsync(token), token: token).ConfigureAwait(false);
+                        .FirstOrDefaultAsync((x, t) => x.GetEnabledAsync(t), token: token).ConfigureAwait(false);
                     if (objFirstEnabledSkill != null && await SkillList
                             .AllAsync(
                                 async (x, t) => x == objFirstEnabledSkill ||
@@ -2868,14 +2868,14 @@ namespace Chummer.Backend.Skills
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -2884,14 +2884,14 @@ namespace Chummer.Backend.Skills
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

@@ -3066,14 +3066,14 @@ namespace Chummer.Backend.Equipment
                         
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3082,14 +3082,14 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in lstPropertyNames)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

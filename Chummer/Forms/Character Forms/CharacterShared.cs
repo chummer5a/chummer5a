@@ -2228,7 +2228,7 @@ namespace Chummer
                     await treSpells.DoThreadSafeAsync(x => x.Nodes.Clear(), token).ConfigureAwait(false);
 
                     // Add the Spells that exist.
-                    await CharacterObject.Spells.ForEachAsync(async objSpell =>
+                    await CharacterObject.Spells.ForEachAsync(async (objSpell, t) =>
                     {
                         if (objSpell.Grade > 0 && treMetamagic != null)
                         {
@@ -2236,7 +2236,7 @@ namespace Chummer
                                                                  token).ConfigureAwait(false);
                         }
 
-                        await AddToTree(objSpell, false).ConfigureAwait(false);
+                        await AddToTree(objSpell, false, t).ConfigureAwait(false);
                     }, token).ConfigureAwait(false);
 
                     await treSpells.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
@@ -2262,7 +2262,7 @@ namespace Chummer
                         {
                             foreach (Spell objSpell in e.NewItems)
                             {
-                                await AddToTree(objSpell).ConfigureAwait(false);
+                                await AddToTree(objSpell, innerToken: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -2317,7 +2317,7 @@ namespace Chummer
 
                             foreach (Spell objSpell in e.NewItems)
                             {
-                                await AddToTree(objSpell).ConfigureAwait(false);
+                                await AddToTree(objSpell, innerToken: token).ConfigureAwait(false);
                             }
 
                             await treSpells.DoThreadSafeAsync(() =>
@@ -2340,9 +2340,9 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true)
+            async Task AddToTree(Spell objSpell, bool blnSingleAdd = true, CancellationToken innerToken = default)
             {
-                TreeNode objNode = await objSpell.CreateTreeNode(cmsSpell, token: token).ConfigureAwait(false);
+                TreeNode objNode = await objSpell.CreateTreeNode(cmsSpell, token: innerToken).ConfigureAwait(false);
                 if (objNode == null)
                     return;
                 TreeNode objParentNode;
@@ -2354,7 +2354,7 @@ namespace Chummer
                             objCombatNode = new TreeNode
                             {
                                 Tag = "Node_SelectedCombatSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedCombatSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2372,7 +2372,7 @@ namespace Chummer
                             objDetectionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedDetectionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedDetectionSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2390,7 +2390,7 @@ namespace Chummer
                             objHealthNode = new TreeNode
                             {
                                 Tag = "Node_SelectedHealthSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedHealthSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2409,7 +2409,7 @@ namespace Chummer
                             objIllusionNode = new TreeNode
                             {
                                 Tag = "Node_SelectedIllusionSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedIllusionSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2418,7 +2418,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objHealthNode != null).ToInt32(), objIllusionNode);
                                 objIllusionNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objIllusionNode;
                         break;
@@ -2429,7 +2429,7 @@ namespace Chummer
                             objManipulationNode = new TreeNode
                             {
                                 Tag = "Node_SelectedManipulationSpells",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedManipulationSpells", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2439,7 +2439,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objIllusionNode != null).ToInt32(), objManipulationNode);
                                 objManipulationNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objManipulationNode;
                         break;
@@ -2450,7 +2450,7 @@ namespace Chummer
                             objRitualsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedGeomancyRituals",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedGeomancyRituals", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2461,7 +2461,7 @@ namespace Chummer
                                                // ReSharper disable once AssignNullToNotNullAttribute
                                                (objManipulationNode != null).ToInt32(), objRitualsNode);
                                 objRitualsNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objRitualsNode;
                         break;
@@ -2472,14 +2472,14 @@ namespace Chummer
                             objEnchantmentsNode = new TreeNode
                             {
                                 Tag = "Node_SelectedEnchantments",
-                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: token).ConfigureAwait(false)
+                                Text = await LanguageManager.GetStringAsync("Node_SelectedEnchantments", token: innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
                                 // ReSharper disable once AssignNullToNotNullAttribute
                                 x.Nodes.Add(objEnchantmentsNode);
                                 objEnchantmentsNode.Expand();
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                         objParentNode = objEnchantmentsNode;
                         break;
@@ -2490,7 +2490,7 @@ namespace Chummer
                             objSpellNode = new TreeNode
                             {
                                 Tag = objSpell.Category,
-                                Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, token).ConfigureAwait(false)
+                                Text = await objSpell.DisplayCategoryAsync(GlobalSettings.Language, innerToken).ConfigureAwait(false)
                             };
                             await treSpells.DoThreadSafeAsync(x =>
                             {
@@ -2504,13 +2504,13 @@ namespace Chummer
                 }
                 if (objSpell.Grade > 0)
                 {
-                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, token).ConfigureAwait(false);
+                    InitiationGrade objGrade = await CharacterObject.InitiationGrades.FirstOrDefaultAsync(x => x.Grade == objSpell.Grade, innerToken).ConfigureAwait(false);
                     if (objGrade != null && treMetamagic != null)
                     {
-                        TreeNode nodMetamagicParent = await treMetamagic.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGrade), token).ConfigureAwait(false);
+                        TreeNode nodMetamagicParent = await treMetamagic.DoThreadSafeFuncAsync(x => x.FindNodeByTag(objGrade), innerToken).ConfigureAwait(false);
                         if (nodMetamagicParent != null)
                         {
-                            TreeNode objNodeForInitiations = await objSpell.CreateTreeNode(cmsInitiationNotes, true, token).ConfigureAwait(false);
+                            TreeNode objNodeForInitiations = await objSpell.CreateTreeNode(cmsInitiationNotes, true, innerToken).ConfigureAwait(false);
                             if (objNodeForInitiations == null)
                                 return;
                             await treMetamagic.DoThreadSafeAsync(x =>
@@ -2531,7 +2531,7 @@ namespace Chummer
                                 nodMetamagicParent.Expand();
                                 if (blnSingleAdd)
                                     x.SelectedNode = objNodeForInitiations;
-                            }, token).ConfigureAwait(false);
+                            }, innerToken).ConfigureAwait(false);
                         }
                     }
                 }
@@ -2558,7 +2558,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token).ConfigureAwait(false);
+                }, innerToken).ConfigureAwait(false);
             }
         }
 
@@ -2582,7 +2582,7 @@ namespace Chummer
 
                     // Add AI Programs.
                     await CharacterObject.AIPrograms
-                                         .ForEachAsync(objAIProgram => AddToTree(objAIProgram, false), token)
+                                         .ForEachAsync((objAIProgram, t) => AddToTree(objAIProgram, false, t), token)
                                          .ConfigureAwait(false);
 
                     await treAIPrograms.DoThreadSafeAsync(x => x.SortCustomAlphabetically(strSelectedId), token).ConfigureAwait(false);
@@ -2598,7 +2598,7 @@ namespace Chummer
                         {
                             foreach (AIProgram objAIProgram in e.NewItems)
                             {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
+                                await AddToTree(objAIProgram, innerToken: token).ConfigureAwait(false);
                             }
 
                             break;
@@ -2641,7 +2641,7 @@ namespace Chummer
 
                             foreach (AIProgram objAIProgram in e.NewItems)
                             {
-                                await AddToTree(objAIProgram).ConfigureAwait(false);
+                                await AddToTree(objAIProgram, innerToken: token).ConfigureAwait(false);
                             }
 
                             await treAIPrograms.DoThreadSafeAsync(() =>
@@ -2664,9 +2664,9 @@ namespace Chummer
                 await objCursorWait.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true)
+            async Task AddToTree(AIProgram objAIProgram, bool blnSingleAdd = true, CancellationToken innerToken = default)
             {
-                TreeNode objNode = await objAIProgram.CreateTreeNode(cmsAdvancedProgram, token).ConfigureAwait(false);
+                TreeNode objNode = await objAIProgram.CreateTreeNode(cmsAdvancedProgram, innerToken).ConfigureAwait(false);
                 if (objNode == null)
                     return;
 
@@ -2675,7 +2675,7 @@ namespace Chummer
                     objParentNode = new TreeNode
                     {
                         Tag = "Node_SelectedAIPrograms",
-                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: token)
+                        Text = await LanguageManager.GetStringAsync("Node_SelectedAIPrograms", token: innerToken)
                             .ConfigureAwait(false)
                     };
                     await treAIPrograms.DoThreadSafeAsync(x =>
@@ -2683,7 +2683,7 @@ namespace Chummer
                         // ReSharper disable once AssignNullToNotNullAttribute
                         x.Nodes.Add(objParentNode);
                         objParentNode.Expand();
-                    }, token).ConfigureAwait(false);
+                    }, innerToken).ConfigureAwait(false);
                 }
 
                 await treAIPrograms.DoThreadSafeAsync(x =>
@@ -2708,7 +2708,7 @@ namespace Chummer
                     }
                     else
                         objParentNode.Nodes.Add(objNode);
-                }, token).ConfigureAwait(false);
+                }, innerToken).ConfigureAwait(false);
             }
         }
 
@@ -7895,7 +7895,7 @@ namespace Chummer
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                 await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                t => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t),
                                                 token: token).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode, false).ConfigureAwait(false);
@@ -7915,7 +7915,7 @@ namespace Chummer
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                         await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        t => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t),
                                                         token: token).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
                                                     await AddToTree(objNode, false).ConfigureAwait(false);
@@ -7954,7 +7954,7 @@ namespace Chummer
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                 await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetStringAsync("String_Force", token: token),
+                                                t => LanguageManager.GetStringAsync("String_Force", token: t),
                                                 token: token).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
@@ -7974,7 +7974,7 @@ namespace Chummer
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                         await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        t => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t),
                                                         token: token).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
                                                     await AddToTree(objNode, false).ConfigureAwait(false);
@@ -8107,7 +8107,7 @@ namespace Chummer
                                             objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                 await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                     .ConfigureAwait(false),
-                                                () => LanguageManager.GetString("String_Force", token: token),
+                                                t => LanguageManager.GetString("String_Force", token: t),
                                                 token: token).ConfigureAwait(false);
                                             objNode.Checked = objGear.Bonded;
                                             await AddToTree(objNode).ConfigureAwait(false);
@@ -8127,7 +8127,7 @@ namespace Chummer
                                                     objNode.Text = await objNode.Text.CheapReplaceAsync(
                                                         await LanguageManager.GetStringAsync("String_Rating", token: token)
                                                             .ConfigureAwait(false),
-                                                        () => LanguageManager.GetStringAsync(objGear.RatingLabel, token: token),
+                                                        t => LanguageManager.GetStringAsync(objGear.RatingLabel, token: t),
                                                         token: token).ConfigureAwait(false);
                                                     objNode.Checked = objStack.Bonded;
                                                     await AddToTree(objNode, false).ConfigureAwait(false);

@@ -1955,7 +1955,7 @@ namespace Chummer.Backend.Equipment
                 return new ValueTuple<string, decimal>(strReturn, decItemCost);
             }
 
-            return new ValueTuple<string, decimal>(await strReturn.CheapReplaceAsync("Rating", () => LanguageManager.GetStringAsync(RatingLabel, token: token), token: token).ConfigureAwait(false) + strNuyenSymbol, decItemCost);
+            return new ValueTuple<string, decimal>(await strReturn.CheapReplaceAsync("Rating", t => LanguageManager.GetStringAsync(RatingLabel, token: t), token: token).ConfigureAwait(false) + strNuyenSymbol, decItemCost);
         }
 
         private SourceString _objCachedSourceDetail;
@@ -2388,8 +2388,8 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             return await GetOwnCostAsync(token).ConfigureAwait(false)
-                   + await ArmorMods.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                   + await GearChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                   + await ArmorMods.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                   + await GearChildren.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
         }
 
         /// <summary>

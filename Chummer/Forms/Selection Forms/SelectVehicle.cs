@@ -793,9 +793,9 @@ namespace Chummer
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdMods))
                                     {
-                                        await objVehicle.Mods.ForEachAsync(async objMod =>
+                                        await objVehicle.Mods.ForEachAsync(async (objMod, t) =>
                                         {
-                                            sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(token)
+                                            sbdMods.AppendLine(await objMod.GetCurrentDisplayNameAsync(t)
                                                 .ConfigureAwait(false));
                                         }, token).ConfigureAwait(false);
 
@@ -808,9 +808,9 @@ namespace Chummer
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdWeapons))
                                     {
-                                        await objVehicle.Weapons.ForEachAsync(async objWeapon =>
+                                        await objVehicle.Weapons.ForEachAsync(async (objWeapon, t) =>
                                         {
-                                            sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(token)
+                                            sbdWeapons.AppendLine(await objWeapon.GetCurrentDisplayNameAsync(t)
                                                 .ConfigureAwait(false));
                                         }, token).ConfigureAwait(false);
 
@@ -823,10 +823,10 @@ namespace Chummer
                                     using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
                                                out StringBuilder sbdWeaponMounts))
                                     {
-                                        await objVehicle.WeaponMounts.ForEachAsync(async objWeaponMount =>
+                                        await objVehicle.WeaponMounts.ForEachAsync(async (objWeaponMount, t) =>
                                         {
                                             sbdWeaponMounts.AppendLine(await objWeaponMount
-                                                .GetCurrentDisplayNameAsync(token)
+                                                .GetCurrentDisplayNameAsync(t)
                                                 .ConfigureAwait(false));
                                         }, token).ConfigureAwait(false);
 

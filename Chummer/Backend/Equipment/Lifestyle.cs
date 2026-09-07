@@ -1931,14 +1931,14 @@ namespace Chummer.Backend.Equipment
                     token.ThrowIfCancellationRequested();
                     // This needs a handler for translations, will fix later.
                     LifestyleQuality objNotAHomeQuality = await LifestyleQualities.FirstOrDefaultAsync(
-                                                              async x =>
-                                                                  await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                              async (x, t) =>
+                                                                  await x.GetNameAsync(t).ConfigureAwait(false) ==
                                                                   "Not a Home" &&
-                                                                  await x.GetOriginSourceAsync(token)
+                                                                  await x.GetOriginSourceAsync(t)
                                                                       .ConfigureAwait(false) == QualitySource.BuiltIn,
                                                               token: token).ConfigureAwait(false)
                                                           ?? await LifestyleQualities.FirstOrDefaultAsync(
-                                                              async x => await x.GetNameAsync(token)
+                                                              async (x, t) => await x.GetNameAsync(t)
                                                                   .ConfigureAwait(false) == "Not a Home",
                                                               token: token).ConfigureAwait(false);
                     if (value == "Bolt Hole")
@@ -5035,13 +5035,14 @@ namespace Chummer.Backend.Equipment
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -5050,13 +5051,14 @@ namespace Chummer.Backend.Equipment
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

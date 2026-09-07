@@ -714,7 +714,7 @@ namespace Chummer.Backend.Skills
                     if (guidSkillId != Guid.Empty)
                         objKnowledgeSkill =
                             await (await objSkillsSection.GetKnowledgeSkillsAsync(token).ConfigureAwait(false))
-                                .FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
+                                .FirstOrDefaultAsync(async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
                     if (objKnowledgeSkill == null)
                     {
                         if (xmlSkillNode["forced"] != null)
@@ -754,7 +754,7 @@ namespace Chummer.Backend.Skills
                 {
                     ThreadSafeBindingList<Skill> lstSkills = await objSkillsSection.GetSkillsAsync(token).ConfigureAwait(false);
                     objLoadingSkill
-                        = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
+                        = await lstSkills.FirstOrDefaultAsync(async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) == guidSkillId, token).ConfigureAwait(false);
                     if (objLoadingSkill != null)
                     {
                         if (objLoadingSkill.IsExoticSkill)
@@ -764,9 +764,9 @@ namespace Chummer.Backend.Skills
                             if (xmlSkillNode.TryGetStringFieldQuickly("specific", ref strSpecific))
                             {
                                 objLoadingSkill
-                                    = await lstSkills.FirstOrDefaultAsync(async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidSkillId
+                                    = await lstSkills.FirstOrDefaultAsync(async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) == guidSkillId
                                         && x is ExoticSkill y
-                                        && await y.GetSpecificAsync(token).ConfigureAwait(false) == strSpecific, token).ConfigureAwait(false);
+                                        && await y.GetSpecificAsync(t).ConfigureAwait(false) == strSpecific, token).ConfigureAwait(false);
                                 if (objLoadingSkill is ExoticSkill objLoadingExoticSkill)
                                 {
                                     blnNewSkill = false;
@@ -3535,7 +3535,7 @@ namespace Chummer.Backend.Skills
                           // Only count our discount if we are the first skill in the list
                           || !ReferenceEquals(
                               await SkillGroupObject.SkillList
-                                                    .FirstOrDefaultAsync(x => x.GetEnabledAsync(token), token)
+                                                    .FirstOrDefaultAsync((x, t) => x.GetEnabledAsync(t), token)
                                                     .ConfigureAwait(false), this);
                     if (await SkillGroupObject.GetKarmaAsync(token).ConfigureAwait(false) > 0)
                     {
@@ -5193,7 +5193,7 @@ namespace Chummer.Backend.Skills
                 if (!await GetCanHaveSpecsAsync(token).ConfigureAwait(false))
                     return string.Empty;
 
-                SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false);
+                SkillSpecialization objSpec = await (await GetSpecializationsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false);
                 return objSpec != null ? await objSpec.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) : string.Empty;
             }
             finally
@@ -5359,8 +5359,8 @@ namespace Chummer.Backend.Skills
                 return await HasSpecializationAsync(strSpecialization, token).ConfigureAwait(false)
                     ? await (await GetSpecializationsAsync(token).ConfigureAwait(false))
                         .FirstOrDefaultAsync(
-                            async x => await x.GetNameAsync(token).ConfigureAwait(false) == strSpecialization ||
-                                       await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) ==
+                            async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == strSpecialization ||
+                                       await x.GetCurrentDisplayNameAsync(t).ConfigureAwait(false) ==
                                        strSpecialization, token: token)
                         .ConfigureAwait(false)
                     : null;
@@ -7652,13 +7652,14 @@ namespace Chummer.Backend.Skills
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -7667,13 +7668,14 @@ namespace Chummer.Backend.Skills
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

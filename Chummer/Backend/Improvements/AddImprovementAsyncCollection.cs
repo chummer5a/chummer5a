@@ -4214,7 +4214,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                             throw new AbortedException();
                         string strNewPowerName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
                         string strNewPowerExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
-                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
+                        objBoostedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async (objPower, t) => await objPower.GetNameAsync(t).ConfigureAwait(false) == strNewPowerName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == strNewPowerExtra, token: token).ConfigureAwait(false);
                     }
                     catch
                     {

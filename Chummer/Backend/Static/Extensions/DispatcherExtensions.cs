@@ -141,7 +141,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke(token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(token), token: token);
+                    Utils.RunOnMainThread(t => funcToRun(t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -186,7 +186,7 @@ namespace Chummer
                 if (objDispatcher == null)
                     funcToRun.Invoke(null, token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token: token);
+                    Utils.RunOnMainThread(t => funcToRun(objDispatcher, t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -329,7 +329,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? Task.Run(() => funcToRun(token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -378,7 +378,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? Task.Run(() => funcToRun(null, token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(objDispatcher, t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -514,7 +514,7 @@ namespace Chummer
                 return default;
             try
             {
-                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(() => funcToRun(token), token: token);
+                return objDispatcher == null ? funcToRun.Invoke(token) : Utils.RunOnMainThread(t => funcToRun(t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -560,7 +560,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objDispatcher, token), token: token);
+                    : Utils.RunOnMainThread(t => funcToRun(objDispatcher, t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -707,7 +707,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? Task.Run(() => funcToRun(token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -757,7 +757,7 @@ namespace Chummer
             {
                 return objDispatcher == null
                     ? Task.Run(() => funcToRun(null, token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(objDispatcher, token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(objDispatcher, t), token);
             }
             catch (ObjectDisposedException) // e)
             {

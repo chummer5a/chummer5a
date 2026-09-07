@@ -841,13 +841,13 @@ namespace Chummer
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
                 strRange = await strRange
-                                 .CheapReplaceAsync("Self", () => LanguageManager.GetStringAsync("String_SpellRangeSelf", token: token), token: token)
-                                 .CheapReplaceAsync("LOS", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", token: token), token: token)
-                                 .CheapReplaceAsync("LOI", () => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", token: token), token: token)
-                                 .CheapReplaceAsync("Touch", () => LanguageManager.GetStringAsync("String_SpellRangeTouchLong", token: token), token: token)
-                                 .CheapReplaceAsync("T", () => LanguageManager.GetStringAsync("String_SpellRangeTouch", token: token), token: token)
-                                 .CheapReplaceAsync("(A)", async () => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: token).ConfigureAwait(false) + ")", token: token)
-                                 .CheapReplaceAsync("MAG", () => LanguageManager.GetStringAsync("String_AttributeMAGShort", token: token), token: token).ConfigureAwait(false);
+                                 .CheapReplaceAsync("Self", t => LanguageManager.GetStringAsync("String_SpellRangeSelf", token: t), token: token)
+                                 .CheapReplaceAsync("LOS", t => LanguageManager.GetStringAsync("String_SpellRangeLineOfSight", token: t), token: token)
+                                 .CheapReplaceAsync("LOI", t => LanguageManager.GetStringAsync("String_SpellRangeLineOfInfluence", token: t), token: token)
+                                 .CheapReplaceAsync("Touch", t => LanguageManager.GetStringAsync("String_SpellRangeTouchLong", token: t), token: token)
+                                 .CheapReplaceAsync("T", t => LanguageManager.GetStringAsync("String_SpellRangeTouch", token: t), token: token)
+                                 .CheapReplaceAsync("(A)", async t => "(" + await LanguageManager.GetStringAsync("String_SpellRangeArea", token: t).ConfigureAwait(false) + ")", token: token)
+                                 .CheapReplaceAsync("MAG", t => LanguageManager.GetStringAsync("String_AttributeMAGShort", token: t), token: token).ConfigureAwait(false);
             }
             await lblRange.DoThreadSafeAsync(x => x.Text = strRange, token: token).ConfigureAwait(false);
             await lblRangeLabel.DoThreadSafeAsync(x => x.Visible = !string.IsNullOrEmpty(strRange), token: token).ConfigureAwait(false);
@@ -879,13 +879,13 @@ namespace Chummer
             string strDv = xmlSpell.SelectSingleNodeAndCacheExpression("dv", token)?.Value.Replace('/', '÷').Replace('*', '×') ?? string.Empty;
             if (!GlobalSettings.Language.Equals(GlobalSettings.DefaultLanguage, StringComparison.OrdinalIgnoreCase))
             {
-                strDv = await strDv.CheapReplaceAsync("F", () => LanguageManager.GetStringAsync("String_SpellForce", token: token), token: token)
-                                   .CheapReplaceAsync("Overflow damage", () => LanguageManager.GetStringAsync("String_SpellOverflowDamage", token: token), token: token)
-                                   .CheapReplaceAsync("Damage Value", () => LanguageManager.GetStringAsync("String_SpellDamageValue", token: token), token: token)
-                                   .CheapReplaceAsync("Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", token: token), token: token)
-                                   .CheapReplaceAsync("Disease DV", () => LanguageManager.GetStringAsync("String_SpellDiseaseDV", token: token), token: token)
+                strDv = await strDv.CheapReplaceAsync("F", t => LanguageManager.GetStringAsync("String_SpellForce", token: t), token: token)
+                                   .CheapReplaceAsync("Overflow damage", t => LanguageManager.GetStringAsync("String_SpellOverflowDamage", token: t), token: token)
+                                   .CheapReplaceAsync("Damage Value", t => LanguageManager.GetStringAsync("String_SpellDamageValue", token: t), token: token)
+                                   .CheapReplaceAsync("Toxin DV", t => LanguageManager.GetStringAsync("String_SpellToxinDV", token: t), token: token)
+                                   .CheapReplaceAsync("Disease DV", t => LanguageManager.GetStringAsync("String_SpellDiseaseDV", token: t), token: token)
                                    .CheapReplaceAsync("Radiation Power",
-                                                      () => LanguageManager.GetStringAsync("String_SpellRadiationPower", token: token), token: token).ConfigureAwait(false);
+                                                      t => LanguageManager.GetStringAsync("String_SpellRadiationPower", token: t), token: token).ConfigureAwait(false);
             }
 
             bool blnForce = strDv.StartsWith('F');

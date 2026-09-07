@@ -116,7 +116,7 @@ namespace Chummer
                                             bool blnDoResumeLayout = true, CancellationToken token = default)
         {
             // Use RunOnMainThread here because we don't want redraws while we translate a form
-            Utils.RunOnMainThread(() => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, token), token: token);
+            Utils.RunOnMainThread(t => TranslateWinFormCoreAsync(true, objObject, strIntoLanguage, blnDoResumeLayout, t), token: token);
         }
 
         /// <summary>
@@ -2520,9 +2520,9 @@ namespace Chummer
         {
             return cboLanguage == null
                 ? Task.FromException(new ArgumentNullException(nameof(cboLanguage)))
-                : PopulateSheetLanguageListAsyncInner();
+                : PopulateSheetLanguageListAsyncInner(token);
 
-            async Task PopulateSheetLanguageListAsyncInner()
+            async Task PopulateSheetLanguageListAsyncInner(CancellationToken innerToken)
             {
                 string strDefaultSheetLanguage = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.Language;
                 int? intLastIndexDirectorySeparator = strSelectedSheet?.LastIndexOf(Path.DirectorySeparatorChar);
@@ -2534,10 +2534,10 @@ namespace Chummer
                 }
 
                 List<ListItem> lstSheetLanguageList
-                    = await GetSheetLanguageListAsync(lstCharacters, true, token).ConfigureAwait(false);
+                    = await GetSheetLanguageListAsync(lstCharacters, true, innerToken).ConfigureAwait(false);
                 try
                 {
-                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: token)
+                    await cboLanguage.PopulateWithListItemsAsync(lstSheetLanguageList, token: innerToken)
                                      .ConfigureAwait(false);
                     await cboLanguage.DoThreadSafeAsync(x =>
                     {
@@ -2546,7 +2546,7 @@ namespace Chummer
                         if (x.SelectedIndex == -1)
                             x.SelectedValue
                                 = defaultCulture?.Name.ToLowerInvariant() ?? GlobalSettings.DefaultLanguage;
-                    }, token: token).ConfigureAwait(false);
+                    }, token: innerToken).ConfigureAwait(false);
                 }
                 finally
                 {

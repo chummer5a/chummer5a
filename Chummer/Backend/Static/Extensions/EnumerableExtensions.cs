@@ -488,5 +488,18 @@ namespace Chummer
                 objFuncToRun.Invoke(objItem);
             }
         }
+
+        /// <summary>
+        /// Syntactic sugar to run some code/action on all items within an enumerable.
+        /// </summary>
+        public static void ForEach<T>(this IEnumerable<T> objEnumerable, [NotNull] Action<T, CancellationToken> objFuncToRun, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objItem in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                objFuncToRun.Invoke(objItem, token);
+            }
+        }
     }
 }

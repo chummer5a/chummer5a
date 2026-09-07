@@ -518,13 +518,14 @@ namespace Chummer
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -533,13 +534,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -894,8 +896,8 @@ namespace Chummer
                                         await _dicCustomDataDirectoryKeys.ClearAsync(token).ConfigureAwait(false);
                                         await objOther._dicCustomDataDirectoryKeys
                                             .ForEachAsync(
-                                                kvpOther => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key,
-                                                    kvpOther.Value, token), token).ConfigureAwait(false);
+                                                (kvpOther, t) => _dicCustomDataDirectoryKeys.AddAsync(kvpOther.Key,
+                                                    kvpOther.Value, t), token).ConfigureAwait(false);
                                     }
                                     finally
                                     {
@@ -6673,7 +6675,7 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                _dicCustomDataDirectoryKeys.ForEach(kvpCustomDataDirectoryName =>
+                _dicCustomDataDirectoryKeys.ForEach((kvpCustomDataDirectoryName, t) =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
                         return;
@@ -6686,7 +6688,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -6697,7 +6699,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)
@@ -6740,7 +6742,7 @@ namespace Chummer
                 _setEnabledCustomDataDirectoryGuids.Clear();
                 _setEnabledCustomDataDirectories.Clear();
                 _lstEnabledCustomDataDirectoryPaths.Clear();
-                await _dicCustomDataDirectoryKeys.ForEachAsync(kvpCustomDataDirectoryName =>
+                await _dicCustomDataDirectoryKeys.ForEachAsync((kvpCustomDataDirectoryName, t) =>
                 {
                     if (!kvpCustomDataDirectoryName.Value)
                         return;
@@ -6753,7 +6755,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.Name.Equals(strKey, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || objLoopInfo.MyVersion > objInfoToAdd.MyVersion)
@@ -6764,7 +6766,7 @@ namespace Chummer
                     {
                         foreach (CustomDataDirectoryInfo objLoopInfo in GlobalSettings.CustomDataDirectoryInfos)
                         {
-                            token.ThrowIfCancellationRequested();
+                            t.ThrowIfCancellationRequested();
                             if (!objLoopInfo.InternalId.Equals(strId, StringComparison.OrdinalIgnoreCase))
                                 continue;
                             if (objInfoToAdd == null || VersionMatchScore(objLoopInfo.MyVersion)

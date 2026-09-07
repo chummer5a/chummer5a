@@ -4088,7 +4088,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4283,8 +4283,8 @@ namespace Chummer
                         }
                         else
                         {
-                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower =>
-                                await objPower.GetNameAsync(token).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
+                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async (objPower, t) =>
+                                await objPower.GetNameAsync(t).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
                             if (objImprovedPower != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
@@ -4316,8 +4316,8 @@ namespace Chummer
                         }
                         else
                         {
-                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async objPower =>
-                                await objPower.GetNameAsync(token).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
+                            Power objImprovedPower = await _objCharacter.Powers.FirstOrDefaultAsync(async (objPower, t) =>
+                                await objPower.GetNameAsync(t).ConfigureAwait(false) == ImprovedName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == UniqueName, token).ConfigureAwait(false);
                             if (objImprovedPower != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objImprovedPower,
@@ -4695,7 +4695,7 @@ namespace Chummer
                             else
                             {
                                 SkillGroup objTargetGroup =
-                                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                    await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                                 if (objTargetGroup != null)
                                 {
                                     lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4733,7 +4733,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -4890,7 +4890,7 @@ namespace Chummer
                         else
                         {
                             SkillGroup objTargetGroup =
-                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async x => await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                await (await objSkillsSection.GetSkillGroupsAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetGroup != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetGroup,
@@ -5083,7 +5083,7 @@ namespace Chummer
                     {
                         Contact objTargetContact =
                             await _objCharacter.Contacts.FirstOrDefaultAsync(
-                                async x => await x.GetUniqueIdAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                async (x, t) => await x.GetUniqueIdAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                         if (objTargetContact != null)
                         {
                             lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
@@ -5112,7 +5112,7 @@ namespace Chummer
                         {
                             Contact objTargetContact =
                                 await _objCharacter.Contacts.FirstOrDefaultAsync(
-                                    async x => await x.GetUniqueIdAsync(token).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
+                                    async (x, t) => await x.GetUniqueIdAsync(t).ConfigureAwait(false) == ImprovedName, token).ConfigureAwait(false);
                             if (objTargetContact != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objTargetContact,
@@ -5167,8 +5167,8 @@ namespace Chummer
                         }
                         else
                         {
-                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async x =>
-                                await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(token).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async (x, t) =>
+                                await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(t).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                             if (objQuality != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,
@@ -5204,8 +5204,8 @@ namespace Chummer
                         }
                         else
                         {
-                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async x =>
-                                await x.GetNameAsync(token).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(token).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
+                            Quality objQuality = await _objCharacter.Qualities.FirstOrDefaultAsync(async (x, t) =>
+                                await x.GetNameAsync(t).ConfigureAwait(false) == ImprovedName || string.Equals(await x.GetSourceIDStringAsync(t).ConfigureAwait(false), ImprovedName, StringComparison.OrdinalIgnoreCase), token).ConfigureAwait(false);
                             if (objQuality != null)
                             {
                                 lstReturn.Add(new ValueTuple<INotifyMultiplePropertiesChangedAsync, string>(objQuality,

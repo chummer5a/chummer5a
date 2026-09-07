@@ -684,10 +684,10 @@ namespace Chummer
 
             await ImprovementManager.RemoveImprovementsAsync(_objCharacter, _objImprovementSource, InternalId, token)
                                     .ConfigureAwait(false);
-            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async objPower =>
+            await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).ForEachAsync(async (objPower, t) =>
             {
-                if (await objPower.Enhancements.ContainsAsync(this, token).ConfigureAwait(false))
-                    await objPower.Enhancements.RemoveAsync(this, token).ConfigureAwait(false);
+                if (await objPower.Enhancements.ContainsAsync(this, t).ConfigureAwait(false))
+                    await objPower.Enhancements.RemoveAsync(this, t).ConfigureAwait(false);
             }, token).ConfigureAwait(false);
 
             return await (await _objCharacter.GetEnhancementsAsync(token).ConfigureAwait(false)).RemoveAsync(this, token).ConfigureAwait(false);

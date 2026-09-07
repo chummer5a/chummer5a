@@ -1356,9 +1356,9 @@ namespace Chummer
                         AvailabilityValue objTotalAvail = new AvailabilityValue(
                             intRating,
                             await strAvailExpression.CheapReplaceAsync("MinRating",
-                                                                       () => nudRating.DoThreadSafeFuncAsync(
+                                                                       t => nudRating.DoThreadSafeFuncAsync(
                                                                            y => y.Minimum.ToString(
-                                                                               GlobalSettings.InvariantCultureInfo), token: token),
+                                                                               GlobalSettings.InvariantCultureInfo), token: t),
                                                                        token: token).ConfigureAwait(false),
                             _intAvailModifier + (await ImprovementManager.ValueOfAsync(_objCharacter, Improvement.ImprovementType.Availability, strImprovedName: objXmlCyberware.SelectSingleNodeAndCacheExpression("id", token)?.Value, blnIncludeNonImproved: true, token: token).ConfigureAwait(false)).StandardRound());
                         string strAvail = await objTotalAvail.ToStringAsync(token).ConfigureAwait(false);

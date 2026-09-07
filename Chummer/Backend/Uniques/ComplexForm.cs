@@ -660,23 +660,23 @@ namespace Chummer
             {
                 strReturn = await strReturn
                                   .CheapReplaceAsync(
-                                      "L", () => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage, token: token), token: token)
+                                      "L", t => LanguageManager.GetStringAsync("String_ComplexFormLevel", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Overflow damage",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellOverflowDamage", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellOverflowDamage", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Damage Value",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDamageValue", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellDamageValue", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync(
-                                      "Toxin DV", () => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage, token: token), token: token)
+                                      "Toxin DV", t => LanguageManager.GetStringAsync("String_SpellToxinDV", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Disease DV",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellDiseaseDV", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellDiseaseDV", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync("Radiation Power",
-                                                     () => LanguageManager.GetStringAsync(
-                                                         "String_SpellRadiationPower", strLanguage, token: token), token: token)
+                                                     t => LanguageManager.GetStringAsync(
+                                                         "String_SpellRadiationPower", strLanguage, token: t), token: token)
                                   .CheapReplaceAsync(
-                                      "Special", () => LanguageManager.GetStringAsync("String_Special", strLanguage, token: token), token: token).ConfigureAwait(false);
+                                      "Special", t => LanguageManager.GetStringAsync("String_Special", strLanguage, token: t), token: token).ConfigureAwait(false);
             }
             return strReturn;
         }

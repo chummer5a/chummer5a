@@ -1536,7 +1536,7 @@ namespace Chummer.Backend.Equipment
                 return await Weapons.SumAsync(w => w.GetTotalCostAsync(token), token).ConfigureAwait(false)
                        + await Mods.SumAsync(m => m.GetTotalCostAsync(token), token).ConfigureAwait(false);
 
-            decimal decOptionCost = await WeaponMountOptions.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+            decimal decOptionCost = await WeaponMountOptions.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
             if (DiscountCost)
                 decOptionCost *= 0.9m;
 
@@ -1584,7 +1584,7 @@ namespace Chummer.Backend.Equipment
                                               token).ConfigureAwait(false)
                        + await Mods.SumAsync(m => m.CalculatedStolenTotalCostAsync(blnStolen, token), token).ConfigureAwait(false);
 
-            decimal decOptionCost = await WeaponMountOptions.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+            decimal decOptionCost = await WeaponMountOptions.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
             if (DiscountCost)
                 decOptionCost *= 0.9m;
 
@@ -1951,8 +1951,8 @@ namespace Chummer.Backend.Equipment
                                                                  sbdRestrictedItems, token), token)
                                                .ConfigureAwait(false);
 
-            intRestrictedCount += await WeaponMountOptions.SumAsync(x =>
-                x.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, token), token).ConfigureAwait(false);
+            intRestrictedCount += await WeaponMountOptions.SumAsync((x, t) =>
+                x.CheckRestrictedGear(dicRestrictedGearLimits, sbdAvailItems, sbdRestrictedItems, t), token).ConfigureAwait(false);
 
             return intRestrictedCount;
         }

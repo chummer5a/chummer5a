@@ -4950,45 +4950,45 @@ namespace Chummer.Backend.Equipment
                 () => LanguageManager.GetStringAsync("String_DamagePhysical", strLanguage, token: token),
                 Utils.JoinableTaskFactory);
             return await (await ReplaceStringsAsync(strInput, strLanguage, token).ConfigureAwait(false))
-                .CheapReplaceAsync("0S", async () => "0" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("0S", async t => "0" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("1S", async () => "1" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("1S", async t => "1" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("2S", async () => "2" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("2S", async t => "2" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("3S", async () => "3" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("3S", async t => "3" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("4S", async () => "4" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("4S", async t => "4" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("5S", async () => "5" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("5S", async t => "5" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("6S", async () => "6" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("6S", async t => "6" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("7S", async () => "7" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("7S", async t => "7" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("8S", async () => "8" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("8S", async t => "8" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("9S", async () => "9" + await strStun.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("9S", async t => "9" + await strStun.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("0P", async () => "0" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("0P", async t => "0" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("1P", async () => "1" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("1P", async t => "1" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("2P", async () => "2" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("2P", async t => "2" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("3P", async () => "3" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("3P", async t => "3" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("4P", async () => "4" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("4P", async t => "4" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("5P", async () => "5" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("5P", async t => "5" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("6P", async () => "6" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("6P", async t => "6" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("7P", async () => "7" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("7P", async t => "7" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("8P", async () => "8" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("8P", async t => "8" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token)
-                .CheapReplaceAsync("9P", async () => "9" + await strPhysical.GetValueAsync(token).ConfigureAwait(false),
+                .CheapReplaceAsync("9P", async t => "9" + await strPhysical.GetValueAsync(t).ConfigureAwait(false),
                     token: token).ConfigureAwait(false);
         }
 
@@ -5039,63 +5039,63 @@ namespace Chummer.Backend.Equipment
                 : await strInput
                     .CheapReplaceAsync(
                         "Special",
-                        () => LanguageManager.GetStringAsync("String_DamageSpecial", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageSpecial", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
-                        "P or S", () => LanguageManager.GetStringAsync("String_DamagePOrS", strLanguage, token: token),
+                        "P or S", t => LanguageManager.GetStringAsync("String_DamagePOrS", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Chemical",
-                        () => LanguageManager.GetStringAsync("String_DamageChemical", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageChemical", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
-                        "(e)", () => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage, token: token),
+                        "(e)", t => LanguageManager.GetStringAsync("String_DamageElectric", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "(f)",
-                        () => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageFlechette", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
-                        "(fire)", () => LanguageManager.GetStringAsync("String_DamageFire", strLanguage, token: token),
+                        "(fire)", t => LanguageManager.GetStringAsync("String_DamageFire", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Grenade",
-                        () => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageGrenade", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Missile",
-                        () => LanguageManager.GetStringAsync("String_DamageMissile", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageMissile", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Mortar",
-                        () => LanguageManager.GetStringAsync("String_DamageMortar", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageMortar", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Rocket",
-                        () => LanguageManager.GetStringAsync("String_DamageRocket", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageRocket", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Torpedo",
-                        () => LanguageManager.GetStringAsync("String_DamageTorpedo", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageTorpedo", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "Radius",
-                        () => LanguageManager.GetStringAsync("String_DamageRadius", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageRadius", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync("As Drug/Toxin",
-                        () => LanguageManager.GetStringAsync(
-                            "String_DamageAsDrugToxin", strLanguage, token: token), token: token)
+                        t => LanguageManager.GetStringAsync(
+                            "String_DamageAsDrugToxin", strLanguage, token: t), token: token)
                     .CheapReplaceAsync(
                         "as round",
-                        () => LanguageManager.GetStringAsync("String_DamageAsRound", strLanguage, token: token),
+                        t => LanguageManager.GetStringAsync("String_DamageAsRound", strLanguage, token: t),
                         token: token)
                     .CheapReplaceAsync(
                         "/m",
-                        async () => "/" + await LanguageManager
-                            .GetStringAsync("String_DamageMeter", strLanguage, token: token).ConfigureAwait(false),
+                        async t => "/" + await LanguageManager
+                            .GetStringAsync("String_DamageMeter", strLanguage, token: t).ConfigureAwait(false),
                         token: token)
                     .CheapReplaceAsync(
-                        "(M)", () => LanguageManager.GetStringAsync("String_DamageMatrix", strLanguage, token: token),
+                        "(M)", t => LanguageManager.GetStringAsync("String_DamageMatrix", strLanguage, token: t),
                         token: token).ConfigureAwait(false);
         }
 
@@ -5427,74 +5427,74 @@ namespace Chummer.Backend.Equipment
                     strReturn = await strReturn
                         .CheapReplaceAsync(
                             " or ",
-                            async () => strSpace + await LanguageManager
-                                                        .GetStringAsync("String_Or", strLanguage, token: token)
+                            async t => strSpace + await LanguageManager
+                                                        .GetStringAsync("String_Or", strLanguage, token: t)
                                                         .ConfigureAwait(false)
                                                     + strSpace,
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(
                             " Belt",
-                            () => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_AmmoBelt", strLanguage, token: t),
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(
                             " Energy",
-                            () => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_AmmoEnergy", strLanguage, token: t),
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(" External Source",
-                            () => LanguageManager.GetStringAsync(
-                                "String_AmmoExternalSource", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync(
+                                "String_AmmoExternalSource", strLanguage, token: t),
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(
                             " Special",
-                            () => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_AmmoSpecial", strLanguage, token: t),
                             StringComparison.OrdinalIgnoreCase, token: token)
                         .CheapReplaceAsync(
                             "(b)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                                "String_AmmoBreakAction", strLanguage, token: token)
+                                                "String_AmmoBreakAction", strLanguage, token: t)
                                             .ConfigureAwait(false) + ")", token: token)
                         .CheapReplaceAsync(
                             "(belt)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                            "String_AmmoBelt", strLanguage, token: token).ConfigureAwait(false) +
+                                            "String_AmmoBelt", strLanguage, token: t).ConfigureAwait(false) +
                                         ")", token: token)
                         .CheapReplaceAsync(
                             "(box)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                            "String_AmmoBox", strLanguage, token: token).ConfigureAwait(false) +
+                                            "String_AmmoBox", strLanguage, token: t).ConfigureAwait(false) +
                                         ")", token: token)
                         .CheapReplaceAsync(
                             "(c)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                            "String_AmmoClip", strLanguage, token: token).ConfigureAwait(false) +
+                                            "String_AmmoClip", strLanguage, token: t).ConfigureAwait(false) +
                                         ")", token: token)
                         .CheapReplaceAsync(
                             "(cy)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                                "String_AmmoCylinder", strLanguage, token: token)
+                                                "String_AmmoCylinder", strLanguage, token: t)
                                             .ConfigureAwait(false) + ")", token: token)
                         .CheapReplaceAsync(
                             "(d)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                            "String_AmmoDrum", strLanguage, token: token).ConfigureAwait(false) +
+                                            "String_AmmoDrum", strLanguage, token: t).ConfigureAwait(false) +
                                         ")", token: token)
                         .CheapReplaceAsync(
                             "(m)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                                "String_AmmoMagazine", strLanguage, token: token)
+                                                "String_AmmoMagazine", strLanguage, token: t)
                                             .ConfigureAwait(false) + ")", token: token)
                         .CheapReplaceAsync(
                             "(ml)",
-                            async () => "("
+                            async t => "("
                                         + await LanguageManager.GetStringAsync(
-                                                "String_AmmoMuzzleLoad", strLanguage, token: token)
+                                                "String_AmmoMuzzleLoad", strLanguage, token: t)
                                             .ConfigureAwait(false) + ")", token: token).ConfigureAwait(false);
                 }
             }
@@ -6763,8 +6763,8 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strAPReplace))
                             {
                                 strAPReplace = await strAPReplace
-                                    .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                                    .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                                    .CheapReplaceAsync("{Rating}", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                                    .CheapReplaceAsync("Rating", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                                 strAP = strAPReplace;
                             }
                             // Adjust the Weapon's AP value.
@@ -6772,8 +6772,8 @@ namespace Chummer.Backend.Equipment
                             if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                             {
                                 strAPAdd = await strAPAdd
-                                    .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                                    .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                                    .CheapReplaceAsync("{Rating}", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                                    .CheapReplaceAsync("Rating", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                                 sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                             }
 
@@ -6784,8 +6784,8 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strAPReplace))
                                 {
                                     strAPReplace = await strAPReplace
-                                        .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                                        .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                                        .CheapReplaceAsync("Rating", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                                     strAP = strAPReplace;
                                 }
                                 // Adjust the Weapon's Damage.
@@ -6793,8 +6793,8 @@ namespace Chummer.Backend.Equipment
                                 if (!string.IsNullOrEmpty(strAPAdd) && strAPAdd != "0" && strAPAdd != "+0" && strAPAdd != "-0")
                                 {
                                     strAPAdd = await strAPAdd
-                                        .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                                        .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                                        .CheapReplaceAsync("Rating", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                                     sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                                 }
                             }
@@ -6822,8 +6822,8 @@ namespace Chummer.Backend.Equipment
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPReplace
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strAP = strAPReplace;
                             }
                             // Adjust the Weapon's Damage.
@@ -6837,8 +6837,8 @@ namespace Chummer.Backend.Equipment
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPAdd
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                             }
                         }
@@ -6855,8 +6855,8 @@ namespace Chummer.Backend.Equipment
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPReplace
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 strAP = strAPReplace;
                             }
                             // Adjust the Weapon's Damage.
@@ -6870,8 +6870,8 @@ namespace Chummer.Backend.Equipment
                                         // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                         .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                     : await strAPAdd
-                                        .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                             }
                         }
@@ -6896,8 +6896,8 @@ namespace Chummer.Backend.Equipment
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strAP = strAPReplace;
                                 }
                                 // Adjust the Weapon's Damage.
@@ -6911,8 +6911,8 @@ namespace Chummer.Backend.Equipment
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                                 }
                             }
@@ -6929,8 +6929,8 @@ namespace Chummer.Backend.Equipment
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPReplace
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strAP = strAPReplace;
                                 }
                                 // Adjust the Weapon's Damage.
@@ -6944,8 +6944,8 @@ namespace Chummer.Backend.Equipment
                                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                                             .CheapReplace("Rating", () => objGear.Rating.ToString(GlobalSettings.InvariantCultureInfo))
                                         : await strAPAdd
-                                            .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdBonusAP.Append("+(", strAPAdd.TrimStartNoAlloc('+'), ')');
                                 }
                             }
@@ -7013,13 +7013,13 @@ namespace Chummer.Backend.Equipment
                     ? ReplaceStrings(strAP.Replace("//", "/")
                             // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                             .CheapReplace("-half",
-                                () => LanguageManager.GetString("String_APHalf", strLanguage, token: token)),
+                                t => LanguageManager.GetString("String_APHalf", strLanguage, token: t), token: token),
                         strLanguage,
                         token)
                     : await ReplaceStringsAsync(await strAP.Replace("//", "/")
                         .CheapReplaceAsync(
                             "-half",
-                            () => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: token),
+                            t => LanguageManager.GetStringAsync("String_APHalf", strLanguage, token: t),
                             token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
             }
 
@@ -7052,8 +7052,8 @@ namespace Chummer.Backend.Equipment
                 else
                     return await ReplaceStringsAsync(await strAP.CheapReplaceAsync(
                                     "-half",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_APHalf", strLanguage, token: token),
+                                    t => LanguageManager.GetStringAsync(
+                                        "String_APHalf", strLanguage, token: t),
                                     token: token).ConfigureAwait(false), strLanguage, token).ConfigureAwait(false);
             }
 
@@ -7107,7 +7107,7 @@ namespace Chummer.Backend.Equipment
             strRC = blnSync
                 // ReSharper disable once MethodHasAsyncOverloadWithCancellation
                 ? strRC.CheapReplace("{Rating}", () => Rating.ToString(GlobalSettings.InvariantCultureInfo))
-                : await strRC.CheapReplaceAsync("{Rating}", async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                : await strRC.CheapReplaceAsync("{Rating}", async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                     token: token).ConfigureAwait(false);
             int intPos = strRC.IndexOf('(');
             if (intPos != -1)
@@ -8792,8 +8792,8 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                     {
                         strInnerBonus = await strInnerBonus.TrimStartNoAlloc('+')
-                            .CheapReplaceAsync("{Rating}", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                            .CheapReplaceAsync("Rating", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                            .CheapReplaceAsync("{Rating}", async t2 => (await x.GetRatingAsync(t2)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                            .CheapReplaceAsync("Rating", async t2 => (await x.GetRatingAsync(t2)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                         sbdRangeBonus.Append("+(", strInnerBonus, ')');
                     }
                     if (WirelessOn && x.WirelessOn && x.WirelessWeaponBonus != null)
@@ -8803,8 +8803,8 @@ namespace Chummer.Backend.Equipment
                             && !string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                         {
                             strInnerBonus = await strInnerBonus.TrimStartNoAlloc('+')
-                                .CheapReplaceAsync("{Rating}", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                                .CheapReplaceAsync("Rating", async () => (await x.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
+                                .CheapReplaceAsync("{Rating}", async t2 => (await x.GetRatingAsync(t2)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                                .CheapReplaceAsync("Rating", async t2 => (await x.GetRatingAsync(t2)).ToString(GlobalSettings.InvariantCultureInfo), token: t).ConfigureAwait(false);
                             sbdRangeBonus.Append("+(", strInnerBonus, ')');
                         }
                     }
@@ -8828,8 +8828,8 @@ namespace Chummer.Backend.Equipment
                         if (!string.IsNullOrEmpty(strInnerBonus) && strInnerBonus != "0" && strInnerBonus != "+0" && strInnerBonus != "-0")
                         {
                             strInnerBonus = await strInnerBonus
-                                .CheapReplaceAsync("{Rating}", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                .CheapReplaceAsync("Rating", async () => (await objGear.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("{Rating}", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("Rating", async t => (await objGear.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                 .ConfigureAwait(false);
                             sbdRangeBonus.Append("+(", strInnerBonus, ')');
                         }
@@ -8914,8 +8914,8 @@ namespace Chummer.Backend.Equipment
                     if (!string.IsNullOrEmpty(strLoopModifier) && strLoopModifier != "0" && strLoopModifier != "+0")
                     {
                         strLoopModifier = await strLoopModifier.TrimStartNoAlloc('+')
-                            .CheapReplaceAsync("{Rating}", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
-                            .CheapReplaceAsync("Rating", async () => (await objAccessory.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                            .CheapReplaceAsync("{Rating}", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
+                            .CheapReplaceAsync("Rating", async t2 => (await objAccessory.GetRatingAsync(t2).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: t)
                             .ConfigureAwait(false);
                         sbdBaseModifier.Append("+(", strLoopModifier, ')');
                     }
@@ -9975,8 +9975,8 @@ namespace Chummer.Backend.Equipment
                             && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                         {
                             strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                .CheapReplaceAsync("{Rating}", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                .CheapReplaceAsync("Rating", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                .CheapReplaceAsync("{Rating}", async t => (await a.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                .CheapReplaceAsync("Rating", async t => (await a.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             sbdExtraModifier.Append("+(")
                                 .Append(strWeaponBonusPool, ')');
                         }
@@ -9987,8 +9987,8 @@ namespace Chummer.Backend.Equipment
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
                                 strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                    .CheapReplaceAsync("{Rating}", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                    .CheapReplaceAsync("Rating", async () => (await a.GetRatingAsync(token)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    .CheapReplaceAsync("{Rating}", async t => (await a.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async t => (await a.GetRatingAsync(t)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append("+(")
                                     .Append(strWeaponBonusPool, ')');
                             }
@@ -10010,8 +10010,8 @@ namespace Chummer.Backend.Equipment
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
                                 strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                    .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                    .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    .CheapReplaceAsync("{Rating}", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append("+(")
                                     .Append(strWeaponBonusPool, ')');
                             }
@@ -10022,8 +10022,8 @@ namespace Chummer.Backend.Equipment
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
                                     strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                        .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append("+(")
                                         .Append(strWeaponBonusPool, ')');
                                 }
@@ -10036,8 +10036,8 @@ namespace Chummer.Backend.Equipment
                                 && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                             {
                                 strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                    .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                    .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                    .CheapReplaceAsync("{Rating}", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                    .CheapReplaceAsync("Rating", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                 sbdExtraModifier.Append("+(")
                                     .Append(strWeaponBonusPool, ')');
                             }
@@ -10048,8 +10048,8 @@ namespace Chummer.Backend.Equipment
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
                                     strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                        .CheapReplaceAsync("{Rating}", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objAmmo.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objAmmo.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append("+(")
                                         .Append(strWeaponBonusPool, ')');
                                 }
@@ -10067,8 +10067,8 @@ namespace Chummer.Backend.Equipment
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
                                     strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                        .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append("+(")
                                         .Append(strWeaponBonusPool, ')');
                                 }
@@ -10079,8 +10079,8 @@ namespace Chummer.Backend.Equipment
                                         && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                     {
                                         strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                            .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         sbdExtraModifier.Append("+(")
                                             .Append(strWeaponBonusPool, ')');
                                     }
@@ -10093,8 +10093,8 @@ namespace Chummer.Backend.Equipment
                                     && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                 {
                                     strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                        .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                        .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                        .CheapReplaceAsync("{Rating}", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                        .CheapReplaceAsync("Rating", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     sbdExtraModifier.Append("+(")
                                         .Append(strWeaponBonusPool, ')');
                                 }
@@ -10105,8 +10105,8 @@ namespace Chummer.Backend.Equipment
                                         && strWeaponBonusPool != "0" && strWeaponBonusPool != "+0" && strWeaponBonusPool != "-0")
                                     {
                                         strWeaponBonusPool = await strWeaponBonusPool.TrimStartNoAlloc('+')
-                                            .CheapReplaceAsync("{Rating}", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
-                                            .CheapReplaceAsync("Rating", async () => (await objChild.GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                            .CheapReplaceAsync("{Rating}", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token)
+                                            .CheapReplaceAsync("Rating", async t => (await objChild.GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         sbdExtraModifier.Append("+(")
                                             .Append(strWeaponBonusPool, ')');
                                     }

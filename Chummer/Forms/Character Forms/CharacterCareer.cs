@@ -9633,9 +9633,9 @@ namespace Chummer
                         for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                         {
                             Quality objInvisibleQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(
-                                async x => x.SourceID == guiSourceID
-                                     && await x.GetExtraAsync(GenericToken).ConfigureAwait(false) == strExtra
-                                     && await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false) == strSourceName
+                                async (x, t) => x.SourceID == guiSourceID
+                                     && await x.GetExtraAsync(t).ConfigureAwait(false) == strExtra
+                                     && await x.GetSourceNameAsync(t).ConfigureAwait(false) == strSourceName
                                      && x.InternalId != strInternalId
                                      && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
                             if (objInvisibleQuality == null

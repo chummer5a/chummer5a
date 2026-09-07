@@ -10055,9 +10055,9 @@ namespace Chummer
                         for (; intSelectedLevels < intCurrentLevels; --intCurrentLevels)
                         {
                             Quality objInvisibleQuality = await CharacterObject.Qualities.FirstOrDefaultAsync(
-                                async x => x.SourceID == guiSourceID
-                                     && await x.GetExtraAsync(GenericToken).ConfigureAwait(false) == strExtra
-                                     && await x.GetSourceNameAsync(GenericToken).ConfigureAwait(false) == strSourceName
+                                async (x, t) => x.SourceID == guiSourceID
+                                     && await x.GetExtraAsync(t).ConfigureAwait(false) == strExtra
+                                     && await x.GetSourceNameAsync(t).ConfigureAwait(false) == strSourceName
                                      && x.InternalId != strInternalId
                                      && !ReferenceEquals(x, objSelectedQuality), GenericToken).ConfigureAwait(false);
                             if (objInvisibleQuality == null
@@ -13293,7 +13293,7 @@ namespace Chummer
                 // ------------------------------------------------------------------------------
                 // Calculate the BP used by Skill Groups.
                 int intSkillGroupsPoints = await objSkillSection.SkillGroups
-                    .SumAsync(x => x.GetCurrentKarmaCostAsync(token),
+                    .SumAsync((x, t) => x.GetCurrentKarmaCostAsync(t),
                         token: token).ConfigureAwait(false);
                 intKarmaPointsRemain -= intSkillGroupsPoints;
 
@@ -13301,7 +13301,7 @@ namespace Chummer
                 // ------------------------------------------------------------------------------
                 // Calculate the BP used by Active Skills.
                 int skillPointsKarma = await objSkillSection.Skills
-                    .SumAsync(x => x.GetCurrentKarmaCostAsync(token),
+                    .SumAsync((x, t) => x.GetCurrentKarmaCostAsync(t),
                         token: token).ConfigureAwait(false);
                 intKarmaPointsRemain -= skillPointsKarma;
 
@@ -13309,7 +13309,7 @@ namespace Chummer
                 // ------------------------------------------------------------------------------
                 // Calculate the points used by Knowledge Skills.
                 int knowledgeKarmaUsed = await objSkillSection.KnowledgeSkills
-                    .SumAsync(x => x.GetCurrentKarmaCostAsync(token),
+                    .SumAsync((x, t) => x.GetCurrentKarmaCostAsync(t),
                         token: token).ConfigureAwait(false);
 
                 token.ThrowIfCancellationRequested();
@@ -14074,7 +14074,7 @@ namespace Chummer
 
             int intKnowledgeSkillsTotalCostKarma
                 = await CharacterObject.SkillsSection.KnowledgeSkills
-                                       .SumAsync(x => x.GetCurrentKarmaCostAsync(token), token: token)
+                                       .SumAsync((x, t) => x.GetCurrentKarmaCostAsync(t), token: token)
                                        .ConfigureAwait(false);
             if (intKnowledgeSkillsTotalCostKarma > 0)
             {
@@ -22795,8 +22795,8 @@ namespace Chummer
                       await LanguageManager.GetStringAsync("Tip_CommonAttributesMetatypeLimits", token: token)
                                            .ConfigureAwait(false), token).ConfigureAwait(false);
             string strNuyenTooltip = await (await CharacterObjectSettings.GetChargenKarmaToNuyenExpressionAsync(token).ConfigureAwait(false))
-                                        .CheapReplaceAsync("{Karma}", () => LanguageManager.GetStringAsync("String_Karma", token: token), token: token)
-                                        .CheapReplaceAsync("{PriorityNuyen}", () => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: token), token: token)
+                                        .CheapReplaceAsync("{Karma}", t => LanguageManager.GetStringAsync("String_Karma", token: t), token: token)
+                                        .CheapReplaceAsync("{PriorityNuyen}", t => LanguageManager.GetStringAsync("Checkbox_CreatePACKSKit_StartingNuyen", token: t), token: token)
                                         .ConfigureAwait(false);
             strNuyenTooltip = await CharacterObject.ProcessAttributesInXPathForTooltipAsync(
                                                                   strNuyenTooltip, token: token).ConfigureAwait(false);

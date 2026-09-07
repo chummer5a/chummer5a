@@ -550,11 +550,11 @@ namespace Chummer
                 if (objSettingsLoaded == objNewCharacterSettings)
                 {
                     CharacterSettings objToDelete = (await s_DicLoadedCharacterSettings.FirstOrDefaultAsync(
-                            async x => !await x.Value.GetBuiltInOptionAsync(token)
+                            async (x, t) => !await x.Value.GetBuiltInOptionAsync(t)
                                                .ConfigureAwait(false)
                                        && !File.Exists(
                                            Path.Combine(Utils.GetSettingsFolderPath,
-                                                        await x.Value.GetFileNameAsync(token)
+                                                        await x.Value.GetFileNameAsync(t)
                                                                .ConfigureAwait(false))), token)
                         .ConfigureAwait(false)).Value;
                     if (objToDelete != null)

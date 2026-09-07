@@ -1058,14 +1058,14 @@ namespace Chummer.Controls.Shared
                     objNewControl = objOldControl;
                 }
                 int intHeight = await objNewControl.DoThreadSafeFuncAsync(x => x.PreferredSize.Height, token: token).ConfigureAwait(false);
-                await objNewControl.DoThreadSafeAsync(x =>
+                await objNewControl.DoThreadSafeAsync((x, t) =>
                 {
                     x.SuspendLayout();
                     try
                     {
                         x.Visible = false;
                         intHeight = Math.Max(_parent.ListItemControlHeight, intHeight);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, t);
                         if (x.AutoSize)
                         {
                             x.MinimumSize = new Size(intWidth, intHeight);
@@ -1140,11 +1140,11 @@ namespace Chummer.Controls.Shared
                 Control objControl = _control;
                 if (objControl != null)
                 {
-                    await objControl.DoThreadSafeAsync(x =>
+                    await objControl.DoThreadSafeAsync((x, t) =>
                     {
                         x.Visible = false;
                         x.Location = new Point(0, 0);
-                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, token);
+                        int intWidth = _parent.DisplayPanel.DoThreadSafeFunc(y => y.Width, t);
                         int intHeight = _parent.ListItemControlHeight;
                         if (x.AutoSize)
                         {

@@ -112,14 +112,14 @@ namespace Chummer.UI.Skills
                 {
                     if (_objCharacter == null)
                         await RealLoad(MyToken, MyToken).ConfigureAwait(false);
-                    await this.DoThreadSafeAsync(x =>
+                    await this.DoThreadSafeAsync((x, t) =>
                     {
                         x.SuspendLayout();
                         try
                         {
-                            x.RefreshSkillLabels(MyToken);
-                            x.RefreshKnowledgeSkillLabels(MyToken);
-                            x.RefreshSkillGroupLabels(MyToken);
+                            x.RefreshSkillLabels(t);
+                            x.RefreshKnowledgeSkillLabels(t);
+                            x.RefreshSkillGroupLabels(t);
                         }
                         finally
                         {
@@ -557,7 +557,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                Utils.RunOnMainThread(() => RefreshSkillGroupLabels(MyToken), token: MyToken);
+                Utils.RunOnMainThread(t => RefreshSkillGroupLabels(t), token: MyToken);
             }
             catch (OperationCanceledException)
             {
@@ -626,7 +626,7 @@ namespace Chummer.UI.Skills
 
             try
             {
-                Utils.RunOnMainThread(() => RefreshKnowledgeSkillLabels(MyToken), token: MyToken);
+                Utils.RunOnMainThread(t => RefreshKnowledgeSkillLabels(t), token: MyToken);
             }
             catch (OperationCanceledException)
             {

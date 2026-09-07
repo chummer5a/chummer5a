@@ -1597,11 +1597,11 @@ namespace Chummer
                 string strMyExtra = await GetExtraAsync(token).ConfigureAwait(false);
                 string strMySourceName = await GetSourceNameAsync(token).ConfigureAwait(false);
                 QualityType eMyType = await GetTypeAsync(token).ConfigureAwait(false);
-                return await _objCharacter.Qualities.CountAsync(async objExistingQuality =>
+                return await _objCharacter.Qualities.CountAsync(async (objExistingQuality, t) =>
                     objExistingQuality.SourceID == guiMyId
-                    && await objExistingQuality.GetExtraAsync(token).ConfigureAwait(false) == strMyExtra
-                    && await objExistingQuality.GetSourceNameAsync(token).ConfigureAwait(false) == strMySourceName
-                    && await objExistingQuality.GetTypeAsync(token).ConfigureAwait(false) == eMyType, token: token).ConfigureAwait(false);
+                    && await objExistingQuality.GetExtraAsync(t).ConfigureAwait(false) == strMyExtra
+                    && await objExistingQuality.GetSourceNameAsync(t).ConfigureAwait(false) == strMySourceName
+                    && await objExistingQuality.GetTypeAsync(t).ConfigureAwait(false) == eMyType, token: token).ConfigureAwait(false);
             }
             finally
             {
@@ -3210,14 +3210,14 @@ namespace Chummer
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                     }
                                 }
@@ -3226,14 +3226,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in lstPropertyNames)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -3374,30 +3374,30 @@ namespace Chummer
                     {
                         List<Weapon> lstWeapons = await _objCharacter.Weapons
                             .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token).ConfigureAwait(false);
-                        await _objCharacter.Vehicles.ForEachAsync(async objVehicle =>
+                        await _objCharacter.Vehicles.ForEachAsync(async (objVehicle, t1) =>
                         {
                             lstWeapons.AddRange(await objVehicle.Weapons
-                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t1)
                                 .ConfigureAwait(false));
-                            await objVehicle.Mods.ForEachAsync(async objMod =>
+                            await objVehicle.Mods.ForEachAsync(async (objMod, t2) =>
                             {
                                 lstWeapons.AddRange(await objMod.Weapons
-                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                                     .ConfigureAwait(false));
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
 
-                            await objVehicle.WeaponMounts.ForEachAsync(async objMount =>
+                            await objVehicle.WeaponMounts.ForEachAsync(async (objMount, t2) =>
                             {
                                 lstWeapons.AddRange(await objMount.Weapons
-                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                    .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t2)
                                     .ConfigureAwait(false));
-                                await objMount.Mods.ForEachAsync(async objMod =>
+                                await objMount.Mods.ForEachAsync(async (objMod, t3) =>
                                 {
                                     lstWeapons.AddRange(await objMod.Weapons
-                                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, token)
+                                        .DeepWhereAsync(x => x.Children, x => x.ParentID == InternalId, t3)
                                         .ConfigureAwait(false));
-                                }, token).ConfigureAwait(false);
-                            }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
 
                         decReturn += await lstWeapons.SumAsync(async objDeleteWeapon =>

@@ -746,46 +746,46 @@ namespace Chummer
                             strDisplayRange = await strDisplayRange
                                 .CheapReplaceAsync(
                                     "Self",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeSelf", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                    t => LanguageManager.GetStringAsync(
+                                        "String_SpellRangeSelf", strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "Special",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellDurationSpecial", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOS",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfSight", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "LOI",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeLineOfInfluence", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token)
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "Touch",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_SpellRangeTouch",
-                                        strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                        strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token) // Short form to remain export-friendly
                                 .CheapReplaceAsync(
                                     "T",
-                                    () => LanguageManager.GetStringAsync(
-                                        "String_SpellRangeTouch", strLanguageToPrint, token: token), StringComparison.OrdinalIgnoreCase,
+                                    t => LanguageManager.GetStringAsync(
+                                        "String_SpellRangeTouch", strLanguageToPrint, token: t), StringComparison.OrdinalIgnoreCase,
                                     token: token)
                                 .CheapReplaceAsync(
                                     "(A)",
-                                    async () => "(" + await LanguageManager.GetStringAsync(
+                                    async t => "(" + await LanguageManager.GetStringAsync(
                                             "String_SpellRangeArea", strLanguageToPrint,
-                                            token: token)
+                                            token: t)
                                         .ConfigureAwait(false) + ")", StringComparison.OrdinalIgnoreCase, token: token)
                                 .CheapReplaceAsync(
                                     "MAG",
-                                    () => LanguageManager.GetStringAsync(
+                                    t => LanguageManager.GetStringAsync(
                                         "String_AttributeMAGShort", strLanguageToPrint,
-                                        token: token), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
+                                        token: t), StringComparison.OrdinalIgnoreCase, token: token).ConfigureAwait(false);
                         }
                     }
 
@@ -2570,13 +2570,14 @@ namespace Chummer
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -2585,13 +2586,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -3366,12 +3368,12 @@ namespace Chummer
                         = await objWriter.StartElementAsync("mugshots", token: token).ConfigureAwait(false);
                     try
                     {
-                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async imgMugshot =>
+                        await (await GetMugshotsAsync(token).ConfigureAwait(false)).ForEachAsync(async (imgMugshot, t) =>
                         {
                             await objWriter.WriteElementStringAsync(
                                 "mugshot",
-                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, token)
-                                    .ConfigureAwait(false), token: token).ConfigureAwait(false);
+                                await GlobalSettings.ImageToBase64StringForStorageAsync(imgMugshot, t)
+                                    .ConfigureAwait(false), token: t).ConfigureAwait(false);
                         }, token).ConfigureAwait(false);
                     }
                     finally

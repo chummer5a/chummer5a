@@ -1200,7 +1200,7 @@ namespace Chummer.Backend.Equipment
                                                     GlobalSettings
                                                         .InvariantCultureInfo))
                                             : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                                async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
+                                                async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(
                                                     GlobalSettings
                                                         .InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         int.TryParse(strLoopRating, NumberStyles.Any, GlobalSettings.InvariantCultureInfo,
@@ -1272,7 +1272,7 @@ namespace Chummer.Backend.Equipment
                                                     GlobalSettings
                                                         .InvariantCultureInfo))
                                             : await strLoopRating.CheapReplaceAsync("{Rating}",
-                                                async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(
+                                                async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(
                                                     GlobalSettings
                                                         .InvariantCultureInfo), token: token).ConfigureAwait(false);
                                         int.TryParse(strLoopRating, NumberStyles.Any,
@@ -4146,7 +4146,7 @@ namespace Chummer.Backend.Equipment
                 }
                 else
                 {
-                    intCount += await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCyberlimbCountAsync(lstExcludeLimbs, token), token).ConfigureAwait(false);
+                    intCount += await (await GetChildrenAsync(token).ConfigureAwait(false)).SumAsync((x, t) => x.GetCyberlimbCountAsync(lstExcludeLimbs, t), token).ConfigureAwait(false);
                 }
 
                 return intCount;
@@ -9048,13 +9048,13 @@ namespace Chummer.Backend.Equipment
                     if (strFirstHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                     {
                         strFirstHalf = await strFirstHalf.CheapReplaceAsync("{MinRating}",
-                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strFirstHalf = await strFirstHalf.CheapReplaceAsync("MinRating",
-                                                             async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strFirstHalf = await strFirstHalf.CheapReplaceAsync("{Rating}",
-                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strFirstHalf = await strFirstHalf.CheapReplaceAsync("Rating",
-                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strFirstHalf = await ProcessAttributesInXPathAsync(strFirstHalf, token: token).ConfigureAwait(false);
                         try
                         {
@@ -9111,13 +9111,13 @@ namespace Chummer.Backend.Equipment
                     if (strSecondHalf.DoesNeedXPathProcessingToBeConvertedToNumber(out decValue))
                     {
                         strSecondHalf = await strSecondHalf.CheapReplaceAsync("{MinRating}",
-                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strSecondHalf = await strSecondHalf.CheapReplaceAsync("MinRating",
-                                                             async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strSecondHalf = await strSecondHalf.CheapReplaceAsync("{Rating}",
-                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strSecondHalf = await strSecondHalf.CheapReplaceAsync("Rating",
-                                                         async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                         strSecondHalf = await ProcessAttributesInXPathAsync(strSecondHalf, token: token).ConfigureAwait(false);
                         try
                         {
@@ -9182,13 +9182,13 @@ namespace Chummer.Backend.Equipment
                     }
 
                     strCapacity = await strCapacity.CheapReplaceAsync("{MinRating}",
-                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     strCapacity = await strCapacity.CheapReplaceAsync("MinRating",
-                                                         async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                         async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     strCapacity = await strCapacity.CheapReplaceAsync("{Rating}",
-                                                     async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                     async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     strCapacity = await strCapacity.CheapReplaceAsync("Rating",
-                                                     async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                     async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                     strCapacity = await ProcessAttributesInXPathAsync(strCapacity, token: token).ConfigureAwait(false);
                     (bool blnIsSuccess, object objProcess) =
                         await CommonFunctions.EvaluateInvariantXPathAsync(strCapacity, token).ConfigureAwait(false);
@@ -9339,13 +9339,13 @@ namespace Chummer.Backend.Equipment
                         else
                         {
                             strESS = await strESS.CheapReplaceAsync("{MinRating}",
-                                                             async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             strESS = await strESS.CheapReplaceAsync("MinRating",
-                                                             async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             strESS = await strESS.CheapReplaceAsync("{Rating}",
-                                                             async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             strESS = await strESS.CheapReplaceAsync("Rating",
-                                                             async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                             async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                             strESS = await ProcessAttributesInXPathAsync(strESS, token: token).ConfigureAwait(false);
                         }
                     }
@@ -9560,13 +9560,13 @@ namespace Chummer.Backend.Equipment
                                 else
                                 {
                                     strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("{MinRating}",
-                                                                     async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                                     async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("MinRating",
-                                                                     async () => (await GetMinRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                                     async t => (await GetMinRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("{Rating}",
-                                                                     async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                                     async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strPostModifierExpression = await strPostModifierExpression.CheapReplaceAsync("Rating",
-                                                                     async () => (await GetRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
+                                                                     async t => (await GetRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
                                     strPostModifierExpression = await ProcessAttributesInXPathAsync(strPostModifierExpression, token: token).ConfigureAwait(false);
                                 }
                             }
@@ -10246,8 +10246,8 @@ namespace Chummer.Backend.Equipment
                 }, token).ConfigureAwait(false);
 
                 // Add in the cost of all Gear plugins.
-                decReturn += await GearChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
-                decReturn += await DrugChildren.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                decReturn += await GearChildren.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
+                decReturn += await DrugChildren.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
 
                 return decReturn;
             }

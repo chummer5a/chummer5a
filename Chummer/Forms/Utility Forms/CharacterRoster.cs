@@ -1539,13 +1539,13 @@ namespace Chummer
                             try
                             {
                                 int i1 = i;
-                                await treCharacterList.DoThreadSafeAsync(treList =>
+                                await treCharacterList.DoThreadSafeAsync((treList, t) =>
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     if (objExistingNode != null)
                                     {
                                         treList.Nodes.Remove(objExistingNode);
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                     }
 
                                     if (node.Nodes.Count > 0 || !string.IsNullOrEmpty(node.ToolTipText)
@@ -1556,7 +1556,7 @@ namespace Chummer
                                         TreeNode objFavoriteNode = treList.FindNode("Favorite", false);
                                         TreeNode objRecentNode = treList.FindNode("Recent", false);
                                         TreeNode objWatchNode = treList.FindNode("Watch", false);
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         if (objFavoriteNode != null && objRecentNode != null
                                                                     && objWatchNode != null)
                                             treList.Nodes.Insert(i1 + intNodeOffset + 3, node);

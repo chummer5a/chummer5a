@@ -1425,12 +1425,12 @@ namespace Chummer
                     else
                     {
                         await (await objCharacter.GetMartialArtsAsync(token).ConfigureAwait(false))
-                            .ForEachWithBreakAsync(async x =>
+                            .ForEachWithBreakAsync(async (x, t) =>
                             {
                                 MartialArtTechnique objLoopTechnique
                                     = await x.Techniques.FirstOrDefaultAsync(
                                             y => MatchesNameOrSourceId(y.Name, y.SourceIDString, strNodeInnerText),
-                                            token)
+                                            t)
                                         .ConfigureAwait(false);
                                 if (objLoopTechnique != null)
                                 {
@@ -1892,18 +1892,18 @@ namespace Chummer
                         {
                             objSkill = string.IsNullOrEmpty(strSpec)
                                 ? await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x => (string.Equals(x.SourceIDString, strNodeId,
+                                    async (x, t) => (string.Equals(x.SourceIDString, strNodeId,
                                                     StringComparison.OrdinalIgnoreCase) ||
                                                 x.DictionaryKey == strNodeName)
-                                               && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >=
+                                               && await x.GetTotalBaseRatingAsync(t).ConfigureAwait(false) >=
                                                intValue, token).ConfigureAwait(false)
                                 : await objSkillsSection.KnowledgeSkills.FirstOrDefaultAsync(
-                                    async x =>
+                                    async (x, t) =>
                                         (string.Equals(x.SourceIDString, strNodeId,
                                              StringComparison.OrdinalIgnoreCase) ||
-                                         await x.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strNodeName)
-                                        && await x.HasSpecializationAsync(strSpec, token).ConfigureAwait(false)
-                                        && await x.GetTotalBaseRatingAsync(token).ConfigureAwait(false) >= intValue,
+                                         await x.GetDictionaryKeyAsync(t).ConfigureAwait(false) == strNodeName)
+                                        && await x.HasSpecializationAsync(strSpec, t).ConfigureAwait(false)
+                                        && await x.GetTotalBaseRatingAsync(t).ConfigureAwait(false) >= intValue,
                                     token).ConfigureAwait(false);
                         }
 
@@ -3153,8 +3153,8 @@ namespace Chummer
                             x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                 strNodeInnerText, objRatingFilter))
                         : await (await objCharacter.GetGearAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                            async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                 objRatingFilter), token).ConfigureAwait(false);
 
                     if (objGear != null)
@@ -3176,8 +3176,8 @@ namespace Chummer
                             x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                 strNodeInnerText, objRatingFilter))
                         : await (await objCharacter.GetPowersAsync(token).ConfigureAwait(false)).FirstOrDefaultAsync(
-                            async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                            async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                 objRatingFilter), token).ConfigureAwait(false);
 
                     if (objPower != null)

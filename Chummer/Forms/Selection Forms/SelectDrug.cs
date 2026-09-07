@@ -639,9 +639,9 @@ namespace Chummer
                 if (strAvailExpr.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue))
                 {
                     strAvailExpr = await strAvailExpr.CheapReplaceAsync("MinRating",
-                                                                        async () =>
+                                                                        async t =>
                                                                             (await nudRating.DoThreadSafeFuncAsync(
-                                                                                x => x.MinimumAsInt, token: token).ConfigureAwait(false))
+                                                                                x => x.MinimumAsInt, token: t).ConfigureAwait(false))
                                                                             .ToString(GlobalSettings.InvariantCultureInfo), token: token)
                                                      .CheapReplaceAsync(
                                                          "Rating",
@@ -724,7 +724,7 @@ namespace Chummer
                     }
                     else if (strCost.DoesNeedXPathProcessingToBeConvertedToNumber(out decItemCost))
                     {
-                        strCost = await (await strCost.CheapReplaceAsync("MinRating", async () => (await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
+                        strCost = await (await strCost.CheapReplaceAsync("MinRating", async t => (await nudRating.DoThreadSafeFuncAsync(x => x.MinimumAsInt, token: t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false))
                                         .CheapReplaceAsync("Rating", () => intRating.ToString(GlobalSettings.InvariantCultureInfo), token: token).ConfigureAwait(false);
 
                         (bool blnIsSuccess, object objProcess) = await CommonFunctions.EvaluateInvariantXPathAsync(strCost, token).ConfigureAwait(false);

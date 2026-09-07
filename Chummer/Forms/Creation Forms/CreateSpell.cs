@@ -1045,10 +1045,10 @@ namespace Chummer
                 strDV = string.Empty;
             string strText = await (strBase + strDV).Replace('/', '÷').Replace('*', '×')
                                                     .CheapReplaceAsync(
-                                                        "F", () => LanguageManager.GetStringAsync("String_SpellForce", token: token), token: token)
+                                                        "F", t => LanguageManager.GetStringAsync("String_SpellForce", token: t), token: token)
                                                     .CheapReplaceAsync("Damage Value",
-                                                                       () => LanguageManager.GetStringAsync(
-                                                                           "String_SpellDamageValue", token: token), token: token).ConfigureAwait(false);
+                                                                       t => LanguageManager.GetStringAsync(
+                                                                           "String_SpellDamageValue", token: t), token: token).ConfigureAwait(false);
             await lblDV.DoThreadSafeAsync(x => x.Text = strText, token: token).ConfigureAwait(false);
 
             return strBase + strDV;

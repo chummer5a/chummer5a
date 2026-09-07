@@ -248,7 +248,7 @@ namespace Chummer
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await Gear.SumAsync(x => x.GetRatingAsync(token), token).ConfigureAwait(false);
+                return await Gear.SumAsync((x, t) => x.GetRatingAsync(t), token).ConfigureAwait(false);
             }
             finally
             {
@@ -579,9 +579,9 @@ namespace Chummer
                 try
                 {
                     token.ThrowIfCancellationRequested();
-                    await Gear.ForEachAsync(async objGear =>
+                    await Gear.ForEachAsync(async (objGear, t) =>
                     {
-                        sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: token)
+                        sbdReturn.Append(await objGear.DisplayNameAsync(objCulture, strLanguage, token: t)
                                                       .ConfigureAwait(false), ',', strSpace);
                     }, token).ConfigureAwait(false);
                 }

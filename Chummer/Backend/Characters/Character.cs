@@ -1225,14 +1225,14 @@ namespace Chummer
 
                         if (SettingsPropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (SettingsPropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         SettingsPropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -1241,14 +1241,14 @@ namespace Chummer
                     }
                     else if (SettingsPropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (SettingsPropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyName in lstProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     SettingsPropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyName));
                                 }
                             }
@@ -2088,7 +2088,7 @@ namespace Chummer
                                         continue;
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
-                                    await Improvements.ForEachAsync(objImprovement =>
+                                    await Improvements.ForEachAsync((objImprovement, t) =>
                                     {
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
@@ -2099,7 +2099,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -2151,7 +2151,7 @@ namespace Chummer
                                         continue;
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
-                                    await Improvements.ForEachAsync(objImprovement =>
+                                    await Improvements.ForEachAsync((objImprovement, t) =>
                                     {
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
@@ -2162,7 +2162,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -2255,7 +2255,7 @@ namespace Chummer
                                         continue;
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
-                                    await Improvements.ForEachAsync(objImprovement =>
+                                    await Improvements.ForEachAsync((objImprovement, t) =>
                                     {
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
@@ -2266,7 +2266,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -2328,7 +2328,7 @@ namespace Chummer
                                         continue;
                                     // Needed in order to properly process named sources where
                                     // the tooltip was built before the object was added to the character
-                                    await Improvements.ForEachAsync(objImprovement =>
+                                    await Improvements.ForEachAsync((objImprovement, t) =>
                                     {
                                         if (objImprovement.SourceName.TrimEndOnce("Wireless")
                                             == objNewItem.InternalId
@@ -2339,7 +2339,7 @@ namespace Chummer
                                                          string strPropertyToUpdate) in
                                                      objImprovement.GetRelevantPropertyChangers())
                                             {
-                                                token.ThrowIfCancellationRequested();
+                                                t.ThrowIfCancellationRequested();
                                                 if (!dicChangedProperties.TryGetValue(objItemToUpdate,
                                                         out HashSet<string> setChangedProperties))
                                                 {
@@ -4724,7 +4724,7 @@ namespace Chummer
 
                             // <contacts>
                             objWriter.WriteStartElement("contacts");
-                            _lstContacts.ForEach(x => x.Save(objWriter, token), token);
+                            _lstContacts.ForEach((x, t) => x.Save(objWriter, t), token);
                             objWriter.WriteEndElement();
 
                             // <spells>
@@ -4749,7 +4749,7 @@ namespace Chummer
 
                             // <spirits>
                             objWriter.WriteStartElement("spirits");
-                            _lstSpirits.ForEach(x => x.Save(objWriter, token), token);
+                            _lstSpirits.ForEach((x, t) => x.Save(objWriter, t), token);
                             objWriter.WriteEndElement();
 
                             // <complexforms>
@@ -6854,7 +6854,7 @@ namespace Chummer
                                                                 .GetLoadedCharacterSettingsAsync(token)
                                                                 .ConfigureAwait(false))
                                                          .FirstOrDefaultAsync(
-                                                             async x => await x.Value.GetEquatableHashCodeAsync(token)
+                                                             async (x, t) => await x.Value.GetEquatableHashCodeAsync(t)
                                                                                .ConfigureAwait(false)
                                                                         == intSettingsHashCode, token)
                                                          .ConfigureAwait(false)).Value;
@@ -12285,7 +12285,7 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await (await GetContactsAsync(token).ConfigureAwait(false)).ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                        await (await GetContactsAsync(token).ConfigureAwait(false)).ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12301,11 +12301,11 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync((objLimitModifier, t) =>
                         {
                             if (objLimitModifier.Limit == "Physical")
                             {
-                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, t);
                             }
 
                             return Task.CompletedTask;
@@ -12371,11 +12371,11 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync((objLimitModifier, t) =>
                         {
                             if (objLimitModifier.Limit == "Mental")
                             {
-                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, t);
                             }
 
                             return Task.CompletedTask;
@@ -12438,11 +12438,11 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync(objLimitModifier =>
+                        await (await GetLimitModifiersAsync(token).ConfigureAwait(false)).ForEachAsync((objLimitModifier, t) =>
                         {
                             if (objLimitModifier.Limit == "Social")
                             {
-                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, token);
+                                return objLimitModifier.Print(objWriter, objCulture, strLanguageToPrint, t);
                             }
 
                             return Task.CompletedTask;
@@ -12506,7 +12506,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetMentorSpiritsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12521,7 +12521,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetSpellsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12536,7 +12536,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetPowersAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12551,7 +12551,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetSpiritsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12566,7 +12566,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetComplexFormsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12581,7 +12581,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetAIProgramsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12596,7 +12596,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetMartialArtsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12611,7 +12611,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetArmorAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12626,7 +12626,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetWeaponsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12641,7 +12641,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetCyberwareAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12658,11 +12658,11 @@ namespace Chummer
                         ThreadSafeObservableCollection<Quality> lstQualities = await GetQualitiesAsync(token).ConfigureAwait(false);
                         // Multiple instances of the same quality are combined into just one entry with a number next to it (e.g. 6 discrete entries of "Focused Concentration" become "Focused Concentration 6")
                         Dictionary<string, int> strQualitiesToPrint = new Dictionary<string, int>(await lstQualities.GetCountAsync(token).ConfigureAwait(false));
-                        await lstQualities.ForEachAsync(async objQuality =>
+                        await lstQualities.ForEachAsync(async (objQuality, t) =>
                         {
-                            string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                + "|" + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
-                                + "|" + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                            string strKey = await objQuality.GetSourceIDStringAsync(t).ConfigureAwait(false)
+                                + "|" + await objQuality.GetSourceNameAsync(t).ConfigureAwait(false)
+                                + "|" + await objQuality.GetExtraAsync(t).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intExistingRating))
                             {
                                 strQualitiesToPrint[strKey] = intExistingRating + 1;
@@ -12673,14 +12673,14 @@ namespace Chummer
                             }
                         }, token).ConfigureAwait(false);
 
-                        await lstQualities.ForEachAsync(async objQuality =>
+                        await lstQualities.ForEachAsync(async (objQuality, t) =>
                         {
-                            string strKey = await objQuality.GetSourceIDStringAsync(token).ConfigureAwait(false)
-                                + "|" + await objQuality.GetSourceNameAsync(token).ConfigureAwait(false)
-                                + "|" + await objQuality.GetExtraAsync(token).ConfigureAwait(false);
+                            string strKey = await objQuality.GetSourceIDStringAsync(t).ConfigureAwait(false)
+                                + "|" + await objQuality.GetSourceNameAsync(t).ConfigureAwait(false)
+                                + "|" + await objQuality.GetExtraAsync(t).ConfigureAwait(false);
                             if (strQualitiesToPrint.TryGetValue(strKey, out int intLoopRating))
                             {
-                                await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, token)
+                                await objQuality.Print(objWriter, intLoopRating, objCulture, strLanguageToPrint, t)
                                     .ConfigureAwait(false);
                                 strQualitiesToPrint.Remove(strKey);
                             }
@@ -12699,7 +12699,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetLifestylesAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12714,7 +12714,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetGearAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12729,7 +12729,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetDrugsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12744,7 +12744,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetVehiclesAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12758,21 +12758,21 @@ namespace Chummer
                     try
                     {
                         token.ThrowIfCancellationRequested();
-                        await (await GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(async objGrade =>
+                        await (await GetInitiationGradesAsync(token).ConfigureAwait(false)).ForEachAsync(async (objGrade, t) =>
                         {
-                            await objGrade.Print(objWriter, objCulture, token).ConfigureAwait(false);
+                            await objGrade.Print(objWriter, objCulture, t).ConfigureAwait(false);
 
                             //TODO: Probably better to integrate this into the main print method, but eh.
                             // <metamagics>
                             XmlElementWriteHelper objInitiationMetamagicsElement
-                                = await objWriter.StartElementAsync("metamagics", token: token).ConfigureAwait(false);
+                                = await objWriter.StartElementAsync("metamagics", token: t).ConfigureAwait(false);
                             try
                             {
-                                token.ThrowIfCancellationRequested();
-                                await (await GetMetamagicsAsync(token).ConfigureAwait(false))
-                                    .ForEachAsync(x => x.Grade == objGrade.Grade
-                                        ? x.Print(objWriter, objCulture, strLanguageToPrint, token)
-                                        : Task.CompletedTask, token).ConfigureAwait(false);
+                                t.ThrowIfCancellationRequested();
+                                await (await GetMetamagicsAsync(t).ConfigureAwait(false))
+                                    .ForEachAsync((x, t2) => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, objCulture, strLanguageToPrint, t2)
+                                        : Task.CompletedTask, t).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -12782,14 +12782,14 @@ namespace Chummer
 
                             // <arts>
                             XmlElementWriteHelper objInitiationArtsElement
-                                = await objWriter.StartElementAsync("arts", token: token).ConfigureAwait(false);
+                                = await objWriter.StartElementAsync("arts", token: t).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                await (await GetArtsAsync(token).ConfigureAwait(false))
-                                    .ForEachAsync(x => x.Grade == objGrade.Grade
-                                        ? x.Print(objWriter, strLanguageToPrint, token)
-                                        : Task.CompletedTask, token).ConfigureAwait(false);
+                                await (await GetArtsAsync(t).ConfigureAwait(false))
+                                    .ForEachAsync((x, t2) => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, strLanguageToPrint, t2)
+                                        : Task.CompletedTask, t).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -12799,14 +12799,14 @@ namespace Chummer
 
                             // <enhancements>
                             XmlElementWriteHelper objInitiationEnhancementsElement = await objWriter
-                                .StartElementAsync("enhancements", token: token).ConfigureAwait(false);
+                                .StartElementAsync("enhancements", token: t).ConfigureAwait(false);
                             try
                             {
                                 token.ThrowIfCancellationRequested();
-                                await (await GetEnhancementsAsync(token).ConfigureAwait(false))
-                                    .ForEachAsync(x => x.Grade == objGrade.Grade
-                                        ? x.Print(objWriter, strLanguageToPrint, token)
-                                        : Task.CompletedTask, token).ConfigureAwait(false);
+                                await (await GetEnhancementsAsync(t).ConfigureAwait(false))
+                                    .ForEachAsync((x, t2) => x.Grade == objGrade.Grade
+                                        ? x.Print(objWriter, strLanguageToPrint, t2)
+                                        : Task.CompletedTask, t).ConfigureAwait(false);
                             }
                             finally
                             {
@@ -12828,7 +12828,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetMetamagicsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12843,7 +12843,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetArtsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12858,7 +12858,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetEnhancementsAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12873,7 +12873,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetCritterPowersAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12888,7 +12888,7 @@ namespace Chummer
                     {
                         token.ThrowIfCancellationRequested();
                         await (await GetSustainedCollectionAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(x => x.Print(objWriter, objCulture, strLanguageToPrint, token), token).ConfigureAwait(false);
+                            .ForEachAsync((x, t) => x.Print(objWriter, objCulture, strLanguageToPrint, t), token).ConfigureAwait(false);
                     }
                     finally
                     {
@@ -12977,11 +12977,11 @@ namespace Chummer
                         token.ThrowIfCancellationRequested();
                         // Calendar weeks are themselves notes. Always print them, and skip empty weeks.
                         await (await GetCalendarAsync(token).ConfigureAwait(false))
-                            .ForEachAsync(async x =>
+                            .ForEachAsync(async (x, t) =>
                             {
-                                if (string.IsNullOrWhiteSpace(await x.GetNotesAsync(token).ConfigureAwait(false)))
+                                if (string.IsNullOrWhiteSpace(await x.GetNotesAsync(t).ConfigureAwait(false)))
                                     return;
-                                await x.Print(objWriter, objCulture, true, token).ConfigureAwait(false);
+                                await x.Print(objWriter, objCulture, true, t).ConfigureAwait(false);
                             }, token).ConfigureAwait(false);
                     }
                     finally
@@ -14179,7 +14179,7 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await Armor.ForEachWithBreakAsync(async objArmor =>
+                    await Armor.ForEachWithBreakAsync(async (objArmor, t1) =>
                     {
                         if (setIds.Remove(objArmor.InternalId))
                         {
@@ -14187,7 +14187,7 @@ namespace Chummer
                             if (setIds.Count == 0)
                                 return false;
                         }
-                        await objArmor.ArmorMods.ForEachWithBreakAsync(async objMod =>
+                        await objArmor.ArmorMods.ForEachWithBreakAsync(async (objMod, t2) =>
                         {
                             if (setIds.Remove(objMod.InternalId))
                             {
@@ -14195,7 +14195,7 @@ namespace Chummer
                                 if (setIds.Count == 0)
                                     return false;
                             }
-                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, t2)).ForEachWithBreakAsync(x =>
                             {
                                 if (setIds.Remove(x.InternalId))
                                 {
@@ -14204,12 +14204,12 @@ namespace Chummer
                                         return false;
                                 }
                                 return true;
-                            }, token).ConfigureAwait(false);
+                            }, t2).ConfigureAwait(false);
                             return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
+                        }, t1).ConfigureAwait(false);
                         if (setIds.Count == 0)
                             return false;
-                        await (await objArmor.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                        await (await objArmor.GearChildren.GetAllDescendantsAsync(x => x.Children, t1)).ForEachWithBreakAsync(x =>
                         {
                             if (setIds.Remove(x.InternalId))
                             {
@@ -14218,12 +14218,12 @@ namespace Chummer
                                     return false;
                             }
                             return true;
-                        }, token).ConfigureAwait(false);
+                        }, t1).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await (await Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                    await (await Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async (objWeapon, t1) =>
                     {
                         if (setIds.Remove(objWeapon.InternalId))
                         {
@@ -14231,7 +14231,7 @@ namespace Chummer
                             if (setIds.Count == 0)
                                 return false;
                         }
-                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                        await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objMod, t2) =>
                         {
                             if (setIds.Remove(objMod.InternalId))
                             {
@@ -14239,7 +14239,7 @@ namespace Chummer
                                 if (setIds.Count == 0)
                                     return false;
                             }
-                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, t2)).ForEachWithBreakAsync(x =>
                             {
                                 if (setIds.Remove(x.InternalId))
                                 {
@@ -14248,23 +14248,22 @@ namespace Chummer
                                         return false;
                                 }
                                 return true;
-                            }, token).ConfigureAwait(false);
+                            }, t2).ConfigureAwait(false);
                             return setIds.Count > 0;
-                        }, token).ConfigureAwait(false);
+                        }, t1).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await (await Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                    await (await Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async (objCyberware, t) =>
                     {
-                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objCyberware.InternalId))
                         {
                             lstReturn.Add(objCyberware);
                             if (setIds.Count == 0)
                                 return false;
                         }
-                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, t)).ForEachWithBreakAsync(x =>
                         {
                             if (setIds.Remove(x.InternalId))
                             {
@@ -14273,14 +14272,13 @@ namespace Chummer
                                     return false;
                             }
                             return true;
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await Drugs.ForEachWithBreakAsync(async objDrug =>
+                    await Drugs.ForEachWithBreakAsync(async (objDrug, t) =>
                     {
-                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objDrug.InternalId))
                         {
                             lstReturn.Add(objDrug);
@@ -14296,14 +14294,13 @@ namespace Chummer
                                     return false;
                             }
                             return true;
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await Lifestyles.ForEachWithBreakAsync(async objLifestyle =>
+                    await Lifestyles.ForEachWithBreakAsync(async (objLifestyle, t) =>
                     {
-                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objLifestyle.InternalId))
                         {
                             lstReturn.Add(objLifestyle);
@@ -14319,7 +14316,7 @@ namespace Chummer
                                     return false;
                             }
                             return true;
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
@@ -14396,9 +14393,8 @@ namespace Chummer
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
                         return lstReturn;
-                    await MartialArts.ForEachWithBreakAsync(async objArt =>
+                    await MartialArts.ForEachWithBreakAsync(async (objArt, t) =>
                     {
-                        token.ThrowIfCancellationRequested();
                         if (setIds.Remove(objArt.InternalId))
                         {
                             lstReturn.Add(objArt);
@@ -14414,7 +14410,7 @@ namespace Chummer
                                     return false;
                             }
                             return true;
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return setIds.Count > 0;
                     }, token).ConfigureAwait(false);
                     if (setIds.Count == 0)
@@ -14477,7 +14473,7 @@ namespace Chummer
 
                     if (!blnOnlyValidImprovementSources)
                     {
-                        await Vehicles.ForEachWithBreakAsync(async objVehicle =>
+                        await Vehicles.ForEachWithBreakAsync(async (objVehicle, t1) =>
                         {
                             if (setIds.Remove(objVehicle.InternalId))
                             {
@@ -14485,7 +14481,7 @@ namespace Chummer
                                 if (setIds.Count == 0)
                                     return false;
                             }
-                            await (await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                            await (await objVehicle.GearChildren.GetAllDescendantsAsync(x => x.Children, t1)).ForEachWithBreakAsync(x =>
                             {
                                 if (setIds.Remove(x.InternalId))
                                 {
@@ -14494,10 +14490,10 @@ namespace Chummer
                                         return false;
                                 }
                                 return true;
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                             if (setIds.Count == 0)
                                 return false;
-                            await (await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                            await (await objVehicle.Weapons.GetAllDescendantsAsync(x => x.Children, t1)).ForEachWithBreakAsync(async (objWeapon, t2) =>
                             {
                                 if (setIds.Remove(objWeapon.InternalId))
                                 {
@@ -14505,7 +14501,7 @@ namespace Chummer
                                     if (setIds.Count == 0)
                                         return false;
                                 }
-                                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objMod, t3) =>
                                 {
                                     if (setIds.Remove(objMod.InternalId))
                                     {
@@ -14513,7 +14509,7 @@ namespace Chummer
                                         if (setIds.Count == 0)
                                             return false;
                                     }
-                                    await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, t3)).ForEachWithBreakAsync(x =>
                                     {
                                         if (setIds.Remove(x.InternalId))
                                         {
@@ -14522,14 +14518,14 @@ namespace Chummer
                                                 return false;
                                         }
                                         return true;
-                                    }, token).ConfigureAwait(false);
+                                    }, t3).ConfigureAwait(false);
                                     return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
                                 return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                             if (setIds.Count == 0)
                                 return false;
-                            await objVehicle.Mods.ForEachWithBreakAsync(async objMod =>
+                            await objVehicle.Mods.ForEachWithBreakAsync(async (objMod, t2) =>
                             {
                                 if (setIds.Remove(objMod.InternalId))
                                 {
@@ -14537,7 +14533,7 @@ namespace Chummer
                                     if (setIds.Count == 0)
                                         return false;
                                 }
-                                await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, t2)).ForEachWithBreakAsync(async (objCyberware, t3) =>
                                 {
                                     if (setIds.Remove(objCyberware.InternalId))
                                     {
@@ -14545,7 +14541,7 @@ namespace Chummer
                                         if (setIds.Count == 0)
                                             return false;
                                     }
-                                    await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                    await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, t3)).ForEachWithBreakAsync(x =>
                                     {
                                         if (setIds.Remove(x.InternalId))
                                         {
@@ -14554,14 +14550,14 @@ namespace Chummer
                                                 return false;
                                         }
                                         return true;
-                                    }, token).ConfigureAwait(false);
+                                    }, t3).ConfigureAwait(false);
                                     return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
                                 return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                             if (setIds.Count == 0)
                                 return false;
-                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async objMount =>
+                            await objVehicle.WeaponMounts.ForEachWithBreakAsync(async (objMount, t2) =>
                             {
                                 if (setIds.Remove(objMount.InternalId))
                                 {
@@ -14571,7 +14567,6 @@ namespace Chummer
                                 }
                                 await objMount.WeaponMountOptions.ForEachWithBreakAsync(objOption =>
                                 {
-                                    token.ThrowIfCancellationRequested();
                                     if (setIds.Remove(objOption.InternalId))
                                     {
                                         lstReturn.Add(objOption);
@@ -14579,10 +14574,10 @@ namespace Chummer
                                             return false;
                                     }
                                     return true;
-                                }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
                                 if (setIds.Count == 0)
                                     return false;
-                                await (await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objWeapon =>
+                                await (await objMount.Weapons.GetAllDescendantsAsync(x => x.Children, t2)).ForEachWithBreakAsync(async (objWeapon, t3) =>
                                 {
                                     if (setIds.Remove(objWeapon.InternalId))
                                     {
@@ -14590,7 +14585,7 @@ namespace Chummer
                                         if (setIds.Count == 0)
                                             return false;
                                     }
-                                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async objMod =>
+                                    await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objMod, t4) =>
                                     {
                                         if (setIds.Remove(objMod.InternalId))
                                         {
@@ -14598,7 +14593,7 @@ namespace Chummer
                                             if (setIds.Count == 0)
                                                 return false;
                                         }
-                                        await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        await (await objMod.GearChildren.GetAllDescendantsAsync(x => x.Children, t4)).ForEachWithBreakAsync(x =>
                                         {
                                             if (setIds.Remove(x.InternalId))
                                             {
@@ -14607,14 +14602,14 @@ namespace Chummer
                                                     return false;
                                             }
                                             return true;
-                                        }, token).ConfigureAwait(false);
+                                        }, t4).ConfigureAwait(false);
                                         return setIds.Count > 0;
-                                    }, token).ConfigureAwait(false);
+                                    }, t3).ConfigureAwait(false);
                                     return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
                                 if (setIds.Count == 0)
                                     return false;
-                                await objMount.Mods.ForEachWithBreakAsync(async objMod =>
+                                await objMount.Mods.ForEachWithBreakAsync(async (objMod, t3) =>
                                 {
                                     if (setIds.Remove(objMod.InternalId))
                                     {
@@ -14622,7 +14617,7 @@ namespace Chummer
                                         if (setIds.Count == 0)
                                             return false;
                                     }
-                                    await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(async objCyberware =>
+                                    await (await objMod.Cyberware.GetAllDescendantsAsync(x => x.Children, t3)).ForEachWithBreakAsync(async (objCyberware, t4) =>
                                     {
                                         if (setIds.Remove(objCyberware.InternalId))
                                         {
@@ -14630,7 +14625,7 @@ namespace Chummer
                                             if (setIds.Count == 0)
                                                 return false;
                                         }
-                                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, token)).ForEachWithBreakAsync(x =>
+                                        await (await objCyberware.GearChildren.GetAllDescendantsAsync(x => x.Children, t4)).ForEachWithBreakAsync(x =>
                                         {
                                             if (setIds.Remove(x.InternalId))
                                             {
@@ -14639,21 +14634,20 @@ namespace Chummer
                                                     return false;
                                             }
                                             return true;
-                                        }, token).ConfigureAwait(false);
+                                        }, t4).ConfigureAwait(false);
                                         return setIds.Count > 0;
-                                    }, token).ConfigureAwait(false);
+                                    }, t3).ConfigureAwait(false);
                                     return setIds.Count > 0;
-                                }, token).ConfigureAwait(false);
+                                }, t2).ConfigureAwait(false);
                                 return setIds.Count > 0;
-                            }, token).ConfigureAwait(false);
+                            }, t1).ConfigureAwait(false);
                             return setIds.Count > 0;
                         }, token).ConfigureAwait(false);
                         if (setIds.Count == 0)
                             return lstReturn;
 
-                        await SkillsSection.Skills.ForEachWithBreakAsync(async objSkill =>
+                        await SkillsSection.Skills.ForEachWithBreakAsync(async (objSkill, t) =>
                         {
-                            token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objSkill.InternalId))
                             {
                                 lstReturn.Add(objSkill);
@@ -14669,7 +14663,7 @@ namespace Chummer
                                         return false;
                                 }
                                 return true;
-                            }, token).ConfigureAwait(false);
+                            }, t).ConfigureAwait(false);
                             return setIds.Count > 0;
                         }, token).ConfigureAwait(false);
                         if (setIds.Count == 0)
@@ -14686,9 +14680,8 @@ namespace Chummer
                         }, token).ConfigureAwait(false);
                         if (setIds.Count == 0)
                             return lstReturn;
-                        await SkillsSection.KnowledgeSkills.ForEachWithBreakAsync(async objSkill =>
+                        await SkillsSection.KnowledgeSkills.ForEachWithBreakAsync(async (objSkill, t) =>
                         {
-                            token.ThrowIfCancellationRequested();
                             if (setIds.Remove(objSkill.InternalId))
                             {
                                 lstReturn.Add(objSkill);
@@ -14704,7 +14697,7 @@ namespace Chummer
                                         return false;
                                 }
                                 return true;
-                            }, token).ConfigureAwait(false);
+                            }, t).ConfigureAwait(false);
                             return setIds.Count > 0;
                         }, token).ConfigureAwait(false);
                         if (setIds.Count == 0)
@@ -28571,7 +28564,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Cyberware objAntiHole
                     = await Cyberware
-                        .FirstOrDefaultAsync(async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceAntiHoleGUID, token)
+                        .FirstOrDefaultAsync(async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceAntiHoleGUID, token)
                         .ConfigureAwait(false);
                 if (objAntiHole != null)
                 {
@@ -28601,7 +28594,7 @@ namespace Chummer
                 {
                     Cyberware objHole
                         = await Cyberware
-                            .FirstOrDefaultAsync(async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceHoleGUID, token)
+                            .FirstOrDefaultAsync(async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceHoleGUID, token)
                             .ConfigureAwait(false);
                     if (objHole == null)
                     {
@@ -28763,7 +28756,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Cyberware objHole
                     = await Cyberware.FirstOrDefaultAsync(
-                        async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceHoleGUID, token).ConfigureAwait(false);
+                        async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceHoleGUID, token).ConfigureAwait(false);
 
                 if (objHole != null)
                 {
@@ -28793,7 +28786,7 @@ namespace Chummer
                 {
                     Cyberware objAntiHole
                         = await Cyberware.FirstOrDefaultAsync(
-                                async x => await x.GetSourceIDAsync(token).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceAntiHoleGUID, token)
+                                async (x, t) => await x.GetSourceIDAsync(t).ConfigureAwait(false) == Backend.Equipment.Cyberware.EssenceAntiHoleGUID, token)
                             .ConfigureAwait(false);
                     if (objAntiHole == null)
                     {
@@ -45890,7 +45883,7 @@ namespace Chummer
                     //Calculate bonus from cyberlimbs
                     int intCount =
                         Math.Min(
-                            await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token),
+                            await Cyberware.SumAsync((x, t) => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, t),
                                 token: token).ConfigureAwait(false) / 2, 2);
 
                     return _intCachedRedlinerBonus = lstSeekerAttributes.Exists(x => x == "STR" || x == "AGI")
@@ -46092,7 +46085,7 @@ namespace Chummer
                 //Calculate bonus from cyberlimbs
                 int intCount =
                     Math.Min(
-                        await Cyberware.SumAsync(x => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, token), token)
+                        await Cyberware.SumAsync((x, t) => x.GetCyberlimbCountAsync(Settings.RedlinerExcludes, t), token)
                             .ConfigureAwait(false) / 2, 2);
 
                 for (int i = lstSeekerAttributes.Count - 1; i >= 0; --i)
@@ -50980,13 +50973,14 @@ namespace Chummer
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -50995,13 +50989,14 @@ namespace Chummer
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

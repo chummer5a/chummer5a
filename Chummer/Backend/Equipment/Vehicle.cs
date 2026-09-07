@@ -888,11 +888,11 @@ namespace Chummer.Backend.Equipment
                                                             !string.IsNullOrEmpty(x.WeaponMountCategories) &&
                                                             x.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
                                                             x.Weapons.Count == 0)
-                                                        : await _lstVehicleMods.FirstOrDefaultAsync(async x =>
+                                                        : await _lstVehicleMods.FirstOrDefaultAsync(async (x, t) =>
                                                             x.Name.Contains("Weapon Mount") ||
                                                             !string.IsNullOrEmpty(x.WeaponMountCategories) &&
                                                             x.WeaponMountCategories.Contains(objWeapon.SizeCategory) &&
-                                                            await x.Weapons.GetCountAsync(token).ConfigureAwait(false) == 0, token).ConfigureAwait(false)) ??
+                                                            await x.Weapons.GetCountAsync(t).ConfigureAwait(false) == 0, token).ConfigureAwait(false)) ??
                                                     (blnSync
                                                         ? _lstVehicleMods.FirstOrDefault(x =>
                                                             x.Name.Contains("Weapon Mount") ||

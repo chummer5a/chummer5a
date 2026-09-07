@@ -1673,25 +1673,25 @@ namespace Chummer.Backend.Attributes
                     {
                         int intLimbCountReturn = 0;
                         int intLimbTotalReturn = 0;
-                        await lstToCheck.ForEachAsync(async objCyberware =>
+                        await lstToCheck.ForEachAsync(async (objCyberware, t) =>
                         {
-                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                            if (!await objCyberware.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false))
                                 return;
-                            if (await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false))
+                            if (await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false))
                             {
                                 if ((await _objCharacterSettings
-                                        .GetExcludeLimbSlotAsync(token).ConfigureAwait(false))
+                                        .GetExcludeLimbSlotAsync(t).ConfigureAwait(false))
                                     .Contains(objCyberware.LimbSlot))
                                     return;
 
-                                int intLoop = await objCyberware.GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                int intLoop = await objCyberware.GetLimbSlotCountAsync(t).ConfigureAwait(false);
                                 intLimbCountReturn += intLoop;
-                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, token)
+                                intLimbTotalReturn += await objCyberware.GetAttributeTotalValueAsync(Abbrev, t)
                                     .ConfigureAwait(false) * intLoop;
                             }
                             else
                             {
-                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
+                                (int intLoop1, int intLoop2) = await ProcessCyberlimbsAsync(await objCyberware.GetChildrenAsync(t).ConfigureAwait(false))
                                     .ConfigureAwait(false);
                                 intLimbCountReturn += intLoop1;
                                 intLimbTotalReturn += intLoop2;
@@ -2834,7 +2834,7 @@ namespace Chummer.Backend.Attributes
                         if (!await _objCharacterSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false) &&
                             Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev))
                         {
-                            await _objCharacter.Cyberware.ForEachAsync(objCyberware => BuildTooltip(sbdModifier, objCyberware, strSpace), token: token).ConfigureAwait(false);
+                            await _objCharacter.Cyberware.ForEachAsync((objCyberware, t) => BuildTooltip(sbdModifier, objCyberware, strSpace, t), token: token).ConfigureAwait(false);
                         }
 
                         // StringBuilder.Insert can be slow because of in-place replaces, so use concat instead
@@ -2847,23 +2847,23 @@ namespace Chummer.Backend.Attributes
                 await objLocker.DisposeAsync().ConfigureAwait(false);
             }
 
-            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace)
+            async Task BuildTooltip(StringBuilder sbdModifier, Cyberware objCyberware, string strSpace, CancellationToken innerToken = default)
             {
-                if (!await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false))
+                if (!await objCyberware.GetIsLimbAsync(innerToken).ConfigureAwait(false) || !await objCyberware.GetIsModularCurrentlyEquippedAsync(innerToken).ConfigureAwait(false))
                 {
                     return;
                 }
 
-                if (await objCyberware.GetInheritAttributesAsync(token).ConfigureAwait(false))
+                if (await objCyberware.GetInheritAttributesAsync(innerToken).ConfigureAwait(false))
                 {
-                    await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false)).ForEachAsync(objChild => BuildTooltip(sbdModifier, objChild, strSpace), token: token).ConfigureAwait(false);
+                    await (await objCyberware.GetChildrenAsync(innerToken).ConfigureAwait(false)).ForEachAsync((objChild, t) => BuildTooltip(sbdModifier, objChild, strSpace, t), token: innerToken).ConfigureAwait(false);
 
                     return;
                 }
 
                 sbdModifier.AppendLine()
-                    .Append(await objCyberware.GetCurrentDisplayNameAsync(token).ConfigureAwait(false), strSpace)
-                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, token).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
+                    .Append(await objCyberware.GetCurrentDisplayNameAsync(innerToken).ConfigureAwait(false), strSpace)
+                    .Append('(', (await objCyberware.GetAttributeTotalValueAsync(Abbrev, innerToken).ConfigureAwait(false)).ToString(GlobalSettings.CultureInfo), ')');
             }
         }
 
@@ -3704,14 +3704,14 @@ namespace Chummer.Backend.Attributes
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
-                                        token.ThrowIfCancellationRequested();
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -3720,14 +3720,14 @@ namespace Chummer.Backend.Attributes
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
-                                    token.ThrowIfCancellationRequested();
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }

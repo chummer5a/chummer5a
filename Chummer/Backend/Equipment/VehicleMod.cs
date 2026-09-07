@@ -1758,7 +1758,7 @@ namespace Chummer.Backend.Equipment
                 {
                     // If the Availability code is based on the current Rating of the item, separate the Availability string into an array and find the first bracket that the Rating is lower than or equal to.
                     foreach (string strValue in (await strAvail.CheapReplaceAsync("MaxRating",
-                            async () => (await GetMaxRatingAsync(token).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
+                            async t => (await GetMaxRatingAsync(t).ConfigureAwait(false)).ToString(GlobalSettings.InvariantCultureInfo),
                             token: token).ConfigureAwait(false)).TrimStartOnce("Range(", true).TrimEndOnce(')')
                         .SplitNoAlloc(',', StringSplitOptions.RemoveEmptyEntries))
                     {
@@ -2151,8 +2151,8 @@ namespace Chummer.Backend.Equipment
         public async Task<decimal> GetTotalCostAsync(CancellationToken token = default)
         {
             return (IncludedInVehicle ? 0 : await GetOwnCostAsync(token).ConfigureAwait(false))
-                   + await Weapons.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false)
-                   + await Cyberware.SumAsync(x => x.GetTotalCostAsync(token), token).ConfigureAwait(false);
+                   + await Weapons.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false)
+                   + await Cyberware.SumAsync((x, t) => x.GetTotalCostAsync(t), token).ConfigureAwait(false);
         }
 
         /// <summary>

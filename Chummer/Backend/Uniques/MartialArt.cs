@@ -1052,9 +1052,9 @@ namespace Chummer
                 };
 
                 TreeNodeCollection lstChildNodes = objNode.Nodes;
-                await Techniques.ForEachAsync(async objTechnique =>
+                await Techniques.ForEachAsync(async (objTechnique, t) =>
                 {
-                    TreeNode objLoopNode = await objTechnique.CreateTreeNode(cmsMartialArtTechnique, token).ConfigureAwait(false);
+                    TreeNode objLoopNode = await objTechnique.CreateTreeNode(cmsMartialArtTechnique, t).ConfigureAwait(false);
                     if (objLoopNode != null)
                     {
                         lstChildNodes.Add(objLoopNode);

@@ -566,13 +566,14 @@ namespace Chummer.Backend.Skills
 
                         if (PropertyChanged != null)
                         {
-                            await Utils.RunOnMainThreadAsync(() =>
+                            await Utils.RunOnMainThreadAsync(t =>
                             {
                                 if (PropertyChanged != null)
                                 {
                                     // ReSharper disable once AccessToModifiedClosure
                                     foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                                     {
+                                        t.ThrowIfCancellationRequested();
                                         PropertyChanged.Invoke(this, objArgs);
                                     }
                                 }
@@ -581,13 +582,14 @@ namespace Chummer.Backend.Skills
                     }
                     else if (PropertyChanged != null)
                     {
-                        await Utils.RunOnMainThreadAsync(() =>
+                        await Utils.RunOnMainThreadAsync(t =>
                         {
                             if (PropertyChanged != null)
                             {
                                 // ReSharper disable once AccessToModifiedClosure
                                 foreach (string strPropertyToChange in setNamesOfChangedProperties)
                                 {
+                                    t.ThrowIfCancellationRequested();
                                     PropertyChanged.Invoke(this, new PropertyChangedEventArgs(strPropertyToChange));
                                 }
                             }
@@ -826,7 +828,7 @@ namespace Chummer.Backend.Skills
                             {
                                 Skill objExistingSkill = await Skills
                                     .FirstOrDefaultAsync(
-                                        async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) == guidLoop, token)
+                                        async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) == guidLoop, token)
                                     .ConfigureAwait(false);
                                 if (objExistingSkill != null)
                                 {
@@ -1301,7 +1303,7 @@ namespace Chummer.Backend.Skills
                                             await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
                                         objSkill = await lstKnowledgeSkills
                                             .FirstOrDefaultAsync(
-                                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
+                                                async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) ==
                                                            guiSkillId, token).ConfigureAwait(false);
                                         if (objSkill != null)
                                             lstReturn.Add(objSkill);
@@ -1312,8 +1314,8 @@ namespace Chummer.Backend.Skills
                                             {
                                                 objSkill = await lstKnowledgeSkills
                                                     .FirstOrDefaultAsync(
-                                                        async x =>
-                                                            await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                        async (x, t) =>
+                                                            await x.GetNameAsync(t).ConfigureAwait(false) ==
                                                             strName, token).ConfigureAwait(false);
                                                 if (objSkill != null)
                                                     lstReturn.Add(objSkill);
@@ -1326,7 +1328,7 @@ namespace Chummer.Backend.Skills
                                             await GetSkillsAsync(token).ConfigureAwait(false);
                                         objSkill = await lstSkills
                                             .FirstOrDefaultAsync(
-                                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false) ==
+                                                async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false) ==
                                                            guiSkillId, token).ConfigureAwait(false);
                                         if (objSkill != null)
                                             lstReturn.Add(objSkill);
@@ -1337,8 +1339,8 @@ namespace Chummer.Backend.Skills
                                             {
                                                 objSkill = await lstSkills
                                                     .FirstOrDefaultAsync(
-                                                        async x =>
-                                                            await x.GetNameAsync(token).ConfigureAwait(false) ==
+                                                        async (x, t) =>
+                                                            await x.GetNameAsync(t).ConfigureAwait(false) ==
                                                             strName, token).ConfigureAwait(false);
                                                 if (objSkill != null)
                                                     lstReturn.Add(objSkill);
@@ -3773,7 +3775,7 @@ namespace Chummer.Backend.Skills
             try
             {
                 token.ThrowIfCancellationRequested();
-                return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCurrentSpCostAsync(token), token).ConfigureAwait(false);
+                return await (await GetKnowledgeSkillsAsync(token).ConfigureAwait(false)).SumAsync((x, t) => x.GetCurrentSpCostAsync(t), token).ConfigureAwait(false);
             }
             finally
             {
@@ -3860,7 +3862,7 @@ namespace Chummer.Backend.Skills
                 }
 
                 return SkillPointsMaximum
-                       - await (await GetSkillsAsync(token).ConfigureAwait(false)).SumAsync(x => x.GetCurrentSpCostAsync(token),
+                       - await (await GetSkillsAsync(token).ConfigureAwait(false)).SumAsync((x, t) => x.GetCurrentSpCostAsync(t),
                                                                       token).ConfigureAwait(false)
                        - await GetSkillPointsSpentOnKnoskillsAsync(token).ConfigureAwait(false);
             }

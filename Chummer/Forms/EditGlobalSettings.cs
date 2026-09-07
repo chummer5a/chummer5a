@@ -1410,7 +1410,7 @@ namespace Chummer
                     && setAppNames.Contains(strAppNameUpper))
                     return;
 
-                await _dicCachedPdfAppNames.ForEachWithBreakAsync(async kvpEntry =>
+                await _dicCachedPdfAppNames.ForEachWithBreakAsync(async (kvpEntry, t) =>
                 {
                     if (kvpEntry.Value.Contains(strAppNameUpper))
                     {
@@ -1426,7 +1426,7 @@ namespace Chummer
                                 if (x.SelectedIndex == -1)
                                     x.SelectedIndex = 0;
                             }
-                        }, token).ConfigureAwait(false);
+                        }, t).ConfigureAwait(false);
                         return false;
                     }
 

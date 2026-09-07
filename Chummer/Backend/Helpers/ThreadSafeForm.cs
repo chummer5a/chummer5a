@@ -51,7 +51,7 @@ namespace Chummer
         public static async Task<ThreadSafeForm<T>> GetAsync(Func<CancellationToken, T> funcFormConstructor, CancellationToken token = default)
         {
             return new ThreadSafeForm<T>(
-                await Utils.RunOnMainThreadAsync(() => funcFormConstructor.Invoke(token), token).ConfigureAwait(false));
+                await Utils.RunOnMainThreadAsync(t => funcFormConstructor.Invoke(t), token).ConfigureAwait(false));
         }
 
         public void Dispose()

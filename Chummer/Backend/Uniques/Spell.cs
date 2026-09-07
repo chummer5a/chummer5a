@@ -1063,32 +1063,32 @@ namespace Chummer
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "F",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellForce", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellForce", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync("Overflow damage",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellOverflowDamage", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellOverflowDamage", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync("Damage Value",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellDamageValue", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellDamageValue", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync(
                                           "Toxin DV",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellToxinDV", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellToxinDV", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync("Disease DV",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellDiseaseDV", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellDiseaseDV", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync("Radiation Power",
-                                                         () => LanguageManager.GetStringAsync(
-                                                             "String_SpellRadiationPower", strLanguage, token: token),
+                                                         t => LanguageManager.GetStringAsync(
+                                                             "String_SpellRadiationPower", strLanguage, token: t),
                                                          token: token)
                                       .CheapReplaceAsync(
                                           "Special",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_Special", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_Special", strLanguage, token: t), token: token)
                                       .ConfigureAwait(false);
                 }
 
@@ -1267,41 +1267,41 @@ namespace Chummer
                     strReturn = await strReturn
                                       .CheapReplaceAsync(
                                           "Self",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeSelf", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeSelf", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "LOS",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeLineOfSight", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeLineOfSight", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "LOI",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeLineOfInfluence", strLanguage, token: token),
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeLineOfInfluence", strLanguage, token: t),
                                           token: token)
                                       .CheapReplaceAsync(
                                           "Touch",
-                                          () => LanguageManager.GetStringAsync("String_SpellRangeTouch",
-                                                                               strLanguage, token: token),
+                                          t => LanguageManager.GetStringAsync("String_SpellRangeTouch",
+                                                                               strLanguage, token: t),
                                           token: token) // Short form to remain export-friendly
                                       .CheapReplaceAsync(
                                           "T",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_SpellRangeTouch", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_SpellRangeTouch", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "(A)",
-                                          async () => "(" + await LanguageManager
+                                          async t => "(" + await LanguageManager
                                                                   .GetStringAsync(
                                                                       "String_SpellRangeArea", strLanguage,
-                                                                      token: token).ConfigureAwait(false) + ")",
+                                                                      token: t).ConfigureAwait(false) + ")",
                                           token: token)
                                       .CheapReplaceAsync(
                                           "MAG",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_AttributeMAGShort", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_AttributeMAGShort", strLanguage, token: t), token: token)
                                       .CheapReplaceAsync(
                                           "Special",
-                                          () => LanguageManager.GetStringAsync(
-                                              "String_Special", strLanguage, token: token), token: token)
+                                          t => LanguageManager.GetStringAsync(
+                                              "String_Special", strLanguage, token: t), token: token)
                                       .ConfigureAwait(false);
                 }
 

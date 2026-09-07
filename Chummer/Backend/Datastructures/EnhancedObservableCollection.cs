@@ -300,13 +300,14 @@ namespace Chummer
 
                 if (PropertyChanged != null)
                 {
-                    await Utils.RunOnMainThreadAsync(() =>
+                    await Utils.RunOnMainThreadAsync(t =>
                     {
                         if (PropertyChanged != null)
                         {
                             // ReSharper disable once AccessToModifiedClosure
                             foreach (PropertyChangedEventArgs objArgs in lstArgsList)
                             {
+                                t.ThrowIfCancellationRequested();
                                 base.OnPropertyChanged(objArgs);
                             }
                         }

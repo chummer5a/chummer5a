@@ -361,7 +361,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(token), token: token);
+                    Utils.RunOnMainThread(t => funcToRun(t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -406,7 +406,7 @@ namespace Chummer
                 if (objControl == null)
                     funcToRun.Invoke(null, token);
                 else
-                    Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
+                    Utils.RunOnMainThread(t => funcToRun(objControl, t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -549,7 +549,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? Task.Run(() => funcToRun(token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -598,7 +598,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? Task.Run(() => funcToRun(null, token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(objControl, t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -734,7 +734,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(token)
-                    : Utils.RunOnMainThread(() => funcToRun(token), token: token);
+                    : Utils.RunOnMainThread(t => funcToRun(t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -780,7 +780,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? funcToRun.Invoke(null, token)
-                    : Utils.RunOnMainThread(() => funcToRun(objControl, token), token: token);
+                    : Utils.RunOnMainThread(t => funcToRun(objControl, t), token: token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -927,7 +927,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? Task.Run(() => funcToRun(token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -977,7 +977,7 @@ namespace Chummer
             {
                 return objControl == null
                     ? Task.Run(() => funcToRun(null, token), token)
-                    : Utils.RunOnMainThreadAsync(() => funcToRun(objControl, token), token);
+                    : Utils.RunOnMainThreadAsync(t => funcToRun(objControl, t), token);
             }
             catch (ObjectDisposedException) // e)
             {
@@ -1898,32 +1898,32 @@ namespace Chummer
 
         public static void PopulateWithListItem(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
         {
-            lsbThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+            lsbThis?.DoThreadSafe((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         public static void PopulateWithListItem(this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+            cboThis?.DoThreadSafe((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         public static void PopulateWithListItem(this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemCore(x, objItem, token), token);
+            cboThis?.DoThreadSafe((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         public static Task PopulateWithListItemAsync([NotNull] this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
         {
-            return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+            return lsbThis.DoThreadSafeAsync((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         public static Task PopulateWithListItemAsync([NotNull] this ComboBox cboThis, ListItem objItem, CancellationToken token = default)
         {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+            return cboThis.DoThreadSafeAsync((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         public static Task PopulateWithListItemAsync([NotNull] this ElasticComboBox cboThis, ListItem objItem, CancellationToken token = default)
         {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemCore(x, objItem, token), token);
+            return cboThis.DoThreadSafeAsync((x, t) => PopulateWithListItemCore(x, objItem, t), token);
         }
 
         private static void PopulateWithListItemCore(this ListBox lsbThis, ListItem objItem, CancellationToken token = default)
@@ -2111,32 +2111,32 @@ namespace Chummer
 
         public static void PopulateWithListItems(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            lsbThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            lsbThis?.DoThreadSafe((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         public static void PopulateWithListItems(this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            cboThis?.DoThreadSafe((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         public static void PopulateWithListItems(this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            cboThis?.DoThreadSafe(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            cboThis?.DoThreadSafe((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         public static Task PopulateWithListItemsAsync([NotNull] this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return lsbThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            return lsbThis.DoThreadSafeAsync((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         public static Task PopulateWithListItemsAsync([NotNull] this ComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            return cboThis.DoThreadSafeAsync((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         public static Task PopulateWithListItemsAsync([NotNull] this ElasticComboBox cboThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)
         {
-            return cboThis.DoThreadSafeAsync(x => PopulateWithListItemsCore(x, lstItems, token), token);
+            return cboThis.DoThreadSafeAsync((x, t) => PopulateWithListItemsCore(x, lstItems, t), token);
         }
 
         private static void PopulateWithListItemsCore(this ListBox lsbThis, IEnumerable<ListItem> lstItems, CancellationToken token = default)

@@ -950,11 +950,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Action<T> funcAction = await action.ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    funcAction.Invoke(x);
-                });
+                _lstData.ForEach(funcAction, token);
             }
             finally
             {
@@ -971,11 +967,7 @@ namespace Chummer
                 token.ThrowIfCancellationRequested();
                 Action<T, CancellationToken> funcAction = await action.ConfigureAwait(false);
                 token.ThrowIfCancellationRequested();
-                _lstData.ForEach(x =>
-                {
-                    token.ThrowIfCancellationRequested();
-                    funcAction.Invoke(x, token);
-                });
+                _lstData.ForEach(funcAction, token);
             }
             finally
             {

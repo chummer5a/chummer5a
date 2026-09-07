@@ -10015,6 +10015,75 @@ namespace Chummer
             return await FirstOrDefaultAsync(lstEnumerable, funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static async Task<T> FirstOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        return objEnumerator.Current;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return default;
+        }
+
+        public static async Task<T> FirstOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCast)
+            {
+                IEnumerator<T> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                            return objEnumerator.Current;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objItem, token).ConfigureAwait(false))
+                        return objItem;
+                }
+            }
+
+            return default;
+        }
+
+        public static async Task<T> FirstOrDefaultAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
+            if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
+                return await FirstOrDefaultAsync(lstEnumerableCast, funcPredicate, token).ConfigureAwait(false);
+            return await FirstOrDefaultAsync(lstEnumerable, funcPredicate, token).ConfigureAwait(false);
+        }
+
         public static async Task<T> LastOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -10109,6 +10178,77 @@ namespace Chummer
         }
 
         public static async Task<T> LastOrDefaultAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
+            if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
+                return await LastOrDefaultAsync(lstEnumerableCast, funcPredicate, token).ConfigureAwait(false);
+            return await LastOrDefaultAsync(lstEnumerable, funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static async Task<T> LastOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = default;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        objReturn = objEnumerator.Current;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return objReturn;
+        }
+
+        public static async Task<T> LastOrDefaultAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            T objReturn = default;
+            if (objEnumerable is IAsyncEnumerable<T> objEnumerableCast)
+            {
+                IEnumerator<T> objEnumerator = await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false);
+                try
+                {
+                    while (objEnumerator.MoveNext())
+                    {
+                        token.ThrowIfCancellationRequested();
+                        if (await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                            objReturn = objEnumerator.Current;
+                    }
+                }
+                finally
+                {
+                    if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                        await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                    else
+                        objEnumerator.Dispose();
+                }
+            }
+            else
+            {
+                foreach (T objItem in objEnumerable)
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objItem, token).ConfigureAwait(false))
+                        objReturn = objItem;
+                }
+            }
+
+            return objReturn;
+        }
+
+        public static async Task<T> LastOrDefaultAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             T2 lstEnumerable = await tskEnumerable.ConfigureAwait(false);
             if (lstEnumerable is IAsyncEnumerable<T> lstEnumerableCast)
