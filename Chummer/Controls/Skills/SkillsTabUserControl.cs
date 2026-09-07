@@ -254,9 +254,9 @@ namespace Chummer.UI.Skills
                                 _lstSkillGroups.Filter(
                                     z => z.SkillList.Any(y =>
                                         _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                                    (z, t) => z.SkillList.AnyAsync(async y =>
-                                        await (await _objCharacter.GetSkillsSectionAsync(t).ConfigureAwait(false)).HasActiveSkillAsync(
-                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t).ConfigureAwait(false), t),
+                                    (z, t1) => z.SkillList.AnyAsync(async (y, t2) =>
+                                        await (await _objCharacter.GetSkillsSectionAsync(t2).ConfigureAwait(false)).HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t2).ConfigureAwait(false), t2).ConfigureAwait(false), t1),
                                     true);
                                 _lstSkillGroups.Sort(new SkillGroupSorter(SkillsSection.CompareSkillGroups));
 
@@ -595,10 +595,10 @@ namespace Chummer.UI.Skills
                             x => x.Filter(
                                 z => z.SkillList.Any(y =>
                                     _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                                (z, t) => z.SkillList.AnyAsync(async y =>
-                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
-                                            await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
-                                        .ConfigureAwait(false), t), true), token)
+                                (z, t1) => z.SkillList.AnyAsync(async (y, t2) =>
+                                    await (await _objCharacter.GetSkillsSectionAsync(t2).ConfigureAwait(false)).HasActiveSkillAsync(
+                                            await y.GetDictionaryKeyAsync(t2).ConfigureAwait(false), t2)
+                                        .ConfigureAwait(false), t1), true), token)
                         .ConfigureAwait(false);
                 }
             }
@@ -608,11 +608,11 @@ namespace Chummer.UI.Skills
                     .DoThreadSafeAsync(
                         x => x.Filter(
                             z => z.SkillList.Any(y => _objCharacter.SkillsSection.HasActiveSkill(y.DictionaryKey)),
-                            (z, t) => z.SkillList.AnyAsync(async y =>
-                                    await _objCharacter.SkillsSection.HasActiveSkillAsync(
-                                        await y.GetDictionaryKeyAsync(t).ConfigureAwait(false), t)
+                            (z, t1) => z.SkillList.AnyAsync(async (y, t2) =>
+                                    await (await _objCharacter.GetSkillsSectionAsync(t2).ConfigureAwait(false)).HasActiveSkillAsync(
+                                        await y.GetDictionaryKeyAsync(t2).ConfigureAwait(false), t2)
                                     .ConfigureAwait(false),
-                                t),
+                                t1),
                             true), token).ConfigureAwait(false);
             }
         }

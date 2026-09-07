@@ -3510,7 +3510,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             return (await GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Self") || await Children
-                .AnyAsync(async x => (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                .AnyAsync(async (x, t) => (await x.GetCanFormPersonaAsync(t).ConfigureAwait(false)).Contains("Parent"),
                     token: token).ConfigureAwait(false);
         }
 

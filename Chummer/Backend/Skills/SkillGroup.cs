@@ -827,13 +827,13 @@ namespace Chummer.Backend.Skills
                             && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             _intCachedBaseUnbroken =
                                 (await SkillList.AllAsync(
-                                     async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
-                                                await x.GetFreeBaseAsync(token).ConfigureAwait(false) <=
+                                     async (x, t) => await x.GetBasePointsAsync(t).ConfigureAwait(false) +
+                                                await x.GetFreeBaseAsync(t).ConfigureAwait(false) <=
                                                 0,
                                      token: token).ConfigureAwait(false)
                                  && await SkillList.AllAsync(
-                                     async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
-                                                await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <=
+                                     async (x, t) => await x.GetKarmaPointsAsync(t).ConfigureAwait(false) +
+                                                await x.GetFreeKarmaAsync(t).ConfigureAwait(false) <=
                                                 0, token: token).ConfigureAwait(false)).ToInt32();
                         else if (await _objCharacterSettings.GetUsePointsOnBrokenGroupsAsync(token)
                                      .ConfigureAwait(false))
@@ -842,8 +842,8 @@ namespace Chummer.Backend.Skills
                         else
                             _intCachedBaseUnbroken
                                 = (await SkillList.AllAsync(
-                                    async x => await x.GetBasePointsAsync(token).ConfigureAwait(false) +
-                                               await x.GetFreeBaseAsync(token).ConfigureAwait(false) <=
+                                    async (x, t) => await x.GetBasePointsAsync(t).ConfigureAwait(false) +
+                                               await x.GetFreeBaseAsync(t).ConfigureAwait(false) <=
                                                0,
                                     token: token).ConfigureAwait(false)).ToInt32();
                     }
@@ -944,13 +944,13 @@ namespace Chummer.Backend.Skills
                              && !await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                         _intCachedBaseUnbroken =
                             (await SkillList.AllAsync(
-                                 async x =>
-                                     await x.GetBasePointsAsync(token).ConfigureAwait(false)
-                                     + await x.GetFreeBaseAsync(token).ConfigureAwait(false) <= 0,
+                                 async (x, t) =>
+                                     await x.GetBasePointsAsync(t).ConfigureAwait(false)
+                                     + await x.GetFreeBaseAsync(t).ConfigureAwait(false) <= 0,
                                  token: token).ConfigureAwait(false)
                              && await SkillList.AllAsync(
-                                 async x => await x.GetKarmaPointsAsync(token).ConfigureAwait(false) +
-                                     await x.GetFreeKarmaAsync(token).ConfigureAwait(false) <= 0,
+                                 async (x, t) => await x.GetKarmaPointsAsync(t).ConfigureAwait(false) +
+                                     await x.GetFreeKarmaAsync(t).ConfigureAwait(false) <= 0,
                                  token: token).ConfigureAwait(false)).ToInt32();
                     else
                     {
@@ -961,13 +961,13 @@ namespace Chummer.Backend.Skills
 
                         _intCachedKarmaUnbroken
                             = (await SkillList.AllAsync(
-                                    async x => await x.GetBasePointsAsync(token)
+                                    async (x, t) => await x.GetBasePointsAsync(t)
                                                    .ConfigureAwait(false) +
-                                               await x.GetFreeBaseAsync(token)
+                                               await x.GetFreeBaseAsync(t)
                                                    .ConfigureAwait(false) +
-                                               await x.GetKarmaPointsAsync(token)
+                                               await x.GetKarmaPointsAsync(t)
                                                    .ConfigureAwait(false)
-                                               + await x.GetFreeKarmaAsync(token)
+                                               + await x.GetFreeKarmaAsync(t)
                                                    .ConfigureAwait(false)
                                                >= intHigh,
                                     token: token)
@@ -1308,8 +1308,8 @@ namespace Chummer.Backend.Skills
                         if (objFirstEnabledSkill == null ||
                             await SkillList
                                 .AllAsync(
-                                    async x => x == objFirstEnabledSkill
-                                               || !await x.GetEnabledAsync(token).ConfigureAwait(false),
+                                    async (x, t) => x == objFirstEnabledSkill
+                                               || !await x.GetEnabledAsync(t).ConfigureAwait(false),
                                     token).ConfigureAwait(false))
                         {
                             _intCachedHasAnyBreakingSkills = 0;
@@ -1318,11 +1318,11 @@ namespace Chummer.Backend.Skills
                                      .GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false)
                                  && await SkillList
                                      .AnyAsync(
-                                         async x =>
-                                             await (await x.GetSpecializationsAsync(token)
-                                                     .ConfigureAwait(false)).GetCountAsync(token)
+                                         async (x, t) =>
+                                             await (await x.GetSpecializationsAsync(t)
+                                                     .ConfigureAwait(false)).GetCountAsync(t)
                                                  .ConfigureAwait(false) != 0
-                                             && await x.GetEnabledAsync(token).ConfigureAwait(false),
+                                             && await x.GetEnabledAsync(t).ConfigureAwait(false),
                                          token).ConfigureAwait(false))
                         {
                             _intCachedHasAnyBreakingSkills = 1;
@@ -1333,11 +1333,11 @@ namespace Chummer.Backend.Skills
                                 .GetTotalBaseRatingAsync(token)
                                 .ConfigureAwait(false);
                             _intCachedHasAnyBreakingSkills = (await SkillList.AnyAsync(
-                                    async x => x != objFirstEnabledSkill
-                                               && await x.GetTotalBaseRatingAsync(token)
+                                    async (x, t) => x != objFirstEnabledSkill
+                                               && await x.GetTotalBaseRatingAsync(t)
                                                    .ConfigureAwait(false)
                                                != intFirstSkillTotalBaseRating
-                                               && await x.GetEnabledAsync(token).ConfigureAwait(false),
+                                               && await x.GetEnabledAsync(t).ConfigureAwait(false),
                                     token)
                                 .ConfigureAwait(false)).ToInt32();
                         }
@@ -1828,7 +1828,7 @@ namespace Chummer.Backend.Skills
                 // Do not add duplicate skills that we are still in the process of loading
                 if (await _lstAffectedSkills
                         .AnyAsync(
-                            async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
+                            async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false)
                                        == guidAddedSkillId, token: token)
                         .ConfigureAwait(false))
                     return;
@@ -1851,7 +1851,7 @@ namespace Chummer.Backend.Skills
                     // Do not add duplicate skills that we are still in the process of loading
                     if (await _lstAffectedSkills
                             .AnyAsync(
-                                async x => await x.GetSkillIdAsync(token).ConfigureAwait(false)
+                                async (x, t) => await x.GetSkillIdAsync(t).ConfigureAwait(false)
                                            == guidAddedSkillId, token: token)
                             .ConfigureAwait(false))
                         return;
@@ -2153,13 +2153,13 @@ namespace Chummer.Backend.Skills
                             if (await (await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false)).GetSpecializationsBreakSkillGroupsAsync(token).ConfigureAwait(false))
                             {
                                 if (await (await objFirstEnabledSkill.GetSpecializationsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) == 0
-                                    && await SkillList.AnyAsync(async x => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(token).ConfigureAwait(false)
-                                        && await (await x.GetSpecializationsAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false) == 0, token: token).ConfigureAwait(false))
+                                    && await SkillList.AnyAsync(async (x, t) => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(t).ConfigureAwait(false)
+                                        && await (await x.GetSpecializationsAsync(t).ConfigureAwait(false)).GetCountAsync(t).ConfigureAwait(false) == 0, token: token).ConfigureAwait(false))
                                 {
                                     setProperties.Add(nameof(HasAnyBreakingSkills));
                                 }
                             }
-                            else if (await SkillList.AnyAsync(async x => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                            else if (await SkillList.AnyAsync(async (x, t) => !ReferenceEquals(x, objFirstEnabledSkill) && await x.GetEnabledAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                             {
                                 setProperties.Add(nameof(HasAnyBreakingSkills));
                             }
@@ -2179,8 +2179,8 @@ namespace Chummer.Backend.Skills
                         .FirstOrDefaultAsync(x => x.GetEnabledAsync(token), token: token).ConfigureAwait(false);
                     if (objFirstEnabledSkill != null && await SkillList
                             .AllAsync(
-                                async x => x == objFirstEnabledSkill ||
-                                           !await x.GetEnabledAsync(token).ConfigureAwait(false), token: token)
+                                async (x, t) => x == objFirstEnabledSkill ||
+                                           !await x.GetEnabledAsync(t).ConfigureAwait(false), token: token)
                             .ConfigureAwait(false))
                         setProperties.Add(nameof(HasAnyBreakingSkills));
                 }

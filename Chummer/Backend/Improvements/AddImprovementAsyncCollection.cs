@@ -728,7 +728,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
             // Find the selected Skill.
             if (blnIsKnowledgeSkill)
             {
-                if (await _objCharacter.SkillsSection.KnowledgeSkills.AnyAsync(async k => await k.GetDictionaryKeyAsync(token).ConfigureAwait(false) == strSelectedSkill, token).ConfigureAwait(false))
+                if (await _objCharacter.SkillsSection.KnowledgeSkills.AnyAsync(async (k, t) => await k.GetDictionaryKeyAsync(t).ConfigureAwait(false) == strSelectedSkill, token).ConfigureAwait(false))
                 {
                     await _objCharacter.SkillsSection.KnowledgeSkills.ForEachAsync(async (objKnowledgeSkill, t) =>
                     {
@@ -4306,7 +4306,7 @@ public async Task qualitylevel(XmlNode bonusNode, CancellationToken token = defa
                                 strName = await objNewPower.GetNameAsync(token).ConfigureAwait(false);
                                 strExtra = await objNewPower.GetExtraAsync(token).ConfigureAwait(false);
                                 blnHasPower = await (await _objCharacter.GetPowersAsync(token).ConfigureAwait(false)).AnyAsync(
-                                    async objPower => await objPower.GetNameAsync(token).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(token).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
+                                    async (objPower, t) => await objPower.GetNameAsync(t).ConfigureAwait(false) == strName && await objPower.GetExtraAsync(t).ConfigureAwait(false) == strExtra, token: token).ConfigureAwait(false);
                             }
                             catch
                             {

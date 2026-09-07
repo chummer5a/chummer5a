@@ -433,6 +433,20 @@ namespace Chummer
             }
         }
 
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static IEnumerable<T> GetAllDescendants<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            foreach (T objLoopChild in objParentList)
+            {
+                yield return objLoopChild;
+
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objLoopChild, token).GetAllDescendants(funcGetChildrenMethod, token))
+                    yield return objLoopGrandchild;
+            }
+        }
+
         public static int Sum<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, [NotNull] Func<T, int> funcSelector, CancellationToken token = default)
         {
             int intReturn = 0;

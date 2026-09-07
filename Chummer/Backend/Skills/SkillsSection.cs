@@ -1145,17 +1145,17 @@ namespace Chummer.Backend.Skills
                     {
                         // zero out any skill groups whose skills did not make the final cut
                         await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachAsync(
-                            async (objSkillGroup, t) =>
+                            async (objSkillGroup, t1) =>
                             {
                                 if (!await objSkillGroup.SkillList
                                         .AnyAsync(
-                                            async x => _dicSkills.ContainsKey(
-                                                await x.GetDictionaryKeyAsync(t)
-                                                    .ConfigureAwait(false)), token: t)
+                                            async (x, t2) => _dicSkills.ContainsKey(
+                                                await x.GetDictionaryKeyAsync(t2)
+                                                    .ConfigureAwait(false)), token: t1)
                                         .ConfigureAwait(false))
                                 {
-                                    await objSkillGroup.SetBaseAsync(0, t).ConfigureAwait(false);
-                                    await objSkillGroup.SetKarmaAsync(0, t).ConfigureAwait(false);
+                                    await objSkillGroup.SetBaseAsync(0, t1).ConfigureAwait(false);
+                                    await objSkillGroup.SetKarmaAsync(0, t1).ConfigureAwait(false);
                                 }
                             }, token: token).ConfigureAwait(false);
                     }
@@ -2092,7 +2092,7 @@ namespace Chummer.Backend.Skills
                                             {
                                                 ThreadSafeBindingList<KnowledgeSkill> lstKnowledgeSkills = await GetKnowledgeSkillsAsync(token).ConfigureAwait(false);
                                                 if (!await lstKnowledgeSkills
-                                                         .AnyAsync(x => x.GetIsNativeLanguageAsync(token),
+                                                         .AnyAsync((x, t) => x.GetIsNativeLanguageAsync(t),
                                                              token)
                                                          .ConfigureAwait(false))
                                                 {
@@ -2475,22 +2475,22 @@ namespace Chummer.Backend.Skills
                             else if (!await _objCharacter.GetCreatedAsync(token).ConfigureAwait(false))
                             {
                                 // zero out any skillgroups whose skills did not make the final cut
-                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkillGroup, t) =>
+                                await (await GetSkillGroupsAsync(token).ConfigureAwait(false)).ForEachWithSideEffectsAsync(async (objSkillGroup, t1) =>
                                 {
-                                    t.ThrowIfCancellationRequested();
+                                    t1.ThrowIfCancellationRequested();
                                     if (!await objSkillGroup.SkillList.AnyAsync(
-                                                async x => _dicSkills.ContainsKey(
-                                                        await x.GetDictionaryKeyAsync(t)
-                                                            .ConfigureAwait(false)), token: t)
+                                                async (x, t2) => _dicSkills.ContainsKey(
+                                                        await x.GetDictionaryKeyAsync(t2)
+                                                            .ConfigureAwait(false)), token: t1)
                                             .ConfigureAwait(false))
                                     {
-                                        await objSkillGroup.SetBaseAsync(0, t).ConfigureAwait(false);
-                                        await objSkillGroup.SetKarmaAsync(0, t).ConfigureAwait(false);
+                                        await objSkillGroup.SetBaseAsync(0, t1).ConfigureAwait(false);
+                                        await objSkillGroup.SetKarmaAsync(0, t1).ConfigureAwait(false);
                                     }
                                     else
                                     {
                                         // TODO: Skill groups don't refresh their CanIncrease property correctly when the last of their skills is being added, as the total base rating will be zero. Call this here to force a refresh.
-                                        await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), t)
+                                        await objSkillGroup.OnPropertyChangedAsync(nameof(SkillGroup.SkillList), t1)
                                             .ConfigureAwait(false);
                                     }
                                 }, token).ConfigureAwait(false);

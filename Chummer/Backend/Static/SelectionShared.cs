@@ -533,7 +533,7 @@ namespace Chummer
                                     foreach (Cyberware objItem in blnSync
                                                  ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                                  : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                                         .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                                         .GetAllDescendantsAsync((x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                                     {
                                         if (!setNamesIncludedInLimit.Contains(objItem.Name)
                                             && !setNamesIncludedInLimit.Contains(objItem.InternalId))
@@ -583,7 +583,7 @@ namespace Chummer
                             foreach (Cyberware objItem in blnSync
                                          ? objCharacter.Cyberware.GetAllDescendants(x => x.Children, token)
                                          : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
-                                             .GetAllDescendantsAsync(x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                             .GetAllDescendantsAsync((x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                             {
                                 if (strNodeName != objItem.Name && strNodeId != objItem.SourceIDString)
                                     continue;
@@ -1832,7 +1832,7 @@ namespace Chummer
                             : await (await objCharacter.GetLifestylesAsync(token)
                                     .ConfigureAwait(false))
                                 .AnyAsync(
-                                    async x => await x.GetBaseLifestyleAsync(token).ConfigureAwait(false) ==
+                                    async (x, t) => await x.GetBaseLifestyleAsync(t).ConfigureAwait(false) ==
                                                strNodeInnerText,
                                     token)
                                 .ConfigureAwait(false), strName);
@@ -3141,8 +3141,8 @@ namespace Chummer
                                     x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                         strNodeInnerText, objRatingFilter), token)
                                 : await objGearParent.GearChildren.AnyAsync(
-                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                    async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                         objRatingFilter), token).ConfigureAwait(false)),
                             strName);
                     }
@@ -3201,8 +3201,8 @@ namespace Chummer
                                     x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString, x.Rating,
                                         strNodeInnerText, objRatingFilter), token)
                                 : await objArmor.ArmorMods.AnyAsync(
-                                    async x => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
-                                        await x.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
+                                    async (x, t) => CharacterItemMatchesNameOrIdAndRating(x.Name, x.SourceIDString,
+                                        await x.GetRatingAsync(t).ConfigureAwait(false), strNodeInnerText,
                                         objRatingFilter), token).ConfigureAwait(false)),
                             strName);
                     }
@@ -3211,13 +3211,13 @@ namespace Chummer
                         blnSync
                             // ReSharper disable once MethodHasAsyncOverload
                             ? objCharacter.Armor.Any(
-                                x => x.ArmorMods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
-                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), token), token)
+                                (x, t) => x.ArmorMods.Any(y => CharacterItemMatchesNameOrIdAndRating(y.Name,
+                                    y.SourceIDString, y.Rating, strNodeInnerText, objRatingFilter), t), token)
                             : await objCharacter.Armor.AnyAsync(
-                                x => x.ArmorMods.AnyAsync(
-                                    async y => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
-                                        await y.GetRatingAsync(token).ConfigureAwait(false), strNodeInnerText,
-                                        objRatingFilter), token),
+                                (x, t1) => x.ArmorMods.AnyAsync(
+                                    async (y, t2) => CharacterItemMatchesNameOrIdAndRating(y.Name, y.SourceIDString,
+                                        await y.GetRatingAsync(t2).ConfigureAwait(false), strNodeInnerText,
+                                        objRatingFilter), t1),
                                 token).ConfigureAwait(false), strName);
                 }
                 default:
@@ -3282,9 +3282,9 @@ namespace Chummer
                                 strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true), token)
                         : await (await objCyberware.GetChildrenAsync(token).ConfigureAwait(false))
                             .AnyAsync(
-                                mod => InstalledCyberwareMatchesRequirementAsync(mod, strNodeInnerText,
+                                (mod, t) => InstalledCyberwareMatchesRequirementAsync(mod, strNodeInnerText,
                                     strWareNodeSelectAttribute, eSourceType, eMatchMode, objRatingFilter, true,
-                                    token), token).ConfigureAwait(false);
+                                    t), token).ConfigureAwait(false);
                     return new ValueTuple<bool, string>(blnResult, strName);
                 }
 

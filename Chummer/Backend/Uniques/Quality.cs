@@ -1821,9 +1821,9 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 string strName = await GetNameAsync(token).ConfigureAwait(false);
                 if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
-                        async objQuality =>
+                        async (objQuality, t) =>
                         {
-                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            string strInnerName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
                             return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
                         }, token: token).ConfigureAwait(false))
                     return false;
@@ -2021,9 +2021,9 @@ namespace Chummer
                 // The Beast's Way and the Spiritual Way get the Mentor Spirit for free.
                 string strName = await GetNameAsync(token).ConfigureAwait(false);
                 if (strName == "Mentor Spirit" && await _objCharacter.Qualities.AnyAsync(
-                        async objQuality =>
+                        async (objQuality, t) =>
                         {
-                            string strInnerName = await objQuality.GetNameAsync(token).ConfigureAwait(false);
+                            string strInnerName = await objQuality.GetNameAsync(t).ConfigureAwait(false);
                             return strInnerName == "The Beast's Way" || strInnerName == "The Spiritual Way";
                         }, token: token).ConfigureAwait(false))
                     return false;

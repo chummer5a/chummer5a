@@ -2330,7 +2330,7 @@ namespace Chummer.Backend.Skills
                 token.ThrowIfCancellationRequested();
                 return (_blnBuyWithKarma || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                        && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
-                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                       && await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false)
                        && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
             }
             finally
@@ -2348,7 +2348,7 @@ namespace Chummer.Backend.Skills
                 value = (value || await GetForcedBuyWithKarmaAsync(token).ConfigureAwait(false))
                         && !await GetForcedNotBuyWithKarmaAsync(token).ConfigureAwait(false)
                         && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                            .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token)
+                            .AnyAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token)
                             .ConfigureAwait(false)
                         && await GetCanHaveSpecsAsync(token).ConfigureAwait(false);
                 if (_blnBuyWithKarma == value)
@@ -5306,8 +5306,8 @@ namespace Chummer.Backend.Skills
                     return false;
 
                 return await (await GetSpecializationsAsync(token).ConfigureAwait(false)).AnyAsync(
-                               async x => await x.GetNameAsync(token).ConfigureAwait(false) == strSpecialization ||
-                                          await x.GetCurrentDisplayNameAsync(token).ConfigureAwait(false) ==
+                               async (x, t) => await x.GetNameAsync(t).ConfigureAwait(false) == strSpecialization ||
+                                          await x.GetCurrentDisplayNameAsync(t).ConfigureAwait(false) ==
                                           strSpecialization,
                                token: token)
                            .ConfigureAwait(false)
@@ -7761,7 +7761,7 @@ namespace Chummer.Backend.Skills
                         setProperties.Add(nameof(Base));
                         if (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                             && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                                .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token)
+                                .AnyAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token)
                                 .ConfigureAwait(false)
                             && !(await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                                  && await GetBasePointsAsync(token).ConfigureAwait(false)
@@ -7788,7 +7788,7 @@ namespace Chummer.Backend.Skills
                         {
                             if (!setProperties.Contains(nameof(ForcedBuyWithKarma))
                                 && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                                    .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token)
+                                    .AnyAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token)
                                     .ConfigureAwait(false)
                                 && !(await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                                      && await GetBasePointsAsync(token).ConfigureAwait(false)
@@ -8010,7 +8010,7 @@ namespace Chummer.Backend.Skills
                         await GetCanHaveSpecsAsync(token).ConfigureAwait(false) &&
                         (e.PropertyNames.Contains(nameof(CharacterSettings.SpecializationBonus))
                          || (e.PropertyNames.Contains(nameof(CharacterSettings.ExpertiseBonus))
-                             && await Specializations.AnyAsync(x => x.GetExpertiseAsync(token), token: token)
+                             && await Specializations.AnyAsync((x, t) => x.GetExpertiseAsync(t), token: token)
                                  .ConfigureAwait(false))))
                     {
                         setProperties.Add(nameof(PoolOtherAttribute));
@@ -8972,7 +8972,7 @@ namespace Chummer.Backend.Skills
                     intReturn =
                         (!await CharacterObject.GetIgnoreRulesAsync(token).ConfigureAwait(false)
                          && await (await GetSpecializationsAsync(token).ConfigureAwait(false))
-                                  .AnyAsync(async x => !await x.GetFreeAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false)
+                                  .AnyAsync(async (x, t) => !await x.GetFreeAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false)
                          && await GetCanHaveSpecsAsync(token).ConfigureAwait(false)
                          && ((await GetKarmaPointsAsync(token).ConfigureAwait(false) > 0
                               && await GetBasePointsAsync(token).ConfigureAwait(false)

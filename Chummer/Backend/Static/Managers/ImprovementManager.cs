@@ -5667,7 +5667,7 @@ namespace Chummer
                                              ? objCharacter.Cyberware.GetAllDescendants(
                                                  x => x.Children, token)
                                              : await (await objCharacter.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
-                                                 x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                                 (x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                                 {
                                     Grade objOldGrade = blnSync ? objCyberware.Grade : await objCyberware.GetGradeAsync(token).ConfigureAwait(false);
                                     if (objOldGrade.Adapsin)

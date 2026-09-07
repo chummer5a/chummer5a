@@ -202,7 +202,7 @@ namespace Chummer
                         if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                    async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
@@ -264,7 +264,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -296,7 +296,7 @@ namespace Chummer
                                     if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                     {
                                         if (await Program.OpenCharacters.AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                             && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                             await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                     }
@@ -358,7 +358,7 @@ namespace Chummer
                         if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                         {
                             if (await Program.OpenCharacters.AllAsync(
-                                    async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                    async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                 && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                 await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                         }
@@ -421,7 +421,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -451,7 +451,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -517,7 +517,7 @@ namespace Chummer
                                      .ConfigureAwait(false))
                     {
                         if (await Program.OpenCharacters
-                                         .AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                         .AllAsync(async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                    token: token).ConfigureAwait(false)
                             && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                             await Program.OpenCharacters.RemoveAsync(objCharacter, token)
@@ -586,7 +586,7 @@ namespace Chummer
                                 continue;
                             if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                     && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                     await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                             }
@@ -620,7 +620,7 @@ namespace Chummer
                                 if (await Program.OpenCharacters.ContainsAsync(objCharacter, token).ConfigureAwait(false))
                                 {
                                     if (await Program.OpenCharacters.AllAsync(
-                                            async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
+                                            async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter), token: token).ConfigureAwait(false)
                                         && !await AnyOpenFormContainsCharacter(objCharacter, objOldForm, token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token).ConfigureAwait(false);
                                 }
@@ -3569,7 +3569,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -3785,7 +3785,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);
@@ -4020,7 +4020,7 @@ namespace Chummer
                                 {
                                     if (await Program.OpenCharacters
                                             .AllAsync(
-                                                async x => x == objCharacter || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(objCharacter),
+                                                async (x, t) => x == objCharacter || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(objCharacter),
                                                 token).ConfigureAwait(false))
                                         await Program.OpenCharacters.RemoveAsync(objCharacter, token)
                                             .ConfigureAwait(false);

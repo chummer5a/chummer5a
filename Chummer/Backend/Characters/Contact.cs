@@ -3351,8 +3351,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))

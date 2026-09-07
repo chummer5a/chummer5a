@@ -1390,8 +1390,8 @@ namespace Chummer.Backend.Attributes
                 {
                     return await (await _objCharacter.GetCyberwareAsync(token).ConfigureAwait(false))
                         .AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false), token: token).ConfigureAwait(false);
                 }
 
@@ -3362,12 +3362,12 @@ namespace Chummer.Backend.Attributes
                     if (!await objSettings.GetDontUseCyberlimbCalculationAsync(token).ConfigureAwait(false)
                         && Cyberware.CyberlimbAttributeAbbrevs.Contains(Abbrev)
                         && await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                                async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                                async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                      await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                           .ConfigureAwait(false) &&
-                                                      !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                      !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                           await objCyberware
-                                                              .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                              .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                             .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
@@ -3421,12 +3421,12 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false) &&
-                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                       await objCyberware
-                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                          .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));
@@ -3440,12 +3440,12 @@ namespace Chummer.Backend.Attributes
                 {
                     CharacterSettings objSettings = await CharacterObject.GetSettingsAsync(token).ConfigureAwait(false);
                     if (await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).AnyAsync(
-                            async objCyberware => await objCyberware.GetIsLimbAsync(token).ConfigureAwait(false) &&
-                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(token)
+                            async (objCyberware, t) => await objCyberware.GetIsLimbAsync(t).ConfigureAwait(false) &&
+                                                  await objCyberware.GetIsModularCurrentlyEquippedAsync(t)
                                                       .ConfigureAwait(false) &&
-                                                  !(await objSettings.GetExcludeLimbSlotAsync(token).ConfigureAwait(false)).Contains(
+                                                  !(await objSettings.GetExcludeLimbSlotAsync(t).ConfigureAwait(false)).Contains(
                                                       await objCyberware
-                                                          .GetLimbSlotAsync(token).ConfigureAwait(false)), token: token)
+                                                          .GetLimbSlotAsync(t).ConfigureAwait(false)), token: token)
                         .ConfigureAwait(false))
                     {
                         setProperties.Add(nameof(TotalValue));

@@ -1803,12 +1803,12 @@ namespace Chummer.Backend.Equipment
                                     setBlocksMounts.AddRange(strBlocksMounts
                                         .SplitNoAlloc(
                                             ',', StringSplitOptions.RemoveEmptyEntries));
-                                    blnAllowSide = !await lstCyberwareToCheck.AnyAsync(async x =>
+                                    blnAllowSide = !await lstCyberwareToCheck.AnyAsync(async (x, t) =>
                                     {
-                                        string strLoopHasModularMount = await x.GetHasModularMountAsync(token).ConfigureAwait(false);
+                                        string strLoopHasModularMount = await x.GetHasModularMountAsync(t).ConfigureAwait(false);
                                         if (string.IsNullOrEmpty(strLoopHasModularMount))
                                             return false;
-                                        if (await x.GetLocationAsync(token).ConfigureAwait(false) != strSide)
+                                        if (await x.GetLocationAsync(t).ConfigureAwait(false) != strSide)
                                             return false;
                                         if (!setBlocksMounts.Contains(strLoopHasModularMount))
                                             return false;
@@ -1816,10 +1816,10 @@ namespace Chummer.Backend.Equipment
                                         if (string.IsNullOrEmpty(strLimbTypeOfMount))
                                             return true;
 
-                                        int intLimbSlotCount = await GetLimbSlotCountAsync(token).ConfigureAwait(false);
+                                        int intLimbSlotCount = await GetLimbSlotCountAsync(t).ConfigureAwait(false);
                                         if (dicNumRightMountBlockers.TryGetValue(strLoopHasModularMount, out intNumBlockers))
                                             intLimbSlotCount += intNumBlockers;
-                                        return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, token)
+                                        return await _objCharacter.LimbCountAsync(strLimbTypeOfMount, t)
                                             .ConfigureAwait(false) / 2 < intLimbSlotCount;
                                     }, token).ConfigureAwait(false);
                                 }
@@ -6001,8 +6001,8 @@ namespace Chummer.Backend.Equipment
                                                                               "Parent Rating",
                                                                               StringComparison.OrdinalIgnoreCase),
                                         token: token).ConfigureAwait(false)
-                                    || await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(async x =>
-                                            await x.GetIsModularCurrentlyEquippedAsync(token).ConfigureAwait(false)
+                                    || await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(async (x, t) =>
+                                            await x.GetIsModularCurrentlyEquippedAsync(t).ConfigureAwait(false)
                                             && x.Weight.Contains(
                                                 "Parent Rating", StringComparison.OrdinalIgnoreCase), token: token)
                                         .ConfigureAwait(false))
@@ -8493,7 +8493,7 @@ namespace Chummer.Backend.Equipment
                 return !string.IsNullOrWhiteSpace(await GetLimbSlotAsync(token).ConfigureAwait(false))
                        || !string.IsNullOrEmpty(MountToLimbType(await GetPlugsIntoModularMountAsync(token).ConfigureAwait(false)))
                        || (await GetInheritAttributesAsync(token).ConfigureAwait(false) && await (await GetChildrenAsync(token).ConfigureAwait(false))
-                           .AnyAsync(objChild => objChild.GetIsLimbAsync(token), token).ConfigureAwait(false));
+                           .AnyAsync((objChild, t) => objChild.GetIsLimbAsync(t), token).ConfigureAwait(false));
             }
             finally
             {
@@ -9080,7 +9080,7 @@ namespace Chummer.Backend.Equipment
                         strReturn = "[" + strCapacity + "]";
 
                     strSecondHalf = strSecondHalf.TrimNoAlloc('[', ']');
-                    if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(x => x.GetAddToParentCapacityAsync(token), token: token).ConfigureAwait(false))
+                    if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync((x, t) => x.GetAddToParentCapacityAsync(t), token: token).ConfigureAwait(false))
                     {
                         // Run through its Children and deduct the Capacity costs.
                         using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -9143,7 +9143,7 @@ namespace Chummer.Backend.Equipment
                     strReturn += "/" + strSecondHalf;
                 }
                 else if (strCapacity.DoesNeedXPathProcessingToBeConvertedToNumber(out decimal decValue) ||
-                         (strCapacity.StartsWith('[') && await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(x => x.GetAddToParentCapacityAsync(token), token: token).ConfigureAwait(false)))
+                         (strCapacity.StartsWith('[') && await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync((x, t) => x.GetAddToParentCapacityAsync(t), token: token).ConfigureAwait(false)))
                 {
                     // If the Capacity is determined by the Rating, evaluate the expression.
                     // XPathExpression cannot evaluate while there are square brackets, so remove them if necessary.
@@ -9151,7 +9151,7 @@ namespace Chummer.Backend.Equipment
                     if (blnSquareBrackets)
                     {
                         strCapacity = strCapacity.Substring(1, strCapacity.Length - 2);
-                        if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(x => x.GetAddToParentCapacityAsync(token), token: token).ConfigureAwait(false))
+                        if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync((x, t) => x.GetAddToParentCapacityAsync(t), token: token).ConfigureAwait(false))
                         {
                             // Run through its Children and deduct the Capacity costs.
                             using (new FetchSafelyFromObjectPool<StringBuilder>(Utils.StringBuilderPool,
@@ -11485,8 +11485,8 @@ namespace Chummer.Backend.Equipment
                 return (await GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Self")
                        || (await ChildrenWithMatrixAttributes
                                .AnyAsync(
-                                   async x =>
-                                       (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                                   async (x, t) =>
+                                       (await x.GetCanFormPersonaAsync(t).ConfigureAwait(false)).Contains("Parent"),
                                    token: token).ConfigureAwait(false) &&
                            await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) > 0);
             }
@@ -13687,7 +13687,7 @@ namespace Chummer.Backend.Equipment
                         return false;
                     string strInputHasModularMount = await objCyberware.GetHasModularMountAsync(token).ConfigureAwait(false);
                     if (await (await GetChildrenAsync(token).ConfigureAwait(false)).AnyAsync(
-                            async x => await x.GetPlugsIntoModularMountAsync(token).ConfigureAwait(false) == strInputHasModularMount,
+                            async (x, t) => await x.GetPlugsIntoModularMountAsync(t).ConfigureAwait(false) == strInputHasModularMount,
                             token: token).ConfigureAwait(false))
                         return false;
 
@@ -13756,8 +13756,8 @@ namespace Chummer.Backend.Equipment
                         return true;
                     if (string.IsNullOrEmpty(await objCyberware.GetLocationAsync(token).ConfigureAwait(false)) &&
                         string.IsNullOrEmpty(await GetLocationAsync(token).ConfigureAwait(false)) &&
-                        (await (await GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(async x => await x.GetLocationAsync(token).ConfigureAwait(false) != "Left", token: token).ConfigureAwait(false)
-                         || await (await GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(async x => await x.GetLocationAsync(token).ConfigureAwait(false) != "Right",
+                        (await (await GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(async (x, t) => await x.GetLocationAsync(t).ConfigureAwait(false) != "Left", token: token).ConfigureAwait(false)
+                         || await (await GetChildrenAsync(token).ConfigureAwait(false)).AllAsync(async (x, t) => await x.GetLocationAsync(t).ConfigureAwait(false) != "Right",
                              token: token).ConfigureAwait(false)))
                         return true;
                     return (await objCyberware.GetBlocksMountsAsync(token).ConfigureAwait(false)).SplitNoAlloc(',')

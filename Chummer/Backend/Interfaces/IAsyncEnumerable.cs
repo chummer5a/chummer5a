@@ -367,6 +367,22 @@ namespace Chummer
             return false;
         }
 
+        public static bool Any<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        return true;
+                }
+            }
+            return false;
+        }
+
         public static async Task<bool> AnyAsync<T>(this IAsyncEnumerable<T> objEnumerable, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -411,6 +427,29 @@ namespace Chummer
             return false;
         }
 
+        public static async Task<bool> AnyAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        return true;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return false;
+        }
+
         public static async Task<bool> AnyAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -436,6 +475,31 @@ namespace Chummer
             return false;
         }
 
+        public static async Task<bool> AnyAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                        return true;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return false;
+        }
+
         public static async Task<bool> AnyAsync<T, T2>(this Task<T2> tskEnumerable, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await AnyAsync(await tskEnumerable.ConfigureAwait(false), token).ConfigureAwait(false);
@@ -446,7 +510,17 @@ namespace Chummer
             return await AnyAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static async Task<bool> AnyAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await AnyAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
         public static async Task<bool> AnyAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            return await AnyAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static async Task<bool> AnyAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             return await AnyAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
@@ -467,6 +541,22 @@ namespace Chummer
             return true;
         }
 
+        public static bool All<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            using (IEnumerator<T> objEnumerator = objEnumerable.GetEnumerator())
+            {
+                token.ThrowIfCancellationRequested();
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!funcPredicate.Invoke(objEnumerator.Current, token))
+                        return false;
+                }
+            }
+            return true;
+        }
+
         public static async Task<bool> AllAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -477,6 +567,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     if (!funcPredicate.Invoke(objEnumerator.Current))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return true;
+        }
+
+        public static async Task<bool> AllAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!funcPredicate.Invoke(objEnumerator.Current, token))
                         return false;
                 }
             }
@@ -515,12 +628,47 @@ namespace Chummer
             return true;
         }
 
+        public static async Task<bool> AllAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (!await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                        return false;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return true;
+        }
+
         public static async Task<bool> AllAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, bool> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await AllAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static async Task<bool> AllAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await AllAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
         public static async Task<bool> AllAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            return await AllAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static async Task<bool> AllAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             return await AllAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
@@ -548,6 +696,19 @@ namespace Chummer
             {
                 token.ThrowIfCancellationRequested();
                 if (funcPredicate.Invoke(objItem))
+                    ++intReturn;
+            }
+            return intReturn;
+        }
+
+        public static int Count<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            foreach (T objItem in objEnumerable)
+            {
+                token.ThrowIfCancellationRequested();
+                if (funcPredicate.Invoke(objItem, token))
                     ++intReturn;
             }
             return intReturn;
@@ -607,6 +768,30 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> CountAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (funcPredicate.Invoke(objEnumerator.Current, token))
+                        ++intReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
         public static async Task<int> CountAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default)
         {
             token.ThrowIfCancellationRequested();
@@ -633,6 +818,32 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> CountAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    if (await funcPredicate.Invoke(objEnumerator.Current, token).ConfigureAwait(false))
+                        ++intReturn;
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
         public static async Task<int> CountAsync<T, T2>(this Task<T2> tskEnumerable, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await CountAsync(await tskEnumerable.ConfigureAwait(false), token).ConfigureAwait(false);
@@ -643,7 +854,17 @@ namespace Chummer
             return await CountAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
 
+        public static async Task<int> CountAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, bool> funcPredicate, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await CountAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
         public static async Task<int> CountAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            return await CountAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> CountAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<bool>> funcPredicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             return await CountAsync(await tskEnumerable.ConfigureAwait(false), funcPredicate, token).ConfigureAwait(false);
         }
@@ -659,6 +880,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     intReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
+        public static async Task<int> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn += funcSelector.Invoke(objEnumerator.Current, token);
                 }
             }
             finally
@@ -696,12 +940,47 @@ namespace Chummer
             return intReturn;
         }
 
+        public static async Task<int> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            int intReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    intReturn += await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return intReturn;
+        }
+
         public static async Task<int> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<int> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, int> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<int> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<int>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<int> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<int>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -717,6 +996,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     lngReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
+        public static async Task<long> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn += funcSelector.Invoke(objEnumerator.Current, token);
                 }
             }
             finally
@@ -754,12 +1056,47 @@ namespace Chummer
             return lngReturn;
         }
 
+        public static async Task<long> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            long lngReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    lngReturn += await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return lngReturn;
+        }
+
         public static async Task<long> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<long> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, long> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<long> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<long>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<long> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<long>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -775,6 +1112,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     fltReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
+        public static async Task<float> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn += funcSelector.Invoke(objEnumerator.Current, token);
                 }
             }
             finally
@@ -812,12 +1172,47 @@ namespace Chummer
             return fltReturn;
         }
 
+        public static async Task<float> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            float fltReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    fltReturn += await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return fltReturn;
+        }
+
         public static async Task<float> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<float> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, float> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<float> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<float>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<float> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<float>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -833,6 +1228,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     dblReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
+        public static async Task<double> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn += funcSelector.Invoke(objEnumerator.Current, token);
                 }
             }
             finally
@@ -870,12 +1288,47 @@ namespace Chummer
             return dblReturn;
         }
 
+        public static async Task<double> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            double dblReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    dblReturn += await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return dblReturn;
+        }
+
         public static async Task<double> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<double> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, double> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<double> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<double>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<double> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<double>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -891,6 +1344,29 @@ namespace Chummer
                 {
                     token.ThrowIfCancellationRequested();
                     decReturn += funcSelector.Invoke(objEnumerator.Current);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
+        public static async Task<decimal> SumAsync<T>(this IAsyncEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = await objEnumerable.GetEnumeratorAsync(token).ConfigureAwait(false);
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn += funcSelector.Invoke(objEnumerator.Current, token);
                 }
             }
             finally
@@ -928,12 +1404,47 @@ namespace Chummer
             return decReturn;
         }
 
+        public static async Task<decimal> SumAsync<T>(this IEnumerable<T> objEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default)
+        {
+            token.ThrowIfCancellationRequested();
+            decimal decReturn = 0;
+            IEnumerator<T> objEnumerator = objEnumerable is IAsyncEnumerable<T> objEnumerableCast
+                ? await objEnumerableCast.GetEnumeratorAsync(token).ConfigureAwait(false)
+                : objEnumerable.GetEnumerator();
+            try
+            {
+                while (objEnumerator.MoveNext())
+                {
+                    token.ThrowIfCancellationRequested();
+                    decReturn += await funcSelector.Invoke(objEnumerator.Current, token).ConfigureAwait(false);
+                }
+            }
+            finally
+            {
+                if (objEnumerator is IAsyncDisposable objAsyncDisposable)
+                    await objAsyncDisposable.DisposeAsync().ConfigureAwait(false);
+                else
+                    objEnumerator.Dispose();
+            }
+            return decReturn;
+        }
+
         public static async Task<decimal> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
 
+        public static async Task<decimal> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, decimal> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
         public static async Task<decimal> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, Task<decimal>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
+        {
+            return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
+        }
+
+        public static async Task<decimal> SumAsync<T, T2>(this Task<T2> tskEnumerable, [NotNull] Func<T, CancellationToken, Task<decimal>> funcSelector, CancellationToken token = default) where T2 : IAsyncEnumerable<T>
         {
             return await SumAsync(await tskEnumerable.ConfigureAwait(false), funcSelector, token).ConfigureAwait(false);
         }
@@ -10065,13 +10576,13 @@ namespace Chummer
         public static Task<bool> DeepAllAsync<T, T2>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AllAsync(async objLoopChild =>
+            return objParentList.AllAsync(async (objLoopChild, t) =>
             {
                 if (!predicate(objLoopChild))
                     return false;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenAsync)
-                    return await lstChildrenAsync.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    return await lstChildrenAsync.DeepAllAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
                 return lstChildren.DeepAll(funcGetChildrenMethod, predicate);
             }, token);
         }
@@ -10082,12 +10593,12 @@ namespace Chummer
         public static Task<bool> DeepAllAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AllAsync(async objLoopChild =>
+            return objParentList.AllAsync(async (objLoopChild, t) =>
             {
                 if (!await predicate(objLoopChild).ConfigureAwait(false))
                     return false;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
-                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10099,12 +10610,12 @@ namespace Chummer
             where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AllAsync(async objLoopChild =>
+            return objParentList.AllAsync(async (objLoopChild, t) =>
             {
                 if (!predicate(objLoopChild))
                     return false;
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10116,12 +10627,12 @@ namespace Chummer
             where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AllAsync(async objLoopChild =>
+            return objParentList.AllAsync(async (objLoopChild, t) =>
             {
                 if (!await predicate(objLoopChild).ConfigureAwait(false))
                     return false;
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAllAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10131,13 +10642,13 @@ namespace Chummer
         public static Task<bool> DeepAnyAsync<T, T2>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AnyAsync(async objLoopChild =>
+            return objParentList.AnyAsync(async (objLoopChild, t) =>
             {
                 if (predicate(objLoopChild))
                     return true;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
                 if (lstChildren is IAsyncEnumerable<T> lstChildrenAsync)
-                    return await lstChildrenAsync.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                    return await lstChildrenAsync.DeepAnyAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
                 return lstChildren.DeepAny(funcGetChildrenMethod, predicate);
             }, token);
         }
@@ -10148,12 +10659,12 @@ namespace Chummer
         public static Task<bool> DeepAnyAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AnyAsync(async objLoopChild =>
+            return objParentList.AnyAsync(async (objLoopChild, t) =>
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
                     return true;
                 T2 lstChildren = funcGetChildrenMethod(objLoopChild);
-                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10163,12 +10674,12 @@ namespace Chummer
         public static Task<bool> DeepAnyAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, bool> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AnyAsync(async objLoopChild =>
+            return objParentList.AnyAsync(async (objLoopChild, t) =>
             {
                 if (predicate(objLoopChild))
                     return true;
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10178,12 +10689,12 @@ namespace Chummer
         public static Task<bool> DeepAnyAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, Task<T2>> funcGetChildrenMethod, Func<T, Task<bool>> predicate, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
-            return objParentList.AnyAsync(async objLoopChild =>
+            return objParentList.AnyAsync(async (objLoopChild, t) =>
             {
                 if (await predicate(objLoopChild).ConfigureAwait(false))
                     return true;
                 T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
-                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, token).ConfigureAwait(false);
+                return await lstChildren.DeepAnyAsync(funcGetChildrenMethod, predicate, t).ConfigureAwait(false);
             }, token);
         }
 
@@ -10982,6 +11493,25 @@ namespace Chummer
         /// <summary>
         /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
         /// </summary>
+        public static IEnumerable<T> GetAllDescendants<T, T2>([ItemNotNull] this IAsyncEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            foreach (T objItem in objParentList)
+            {
+                token.ThrowIfCancellationRequested();
+                yield return objItem;
+                token.ThrowIfCancellationRequested();
+                foreach (T objLoopGrandchild in funcGetChildrenMethod(objItem, token).GetAllDescendants(funcGetChildrenMethod, token))
+                {
+                    token.ThrowIfCancellationRequested();
+                    yield return objLoopGrandchild;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
         public static async Task<List<T>> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
         {
             token.ThrowIfCancellationRequested();
@@ -10995,6 +11525,26 @@ namespace Chummer
                     lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, t).ConfigureAwait(false));
                 else
                     lstReturn.AddRange(lstChildren.GetAllDescendants(funcGetChildrenMethod));
+            }, token).ConfigureAwait(false);
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, T2> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            await objParentList.ForEachAsync(async (objLoopChild, t) =>
+            {
+                lstReturn.Add(objLoopChild);
+                t.ThrowIfCancellationRequested();
+                T2 lstChildren = funcGetChildrenMethod(objLoopChild, t);
+                if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
+                    lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, t).ConfigureAwait(false));
+                else
+                    lstReturn.AddRange(lstChildren.GetAllDescendants(funcGetChildrenMethod, t));
             }, token).ConfigureAwait(false);
             return lstReturn;
         }
@@ -11029,6 +11579,47 @@ namespace Chummer
                     lstReturn.Add(objLoopChild);
                     token.ThrowIfCancellationRequested();
                     T2 lstChildren = await funcGetChildrenMethod(objLoopChild).ConfigureAwait(false);
+                    if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
+                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                            .ConfigureAwait(false));
+                    else
+                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, token)
+                            .ConfigureAwait(false));
+                }
+            }
+            return lstReturn;
+        }
+
+        /// <summary>
+        /// Gets all relatives in the list, including the parents, the parents' children, their children's children, etc.
+        /// </summary>
+        public static async Task<List<T>> GetAllDescendantsAsync<T, T2>([ItemNotNull] this IEnumerable<T> objParentList, Func<T, CancellationToken, Task<T2>> funcGetChildrenMethod, CancellationToken token = default) where T2 : IEnumerable<T>
+        {
+            token.ThrowIfCancellationRequested();
+            List<T> lstReturn = new List<T>();
+            if (objParentList is IAsyncEnumerable<T> objParentListCast)
+            {
+                await objParentListCast.ForEachAsync(async (objLoopChild, t) =>
+                {
+                    lstReturn.Add(objLoopChild);
+                    t.ThrowIfCancellationRequested();
+                    T2 lstChildren = await funcGetChildrenMethod(objLoopChild, t).ConfigureAwait(false);
+                    if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
+                        lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, t)
+                            .ConfigureAwait(false));
+                    else
+                        lstReturn.AddRange(await lstChildren.GetAllDescendantsAsync(funcGetChildrenMethod, t)
+                            .ConfigureAwait(false));
+                }, token).ConfigureAwait(false);
+            }
+            else
+            {
+                foreach (T objLoopChild in objParentList)
+                {
+                    token.ThrowIfCancellationRequested();
+                    lstReturn.Add(objLoopChild);
+                    token.ThrowIfCancellationRequested();
+                    T2 lstChildren = await funcGetChildrenMethod(objLoopChild, token).ConfigureAwait(false);
                     if (lstChildren is IAsyncEnumerable<T> lstChildrenCast)
                         lstReturn.AddRange(await lstChildrenCast.GetAllDescendantsAsync(funcGetChildrenMethod, token)
                             .ConfigureAwait(false));

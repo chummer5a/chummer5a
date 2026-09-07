@@ -1073,9 +1073,9 @@ namespace Chummer
                         = Program.MainForm.OpenCharacterEditorForms;
                     if (lstToProcess1 != null && await lstToProcess1
                             .AnyAsync(
-                                async x => !x.CharacterObject.IsDisposed &&
+                                async (x, t) => !x.CharacterObject.IsDisposed &&
                                            string.Equals(
-                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
                         strMarker += "*";
@@ -1083,18 +1083,18 @@ namespace Chummer
                         = Program.MainForm.OpenCharacterSheetViewers;
                     if (lstToProcess2 != null && await lstToProcess2
                             .AnyAsync(
-                                x => x.CharacterObjects.AnyAsync(
-                                    async y => !y.IsDisposed && string.Equals(
-                                        await y.GetFileNameAsync(token).ConfigureAwait(false), strFilePath,
-                                        StringComparison.Ordinal), token), token).ConfigureAwait(false))
+                                (x, t1) => x.CharacterObjects.AnyAsync(
+                                    async (y, t2) => !y.IsDisposed && string.Equals(
+                                        await y.GetFileNameAsync(t2).ConfigureAwait(false), strFilePath,
+                                        StringComparison.Ordinal), t1), token).ConfigureAwait(false))
                         strMarker += "^";
                     ThreadSafeObservableCollection<ExportCharacter> lstToProcess3
                         = Program.MainForm.OpenCharacterExportForms;
                     if (lstToProcess3 != null && await lstToProcess3
                             .AnyAsync(
-                                async x => !x.CharacterObject.IsDisposed &&
+                                async (x, t) => !x.CharacterObject.IsDisposed &&
                                            string.Equals(
-                                               await x.CharacterObject.GetFileNameAsync(token).ConfigureAwait(false),
+                                               await x.CharacterObject.GetFileNameAsync(t).ConfigureAwait(false),
                                                strFilePath, StringComparison.Ordinal), token)
                             .ConfigureAwait(false))
                         strMarker += "\'";

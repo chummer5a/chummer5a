@@ -5035,7 +5035,7 @@ namespace Chummer
                             Dictionary<Cyberware, int> dicPairableCyberwares
                                 = new Dictionary<Cyberware, int>(await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetCountAsync(token).ConfigureAwait(false));
                             foreach (Cyberware objCyberware in await (await CharacterObject.GetCyberwareAsync(token).ConfigureAwait(false)).GetAllDescendantsAsync(
-                                         x => x.GetChildrenAsync(token), token).ConfigureAwait(false))
+                                         (x, t) => x.GetChildrenAsync(t), token).ConfigureAwait(false))
                             {
                                 // We're only re-apply improvements a list of items, not all of them
                                 if (lstInternalIdFilter?.Contains(objCyberware.InternalId) != false)

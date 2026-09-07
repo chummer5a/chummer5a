@@ -1355,7 +1355,7 @@ namespace Chummer
                 WeaponAccessory objReturnAccessory = null;
                 foreach (Weapon objWeapon in await lstWeapons.DeepWhereAsync(x => x.Children,
                              x => x.WeaponAccessories.AnyAsync(
-                                 async y => await y.GearChildren.GetCountAsync(token).ConfigureAwait(false) > 0, token),
+                                 async (y, t) => await y.GearChildren.GetCountAsync(t).ConfigureAwait(false) > 0, token),
                              token: token).ConfigureAwait(false))
                 {
                     await objWeapon.WeaponAccessories.ForEachWithBreakAsync(async (objAccessory, t) =>

@@ -4606,7 +4606,7 @@ namespace Chummer.Backend.Equipment
         {
             return !string.IsNullOrEmpty(strCheckCapacity) && ModCategoryStrings.Contains(strCheckCapacity)
                 ? await CalcCategoryAvailAsync(strCheckCapacity, token).ConfigureAwait(false) < 0
-                : await ModCategoryStrings.AnyAsync(async strCategory => await CalcCategoryAvailAsync(strCategory, token).ConfigureAwait(false) < 0, token).ConfigureAwait(false);
+                : await ModCategoryStrings.AnyAsync(async (strCategory, t) => await CalcCategoryAvailAsync(strCategory, t).ConfigureAwait(false) < 0, token).ConfigureAwait(false);
         }
 
         /// <summary>
@@ -4953,7 +4953,7 @@ namespace Chummer.Backend.Equipment
         {
             token.ThrowIfCancellationRequested();
             return await GearChildren.AnyAsync(
-                       async x => (await x.GetCanFormPersonaAsync(token).ConfigureAwait(false)).Contains("Parent"),
+                       async (x, t) => (await x.GetCanFormPersonaAsync(t).ConfigureAwait(false)).Contains("Parent"),
                        token: token).ConfigureAwait(false) &&
                    await this.GetTotalMatrixAttributeAsync("Device Rating", token).ConfigureAwait(false) > 0;
         }

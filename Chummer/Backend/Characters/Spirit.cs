@@ -1238,12 +1238,12 @@ namespace Chummer
                 {
                     if (value > 0 && _intServicesOwed <= 0 && !await GetBoundAsync(token).ConfigureAwait(false) &&
                         !await GetFetteredAsync(token).ConfigureAwait(false) && await CharacterObject.Spirits.AnyAsync(
-                            async x =>
+                            async (x, t) =>
                                 !ReferenceEquals(x, this)
-                                && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
-                                && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eType
+                                && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                     {
                         // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                         await Program.ShowScrollableMessageBoxAsync(
@@ -1507,12 +1507,12 @@ namespace Chummer
                     return;
                 }
                 if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !value && await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && !await GetFetteredAsync(token).ConfigureAwait(false)
-                    && await CharacterObject.Spirits.AnyAsync(async x =>
+                    && await CharacterObject.Spirits.AnyAsync(async (x, t) =>
                         !ReferenceEquals(x, this)
-                        && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eType
-                        && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                        && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                        && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                        && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eType
+                        && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                        && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                        && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     await Program.ShowScrollableMessageBoxAsync(
@@ -2164,7 +2164,7 @@ namespace Chummer
 
                     //Only one Fettered spirit is permitted.
                     if (await CharacterObject.Spirits
-                            .AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                            .AnyAsync((objSpirit, t) => objSpirit.GetFetteredAsync(t), token: token)
                             .ConfigureAwait(false))
                         return;
                 }
@@ -2172,12 +2172,12 @@ namespace Chummer
                          !await GetBoundAsync(token).ConfigureAwait(false) &&
                          await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits
                              .AnyAsync(
-                                 async x =>
+                                 async (x, t) =>
                                      !ReferenceEquals(x, this)
-                                     && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
-                                     && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                     && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                     && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token)
+                                     && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eEntityType
+                                     && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                     && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                     && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token)
                              .ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
@@ -2213,7 +2213,7 @@ namespace Chummer
                         return;
 
                     //Only one Fettered spirit is permitted.
-                    if (await CharacterObject.Spirits.AnyAsync(objSpirit => objSpirit.GetFetteredAsync(token), token: token)
+                    if (await CharacterObject.Spirits.AnyAsync((objSpirit, t) => objSpirit.GetFetteredAsync(t), token: token)
                             .ConfigureAwait(false))
                         return;
                     if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false))
@@ -2235,12 +2235,12 @@ namespace Chummer
                 }
                 else if (await CharacterObject.GetCreatedAsync(token).ConfigureAwait(false) && !await GetBoundAsync(token).ConfigureAwait(false) &&
                          await GetServicesOwedAsync(token).ConfigureAwait(false) > 0 && await CharacterObject.Spirits.AnyAsync(
-                             async x =>
+                             async (x, t) =>
                                  !ReferenceEquals(x, this)
-                                 && await x.GetEntityTypeAsync(token).ConfigureAwait(false) == eEntityType
-                                 && await x.GetServicesOwedAsync(token).ConfigureAwait(false) > 0
-                                 && !await x.GetBoundAsync(token).ConfigureAwait(false)
-                                 && !await x.GetFetteredAsync(token).ConfigureAwait(false), token: token).ConfigureAwait(false))
+                                 && await x.GetEntityTypeAsync(t).ConfigureAwait(false) == eEntityType
+                                 && await x.GetServicesOwedAsync(t).ConfigureAwait(false) > 0
+                                 && !await x.GetBoundAsync(t).ConfigureAwait(false)
+                                 && !await x.GetFetteredAsync(t).ConfigureAwait(false), token: token).ConfigureAwait(false))
                 {
                     // Once created, new sprites/spirits are added as Unbound first. We're not permitted to have more than 1 at a time, but we only count ones that have services.
                     await Program.ShowScrollableMessageBoxAsync(
@@ -2946,8 +2946,8 @@ namespace Chummer
                             if (await Program.OpenCharacters.ContainsAsync(objOldLinkedCharacter, token)
                                     .ConfigureAwait(false))
                             {
-                                if (await Program.OpenCharacters.AllAsync(async x => x == _objLinkedCharacter
-                                                                               || !(await x.GetLinkedCharactersAsync(token).ConfigureAwait(false)).Contains(
+                                if (await Program.OpenCharacters.AllAsync(async (x, t) => x == _objLinkedCharacter
+                                                                               || !(await x.GetLinkedCharactersAsync(t).ConfigureAwait(false)).Contains(
                                                                                    objOldLinkedCharacter), token: token)
                                         .ConfigureAwait(false)
                                     && !await Program.MainForm.AnyOpenFormContainsCharacter(objOldLinkedCharacter, token: token).ConfigureAwait(false))
