@@ -18627,7 +18627,7 @@ namespace Chummer
                     // Run through all of the Spells and remove their Improvements.
                     if (Spells.All(x =>
                             x.Grade == 0 && (!blnKeepAdeptEligible || x.Category != "Rituals" ||
-                                             x.Descriptors.Contains("Spell")), token))
+                                             x.HashDescriptors.Contains("Spell")), token))
                     {
                         List<string> lstIds = Spells.Select(x => x.InternalId).ToList();
                         ImprovementManager.RemoveImprovements(this, Improvement.ImprovementSource.Spell,
@@ -18700,7 +18700,7 @@ namespace Chummer
                     if (await lstSpells
                             .AllAsync(
                                 x => x.Grade == 0 && (!blnKeepAdeptEligible || x.Category != "Rituals" ||
-                                                      x.Descriptors.Contains("Spell")), token: token)
+                                                      x.HashDescriptors.Contains("Spell")), token: token)
                             .ConfigureAwait(false))
                     {
                         List<string> lstIds = new List<string>(await lstSpells.GetCountAsync(token).ConfigureAwait(false));
